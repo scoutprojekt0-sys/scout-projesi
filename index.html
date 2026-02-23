@@ -3,471 +3,84 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Scout Arena | Vitrine Cik</title>
+  <title>Menu</title>
   <style>
-    :root {
-      --bg-1: #fff9f2;
-      --bg-2: #ffe8d4;
-      --bg-3: #ffd7b4;
-      --text: #1f2a37;
-      --muted: #52606d;
-      --card: #fffffff0;
-      --line: #e3d9cf;
-      --a1: #0f766e;
-      --a2: #f97316;
-      --a3: #155e75;
-      --radius: 18px;
-      --shadow: 0 14px 36px #00000018;
-    }
-
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; }
-
-    body {
-      font-family: "Gill Sans", "Trebuchet MS", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at 10% 10%, var(--bg-1), transparent 45%),
-        radial-gradient(circle at 90% 15%, #fff1de, transparent 40%),
-        linear-gradient(135deg, var(--bg-1), var(--bg-2) 45%, var(--bg-3));
-      min-height: 100vh;
-    }
-
-    .wrap {
-      width: min(1120px, calc(100% - 28px));
-      margin: 18px auto 28px;
-    }
-
-    .nav {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 12px 14px;
-      border-radius: 16px;
-      border: 1px solid #ffffffaa;
-      background: var(--card);
-      backdrop-filter: blur(8px);
-      box-shadow: var(--shadow);
-      position: sticky;
-      top: 10px;
-      z-index: 20;
-    }
-
-    .brand {
-      margin-right: auto;
-      text-decoration: none;
-      color: var(--text);
-      font-weight: 900;
-      letter-spacing: 0.8px;
-      font-size: 1.15rem;
-    }
-
-    .brand span { color: var(--a1); }
-
-    .links {
-      list-style: none;
-      display: flex;
-      gap: 6px;
-      margin: 0;
-      padding: 0;
-    }
-
-    .links a {
-      text-decoration: none;
-      color: var(--muted);
-      font-weight: 700;
-      padding: 9px 12px;
-      border-radius: 999px;
-    }
-
-    .links a:hover {
-      color: var(--text);
-      background: #ffffff;
-    }
-
-    .btn {
-      border: 0;
-      border-radius: 999px;
-      padding: 10px 15px;
-      text-decoration: none;
-      font-weight: 800;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: transform .2s ease, box-shadow .2s ease;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 24px #00000018;
-    }
-
-    .btn-main {
-      color: #fff;
-      background: linear-gradient(135deg, var(--a2), #fb923c);
-    }
-
-    .btn-soft {
-      color: var(--a3);
-      border: 1px solid #cae4ea;
-      background: #effbff;
-    }
-
-    .toggle {
-      display: none;
-      border: 1px solid var(--line);
-      background: #fff;
-      color: var(--text);
-      border-radius: 10px;
-      padding: 8px 10px;
-      font-weight: 800;
-    }
-
-    .hero {
-      margin-top: 18px;
-      display: grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap: 14px;
-    }
-
-    .panel {
-      background: var(--card);
-      border: 1px solid #ffffffb8;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-
-    .hero-main {
-      padding: 30px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-main::after {
-      content: "";
-      position: absolute;
-      right: -80px;
-      top: -80px;
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #16a34a2b 0, #16a34a10 55%, transparent 70%);
-    }
-
-    .tag {
-      display: inline-block;
-      padding: 7px 11px;
-      border-radius: 999px;
-      border: 1px solid #95d5d6;
-      color: var(--a1);
-      font-weight: 700;
-      background: #f0fdfa;
-      font-size: 0.88rem;
-    }
-
-    h1 {
-      margin: 12px 0 10px;
-      line-height: 1.08;
-      font-size: clamp(2rem, 4.8vw, 3.7rem);
-      letter-spacing: .2px;
-    }
-
-    .lead {
-      margin: 0;
-      color: var(--muted);
-      font-size: 1.04rem;
-      line-height: 1.6;
-      max-width: 58ch;
-    }
-
-    .hero-actions {
-      margin-top: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .stats {
-      margin-top: 22px;
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .stat {
-      padding: 12px;
-      border-radius: 12px;
-      background: #fff;
-      border: 1px solid #f0e6dd;
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 1.35rem;
-      color: #0f766e;
-      margin-bottom: 2px;
-    }
-
-    .stat span {
-      color: var(--muted);
-      font-size: .88rem;
-    }
-
-    .hero-side {
-      padding: 16px;
-      display: grid;
-      gap: 10px;
-    }
-
-    .quick-card {
-      border: 1px solid #f0e5db;
-      border-radius: 14px;
-      padding: 14px;
-      background: #fffdfb;
-    }
-
-    .quick-card h3 {
-      margin: 0 0 6px;
-      font-size: 1rem;
-      color: #1f2a37;
-    }
-
-    .quick-card p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.5;
-      font-size: .93rem;
-    }
-
-    .section {
-      margin-top: 14px;
-      padding: 24px;
-    }
-
-    .section h2 {
-      margin: 0 0 8px;
-      font-size: clamp(1.6rem, 3vw, 2.2rem);
-      line-height: 1.15;
-    }
-
-    .section .sub {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.6;
-      max-width: 70ch;
-    }
-
-    .roles {
-      margin-top: 16px;
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .role {
-      border: 1px solid #efe1d4;
-      border-radius: 14px;
-      padding: 16px;
-      background: linear-gradient(180deg, #ffffff, #fff8f1);
-    }
-
-    .role h3 {
-      margin: 0 0 8px;
-      font-size: 1.05rem;
-      color: #1a2733;
-    }
-
-    .role ul {
-      margin: 0;
-      padding-left: 18px;
-      color: #4f6475;
-      line-height: 1.55;
-    }
-
-    .steps {
-      margin-top: 16px;
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .step {
-      border: 1px solid #ede2d8;
-      border-radius: 12px;
-      padding: 14px;
-      background: #fff;
-    }
-
-    .step b {
-      color: var(--a1);
-      display: inline-block;
-      margin-bottom: 6px;
-    }
-
-    .final-cta {
-      margin-top: 14px;
-      padding: 24px;
-      text-align: center;
-      background: linear-gradient(130deg, #155e75, #0f766e, #fb923c);
-      color: #fff;
-    }
-
-    .final-cta h3 {
-      margin: 0;
-      font-size: clamp(1.5rem, 3vw, 2rem);
-      line-height: 1.2;
-    }
-
-    .final-cta p {
-      margin: 9px auto 14px;
-      max-width: 64ch;
-      color: #e8f8ff;
-      line-height: 1.5;
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(16px);
-      animation: up .65s ease forwards;
-    }
-
-    .d1 { animation-delay: .08s; }
-    .d2 { animation-delay: .16s; }
-    .d3 { animation-delay: .24s; }
-
-    @keyframes up {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 950px) {
-      .hero { grid-template-columns: 1fr; }
-      .roles { grid-template-columns: 1fr 1fr; }
-      .steps { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 760px) {
-      .toggle { display: inline-flex; }
-      .links {
-        display: none;
-        width: 100%;
-        flex-direction: column;
-        border-top: 1px solid var(--line);
-        padding-top: 8px;
-      }
-      .nav.open .links { display: flex; }
-      .nav { flex-wrap: wrap; }
-      .nav > .btn-main { display: none; }
-      .nav.open > .btn-main { display: inline-flex; width: 100%; }
-      .stats { grid-template-columns: 1fr 1fr; }
-      .roles { grid-template-columns: 1fr; }
-      .hero-main, .section, .final-cta { padding: 20px; }
+    :root{--card:#ffffffe0;--text:#1f2a37;--muted:#52606d;--acc:#0f766e;--acc2:#f97316;--line:#d8e0e5}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Gill Sans","Trebuchet MS",sans-serif;background:radial-gradient(circle at 10% 10%,#fff8ed,#ffe8d4 40%,#ffdcbc 100%);color:var(--text)}
+    .wrap{max-width:1080px;margin:20px auto;padding:0 12px}
+    .nav{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:18px;background:var(--card);backdrop-filter:blur(8px);box-shadow:0 14px 36px #0000001c;border:1px solid #ffffffaa;position:relative}
+    .brand{font-size:1.15rem;font-weight:900;letter-spacing:.6px;text-decoration:none;color:var(--text);margin-right:auto}
+    .links{list-style:none;display:flex;gap:6px;padding:0;margin:0;align-items:center}
+    .links a{display:block;padding:10px 14px;border-radius:999px;text-decoration:none;color:var(--muted);font-weight:700}
+    .links a:hover{background:#fff;color:var(--text)}
+    .links .active{background:var(--acc);color:#fff}
+    .has-drop{position:relative}
+    .drop-toggle{display:block;padding:10px 14px;border-radius:999px;text-decoration:none;color:var(--muted);font-weight:700;border:0;background:transparent;cursor:pointer;font-family:inherit;font-size:1rem}
+    .drop-toggle:hover{background:#fff;color:var(--text)}
+    .dropdown{list-style:none;position:absolute;top:43px;left:0;min-width:170px;margin:0;padding:8px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 14px 22px #00000014;display:none}
+    .dropdown a{border-radius:8px;padding:9px 10px}
+    .has-drop.open .dropdown{display:block}
+    .cta{text-decoration:none;background:linear-gradient(135deg,var(--acc2),#fb923c);color:#fff;padding:10px 14px;border-radius:999px;font-weight:800}
+    .toggle{display:none;width:42px;height:38px;border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer}
+    .bar{display:block;width:18px;height:2px;background:var(--text);margin:4px auto;transition:transform .2s ease,opacity .2s ease}
+    @media (max-width:760px){
+      .toggle{display:block}
+      .links,.cta{display:none}
+      .nav.open .links{display:flex;flex-direction:column;align-items:stretch;width:100%;padding-top:8px}
+      .nav.open .cta{display:block;text-align:center;width:100%}
+      .nav.open .dropdown{position:static;border:0;box-shadow:none;padding:0 0 0 8px;background:transparent}
+      .nav.open .bar:nth-child(1){transform:translateY(6px) rotate(45deg)}
+      .nav.open .bar:nth-child(2){opacity:0}
+      .nav.open .bar:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <nav class="nav reveal" id="nav">
-      <a href="#" class="brand">SCOUT<span>ARENA</span></a>
-      <button class="toggle" id="toggle" aria-label="menu">MENU</button>
+    <nav class="nav" id="nav">
+      <a href="#" class="brand">NOVA</a>
+      <button class="toggle" id="toggle" aria-label="menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
       <ul class="links">
-        <li><a href="#roller">Roller</a></li>
-        <li><a href="#akis">Akis</a></li>
-        <li><a href="#katil">Uye Ol</a></li>
+        <li><a class="active" href="#">Anasayfa</a></li>
+        <li class="has-drop" id="servicesItem">
+          <button class="drop-toggle" id="servicesToggle" aria-expanded="false" aria-controls="servicesMenu">Hizmetler</button>
+          <ul class="dropdown" id="servicesMenu">
+            <li><a href="#">UI Tasarim</a></li>
+            <li><a href="#">Web Gelistirme</a></li>
+            <li><a href="#">Bakim Destegi</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Projeler</a></li>
+        <li><a href="#">Iletisim</a></li>
       </ul>
-      <a href="#katil" class="btn btn-main">Erken Erisim</a>
+      <a href="#" class="cta">Teklif Al</a>
     </nav>
-
-    <section class="hero">
-      <article class="panel hero-main reveal d1">
-        <span class="tag">Yeni Nesil Transfer Agi</span>
-        <h1>Oyuncular, Menajerler ve Antrenorler Icin Tek Vitrin</h1>
-        <p class="lead">
-          Hedefimiz net: giren kisi "woow" desin, dogru kisiler birbiriyle hizli baglansin,
-          oyuncu firsatlari sahaya daha cabuk insin.
-        </p>
-        <div class="hero-actions">
-          <a href="#katil" class="btn btn-main">Hemen Uye Ol</a>
-          <a href="#akis" class="btn btn-soft">Nasil Calisiyor?</a>
-        </div>
-        <div class="stats">
-          <div class="stat"><strong>+12K</strong><span>Aktif Oyuncu Profili</span></div>
-          <div class="stat"><strong>+680</strong><span>Dogrulanmis Menajer</span></div>
-          <div class="stat"><strong>+240</strong><span>Kulup Baglantisi</span></div>
-        </div>
-      </article>
-
-      <aside class="panel hero-side reveal d2">
-        <article class="quick-card">
-          <h3>Oyuncu Modu</h3>
-          <p>Mac videolari, istatistik ve guclu vitrin kartiyla kulup ilgisini topla.</p>
-        </article>
-        <article class="quick-card">
-          <h3>Menajer Paneli</h3>
-          <p>Portfoyunu rol ve pozisyona gore filtreleyip gorusmeleri tek yerden yonet.</p>
-        </article>
-        <article class="quick-card">
-          <h3>Antrenor Kiti</h3>
-          <p>Ihtiyaca gore hizli arama, karsilastirma ve karar destek ekranlari.</p>
-        </article>
-      </aside>
-    </section>
-
-    <section class="panel section reveal d2" id="roller">
-      <h2>Her Rol Icin Ozel Deneyim</h2>
-      <p class="sub">Ayni ekran herkes icin degil. Platform, rolune gore sana en gerekli adimlari one cikarir.</p>
-      <div class="roles">
-        <article class="role">
-          <h3>Oyuncular</h3>
-          <ul>
-            <li>30 saniyede vitrin profili</li>
-            <li>Performans odakli one cikma</li>
-            <li>Kulup geri donuslerini takip</li>
-          </ul>
-        </article>
-        <article class="role">
-          <h3>Menajerler</h3>
-          <ul>
-            <li>Portfoy bazli aday yonetimi</li>
-            <li>Teklif ve gorusme takvimi</li>
-            <li>Transfer sureci icin tek panel</li>
-          </ul>
-        </article>
-        <article class="role">
-          <h3>Antrenorler</h3>
-          <ul>
-            <li>Akilli filtreleme ve listeleme</li>
-            <li>Hizli karsilastirma tablosu</li>
-            <li>Ekiple paylasilabilir notlar</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <section class="panel section reveal d3" id="akis">
-      <h2>3 Adimda Sonuca Giden Akis</h2>
-      <p class="sub">Kalabalik paneller yerine, hizli hareket ettiren sade ama etkili bir operasyon tasarimi.</p>
-      <div class="steps">
-        <article class="step"><b>01. Kayit</b><div>Rolunu sec, profilini ac, vitrinini yayina al.</div></article>
-        <article class="step"><b>02. Eslesme</b><div>Filtrelerle dogru kisilere ulas, ilgi sinyallerini topla.</div></article>
-        <article class="step"><b>03. Gorusme</b><div>Teklif ve gorusme surecini hizli sekilde kapat.</div></article>
-      </div>
-    </section>
-
-    <section class="panel final-cta reveal d3" id="katil">
-      <h3>Vitrine Cik, Agi Buyut, Transferi Hizlandir</h3>
-      <p>Erken erisim listesine katil, platform acilisinda oncelikli hesap avantajini yakala.</p>
-      <a href="#" class="btn btn-main">Erken Erisim Listesine Yazil</a>
-    </section>
   </div>
-
   <script>
-    const nav = document.getElementById("nav");
-    const toggle = document.getElementById("toggle");
-    toggle.addEventListener("click", () => nav.classList.toggle("open"));
+    const nav = document.getElementById('nav');
+    const toggle = document.getElementById('toggle');
+    const servicesItem = document.getElementById('servicesItem');
+    const servicesToggle = document.getElementById('servicesToggle');
+
+    toggle.onclick = () => nav.classList.toggle('open');
+
+    servicesToggle.onclick = (e) => {
+      e.preventDefault();
+      const isOpen = servicesItem.classList.toggle('open');
+      servicesToggle.setAttribute('aria-expanded', String(isOpen));
+    };
+
+    document.addEventListener('click', (e) => {
+      if (!servicesItem.contains(e.target)) {
+        servicesItem.classList.remove('open');
+        servicesToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
   </script>
 </body>
 </html>
