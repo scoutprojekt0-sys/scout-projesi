@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Menu</title>
+  <style>
+    :root{--card:#ffffffe0;--text:#1f2a37;--muted:#52606d;--acc:#0f766e;--acc2:#f97316;--line:#d8e0e5}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Gill Sans","Trebuchet MS",sans-serif;background:radial-gradient(circle at 10% 10%,#fff8ed,#ffe8d4 40%,#ffdcbc 100%);color:var(--text)}
+    .wrap{max-width:1080px;margin:20px auto;padding:0 12px}
+    .nav{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:18px;background:var(--card);backdrop-filter:blur(8px);box-shadow:0 14px 36px #0000001c;border:1px solid #ffffffaa;position:relative}
+    .brand{font-size:1.15rem;font-weight:900;letter-spacing:.6px;text-decoration:none;color:var(--text);margin-right:auto}
+    .links{list-style:none;display:flex;gap:6px;padding:0;margin:0;align-items:center}
+    .links a{display:block;padding:10px 14px;border-radius:999px;text-decoration:none;color:var(--muted);font-weight:700}
+    .links a:hover{background:#fff;color:var(--text)}
+    .links .active{background:var(--acc);color:#fff}
+    .has-drop{position:relative}
+    .drop-toggle{display:block;padding:10px 14px;border-radius:999px;text-decoration:none;color:var(--muted);font-weight:700;border:0;background:transparent;cursor:pointer;font-family:inherit;font-size:1rem}
+    .drop-toggle:hover{background:#fff;color:var(--text)}
+    .dropdown{list-style:none;position:absolute;top:43px;left:0;min-width:170px;margin:0;padding:8px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 14px 22px #00000014;display:none}
+    .dropdown a{border-radius:8px;padding:9px 10px}
+    .has-drop.open .dropdown{display:block}
+    .cta{text-decoration:none;background:linear-gradient(135deg,var(--acc2),#fb923c);color:#fff;padding:10px 14px;border-radius:999px;font-weight:800}
+    .toggle{display:none;width:42px;height:38px;border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer}
+    .bar{display:block;width:18px;height:2px;background:var(--text);margin:4px auto;transition:transform .2s ease,opacity .2s ease}
+    @media (max-width:760px){
+      .toggle{display:block}
+      .links,.cta{display:none}
+      .nav.open .links{display:flex;flex-direction:column;align-items:stretch;width:100%;padding-top:8px}
+      .nav.open .cta{display:block;text-align:center;width:100%}
+      .nav.open .dropdown{position:static;border:0;box-shadow:none;padding:0 0 0 8px;background:transparent}
+      .nav.open .bar:nth-child(1){transform:translateY(6px) rotate(45deg)}
+      .nav.open .bar:nth-child(2){opacity:0}
+      .nav.open .bar:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav" id="nav">
+      <a href="#" class="brand">NOVA</a>
+      <button class="toggle" id="toggle" aria-label="menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+      <ul class="links">
+        <li><a class="active" href="#">Anasayfa</a></li>
+        <li class="has-drop" id="servicesItem">
+          <button class="drop-toggle" id="servicesToggle" aria-expanded="false" aria-controls="servicesMenu">Hizmetler</button>
+          <ul class="dropdown" id="servicesMenu">
+            <li><a href="#">UI Tasarim</a></li>
+            <li><a href="#">Web Gelistirme</a></li>
+            <li><a href="#">Bakim Destegi</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Projeler</a></li>
+        <li><a href="#">Iletisim</a></li>
+      </ul>
+      <a href="#" class="cta">Teklif Al</a>
+    </nav>
+  </div>
+  <script>
+    const nav = document.getElementById('nav');
+    const toggle = document.getElementById('toggle');
+    const servicesItem = document.getElementById('servicesItem');
+    const servicesToggle = document.getElementById('servicesToggle');
+
+    toggle.onclick = () => nav.classList.toggle('open');
+
+    servicesToggle.onclick = (e) => {
+      e.preventDefault();
+      const isOpen = servicesItem.classList.toggle('open');
+      servicesToggle.setAttribute('aria-expanded', String(isOpen));
+    };
+
+    document.addEventListener('click', (e) => {
+      if (!servicesItem.contains(e.target)) {
+        servicesItem.classList.remove('open');
+        servicesToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  </script>
+</body>
+</html>
