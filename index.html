@@ -3,175 +3,174 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Scout Arena | Oyuncu-Menajer-Antrenor Platformu</title>
+  <title>Scout Arena | Vitrine Cik</title>
   <style>
     :root {
-      --bg: #09111d;
-      --bg-2: #101e33;
-      --surface: #13253d;
-      --surface-2: #173050;
-      --text: #ebf4ff;
-      --muted: #9bb3cf;
-      --line: #27466f;
-      --a1: #1ed0ff;
-      --a2: #68ff8e;
-      --a3: #ff9953;
-      --ok: #26d07c;
+      --bg-1: #fff9f2;
+      --bg-2: #ffe8d4;
+      --bg-3: #ffd7b4;
+      --text: #1f2a37;
+      --muted: #52606d;
+      --card: #fffffff0;
+      --line: #e3d9cf;
+      --a1: #0f766e;
+      --a2: #f97316;
+      --a3: #155e75;
       --radius: 18px;
-      --shadow: 0 16px 50px #01071380;
+      --shadow: 0 14px 36px #00000018;
     }
 
     * { box-sizing: border-box; }
-
     html, body { margin: 0; padding: 0; }
 
     body {
-      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      font-family: "Gill Sans", "Trebuchet MS", sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at 15% 15%, #1a3558 0, transparent 44%),
-        radial-gradient(circle at 85% 10%, #2b2b59 0, transparent 38%),
-        linear-gradient(130deg, var(--bg), var(--bg-2));
+        radial-gradient(circle at 10% 10%, var(--bg-1), transparent 45%),
+        radial-gradient(circle at 90% 15%, #fff1de, transparent 40%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2) 45%, var(--bg-3));
       min-height: 100vh;
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image: linear-gradient(#ffffff0f 1px, transparent 1px), linear-gradient(90deg, #ffffff0f 1px, transparent 1px);
-      background-size: 38px 38px;
-      opacity: 0.16;
+    .wrap {
+      width: min(1120px, calc(100% - 28px));
+      margin: 18px auto 28px;
     }
 
-    .container {
-      width: min(1180px, calc(100% - 32px));
-      margin: 0 auto;
-    }
-
-    .topbar {
+    .nav {
       display: flex;
       align-items: center;
-      gap: 16px;
-      margin-top: 18px;
+      gap: 14px;
       padding: 12px 14px;
-      border: 1px solid #ffffff24;
       border-radius: 16px;
-      background: #0f1b2dcc;
-      backdrop-filter: blur(10px);
+      border: 1px solid #ffffffaa;
+      background: var(--card);
+      backdrop-filter: blur(8px);
+      box-shadow: var(--shadow);
       position: sticky;
       top: 10px;
       z-index: 20;
     }
 
-    .logo {
+    .brand {
+      margin-right: auto;
       text-decoration: none;
       color: var(--text);
-      margin-right: auto;
-      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-      letter-spacing: 1.2px;
-      font-size: 1.2rem;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      font-size: 1.15rem;
     }
 
-    .logo span { color: var(--a2); }
+    .brand span { color: var(--a1); }
 
-    .menu-toggle {
-      display: none;
-      border: 1px solid var(--line);
-      background: transparent;
-      color: var(--text);
-      border-radius: 10px;
-      padding: 7px 10px;
-      font-weight: 700;
-    }
-
-    .menu {
+    .links {
       list-style: none;
       display: flex;
-      gap: 8px;
+      gap: 6px;
       margin: 0;
       padding: 0;
     }
 
-    .menu a {
-      color: var(--muted);
+    .links a {
       text-decoration: none;
+      color: var(--muted);
+      font-weight: 700;
       padding: 9px 12px;
       border-radius: 999px;
-      font-weight: 700;
     }
 
-    .menu a:hover {
+    .links a:hover {
       color: var(--text);
-      background: #ffffff12;
+      background: #ffffff;
     }
 
     .btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 15px;
+      text-decoration: none;
+      font-weight: 800;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      border: 0;
-      border-radius: 999px;
-      padding: 11px 18px;
-      text-decoration: none;
-      font-weight: 800;
       cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: transform .2s ease, box-shadow .2s ease;
     }
 
     .btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px #00000050;
+      box-shadow: 0 10px 24px #00000018;
     }
 
-    .btn-primary {
-      color: #031a2c;
-      background: linear-gradient(130deg, var(--a2), #8dffc2);
+    .btn-main {
+      color: #fff;
+      background: linear-gradient(135deg, var(--a2), #fb923c);
     }
 
-    .btn-dark {
-      color: var(--text);
+    .btn-soft {
+      color: var(--a3);
+      border: 1px solid #cae4ea;
+      background: #effbff;
+    }
+
+    .toggle {
+      display: none;
       border: 1px solid var(--line);
-      background: #142843;
+      background: #fff;
+      color: var(--text);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-weight: 800;
     }
 
     .hero {
-      margin-top: 28px;
+      margin-top: 18px;
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 24px;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 14px;
     }
 
     .panel {
-      background: linear-gradient(160deg, #122640, #102239);
-      border: 1px solid #ffffff1d;
+      background: var(--card);
+      border: 1px solid #ffffffb8;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
     }
 
-    .hero-copy {
-      padding: 34px;
+    .hero-main {
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
     }
 
-    .chip {
+    .hero-main::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #16a34a2b 0, #16a34a10 55%, transparent 70%);
+    }
+
+    .tag {
       display: inline-block;
-      padding: 7px 12px;
+      padding: 7px 11px;
       border-radius: 999px;
-      border: 1px solid #77ffc34b;
-      color: #a8f6cb;
+      border: 1px solid #95d5d6;
+      color: var(--a1);
       font-weight: 700;
-      font-size: 0.86rem;
-      background: #8cffc81a;
+      background: #f0fdfa;
+      font-size: 0.88rem;
     }
 
     h1 {
-      margin: 14px 0 10px;
-      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-      letter-spacing: 0.8px;
-      line-height: 1.03;
-      font-size: clamp(2rem, 5vw, 4rem);
+      margin: 12px 0 10px;
+      line-height: 1.08;
+      font-size: clamp(2rem, 4.8vw, 3.7rem);
+      letter-spacing: .2px;
     }
 
     .lead {
@@ -179,355 +178,296 @@
       color: var(--muted);
       font-size: 1.04rem;
       line-height: 1.6;
-      max-width: 60ch;
+      max-width: 58ch;
     }
 
     .hero-actions {
-      margin-top: 22px;
+      margin-top: 20px;
       display: flex;
-      gap: 10px;
       flex-wrap: wrap;
+      gap: 10px;
     }
 
-    .metrics {
+    .stats {
       margin-top: 22px;
       display: grid;
-      grid-template-columns: repeat(3, minmax(100px, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px;
     }
 
-    .metric {
-      background: #0c1b30;
-      border: 1px solid #ffffff16;
-      border-radius: 12px;
+    .stat {
       padding: 12px;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid #f0e6dd;
     }
 
-    .metric strong {
-      font-size: 1.35rem;
+    .stat strong {
       display: block;
-      color: #c4ffe4;
-      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-      letter-spacing: 0.8px;
+      font-size: 1.35rem;
+      color: #0f766e;
+      margin-bottom: 2px;
     }
 
-    .metric span {
+    .stat span {
       color: var(--muted);
-      font-size: 0.87rem;
+      font-size: .88rem;
     }
 
     .hero-side {
-      padding: 20px;
-      display: grid;
-      gap: 12px;
-      align-content: start;
-    }
-
-    .badge {
-      border-radius: 14px;
-      border: 1px solid #ffffff1f;
       padding: 16px;
-      background: linear-gradient(160deg, #16304f, #11243b);
+      display: grid;
+      gap: 10px;
     }
 
-    .badge h3 {
-      margin: 0 0 8px;
+    .quick-card {
+      border: 1px solid #f0e5db;
+      border-radius: 14px;
+      padding: 14px;
+      background: #fffdfb;
+    }
+
+    .quick-card h3 {
+      margin: 0 0 6px;
       font-size: 1rem;
+      color: #1f2a37;
     }
 
-    .badge p {
+    .quick-card p {
       margin: 0;
       color: var(--muted);
-      line-height: 1.45;
-      font-size: 0.93rem;
+      line-height: 1.5;
+      font-size: .93rem;
     }
 
     .section {
-      margin-top: 28px;
-      padding: 26px;
+      margin-top: 14px;
+      padding: 24px;
     }
 
     .section h2 {
-      margin: 0 0 12px;
-      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-      letter-spacing: 0.7px;
-      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      margin: 0 0 8px;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      line-height: 1.15;
     }
 
-    .section p.section-lead {
+    .section .sub {
       margin: 0;
       color: var(--muted);
-      max-width: 72ch;
       line-height: 1.6;
+      max-width: 70ch;
     }
 
     .roles {
-      margin-top: 18px;
+      margin-top: 16px;
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
+      gap: 12px;
     }
 
-    .role-card {
-      border: 1px solid #ffffff1e;
-      border-radius: 16px;
-      padding: 18px;
-      background: linear-gradient(170deg, var(--surface), var(--surface-2));
-      position: relative;
-      overflow: hidden;
+    .role {
+      border: 1px solid #efe1d4;
+      border-radius: 14px;
+      padding: 16px;
+      background: linear-gradient(180deg, #ffffff, #fff8f1);
     }
 
-    .role-card::after {
-      content: "";
-      position: absolute;
-      right: -30px;
-      top: -30px;
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      background: #ffffff14;
+    .role h3 {
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+      color: #1a2733;
     }
 
-    .role-card h3 {
-      margin: 0 0 9px;
-      color: #d8ecff;
-      font-size: 1.1rem;
-    }
-
-    .role-card ul {
+    .role ul {
       margin: 0;
       padding-left: 18px;
-      color: #c0d6ef;
+      color: #4f6475;
       line-height: 1.55;
     }
 
-    .flow {
-      margin-top: 18px;
+    .steps {
+      margin-top: 16px;
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
+      gap: 10px;
     }
 
     .step {
-      background: #11243d;
-      border: 1px solid #ffffff1a;
-      border-radius: 14px;
-      padding: 15px;
+      border: 1px solid #ede2d8;
+      border-radius: 12px;
+      padding: 14px;
+      background: #fff;
     }
 
     .step b {
-      display: inline-block;
-      margin-bottom: 8px;
       color: var(--a1);
+      display: inline-block;
+      margin-bottom: 6px;
     }
 
-    .testimonials {
-      margin-top: 18px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .quote {
-      border: 1px solid #ffffff25;
-      border-radius: 14px;
-      padding: 18px;
-      background: #10243d;
-    }
-
-    .quote p {
-      margin: 0 0 8px;
-      line-height: 1.58;
-      color: #d8e9fa;
-    }
-
-    .quote small {
-      color: #95afcb;
-    }
-
-    .cta-band {
-      margin: 30px 0 22px;
-      padding: 26px;
+    .final-cta {
+      margin-top: 14px;
+      padding: 24px;
       text-align: center;
-      border-radius: 16px;
-      border: 1px solid #8ffff553;
-      background: linear-gradient(140deg, #163f4b, #165436, #113552);
-      box-shadow: var(--shadow);
+      background: linear-gradient(130deg, #155e75, #0f766e, #fb923c);
+      color: #fff;
     }
 
-    .cta-band h3 {
+    .final-cta h3 {
       margin: 0;
-      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-      letter-spacing: 0.8px;
-      font-size: clamp(1.7rem, 3vw, 2.2rem);
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      line-height: 1.2;
     }
 
-    .cta-band p {
-      margin: 10px auto 16px;
-      color: #d0ecf6;
+    .final-cta p {
+      margin: 9px auto 14px;
       max-width: 64ch;
+      color: #e8f8ff;
+      line-height: 1.5;
     }
 
     .reveal {
       opacity: 0;
-      transform: translateY(18px);
-      animation: rise 0.75s ease forwards;
+      transform: translateY(16px);
+      animation: up .65s ease forwards;
     }
 
-    .reveal.delay-1 { animation-delay: 0.08s; }
-    .reveal.delay-2 { animation-delay: 0.16s; }
-    .reveal.delay-3 { animation-delay: 0.24s; }
+    .d1 { animation-delay: .08s; }
+    .d2 { animation-delay: .16s; }
+    .d3 { animation-delay: .24s; }
 
-    @keyframes rise {
+    @keyframes up {
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
 
-    @media (max-width: 980px) {
+    @media (max-width: 950px) {
       .hero { grid-template-columns: 1fr; }
       .roles { grid-template-columns: 1fr 1fr; }
-      .flow { grid-template-columns: 1fr; }
-      .testimonials { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 760px) {
-      .menu-toggle { display: block; }
-      .menu {
+      .toggle { display: inline-flex; }
+      .links {
         display: none;
         width: 100%;
         flex-direction: column;
-        border-top: 1px solid #ffffff1a;
+        border-top: 1px solid var(--line);
         padding-top: 8px;
       }
-      .topbar.open .menu { display: flex; }
-      .topbar { flex-wrap: wrap; }
-      .topbar > .btn { display: none; }
-      .topbar.open > .btn { display: inline-flex; width: 100%; }
-      .hero-copy, .section, .cta-band { padding: 20px; }
+      .nav.open .links { display: flex; }
+      .nav { flex-wrap: wrap; }
+      .nav > .btn-main { display: none; }
+      .nav.open > .btn-main { display: inline-flex; width: 100%; }
+      .stats { grid-template-columns: 1fr 1fr; }
       .roles { grid-template-columns: 1fr; }
-      .metrics { grid-template-columns: 1fr 1fr; }
+      .hero-main, .section, .final-cta { padding: 20px; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <nav class="topbar reveal" id="topbar">
-      <a href="#" class="logo">SCOUT<span>ARENA</span></a>
-      <button class="menu-toggle" id="menuToggle" aria-label="menu">MENU</button>
-      <ul class="menu">
+  <div class="wrap">
+    <nav class="nav reveal" id="nav">
+      <a href="#" class="brand">SCOUT<span>ARENA</span></a>
+      <button class="toggle" id="toggle" aria-label="menu">MENU</button>
+      <ul class="links">
         <li><a href="#roller">Roller</a></li>
         <li><a href="#akis">Akis</a></li>
-        <li><a href="#yorumlar">Yorumlar</a></li>
+        <li><a href="#katil">Uye Ol</a></li>
       </ul>
-      <a href="#katil" class="btn btn-primary">Erken Erisim</a>
+      <a href="#katil" class="btn btn-main">Erken Erisim</a>
     </nav>
 
     <section class="hero">
-      <article class="panel hero-copy reveal delay-1">
-        <span class="chip">Yeni Nesil Futbol Agi</span>
-        <h1>Oyuncuyu Dogru Kulube, Dogru Anda Tasiyan Platform</h1>
+      <article class="panel hero-main reveal d1">
+        <span class="tag">Yeni Nesil Transfer Agi</span>
+        <h1>Oyuncular, Menajerler ve Antrenorler Icin Tek Vitrin</h1>
         <p class="lead">
-          Oyuncular vitrinini buyutur, menajerler transfer surecini hizlandirir, antrenorler dogru profili aninda filtreler.
-          Hepsi tek sahnede, tek akista.
+          Hedefimiz net: giren kisi "woow" desin, dogru kisiler birbiriyle hizli baglansin,
+          oyuncu firsatlari sahaya daha cabuk insin.
         </p>
         <div class="hero-actions">
-          <a href="#katil" class="btn btn-primary">Hemen Uye Ol</a>
-          <a href="#akis" class="btn btn-dark">Canli Demo Akisi</a>
+          <a href="#katil" class="btn btn-main">Hemen Uye Ol</a>
+          <a href="#akis" class="btn btn-soft">Nasil Calisiyor?</a>
         </div>
-        <div class="metrics">
-          <div class="metric"><strong>+12K</strong><span>Aktif Oyuncu Profili</span></div>
-          <div class="metric"><strong>+680</strong><span>Dogrulanmis Menajer</span></div>
-          <div class="metric"><strong>+240</strong><span>Kulup Iletisim Hatti</span></div>
+        <div class="stats">
+          <div class="stat"><strong>+12K</strong><span>Aktif Oyuncu Profili</span></div>
+          <div class="stat"><strong>+680</strong><span>Dogrulanmis Menajer</span></div>
+          <div class="stat"><strong>+240</strong><span>Kulup Baglantisi</span></div>
         </div>
       </article>
 
-      <aside class="panel hero-side reveal delay-2">
-        <div class="badge">
+      <aside class="panel hero-side reveal d2">
+        <article class="quick-card">
           <h3>Oyuncu Modu</h3>
-          <p>Mac klipleri, fiziksel veriler ve sezon istatistikleriyle profilini vitrinde one cikar.</p>
-        </div>
-        <div class="badge">
+          <p>Mac videolari, istatistik ve guclu vitrin kartiyla kulup ilgisini topla.</p>
+        </article>
+        <article class="quick-card">
           <h3>Menajer Paneli</h3>
-          <p>Portfoyunu kulup ihtiyacina gore etiketle, ilgi sinyallerini tek ekranda topla.</p>
-        </div>
-        <div class="badge">
+          <p>Portfoyunu rol ve pozisyona gore filtreleyip gorusmeleri tek yerden yonet.</p>
+        </article>
+        <article class="quick-card">
           <h3>Antrenor Kiti</h3>
-          <p>Pozisyon, ayak, tempo, pas yuzdesi ve oyun zekasi metrikleriyle hizli secim yap.</p>
-        </div>
+          <p>Ihtiyaca gore hizli arama, karsilastirma ve karar destek ekranlari.</p>
+        </article>
       </aside>
     </section>
 
-    <section class="panel section reveal delay-2" id="roller">
-      <h2>Her Rol Icin Ayri Avantaj</h2>
-      <p class="section-lead">
-        Platform, her kullanici tipini ayni arayuze sikistirmaz. Oyuncu, menajer ve antrenor kendi is akisina gore
-        farkli ekranlar gorur ve daha hizli aksiyon alir.
-      </p>
+    <section class="panel section reveal d2" id="roller">
+      <h2>Her Rol Icin Ozel Deneyim</h2>
+      <p class="sub">Ayni ekran herkes icin degil. Platform, rolune gore sana en gerekli adimlari one cikarir.</p>
       <div class="roles">
-        <article class="role-card">
+        <article class="role">
           <h3>Oyuncular</h3>
           <ul>
-            <li>30 saniyede profesyonel vitrin profili</li>
-            <li>Video + performans raporu ile gorunurluk</li>
-            <li>Kuluplerden direkt ilgi bildirimi</li>
+            <li>30 saniyede vitrin profili</li>
+            <li>Performans odakli one cikma</li>
+            <li>Kulup geri donuslerini takip</li>
           </ul>
         </article>
-        <article class="role-card">
+        <article class="role">
           <h3>Menajerler</h3>
           <ul>
-            <li>Portfoy bazli teklif ve gorusme yonetimi</li>
-            <li>Takvimlenmis gorusme ve not takibi</li>
-            <li>Transfer sureci icin tek timeline</li>
+            <li>Portfoy bazli aday yonetimi</li>
+            <li>Teklif ve gorusme takvimi</li>
+            <li>Transfer sureci icin tek panel</li>
           </ul>
         </article>
-        <article class="role-card">
+        <article class="role">
           <h3>Antrenorler</h3>
           <ul>
-            <li>Ihtiyaca gore akilli filtreleme</li>
-            <li>Izleme listesi ve karsilastirma tablosu</li>
-            <li>Ekibinle paylasilabilir degerlendirme notu</li>
+            <li>Akilli filtreleme ve listeleme</li>
+            <li>Hizli karsilastirma tablosu</li>
+            <li>Ekiple paylasilabilir notlar</li>
           </ul>
         </article>
       </div>
     </section>
 
-    <section class="panel section reveal delay-3" id="akis">
-      <h2>3 Adimda Transfere Hazir Akis</h2>
-      <p class="section-lead">Asiri kalabalik paneller yerine, karar verenleri dogrudan sonuca goturen hizli bir operasyon akisi.</p>
-      <div class="flow">
-        <article class="step"><b>01. Profil Ac</b><div>Oyuncu veya menajer olarak kayit ol, vitrinini dakikalar icinde yayina al.</div></article>
-        <article class="step"><b>02. Eslesme Al</b><div>Antrenor kriterleriyle anlik eslesme ve ilgi bildirimleri al.</div></article>
-        <article class="step"><b>03. Gorusmeyi Kapat</b><div>Platform icinden gorusmeyi planla, teklif surecini tek yerden yonet.</div></article>
+    <section class="panel section reveal d3" id="akis">
+      <h2>3 Adimda Sonuca Giden Akis</h2>
+      <p class="sub">Kalabalik paneller yerine, hizli hareket ettiren sade ama etkili bir operasyon tasarimi.</p>
+      <div class="steps">
+        <article class="step"><b>01. Kayit</b><div>Rolunu sec, profilini ac, vitrinini yayina al.</div></article>
+        <article class="step"><b>02. Eslesme</b><div>Filtrelerle dogru kisilere ulas, ilgi sinyallerini topla.</div></article>
+        <article class="step"><b>03. Gorusme</b><div>Teklif ve gorusme surecini hizli sekilde kapat.</div></article>
       </div>
     </section>
 
-    <section class="panel section reveal delay-3" id="yorumlar">
-      <h2>Ilk Kullanicilardan Tepki</h2>
-      <div class="testimonials">
-        <article class="quote">
-          <p>"Iki haftada onceki 3 ayin toplamindan daha cok scout geri donusu aldik."</p>
-          <small>Mert A. | Oyuncu Menajeri</small>
-        </article>
-        <article class="quote">
-          <p>"Filtreler cok net. Aradigim profile dakikalar icinde ulasiyorum, surec hizlandi."</p>
-          <small>Coach Selim | Akademi Antrenoru</small>
-        </article>
-      </div>
-    </section>
-
-    <section class="cta-band reveal" id="katil">
-      <h3>Siran Geldi. Vitrine Cik, Agi Buyut, Transferi Hizlandir.</h3>
-      <p>Ilk dalgaya katil, erken erisim hakkini al, kulup ve scout aginda one cik.</p>
-      <a href="#" class="btn btn-primary">Erken Erisim Listesine Yazil</a>
+    <section class="panel final-cta reveal d3" id="katil">
+      <h3>Vitrine Cik, Agi Buyut, Transferi Hizlandir</h3>
+      <p>Erken erisim listesine katil, platform acilisinda oncelikli hesap avantajini yakala.</p>
+      <a href="#" class="btn btn-main">Erken Erisim Listesine Yazil</a>
     </section>
   </div>
 
   <script>
-    const topbar = document.getElementById("topbar");
-    const menuToggle = document.getElementById("menuToggle");
-    menuToggle.addEventListener("click", () => topbar.classList.toggle("open"));
+    const nav = document.getElementById("nav");
+    const toggle = document.getElementById("toggle");
+    toggle.addEventListener("click", () => nav.classList.toggle("open"));
   </script>
 </body>
 </html>
