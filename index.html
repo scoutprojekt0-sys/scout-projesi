@@ -1496,6 +1496,9 @@
                     <button type="button" class="nav-dropdown-item" onclick="openTransferMarketCategory('seeking')">
                         <i class="fas fa-bullseye"></i> Kulüp Arıyor
                     </button>
+                    <button type="button" class="nav-dropdown-item" onclick="openTrialCenter()">
+                        <i class="fas fa-calendar-check"></i> Deneme Günleri
+                    </button>
                 </div>
             </div>
             <div class="nav-dropdown" id="scoutRadarDropdown">
@@ -1515,7 +1518,7 @@
                     </button>
                 </div>
             </div>
-            <a href="#" class="nav-button">
+            <a href="#" class="nav-button" onclick="openFavoritesPage(event)">
                 <i class="fas fa-heart"></i>
                 <span>Favoriler</span>
             </a>
@@ -1535,6 +1538,26 @@
                 <div class="nav-dropdown-menu" id="lawOfficeMenu">
                     <button type="button" class="nav-dropdown-item" onclick="openLawyersPage()">
                         <i class="fas fa-users"></i> Avukatlar
+                    </button>
+                </div>
+            </div>
+            <div class="nav-dropdown" id="liveScoutDropdown">
+                <button type="button" class="nav-button" onclick="toggleLiveScoutMenu(event)">
+                    <i class="fas fa-broadcast-tower"></i>
+                    <span>Canlı Scout</span>
+                </button>
+                <div class="nav-dropdown-menu" id="liveScoutMenu">
+                    <button type="button" class="nav-dropdown-item" onclick="openLiveScoutSection('matches')">
+                        <i class="fas fa-play-circle"></i> Canlı Maçlar
+                    </button>
+                    <button type="button" class="nav-dropdown-item" onclick="openLiveScoutSection('scorecard')">
+                        <i class="fas fa-id-card"></i> Scout Skor Kartı
+                    </button>
+                    <button type="button" class="nav-dropdown-item" onclick="openLiveScoutSection('negotiation')">
+                        <i class="fas fa-handshake"></i> Teklif Pazarlık Odası
+                    </button>
+                    <button type="button" class="nav-dropdown-item" onclick="openLiveScoutSection('weekly')">
+                        <i class="fas fa-chart-line"></i> Haftalık Performans
                     </button>
                 </div>
             </div>
@@ -1884,26 +1907,6 @@
 
                 <!-- Register Form -->
                 <form id="registerForm">
-                    <!-- Profil Resmi Yükleme -->
-                    <div class="profile-image-upload">
-                        <div class="image-upload-area" onclick="document.getElementById('profileImageInput').click()">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <div class="image-upload-text">Profil Fotoğrafınızı Yükleyin</div>
-                            <div class="image-upload-subtext">Tıklayın veya sürükleyip bırakın (JPG, PNG - Max 5MB)</div>
-                            <input type="file" id="profileImageInput" name="profile_image" accept="image/*" onchange="previewProfileImage(event)">
-                        </div>
-
-                        <!-- Fotoğraf Önizlemesi -->
-                        <div class="profile-preview-container" id="profilePreviewContainer">
-                            <img id="profilePreviewImg" src="" alt="Profil Fotoğrafı" class="profile-preview-img">
-                            <center>
-                                <button type="button" class="remove-profile-img-btn" onclick="removeProfileImage()">
-                                    <i class="fas fa-trash"></i> Fotoğrafı Kaldır
-                                </button>
-                            </center>
-                        </div>
-                    </div>
-
                     <div class="form-group">
                         <label><i class="fas fa-user"></i> Ad Soyad</label>
                         <input type="text" class="form-control" name="name" placeholder="Ad Soyad" required>
@@ -2360,6 +2363,14 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Auth status kontrol et (önce bunu)
             checkAuthStatus();
+            if (localStorage.getItem('nextscout_open_login') === '1') {
+                localStorage.removeItem('nextscout_open_login');
+                openLoginModal();
+            }
+            if (localStorage.getItem('nextscout_open_register') === '1') {
+                localStorage.removeItem('nextscout_open_register');
+                openRegisterModal();
+            }
             
             if (window.location.protocol !== 'file:') {
                 testAPIConnection();
@@ -2547,6 +2558,49 @@
             }
         }
 
+        function toggleLiveScoutMenu(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('liveScoutMenu');
+            if (!menu) return;
+            menu.classList.toggle('show');
+        }
+
+        function isUserAuthenticated() {
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            const userRaw = (localStorage.getItem('nextscout_user') || '').trim();
+            return Boolean(token || userRaw);
+        }
+
+        function requireAuthForFeature() {
+            if (isUserAuthenticated()) return true;
+            openLoginModal();
+            return false;
+        }
+
+        function openLiveScoutSection(section) {
+            if (!requireAuthForFeature()) return;
+            const routes = {
+                matches: 'scout-live-matches.html',
+                scorecard: 'scout-skor-karti.html',
+                negotiation: 'teklif-pazarlik-odasi.html',
+                weekly: 'haftalik-performans.html',
+            };
+            const target = routes[section] || 'scout-live-matches.html';
+            window.location.href = target;
+        }
+
+        function openFavoritesPage(event) {
+            if (event) event.preventDefault();
+            if (!requireAuthForFeature()) return false;
+            navigateTo('favorites');
+            return false;
+        }
+
+        function openTrialCenter() {
+            if (!requireAuthForFeature()) return;
+            window.location.href = 'trial-center.html';
+        }
+
         const LEAGUES_DATA = {
             'Avrupa': ['Turkiye', 'Ingiltere', 'Ispanya', 'Almanya', 'Italya'],
             'Asya': ['Japonya', 'Guney Kore', 'Suudi Arabistan', 'Katar'],
@@ -2700,6 +2754,12 @@
                 const scoutDropdown = document.getElementById('scoutRadarDropdown');
                 if (scoutMenu && scoutDropdown && !scoutDropdown.contains(event.target)) {
                     scoutMenu.classList.remove('show');
+                }
+
+                const liveMenu = document.getElementById('liveScoutMenu');
+                const liveDropdown = document.getElementById('liveScoutDropdown');
+                if (liveMenu && liveDropdown && !liveDropdown.contains(event.target)) {
+                    liveMenu.classList.remove('show');
                 }
 
                 const leaguesMenu = document.getElementById('leaguesMenu');
@@ -3077,39 +3137,6 @@
             });
         });
 
-        // ========== PROFILE IMAGE FUNCTIONS ==========
-        function previewProfileImage(event) {
-            const file = event.target.files[0];
-            
-            if (file) {
-                // Dosya türü kontrolü
-                if (!file.type.startsWith('image/')) {
-                    alert('Lütfen geçerli bir resim dosyası seçin!');
-                    document.getElementById('profileImageInput').value = '';
-                    return;
-                }
-
-                // Dosya boyutu kontrolü (5MB)
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('Resim boyutu 5MB\'dan küçük olmalıdır!');
-                    document.getElementById('profileImageInput').value = '';
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('profilePreviewImg').src = e.target.result;
-                    document.getElementById('profilePreviewContainer').classList.add('show');
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function removeProfileImage() {
-            document.getElementById('profileImageInput').value = '';
-            document.getElementById('profilePreviewContainer').classList.remove('show');
-            document.getElementById('profilePreviewImg').src = '';
-        }
     </script>
 </body>
 </html>

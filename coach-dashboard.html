@@ -92,6 +92,7 @@
       <div class="navbar-left"><div class="logo">NextScout Scout</div></div>
       <div class="navbar-right">
       <button class="btn-small success" onclick="openCoachNeedModal()">Ilan Ver</button>
+      <button class="btn-small success" onclick="openTrialPublishModal()">Deneme/Idman Ilani</button>
       <button class="btn-small primary" onclick="openLiveScoutModal()">Canli Scout Baslat</button>
       <button class="btn-small secondary" onclick="openScoutProfile()">Profilim</button>
       <button class="btn-small primary" onclick="window.location.href='index.html'">Ana Sayfa</button>
@@ -107,6 +108,7 @@
           <li class="sidebar-item active" onclick="location.reload()"><span style="font-size:18px;min-width:20px;">🔍</span><span>Oyuncu Ara</span></li>
           <li class="sidebar-item" onclick="openScoutProfile()"><span style="font-size:18px;min-width:20px;">👤</span><span>Profilim</span></li>
           <li class="sidebar-item" onclick="openWatchlist()"><span style="font-size:18px;min-width:20px;">📋</span><span>Takip Listem</span></li>
+          <li class="sidebar-item" onclick="openTrialCenter()"><span style="font-size:18px;min-width:20px;">📅</span><span>Deneme & Idmanlar</span></li>
           <li class="sidebar-item" onclick="openPerformance()"><span style="font-size:18px;min-width:20px;">📊</span><span>Performans Analizi</span></li>
           <li class="sidebar-item" onclick="openVideoAnalysis()"><span style="font-size:18px;min-width:20px;">🎥</span><span>Video Analiz</span></li>
           <li class="sidebar-item" onclick="openLiveScoutModal()"><span style="font-size:18px;min-width:20px;">📡</span><span>Canli Scout</span></li>
@@ -187,12 +189,53 @@
             </select>
             <input type="text" id="liveFocusPlayer" placeholder="Odak oyuncu / pozisyon (or: Sol Bek #3)">
           </div>
-          <input type="url" id="liveStreamUrl" placeholder="Yayin linki (opsiyonel)">
+          <input type="url" id="liveStreamUrl" placeholder="Ana yayin linki (opsiyonel)">
+          <div class="live-grid">
+            <input type="url" id="liveStreamYoutube" placeholder="YouTube linki">
+            <input type="url" id="liveStreamInstagram" placeholder="Instagram linki">
+          </div>
+          <div class="live-grid">
+            <input type="url" id="liveStreamFacebook" placeholder="Facebook linki">
+            <input type="url" id="liveStreamX" placeholder="X (Twitter) linki">
+          </div>
           <textarea id="liveNote" placeholder="Kisa not (opsiyonel): Bu oyuncu hizli gecislerde etkili."></textarea>
         </div>
         <div class="need-modal-actions">
           <button class="btn-small secondary" type="button" onclick="closeLiveScoutModal()">Iptal</button>
           <button class="btn-small success" type="submit">Yayini Baslat</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="need-modal-overlay" id="trialPublishModal" onclick="if(event.target.id==='trialPublishModal'){closeTrialPublishModal();}">
+    <div class="need-modal live-modal" onclick="event.stopPropagation()">
+      <div class="need-modal-head">
+        <h3>Deneme / Idman Ilani</h3>
+        <button class="btn-small secondary" type="button" onclick="closeTrialPublishModal()">Kapat</button>
+      </div>
+      <form id="trialPublishForm">
+        <div class="need-modal-body">
+          <div class="live-grid">
+            <select id="trialEventType">
+              <option value="trial">Deneme</option>
+              <option value="training">Idman</option>
+              <option value="match">Deneme Maci</option>
+            </select>
+            <input type="text" id="trialEventTitle" placeholder="Baslik (or: U19 Acik Deneme)" required>
+          </div>
+          <div class="live-grid">
+            <input type="date" id="trialEventDate" required>
+            <input type="time" id="trialEventTime" required>
+          </div>
+          <div class="live-grid">
+            <input type="text" id="trialEventCity" placeholder="Sehir" required>
+            <input type="text" id="trialEventVenue" placeholder="Saha / Tesis">
+          </div>
+        </div>
+        <div class="need-modal-actions">
+          <button class="btn-small secondary" type="button" onclick="closeTrialPublishModal()">Iptal</button>
+          <button class="btn-small success" type="submit">Yayina Al</button>
         </div>
       </form>
     </div>
@@ -369,9 +412,10 @@
     }
 
     function openWatchlist() { window.location.href = 'scout-watchlist.html'; }
+    function openTrialCenter() { window.location.href = 'trial-center.html?view=coach'; }
     function openScoutProfile() { window.location.href = 'scout-profile.html'; }
     function openPerformance() { window.location.href = 'statistics.html'; }
-    function openVideoAnalysis() { window.location.href = 'live-matches.html'; }
+    function openVideoAnalysis() { window.location.href = 'scout-live-matches.html'; }
     function openMessages() { window.location.href = 'notifications.html'; }
     function openSettings() { window.location.href = 'settings.html'; }
     function openHelp() { window.location.href = 'help.html'; }
@@ -394,6 +438,71 @@
     function closeLiveScoutModal() {
       const modal = document.getElementById('liveScoutModal');
       if (modal) modal.classList.remove('show');
+    }
+
+    function openTrialPublishModal() {
+      const modal = document.getElementById('trialPublishModal');
+      if (modal) modal.classList.add('show');
+    }
+
+    function closeTrialPublishModal() {
+      const modal = document.getElementById('trialPublishModal');
+      if (modal) modal.classList.remove('show');
+    }
+
+    function pushLocalNotification(title, message) {
+      try {
+        const key = 'nextscout_local_notifications';
+        const rows = JSON.parse(localStorage.getItem(key) || '[]');
+        rows.unshift({
+          id: Date.now(),
+          title,
+          message,
+          type: 'trial_event',
+          created_at: new Date().toISOString(),
+          read: false,
+        });
+        localStorage.setItem(key, JSON.stringify(rows.slice(0, 300)));
+      } catch (error) {}
+    }
+
+    async function publishTrialEventApi(payload) {
+      const apiBase = getApiBaseUrl();
+      const token = (localStorage.getItem('nextscout_token') || '').trim();
+      if (!token || token === 'local-session-token') {
+        const rows = JSON.parse(localStorage.getItem('nextscout_trial_events') || '[]');
+        rows.unshift({
+          id: Date.now(),
+          type: payload.event_type === 'trial_day' ? 'trial' : (payload.event_type === 'training_session' ? 'training' : 'match'),
+          title: payload.title,
+          date: payload.event_date.slice(0, 10),
+          time: payload.event_date.slice(11, 16),
+          city: payload.city,
+          venue: payload.venue,
+          owner: 'Scout',
+          owner_role: 'coach',
+          club_name: '',
+          status: 'registration_open',
+        });
+        localStorage.setItem('nextscout_trial_events', JSON.stringify(rows));
+        return rows[0];
+      }
+
+      const response = await fetch(`${apiBase}/community-events`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok || body?.ok === false) {
+        throw new Error(body?.message || `HTTP ${response.status}`);
+      }
+      return body?.data || null;
     }
 
     async function saveCoachNeed(payload) {
@@ -482,10 +591,23 @@
       const sport = (document.getElementById('liveSport').value || 'futbol').trim();
       const focus = (document.getElementById('liveFocusPlayer').value || '').trim();
       const stream = (document.getElementById('liveStreamUrl').value || '').trim();
+      const streamYoutube = (document.getElementById('liveStreamYoutube').value || '').trim();
+      const streamInstagram = (document.getElementById('liveStreamInstagram').value || '').trim();
+      const streamFacebook = (document.getElementById('liveStreamFacebook').value || '').trim();
+      const streamX = (document.getElementById('liveStreamX').value || '').trim();
       const note = (document.getElementById('liveNote').value || '').trim();
 
       if (!matchName) {
         alert('Mac adi zorunlu.');
+        return;
+      }
+      if (stream && /(^|:\/\/)(www\.)?example\.com(\/|$)/i.test(stream)) {
+        alert('Lutfen gercek bir yayin linki girin. example.com test alanidir.');
+        return;
+      }
+      const allStreams = [streamYoutube, streamInstagram, streamFacebook, streamX];
+      if (allStreams.some((url) => url && /(^|:\/\/)(www\.)?example\.com(\/|$)/i.test(url))) {
+        alert('Platform linklerinde example.com kullanmayin.');
         return;
       }
 
@@ -496,12 +618,22 @@
         scoutName = (user && user.name) ? String(user.name) : '';
       } catch (error) {}
 
+      const streamLinks = {
+        youtube: streamYoutube || null,
+        instagram: streamInstagram || null,
+        facebook: streamFacebook || null,
+        x: streamX || null,
+      };
+      const firstPlatformStream = streamYoutube || streamFacebook || streamInstagram || streamX || '';
+      const primaryStream = stream || firstPlatformStream || null;
+
       const payload = {
         match_name: matchName,
         location: location || null,
         sport: sport || null,
         focus: focus || null,
-        stream_url: stream || null,
+        stream_url: primaryStream,
+        stream_links: streamLinks,
         note: note || null,
         scout_name: scoutName || null,
       };
@@ -510,10 +642,54 @@
         await saveLiveScoutMatch(payload);
         this.reset();
         closeLiveScoutModal();
-        window.location.href = 'live-matches.html';
+        window.location.href = 'scout-live-matches.html';
       } catch (error) {
         alert(`Canli mac kaydedilemedi: ${error.message}`);
       }
+    });
+
+    document.getElementById('trialPublishForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const type = (document.getElementById('trialEventType').value || 'trial').trim();
+      const title = (document.getElementById('trialEventTitle').value || '').trim();
+      const date = (document.getElementById('trialEventDate').value || '').trim();
+      const time = (document.getElementById('trialEventTime').value || '').trim();
+      const city = (document.getElementById('trialEventCity').value || '').trim();
+      const venue = (document.getElementById('trialEventVenue').value || '').trim();
+
+      if (!title || !date || !time || !city) {
+        alert('Baslik, tarih, saat ve sehir zorunlu.');
+        return;
+      }
+
+      const typeMap = { trial: 'trial_day', training: 'training_session', match: 'trial_match' };
+      const eventDateIso = new Date(`${date}T${time}:00`).toISOString();
+
+      const payload = {
+        title,
+        description: 'Dashboard ilani',
+        event_type: typeMap[type] || 'trial_day',
+        city,
+        district: null,
+        venue: venue || 'Belirtilecek',
+        event_date: eventDateIso,
+        max_participants: 40,
+        entry_fee: 0,
+        is_free: true,
+        skill_level: 'all_levels',
+        contact_info: '',
+      };
+
+      publishTrialEventApi(payload)
+        .then(() => {
+          this.reset();
+          closeTrialPublishModal();
+          pushLocalNotification('Yeni Deneme/Idman Ilani', `${title} yayina alindi.`);
+          alert('Deneme/Idman ilani yayina alindi.');
+        })
+        .catch((error) => {
+          alert(`Ilan yayinlanamadi: ${error.message}`);
+        });
     });
 
     async function init() {
@@ -529,6 +705,11 @@
       filteredPlayers = allPlayers.slice();
       renderPlayers(filteredPlayers);
       updateStats();
+
+      const query = new URLSearchParams(window.location.search);
+      if (query.get('open_live') === '1') {
+        openLiveScoutModal();
+      }
     }
 
     window.addEventListener('DOMContentLoaded', init);

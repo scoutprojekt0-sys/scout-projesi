@@ -231,6 +231,62 @@
                 <tbody id="pendingUsersBody"></tbody>
             </table>
         </div>
+
+        <div class="section">
+            <div class="section-title"><i class="fas fa-calendar-check"></i> Deneme/Idman Ilan Moderasyonu (API)</div>
+            <div class="action-buttons" style="margin-bottom:12px;">
+                <button class="btn btn-secondary" type="button" onclick="loadTrialModerationQueue()"><i class="fas fa-rotate"></i> Listeyi Yenile</button>
+            </div>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Etkinlik</th>
+                        <th>Tur</th>
+                        <th>Sehir</th>
+                        <th>Tarih</th>
+                        <th>Duzenleyen</th>
+                        <th>Durum</th>
+                        <th>Islem</th>
+                    </tr>
+                </thead>
+                <tbody id="trialModerationBody">
+                    <tr><td colspan="7" style="text-align:center;color:#64748B;">Yukleniyor...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Amator Lig Sonuc Moderasyonu -->
+        <div class="section" id="amateurModerationSection">
+            <div class="section-title"><i class="fas fa-futbol"></i> Amator Lig Sonuc Moderasyonu</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">
+                <input id="amLeague" type="text" placeholder="Lig (or: Izmir 1. Amator A)" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amSeason" type="text" placeholder="Sezon (or: 2025-2026)" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amCountry" type="text" placeholder="Ulke (or: Turkiye)" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amSport" type="text" placeholder="Brans (or: futbol)" value="futbol" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amHome" type="text" placeholder="Ev sahibi takim" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amAway" type="text" placeholder="Deplasman takim" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amHomeScore" type="number" min="0" placeholder="Ev gol" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amAwayScore" type="number" min="0" placeholder="Dep gol" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+            </div>
+            <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+                <button class="btn btn-primary" type="button" onclick="addAmateurResult()"><i class="fas fa-plus"></i> Sonuc Ekle (Beklemede)</button>
+                <button class="btn btn-secondary" type="button" onclick="rebuildAmateurStandings()"><i class="fas fa-calculator"></i> Puan Durumu Hesapla</button>
+            </div>
+
+            <div style="margin-top:16px;font-weight:700;">Bekleyen / Dogrulanan Sonuclar</div>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Lig</th>
+                        <th>Mac</th>
+                        <th>Skor</th>
+                        <th>Durum</th>
+                        <th>Islem</th>
+                    </tr>
+                </thead>
+                <tbody id="amateurResultsBody"></tbody>
+            </table>
+        </div>
     </div>
     <script>
         function formatRole(role) {
@@ -296,7 +352,219 @@
             }).join('');
         }
 
-        document.addEventListener('DOMContentLoaded', loadPendingUsers);
+        function getApiBaseUrl() {
+            if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+            return '/api';
+        }
+
+        async function loadTrialModerationQueue() {
+            const tbody = document.getElementById('trialModerationBody');
+            if (!tbody) return;
+            const apiBase = getApiBaseUrl();
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            if (!token) {
+                tbody.innerHTML = '<tr><td colspan=\"7\" style=\"text-align:center;color:#b91c1c;\">Admin token bulunamadi. Giris yap.</td></tr>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${apiBase}/admin/trial-events`, {
+                    headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    throw new Error(payload?.message || `HTTP ${response.status}`);
+                }
+
+                const rows = Array.isArray(payload?.data?.data) ? payload.data.data : [];
+                if (!rows.length) {
+                    tbody.innerHTML = '<tr><td colspan=\"7\" style=\"text-align:center;color:#64748B;\">Ilan bulunamadi.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = rows.map((item) => `
+                    <tr>
+                        <td><strong>${escapeHtml(item?.title || '-')}</strong></td>
+                        <td>${escapeHtml(item?.event_type || '-')}</td>
+                        <td>${escapeHtml(item?.city || '-')}</td>
+                        <td>${formatDate(item?.event_date)}</td>
+                        <td>${escapeHtml(item?.organizer?.name || '-')}</td>
+                        <td><span class=\"badge badge-info\">${escapeHtml(item?.status || '-')}</span></td>
+                        <td>
+                            <button class=\"btn btn-primary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"moderateTrialEvent(${Number(item.id)}, 'approve')\">Onayla</button>
+                            <button class=\"btn btn-secondary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"moderateTrialEvent(${Number(item.id)}, 'reject')\">Reddet</button>
+                            <button class=\"btn btn-secondary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"moderateTrialEvent(${Number(item.id)}, 'cancel')\">Iptal</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                tbody.innerHTML = `<tr><td colspan=\"7\" style=\"text-align:center;color:#b91c1c;\">Hata: ${escapeHtml(error.message)}</td></tr>`;
+            }
+        }
+
+        async function moderateTrialEvent(id, action) {
+            const apiBase = getApiBaseUrl();
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            if (!token) {
+                alert('Admin token bulunamadi.');
+                return;
+            }
+            try {
+                const response = await fetch(`${apiBase}/admin/trial-events/${encodeURIComponent(id)}/moderate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ action }),
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    throw new Error(payload?.message || `HTTP ${response.status}`);
+                }
+                loadTrialModerationQueue();
+            } catch (error) {
+                alert(`Moderasyon hatasi: ${error.message}`);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPendingUsers();
+            loadTrialModerationQueue();
+        });
+
+        function getAmateurResults() {
+            try {
+                const rows = JSON.parse(localStorage.getItem('nextscout_amateur_results') || '[]');
+                return Array.isArray(rows) ? rows : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function saveAmateurResults(rows) {
+            localStorage.setItem('nextscout_amateur_results', JSON.stringify(Array.isArray(rows) ? rows : []));
+        }
+
+        function addAmateurResult() {
+            const league = (document.getElementById('amLeague')?.value || '').trim();
+            const season = (document.getElementById('amSeason')?.value || '').trim();
+            const country = (document.getElementById('amCountry')?.value || '').trim();
+            const sport = (document.getElementById('amSport')?.value || 'futbol').trim();
+            const home = (document.getElementById('amHome')?.value || '').trim();
+            const away = (document.getElementById('amAway')?.value || '').trim();
+            const homeScore = Number(document.getElementById('amHomeScore')?.value);
+            const awayScore = Number(document.getElementById('amAwayScore')?.value);
+
+            if (!league || !season || !home || !away || Number.isNaN(homeScore) || Number.isNaN(awayScore)) {
+                alert('Lig, sezon, takimlar ve skor alanlarini doldur.');
+                return;
+            }
+
+            const rows = getAmateurResults();
+            rows.unshift({
+                id: Date.now(),
+                league,
+                season,
+                country: country || 'Turkiye',
+                sport: sport || 'futbol',
+                home_team: home,
+                away_team: away,
+                home_score: homeScore,
+                away_score: awayScore,
+                status: 'pending',
+                source: 'community',
+                created_at: new Date().toISOString(),
+            });
+            saveAmateurResults(rows);
+            loadAmateurResults();
+            alert('Sonuc eklendi. Admin onayi bekliyor.');
+        }
+
+        function setAmateurStatus(id, status) {
+            const rows = getAmateurResults().map((row) => {
+                if (Number(row.id) !== Number(id)) return row;
+                return { ...row, status, reviewed_at: new Date().toISOString() };
+            });
+            saveAmateurResults(rows);
+            loadAmateurResults();
+        }
+
+        function loadAmateurResults() {
+            const body = document.getElementById('amateurResultsBody');
+            if (!body) return;
+            const rows = getAmateurResults();
+
+            if (!rows.length) {
+                body.innerHTML = '<tr><td colspan=\"5\" style=\"text-align:center;color:#64748B;\">Henuz amator sonuc kaydi yok.</td></tr>';
+                return;
+            }
+
+            body.innerHTML = rows.map((row) => {
+                const badge = row.status === 'verified'
+                    ? '<span class=\"badge badge-success\">Dogrulandi</span>'
+                    : row.status === 'rejected'
+                        ? '<span class=\"badge badge-danger\">Reddedildi</span>'
+                        : '<span class=\"badge badge-warning\">Beklemede</span>';
+                return `
+                    <tr>
+                        <td><strong>${escapeHtml(row.league || '-')}</strong><br><small>${escapeHtml(row.season || '-')}</small></td>
+                        <td>${escapeHtml(row.home_team || '')} - ${escapeHtml(row.away_team || '')}</td>
+                        <td><strong>${row.home_score ?? '-'} : ${row.away_score ?? '-'}</strong></td>
+                        <td>${badge}</td>
+                        <td>
+                            <button class=\"btn btn-primary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"setAmateurStatus(${Number(row.id)}, 'verified')\">Dogrula</button>
+                            <button class=\"btn btn-secondary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"setAmateurStatus(${Number(row.id)}, 'rejected')\">Reddet</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function rebuildAmateurStandings() {
+            const rows = getAmateurResults().filter((x) => x.status === 'verified');
+            const buckets = {};
+
+            rows.forEach((row) => {
+                const key = `${row.country || 'Turkiye'}__${row.sport || 'futbol'}__${row.league || '-'}__${row.season || '-'}`;
+                if (!buckets[key]) buckets[key] = {};
+                const table = buckets[key];
+                const teams = [row.home_team, row.away_team];
+                teams.forEach((team) => {
+                    if (!table[team]) {
+                        table[team] = { team, played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, gd: 0, points: 0 };
+                    }
+                });
+
+                const home = table[row.home_team];
+                const away = table[row.away_team];
+
+                home.played += 1; away.played += 1;
+                home.gf += Number(row.home_score); home.ga += Number(row.away_score);
+                away.gf += Number(row.away_score); away.ga += Number(row.home_score);
+
+                if (Number(row.home_score) > Number(row.away_score)) {
+                    home.won += 1; away.lost += 1; home.points += 3;
+                } else if (Number(row.home_score) < Number(row.away_score)) {
+                    away.won += 1; home.lost += 1; away.points += 3;
+                } else {
+                    home.drawn += 1; away.drawn += 1; home.points += 1; away.points += 1;
+                }
+            });
+
+            const out = Object.entries(buckets).map(([group, teams]) => {
+                const standings = Object.values(teams)
+                    .map((t) => ({ ...t, gd: t.gf - t.ga }))
+                    .sort((a, b) => (b.points - a.points) || (b.gd - a.gd) || (b.gf - a.gf) || a.team.localeCompare(b.team));
+                return { group, standings, updated_at: new Date().toISOString() };
+            });
+
+            localStorage.setItem('nextscout_amateur_standings', JSON.stringify(out));
+            alert(`Puan durumu hesaplandi. Grup sayisi: ${out.length}`);
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAmateurResults);
     </script>
 </body>
 </html>

@@ -1,0 +1,266 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deneme & Idman Merkezi - NextScout</title>
+  <style>
+    :root {
+      --bg: #f7fafc;
+      --panel: #fff;
+      --line: #dbeafe;
+      --text: #0f172a;
+      --muted: #64748b;
+      --brand: #1d4ed8;
+      --brand2: #1e3a8a;
+      --ok: #16a34a;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Segoe UI, Arial, sans-serif; color: var(--text); background: var(--bg); }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    .hero {
+      background: linear-gradient(135deg, var(--brand2), var(--brand));
+      color: #fff;
+      border-radius: 14px;
+      padding: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .hero h1 { margin: 0; font-size: 28px; }
+    .hero p { margin: 6px 0 0; opacity: .95; }
+    .btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--brand);
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .btn.success { background: var(--ok); color: #fff; border-color: var(--ok); }
+    .grid { margin-top: 14px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+    .card h3 { margin: 0 0 8px; font-size: 17px; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 8px; }
+    .tag { font-size: 11px; font-weight: 700; background: #eff6ff; color: #1d4ed8; border-radius: 999px; padding: 4px 8px; }
+    .list { margin-top: 10px; display: grid; gap: 10px; }
+    .empty { border: 1px dashed #bfdbfe; border-radius: 10px; background: #fff; color: var(--muted); padding: 20px; text-align: center; }
+    .notice { margin-top: 12px; background: #fff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 12px; }
+    @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <h1>Deneme & Idman Merkezi</h1>
+        <p>Kulup ve antrenorlerin yayinladigi deneme gunleri, idmanlar ve deneme maclari.</p>
+      </div>
+      <a class="btn" href="index.html">Anasayfa</a>
+    </div>
+
+    <div class="notice" id="notice"></div>
+
+    <div id="appRoot" style="display:block">
+      <div class="grid">
+        <div class="card">
+          <h3>Acik Deneme Gunleri</h3>
+          <div class="muted">Basvuruya acik deneme ilanlari</div>
+          <div class="list" id="openTrials"></div>
+        </div>
+
+        <div class="card">
+          <h3>Haftalik Idman Takvimi</h3>
+          <div class="muted">Kulup/coach tarafindan planlanan idmanlar</div>
+          <div class="list" id="trainingList"></div>
+        </div>
+
+        <div class="card">
+          <h3>Yaklasan Deneme Maclari</h3>
+          <div class="muted">Scout izlemesine acik deneme maclari</div>
+          <div class="list" id="trialMatches"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = (function() {
+      const p = new URLSearchParams(window.location.search);
+      const fromQuery = (p.get('api_base') || '').trim();
+      if (fromQuery) return fromQuery.replace(/\/$/, '');
+      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      return '/api';
+    })();
+
+    const LOCAL_KEY = 'nextscout_trial_events';
+
+    function esc(v) {
+      return String(v == null ? '' : v)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function isAuthed() {
+      const token = (localStorage.getItem('nextscout_token') || '').trim();
+      const userRaw = (localStorage.getItem('nextscout_user') || '').trim();
+      return Boolean(token || userRaw);
+    }
+
+    function authToken() {
+      return (localStorage.getItem('nextscout_token') || '').trim();
+    }
+
+    function getView() {
+      const p = new URLSearchParams(window.location.search);
+      return (p.get('view') || '').toLowerCase();
+    }
+
+    function goLogin() {
+      localStorage.setItem('nextscout_open_login', '1');
+      window.location.href = 'index.html';
+    }
+
+    function setNotice() {
+      const notice = document.getElementById('notice');
+      const view = getView();
+      if (view === 'player') {
+        notice.innerHTML = isAuthed()
+          ? 'Oyuncu olarak <strong>Basvur</strong> butonunu kullanabilirsin.'
+          : 'Ilanlari gorebilirsin. Basvuru yapmak icin <a href="#" onclick="goLogin();return false;">giris yap</a>.';
+        return;
+      }
+      notice.innerHTML = 'Ilanlar burada herkese acik listelenir. Ilan verme sadece coach/club dashboardlarindan yapilir.';
+    }
+
+    function mapEventType(type) {
+      const t = (type || '').toLowerCase();
+      if (t === 'trial_day' || t === 'trial') return 'trial';
+      if (t === 'training_session' || t === 'training') return 'training';
+      if (t === 'trial_match' || t === 'match') return 'match';
+      return 'other';
+    }
+
+    function fromApiItem(item) {
+      const eventDate = item?.event_date ? new Date(item.event_date) : null;
+      const date = eventDate ? eventDate.toISOString().slice(0, 10) : '-';
+      const time = eventDate ? eventDate.toTimeString().slice(0, 5) : '';
+      return {
+        id: item?.id,
+        type: mapEventType(item?.event_type),
+        title: item?.title || '-',
+        date,
+        time,
+        city: item?.city || '-',
+        venue: item?.venue || '',
+        owner: item?.organizer?.name || '-',
+        owner_role: (item?.organizer?.role || 'coach').toLowerCase(),
+        club_name: item?.organizer?.club_name || item?.organizer?.team_name || '',
+        status: item?.status || '',
+      };
+    }
+
+    function loadLocalFallback() {
+      try {
+        const rows = JSON.parse(localStorage.getItem(LOCAL_KEY) || '[]');
+        return Array.isArray(rows) ? rows : [];
+      } catch {
+        return [];
+      }
+    }
+
+    async function loadEvents() {
+      try {
+        const res = await fetch(`${API_BASE}/community-events?trial_only=1`, { headers: { Accept: 'application/json' } });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const body = await res.json();
+        const rows = Array.isArray(body?.data?.data) ? body.data.data : (Array.isArray(body?.data) ? body.data : []);
+        return rows.map(fromApiItem);
+      } catch (error) {
+        return loadLocalFallback();
+      }
+    }
+
+    async function applyEvent(id) {
+      if (!isAuthed()) {
+        goLogin();
+        return;
+      }
+
+      const token = authToken();
+      if (!token || token === 'local-session-token') {
+        const apps = JSON.parse(localStorage.getItem('nextscout_trial_applications') || '[]');
+        if (!apps.some((x) => Number(x.event_id) === Number(id))) {
+          apps.unshift({ id: Date.now(), event_id: Number(id), status: 'pending', created_at: new Date().toISOString() });
+          localStorage.setItem('nextscout_trial_applications', JSON.stringify(apps));
+        }
+        alert('Basvuru alindi (demo modu).');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/community-events/${encodeURIComponent(id)}/register`, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok || body?.ok === false) {
+          throw new Error(body?.message || `HTTP ${res.status}`);
+        }
+        alert('Basvuru gonderildi.');
+      } catch (error) {
+        alert(`Basvuru gonderilemedi: ${error.message}`);
+      }
+    }
+
+    function renderBucket(elId, rows, typeFilter) {
+      const root = document.getElementById(elId);
+      const items = rows.filter((x) => x.type === typeFilter);
+      if (!items.length) {
+        root.innerHTML = '<div class="empty">Henuz etkinlik yok.</div>';
+        return;
+      }
+
+      const canApply = getView() === 'player';
+
+      root.innerHTML = items.map((item) => {
+        const action = canApply
+          ? `<button class="btn success" type="button" onclick="applyEvent(${Number(item.id)})">Basvur</button>`
+          : `<span class="tag">${esc(item.owner_role || 'coach')}</span>`;
+        return `
+          <div class="card" style="padding:10px; border-radius:10px;">
+            <div class="row"><strong>${esc(item.title)}</strong><span class="tag">${esc(item.type.toUpperCase())}</span></div>
+            <div class="muted">${esc(item.date)} ${esc(item.time)} • ${esc(item.city)}${item.venue ? ' • ' + esc(item.venue) : ''}</div>
+            <div class="row">
+              <span class="muted">Duzenleyen: ${esc(item.owner || '-')}${item.club_name ? ` • Kulup: ${esc(item.club_name)}` : ''}</span>
+              ${action}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function init() {
+      setNotice();
+      const rows = await loadEvents();
+      renderBucket('openTrials', rows, 'trial');
+      renderBucket('trainingList', rows, 'training');
+      renderBucket('trialMatches', rows, 'match');
+    }
+
+    init();
+  </script>
+</body>
+</html>
