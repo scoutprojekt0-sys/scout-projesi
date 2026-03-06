@@ -1103,10 +1103,241 @@
             color: #2563eb;
         }
 
+        .idea-news-strip {
+            display: none;
+        }
+
+        .idea-news-container {
+            position: static;
+            width: 100%;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .idea-news-square {
+            width: 100%;
+            height: 350px;
+            border-radius: 14px;
+            border: 1px solid #bfdbfe;
+            background: linear-gradient(165deg, #0b3b8a 0%, #1d4ed8 100%);
+            box-shadow: 0 14px 28px rgba(30, 58, 138, 0.18);
+            padding: 14px;
+            color: #ffffff;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .below-cards-grid {
+            margin-top: 16px;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .below-card {
+            border-radius: 12px;
+            border: 1px solid #bfdbfe;
+            background: linear-gradient(165deg, #0f2f68 0%, #1e40af 100%);
+            box-shadow: 0 10px 20px rgba(30, 58, 138, 0.14);
+            color: #ffffff;
+            height: 170px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 8px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .below-card:hover {
+            border-color: #93c5fd;
+            box-shadow: 0 12px 24px rgba(30, 58, 138, 0.2);
+        }
+
+        .below-card .title {
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.3;
+        }
+
+        .below-card .desc {
+            font-size: 12px;
+            opacity: 0.9;
+            line-height: 1.35;
+            flex: 1;
+            max-height: none;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .club-promo-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            gap: 6px;
+            flex: 1;
+            max-height: none;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .club-promo-list li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            border-radius: 8px;
+            padding: 6px 8px;
+            background: rgba(255, 255, 255, 0.08);
+            font-size: 11px;
+        }
+
+        .club-promo-tag {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 999px;
+            background: #facc15;
+            color: #1f2937;
+        }
+
+        .mini-lines {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: grid;
+            gap: 6px;
+        }
+
+        .mini-lines li {
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 6px 8px;
+            font-size: 11px;
+            line-height: 1.35;
+        }
+
+        .idea-news-square h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .idea-news-square .sub {
+            margin-top: 4px;
+            font-size: 12px;
+            opacity: 0.85;
+        }
+
+        .idea-news-list {
+            margin-top: 0;
+            display: grid;
+            gap: 10px;
+            overflow: auto;
+        }
+
+        #ideaNewsList {
+            height: 360px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .idea-news-item {
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.10);
+            border-radius: 10px;
+            text-decoration: none;
+            color: #ffffff;
+            overflow: hidden;
+            display: block;
+            cursor: default;
+        }
+
+        .idea-news-item:hover {
+            background: rgba(255, 255, 255, 0.16);
+        }
+
+        .idea-news-item .img {
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(135deg, rgba(255,255,255,.25), rgba(255,255,255,.12));
+            object-fit: cover;
+            display: block;
+        }
+
+        #ideaNewsList .idea-news-item .t {
+            font-size: 13px;
+            line-height: 1.35;
+        }
+
+        #ideaNewsList .idea-news-item {
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            background: rgba(15, 23, 42, 0.45);
+            min-height: 56px;
+        }
+
+        #ideaNewsList .idea-news-item .body {
+            position: static;
+            width: 100%;
+            padding: 8px 10px;
+            background: none;
+        }
+
+        #ideaNewsList .idea-news-item .m {
+            color: rgba(226, 232, 240, .9);
+        }
+
+        .idea-news-item .body {
+            padding: 8px 10px;
+        }
+
+        .idea-news-item .t {
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        .idea-news-item .m {
+            margin-top: 4px;
+            font-size: 11px;
+            opacity: 0.86;
+        }
+
         @media (max-width: 768px) {
             .idea-links-container {
                 padding: 0 15px;
                 gap: 8px;
+            }
+
+            .idea-news-container {
+                position: static;
+                padding: 0 15px;
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .idea-news-strip {
+                display: none;
+            }
+
+            .idea-news-square {
+                width: 100%;
+                height: 350px;
+            }
+
+            .below-cards-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .below-card {
+                height: 150px;
             }
 
             .idea-link-item {
@@ -1980,6 +2211,47 @@
 
         <!-- Hero Section (Center) -->
         <section class="hero">
+            <div class="idea-news-container">
+                <aside class="idea-news-square">
+                    <div class="idea-news-list" id="ideaNewsList">
+                        <div class="idea-news-item">
+                            <div class="t">Haberler yukleniyor...</div>
+                        </div>
+                    </div>
+                </aside>
+                <aside class="idea-news-square">
+                    <h3>Siteden Haberler</h3>
+                    <div class="sub">Sadece site haberleri (2. kart)</div>
+                    <div class="idea-news-list" id="siteNewsList">
+                        <div class="idea-news-item">
+                            <div class="t">Haberler yukleniyor...</div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+
+            <div class="below-cards-grid">
+                <article class="below-card" id="urgentNeedsCard" data-dashboard-feature="urgent-needs" role="button" tabindex="0">
+                    <div class="title">Acil Kulup Ihtiyaclari</div>
+                    <div class="desc" id="urgentNeedsBody">Kulup ilanlarindan acil aranan oyuncu pozisyonlari.</div>
+                </article>
+                <article class="below-card" id="playerOfWeekCard" data-dashboard-feature="player-of-week" role="button" tabindex="0">
+                    <div class="title">Haftanin Oyuncusu</div>
+                    <div class="desc" id="playerOfWeekBody">Bu haftanin one cikan oyuncu karti.</div>
+                </article>
+                <article class="below-card" id="hotTransfersCard" data-dashboard-feature="club-promo" role="button" tabindex="0">
+                    <div class="title">Kulubunu Tanit</div>
+                    <ul class="club-promo-list" id="clubPromoList">
+                        <li><span>Ornek SK</span><span class="club-promo-tag">Vitrin</span></li>
+                        <li><span>Anadolu FK</span><span class="club-promo-tag">One Cikan</span></li>
+                        <li><span>Marmara Spor</span><span class="club-promo-tag">Sponsorlu</span></li>
+                    </ul>
+                </article>
+                <article class="below-card" id="risingStarsCard" data-dashboard-feature="rising-stars" role="button" tabindex="0">
+                    <div class="title">Yukselen Yildizlar</div>
+                    <div class="desc" id="risingStarsBody">Formu yukselen oyuncu listesi.</div>
+                </article>
+            </div>
         </section>
 
         <!-- Right Ad Panel -->
@@ -2325,6 +2597,182 @@
             }).join('');
         }
 
+        function normalizeIdeaNewsItem(item) {
+            if (!item || typeof item !== 'object') return null;
+            return {
+                title: item.title || item.headline || item.name || 'Baslik yok',
+                source: item.source || item.provider || 'Spor Haber',
+                url: item.url || item.link || '',
+                publishedAt: item.published_at || item.publishedAt || item.created_at || null,
+                imageUrl: item.image_url || item.imageUrl || '',
+            };
+        }
+
+        function getFallbackIdeaNewsItems() {
+            const now = new Date().toISOString();
+            return [
+                { title: 'Guncel spor akisi hazirlaniyor', source: 'NextScout', publishedAt: now, url: '', imageUrl: '' },
+                { title: 'Yeni mansetler birazdan yansitilacak', source: 'NextScout', publishedAt: now, url: '', imageUrl: '' },
+                { title: 'Veri baglantisi stabil hale getiriliyor', source: 'NextScout', publishedAt: now, url: '', imageUrl: '' },
+            ];
+        }
+
+        function renderIdeaNewsItem(item) {
+            const when = item.publishedAt ? new Date(item.publishedAt).toLocaleString('tr-TR') : 'Simdi';
+            const sourceLabel = /^fotoma[cç]$/i.test((item.source || '').trim()) ? '' : (item.source || '');
+            const meta = sourceLabel ? `${sourceLabel} • ${when}` : when;
+            const title = (item.title || '').toString()
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            const metaEsc = meta
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            return `<div class="idea-news-item">
+                <div class="body">
+                    <div class="t">${title}</div>
+                    <div class="m">${metaEsc}</div>
+                </div>
+            </div>`;
+        }
+
+        async function renderIdeaNewsSquare() {
+            const root = document.getElementById('ideaNewsList');
+            if (!root) return;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/news/live?tr_only=1&_t=${Date.now()}`, {
+                    cache: 'no-store',
+                    headers: { Accept: 'application/json' },
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const payload = await response.json();
+                const items = Array.isArray(payload?.data) ? payload.data : [];
+                const normalized = items
+                    .map(normalizeIdeaNewsItem)
+                    .filter(Boolean)
+                    .sort((a, b) => new Date(b.publishedAt || 0).getTime() - new Date(a.publishedAt || 0).getTime())
+                    .slice(0, 10);
+
+                const list = normalized.length ? normalized : getFallbackIdeaNewsItems();
+                root.innerHTML = list.map(renderIdeaNewsItem).join('');
+            } catch (error) {
+                root.innerHTML = getFallbackIdeaNewsItems().map(renderIdeaNewsItem).join('');
+            }
+        }
+
+        async function renderSiteNewsSquare() {
+            const root = document.getElementById('siteNewsList');
+            if (!root) return;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/news?per_page=8`, {
+                    headers: { Accept: 'application/json' },
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const payload = await response.json();
+                const items = Array.isArray(payload?.data) ? payload.data : [];
+                const normalized = items.map(normalizeIdeaNewsItem).filter(Boolean).slice(0, 2);
+
+                if (!normalized.length) {
+                    root.innerHTML = '<div class="idea-news-item"><div class="t">Sitede haber yok.</div><div class="m">Yeni icerik bekleniyor.</div></div>';
+                    return;
+                }
+
+                root.innerHTML = normalized.map(renderIdeaNewsItem).join('');
+            } catch (error) {
+                root.innerHTML = '<div class="idea-news-item"><div class="t">Site haberleri alinamadi.</div><div class="m">API kontrol et.</div></div>';
+            }
+        }
+
+        function esc(value) {
+            return (value || '')
+                .toString()
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        async function fetchJsonSafe(url) {
+            try {
+                const response = await fetch(url, { headers: { Accept: 'application/json' }, cache: 'no-store' });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return await response.json();
+            } catch (error) {
+                return null;
+            }
+        }
+
+        async function renderHomepageInfoCards() {
+            const urgentRoot = document.getElementById('urgentNeedsBody');
+            const playerRoot = document.getElementById('playerOfWeekBody');
+            const promoRoot = document.getElementById('clubPromoList');
+            const risingRoot = document.getElementById('risingStarsBody');
+            if (!urgentRoot || !playerRoot || !promoRoot || !risingRoot) return;
+
+            const [urgentPayload, playerPayload, featuredPayload, risingPayload] = await Promise.all([
+                fetchJsonSafe(`${API_BASE_URL}/club-needs/urgent`),
+                fetchJsonSafe(`${API_BASE_URL}/player-of-week`),
+                fetchJsonSafe(`${API_BASE_URL}/featured`),
+                fetchJsonSafe(`${API_BASE_URL}/rising-stars`),
+            ]);
+
+            const urgentItems = Array.isArray(urgentPayload?.data) ? urgentPayload.data.slice(0, 3) : [];
+            if (urgentItems.length) {
+                urgentRoot.innerHTML = `<ul class="mini-lines">${urgentItems.map((item) => {
+                    const club = esc(item?.club_name || 'Kulup');
+                    const pos = esc(item?.position || 'Pozisyon');
+                    const urgency = esc(item?.urgency || 'normal');
+                    return `<li><strong>${club}</strong> • ${pos} (${urgency})</li>`;
+                }).join('')}</ul>`;
+            } else {
+                urgentRoot.textContent = 'Henuz acil kulup ihtiyaci bulunmuyor.';
+            }
+
+            const player = playerPayload?.data;
+            if (player && typeof player === 'object') {
+                const playerName = esc(player?.name || player?.player_name || 'Oyuncu');
+                const voteText = player?.votes_count ? `Oy: ${esc(player.votes_count)}` : 'Haftanin secimi aktif';
+                const period = player?.period_end ? new Date(player.period_end).toLocaleDateString('tr-TR') : 'Guncel';
+                playerRoot.innerHTML = `<ul class="mini-lines"><li><strong>${playerName}</strong></li><li>${voteText}</li><li>Donem: ${esc(period)}</li></ul>`;
+            } else {
+                playerRoot.textContent = 'Bu hafta icin secim verisi henuz yayinlanmadi.';
+            }
+
+            const featuredItems = Array.isArray(featuredPayload?.data) ? featuredPayload.data.slice(0, 4) : [];
+            if (featuredItems.length) {
+                promoRoot.innerHTML = featuredItems.map((item, idx) => {
+                    const clubName = esc(item?.data?.name || item?.badge_text || `Vitrin Kulup ${idx + 1}`);
+                    const badge = esc(item?.badge_text || 'Vitrin');
+                    return `<li><span>${clubName}</span><span class="club-promo-tag">${badge}</span></li>`;
+                }).join('');
+            } else {
+                promoRoot.innerHTML = [
+                    '<li><span>Ornek SK</span><span class="club-promo-tag">Vitrin</span></li>',
+                    '<li><span>Anadolu FK</span><span class="club-promo-tag">One Cikan</span></li>',
+                    '<li><span>Marmara Spor</span><span class="club-promo-tag">Sponsorlu</span></li>',
+                ].join('');
+            }
+
+            const risingItems = Array.isArray(risingPayload?.data) ? risingPayload.data.slice(0, 3) : [];
+            if (risingItems.length) {
+                risingRoot.innerHTML = `<ul class="mini-lines">${risingItems.map((item, idx) => {
+                    const name = esc(item?.name || item?.player_name || `Oyuncu ${idx + 1}`);
+                    const score = item?.growth_score !== undefined ? `Skor: ${esc(item.growth_score)}` : 'Yukselen form';
+                    return `<li><strong>${name}</strong><br>${score}</li>`;
+                }).join('')}</ul>`;
+            } else {
+                risingRoot.textContent = 'Yukselen yildiz verisi henuz olusmadi.';
+            }
+        }
+
         function toggleManagerNeedsButtonPanel(event) {
             event.preventDefault();
             event.stopPropagation();
@@ -2345,6 +2793,16 @@
                 fetchNotificationCount();
                 fetchLiveMatchCount();
             }, 30000); // 30 seconds
+
+            // Haberleri periyodik yenile
+            setInterval(() => {
+                renderIdeaNewsSquare();
+            }, 90000); // 90 seconds
+
+            // Alt bilgi kartlarini periyodik yenile
+            setInterval(() => {
+                renderHomepageInfoCards();
+            }, 120000); // 120 seconds
         }
 
         // Sayfa yüklendiğinde başlat
@@ -2365,6 +2823,10 @@
             }
             startAutoRefresh();
             renderManagerNeedsButtonPanel();
+            renderIdeaNewsSquare();
+            renderSiteNewsSquare();
+            renderHomepageInfoCards();
+            initDashboardFeatureCards();
         });
 
         // Language Dropdown Toggle
@@ -2582,6 +3044,55 @@
             if (!requireAuthForFeature()) return false;
             navigateTo('favorites');
             return false;
+        }
+
+        function getSessionRole() {
+            try {
+                const rawUser = localStorage.getItem('nextscout_user');
+                if (!rawUser) return '';
+                const user = JSON.parse(rawUser);
+                return (user?.role || '').toString().trim().toLowerCase();
+            } catch (error) {
+                return '';
+            }
+        }
+
+        function openDashboardFeature(featureKey) {
+            if (!requireAuthForFeature()) return;
+
+            const role = getSessionRole();
+            const isFileMode = window.location.protocol === 'file:';
+            const ownDashboard = getDashboardByRole(role, isFileMode);
+            let target = ownDashboard;
+
+            if (featureKey === 'urgent-needs') {
+                if (role === 'team' || role === 'club') target = 'team-dashboard.html';
+                else if (role === 'manager') target = 'manager-dashboard.html';
+                else if (role === 'coach' || role === 'scout') target = 'coach-dashboard.html';
+            } else if (featureKey === 'club-promo') {
+                target = 'team-dashboard.html';
+            } else if (featureKey === 'rising-stars') {
+                if (role === 'manager') target = 'manager-dashboard.html';
+                else if (role === 'coach' || role === 'scout') target = 'coach-dashboard.html';
+            }
+
+            window.location.href = resolveLocalPage(target);
+        }
+
+        function initDashboardFeatureCards() {
+            const cards = document.querySelectorAll('[data-dashboard-feature]');
+            cards.forEach((card) => {
+                const featureKey = card.getAttribute('data-dashboard-feature');
+                if (!featureKey) return;
+
+                card.addEventListener('click', () => openDashboardFeature(featureKey));
+                card.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        openDashboardFeature(featureKey);
+                    }
+                });
+            });
         }
 
         function openTrialCenter() {
