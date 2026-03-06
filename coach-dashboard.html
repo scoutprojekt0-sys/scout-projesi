@@ -20,11 +20,14 @@
     .need-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); z-index: 1500; align-items: center; justify-content: center; padding: 16px; }
     .need-modal-overlay.show { display: flex; }
     .need-modal { width: min(700px, 100%); background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 40px rgba(15,23,42,.2); }
+    .live-modal { width: min(760px, 100%); }
     .need-modal-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid #e5e7eb; }
     .need-modal-head h3 { font-size: 18px; font-weight: 800; color: #1f2937; margin: 0; }
     .need-modal-body { padding: 16px; display: grid; gap: 10px; }
     .need-modal-body input, .need-modal-body textarea { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; font-family: inherit; }
     .need-modal-body textarea { min-height: 120px; resize: vertical; }
+    .need-modal-body select { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; font-family: inherit; }
+    .live-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .need-modal-actions { display: flex; justify-content: flex-end; gap: 8px; padding: 0 16px 16px; }
 
     .main-container { display: grid; grid-template-columns: 240px 1fr; gap: 20px; padding: 20px; min-height: calc(100vh - 70px); }
@@ -89,6 +92,7 @@
       <div class="navbar-left"><div class="logo">NextScout Scout</div></div>
       <div class="navbar-right">
       <button class="btn-small success" onclick="openCoachNeedModal()">Ilan Ver</button>
+      <button class="btn-small primary" onclick="openLiveScoutModal()">Canli Scout Baslat</button>
       <button class="btn-small secondary" onclick="openScoutProfile()">Profilim</button>
       <button class="btn-small primary" onclick="window.location.href='index.html'">Ana Sayfa</button>
       <button class="btn-small secondary" onclick="logout()">Cikis</button>
@@ -105,6 +109,7 @@
           <li class="sidebar-item" onclick="openWatchlist()"><span style="font-size:18px;min-width:20px;">📋</span><span>Takip Listem</span></li>
           <li class="sidebar-item" onclick="openPerformance()"><span style="font-size:18px;min-width:20px;">📊</span><span>Performans Analizi</span></li>
           <li class="sidebar-item" onclick="openVideoAnalysis()"><span style="font-size:18px;min-width:20px;">🎥</span><span>Video Analiz</span></li>
+          <li class="sidebar-item" onclick="openLiveScoutModal()"><span style="font-size:18px;min-width:20px;">📡</span><span>Canli Scout</span></li>
           <li class="sidebar-item" onclick="openMessages()"><span style="font-size:18px;min-width:20px;">💬</span><span>Mesajlarim</span></li>
           <li class="sidebar-item" onclick="openSettings()"><span style="font-size:18px;min-width:20px;">⚙️</span><span>Ayarlar</span></li>
           <li class="sidebar-item" onclick="openHelp()"><span style="font-size:18px;min-width:20px;">❓</span><span>Yardim</span></li>
@@ -157,6 +162,37 @@
         <div class="need-modal-actions">
           <button class="btn-small secondary" type="button" onclick="closeCoachNeedModal()">Iptal</button>
           <button class="btn-small success" type="submit">Kaydet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="need-modal-overlay" id="liveScoutModal" onclick="if(event.target.id==='liveScoutModal'){closeLiveScoutModal();}">
+    <div class="need-modal live-modal" onclick="event.stopPropagation()">
+      <div class="need-modal-head">
+        <h3>Canli Scout Baslat</h3>
+        <button class="btn-small secondary" type="button" onclick="closeLiveScoutModal()">Kapat</button>
+      </div>
+      <form id="liveScoutForm">
+        <div class="need-modal-body">
+          <div class="live-grid">
+            <input type="text" id="liveMatchName" placeholder="Mac adi (or: U19 Hazirlik Maci)" required>
+            <input type="text" id="liveLocation" placeholder="Konum (or: Izmir Buca)">
+          </div>
+          <div class="live-grid">
+            <select id="liveSport">
+              <option value="futbol">Futbol</option>
+              <option value="basketbol">Basketbol</option>
+              <option value="voleybol">Voleybol</option>
+            </select>
+            <input type="text" id="liveFocusPlayer" placeholder="Odak oyuncu / pozisyon (or: Sol Bek #3)">
+          </div>
+          <input type="url" id="liveStreamUrl" placeholder="Yayin linki (opsiyonel)">
+          <textarea id="liveNote" placeholder="Kisa not (opsiyonel): Bu oyuncu hizli gecislerde etkili."></textarea>
+        </div>
+        <div class="need-modal-actions">
+          <button class="btn-small secondary" type="button" onclick="closeLiveScoutModal()">Iptal</button>
+          <button class="btn-small success" type="submit">Yayini Baslat</button>
         </div>
       </form>
     </div>
@@ -350,9 +386,37 @@
       if (modal) modal.classList.remove('show');
     }
 
+    function openLiveScoutModal() {
+      const modal = document.getElementById('liveScoutModal');
+      if (modal) modal.classList.add('show');
+    }
+
+    function closeLiveScoutModal() {
+      const modal = document.getElementById('liveScoutModal');
+      if (modal) modal.classList.remove('show');
+    }
+
     async function saveCoachNeed(payload) {
       const apiBase = getApiBaseUrl();
       const response = await fetch(`${apiBase}/discovery/coach-needs`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body?.message || `HTTP ${response.status}`);
+      }
+      const body = await response.json();
+      return body?.data || null;
+    }
+
+    async function saveLiveScoutMatch(payload) {
+      const apiBase = getApiBaseUrl();
+      const response = await fetch(`${apiBase}/live-matches`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -408,6 +472,47 @@
         alert('Ilan kaydedildi.');
       } catch (error) {
         alert(`Ilan kaydedilemedi: ${error.message}`);
+      }
+    });
+
+    document.getElementById('liveScoutForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const matchName = (document.getElementById('liveMatchName').value || '').trim();
+      const location = (document.getElementById('liveLocation').value || '').trim();
+      const sport = (document.getElementById('liveSport').value || 'futbol').trim();
+      const focus = (document.getElementById('liveFocusPlayer').value || '').trim();
+      const stream = (document.getElementById('liveStreamUrl').value || '').trim();
+      const note = (document.getElementById('liveNote').value || '').trim();
+
+      if (!matchName) {
+        alert('Mac adi zorunlu.');
+        return;
+      }
+
+      let scoutName = '';
+      try {
+        const raw = localStorage.getItem('nextscout_user');
+        const user = raw ? JSON.parse(raw) : null;
+        scoutName = (user && user.name) ? String(user.name) : '';
+      } catch (error) {}
+
+      const payload = {
+        match_name: matchName,
+        location: location || null,
+        sport: sport || null,
+        focus: focus || null,
+        stream_url: stream || null,
+        note: note || null,
+        scout_name: scoutName || null,
+      };
+
+      try {
+        await saveLiveScoutMatch(payload);
+        this.reset();
+        closeLiveScoutModal();
+        window.location.href = 'live-matches.html';
+      } catch (error) {
+        alert(`Canli mac kaydedilemedi: ${error.message}`);
       }
     });
 

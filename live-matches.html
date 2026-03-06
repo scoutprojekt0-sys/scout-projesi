@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canli Maclar - NextScout</title>
+  <style>
+    body{font-family:Inter,Arial,sans-serif;background:#f8fafc;color:#1f2937;margin:0}
+    .wrap{max-width:900px;margin:0 auto;padding:24px}
+    .top{display:flex;justify-content:space-between;align-items:center}
+    a{color:#2563eb;text-decoration:none}
+    .card{background:#fff;border:1px solid #dbeafe;border-radius:10px;padding:14px;margin-top:12px}
+    .card.live{border-color:#93c5fd;background:#eff6ff}
+    .tag{display:inline-block;padding:4px 8px;border-radius:999px;background:#1d4ed8;color:#fff;font-size:11px;font-weight:700;margin-bottom:8px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top"><h1>Canli Maclar</h1><a href="index.html">Anasayfa</a></div>
+    <div id="list"></div>
+  </div>
+  <script>
+  function getApiBaseUrl() {
+    const query = new URLSearchParams(window.location.search);
+    const fromQuery = (query.get('api_base') || '').trim();
+    if (fromQuery) return fromQuery.replace(/\/$/, '');
+    if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+    return '/api';
+  }
+
+  function esc(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function renderMatchCard(match) {
+    const title = match.title || `${match.home_team || ''} - ${match.away_team || ''}`.trim();
+    const teams = `${match.home_team || ''} - ${match.away_team || ''}`.trim();
+    const score = `${match.home_score ?? '-'} : ${match.away_score ?? '-'}`;
+    const minute = match.minute ? ` | ${match.minute}'` : '';
+    const league = match.league ? `<div><strong>${esc(match.league)}</strong></div>` : '';
+    const sportAndLocation = (match.sport || match.location)
+      ? `<div>${match.sport ? `Spor: ${esc(match.sport)}` : ''}${match.sport && match.location ? ' | ' : ''}${match.location ? `Konum: ${esc(match.location)}` : ''}</div>`
+      : '';
+    const focus = match.focus ? `<div>Odak: ${esc(match.focus)}</div>` : '';
+    const note = match.note ? `<div>Not: ${esc(match.note)}</div>` : '';
+    const scout = match.scout_name ? `<div>Scout: ${esc(match.scout_name)}</div>` : '';
+    const stream = match.stream_url ? `<div><a href="${esc(match.stream_url)}" target="_blank" rel="noopener">Yayini Ac</a></div>` : '';
+
+    return `
+      <div class="card">
+        <div class="tag">CANLI</div>
+        <div><strong>${esc(title || 'Mac')}</strong></div>
+        ${league}
+        ${teams ? `<div>${esc(teams)}</div>` : ''}
+        <div><strong>${score}</strong>${minute}</div>
+        ${sportAndLocation}
+        ${focus}
+        ${note}
+        ${scout}
+        ${stream}
+      </div>
+    `;
+  }
+
+  (async function() {
+    const el = document.getElementById('list');
+    const apiBase = getApiBaseUrl();
+    try {
+      const res = await fetch(`${apiBase}/live-matches`, { headers: { Accept: 'application/json' } });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const matches = Array.isArray(data.matches) ? data.matches : [];
+
+      if (!matches.length) {
+        el.innerHTML = '<div class="card">Su an canli mac yok.</div>';
+        return;
+      }
+
+      el.innerHTML = matches.map(renderMatchCard).join('');
+    } catch (e) {
+      el.innerHTML = '<div class="card">Veri alinamadi. Laravel server calisiyor mu kontrol edin.</div>';
+    }
+  })();
+  </script>
+</body>
+</html>
