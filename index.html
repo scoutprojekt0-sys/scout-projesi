@@ -1786,22 +1786,6 @@
                         </select>
                     </div>
 
-                    <!-- Profil Resmi Yükleme -->
-                    <div class="profile-image-upload">
-                        <div class="image-upload-area" onclick="document.getElementById('profileImageInput').click()">
-                            <i class="fas fa-camera"></i>
-                            <div class="image-upload-text">Profil Resmi Yükle</div>
-                            <div class="image-upload-subtext">JPG, PNG, maksimum 2MB</div>
-                        </div>
-                        <input type="file" id="profileImageInput" accept="image/*" onchange="previewProfileImage(event)">
-                        <div class="profile-preview-container" id="profileImagePreviewContainer">
-                            <img src="" alt="Profil Resmi" class="profile-preview-img" id="profileImagePreview">
-                            <button type="button" class="remove-profile-img-btn" onclick="removeProfileImage()">
-                                <i class="fas fa-times"></i> Resmi Kaldır
-                            </button>
-                        </div>
-                    </div>
-
                     <div class="form-row">
                         <label class="checkbox-label">
                             <input type="checkbox" name="terms" required>
@@ -2186,8 +2170,10 @@
         // Close dropdown when clicking outside
         document.addEventListener('click', function(event) {
             const langDropdown = document.querySelector('.language-dropdown');
+            const langMenu = document.getElementById('langMenu');
+            if (!langDropdown || !langMenu) return;
             if (!langDropdown.contains(event.target)) {
-                document.getElementById('langMenu').classList.remove('active');
+                langMenu.classList.remove('active');
             }
         });
 
@@ -2200,19 +2186,22 @@
         }
 
         // Search functionality
-        document.querySelector('.search-icon').addEventListener('click', function() {
-            const searchInput = document.querySelector('.search-container input');
-            if (searchInput.value.trim()) {
-                window.location.href = `/search?q=${encodeURIComponent(searchInput.value)}`;
-            }
-        });
+        const searchIcon = document.querySelector('.search-icon');
+        const searchInput = document.querySelector('.search-container input');
+        if (searchIcon && searchInput) {
+            searchIcon.addEventListener('click', function() {
+                if (searchInput.value.trim()) {
+                    window.location.href = `/search?q=${encodeURIComponent(searchInput.value)}`;
+                }
+            });
 
-        // Search on Enter key
-        document.querySelector('.search-container input').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                document.querySelector('.search-icon').click();
-            }
-        });
+            // Search on Enter key
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchIcon.click();
+                }
+            });
+        }
 
         // ========== ADVANCED SEARCH MODAL ==========
         function openAdvancedSearch() {
