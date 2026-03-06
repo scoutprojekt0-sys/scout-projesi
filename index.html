@@ -1401,7 +1401,7 @@
             <!-- Header Left -->
             <div class="header-left">
                 <!-- Logo -->
-                <a href="/" class="logo">
+                    <a href="index.html" class="logo">
                     <i class="fas fa-search"></i>
                     NextScout
                 </a>
@@ -1477,7 +1477,7 @@
     <!-- ========== NAV BAR (Koyu Mavi Kare) ========== -->
     <nav class="feature-nav">
         <div class="nav-container">
-            <a href="/" class="nav-button">
+                                <a href="index.html" class="nav-button">
                 <i class="fas fa-home"></i>
                 <span>Anasayfa</span>
             </a>
@@ -2088,27 +2088,10 @@
                 const user = JSON.parse(userData);
                 const role = (user.role || 'player').toLowerCase();
 
-                if (window.location.protocol === 'file:') {
-                    window.location.href = getDashboardByRole(role, true);
-                    return;
-                }
-
-                // Role bazlı yönlendirme
-                if (role === 'admin') {
-                    window.location.href = '/admin';
-                } else if (role === 'scout') {
-                    window.location.href = '/dashboard/scout';
-                } else if (role === 'manager' || role === 'agent') {
-                    window.location.href = '/dashboard/manager';
-                } else if (role === 'club' || role === 'team') {
-                    window.location.href = '/dashboard/club';
-                } else {
-                    // Default: player dashboard
-                    window.location.href = '/dashboard/player';
-                }
+                        window.location.href = resolveLocalPage(getDashboardByRole(role, window.location.protocol === 'file:'));
             } catch (e) {
                 console.error('Profil yönlendirme hatası:', e);
-                window.location.href = '/dashboard/player';
+                        window.location.href = resolveLocalPage('DASHBOARD_DESIGN.html');
             }
         }
 
@@ -2233,13 +2216,18 @@
             return false;
         }
 
-        // file:// acilisinda rota yerine local html'e gider, server modunda normal route'a gider
+        function resolveLocalPage(target) {
+            const raw = String(target || '').trim();
+            if (!raw) return 'index.html';
+            if (/^(https?:|mailto:|tel:)/i.test(raw)) return raw;
+
+            const normalized = raw.replace(/^\.\//, '');
+            return normalized;
+        }
+
+        // Route yerine her zaman local html sayfasina gider
         function navigateTo(routeName) {
-            if (window.location.protocol === 'file:') {
-                window.location.href = `${routeName}.html`;
-                return;
-            }
-            window.location.href = `/${routeName}`;
+            window.location.href = resolveLocalPage(`${routeName}.html`);
         }
 
         // ========== NOTIFICATION API ==========
@@ -2415,7 +2403,7 @@
         if (searchIcon && searchInput) {
             searchIcon.addEventListener('click', function() {
                 if (searchInput.value.trim()) {
-                    window.location.href = `/search?q=${encodeURIComponent(searchInput.value)}`;
+                    window.location.href = resolveLocalPage(`professional-players.html?q=${encodeURIComponent(searchInput.value)}`);
                 }
             });
 
@@ -2456,8 +2444,8 @@
                 }
             }
             
-            // Arama sayfasına yönlendir
-            window.location.href = `/search?${searchParams.toString()}`;
+            // Arama sonucunu profesyonel oyuncular sayfasina yonlendir
+            window.location.href = resolveLocalPage(`professional-players.html?${searchParams.toString()}`);
         });
 
         // ESC tuşu ile modal kapatma
@@ -2498,7 +2486,7 @@
         }
 
         function openLawyersPage() {
-            window.location.href = 'lawyers-directory.html';
+            window.location.href = resolveLocalPage('lawyers-directory.html');
         }
 
         function toggleLawyersMenu(event) {
@@ -2522,7 +2510,7 @@
                 seeking: 'Kulup-Ariyor',
             };
             const selected = map[category] || 'Sozlesmeli';
-            window.location.href = `professional-players.html?transfer_category=${encodeURIComponent(selected)}`;
+            window.location.href = resolveLocalPage(`professional-players.html?transfer_category=${encodeURIComponent(selected)}`);
         }
 
         function toggleScoutRadarMenu(event) {
@@ -2539,7 +2527,7 @@
                 hidden: 'Gizli-Yetenek',
             };
             const selected = map[category] || 'Yeni-Eslesenler';
-            window.location.href = `professional-players.html?scout_radar=${encodeURIComponent(selected)}`;
+            window.location.href = resolveLocalPage(`professional-players.html?scout_radar=${encodeURIComponent(selected)}`);
         }
 
         function toggleLeaguesMenu(event) {
@@ -2586,7 +2574,7 @@
                 weekly: 'haftalik-performans.html',
             };
             const target = routes[section] || 'scout-live-matches.html';
-            window.location.href = target;
+            window.location.href = resolveLocalPage(target);
         }
 
         function openFavoritesPage(event) {
@@ -2598,7 +2586,7 @@
 
         function openTrialCenter() {
             if (!requireAuthForFeature()) return;
-            window.location.href = 'trial-center.html';
+            window.location.href = resolveLocalPage('trial-center.html');
         }
 
         const LEAGUES_DATA = {
@@ -2721,12 +2709,13 @@
                 selectedLeagueFlow.gender
             );
             renderLeagueStep(leagues, 'nav-sports-item', (league) => {
-                window.location.href =
+                window.location.href = resolveLocalPage(
                     `league-details.html?continent=${encodeURIComponent(selectedLeagueFlow.continent || '')}` +
                     `&country=${encodeURIComponent(selectedLeagueFlow.country || '')}` +
                     `&sport=${encodeURIComponent(selectedLeagueFlow.sport || '')}` +
                     `&gender=${encodeURIComponent(selectedLeagueFlow.gender || '')}` +
-                    `&league=${encodeURIComponent(league || '')}`;
+                    `&league=${encodeURIComponent(league || '')}`
+                );
             });
         }
 
@@ -2864,13 +2853,13 @@
                 return 'DASHBOARD_DESIGN.html';
             }
 
-            if (normalizedRole === 'admin') return '/admin';
-            if (normalizedRole === 'manager') return '/manager';
-            if (normalizedRole === 'coach' || normalizedRole === 'scout') return '/coach';
-            if (normalizedRole === 'team' || normalizedRole === 'club') return '/team';
-            if (normalizedRole === 'lawyer') return '/dashboard/lawyer';
-            if (normalizedRole === 'player') return '/player';
-            return '/dashboard';
+            if (normalizedRole === 'admin') return 'admin-dashboard.html';
+            if (normalizedRole === 'manager') return 'manager-dashboard.html';
+            if (normalizedRole === 'coach' || normalizedRole === 'scout') return 'coach-dashboard.html';
+            if (normalizedRole === 'team' || normalizedRole === 'club') return 'team-dashboard.html';
+            if (normalizedRole === 'lawyer') return 'lawyer-dashboard.html';
+            if (normalizedRole === 'player') return 'DASHBOARD_DESIGN.html';
+            return 'DASHBOARD_DESIGN.html';
         }
 
         function savePendingUser(user) {
@@ -2978,7 +2967,7 @@
                 }));
                 localStorage.setItem('nextscout_demo_login', 'true');
                 closeLoginModal();
-                window.location.href = getDashboardByRole(registeredUser.role || 'player', true);
+                    window.location.href = resolveLocalPage(getDashboardByRole(registeredUser.role || 'player', true));
                 return;
             }
 
@@ -3016,7 +3005,7 @@
                 const dashboardUrl = getDashboardByRole(userRole, window.location.protocol === 'file:');
                 
                 console.log('📍 Dashboard URL:', dashboardUrl);
-                window.location.href = dashboardUrl;
+                                window.location.href = resolveLocalPage(dashboardUrl);
             })
             .catch((err) => {
                 console.error('❌ Giriş hatası:', err);
@@ -3077,7 +3066,7 @@
                 }));
                 localStorage.setItem('nextscout_demo_login', 'true');
                 closeRegisterModal();
-                window.location.href = getDashboardByRole(payload.role, true);
+                    window.location.href = resolveLocalPage(getDashboardByRole(payload.role, true));
                 return;
             }
 
@@ -3123,7 +3112,7 @@
                 const dashboardUrl = getDashboardByRole(userRole, window.location.protocol === 'file:');
                 
                 console.log('📍 Dashboard URL:', dashboardUrl);
-                window.location.href = dashboardUrl;
+                            window.location.href = resolveLocalPage(dashboardUrl);
             })
             .catch((err) => {
                 console.error('❌ Kayıt hatası:', err);

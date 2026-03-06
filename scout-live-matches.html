@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canli Maclar - NextScout</title>
+  <style>
+    body{font-family:Inter,Arial,sans-serif;background:#f8fafc;color:#1f2937;margin:0}
+    .wrap{max-width:900px;margin:0 auto;padding:24px}
+    .top{display:flex;justify-content:space-between;align-items:center}
+    a{color:#2563eb;text-decoration:none}
+    .card{background:#fff;border:1px solid #dbeafe;border-radius:10px;padding:14px;margin-top:12px}
+    .card.live{border-color:#93c5fd;background:#eff6ff}
+    .tag{display:inline-block;padding:4px 8px;border-radius:999px;background:#1d4ed8;color:#fff;font-size:11px;font-weight:700;margin-bottom:8px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top"><h1>Canli Maclar</h1><a href="index.html">Anasayfa</a></div>
+    <div id="list"></div>
+  </div>
+  <script>
+  function getApiBaseUrl() {
+    const query = new URLSearchParams(window.location.search);
+    const fromQuery = (query.get('api_base') || '').trim();
+    if (fromQuery) return fromQuery.replace(/\/$/, '');
+    if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+    return '/api';
+  }
+
+  function esc(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function isDemoStreamUrl(url) {
+    if (!url) return false;
+    try {
+      const parsed = new URL(String(url));
+      const host = (parsed.hostname || '').toLowerCase();
+      return host === 'example.com' || host.endsWith('.example.com');
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function isAllowedPlatformUrl(url, platformKey) {
+    if (!url) return false;
+    try {
+      const parsed = new URL(String(url));
+      const host = (parsed.hostname || '').toLowerCase();
+      const rules = {
+        youtube: ['youtube.com', 'www.youtube.com', 'youtu.be'],
+        instagram: ['instagram.com', 'www.instagram.com'],
+        facebook: ['facebook.com', 'www.facebook.com', 'fb.watch'],
+        x: ['x.com', 'www.x.com', 'twitter.com', 'www.twitter.com'],
+      };
+      const allowedHosts = rules[platformKey] || [];
+      return allowedHosts.some((allowed) => host === allowed || host.endsWith(`.${allowed}`));
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function isUserAuthenticated() {
+    const token = (localStorage.getItem('nextscout_token') || '').trim();
+    const userRaw = (localStorage.getItem('nextscout_user') || '').trim();
+    return Boolean(token || userRaw);
+  }
+
+  function startBroadcast(event) {
+    if (event) event.preventDefault();
+    if (!isUserAuthenticated()) {
+      localStorage.setItem('nextscout_open_login', '1');
+      window.location.href = 'index.html';
+      return false;
+    }
+    window.location.href = 'coach-dashboard.html?open_live=1';
+    return false;
+  }
+
+  function renderMatchCard(match) {
+    const title = match.title || `${match.home_team || ''} - ${match.away_team || ''}`.trim();
+    const teams = `${match.home_team || ''} - ${match.away_team || ''}`.trim();
+    const score = `${match.home_score ?? '-'} : ${match.away_score ?? '-'}`;
+    const minute = match.minute ? ` | ${match.minute}'` : '';
+    const league = match.league ? `<div><strong>${esc(match.league)}</strong></div>` : '';
+    const sportAndLocation = (match.sport || match.location)
+      ? `<div>${match.sport ? `Spor: ${esc(match.sport)}` : ''}${match.sport && match.location ? ' | ' : ''}${match.location ? `Konum: ${esc(match.location)}` : ''}</div>`
+      : '';
+    const focus = match.focus ? `<div>Odak: ${esc(match.focus)}</div>` : '';
+    const note = match.note ? `<div>Not: ${esc(match.note)}</div>` : '';
+    const scout = match.scout_name ? `<div>Scout: ${esc(match.scout_name)}</div>` : '';
+    const streamLinks = (match.stream_links && typeof match.stream_links === 'object') ? match.stream_links : {};
+    const platformOrder = [
+      { key: 'youtube', label: 'YouTube' },
+      { key: 'instagram', label: 'Instagram' },
+      { key: 'facebook', label: 'Facebook' },
+      { key: 'x', label: 'X' },
+    ];
+    const platformButtons = platformOrder
+      .map((p) => ({ label: p.label, key: p.key, url: streamLinks[p.key] || '' }))
+      .filter((p) => p.url)
+      .map((p) => {
+        if (isDemoStreamUrl(p.url)) {
+          return `<span style="display:inline-block;margin-right:8px;color:#64748b;">${esc(p.label)}: test link</span>`;
+        }
+        if (!isAllowedPlatformUrl(p.url, p.key)) {
+          return `<span style="display:inline-block;margin-right:8px;color:#64748b;">${esc(p.label)}: link hazir degil</span>`;
+        }
+        return `<a href="${esc(p.url)}" target="_blank" rel="noopener" style="display:inline-block;margin-right:8px;">${esc(p.label)} Ac</a>`;
+      })
+      .join('');
+    const fallbackStream = match.stream_url
+      ? (isDemoStreamUrl(match.stream_url)
+          ? `<div>Yayin linki test adresi. Gercek yayin linki bekleniyor.</div>`
+          : `<div>Yayin linki platforma uygun degilse acilmaz.</div>`)
+      : '';
+    const stream = platformButtons ? `<div style="margin-top:6px;">${platformButtons}</div>` : fallbackStream;
+    const startBroadcastHtml = `<div style="margin-top:8px;"><a href="#" onclick="return startBroadcast(event)">Yayin Baslat</a></div>`;
+
+    return `
+      <div class="card">
+        <div class="tag">CANLI</div>
+        <div><strong>${esc(title || 'Mac')}</strong></div>
+        ${league}
+        ${teams ? `<div>${esc(teams)}</div>` : ''}
+        <div><strong>${score}</strong>${minute}</div>
+        ${sportAndLocation}
+        ${focus}
+        ${note}
+        ${scout}
+        ${stream}
+        ${startBroadcastHtml}
+      </div>
+    `;
+  }
+
+  (async function() {
+    const el = document.getElementById('list');
+    const apiBase = getApiBaseUrl();
+    try {
+      const res = await fetch(`${apiBase}/live-matches`, { headers: { Accept: 'application/json' } });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const matches = Array.isArray(data.matches) ? data.matches : [];
+
+      if (!matches.length) {
+        el.innerHTML = '<div class="card">Su an canli mac yok.</div>';
+        return;
+      }
+
+      el.innerHTML = matches.map(renderMatchCard).join('');
+    } catch (e) {
+      el.innerHTML = '<div class="card">Veri alinamadi. Laravel server calisiyor mu kontrol edin.</div>';
+    }
+  })();
+  </script>
+</body>
+</html>

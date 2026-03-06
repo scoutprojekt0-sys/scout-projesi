@@ -597,6 +597,33 @@
       const streamX = (document.getElementById('liveStreamX').value || '').trim();
       const note = (document.getElementById('liveNote').value || '').trim();
 
+      function isValidHttpUrl(url) {
+        try {
+          const parsed = new URL(String(url));
+          return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+        } catch (error) {
+          return false;
+        }
+      }
+
+      function isAllowedPlatformUrl(url, platformKey) {
+        if (!url) return true;
+        let host = '';
+        try {
+          host = (new URL(String(url)).hostname || '').toLowerCase();
+        } catch (error) {
+          return false;
+        }
+        const rules = {
+          youtube: ['youtube.com', 'www.youtube.com', 'youtu.be'],
+          instagram: ['instagram.com', 'www.instagram.com'],
+          facebook: ['facebook.com', 'www.facebook.com', 'fb.watch'],
+          x: ['x.com', 'www.x.com', 'twitter.com', 'www.twitter.com'],
+        };
+        const allowedHosts = rules[platformKey] || [];
+        return allowedHosts.some((allowed) => host === allowed || host.endsWith(`.${allowed}`));
+      }
+
       if (!matchName) {
         alert('Mac adi zorunlu.');
         return;
@@ -608,6 +635,26 @@
       const allStreams = [streamYoutube, streamInstagram, streamFacebook, streamX];
       if (allStreams.some((url) => url && /(^|:\/\/)(www\.)?example\.com(\/|$)/i.test(url))) {
         alert('Platform linklerinde example.com kullanmayin.');
+        return;
+      }
+      if (stream && !isValidHttpUrl(stream)) {
+        alert('Ana yayin linki http/https formatinda olmali.');
+        return;
+      }
+      if (streamYoutube && (!isValidHttpUrl(streamYoutube) || !isAllowedPlatformUrl(streamYoutube, 'youtube'))) {
+        alert('YouTube linki gecersiz. youtube.com veya youtu.be kullanin.');
+        return;
+      }
+      if (streamInstagram && (!isValidHttpUrl(streamInstagram) || !isAllowedPlatformUrl(streamInstagram, 'instagram'))) {
+        alert('Instagram linki gecersiz. instagram.com kullanin.');
+        return;
+      }
+      if (streamFacebook && (!isValidHttpUrl(streamFacebook) || !isAllowedPlatformUrl(streamFacebook, 'facebook'))) {
+        alert('Facebook linki gecersiz. facebook.com veya fb.watch kullanin.');
+        return;
+      }
+      if (streamX && (!isValidHttpUrl(streamX) || !isAllowedPlatformUrl(streamX, 'x'))) {
+        alert('X linki gecersiz. x.com veya twitter.com kullanin.');
         return;
       }
 
