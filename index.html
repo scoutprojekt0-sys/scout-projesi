@@ -1481,14 +1481,40 @@
                 <i class="fas fa-home"></i>
                 <span>Anasayfa</span>
             </a>
-            <a href="#" class="nav-button">
-                <i class="fas fa-exchange-alt"></i>
-                <span>Transferborsası</span>
-            </a>
-            <a href="#" class="nav-button">
-                <i class="fas fa-radar"></i>
-                <span>Scout Radar</span>
-            </a>
+            <div class="nav-dropdown" id="transferMarketDropdown">
+                <button type="button" class="nav-button" onclick="toggleTransferMarketMenu(event)">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Transferborsası</span>
+                </button>
+                <div class="nav-dropdown-menu" id="transferMarketMenu">
+                    <button type="button" class="nav-dropdown-item" onclick="openTransferMarketCategory('contracted')">
+                        <i class="fas fa-file-signature"></i> Sözleşmeli
+                    </button>
+                    <button type="button" class="nav-dropdown-item" onclick="openTransferMarketCategory('free')">
+                        <i class="fas fa-user-check"></i> Boşta
+                    </button>
+                    <button type="button" class="nav-dropdown-item" onclick="openTransferMarketCategory('seeking')">
+                        <i class="fas fa-bullseye"></i> Kulüp Arıyor
+                    </button>
+                </div>
+            </div>
+            <div class="nav-dropdown" id="scoutRadarDropdown">
+                <button type="button" class="nav-button" onclick="toggleScoutRadarMenu(event)">
+                    <i class="fas fa-radar"></i>
+                    <span>Scout Radar</span>
+                </button>
+                <div class="nav-dropdown-menu" id="scoutRadarMenu">
+                    <button type="button" class="nav-dropdown-item" onclick="openScoutRadarCategory('new')">
+                        <i class="fas fa-sparkles"></i> Yeni Eşleşenler
+                    </button>
+                    <button type="button" class="nav-dropdown-item" onclick="openScoutRadarCategory('rising')">
+                        <i class="fas fa-arrow-trend-up"></i> Yükselenler
+                    </button>
+                    <button type="button" class="nav-dropdown-item" onclick="openScoutRadarCategory('hidden')">
+                        <i class="fas fa-user-secret"></i> Gizli Yetenek
+                    </button>
+                </div>
+            </div>
             <a href="#" class="nav-button">
                 <i class="fas fa-heart"></i>
                 <span>Favoriler</span>
@@ -2471,6 +2497,40 @@
             menu.classList.toggle('show');
         }
 
+        function toggleTransferMarketMenu(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('transferMarketMenu');
+            if (!menu) return;
+            menu.classList.toggle('show');
+        }
+
+        function openTransferMarketCategory(category) {
+            const map = {
+                contracted: 'Sozlesmeli',
+                free: 'Bosta',
+                seeking: 'Kulup-Ariyor',
+            };
+            const selected = map[category] || 'Sozlesmeli';
+            window.location.href = `professional-players.html?transfer_category=${encodeURIComponent(selected)}`;
+        }
+
+        function toggleScoutRadarMenu(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('scoutRadarMenu');
+            if (!menu) return;
+            menu.classList.toggle('show');
+        }
+
+        function openScoutRadarCategory(category) {
+            const map = {
+                new: 'Yeni-Eslesenler',
+                rising: 'Yukselenler',
+                hidden: 'Gizli-Yetenek',
+            };
+            const selected = map[category] || 'Yeni-Eslesenler';
+            window.location.href = `professional-players.html?scout_radar=${encodeURIComponent(selected)}`;
+        }
+
         function toggleLeaguesMenu(event) {
             event.stopPropagation();
             const menu = document.getElementById('leaguesMenu');
@@ -2628,6 +2688,18 @@
                 const dropdown = document.getElementById('lawOfficeDropdown');
                 if (menu && dropdown && !dropdown.contains(event.target)) {
                     menu.classList.remove('show');
+                }
+
+                const transferMenu = document.getElementById('transferMarketMenu');
+                const transferDropdown = document.getElementById('transferMarketDropdown');
+                if (transferMenu && transferDropdown && !transferDropdown.contains(event.target)) {
+                    transferMenu.classList.remove('show');
+                }
+
+                const scoutMenu = document.getElementById('scoutRadarMenu');
+                const scoutDropdown = document.getElementById('scoutRadarDropdown');
+                if (scoutMenu && scoutDropdown && !scoutDropdown.contains(event.target)) {
+                    scoutMenu.classList.remove('show');
                 }
 
                 const leaguesMenu = document.getElementById('leaguesMenu');

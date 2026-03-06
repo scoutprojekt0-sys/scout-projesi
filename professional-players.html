@@ -1,0 +1,815 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profesyonel Futbolcular | NextScout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #F8FAFC;
+      color: #1F2937;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .market-wrapper {
+      display: grid;
+      grid-template-columns: 200px minmax(0, 1fr) 200px;
+      gap: 16px;
+      max-width: 1460px;
+      margin: 0 auto;
+      align-items: start;
+    }
+
+    .market-ad-panel {
+      background: #ffffff;
+      border: 2px solid #dbeafe;
+      border-radius: 14px;
+      min-height: 760px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #64748b;
+    }
+
+    .market-ad-content strong {
+      display: block;
+      font-size: 14px;
+      color: #1e3a8a;
+      margin-bottom: 8px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border: 1px solid rgba(59, 130, 246, 0.5);
+      background: rgba(59, 130, 246, 0.1);
+      color: #6cc6ff;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: rgba(59, 130, 246, 0.8);
+      color: #ffffff;
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+      border-color: #3b82f6;
+      color: white;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .filter {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .filter label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #1e3a8a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .filter input, .filter select {
+      padding: 8px 12px;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      background: #ffffff;
+      color: #1f2937;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .filter input:focus, .filter select:focus {
+      border-color: rgba(59, 130, 246, 0.8);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .players-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .player-card {
+      background: #ffffff;
+      border: 1px solid #dbeafe;
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .player-card:hover {
+      border-color: rgba(59, 130, 246, 0.6);
+      transform: translateY(-8px);
+      box-shadow: 0 16px 40px rgba(59, 130, 246, 0.2);
+    }
+
+    .player-avatar {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .player-content {
+      padding: 20px;
+    }
+
+    .player-name {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 4px;
+      color: #111827;
+    }
+
+    .player-position {
+      font-size: 12px;
+      color: #2563eb;
+      font-weight: 700;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .player-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .info-label {
+      font-size: 11px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .info-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .player-rating {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px;
+      background: rgba(59, 130, 246, 0.1);
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .rating-stars {
+      color: #fbbf24;
+      font-size: 16px;
+    }
+
+    .rating-value {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fbbf24;
+    }
+
+    .player-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .player-actions button {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      background: rgba(59, 130, 246, 0.1);
+      color: #1d4ed8;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .player-actions button:hover {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: rgba(59, 130, 246, 0.6);
+      color: #1e40af;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 40px;
+    }
+
+    .pagination button {
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      background: transparent;
+      color: #6cc6ff;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pagination button:hover {
+      background: rgba(59, 130, 246, 0.1);
+      border-color: rgba(59, 130, 246, 0.6);
+    }
+
+    .pagination button.active {
+      background: #3b82f6;
+      border-color: #3b82f6;
+    }
+
+    @media (max-width: 768px) {
+      .filters {
+        grid-template-columns: 1fr;
+      }
+
+      .players-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 1320px) {
+      .market-wrapper {
+        grid-template-columns: 1fr;
+      }
+
+      .market-ad-panel {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="market-wrapper">
+    <aside class="market-ad-panel">
+      <div class="market-ad-content">
+        <strong>Reklam Alanı</strong>
+        Transfer Sponsorluğu
+      </div>
+    </aside>
+
+    <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>🏅 Profesyonel Sporcular</h1>
+      <div class="header-actions">
+        <a href="index.html" class="btn">← Ana Sayfa</a>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <div class="filter">
+        <label>Branş</label>
+        <select id="sportFilter">
+          <option value="">Tümü</option>
+          <option value="futbol">Futbol</option>
+          <option value="basketbol">Basketbol</option>
+          <option value="voleybol">Voleybol</option>
+        </select>
+      </div>
+
+      <div class="filter">
+        <label>Pozisyon</label>
+        <select id="positionFilter">
+          <option value="">Tümü</option>
+          <option value="kaleci">Kaleci</option>
+          <option value="defans">Defans</option>
+          <option value="ortasaha">Orta Saha</option>
+          <option value="forvet">Forvet</option>
+        </select>
+      </div>
+
+      <div class="filter">
+        <label>Lig</label>
+        <select id="leagueFilter">
+          <option value="">Tümü</option>
+          <option value="super">Süper Lig</option>
+          <option value="1lig">1. Lig</option>
+          <option value="avrupa">Avrupa Ligleri</option>
+        </select>
+      </div>
+
+      <div class="filter">
+        <label>Yaş Aralığı</label>
+        <input type="text" id="ageFilter" placeholder="18-30">
+      </div>
+
+      <div class="filter">
+        <label>Rating (Min)</label>
+        <input type="number" id="ratingFilter" placeholder="7.0" min="0" max="10" step="0.1">
+      </div>
+    </div>
+
+    <!-- Players Grid -->
+    <div class="players-grid" id="playersGrid">
+      <!-- Dinamik oyuncular yüklenecek -->
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" id="pagination">
+      <button class="active">1</button>
+      <button>2</button>
+      <button>3</button>
+    </div>
+
+    </div>
+
+    <aside class="market-ad-panel">
+      <div class="market-ad-content">
+        <strong>Reklam Alanı</strong>
+        Scout Kampanyası
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const playersGrid = document.getElementById("playersGrid");
+    const sportFilter = document.getElementById("sportFilter");
+    const positionFilter = document.getElementById("positionFilter");
+    const leagueFilter = document.getElementById("leagueFilter");
+    const ageFilter = document.getElementById("ageFilter");
+    const ratingFilter = document.getElementById("ratingFilter");
+
+    function getApiBaseUrl() {
+      if (window.location.protocol === "http:" || window.location.protocol === "https:") {
+        return window.location.origin + "/api";
+      }
+      const params = new URLSearchParams(window.location.search);
+      return params.get("api_base") || "http://localhost:8000/api";
+    }
+
+    const mockPlayers = [
+      {
+        id: 1,
+        name: "Serdar Aziz",
+        position: "Defans",
+        age: 28,
+        league: "Süper Lig",
+        club: "Fenerbahçe",
+        sport: "futbol",
+        rating: 8.5,
+        height: 185,
+        nationality: "Türkiye",
+        contract_status: "active",
+        seeking_club: false,
+        radar_new: true,
+        radar_rising: false,
+        radar_hidden: false
+      },
+      {
+        id: 2,
+        name: "Okay Yokuşlu",
+        position: "Orta Saha",
+        age: 27,
+        league: "Süper Lig",
+        club: "Trabzonspor",
+        sport: "futbol",
+        rating: 8.3,
+        height: 188,
+        nationality: "Türkiye",
+        contract_status: "active",
+        seeking_club: false,
+        radar_new: false,
+        radar_rising: true,
+        radar_hidden: false
+      },
+      {
+        id: 3,
+        name: "Kerem Aktürkoğlu",
+        position: "Forvet",
+        age: 26,
+        league: "Süper Lig",
+        club: "Galatasaray",
+        sport: "futbol",
+        rating: 8.7,
+        height: 183,
+        nationality: "Türkiye",
+        contract_status: "active",
+        seeking_club: true,
+        radar_new: true,
+        radar_rising: true,
+        radar_hidden: false
+      },
+      {
+        id: 4,
+        name: "Altay Bayındır",
+        position: "Kaleci",
+        age: 24,
+        league: "Avrupa Ligleri",
+        club: "Manchester United",
+        sport: "futbol",
+        rating: 8.2,
+        height: 195,
+        nationality: "Türkiye",
+        contract_status: "active",
+        seeking_club: false,
+        radar_new: false,
+        radar_rising: false,
+        radar_hidden: true
+      },
+      {
+        id: 5,
+        name: "Merih Demiral",
+        position: "Defans",
+        age: 26,
+        league: "Avrupa Ligleri",
+        club: "Juventus",
+        sport: "futbol",
+        rating: 8.4,
+        height: 189,
+        nationality: "Türkiye",
+        contract_status: "active",
+        seeking_club: true,
+        radar_new: false,
+        radar_rising: true,
+        radar_hidden: false
+      },
+      {
+        id: 6,
+        name: "Burak Yılmaz",
+        position: "Forvet",
+        age: 36,
+        league: "Süper Lig",
+        club: "Trabzonspor",
+        sport: "futbol",
+        rating: 8.6,
+        height: 186,
+        nationality: "Türkiye",
+        contract_status: "free",
+        seeking_club: true,
+        radar_new: true,
+        radar_rising: false,
+        radar_hidden: true
+      },
+      {
+        id: 7,
+        name: "Mert Can",
+        position: "Guard",
+        age: 23,
+        league: "Türkiye Basketbol Ligi",
+        club: "Anadolu Efes",
+        sport: "basketbol",
+        rating: 8.1,
+        height: 192,
+        nationality: "Türkiye",
+        contract_status: "active",
+        seeking_club: false,
+        radar_new: true,
+        radar_rising: true,
+        radar_hidden: false
+      },
+      {
+        id: 8,
+        name: "Ege Tunç",
+        position: "Pivot",
+        age: 25,
+        league: "Türkiye Basketbol Ligi",
+        club: "Fenerbahçe Beko",
+        sport: "basketbol",
+        rating: 8.4,
+        height: 208,
+        nationality: "Türkiye",
+        contract_status: "active",
+        seeking_club: true,
+        radar_new: false,
+        radar_rising: true,
+        radar_hidden: false
+      },
+      {
+        id: 9,
+        name: "Aslı Deniz",
+        position: "Smaçör",
+        age: 22,
+        league: "Sultanlar Ligi",
+        club: "Eczacıbaşı",
+        sport: "voleybol",
+        rating: 8.6,
+        height: 186,
+        nationality: "Türkiye",
+        contract_status: "free",
+        seeking_club: true,
+        radar_new: true,
+        radar_rising: false,
+        radar_hidden: true
+      },
+      {
+        id: 10,
+        name: "Zeynep Aras",
+        position: "Pasör",
+        age: 24,
+        league: "Sultanlar Ligi",
+        club: "VakıfBank",
+        sport: "voleybol",
+        rating: 8.2,
+        height: 179,
+        nationality: "Türkiye",
+        contract_status: "active",
+        seeking_club: false,
+        radar_new: false,
+        radar_rising: true,
+        radar_hidden: false
+      }
+    ];
+
+    let allPlayers = [...mockPlayers];
+
+    function renderPlayers(players) {
+      if (!players.length) {
+        playersGrid.innerHTML = '<div class="player-card" style="padding:16px;">Oyuncu bulunamadı.</div>';
+        return;
+      }
+      playersGrid.innerHTML = players.map(player => `
+        <div class="player-card">
+          <div class="player-avatar">⚽</div>
+          <div class="player-content">
+            <div class="player-name">${player.name}</div>
+            <div class="player-position">${player.position}</div>
+
+            <div class="player-info">
+              <div class="info-item">
+                <span class="info-label">Yaş</span>
+                <span class="info-value">${player.age}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Boy</span>
+                <span class="info-value">${player.height}cm</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Branş</span>
+                <span class="info-value" style="font-size: 12px; text-transform: capitalize;">${player.sport || '-'}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Lig</span>
+                <span class="info-value" style="font-size: 12px;">${player.league}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Kulüp</span>
+                <span class="info-value" style="font-size: 12px;">${player.club}</span>
+              </div>
+            </div>
+
+            <div class="player-rating">
+              <span class="rating-stars">★★★★★</span>
+              <span class="rating-value">${player.rating}/10</span>
+            </div>
+
+            <div class="player-actions">
+              <button onclick="viewProfile(${player.id})">Profil</button>
+              <button onclick="addToFavorite(${player.id})">❤️</button>
+              <button onclick="contact(${player.id})">İletişim</button>
+            </div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    async function loadPlayersFromApi() {
+      try {
+        const apiBase = getApiBaseUrl();
+        const params = new URLSearchParams(window.location.search);
+        const apiQuery = new URLSearchParams();
+
+        const transferCategory = (params.get("transfer_category") || "").trim();
+        const scoutRadar = (params.get("scout_radar") || "").trim();
+        const q = (params.get("q") || "").trim();
+
+        if (transferCategory) apiQuery.set("transfer_category", transferCategory);
+        if (scoutRadar) apiQuery.set("scout_radar", scoutRadar);
+        if (q) apiQuery.set("q", q);
+
+        const selectedSport = (sportFilter?.value || "").trim();
+        if (selectedSport) {
+          apiQuery.set("sport", selectedSport);
+        }
+
+        const url = apiQuery.toString()
+          ? `${apiBase}/public/players?${apiQuery.toString()}`
+          : `${apiBase}/public/players`;
+
+        const res = await fetch(url, { headers: { "Accept": "application/json" } });
+        const data = await res.json();
+        if (!res.ok || !data.ok || !Array.isArray(data.data)) return;
+
+        allPlayers = data.data.map((p) => ({
+          id: p.id,
+          name: p.name || "Oyuncu",
+          position: p.position || "Oyuncu",
+          age: p.age || "-",
+          league: p.league || "-",
+          club: p.club || "-",
+          sport: p.sport || p.branch || "futbol",
+          rating: p.rating || 0,
+          height: p.height || "-",
+          nationality: p.nationality || "-",
+          contract_status: p.contract_status || "active",
+          seeking_club: Boolean(p.seeking_club),
+          radar_new: Boolean(p.radar_new),
+          radar_rising: Boolean(p.radar_rising),
+          radar_hidden: Boolean(p.radar_hidden),
+        }));
+      } catch (e) {
+        // Fallback mock data kullanılacak
+      }
+    }
+
+    function getTransferCategoryFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const category = (params.get("transfer_category") || "").toLowerCase();
+      if (category === "sozlesmeli") return "contracted";
+      if (category === "bosta") return "free";
+      if (category === "kulup-ariyor") return "seeking";
+      return "";
+    }
+
+    function getScoutRadarCategoryFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const category = (params.get("scout_radar") || "").toLowerCase();
+      if (category === "yeni-eslesenler") return "new";
+      if (category === "yukselenler") return "rising";
+      if (category === "gizli-yetenek") return "hidden";
+      return "";
+    }
+
+    function parseAgeRange(value) {
+      const txt = (value || "").trim();
+      if (!txt) return null;
+      const parts = txt.split("-").map(x => parseInt(x.trim(), 10)).filter(x => !Number.isNaN(x));
+      if (parts.length !== 2) return null;
+      return { min: Math.min(parts[0], parts[1]), max: Math.max(parts[0], parts[1]) };
+    }
+
+    function filterPlayers() {
+      let filtered = [...allPlayers];
+
+      if (positionFilter.value) {
+        filtered = filtered.filter(p => p.position.toLowerCase() === positionFilter.value.toLowerCase());
+      }
+
+      if (sportFilter.value) {
+        filtered = filtered.filter((p) => String(p.sport || "").toLowerCase() === sportFilter.value);
+      }
+
+      if (leagueFilter.value) {
+        filtered = filtered.filter(p => p.league.toLowerCase().includes(leagueFilter.value));
+      }
+
+      if (ratingFilter.value) {
+        filtered = filtered.filter(p => p.rating >= parseFloat(ratingFilter.value));
+      }
+
+      const ageRange = parseAgeRange(ageFilter.value);
+      if (ageRange) {
+        filtered = filtered.filter(p => {
+          const age = parseInt(p.age, 10);
+          if (Number.isNaN(age)) return false;
+          return age >= ageRange.min && age <= ageRange.max;
+        });
+      }
+
+      const transferCategory = getTransferCategoryFromQuery();
+      if (transferCategory === "contracted") {
+        filtered = filtered.filter((p) => String(p.contract_status || "active") === "active");
+      } else if (transferCategory === "free") {
+        filtered = filtered.filter((p) => String(p.contract_status || "") === "free");
+      } else if (transferCategory === "seeking") {
+        filtered = filtered.filter((p) => Boolean(p.seeking_club));
+      }
+
+      const scoutCategory = getScoutRadarCategoryFromQuery();
+      if (scoutCategory === "new") {
+        filtered = filtered.filter((p) => Boolean(p.radar_new));
+      } else if (scoutCategory === "rising") {
+        filtered = filtered.filter((p) => Boolean(p.radar_rising));
+      } else if (scoutCategory === "hidden") {
+        filtered = filtered.filter((p) => Boolean(p.radar_hidden));
+      }
+
+      renderPlayers(filtered);
+    }
+
+    function viewProfile(id) {
+      window.location.href = `player-profile.html?user_id=${encodeURIComponent(id)}`;
+    }
+
+    function addToFavorite(id) {
+      const player = allPlayers.find(p => p.id === id);
+      if (!player) return;
+
+      const key = "nextscout_favorite_players";
+      const current = JSON.parse(localStorage.getItem(key) || "[]");
+      const alreadyExists = current.some(p => p.id === player.id);
+
+      if (alreadyExists) {
+        alert(`${player.name} zaten favorilerde.`);
+        return;
+      }
+
+      current.unshift({
+        id: player.id,
+        name: player.name,
+        position: player.position,
+        age: player.age,
+        league: player.league,
+        club: player.club,
+        rating: player.rating,
+        height: player.height,
+        nationality: player.nationality,
+        createdAt: new Date().toISOString()
+      });
+
+      localStorage.setItem(key, JSON.stringify(current.slice(0, 500)));
+      alert(`✅ ${player.name} favorilere eklendi`);
+    }
+
+    function contact(id) {
+      const player = allPlayers.find(p => p.id === id);
+      alert(`${player.name} ile iletişime geçiyorsunuz...`);
+    }
+
+    // Event listeners
+    sportFilter.addEventListener("change", filterPlayers);
+    positionFilter.addEventListener("change", filterPlayers);
+    leagueFilter.addEventListener("change", filterPlayers);
+    ageFilter.addEventListener("input", filterPlayers);
+    ratingFilter.addEventListener("change", filterPlayers);
+
+    // Initial render
+    (async function init() {
+      await loadPlayersFromApi();
+      filterPlayers();
+    })();
+  </script>
+</body>
+</html>
+
