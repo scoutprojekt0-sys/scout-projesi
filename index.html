@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -38,6 +38,7 @@
             top: 0;
             z-index: 1000;
             box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+            position: relative;
         }
 
         .header-container {
@@ -778,11 +779,274 @@
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
         }
 
+        /* ========== FEATURE NAV BAR ========== */
+        .feature-nav {
+            background: #1E3A8A;
+            border-bottom: 2px solid #3B82F6;
+            padding: 0;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 998;
+            width: 100%;
+        }
+
+        .nav-container {
+            width: 100%;
+            margin: 0;
+            padding: 0 40px;
+            padding-left: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 0;
+            height: 100%;
+        }
+
+        .nav-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0 24px;
+            height: 100%;
+            color: #FFFFFF;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .nav-button:focus,
+        .nav-button:focus-visible,
+        .nav-button:active {
+            outline: none;
+            box-shadow: none;
+            background: transparent;
+        }
+
+        .nav-button::-moz-focus-inner {
+            border: 0;
+        }
+
+        .nav-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom-color: #60A5FA;
+            transform: translateY(-2px);
+        }
+
+        .nav-button i {
+            font-size: 16px;
+        }
+
+        .nav-button span {
+            display: inline;
+        }
+
+        .nav-dropdown {
+            position: relative;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            min-width: 180px;
+            background: #FFFFFF;
+            border: 1px solid #DBEAFE;
+            border-radius: 10px;
+            box-shadow: 0 12px 24px rgba(30, 58, 138, 0.18);
+            padding: 8px;
+            display: none;
+            z-index: 1200;
+        }
+
+        .nav-dropdown-menu.show {
+            display: block;
+        }
+
+        .nav-dropdown-menu:empty {
+            display: none !important;
+            padding: 0;
+            border: 0;
+            box-shadow: none;
+        }
+
+        .nav-dropdown-item {
+            width: 100%;
+            border: 1px solid #DBEAFE;
+            background: #F8FAFF;
+            color: #1E3A8A;
+            border-radius: 8px;
+            padding: 9px 10px;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .nav-dropdown-item:hover {
+            background: #E0E7FF;
+            border-color: #93C5FD;
+        }
+
+        .nav-submenu {
+            margin-top: 6px;
+            border-top: 1px solid #DBEAFE;
+            padding-top: 6px;
+            display: none;
+        }
+
+        .nav-submenu.show {
+            display: block;
+        }
+
+        /* Sports Submenu */
+        .nav-sports-submenu {
+            margin-left: 12px;
+            margin-top: 4px;
+            padding-left: 8px;
+            border-left: 2px solid #93C5FD;
+            display: none;
+        }
+
+        .nav-sports-submenu.show {
+            display: block;
+        }
+
+        .nav-sports-item {
+            width: 100%;
+            background: #F0F4FF;
+            color: #1E3A8A;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            margin: 3px 0;
+            transition: all 0.2s ease;
+        }
+
+        .nav-sports-item:hover {
+            background: #E0E7FF;
+            transform: translateX(4px);
+        }
+
+        .nav-submenu-item {
+            width: 100%;
+            border: 1px solid #E2E8F0;
+            background: #FFFFFF;
+            color: #334155;
+            border-radius: 8px;
+            padding: 7px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            margin-bottom: 6px;
+        }
+
+        .nav-submenu-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .nav-submenu-item:hover {
+            background: #F1F5F9;
+            border-color: #CBD5E1;
+        }
+
+        @media (max-width: 1024px) {
+            .nav-button {
+                padding: 0 16px;
+                font-size: 13px;
+                gap: 6px;
+            }
+
+            .nav-button i {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .feature-nav {
+                overflow-x: auto;
+            }
+
+            .nav-container {
+                padding: 0 15px;
+                gap: 5px;
+            }
+
+            .nav-button {
+                padding: 0 12px;
+                font-size: 12px;
+                gap: 4px;
+            }
+
+            .nav-button span {
+                display: none;
+            }
+
+            .nav-button i {
+                font-size: 18px;
+            }
+        }
+
+        /* ========== HERO SECTION WITH AD PANELS ========== */
+        .hero-wrapper {
+            display: grid;
+            grid-template-columns: 200px 1fr 200px;
+            gap: 0;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+            min-height: 150vh;
+            align-items: stretch;
+        }
+
+        .ad-panel {
+            background: #FFFFFF;
+            border: 2px solid #E0E7FF;
+            border-radius: 12px;
+            padding: 24px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 800px;
+            text-align: center;
+            color: #94A3B8;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .ad-panel:hover {
+            border-color: #3B82F6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+        }
+
+        .ad-panel-content {
+            width: 100%;
+        }
+
         /* ========== HERO SECTION ========== */
         .hero {
-            padding: 80px 40px;
-            max-width: 1600px;
-            margin: 0 auto;
+            padding: 40px 20px;
             text-align: center;
         }
 
@@ -807,43 +1071,6 @@
             color: #64748B;
             margin-bottom: 40px;
             line-height: 1.6;
-        }
-
-        .hero-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 30px;
-            margin-top: 60px;
-            padding-top: 60px;
-            border-top: 2px solid #3B82F6;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
-            padding: 30px;
-            border-radius: 8px;
-            border: 1px solid #3B82F6;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 32px rgba(59, 130, 246, 0.15);
-            border-color: #0EA5E9;
-        }
-
-        .stat-number {
-            font-size: 42px;
-            font-weight: 800;
-            color: #3B82F6;
-            margin-bottom: 10px;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: #64748B;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         /* ========== RESPONSIVE ========== */
@@ -871,6 +1098,37 @@
 
             .hero h1 {
                 font-size: 42px;
+            }
+
+            /* Responsive - Ad Panels */
+            .hero-wrapper {
+                grid-template-columns: 300px 1fr 300px;
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .nav-button {
+                padding: 0 12px;
+                font-size: 12px;
+                gap: 4px;
+            }
+
+            .nav-button span {
+                display: none;
+            }
+
+            .nav-button i {
+                font-size: 18px;
+            }
+
+            .hero-wrapper {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .ad-panel {
+                min-height: 300px;
             }
         }
 
@@ -932,7 +1190,99 @@
             .hero p {
                 font-size: 16px;
             }
+
+            .hero-wrapper {
+                padding: 20px 15px;
+            }
+
+            .ad-panel {
+                display: none;
+            }
+
+            .hero {
+                padding: 20px 15px;
+            }
         }
+
+        /* Profil Resmi Yükleme */
+        .profile-image-upload {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .image-upload-area {
+            border: 2px dashed #3B82F6;
+            border-radius: 8px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #EFF6FF;
+        }
+
+        .image-upload-area:hover {
+            border-color: #0EA5E9;
+            background: #DBEAFE;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        .image-upload-area i {
+            font-size: 32px;
+            color: #3B82F6;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .image-upload-text {
+            color: #1F2937;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .image-upload-subtext {
+            color: #64748B;
+            font-size: 12px;
+        }
+
+        #profileImageInput {
+            display: none;
+        }
+
+        .profile-preview-container {
+            display: none;
+            margin-top: 16px;
+        }
+
+        .profile-preview-container.show {
+            display: block;
+        }
+
+        .profile-preview-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 3px solid #3B82F6;
+            margin: 0 auto 12px;
+            display: block;
+        }
+
+        .remove-profile-img-btn {
+            background: #EF4444;
+            color: #FFFFFF;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .remove-profile-img-btn:hover {
+            background: #DC2626;
+        }
+
     </style>
 </head>
 <body>
@@ -1014,6 +1364,157 @@
             </div>
         </div>
     </header>
+
+    <!-- ========== NAV BAR (Koyu Mavi Kare) ========== -->
+    <nav class="feature-nav">
+        <div class="nav-container">
+            <a href="/" class="nav-button">
+                <i class="fas fa-home"></i>
+                <span>Anasayfa</span>
+            </a>
+            <a href="#" class="nav-button">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Transferborsası</span>
+            </a>
+            <a href="#" class="nav-button">
+                <i class="fas fa-radar"></i>
+                <span>Scout Radar</span>
+            </a>
+            <a href="#" class="nav-button">
+                <i class="fas fa-heart"></i>
+                <span>Favoriler</span>
+            </a>
+            <div class="nav-dropdown" id="leaguesDropdown">
+                <button type="button" class="nav-button" onclick="toggleLeaguesMenu(event)">
+                    <i class="fas fa-trophy"></i>
+                    <span>Ligler</span>
+                </button>
+                <div class="nav-dropdown-menu" id="leaguesMenu">
+                </div>
+            </div>
+            <div class="nav-dropdown" id="lawOfficeDropdown">
+                <button type="button" class="nav-button" onclick="toggleLawyersMenu(event)">
+                    <i class="fas fa-gavel"></i>
+                    <span>Hukuk Ofisi</span>
+                </button>
+                <div class="nav-dropdown-menu" id="lawOfficeMenu">
+                    <button type="button" class="nav-dropdown-item" onclick="openLawyersPage()">
+                        <i class="fas fa-users"></i> Avukatlar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========== LEGAL SERVICES MODAL ========== -->
+    <div class="modal-overlay" id="legalModal" onclick="closeLegalModal()">
+        <div class="modal-card" style="max-width: 500px;" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2><i class="fas fa-gavel"></i> Hukuk Ofisi</h2>
+                <button class="modal-close" onclick="closeLegalModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body" style="text-align: center; padding: 40px;">
+                <i class="fas fa-building" style="font-size: 48px; color: #3B82F6; margin-bottom: 20px; display: block;"></i>
+                <h3 style="font-size: 20px; color: #1F2937; margin-bottom: 12px;">Yasal Hizmetler</h3>
+                <p style="color: #64748B; margin-bottom: 30px; line-height: 1.6;">
+                    Profesyonel avukatlardan sözleşme hazırlama, danışmanlık ve hukuki destek alın.
+                </p>
+                
+                <button class="btn btn-primary" style="width: 100%;" onclick="openLawyerProfileForm()">
+                    <i class="fas fa-user-plus"></i> Profil Oluştur
+                </button>
+                <button class="btn btn-primary" style="width: 100%; margin-top: 12px;" onclick="openLawyersPage()">
+                    <i class="fas fa-users"></i> Avukatlar
+                </button>
+                <button class="btn btn-secondary" style="width: 100%; margin-top: 12px;" onclick="closeLegalModal()">
+                    <i class="fas fa-times"></i> Kapat
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== LAWYER PROFILE MODAL ========== -->
+    <div class="modal-overlay" id="lawyerProfileModal" onclick="closeLawyerProfileModal()">
+        <div class="modal-card" style="max-width: 700px; max-height: 90vh; overflow-y: auto;" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2><i class="fas fa-briefcase"></i> Avukat Profili Oluştur</h2>
+                <button class="modal-close" onclick="closeLawyerProfileModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="lawyerModalForm" style="display: flex; flex-direction: column; gap: 16px;">
+                    <!-- Lisans Numarası -->
+                    <div class="form-group">
+                        <label style="font-weight: 600; color: #1F2937; margin-bottom: 6px; display: block;">Lisans Numarası *</label>
+                        <input type="text" class="form-control" name="license_number" placeholder="Avukat Lisans Numaranız" required>
+                    </div>
+
+                    <!-- Uzmanlık ve Deneyim -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="form-group">
+                            <label style="font-weight: 600; color: #1F2937; margin-bottom: 6px; display: block;">Uzmanlık Alanı *</label>
+                            <input type="text" class="form-control" name="specialization" placeholder="Spor Hukuku" required>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-weight: 600; color: #1F2937; margin-bottom: 6px; display: block;">Deneyim (Yıl) *</label>
+                            <input type="number" class="form-control" name="years_experience" placeholder="0" min="0" required>
+                        </div>
+                    </div>
+
+                    <!-- Biyografi -->
+                    <div class="form-group">
+                        <label style="font-weight: 600; color: #1F2937; margin-bottom: 6px; display: block;">Biyografi</label>
+                        <textarea class="form-control" name="bio" placeholder="Kendiniz hakkında bilgi verin..." style="min-height: 100px;"></textarea>
+                    </div>
+
+                    <!-- Ofis Bilgileri -->
+                    <div class="form-group">
+                        <label style="font-weight: 600; color: #1F2937; margin-bottom: 6px; display: block;">Ofis Adı</label>
+                        <input type="text" class="form-control" name="office_name" placeholder="Hukuk Ofisi Adı">
+                    </div>
+
+                    <!-- Ofis İletişim -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="form-group">
+                            <label style="font-weight: 600; color: #1F2937; margin-bottom: 6px; display: block;">Telefon</label>
+                            <input type="tel" class="form-control" name="office_phone" placeholder="+90 212 xxx xxxx">
+                        </div>
+                        <div class="form-group">
+                            <label style="font-weight: 600; color: #1F2937; margin-bottom: 6px; display: block;">E-mail</label>
+                            <input type="email" class="form-control" name="office_email" placeholder="ofis@hukuk.com">
+                        </div>
+                    </div>
+
+                    <!-- Fiyatlandırma -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="form-group">
+                            <label style="font-weight: 600; color: #1F2937; margin-bottom: 6px; display: block;">Saatlik Ücret (€) *</label>
+                            <input type="number" class="form-control" name="hourly_rate" placeholder="250" min="0" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-weight: 600; color: #1F2937; margin-bottom: 6px; display: block;">Sözleşme Ücreti (€)</label>
+                            <input type="number" class="form-control" name="contract_fee" placeholder="500" min="0" step="0.01">
+                        </div>
+                    </div>
+
+                    <!-- Butonlar -->
+                    <div style="display: flex; gap: 12px; margin-top: 20px;">
+                        <button type="submit" class="btn btn-primary" style="flex: 1;">
+                            <i class="fas fa-save"></i> Profili Oluştur
+                        </button>
+                        <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="closeLawyerProfileModal()">
+                            <i class="fas fa-times"></i> İptal Et
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- ========== ADVANCED SEARCH MODAL ========== -->
     <div class="modal-overlay" id="advancedSearchModal" onclick="closeAdvancedSearch()">
@@ -1223,6 +1724,26 @@
 
                 <!-- Register Form -->
                 <form id="registerForm">
+                    <!-- Profil Resmi Yükleme -->
+                    <div class="profile-image-upload">
+                        <div class="image-upload-area" onclick="document.getElementById('profileImageInput').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <div class="image-upload-text">Profil Fotoğrafınızı Yükleyin</div>
+                            <div class="image-upload-subtext">Tıklayın veya sürükleyip bırakın (JPG, PNG - Max 5MB)</div>
+                            <input type="file" id="profileImageInput" name="profile_image" accept="image/*" onchange="previewProfileImage(event)">
+                        </div>
+
+                        <!-- Fotoğraf Önizlemesi -->
+                        <div class="profile-preview-container" id="profilePreviewContainer">
+                            <img id="profilePreviewImg" src="" alt="Profil Fotoğrafı" class="profile-preview-img">
+                            <center>
+                                <button type="button" class="remove-profile-img-btn" onclick="removeProfileImage()">
+                                    <i class="fas fa-trash"></i> Fotoğrafı Kaldır
+                                </button>
+                            </center>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label><i class="fas fa-user"></i> Ad Soyad</label>
                         <input type="text" class="form-control" name="name" placeholder="Ad Soyad" required>
@@ -1261,7 +1782,24 @@
                             <option value="scout">Scout</option>
                             <option value="manager">Menajer</option>
                             <option value="team">Kulup</option>
+                            <option value="lawyer">Avukat</option>
                         </select>
+                    </div>
+
+                    <!-- Profil Resmi Yükleme -->
+                    <div class="profile-image-upload">
+                        <div class="image-upload-area" onclick="document.getElementById('profileImageInput').click()">
+                            <i class="fas fa-camera"></i>
+                            <div class="image-upload-text">Profil Resmi Yükle</div>
+                            <div class="image-upload-subtext">JPG, PNG, maksimum 2MB</div>
+                        </div>
+                        <input type="file" id="profileImageInput" accept="image/*" onchange="previewProfileImage(event)">
+                        <div class="profile-preview-container" id="profileImagePreviewContainer">
+                            <img src="" alt="Profil Resmi" class="profile-preview-img" id="profileImagePreview">
+                            <button type="button" class="remove-profile-img-btn" onclick="removeProfileImage()">
+                                <i class="fas fa-times"></i> Resmi Kaldır
+                            </button>
+                        </div>
                     </div>
 
                     <div class="form-row">
@@ -1283,33 +1821,28 @@
         </div>
     </div>
 
-    <!-- ========== HERO SECTION ========== -->
-    <section class="hero">
-        <h1>
-            <span class="hero-red">Scout Yap,</span>
-            <span class="hero-white">Transfer Yap</span>
-        </h1>
-        <p>AI destekli scouting platformu ile geleceğin yıldızlarını bugün keşfet</p>
-
-        <div class="hero-stats">
-            <div class="stat-card">
-                <div class="stat-number">15K+</div>
-                <div class="stat-label">Aktif Scout</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">50K+</div>
-                <div class="stat-label">Video Analiz</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">1,234</div>
-                <div class="stat-label">Transfer Kapandı</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">92%</div>
-                <div class="stat-label">Memnuniyet Oranı</div>
+    <!-- ========== HERO SECTION WITH AD PANELS ========== -->
+    <div class="hero-wrapper">
+        <!-- Left Ad Panel -->
+        <div class="ad-panel">
+            <div class="ad-panel-content">
+                <i class="fas fa-ad" style="font-size: 32px; color: #3B82F6; margin-bottom: 12px; display: block;"></i>
+                <p>Reklam Alanı</p>
             </div>
         </div>
-    </section>
+
+        <!-- Hero Section (Center) -->
+        <section class="hero">
+        </section>
+
+        <!-- Right Ad Panel -->
+        <div class="ad-panel">
+            <div class="ad-panel-content">
+                <i class="fas fa-ad" style="font-size: 32px; color: #3B82F6; margin-bottom: 12px; display: block;"></i>
+                <p>Reklam Alanı</p>
+            </div>
+        </div>
+    </div>
 
     <script>
         // API Base URL - Fully automatic detection
@@ -1734,6 +2267,256 @@
             document.body.style.overflow = 'auto';
         }
 
+        // Legal Modal Functions
+        function openLegalModal() {
+            document.getElementById('legalModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLegalModal() {
+            document.getElementById('legalModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function openLawyerProfileForm() {
+            document.getElementById('legalModal').classList.remove('active');
+            document.getElementById('lawyerProfileModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function openLawyersPage() {
+            window.location.href = 'lawyers-directory.html';
+        }
+
+        function toggleLawyersMenu(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('lawOfficeMenu');
+            if (!menu) return;
+            menu.classList.toggle('show');
+        }
+
+        function toggleLeaguesMenu(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('leaguesMenu');
+            if (!menu) return;
+
+            if (!menu.children || menu.children.length === 0) {
+                renderLeagueContinents();
+            }
+
+            menu.classList.toggle('show');
+
+            if (!menu.classList.contains('show')) {
+                resetLeaguesMenu();
+            }
+        }
+
+        const LEAGUES_DATA = {
+            'Avrupa': ['Turkiye', 'Ingiltere', 'Ispanya', 'Almanya', 'Italya'],
+            'Asya': ['Japonya', 'Guney Kore', 'Suudi Arabistan', 'Katar'],
+            'Afrika': ['Misir', 'Fas', 'Nijerya'],
+            'Kuzey Amerika': ['ABD', 'Kanada', 'Meksika'],
+            'Guney Amerika': ['Brezilya', 'Arjantin', 'Uruguay'],
+            'Okyanusya': ['Avustralya', 'Yeni Zelanda']
+        };
+
+        const SPORTS_DATA = ['Futbol', 'Voleybol', 'Basketbol', 'Hentbol'];
+        const GENDER_DATA = ['Bay', 'Bayan'];
+
+        const COUNTRY_FOOTBALL_LEAGUES = {
+            'Turkiye': {
+                'Bay': ['Super Lig', '1. Lig', '2. Lig', '3. Lig', 'Bolgesel Amator Lig', 'Yerel Amator Lig'],
+                'Bayan': ['Kadinlar Super Ligi', 'Kadinlar 1. Ligi', 'Kadinlar 2. Ligi', 'Kadinlar Bolgesel Ligi', 'Kadinlar Amator Lig']
+            },
+            'Ingiltere': {
+                'Bay': ['Premier League', 'Championship', 'League One', 'League Two', 'National League', 'Isthmian League (Amator)'],
+                'Bayan': ["Women's Super League", "Women's Championship", "Women's National League", "Women's Regional League", "Women's Amateur League"]
+            },
+            'Ispanya': {
+                'Bay': ['La Liga', 'Segunda Division', 'Primera Federacion', 'Segunda Federacion', 'Tercera Federacion', 'Regional Preferente (Amator)'],
+                'Bayan': ['Liga F', 'Primera Federacion Femenina', 'Segunda Federacion Femenina', 'Regional Femenina', 'Amator Femenina']
+            },
+            'Almanya': {
+                'Bay': ['Bundesliga', '2. Bundesliga', '3. Liga', 'Regionalliga', 'Oberliga', 'Landesliga (Amator)'],
+                'Bayan': ['Frauen Bundesliga', '2. Frauen Bundesliga', 'Regionalliga Frauen', 'Landesliga Frauen', 'Amator Frauen']
+            },
+            'Italya': {
+                'Bay': ['Serie A', 'Serie B', 'Serie C', 'Serie D', 'Eccellenza', 'Promozione (Amator)'],
+                'Bayan': ['Serie A Femminile', 'Serie B Femminile', 'Serie C Femminile', 'Eccellenza Femminile', 'Amator Femminile']
+            }
+        };
+
+        function buildGenericCountryLeagues(country, sport, gender) {
+            return [
+                `${country} ${sport} ${gender} 1. Lig`,
+                `${country} ${sport} ${gender} 2. Lig`,
+                `${country} ${sport} ${gender} 3. Lig`,
+                `${country} ${sport} ${gender} Bolgesel Lig`,
+                `${country} ${sport} ${gender} Amator Lig`,
+                `${country} ${sport} ${gender} Yerel Amator Lig`
+            ];
+        }
+
+        function getLeaguesBySelection(country, sport, gender) {
+            if (sport === 'Futbol' && COUNTRY_FOOTBALL_LEAGUES[country] && COUNTRY_FOOTBALL_LEAGUES[country][gender]) {
+                return COUNTRY_FOOTBALL_LEAGUES[country][gender];
+            }
+            return buildGenericCountryLeagues(country, sport, gender);
+        }
+
+        let selectedLeagueFlow = {
+            continent: '',
+            country: '',
+            sport: '',
+            gender: ''
+        };
+
+        function resetLeaguesMenu() {
+            const menu = document.getElementById('leaguesMenu');
+            if (!menu) return;
+            selectedLeagueFlow = { continent: '', country: '', sport: '', gender: '' };
+            menu.innerHTML = '';
+        }
+
+        function renderLeagueStep(items, className, onClick) {
+            const menu = document.getElementById('leaguesMenu');
+            if (!menu) return;
+            menu.innerHTML = '';
+            items.forEach((item) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = className;
+                btn.textContent = item;
+                btn.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    onClick(item);
+                });
+                menu.appendChild(btn);
+            });
+        }
+
+        function renderLeagueContinents() {
+            renderLeagueStep(Object.keys(LEAGUES_DATA), 'nav-dropdown-item', (continent) => {
+                selectedLeagueFlow.continent = continent;
+                renderLeagueCountries(continent);
+            });
+        }
+
+        function renderLeagueCountries(continent) {
+            const countries = LEAGUES_DATA[continent] || [];
+            renderLeagueStep(countries, 'nav-submenu-item', (country) => {
+                selectedLeagueFlow.country = country;
+                renderLeagueSports();
+            });
+        }
+
+        function renderLeagueSports() {
+            renderLeagueStep(SPORTS_DATA, 'nav-sports-item', (sport) => {
+                selectedLeagueFlow.sport = sport;
+                renderLeagueGenders();
+            });
+        }
+
+        function renderLeagueGenders() {
+            renderLeagueStep(GENDER_DATA, 'nav-sports-item', (gender) => {
+                selectedLeagueFlow.gender = gender;
+                renderLeagueList();
+            });
+        }
+
+        function renderLeagueList() {
+            const leagues = getLeaguesBySelection(
+                selectedLeagueFlow.country,
+                selectedLeagueFlow.sport,
+                selectedLeagueFlow.gender
+            );
+            renderLeagueStep(leagues, 'nav-sports-item', (league) => {
+                window.location.href =
+                    `league-details.html?continent=${encodeURIComponent(selectedLeagueFlow.continent || '')}` +
+                    `&country=${encodeURIComponent(selectedLeagueFlow.country || '')}` +
+                    `&sport=${encodeURIComponent(selectedLeagueFlow.sport || '')}` +
+                    `&gender=${encodeURIComponent(selectedLeagueFlow.gender || '')}` +
+                    `&league=${encodeURIComponent(league || '')}`;
+            });
+        }
+
+        function closeLawyerProfileModal() {
+            document.getElementById('lawyerProfileModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Lawyer Profile Form Submit
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('click', function(event) {
+                const menu = document.getElementById('lawOfficeMenu');
+                const dropdown = document.getElementById('lawOfficeDropdown');
+                if (menu && dropdown && !dropdown.contains(event.target)) {
+                    menu.classList.remove('show');
+                }
+
+                const leaguesMenu = document.getElementById('leaguesMenu');
+                const leaguesDropdown = document.getElementById('leaguesDropdown');
+                if (leaguesMenu && leaguesDropdown && !leaguesDropdown.contains(event.target)) {
+                    leaguesMenu.classList.remove('show');
+                    resetLeaguesMenu();
+                }
+            });
+
+            const lawyerForm = document.getElementById('lawyerModalForm');
+            if (lawyerForm) {
+                lawyerForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(this);
+                    const data = Object.fromEntries(formData);
+
+                    // Yerel listeye ekle (sayfada avukat kartları fallback olarak görünsün)
+                    try {
+                        const key = 'nextscout_lawyer_profiles';
+                        const current = JSON.parse(localStorage.getItem(key) || '[]');
+                        const safe = {
+                            id: Date.now(),
+                            user_id: 0,
+                            name: (JSON.parse(localStorage.getItem('nextscout_user') || '{}')?.name || 'Avukat').toString(),
+                            license_number: (data.license_number || '').toString().trim(),
+                            specialization: (data.specialization || '').toString().trim(),
+                            years_experience: Number(data.years_experience || 0),
+                            bio: (data.bio || '').toString().trim(),
+                            office_name: (data.office_name || '').toString().trim(),
+                            office_phone: (data.office_phone || '').toString().trim(),
+                            office_email: (data.office_email || '').toString().trim(),
+                            hourly_rate: Number(data.hourly_rate || 0),
+                            contract_fee: Number(data.contract_fee || 0),
+                            is_verified: false,
+                        };
+                        const withoutSame = current.filter((x) => (x?.license_number || '') !== safe.license_number);
+                        withoutSame.unshift(safe);
+                        localStorage.setItem(key, JSON.stringify(withoutSame.slice(0, 500)));
+                    } catch (error) {}
+
+                    // Backend kaydı (token varsa)
+                    try {
+                        const token = (localStorage.getItem('nextscout_token') || '').trim();
+                        if (token) {
+                            await fetch(`${API_BASE_URL}/lawyers/register`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json',
+                                    'Authorization': `Bearer ${token}`,
+                                },
+                                body: JSON.stringify(data),
+                            });
+                        }
+                    } catch (error) {}
+
+                    alert('✅ Profil başarıyla oluşturuldu!');
+                    closeLawyerProfileModal();
+                    this.reset();
+                });
+            }
+        });
+
         function togglePassword(inputId) {
             const input = document.getElementById(inputId);
             const button = input.parentElement.querySelector('.toggle-password i');
@@ -1768,6 +2551,7 @@
                 if (normalizedRole === 'manager') return 'manager-dashboard.html';
                 if (normalizedRole === 'coach' || normalizedRole === 'scout') return 'coach-dashboard.html';
                 if (normalizedRole === 'team' || normalizedRole === 'club') return 'team-dashboard.html';
+                if (normalizedRole === 'lawyer') return 'lawyer-dashboard.html';
                 if (normalizedRole === 'player') return 'DASHBOARD_DESIGN.html';
                 return 'DASHBOARD_DESIGN.html';
             }
@@ -1776,6 +2560,7 @@
             if (normalizedRole === 'manager') return '/manager';
             if (normalizedRole === 'coach' || normalizedRole === 'scout') return '/coach';
             if (normalizedRole === 'team' || normalizedRole === 'club') return '/team';
+            if (normalizedRole === 'lawyer') return '/dashboard/lawyer';
             if (normalizedRole === 'player') return '/player';
             return '/dashboard';
         }
@@ -2043,6 +2828,40 @@
                 alert(errorMsg);
             });
         });
+
+        // ========== PROFILE IMAGE FUNCTIONS ==========
+        function previewProfileImage(event) {
+            const file = event.target.files[0];
+            
+            if (file) {
+                // Dosya türü kontrolü
+                if (!file.type.startsWith('image/')) {
+                    alert('Lütfen geçerli bir resim dosyası seçin!');
+                    document.getElementById('profileImageInput').value = '';
+                    return;
+                }
+
+                // Dosya boyutu kontrolü (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Resim boyutu 5MB\'dan küçük olmalıdır!');
+                    document.getElementById('profileImageInput').value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profilePreviewImg').src = e.target.result;
+                    document.getElementById('profilePreviewContainer').classList.add('show');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeProfileImage() {
+            document.getElementById('profileImageInput').value = '';
+            document.getElementById('profilePreviewContainer').classList.remove('show');
+            document.getElementById('profilePreviewImg').src = '';
+        }
     </script>
 </body>
 </html>
