@@ -20,6 +20,8 @@
 
         html, body {
             height: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
         }
 
         body {
@@ -1107,6 +1109,180 @@
             display: none;
         }
 
+        .contract-live-panel {
+            width: 100%;
+            min-width: 0;
+            border-radius: 14px;
+            border: 1px solid #bfdbfe;
+            background: linear-gradient(145deg, #082f66 0%, #1d4ed8 100%);
+            box-shadow: 0 14px 28px rgba(30, 58, 138, 0.18);
+            padding: 12px;
+            margin-bottom: 14px;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        .contract-live-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .contract-live-title {
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .contract-live-sub {
+            font-size: 11px;
+            opacity: 0.88;
+        }
+
+        .contract-ticker {
+            width: 100%;
+            min-width: 0;
+            overflow: hidden;
+            position: relative;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .contract-ticker-track {
+            display: flex;
+            align-items: stretch;
+            gap: 10px;
+            padding: 10px;
+            width: max-content;
+            animation: contractTickerMove 30s linear infinite;
+        }
+
+        .contract-ticker:hover .contract-ticker-track {
+            animation-play-state: paused;
+        }
+
+        .contract-card {
+            min-width: 290px;
+            max-width: 290px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(15, 23, 42, 0.26);
+            border-radius: 10px;
+            padding: 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .contract-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(15, 23, 42, 0.38);
+        }
+
+        .contract-card:focus-visible {
+            outline: 2px solid #93c5fd;
+            outline-offset: 2px;
+        }
+
+        .contract-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .contract-card-player {
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .contract-badge {
+            font-size: 10px;
+            font-weight: 800;
+            border-radius: 999px;
+            padding: 2px 8px;
+            color: #0f172a;
+            background: #fcd34d;
+        }
+
+        .contract-badge.suspended {
+            background: #fca5a5;
+        }
+
+        .contract-card-meta {
+            font-size: 11px;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+
+        .contract-card-note {
+            font-size: 11px;
+            line-height: 1.35;
+        }
+
+        .contract-preview-modal {
+            max-width: 560px;
+        }
+
+        .contract-preview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .contract-preview-field {
+            border: 1px solid #DBEAFE;
+            background: #F8FAFF;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .contract-preview-field .k {
+            font-size: 11px;
+            color: #1D4ED8;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .contract-preview-field .v {
+            font-size: 13px;
+            color: #0F172A;
+            font-weight: 700;
+        }
+
+        .contract-preview-note {
+            border: 1px solid #DBEAFE;
+            background: #EFF6FF;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 14px;
+            color: #1E3A8A;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 768px) {
+            .contract-card {
+                min-width: 230px;
+                max-width: 230px;
+            }
+
+            .contract-preview-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @keyframes contractTickerMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
         .idea-news-container {
             position: static;
             width: 100%;
@@ -1222,6 +1398,105 @@
             padding: 6px 8px;
             font-size: 11px;
             line-height: 1.35;
+        }
+
+        .success-stories-panel {
+            margin-top: 16px;
+            border-radius: 14px;
+            border: 1px solid #bfdbfe;
+            background: linear-gradient(165deg, #0a2f70 0%, #1d4ed8 100%);
+            box-shadow: 0 14px 28px rgba(30, 58, 138, 0.18);
+            padding: 14px;
+            color: #ffffff;
+            display: block;
+            min-height: 230px;
+        }
+
+        .success-stories-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .success-stories-list {
+            display: grid;
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .success-story-item {
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.10);
+            border-radius: 10px;
+            padding: 8px 10px;
+            font-size: 12px;
+            line-height: 1.35;
+        }
+
+        .success-story-item .meta {
+            margin-top: 4px;
+            opacity: 0.9;
+            font-size: 11px;
+        }
+
+        .mvp-tool-strip {
+            margin-top: 14px;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .mvp-tool-btn {
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            background: linear-gradient(165deg, #1e3a8a 0%, #2563eb 100%);
+            color: #ffffff;
+            padding: 10px;
+            font-size: 12px;
+            font-weight: 800;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .mvp-tool-btn:hover {
+            filter: brightness(1.05);
+        }
+
+        .success-story-cta-btn {
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 10px;
+            padding: 7px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.22);
+            color: #ffffff;
+            cursor: pointer;
+            transition: .2s ease;
+            min-height: auto;
+            width: auto;
+            white-space: nowrap;
+        }
+
+        .success-story-cta-btn:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.58);
+            background: rgba(15, 23, 42, 0.34);
+        }
+
+        .success-story-cta-btn .cta-title {
+            font-size: 12px;
+            font-weight: 800;
+            line-height: 1.3;
+        }
+
+        .success-story-cta-btn .cta-desc {
+            display: none;
         }
 
         .idea-news-square h3 {
@@ -1340,6 +1615,14 @@
                 height: 150px;
             }
 
+            .success-stories-panel {
+                min-height: auto;
+            }
+
+            .mvp-tool-strip {
+                grid-template-columns: 1fr 1fr;
+            }
+
             .idea-link-item {
                 width: 100%;
                 justify-content: center;
@@ -1388,6 +1671,7 @@
         .hero {
             padding: 40px 20px;
             text-align: center;
+            min-width: 0;
         }
 
         .hero h1 {
@@ -2199,6 +2483,97 @@
         </div>
     </div>
 
+    <!-- ========== SUCCESS STORY MODAL ========== -->
+    <div class="modal-overlay" id="successStoryModal" onclick="closeSuccessStoryModal()">
+        <div class="modal-card" style="max-width: 760px;" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2><i class="fas fa-trophy"></i> Basari Hikayesi Gonder</h2>
+                <button class="modal-close" onclick="closeSuccessStoryModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="successStoryForm" style="display: flex; flex-direction: column; gap: 12px;">
+                    <div class="form-group">
+                        <label class="form-label">Ad Soyad *</label>
+                        <input type="text" class="form-control" name="full_name" required maxlength="150">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div class="form-group">
+                            <label class="form-label">Brans *</label>
+                            <select class="form-control" name="sport" required>
+                                <option value="">Seciniz</option>
+                                <option value="Futbol">Futbol</option>
+                                <option value="Basketbol">Basketbol</option>
+                                <option value="Voleybol">Voleybol</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Gorsel Linki (ops.)</label>
+                            <input type="url" class="form-control" name="image_url" maxlength="500" placeholder="https://...">
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div class="form-group">
+                            <label class="form-label">Eski Kulup (ops.)</label>
+                            <input type="text" class="form-control" name="old_club" maxlength="150">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Yeni Kulup (ops.)</label>
+                            <input type="text" class="form-control" name="new_club" maxlength="150">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hikayen *</label>
+                        <textarea class="form-control" name="story_text" required maxlength="2500" rows="5" placeholder="Kisa ve etkili sekilde hikayeni yaz..."></textarea>
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                        <button type="button" class="btn btn-secondary" onclick="closeSuccessStoryModal()">Vazgec</button>
+                        <button type="submit" class="btn btn-primary">Gonder</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="contractPreviewModal" onclick="if(event.target===this) closeContractPreviewModal()">
+        <div class="modal-card contract-preview-modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-id-card"></i> Oyuncu Hizli Onizleme</h2>
+                <button class="modal-close" onclick="closeContractPreviewModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="contract-preview-grid">
+                    <div class="contract-preview-field">
+                        <div class="k">Oyuncu</div>
+                        <div class="v" id="cpPlayerName">-</div>
+                    </div>
+                    <div class="contract-preview-field">
+                        <div class="k">Pozisyon</div>
+                        <div class="v" id="cpPlayerPosition">-</div>
+                    </div>
+                    <div class="contract-preview-field">
+                        <div class="k">Kulup</div>
+                        <div class="v" id="cpPlayerClub">-</div>
+                    </div>
+                    <div class="contract-preview-field">
+                        <div class="k">Durum</div>
+                        <div class="v" id="cpPlayerStatus">-</div>
+                    </div>
+                </div>
+                <div class="contract-preview-note" id="cpPlayerNote">-</div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" onclick="closeContractPreviewModal()">
+                        <i class="fas fa-times"></i> Kapat
+                    </button>
+                    <button class="btn-primary" onclick="openContractPreviewFullProfile()">
+                        <i class="fas fa-arrow-right"></i> Tam Profili Ac
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ========== HERO SECTION WITH AD PANELS ========== -->
     <div class="hero-wrapper">
         <!-- Left Ad Panel -->
@@ -2211,6 +2586,24 @@
 
         <!-- Hero Section (Center) -->
         <section class="hero">
+            <section class="contract-live-panel">
+                <div class="contract-live-head">
+                    <div class="contract-live-title">Sozlesme Durumu Canli Akisi</div>
+                    <div class="contract-live-sub">Sadece sozlesmesi biten ve askida oyuncular</div>
+                </div>
+                <div class="contract-ticker">
+                    <div class="contract-ticker-track" id="contractTickerTrack">
+                        <article class="contract-card">
+                            <div class="contract-card-top">
+                                <span class="contract-card-player">Veri yukleniyor...</span>
+                                <span class="contract-badge">Canli</span>
+                            </div>
+                            <div class="contract-card-note">Akis hazirlaniyor...</div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
             <div class="idea-news-container">
                 <aside class="idea-news-square">
                     <div class="idea-news-list" id="ideaNewsList">
@@ -2252,6 +2645,30 @@
                     <div class="desc" id="risingStarsBody">Formu yukselen oyuncu listesi.</div>
                 </article>
             </div>
+
+            <section class="success-stories-panel">
+                <div class="success-stories-head">
+                    <h3 style="margin: 0; font-size: 16px;">Basari Hikayeleri</h3>
+                    <button type="button" class="success-story-cta-btn" onclick="openSuccessStoryModal()">
+                        <span class="cta-title">Hikayeni Paylas</span>
+                        <span class="cta-desc">Kulup degisikligi, secmelere kabul veya performans sicrama hikayeni gonder.</span>
+                    </button>
+                </div>
+                <p style="margin: 0 0 10px; font-size: 12px; opacity: 0.88;">Sadece admin onayli hikayeler listelenir.</p>
+                <div class="success-stories-list" id="successStoriesList">
+                    <div class="success-story-item">
+                        Hikayeler yukleniyor...
+                    </div>
+                </div>
+            </section>
+
+            <div class="mvp-tool-strip">
+                <button class="mvp-tool-btn" type="button" onclick="openMvpTool('profile-check')">2 Dakika Profil Check</button>
+                <button class="mvp-tool-btn" type="button" onclick="openMvpTool('matching-alert')">Akilli Eslesme Alarmi</button>
+                <button class="mvp-tool-btn" type="button" onclick="openMvpTool('offer-score')">Menajer Teklif Skoru</button>
+                <button class="mvp-tool-btn" type="button" onclick="openMvpTool('quick-report')">Mac Sonu Anlik Rapor</button>
+            </div>
+
         </section>
 
         <!-- Right Ad Panel -->
@@ -2289,6 +2706,8 @@
 
         let API_BASE_URL = getAPIBaseURL();
         const API_PORTS = [8000, 9010, 8088, 8080, 3000];
+        const IS_FILE_MODE = window.location.protocol === 'file:';
+        let contractPreviewState = null;
 
         // ========== AUTH STATUS CHECK ==========
         function checkAuthStatus() {
@@ -2300,6 +2719,7 @@
             const loginBtn = document.getElementById('loginBtn');
             const profileBtn = document.getElementById('profileBtn');
             const logoutBtn = document.getElementById('logoutBtn');
+            if (!registerBtn || !loginBtn || !profileBtn || !logoutBtn) return;
 
             // file:// modunda fallback: demo login varsa son kayıtlı kullanıcıyı oturuma al
             if (window.location.protocol === 'file:' && !userData && demoLogin) {
@@ -2387,7 +2807,7 @@
         // Test API connectivity on page load
         async function testAPIConnection() {
             // file:// modunda backend zorunlu değil (local demo akışı)
-            if (window.location.protocol === 'file:') {
+            if (IS_FILE_MODE) {
                 console.log('📍 File mode: API bağlantı testi atlandı.');
                 return true;
             }
@@ -2504,6 +2924,10 @@
 
         // ========== NOTIFICATION API ==========
         async function fetchNotificationCount() {
+            if (IS_FILE_MODE) {
+                updateNotificationBadge(3);
+                return;
+            }
             try {
                 const response = await fetch(`${API_BASE_URL}/notifications/count`);
                 const data = await response.json();
@@ -2532,6 +2956,10 @@
 
         // ========== LIVE MATCH API ==========
         async function fetchLiveMatchCount() {
+            if (IS_FILE_MODE) {
+                updateLiveMatchIndicator(12);
+                return;
+            }
             try {
                 const response = await fetch(`${API_BASE_URL}/live-matches/count`);
                 const data = await response.json();
@@ -2615,6 +3043,171 @@
                 { title: 'Yeni mansetler birazdan yansitilacak', source: 'NextScout', publishedAt: now, url: '', imageUrl: '' },
                 { title: 'Veri baglantisi stabil hale getiriliyor', source: 'NextScout', publishedAt: now, url: '', imageUrl: '' },
             ];
+        }
+
+        function getFallbackContractStreamItems() {
+            return [
+                { player_name: 'Arda K.', position: 'RW', club_name: 'Bakirkoy SK', status: 'expired', note: 'Sezon sonu sozlesmesi bitti, gorusmelere acik.' },
+                { player_name: 'Mert A.', position: 'CB', club_name: 'Kucukcekmece Spor', status: 'suspended', note: 'Lisansi askida, yeni sozlesme bekleniyor.' },
+                { player_name: 'Yusuf D.', position: 'ST', club_name: 'Anadolu Genclik', status: 'expired', note: 'Bosta ve deneme maclarina acik.' },
+                { player_name: 'Emirhan T.', position: 'CM', club_name: 'Beylikduzu FK', status: 'suspended', note: 'Sozlesme sureci askida, menajer gorusmesi suruyor.' },
+            ];
+        }
+
+        function normalizeContractItem(item) {
+            const statusRaw = (item?.status || item?.contract_status || '').toString().trim().toLowerCase();
+            const status = statusRaw === 'suspended' ? 'suspended' : (statusRaw === 'expired' ? 'expired' : '');
+            if (!status) return null;
+
+            return {
+                player_id: (item?.player_id || item?.id || '').toString().trim(),
+                player_name: (item?.player_name || item?.name || 'Oyuncu').toString().trim(),
+                position: (item?.position || item?.pos || '-').toString().trim(),
+                club_name: (item?.club_name || item?.club || '-').toString().trim(),
+                status,
+                note: (item?.note || item?.summary || '').toString().trim(),
+            };
+        }
+
+        async function renderContractStatusTicker() {
+            const tickerTrack = document.getElementById('contractTickerTrack');
+            if (!tickerTrack) return;
+
+            let items = [];
+            if (!IS_FILE_MODE) {
+                try {
+                    const payload = await fetchJsonSafe(`${API_BASE_URL}/contracts/live?statuses=expired,suspended&limit=12`);
+                    const rawList = Array.isArray(payload?.data)
+                        ? payload.data
+                        : (Array.isArray(payload?.items) ? payload.items : []);
+                    items = rawList.map(normalizeContractItem).filter(Boolean);
+                } catch (error) {}
+            }
+
+            if (!items.length) {
+                items = getFallbackContractStreamItems().map(normalizeContractItem).filter(Boolean);
+            }
+
+            const filtered = items.filter((item) => item?.status === 'expired' || item?.status === 'suspended');
+            if (!filtered.length) {
+                tickerTrack.innerHTML = '';
+                return;
+            }
+
+            const doubled = filtered.concat(filtered);
+            tickerTrack.innerHTML = doubled.map((item) => {
+                const badgeText = item.status === 'suspended' ? 'Sozlesmesi Askida' : 'Sozlesmesi Biten';
+                const badgeClass = item.status === 'suspended' ? 'contract-badge suspended' : 'contract-badge';
+                const note = item.note || (item.status === 'suspended'
+                    ? 'Lisansi askida, gorusmelere acik.'
+                    : 'Sozlesmesi bitti, yeni teklifler degerlendiriliyor.');
+
+                return `
+                    <article class="contract-card" role="button" tabindex="0" data-player-id="${esc(item.player_id)}" data-player-name="${esc(item.player_name)}" data-player-position="${esc(item.position)}" data-player-club="${esc(item.club_name)}" data-player-status="${esc(item.status)}" data-player-note="${esc(note)}">
+                        <div class="contract-card-top">
+                            <span class="contract-card-player">${esc(item.player_name)}</span>
+                            <span class="${badgeClass}">${badgeText}</span>
+                        </div>
+                        <div class="contract-card-meta">${esc(item.position)} • ${esc(item.club_name)}</div>
+                        <div class="contract-card-note">${esc(note)}</div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function openContractPlayerProfile(cardElement) {
+            if (!cardElement) return;
+            if (!requireAuthForFeature()) return;
+
+            const playerId = (cardElement.getAttribute('data-player-id') || '').trim();
+            const playerName = (cardElement.getAttribute('data-player-name') || '').trim();
+
+            if (playerId) {
+                window.location.href = resolveLocalPage(`player-profile.html?user_id=${encodeURIComponent(playerId)}`);
+                return;
+            }
+
+            if (playerName) {
+                window.location.href = resolveLocalPage(`professional-players.html?q=${encodeURIComponent(playerName)}`);
+            }
+        }
+
+        function closeContractPreviewModal() {
+            const modal = document.getElementById('contractPreviewModal');
+            if (!modal) return;
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            contractPreviewState = null;
+        }
+
+        function openContractQuickPreview(cardElement) {
+            if (!cardElement) return;
+            if (!requireAuthForFeature()) return;
+
+            const playerId = (cardElement.getAttribute('data-player-id') || '').trim();
+            const playerName = (cardElement.getAttribute('data-player-name') || '').trim();
+            const playerPosition = (cardElement.getAttribute('data-player-position') || '-').trim();
+            const playerClub = (cardElement.getAttribute('data-player-club') || '-').trim();
+            const playerStatusRaw = (cardElement.getAttribute('data-player-status') || '').trim().toLowerCase();
+            const playerNote = (cardElement.getAttribute('data-player-note') || '').trim();
+            const playerStatus = playerStatusRaw === 'suspended' ? 'Sozlesmesi Askida' : 'Sozlesmesi Biten';
+
+            contractPreviewState = {
+                playerId,
+                playerName,
+            };
+
+            const nameEl = document.getElementById('cpPlayerName');
+            const positionEl = document.getElementById('cpPlayerPosition');
+            const clubEl = document.getElementById('cpPlayerClub');
+            const statusEl = document.getElementById('cpPlayerStatus');
+            const noteEl = document.getElementById('cpPlayerNote');
+            const modal = document.getElementById('contractPreviewModal');
+
+            if (!nameEl || !positionEl || !clubEl || !statusEl || !noteEl || !modal) return;
+
+            nameEl.textContent = playerName || '-';
+            positionEl.textContent = playerPosition || '-';
+            clubEl.textContent = playerClub || '-';
+            statusEl.textContent = playerStatus;
+            noteEl.textContent = playerNote || 'Detay bilgisi bulunamadi.';
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function openContractPreviewFullProfile() {
+            if (!contractPreviewState) return;
+            const playerId = (contractPreviewState.playerId || '').trim();
+            const playerName = (contractPreviewState.playerName || '').trim();
+            closeContractPreviewModal();
+
+            if (playerId) {
+                window.location.href = resolveLocalPage(`player-profile.html?user_id=${encodeURIComponent(playerId)}`);
+                return;
+            }
+            if (playerName) {
+                window.location.href = resolveLocalPage(`professional-players.html?q=${encodeURIComponent(playerName)}`);
+            }
+        }
+
+        function bindContractTickerEvents() {
+            const tickerTrack = document.getElementById('contractTickerTrack');
+            if (!tickerTrack) return;
+
+            tickerTrack.addEventListener('click', function(event) {
+                const card = event.target.closest('.contract-card');
+                if (!card) return;
+                openContractQuickPreview(card);
+            });
+
+            tickerTrack.addEventListener('keydown', function(event) {
+                if (event.key !== 'Enter' && event.key !== ' ') return;
+                const card = event.target.closest('.contract-card');
+                if (!card) return;
+                event.preventDefault();
+                openContractQuickPreview(card);
+            });
         }
 
         function renderIdeaNewsItem(item) {
@@ -2773,6 +3366,104 @@
             }
         }
 
+        async function renderSuccessStoriesPanel() {
+            const root = document.getElementById('successStoriesList');
+            if (!root) return;
+
+            try {
+                const payload = await fetchJsonSafe(`${API_BASE_URL}/success-stories?limit=8`);
+                const items = Array.isArray(payload?.data) ? payload.data.slice(0, 8) : [];
+                if (!items.length) {
+                    root.innerHTML = '<div class="success-story-item">Henuz onayli basari hikayesi yok.</div>';
+                    return;
+                }
+
+                root.innerHTML = items.map((item) => {
+                    const fullName = esc(item?.full_name || 'Oyuncu');
+                    const sport = esc(item?.sport || '-');
+                    const oldClub = esc(item?.old_club || 'Eski kulup belirtilmedi');
+                    const newClub = esc(item?.new_club || 'Yeni kulup belirtilmedi');
+                    const story = esc(item?.story_text || '').slice(0, 190);
+                    return `<article class="success-story-item">
+                        <strong>${fullName}</strong> <span style="opacity:.85;">• ${sport}</span>
+                        <div class="meta">${oldClub} → ${newClub}</div>
+                        <div style="margin-top:6px;">${story}${(item?.story_text || '').length > 190 ? '...' : ''}</div>
+                    </article>`;
+                }).join('');
+            } catch (error) {
+                root.innerHTML = '<div class="success-story-item">Hikayeler su an alinamiyor.</div>';
+            }
+        }
+
+        function openSuccessStoryModal() {
+            if (!requireAuthForFeature()) return;
+
+            try {
+                const userRaw = localStorage.getItem('nextscout_user');
+                const user = userRaw ? JSON.parse(userRaw) : null;
+                const input = document.querySelector('#successStoryForm input[name="full_name"]');
+                if (input && !input.value && user?.name) {
+                    input.value = String(user.name);
+                }
+            } catch (error) {}
+
+            document.getElementById('successStoryModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSuccessStoryModal() {
+            const modal = document.getElementById('successStoryModal');
+            if (!modal) return;
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        async function submitSuccessStoryForm(event) {
+            event.preventDefault();
+
+            const form = event.currentTarget;
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            if (!token) {
+                closeSuccessStoryModal();
+                openLoginModal();
+                return;
+            }
+
+            const formData = new FormData(form);
+            const payload = {
+                full_name: (formData.get('full_name') || '').toString().trim(),
+                sport: (formData.get('sport') || '').toString().trim(),
+                old_club: (formData.get('old_club') || '').toString().trim(),
+                new_club: (formData.get('new_club') || '').toString().trim(),
+                story_text: (formData.get('story_text') || '').toString().trim(),
+                image_url: (formData.get('image_url') || '').toString().trim(),
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/success-stories`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                const result = await response.json();
+                if (!response.ok || !result?.ok) {
+                    throw new Error(result?.message || `HTTP ${response.status}`);
+                }
+
+                alert('Hikayen alindi. Admin onayindan sonra anasayfada yayinlanacak.');
+                form.reset();
+                closeSuccessStoryModal();
+                renderSuccessStoriesPanel();
+            } catch (error) {
+                alert('Hikaye gonderilemedi. Lutfen tekrar dene.');
+            }
+        }
+
         function toggleManagerNeedsButtonPanel(event) {
             event.preventDefault();
             event.stopPropagation();
@@ -2787,6 +3478,9 @@
             // İlk yükleme
             fetchNotificationCount();
             fetchLiveMatchCount();
+            renderContractStatusTicker();
+
+            if (IS_FILE_MODE) return;
 
             // Her 30 saniyede bir güncelle
             setInterval(() => {
@@ -2803,6 +3497,15 @@
             setInterval(() => {
                 renderHomepageInfoCards();
             }, 120000); // 120 seconds
+
+            setInterval(() => {
+                renderSuccessStoriesPanel();
+            }, 150000); // 150 seconds
+
+            setInterval(() => {
+                renderContractStatusTicker();
+            }, 60000); // 60 seconds
+
         }
 
         // Sayfa yüklendiğinde başlat
@@ -2822,11 +3525,18 @@
                 testAPIConnection();
             }
             startAutoRefresh();
+            bindContractTickerEvents();
             renderManagerNeedsButtonPanel();
+            renderContractStatusTicker();
             renderIdeaNewsSquare();
             renderSiteNewsSquare();
             renderHomepageInfoCards();
+            renderSuccessStoriesPanel();
             initDashboardFeatureCards();
+            const successStoryForm = document.getElementById('successStoryForm');
+            if (successStoryForm) {
+                successStoryForm.addEventListener('submit', submitSuccessStoryForm);
+            }
         });
 
         // Language Dropdown Toggle
@@ -2889,26 +3599,30 @@
         }
 
         function resetAdvancedSearch() {
-            document.getElementById('advancedSearchForm').reset();
+            const form = document.getElementById('advancedSearchForm');
+            if (form) form.reset();
         }
 
         // Advanced Search Form Submit
-        document.getElementById('advancedSearchForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Form verilerini topla
-            const formData = new FormData(this);
-            const searchParams = new URLSearchParams();
-            
-            for (let [key, value] of formData.entries()) {
-                if (value) {
-                    searchParams.append(key, value);
+        const advancedSearchForm = document.getElementById('advancedSearchForm');
+        if (advancedSearchForm) {
+            advancedSearchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Form verilerini topla
+                const formData = new FormData(this);
+                const searchParams = new URLSearchParams();
+                
+                for (let [key, value] of formData.entries()) {
+                    if (value) {
+                        searchParams.append(key, value);
+                    }
                 }
-            }
-            
-            // Arama sonucunu profesyonel oyuncular sayfasina yonlendir
-            window.location.href = resolveLocalPage(`professional-players.html?${searchParams.toString()}`);
-        });
+                
+                // Arama sonucunu profesyonel oyuncular sayfasina yonlendir
+                window.location.href = resolveLocalPage(`professional-players.html?${searchParams.toString()}`);
+            });
+        }
 
         // ESC tuşu ile modal kapatma
         document.addEventListener('keydown', function(e) {
@@ -2916,6 +3630,8 @@
                 closeAdvancedSearch();
                 closeLoginModal();
                 closeRegisterModal();
+                closeSuccessStoryModal();
+                closeContractPreviewModal();
             }
         });
 
@@ -3093,6 +3809,29 @@
                     }
                 });
             });
+        }
+
+        function openMvpTool(toolKey) {
+            if (!requireAuthForFeature()) return;
+
+            const role = getSessionRole();
+            const isFileMode = window.location.protocol === 'file:';
+
+            if (toolKey === 'offer-score') {
+                window.location.href = resolveLocalPage('manager-dashboard.html');
+                return;
+            }
+            if (toolKey === 'quick-report') {
+                window.location.href = resolveLocalPage('coach-dashboard.html');
+                return;
+            }
+            if (toolKey === 'profile-check' || toolKey === 'matching-alert') {
+                window.location.href = resolveLocalPage('DASHBOARD_DESIGN.html');
+                return;
+            }
+
+            const fallback = getDashboardByRole(role, isFileMode);
+            window.location.href = resolveLocalPage(fallback);
         }
 
         function openTrialCenter() {
@@ -3327,7 +4066,9 @@
 
         function togglePassword(inputId) {
             const input = document.getElementById(inputId);
+            if (!input || !input.parentElement) return;
             const button = input.parentElement.querySelector('.toggle-password i');
+            if (!button) return;
             
             if (input.type === 'password') {
                 input.type = 'text';
@@ -3447,8 +4188,10 @@
         }
 
         // Login Form Submit
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
 
             const formData = new FormData(this);
             const payload = {
@@ -3528,11 +4271,14 @@
                 
                 alert(errorMsg);
             });
-        });
+            });
+        }
 
         // Register Form Submit
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        const registerForm = document.getElementById('registerForm');
+        if (registerForm) {
+            registerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
 
             const formData = new FormData(this);
             const name = formData.get('name');
@@ -3635,8 +4381,12 @@
                 
                 alert(errorMsg);
             });
-        });
+            });
+        }
 
     </script>
+    <script src="assets/js/core-stability.js"></script>
 </body>
 </html>
+
+
