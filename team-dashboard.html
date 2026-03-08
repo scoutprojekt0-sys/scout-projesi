@@ -41,6 +41,35 @@
         }
         .needs-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
         .needs-msg { font-size: 12px; color: #059669; min-height: 16px; margin-top: 6px; }
+        .promo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .promo-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        .promo-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 4px;
+        }
+        .promo-check {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #334155;
+            margin-top: 4px;
+        }
         .main-container { display: grid; grid-template-columns: 240px 1fr; gap: 20px; padding: 20px; min-height: calc(100vh - 70px); }
         .sidebar { background: white; border-radius: 12px; padding: 20px; height: fit-content; position: sticky; top: 90px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .sidebar-title { font-size: 11px; text-transform: uppercase; color: #9ca3af; font-weight: 600; margin-bottom: 12px; letter-spacing: 0.5px; }
@@ -103,6 +132,7 @@
         </div>
         <div class="navbar-right">
             <button class="btn-small light" onclick="toggleClubNeedsPanel()">Kulup Ihtiyaclari</button>
+            <button class="btn-small light" onclick="toggleClubPromoPanel()">Kulubunu Tanit</button>
             <button class="btn-small light" onclick="toggleTrialPublishPanel()">Deneme/Idman Ilani</button>
             <button class="btn-small primary" onclick="window.location.href='index.html'">Ana Sayfa</button>
             <button class="btn-small secondary" onclick="logout()">Cikis</button>
@@ -206,9 +236,44 @@
         <div id="trialPublishMsg" class="needs-msg"></div>
     </div>
 
+    <div id="clubPromoPanel" class="needs-panel" style="right: 644px; width: 360px;">
+        <h3>Kulubunu Tanit</h3>
+        <label class="promo-label" for="clubPromoName">Kulup Ismi</label>
+        <input id="clubPromoName" class="promo-input" type="text" placeholder="Kulup adini gir">
+
+        <div class="promo-grid">
+            <div>
+                <label class="promo-label" for="clubPromoImage1">Resim 1</label>
+                <input id="clubPromoImage1" class="promo-input" type="file" accept="image/*">
+            </div>
+            <div>
+                <label class="promo-label" for="clubPromoImage2">Resim 2</label>
+                <input id="clubPromoImage2" class="promo-input" type="file" accept="image/*">
+            </div>
+        </div>
+
+        <label class="promo-label" for="clubPromoVideoUrl">Video Linki (YouTube/Instagram)</label>
+        <input id="clubPromoVideoUrl" class="promo-input" type="url" placeholder="https://...">
+
+        <label class="promo-label" for="clubPromoNotes">Kulup Notlari</label>
+        <textarea id="clubPromoNotes" placeholder="Kulup, tesis, hedef, altyapi bilgisi..."></textarea>
+
+        <label class="promo-check">
+            <input id="clubPromoPaid" type="checkbox">
+            Odemeyi tamamladim (yalnizca odemesi tamamlanan tanitimlar anasayfada yayinlanir)
+        </label>
+
+        <div class="needs-actions">
+            <button class="btn-small secondary" onclick="toggleClubPromoPanel(false)">Kapat</button>
+            <button class="btn-small primary" onclick="publishClubPromo()">Yayinla</button>
+        </div>
+        <div id="clubPromoMsg" class="needs-msg"></div>
+    </div>
+
     <script>
         const OFFERS_KEY = 'nextscout_team_offers';
         const CLUB_NEEDS_KEY = 'nextscout_club_needs_notes';
+        const CLUB_PROMOS_KEY = 'nextscout_paid_club_promos';
         let allPlayers = [];
         let filteredPlayers = [];
 
@@ -393,7 +458,7 @@
             }
         }
 
-        function sendClubNeedsNote() {
+        async function sendClubNeedsNote() {
             const textarea = document.getElementById('clubNeedsText');
             const msg = document.getElementById('clubNeedsMsg');
             const note = (textarea && textarea.value || '').trim();
@@ -410,19 +475,125 @@
                 items = [];
             }
 
-            items.unshift({
+            const newItem = {
                 id: Date.now(),
+                club_name: (function() {
+                    try {
+                        const user = JSON.parse(localStorage.getItem('nextscout_user') || '{}');
+                        return (user?.club_name || user?.name || 'Kulup').toString().trim() || 'Kulup';
+                    } catch (error) {
+                        return 'Kulup';
+                    }
+                })(),
                 note,
                 created_at: new Date().toISOString(),
-            });
+            };
+            items.unshift(newItem);
             localStorage.setItem(CLUB_NEEDS_KEY, JSON.stringify(items.slice(0, 200)));
 
+            try {
+                const apiBase = getApiBaseUrl();
+                await fetch(`${apiBase}/club-needs`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                    },
+                    body: JSON.stringify({
+                        club_name: newItem.club_name,
+                        position: 'Belirtilmedi',
+                        priority: 'medium',
+                        note: newItem.note,
+                    }),
+                });
+            } catch (error) {}
+
             if (textarea) textarea.value = '';
-            if (msg) msg.textContent = 'Not gonderildi.';
+            if (msg) msg.textContent = 'Not gonderildi (API + yerel).';
             setTimeout(() => {
                 if (msg) msg.textContent = '';
                 toggleClubNeedsPanel(false);
             }, 900);
+        }
+
+        function toggleClubPromoPanel(forceState) {
+            const panel = document.getElementById('clubPromoPanel');
+            if (!panel) return;
+            const shouldOpen = typeof forceState === 'boolean' ? forceState : !panel.classList.contains('active');
+            panel.classList.toggle('active', shouldOpen);
+            if (!shouldOpen) return;
+
+            const nameInput = document.getElementById('clubPromoName');
+            const msg = document.getElementById('clubPromoMsg');
+            if (msg) msg.textContent = '';
+            if (nameInput && !nameInput.value.trim()) {
+                try {
+                    const user = JSON.parse(localStorage.getItem('nextscout_user') || '{}');
+                    const fallbackName = (user?.club_name || user?.name || '').toString().trim();
+                    if (fallbackName) nameInput.value = fallbackName;
+                } catch (error) {}
+            }
+        }
+
+        function readFileAsDataUrl(file) {
+            return new Promise((resolve) => {
+                if (!file) {
+                    resolve('');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = () => resolve(typeof reader.result === 'string' ? reader.result : '');
+                reader.onerror = () => resolve('');
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function publishClubPromo() {
+            const msg = document.getElementById('clubPromoMsg');
+            const name = (document.getElementById('clubPromoName')?.value || '').trim();
+            const notes = (document.getElementById('clubPromoNotes')?.value || '').trim();
+            const videoUrl = (document.getElementById('clubPromoVideoUrl')?.value || '').trim();
+            const paid = Boolean(document.getElementById('clubPromoPaid')?.checked);
+            const image1File = document.getElementById('clubPromoImage1')?.files?.[0] || null;
+            const image2File = document.getElementById('clubPromoImage2')?.files?.[0] || null;
+
+            if (!name) {
+                if (msg) msg.textContent = 'Kulup ismi zorunlu.';
+                return;
+            }
+            if (!paid) {
+                if (msg) msg.textContent = 'Yayinlamak icin odeme onayi gerekli.';
+                return;
+            }
+
+            const [image1, image2] = await Promise.all([
+                readFileAsDataUrl(image1File),
+                readFileAsDataUrl(image2File),
+            ]);
+
+            let promos = [];
+            try {
+                const parsed = JSON.parse(localStorage.getItem(CLUB_PROMOS_KEY) || '[]');
+                promos = Array.isArray(parsed) ? parsed : [];
+            } catch (error) {
+                promos = [];
+            }
+
+            const safeName = name.toLowerCase();
+            const filtered = promos.filter((item) => (item?.club_name || '').toString().trim().toLowerCase() !== safeName);
+            filtered.unshift({
+                id: Date.now(),
+                club_name: name,
+                notes,
+                video_url: videoUrl,
+                images: [image1, image2].filter(Boolean).slice(0, 2),
+                paid: true,
+                created_at: new Date().toISOString(),
+            });
+
+            localStorage.setItem(CLUB_PROMOS_KEY, JSON.stringify(filtered.slice(0, 100)));
+            if (msg) msg.textContent = 'Kulup tanitimi odeme onayi ile anasayfada yayina alindi.';
+            setTimeout(() => toggleClubPromoPanel(false), 700);
         }
 
         async function publishTrialEventApi(payload) {
@@ -556,5 +727,8 @@
 
         window.addEventListener('DOMContentLoaded', init);
     </script>
+    <script src="assets/js/core-stability.js"></script>
 </body>
 </html>
+
+

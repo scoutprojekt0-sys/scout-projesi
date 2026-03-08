@@ -850,6 +850,91 @@
             font-size: 16px;
         }
 
+        .friend-add-btn {
+            position: relative;
+            width: 46px;
+            padding: 0;
+            justify-content: center;
+            color: #67E8F9;
+            border-bottom-color: rgba(103, 232, 249, 0.35);
+        }
+
+        .friend-add-btn:hover {
+            background: rgba(103, 232, 249, 0.12);
+            border-bottom-color: #67E8F9;
+            color: #FFFFFF;
+        }
+
+        .friend-add-btn::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%) translateY(-4px);
+            background: #1E3A8A;
+            border: 1px solid #60A5FA;
+            box-shadow: 0 8px 18px rgba(30, 58, 138, 0.35);
+            color: #FFFFFF;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 1300;
+        }
+
+        .friend-add-btn:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .friend-invite-modal {
+            max-width: 560px;
+        }
+
+        .friend-invite-text {
+            color: #475569;
+            margin-bottom: 14px;
+        }
+
+        .friend-invite-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .invite-action-btn {
+            width: 100%;
+            justify-content: center;
+            padding: 12px 14px;
+        }
+
+        .invite-link-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .invite-link-row input {
+            flex: 1;
+        }
+
+        .invite-note {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #64748B;
+        }
+
+        @media (max-width: 768px) {
+            .friend-invite-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .nav-button span {
             display: inline;
         }
@@ -1140,6 +1225,63 @@
             opacity: 0.88;
         }
 
+        .breaking-news-strip {
+            width: 100%;
+            min-width: 0;
+            border-radius: 10px;
+            border: 1px solid #bfdbfe;
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            box-shadow: 0 8px 16px rgba(30, 58, 138, 0.18);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 10px;
+        }
+
+        .breaking-news-badge {
+            flex: 0 0 auto;
+            font-size: 10px;
+            font-weight: 800;
+            color: #0f172a;
+            background: #facc15;
+            border-radius: 999px;
+            padding: 3px 8px;
+            white-space: nowrap;
+        }
+
+        .breaking-news-viewport {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .breaking-news-track {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            width: max-content;
+            animation: breakingNewsMove 22s linear infinite;
+            white-space: nowrap;
+        }
+
+        .breaking-news-strip:hover .breaking-news-track {
+            animation-play-state: paused;
+        }
+
+        .breaking-news-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: #ffffff;
+            opacity: 0.95;
+        }
+
+        .breaking-news-name::before {
+            content: "•";
+            color: #facc15;
+            margin-right: 8px;
+        }
+
         .contract-ticker {
             width: 100%;
             min-width: 0;
@@ -1267,6 +1409,135 @@
             line-height: 1.4;
         }
 
+        .about-modal-card {
+            max-width: 680px;
+        }
+
+        .about-hero {
+            border: 1px solid #DBEAFE;
+            border-radius: 12px;
+            padding: 14px;
+            background: linear-gradient(165deg, #EFF6FF 0%, #DBEAFE 100%);
+            margin-bottom: 12px;
+        }
+
+        .about-hero h3 {
+            margin: 0 0 8px;
+            font-size: 18px;
+            color: #1E3A8A;
+            font-weight: 800;
+        }
+
+        .about-hero p {
+            margin: 0;
+            color: #1F2937;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .about-values {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .about-value {
+            border: 1px solid #E2E8F0;
+            border-radius: 10px;
+            padding: 10px;
+            background: #F8FAFC;
+        }
+
+        .about-value .t {
+            font-size: 13px;
+            color: #1E3A8A;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .about-value .d {
+            font-size: 12px;
+            color: #334155;
+            line-height: 1.4;
+        }
+
+        .home-info-rich p {
+            margin: 0 0 8px;
+            font-size: 13px;
+            line-height: 1.45;
+            color: #334155;
+        }
+
+        .home-info-rich ul,
+        .home-info-rich ol {
+            margin: 0;
+            padding-left: 18px;
+            display: grid;
+            gap: 6px;
+            color: #334155;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .home-link-list {
+            display: grid;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .home-link-btn {
+            width: 100%;
+            text-align: left;
+            border: 1px solid #BFDBFE;
+            border-radius: 8px;
+            background: #EFF6FF;
+            color: #1E3A8A;
+            padding: 10px 12px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .home-link-btn:hover {
+            background: #DBEAFE;
+            border-color: #93C5FD;
+        }
+
+        .home-contact-form {
+            display: grid;
+            gap: 8px;
+        }
+
+        .home-contact-form input,
+        .home-contact-form textarea {
+            width: 100%;
+            border: 1px solid #CBD5E1;
+            border-radius: 8px;
+            background: #FFFFFF;
+            color: #0F172A;
+            padding: 9px 10px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .home-contact-form textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .home-contact-form button {
+            justify-self: flex-start;
+        }
+
+        .home-contact-feedback {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #16A34A;
+            min-height: 16px;
+        }
+
         @media (max-width: 768px) {
             .contract-card {
                 min-width: 230px;
@@ -1276,9 +1547,18 @@
             .contract-preview-grid {
                 grid-template-columns: 1fr;
             }
+
+            .about-values {
+                grid-template-columns: 1fr;
+            }
         }
 
         @keyframes contractTickerMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        @keyframes breakingNewsMove {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
@@ -1310,8 +1590,220 @@
         .below-cards-grid {
             margin-top: 16px;
             display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 12px;
+        }
+
+        .top-adboards-grid {
+            margin-top: 14px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .top-adboard {
+            border-radius: 12px;
+            border: 1px solid #bfdbfe;
+            background: linear-gradient(155deg, #0b3b8a 0%, #1d4ed8 100%);
+            box-shadow: 0 10px 20px rgba(30, 58, 138, 0.14);
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            gap: 8px;
+            color: #ffffff;
+            text-align: left;
+            padding: 14px;
+            cursor: pointer;
+        }
+
+        .top-adboard-title {
+            font-size: 16px;
+            font-weight: 800;
+            line-height: 1.3;
+        }
+
+        .top-adboard-desc {
+            font-size: 13px;
+            opacity: 0.92;
+            line-height: 1.4;
+        }
+
+        .data-status-strip {
+            margin-top: 8px;
+            border-radius: 10px;
+            border: 1px solid #BFDBFE;
+            background: linear-gradient(135deg, #0B3B8A 0%, #1D4ED8 100%);
+            color: #E0F2FE;
+            padding: 7px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            opacity: 0.78;
+            filter: blur(0.2px);
+        }
+
+        .card-mini-meta {
+            margin-top: 6px;
+            font-size: 10px;
+            line-height: 1.35;
+            color: #DBEAFE;
+            opacity: 0.72;
+            filter: blur(0.2px);
+        }
+
+        .club-needs-source {
+            margin-top: 2px;
+            font-size: 9px;
+            color: #BFDBFE;
+            opacity: 0.7;
+            filter: blur(0.2px);
+        }
+
+        .promo-ad-grid {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .promo-ad-card {
+            border-radius: 12px;
+            border: 1px dashed #93C5FD;
+            background: linear-gradient(135deg, #0F2F68 0%, #1E40AF 100%);
+            min-height: 92px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #E0F2FE;
+            font-size: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .club-needs-inline-list {
+            margin-top: 8px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .club-needs-inline-item {
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.32);
+            border-radius: 10px;
+            background: rgba(15, 23, 42, 0.22);
+            color: #ffffff;
+            text-align: left;
+            padding: 8px 10px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .club-needs-inline-item .club {
+            font-size: 12px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .club-needs-inline-item .note {
+            font-size: 11px;
+            opacity: 0.92;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .club-promo-name-list {
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .club-promo-name-pill {
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(15, 23, 42, 0.2);
+            color: #ffffff;
+            border-radius: 999px;
+            padding: 5px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .club-promo-modal {
+            max-width: 860px;
+        }
+
+        .club-promo-modal-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 12px;
+        }
+
+        .club-promo-modal-list {
+            border: 1px solid #DBEAFE;
+            border-radius: 10px;
+            background: #F8FAFF;
+            max-height: 420px;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .club-promo-modal-item {
+            width: 100%;
+            border: 1px solid #DBEAFE;
+            border-radius: 8px;
+            background: #FFFFFF;
+            color: #1E3A8A;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: left;
+            padding: 9px 10px;
+            margin-bottom: 7px;
+            cursor: pointer;
+        }
+
+        .club-promo-modal-item:hover {
+            background: #EFF6FF;
+            border-color: #93C5FD;
+        }
+
+        .club-promo-modal-detail {
+            border: 1px solid #DBEAFE;
+            border-radius: 10px;
+            background: #FFFFFF;
+            padding: 12px;
+            min-height: 260px;
+        }
+
+        .club-promo-modal-detail h3 {
+            font-size: 18px;
+            color: #1E3A8A;
+            margin-bottom: 8px;
+        }
+
+        .club-promo-modal-images {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .club-promo-modal-images img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #DBEAFE;
         }
 
         .below-card {
@@ -1499,6 +1991,64 @@
             display: none;
         }
 
+        .home-sections-grid {
+            margin-top: 16px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .home-section-card {
+            border-radius: 12px;
+            border: 1px solid #bfdbfe;
+            background: linear-gradient(165deg, #0a2f70 0%, #1d4ed8 100%);
+            box-shadow: 0 10px 22px rgba(30, 58, 138, 0.16);
+            color: #ffffff;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .home-section-card h4 {
+            margin: 0 0 8px;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .home-section-card p,
+        .home-section-card li {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.4;
+            opacity: 0.95;
+        }
+
+        .home-section-card ul,
+        .home-section-card ol {
+            margin: 0;
+            padding-left: 16px;
+            display: grid;
+            gap: 6px;
+        }
+
+        .site-footer {
+            margin-top: 20px;
+            border-top: 1px solid #bfdbfe;
+            background: #0f172a;
+            color: #cbd5e1;
+            padding: 16px;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .site-footer a {
+            color: #93c5fd;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
         .idea-news-square h3 {
             margin: 0;
             font-size: 16px;
@@ -1608,7 +2158,11 @@
             }
 
             .below-cards-grid {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1fr;
+            }
+
+            .top-adboards-grid {
+                grid-template-columns: 1fr;
             }
 
             .below-card {
@@ -1621,6 +2175,10 @@
 
             .mvp-tool-strip {
                 grid-template-columns: 1fr 1fr;
+            }
+
+            .home-sections-grid {
+                grid-template-columns: 1fr;
             }
 
             .idea-link-item {
@@ -1992,10 +2550,20 @@
     <!-- ========== NAV BAR (Koyu Mavi Kare) ========== -->
     <nav class="feature-nav">
         <div class="nav-container">
-                                <a href="index.html" class="nav-button">
-                <i class="fas fa-home"></i>
-                <span>Anasayfa</span>
-            </a>
+            <div class="nav-dropdown" id="homeDropdown">
+                <button type="button" class="nav-button" onclick="toggleHomeMenu(event)">
+                    <i class="fas fa-home"></i>
+                    <span>Anasayfa</span>
+                </button>
+                <div class="nav-dropdown-menu" id="homeMenu">
+                    <button type="button" class="nav-dropdown-item" onclick="openAboutModal()">Hakkımızda</button>
+                    <button type="button" class="nav-dropdown-item" onclick="openHomeInfoModal('contact')">İletişim</button>
+                    <button type="button" class="nav-dropdown-item" onclick="openHomeInfoModal('footer')">Footer</button>
+                    <button type="button" class="nav-dropdown-item" onclick="openHomeInfoModal('faq')">SSS/Yardım</button>
+                    <button type="button" class="nav-dropdown-item" onclick="openHomeInfoModal('how')">Nasıl Çalışır</button>
+                    <button type="button" class="nav-dropdown-item" onclick="openHomeInfoModal('trust')">Güven & Referans</button>
+                </div>
+            </div>
             <div class="nav-dropdown" id="transferMarketDropdown">
                 <button type="button" class="nav-button" onclick="toggleTransferMarketMenu(event)">
                     <i class="fas fa-exchange-alt"></i>
@@ -2030,6 +2598,9 @@
                     </button>
                     <button type="button" class="nav-dropdown-item" onclick="openScoutRadarCategory('hidden')">
                         <i class="fas fa-user-secret"></i> Gizli Yetenek
+                    </button>
+                    <button type="button" class="nav-dropdown-item" onclick="openScoutRadarCategory('data-center')">
+                        <i class="fas fa-database"></i> Veri Merkezi
                     </button>
                 </div>
             </div>
@@ -2076,6 +2647,9 @@
                     </button>
                 </div>
             </div>
+            <button type="button" class="nav-button friend-add-btn" onclick="openFriendInviteModal()" title="Arkadaşını Ekle" data-tooltip="Arkadaşını Ekle">
+                <i class="fas fa-user-plus"></i>
+            </button>
         </div>
     </nav>
 
@@ -2103,6 +2677,39 @@
             </div>
         </div>
     </section>
+
+    <!-- ========== FRIEND INVITE MODAL ========== -->
+    <div class="modal-overlay" id="friendInviteModal" onclick="if(event.target===this) closeFriendInviteModal()">
+        <div class="modal-card friend-invite-modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-plus"></i> Arkadaşlarını Davet Et</h2>
+                <button class="modal-close" onclick="closeFriendInviteModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="friend-invite-text">Facebook ve Instagram'daki arkadaşlarına davet linkini paylaş.</p>
+
+                <div class="friend-invite-grid">
+                    <button type="button" class="btn-primary invite-action-btn" onclick="shareInviteToFacebook()">
+                        <i class="fab fa-facebook-f"></i> Facebook'ta Paylaş
+                    </button>
+                    <button type="button" class="btn-secondary invite-action-btn" onclick="shareInviteToInstagram()">
+                        <i class="fab fa-instagram"></i> Instagram'da Paylaş
+                    </button>
+                </div>
+
+                <label for="friendInviteLink" style="font-size: 13px; font-weight: 700; color: #1F2937;">Davet Linkin</label>
+                <div class="invite-link-row">
+                    <input id="friendInviteLink" class="form-control" type="text" readonly>
+                    <button type="button" class="btn-primary" onclick="copyFriendInviteLink()">
+                        <i class="fas fa-copy"></i> Kopyala
+                    </button>
+                </div>
+                <p class="invite-note">Not: Gizlilik kısıtları nedeniyle Facebook/Instagram arkadaş listesi doğrudan çekilmez, paylaşım linki ile davet edilir.</p>
+            </div>
+        </div>
+    </div>
 
     <!-- ========== LEGAL SERVICES MODAL ========== -->
     <div class="modal-overlay" id="legalModal" onclick="closeLegalModal()">
@@ -2574,6 +3181,71 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="aboutModal" onclick="if(event.target===this) closeAboutModal()">
+        <div class="modal-card about-modal-card">
+            <div class="modal-header">
+                <h2><i class="fas fa-circle-info"></i> Hakkımızda</h2>
+                <button class="modal-close" onclick="closeAboutModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <section class="about-hero">
+                    <h3>NextScout: Yeteneğin görünür olduğu saha</h3>
+                    <p>
+                        NextScout; oyuncu, menajer, kulüp ve scout'u tek bir ekosistemde buluşturan
+                        dijital keşif platformudur. Amacımız, yeteneğin kaybolmadığı; doğru profilin,
+                        doğru zamanda, doğru gözle buluştuğu güvenilir bir vitrin oluşturmaktır.
+                    </p>
+                </section>
+
+                <div class="about-values">
+                    <article class="about-value">
+                        <div class="t">Şeffaflık</div>
+                        <div class="d">Oyuncu verisi, performans göstergeleri ve iletişim süreci açık ve takip edilebilir şekilde ilerler.</div>
+                    </article>
+                    <article class="about-value">
+                        <div class="t">Hızlı Eşleşme</div>
+                        <div class="d">Kulüp ihtiyacı ile oyuncu profilini kısa sürede eşleştirir, fırsat penceresini büyütürüz.</div>
+                    </article>
+                    <article class="about-value">
+                        <div class="t">Güvenli Süreç</div>
+                        <div class="d">Profil, sözleşme ve iletişim adımlarında sürdürülebilir, düzenli ve güvenli bir yapı sunarız.</div>
+                    </article>
+                    <article class="about-value">
+                        <div class="t">Gerçek Etki</div>
+                        <div class="d">Sadece görünürlük değil; deneme, iletişim ve transfere giden somut bir yol hedefleriz.</div>
+                    </article>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn-primary" onclick="closeAboutModal()">
+                        <i class="fas fa-check"></i> Anladım
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="homeInfoModal" onclick="if(event.target===this) closeHomeInfoModal()">
+        <div class="modal-card about-modal-card">
+            <div class="modal-header">
+                <h2 id="homeInfoTitle"><i class="fas fa-circle-info"></i> Bilgi</h2>
+                <button class="modal-close" onclick="closeHomeInfoModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="home-info-rich" id="homeInfoBody"></div>
+                <div class="modal-footer">
+                    <button class="btn-primary" onclick="closeHomeInfoModal()">
+                        <i class="fas fa-check"></i> Tamam
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ========== HERO SECTION WITH AD PANELS ========== -->
     <div class="hero-wrapper">
         <!-- Left Ad Panel -->
@@ -2586,7 +3258,16 @@
 
         <!-- Hero Section (Center) -->
         <section class="hero">
-            <section class="contract-live-panel">
+            <section class="breaking-news-strip" aria-label="Son Dakika">
+                <span class="breaking-news-badge">SON DAKIKA</span>
+                <div class="breaking-news-viewport">
+                    <div class="breaking-news-track" id="breakingNewsTrack">
+                        <span class="breaking-news-name">Yukleniyor</span>
+                    </div>
+                </div>
+            </section>
+            <section class="data-status-strip" id="dataStatusStrip">Veri Durumu: Yukleniyor...</section>
+            <section class="contract-live-panel" id="homeStep2">
                 <div class="contract-live-head">
                     <div class="contract-live-title">Sozlesme Durumu Canli Akisi</div>
                     <div class="contract-live-sub">Sadece sozlesmesi biten ve askida oyuncular</div>
@@ -2623,30 +3304,55 @@
                 </aside>
             </div>
 
+            <div class="promo-ad-grid">
+                <div class="promo-ad-card">
+                    <i class="fas fa-ad"></i>
+                    Reklam Panosu
+                </div>
+                <div class="promo-ad-card">
+                    <i class="fas fa-ad"></i>
+                    Reklam Panosu
+                </div>
+            </div>
+
             <div class="below-cards-grid">
-                <article class="below-card" id="urgentNeedsCard" data-dashboard-feature="urgent-needs" role="button" tabindex="0">
-                    <div class="title">Acil Kulup Ihtiyaclari</div>
-                    <div class="desc" id="urgentNeedsBody">Kulup ilanlarindan acil aranan oyuncu pozisyonlari.</div>
-                </article>
                 <article class="below-card" id="playerOfWeekCard" data-dashboard-feature="player-of-week" role="button" tabindex="0">
                     <div class="title">Haftanin Oyuncusu</div>
                     <div class="desc" id="playerOfWeekBody">Bu haftanin one cikan oyuncu karti.</div>
                 </article>
-                <article class="below-card" id="hotTransfersCard" data-dashboard-feature="club-promo" role="button" tabindex="0">
-                    <div class="title">Kulubunu Tanit</div>
-                    <ul class="club-promo-list" id="clubPromoList">
-                        <li><span>Ornek SK</span><span class="club-promo-tag">Vitrin</span></li>
-                        <li><span>Anadolu FK</span><span class="club-promo-tag">One Cikan</span></li>
-                        <li><span>Marmara Spor</span><span class="club-promo-tag">Sponsorlu</span></li>
+                <article class="below-card" id="weeklyTrendsCard" data-dashboard-feature="weekly-trends" role="button" tabindex="0">
+                    <div class="title">Haftanin Trendleri</div>
+                    <ul class="club-promo-list" id="weeklyTrendsList">
+                        <li><span>Trend verisi yukleniyor...</span><span class="club-promo-tag">Bekle</span></li>
                     </ul>
+                    <div class="card-mini-meta" id="weeklyTrendsMeta">Son guncelleme: bekleniyor • Kaynak: API • Guven: -</div>
                 </article>
                 <article class="below-card" id="risingStarsCard" data-dashboard-feature="rising-stars" role="button" tabindex="0">
                     <div class="title">Yukselen Yildizlar</div>
                     <div class="desc" id="risingStarsBody">Formu yukselen oyuncu listesi.</div>
+                    <div class="card-mini-meta" id="risingStarsMeta">Son 7 gun degisim: - • Guncelleme: bekleniyor</div>
                 </article>
             </div>
 
-            <section class="success-stories-panel">
+            <div class="top-adboards-grid">
+                <article class="top-adboard" data-dashboard-feature="urgent-needs" role="button" tabindex="0">
+                    <div class="top-adboard-title"><i class="fas fa-bullseye"></i> Kulup Ihtiyaclari</div>
+                    <div class="club-needs-inline-list" id="clubNeedsInlineList">
+                        <button type="button" class="club-needs-inline-item">
+                            <span class="club">Yukleniyor...</span>
+                            <span class="note">Not yukleniyor...</span>
+                        </button>
+                    </div>
+                </article>
+                <article class="top-adboard" data-dashboard-feature="club-promo" role="button" tabindex="0">
+                    <div class="top-adboard-title"><i class="fas fa-bullhorn"></i> Odemeli Kulup Tanitimlari</div>
+                    <div class="club-promo-name-list" id="clubPromoNamesInline">
+                        <span class="club-promo-name-pill">Yukleniyor...</span>
+                    </div>
+                </article>
+            </div>
+
+            <section class="success-stories-panel" id="homeStep3">
                 <div class="success-stories-head">
                     <h3 style="margin: 0; font-size: 16px;">Basari Hikayeleri</h3>
                     <button type="button" class="success-story-cta-btn" onclick="openSuccessStoryModal()">
@@ -2661,13 +3367,6 @@
                     </div>
                 </div>
             </section>
-
-            <div class="mvp-tool-strip">
-                <button class="mvp-tool-btn" type="button" onclick="openMvpTool('profile-check')">2 Dakika Profil Check</button>
-                <button class="mvp-tool-btn" type="button" onclick="openMvpTool('matching-alert')">Akilli Eslesme Alarmi</button>
-                <button class="mvp-tool-btn" type="button" onclick="openMvpTool('offer-score')">Menajer Teklif Skoru</button>
-                <button class="mvp-tool-btn" type="button" onclick="openMvpTool('quick-report')">Mac Sonu Anlik Rapor</button>
-            </div>
 
         </section>
 
@@ -3025,6 +3724,60 @@
             }).join('');
         }
 
+        function getFallbackBreakingNames() {
+            return ['Arda K.', 'Mert A.', 'Yusuf D.', 'Emirhan T.', 'Kerem S.', 'Deniz Y.'];
+        }
+
+        function getTodayIsoDateString() {
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const d = String(now.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        async function renderBreakingNewsStrip() {
+            const track = document.getElementById('breakingNewsTrack');
+            if (!track) return;
+
+            const today = getTodayIsoDateString();
+            let names = [];
+
+            if (IS_FILE_MODE) {
+                try {
+                    const registered = JSON.parse(localStorage.getItem('nextscout_registered_users') || '[]');
+                    names = (Array.isArray(registered) ? registered : [])
+                        .filter((item) => String(item?.created_at || '').slice(0, 10) === today)
+                        .map((item) => (item?.name || '').toString().trim())
+                        .filter(Boolean);
+                } catch (error) {}
+            } else {
+                const payload = await fetchJsonSafe(`${API_BASE_URL}/public/players?limit=40`);
+                const list = Array.isArray(payload?.data) ? payload.data : [];
+                const todayAdded = list
+                    .filter((item) => String(item?.created_at || '').slice(0, 10) === today)
+                    .map((item) => (item?.name || item?.full_name || '').toString().trim())
+                    .filter(Boolean);
+
+                names = todayAdded.length
+                    ? todayAdded
+                    : list
+                        .map((item) => (item?.name || item?.full_name || '').toString().trim())
+                        .filter(Boolean)
+                        .slice(0, 8);
+            }
+
+            if (!names.length) {
+                names = getFallbackBreakingNames();
+            }
+
+            const uniqueNames = [...new Set(names)].slice(0, 10);
+            const doubled = uniqueNames.concat(uniqueNames);
+            track.innerHTML = doubled
+                .map((name) => `<span class="breaking-news-name">${esc(name)}</span>`)
+                .join('');
+        }
+
         function normalizeIdeaNewsItem(item) {
             if (!item || typeof item !== 'object') return null;
             return {
@@ -3304,30 +4057,18 @@
         }
 
         async function renderHomepageInfoCards() {
-            const urgentRoot = document.getElementById('urgentNeedsBody');
             const playerRoot = document.getElementById('playerOfWeekBody');
-            const promoRoot = document.getElementById('clubPromoList');
+            const promoRoot = document.getElementById('weeklyTrendsList');
             const risingRoot = document.getElementById('risingStarsBody');
-            if (!urgentRoot || !playerRoot || !promoRoot || !risingRoot) return;
+            const weeklyMetaRoot = document.getElementById('weeklyTrendsMeta');
+            const risingMetaRoot = document.getElementById('risingStarsMeta');
+            if (!playerRoot || !promoRoot || !risingRoot) return;
 
-            const [urgentPayload, playerPayload, featuredPayload, risingPayload] = await Promise.all([
-                fetchJsonSafe(`${API_BASE_URL}/club-needs/urgent`),
+            const [playerPayload, trendsPayload, risingPayload] = await Promise.all([
                 fetchJsonSafe(`${API_BASE_URL}/player-of-week`),
-                fetchJsonSafe(`${API_BASE_URL}/featured`),
+                fetchJsonSafe(`${API_BASE_URL}/trending/week`),
                 fetchJsonSafe(`${API_BASE_URL}/rising-stars`),
             ]);
-
-            const urgentItems = Array.isArray(urgentPayload?.data) ? urgentPayload.data.slice(0, 3) : [];
-            if (urgentItems.length) {
-                urgentRoot.innerHTML = `<ul class="mini-lines">${urgentItems.map((item) => {
-                    const club = esc(item?.club_name || 'Kulup');
-                    const pos = esc(item?.position || 'Pozisyon');
-                    const urgency = esc(item?.urgency || 'normal');
-                    return `<li><strong>${club}</strong> • ${pos} (${urgency})</li>`;
-                }).join('')}</ul>`;
-            } else {
-                urgentRoot.textContent = 'Henuz acil kulup ihtiyaci bulunmuyor.';
-            }
 
             const player = playerPayload?.data;
             if (player && typeof player === 'object') {
@@ -3339,19 +4080,23 @@
                 playerRoot.textContent = 'Bu hafta icin secim verisi henuz yayinlanmadi.';
             }
 
-            const featuredItems = Array.isArray(featuredPayload?.data) ? featuredPayload.data.slice(0, 4) : [];
-            if (featuredItems.length) {
-                promoRoot.innerHTML = featuredItems.map((item, idx) => {
-                    const clubName = esc(item?.data?.name || item?.badge_text || `Vitrin Kulup ${idx + 1}`);
-                    const badge = esc(item?.badge_text || 'Vitrin');
-                    return `<li><span>${clubName}</span><span class="club-promo-tag">${badge}</span></li>`;
+            const trendItems = Array.isArray(trendsPayload?.data) ? trendsPayload.data.slice(0, 4) : [];
+            if (trendItems.length) {
+                promoRoot.innerHTML = trendItems.map((item, idx) => {
+                    const typeText = (item?.trendable_type || '').toString().split('\\').pop() || 'Icerik';
+                    const entryName = `${typeText} #${esc(item?.trendable_id || (idx + 1))}`;
+                    const scoreText = `Goruntulenme: ${esc(item?.total_views || 0)}`;
+                    return `<li><span>${entryName}</span><span class="club-promo-tag">${scoreText}</span></li>`;
                 }).join('');
             } else {
                 promoRoot.innerHTML = [
-                    '<li><span>Ornek SK</span><span class="club-promo-tag">Vitrin</span></li>',
-                    '<li><span>Anadolu FK</span><span class="club-promo-tag">One Cikan</span></li>',
-                    '<li><span>Marmara Spor</span><span class="club-promo-tag">Sponsorlu</span></li>',
+                    '<li><span>Haftalik trend verisi yok</span><span class="club-promo-tag">0</span></li>',
                 ].join('');
+            }
+            if (weeklyMetaRoot) {
+                const trendCount = trendItems.length;
+                const score = trendCount >= 3 ? 'Yuksek' : (trendCount > 0 ? 'Orta' : 'Dusuk');
+                weeklyMetaRoot.textContent = `Son guncelleme: ${new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })} • Kaynak: /api/trending/week • Guven: ${score}`;
             }
 
             const risingItems = Array.isArray(risingPayload?.data) ? risingPayload.data.slice(0, 3) : [];
@@ -3364,6 +4109,115 @@
             } else {
                 risingRoot.textContent = 'Yukselen yildiz verisi henuz olusmadi.';
             }
+            if (risingMetaRoot) {
+                const numericScores = risingItems
+                    .map((item) => Number(item?.growth_score))
+                    .filter((value) => Number.isFinite(value));
+                const avg = numericScores.length
+                    ? numericScores.reduce((sum, value) => sum + value, 0) / numericScores.length
+                    : 0;
+                const changePercent = Math.round(avg);
+                risingMetaRoot.textContent = `Son 7 gun degisim: +${changePercent}% • Guncelleme: ${new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`;
+            }
+        }
+
+        function renderPaidClubPromoNamesInline() {
+            const root = document.getElementById('clubPromoNamesInline');
+            if (!root) return;
+
+            let rows = [];
+            try {
+                const parsed = JSON.parse(localStorage.getItem('nextscout_paid_club_promos') || '[]');
+                rows = Array.isArray(parsed) ? parsed : [];
+            } catch (error) {
+                rows = [];
+            }
+
+            const names = rows
+                .filter((item) => item && item.paid === true)
+                .map((item) => (item?.club_name || '').toString().trim())
+                .filter(Boolean);
+
+            const uniqueNames = [...new Set(names)].slice(0, 14);
+            if (!uniqueNames.length) {
+                root.innerHTML = '<span class="club-promo-name-pill">Henuz odemeli tanitim yok</span>';
+                return;
+            }
+
+            root.innerHTML = uniqueNames
+                .map((name) => `<span class="club-promo-name-pill">${esc(name)}</span>`)
+                .join('');
+        }
+
+        async function renderClubNeedsInlineList() {
+            const root = document.getElementById('clubNeedsInlineList');
+            if (!root) return;
+
+            let rows = [];
+            const apiPayload = await fetchJsonSafe(`${API_BASE_URL}/club-needs?limit=30`);
+            const apiRows = Array.isArray(apiPayload?.data) ? apiPayload.data : [];
+            try {
+                const parsed = JSON.parse(localStorage.getItem('nextscout_club_needs_notes') || '[]');
+                rows = Array.isArray(parsed) ? parsed : [];
+            } catch (error) {
+                rows = [];
+            }
+            rows = [...apiRows, ...rows];
+
+            const items = rows
+                .map((item) => ({
+                    club: (item?.club_name || 'Kulup').toString().trim() || 'Kulup',
+                    note: (item?.note || '').toString().trim(),
+                    source: (item?.source || (item?.id ? 'API' : 'Kulup Paneli')).toString(),
+                    createdAt: item?.created_at || '',
+                }))
+                .filter((item) => item.note)
+                .slice(0, 10);
+
+            if (!items.length) {
+                root.innerHTML = '<button type="button" class="club-needs-inline-item"><span class="club">Henuz not yok</span><span class="note">Kulup ihtiyac notu eklendiginde burada gorunecek.</span></button>';
+                return;
+            }
+
+            root.innerHTML = items
+                .map((item) => {
+                    const timeText = item.createdAt ? new Date(item.createdAt).toLocaleDateString('tr-TR') : 'Bugun';
+                    return `<button type="button" class="club-needs-inline-item"><span class="club">${esc(item.club)}</span><span class="note">${esc(item.note)}</span><span class="club-needs-source">Kaynak: ${esc(item.source)} • ${esc(timeText)}</span></button>`;
+                })
+                .join('');
+        }
+
+        async function renderDataStatusStrip() {
+            const root = document.getElementById('dataStatusStrip');
+            if (!root) return;
+
+            const [playersPayload, clubNeedsPayload] = await Promise.all([
+                fetchJsonSafe(`${API_BASE_URL}/public/players?limit=250`),
+                fetchJsonSafe(`${API_BASE_URL}/club-needs?limit=250`),
+            ]);
+
+            const players = Array.isArray(playersPayload?.data) ? playersPayload.data : [];
+            const clubNeeds = Array.isArray(clubNeedsPayload?.data) ? clubNeedsPayload.data : [];
+            const leaguesCount = (() => {
+                const allCountries = Object.values(LEAGUES_DATA || {}).flat();
+                return allCountries.length || 0;
+            })();
+            const uniqueClubs = new Set(
+                clubNeeds
+                    .map((item) => (item?.club_name || '').toString().trim())
+                    .filter(Boolean)
+            );
+            const clubCount = uniqueClubs.size || (() => {
+                try {
+                    const localRows = JSON.parse(localStorage.getItem('nextscout_club_needs_notes') || '[]');
+                    return new Set((Array.isArray(localRows) ? localRows : []).map((item) => (item?.club_name || '').toString().trim()).filter(Boolean)).size;
+                } catch (error) {
+                    return 0;
+                }
+            })();
+            const playerCount = players.length || 0;
+
+            root.textContent = `Veri Durumu: Guncel veri ${leaguesCount} lig / ${clubCount} kulup / ${playerCount} oyuncu`;
         }
 
         async function renderSuccessStoriesPanel() {
@@ -3476,6 +4330,10 @@
         // ========== AUTO REFRESH ==========
         function startAutoRefresh() {
             // İlk yükleme
+            renderBreakingNewsStrip();
+            renderClubNeedsInlineList();
+            renderPaidClubPromoNamesInline();
+            renderDataStatusStrip();
             fetchNotificationCount();
             fetchLiveMatchCount();
             renderContractStatusTicker();
@@ -3499,12 +4357,28 @@
             }, 120000); // 120 seconds
 
             setInterval(() => {
+                renderPaidClubPromoNamesInline();
+            }, 120000); // 120 seconds
+
+            setInterval(() => {
+                renderClubNeedsInlineList();
+            }, 120000); // 120 seconds
+
+            setInterval(() => {
+                renderDataStatusStrip();
+            }, 180000); // 180 seconds
+
+            setInterval(() => {
                 renderSuccessStoriesPanel();
             }, 150000); // 150 seconds
 
             setInterval(() => {
                 renderContractStatusTicker();
             }, 60000); // 60 seconds
+
+            setInterval(() => {
+                renderBreakingNewsStrip();
+            }, 90000); // 90 seconds
 
         }
 
@@ -3531,8 +4405,12 @@
             renderIdeaNewsSquare();
             renderSiteNewsSquare();
             renderHomepageInfoCards();
+            renderClubNeedsInlineList();
+            renderPaidClubPromoNamesInline();
+            renderDataStatusStrip();
             renderSuccessStoriesPanel();
             initDashboardFeatureCards();
+            loadFooterPagesFromApi();
             const successStoryForm = document.getElementById('successStoryForm');
             if (successStoryForm) {
                 successStoryForm.addEventListener('submit', submitSuccessStoryForm);
@@ -3603,6 +4481,82 @@
             if (form) form.reset();
         }
 
+        function getFriendInviteLink() {
+            const storageKey = 'nextscout_invite_token';
+            let inviteToken = localStorage.getItem(storageKey) || '';
+            if (!inviteToken) {
+                inviteToken = `ns-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+                localStorage.setItem(storageKey, inviteToken);
+            }
+
+            const userRaw = localStorage.getItem('nextscout_user') || '{}';
+            let inviter = 'user';
+            try {
+                const parsed = JSON.parse(userRaw);
+                inviter = (parsed?.email || parsed?.name || 'user').toString().trim() || 'user';
+            } catch (error) {}
+
+            if (window.location.protocol === 'file:') {
+                return `https://nextscout.app/invite?code=${encodeURIComponent(inviteToken)}&by=${encodeURIComponent(inviter)}`;
+            }
+
+            return `${window.location.origin}/invite?code=${encodeURIComponent(inviteToken)}&by=${encodeURIComponent(inviter)}`;
+        }
+
+        function openFriendInviteModal() {
+            const modal = document.getElementById('friendInviteModal');
+            const linkInput = document.getElementById('friendInviteLink');
+            if (!modal) return;
+            if (linkInput) linkInput.value = getFriendInviteLink();
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFriendInviteModal() {
+            const modal = document.getElementById('friendInviteModal');
+            if (!modal) return;
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        async function copyFriendInviteLink() {
+            const linkInput = document.getElementById('friendInviteLink');
+            const inviteUrl = linkInput?.value || getFriendInviteLink();
+
+            try {
+                await navigator.clipboard.writeText(inviteUrl);
+                alert('Davet linki kopyalandi.');
+            } catch (error) {
+                if (linkInput) {
+                    linkInput.focus();
+                    linkInput.select();
+                }
+                alert('Linki secip manuel kopyalayabilirsin.');
+            }
+        }
+
+        function shareInviteToFacebook() {
+            const inviteUrl = getFriendInviteLink();
+            const quote = 'NextScout\'a katil, beraber oyuncu kesfedelim.';
+            const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(inviteUrl)}&quote=${encodeURIComponent(quote)}`;
+            window.open(fbUrl, '_blank', 'noopener,noreferrer,width=720,height=640');
+        }
+
+        async function shareInviteToInstagram() {
+            const inviteUrl = getFriendInviteLink();
+            const shareText = `NextScout'a katil: ${inviteUrl}`;
+
+            if (navigator.share) {
+                try {
+                    await navigator.share({ text: shareText, url: inviteUrl });
+                    return;
+                } catch (error) {}
+            }
+
+            await copyFriendInviteLink();
+            window.open('https://www.instagram.com/', '_blank', 'noopener,noreferrer');
+        }
+
         // Advanced Search Form Submit
         const advancedSearchForm = document.getElementById('advancedSearchForm');
         if (advancedSearchForm) {
@@ -3632,6 +4586,9 @@
                 closeRegisterModal();
                 closeSuccessStoryModal();
                 closeContractPreviewModal();
+                closeAboutModal();
+                closeHomeInfoModal();
+                closeFriendInviteModal();
             }
         });
 
@@ -3674,6 +4631,261 @@
             menu.classList.toggle('show');
         }
 
+        function toggleHomeMenu(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('homeMenu');
+            if (!menu) return;
+            menu.classList.toggle('show');
+        }
+
+        function openHomeStep(sectionId) {
+            const menu = document.getElementById('homeMenu');
+            if (menu) menu.classList.remove('show');
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                return;
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function openAboutModal() {
+            const menu = document.getElementById('homeMenu');
+            if (menu) menu.classList.remove('show');
+            const modal = document.getElementById('aboutModal');
+            if (!modal) return;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAboutModal() {
+            const modal = document.getElementById('aboutModal');
+            if (!modal) return;
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        const HOME_INFO_CONTENT = {
+            contact: {
+                title: 'İletişim',
+                html: `
+                    <p>Mesajını bırak, admin paneline anında düşsün.</p>
+                    <form class="home-contact-form" id="homeContactForm">
+                        <input type="text" id="contactName" name="name" placeholder="Ad Soyad" required maxlength="80">
+                        <input type="email" id="contactEmail" name="email" placeholder="E-posta" required maxlength="120">
+                        <textarea id="contactMessage" name="message" placeholder="Mesajın" required maxlength="1500"></textarea>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-paper-plane"></i> Mesajı Gönder
+                        </button>
+                        <div id="homeContactFeedback" class="home-contact-feedback"></div>
+                    </form>
+                `,
+            },
+            footer: {
+                title: 'Footer',
+                html: `
+                    <p>Alt menuden gerekli bilgi sayfalarina dogrudan gecis yapabilirsin.</p>
+                    <div class="home-link-list">
+                        <button type="button" class="home-link-btn" onclick="openHomeInfoModal('terms')">Kullanim Sartlari</button>
+                        <button type="button" class="home-link-btn" onclick="openHomeInfoModal('privacy')">Gizlilik Politikasi</button>
+                        <button type="button" class="home-link-btn" onclick="openHomeInfoModal('helpcenter')">Yardim Merkezi</button>
+                    </div>
+                `,
+            },
+            terms: {
+                title: 'Kullanim Sartlari',
+                html: `
+                    <p>Platformu kullanirken tum kullanicilar su temel kosullari kabul eder:</p>
+                    <ol>
+                        <li>Paylasilan profil ve performans verileri gercek ve guncel olmali.</li>
+                        <li>Hakaret, nefret soylemi veya manipule edici icerik yasaktir.</li>
+                        <li>Hesap guvenligi kullanicinin sorumlulugundadir.</li>
+                        <li>Kurallara aykiri durumlarda hesap gecici veya kalici askiya alinabilir.</li>
+                    </ol>
+                `,
+            },
+            privacy: {
+                title: 'Gizlilik Politikasi',
+                html: `
+                    <p>Kisisel veriler yalnizca platform isleyisi ve eslesme surecleri icin kullanilir.</p>
+                    <ul>
+                        <li>Veriler izinsiz ucuncu taraflarla paylasilmaz.</li>
+                        <li>Profil alanlari kullanici kontrolunde guncellenebilir.</li>
+                        <li>Yasal yukumluluk disinda veriler ticari olarak satilmaz.</li>
+                    </ul>
+                `,
+            },
+            helpcenter: {
+                title: 'Yardim Merkezi',
+                html: `
+                    <p>Sik sorulan konular icin hizli yardim adimlari:</p>
+                    <ol>
+                        <li>Hesap ve giris sorunlari</li>
+                        <li>Profil dogrulama ve performans verisi guncelleme</li>
+                        <li>Menajer-kulup iletisim akisinda destek</li>
+                    </ol>
+                    <p>Daha detayli destek icin Iletisim formundan mesaj birakabilirsin.</p>
+                `,
+            },
+            faq: {
+                title: 'SSS / Yardım',
+                html: `
+                    <p>En sık sorulan sorular ve çözüm adımları bu bölümde yer alır.</p>
+                    <ol>
+                        <li>Profil nasıl güçlendirilir?</li>
+                        <li>Scout görünürlüğü nasıl artırılır?</li>
+                        <li>Teklif süreçleri nasıl takip edilir?</li>
+                    </ol>
+                `,
+            },
+            how: {
+                title: 'Nasıl Çalışır',
+                html: `
+                    <ol>
+                        <li>Profilini oluştur ve vitrin kartını tamamla.</li>
+                        <li>Canlı akışta kulüp/menajer ihtiyaçlarını takip et.</li>
+                        <li>Eşleşme sonrası iletişim ve teklif sürecini yönet.</li>
+                    </ol>
+                `,
+            },
+            trust: {
+                title: 'Güven & Referans',
+                html: `
+                    <p>Platformda süreçler şeffaflık, doğruluk ve sürdürülebilir iletişim ilkeleriyle yürür.</p>
+                    <ul>
+                        <li>Doğrulanabilir profil verisi</li>
+                        <li>Kayıt altına alınan teklif/iletişim akışı</li>
+                        <li>Topluluk ve profesyonel ağ referansları</li>
+                    </ul>
+                `,
+            },
+        };
+
+        const CONTACT_MESSAGES_STORAGE_KEY = 'nextscout_contact_messages';
+
+        function getActiveApiBaseUrl() {
+            return (typeof API_BASE_URL === 'string' && API_BASE_URL.trim())
+                ? API_BASE_URL.trim()
+                : getAPIBaseURL();
+        }
+
+        async function loadFooterPagesFromApi() {
+            const apiBase = getActiveApiBaseUrl();
+            try {
+                const response = await fetch(`${apiBase}/public/footer-pages`, {
+                    method: 'GET',
+                    headers: { Accept: 'application/json' },
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) return;
+
+                const pages = payload?.data || {};
+                ['terms', 'privacy', 'helpcenter'].forEach((key) => {
+                    if (pages[key]?.title && pages[key]?.html) {
+                        HOME_INFO_CONTENT[key] = {
+                            title: pages[key].title,
+                            html: pages[key].html,
+                        };
+                    }
+                });
+            } catch (error) {
+                // Static fallback content remains active when API is unreachable.
+            }
+        }
+
+        function getContactMessages() {
+            try {
+                const rows = JSON.parse(localStorage.getItem(CONTACT_MESSAGES_STORAGE_KEY) || '[]');
+                return Array.isArray(rows) ? rows : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function saveContactMessage(message) {
+            const rows = getContactMessages();
+            rows.unshift(message);
+            localStorage.setItem(CONTACT_MESSAGES_STORAGE_KEY, JSON.stringify(rows));
+        }
+
+        async function submitContactMessageApi(payload) {
+            const apiBase = getActiveApiBaseUrl();
+            const response = await fetch(`${apiBase}/public/contact-messages`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok || data?.ok === false) {
+                throw new Error(data?.message || `HTTP ${response.status}`);
+            }
+
+            return data;
+        }
+
+        function bindHomeContactForm() {
+            const form = document.getElementById('homeContactForm');
+            if (!form) return;
+
+            form.addEventListener('submit', async function(event) {
+                event.preventDefault();
+                const name = (document.getElementById('contactName')?.value || '').trim();
+                const email = (document.getElementById('contactEmail')?.value || '').trim();
+                const message = (document.getElementById('contactMessage')?.value || '').trim();
+                const feedback = document.getElementById('homeContactFeedback');
+
+                if (!name || !email || !message) {
+                    if (feedback) feedback.textContent = 'Tum alanlari doldur.';
+                    return;
+                }
+
+                const payload = { name, email, message };
+                try {
+                    await submitContactMessageApi(payload);
+                    form.reset();
+                    if (feedback) feedback.textContent = 'Mesajin alindi. Admin paneline gonderildi.';
+                } catch (error) {
+                    // Offline fallback to avoid losing user input intent.
+                    saveContactMessage({
+                        id: Date.now(),
+                        ...payload,
+                        created_at: new Date().toISOString(),
+                    });
+                    if (feedback) feedback.textContent = 'API su an ulasilamiyor. Mesajin yerelde kaydedildi.';
+                }
+            });
+        }
+
+        function openHomeInfoModal(key) {
+            const menu = document.getElementById('homeMenu');
+            if (menu) menu.classList.remove('show');
+
+            const config = HOME_INFO_CONTENT[key];
+            if (!config) return;
+
+            const titleEl = document.getElementById('homeInfoTitle');
+            const bodyEl = document.getElementById('homeInfoBody');
+            const modal = document.getElementById('homeInfoModal');
+            if (!titleEl || !bodyEl || !modal) return;
+
+            titleEl.innerHTML = `<i class="fas fa-circle-info"></i> ${config.title}`;
+            bodyEl.innerHTML = config.html;
+            if (key === 'contact') bindHomeContactForm();
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeHomeInfoModal() {
+            const modal = document.getElementById('homeInfoModal');
+            if (!modal) return;
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
         function toggleTransferMarketMenu(event) {
             event.stopPropagation();
             const menu = document.getElementById('transferMarketMenu');
@@ -3699,6 +4911,10 @@
         }
 
         function openScoutRadarCategory(category) {
+            if (category === 'data-center') {
+                window.location.href = resolveLocalPage('data-center.html');
+                return;
+            }
             const map = {
                 new: 'Yeni-Eslesenler',
                 rising: 'Yukselenler',
@@ -3787,6 +5003,8 @@
                 else if (role === 'coach' || role === 'scout') target = 'coach-dashboard.html';
             } else if (featureKey === 'club-promo') {
                 target = 'team-dashboard.html';
+            } else if (featureKey === 'weekly-trends') {
+                target = 'professional-players.html';
             } else if (featureKey === 'rising-stars') {
                 if (role === 'manager') target = 'manager-dashboard.html';
                 else if (role === 'coach' || role === 'scout') target = 'coach-dashboard.html';
@@ -3981,6 +5199,12 @@
                 const dropdown = document.getElementById('lawOfficeDropdown');
                 if (menu && dropdown && !dropdown.contains(event.target)) {
                     menu.classList.remove('show');
+                }
+
+                const homeMenu = document.getElementById('homeMenu');
+                const homeDropdown = document.getElementById('homeDropdown');
+                if (homeMenu && homeDropdown && !homeDropdown.contains(event.target)) {
+                    homeMenu.classList.remove('show');
                 }
 
                 const transferMenu = document.getElementById('transferMarketMenu');
