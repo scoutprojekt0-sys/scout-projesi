@@ -28,6 +28,38 @@
     return text;
   }
 
+  async function fetchJsonWithRetry(url, options) {
+    var opts = options || {};
+    var retries = toNumber(opts.retries, 1);
+    var timeoutMs = toNumber(opts.timeoutMs, 5000);
+    var fallback = typeof opts.fallback === 'undefined' ? null : opts.fallback;
+
+    for (var i = 0; i <= retries; i += 1) {
+      try {
+        var controller = new AbortController();
+        var timer = setTimeout(function () { controller.abort(); }, timeoutMs);
+        var res = await fetch(url, {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+          cache: 'no-store',
+          signal: controller.signal
+        });
+        clearTimeout(timer);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return await res.json();
+      } catch (error) {
+        if (i >= retries) return fallback;
+      }
+    }
+    return fallback;
+  }
+
+  function sourceStamp(source, updatedAt) {
+    var safeSource = normalizeText(source || 'Sistem', 60) || 'Sistem';
+    var safeTime = updatedAt ? formatDateTR(updatedAt) : formatDateTR(new Date());
+    return 'Kaynak: ' + safeSource + ' • Son guncelleme: ' + safeTime;
+  }
+
   // Lightweight editorial guard for admin/content forms.
   function editorialChecklist(payload) {
     var title = normalizeText(payload && payload.title, 120);
@@ -48,6 +80,8 @@
     toNumber: toNumber,
     formatDateTR: formatDateTR,
     normalizeText: normalizeText,
-    editorialChecklist: editorialChecklist
+    editorialChecklist: editorialChecklist,
+    fetchJsonWithRetry: fetchJsonWithRetry,
+    sourceStamp: sourceStamp
   };
 })(window);

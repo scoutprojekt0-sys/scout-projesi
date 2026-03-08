@@ -415,6 +415,59 @@
             color: #667eea;
         }
 
+        .data-meta {
+            margin: 0 0 16px;
+            font-size: 12px;
+            color: #475569;
+            background: #e2e8f0;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 8px 10px;
+        }
+
+        .profile-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .profile-tab {
+            border: 1px solid #cbd5e1;
+            background: #fff;
+            color: #334155;
+            border-radius: 999px;
+            padding: 7px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .profile-tab.active {
+            background: #667eea;
+            border-color: #667eea;
+            color: #fff;
+        }
+
+        .tab-panel { display: none; content-visibility: auto; contain-intrinsic-size: 480px; }
+        .tab-panel.active { display: block; }
+
+        .transfer-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+        }
+
+        .transfer-table th, .transfer-table td {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 10px;
+            text-align: left;
+        }
+
         @media (max-width: 1024px) {
             .hero-section {
                 grid-template-columns: 1fr;
@@ -501,133 +554,81 @@
             </div>
         </div>
 
-        <!-- GALERİ -->
-        <h2 class="section-title">📸 Foto Galerisi</h2>
-        <div class="gallery-grid">
-            <div class="gallery-item" style="background: white; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <div class="gallery-item-empty">📷</div>
-            </div>
-            <div class="gallery-item" style="background: white; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <div class="gallery-item-empty">📷</div>
-            </div>
-            <div class="gallery-item" style="background: white; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <div class="gallery-item-empty">📷</div>
-            </div>
-            <div class="gallery-item" style="background: white; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <div class="gallery-item-empty">📷</div>
-            </div>
-            <div class="gallery-item" style="background: white; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <div class="gallery-item-empty">📷</div>
-            </div>
-            <div class="gallery-item" style="background: white; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <div class="gallery-item-empty">📷</div>
-            </div>
+        <div class="data-meta" id="playerDataMeta">Kaynak: Sistem • Son guncelleme: -</div>
+        <div class="profile-tabs" id="profileTabs">
+            <button class="profile-tab active" data-tab="overview" type="button">Genel</button>
+            <button class="profile-tab" data-tab="media" type="button">Medya</button>
+            <button class="profile-tab" data-tab="transfer" type="button">Transfer Geçmişi</button>
+            <button class="profile-tab" data-tab="contract" type="button">Sözleşme</button>
+            <button class="profile-tab" data-tab="notes" type="button">Scout Notları</button>
         </div>
 
-        <!-- VİDEO PORTFOLIO -->
-        <h2 class="section-title">🎬 Video Portfolio</h2>
-        <div class="videos-grid">
-            <div class="video-card">
-                <div class="video-thumbnail">
-                    <div class="play-btn">▶</div>
+        <section class="tab-panel active" data-tab-panel="overview">
+            <div class="details-grid">
+                <div class="card">
+                    <h3 class="card-title">📝 Hakkında</h3>
+                    <p class="bio-text" id="bioText">
+                        Türkiye'nin en yetenekli forvet oyuncularından biri. Güçlü fizik yapısı, hızı ve gol yeteneği ile biliniyor.
+                    </p>
                 </div>
-                <div class="video-info">
-                    <div class="video-title">Sezon Özetleri</div>
-                    <a href="#" class="video-link">Videoyu izle →</a>
+                <div class="card" id="stats">
+                    <h3 class="card-title">📊 İstatistikler</h3>
+                    <div class="stats-list">
+                        <div class="stats-item"><span class="stats-label">Oynanan Maçlar</span><span class="stats-value" id="statMatches">28</span></div>
+                        <div class="stats-item"><span class="stats-label">Goller</span><span class="stats-value" id="statGoals">15</span></div>
+                        <div class="stats-item"><span class="stats-label">Asistler</span><span class="stats-value" id="statAssists">6</span></div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="video-card">
-                <div class="video-thumbnail">
-                    <div class="play-btn">▶</div>
+                <div class="card" id="achievements">
+                    <h3 class="card-title">🏆 Başarılar</h3>
+                    <div id="achievementList" style="display:grid;gap:10px;"></div>
                 </div>
-                <div class="video-info">
-                    <div class="video-title">Gol Koleksiyonu</div>
-                    <a href="#" class="video-link">Videoyu izle →</a>
-                </div>
-            </div>
-
-            <div class="video-card">
-                <div class="video-thumbnail">
-                    <div class="play-btn">▶</div>
-                </div>
-                <div class="video-info">
-                    <div class="video-title">Teknik Analiz</div>
-                    <a href="#" class="video-link">Videoyu izle →</a>
+                <div class="card">
+                    <h3 class="card-title">📧 İletişim</h3>
+                    <div class="stats-list">
+                        <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;">Mesaj Gönder</button>
+                        <button class="btn btn-secondary" style="width: 100%;">☎️ Menajer ile Görüş</button>
+                    </div>
                 </div>
             </div>
+        </section>
 
-            <div class="video-card">
-                <div class="video-thumbnail">
-                    <div class="play-btn">▶</div>
-                </div>
-                <div class="video-info">
-                    <div class="video-title">Maç Highlights</div>
-                    <a href="#" class="video-link">Videoyu izle →</a>
-                </div>
-            </div>
-        </div>
+        <section class="tab-panel" data-tab-panel="media">
+            <h2 class="section-title">📸 Foto Galerisi</h2>
+            <div class="gallery-grid" id="galleryGrid"></div>
+            <h2 class="section-title">🎬 Video Portfolyo</h2>
+            <div class="videos-grid" id="videosGrid"></div>
+        </section>
 
-        <!-- DETAYLAR -->
-        <div class="details-grid">
-            <!-- HAKKINDA -->
+        <section class="tab-panel" data-tab-panel="transfer">
+            <h2 class="section-title">🔁 Transfer Geçmişi</h2>
+            <table class="transfer-table">
+                <thead><tr><th>Sezon</th><th>Kulüp</th><th>Yeni Kulüp</th><th>Bedel</th></tr></thead>
+                <tbody id="transferHistoryBody"></tbody>
+            </table>
+        </section>
+
+        <section class="tab-panel" data-tab-panel="contract">
+            <h2 class="section-title">📄 Sözleşme</h2>
             <div class="card">
-                <h3 class="card-title">📝 Hakkında</h3>
-                <p class="bio-text" id="bioText">
-                    Türkiye'nin en yetenekli forvet oyuncularından biri. Güçlü fizik yapısı, hızı ve gol yeteneği ile biliniyor. 
-                    Milli takım da tecrübesi bulunan bu oyuncu, Avrupa'nın büyük kulüplerinin ilgisini çekmektedir.
-                </p>
-            </div>
-
-            <!-- İSTATİSTİKLER -->
-            <div class="card" id="stats">
-                <h3 class="card-title">📊 İstatistikler</h3>
                 <div class="stats-list">
-                    <div class="stats-item">
-                        <span class="stats-label">Oynan Maçlar</span>
-                        <span class="stats-value" id="statMatches">28</span>
-                    </div>
-                    <div class="stats-item">
-                        <span class="stats-label">Goller</span>
-                        <span class="stats-value" id="statGoals">15</span>
-                    </div>
-                    <div class="stats-item">
-                        <span class="stats-label">Asistler</span>
-                        <span class="stats-value" id="statAssists">6</span>
-                    </div>
+                    <div class="stats-item"><span class="stats-label">Durum</span><span class="stats-value" id="contractStatusValue">Sozlesmeli</span></div>
+                    <div class="stats-item"><span class="stats-label">Bitiş</span><span class="stats-value" id="contractEndValue">2027-06-30</span></div>
+                    <div class="stats-item"><span class="stats-label">Opsiyon</span><span class="stats-value" id="contractOptionValue">1 yil</span></div>
                 </div>
             </div>
+        </section>
 
-            <!-- BAŞARILAR -->
-            <div class="card" id="achievements">
-                <h3 class="card-title">🏆 Başarıları</h3>
-                <div style="display: grid; gap: 10px;">
-                    <div class="achievement-item">
-                        <div class="achievement-title">Lig Şampiyonu</div>
-                        <div class="achievement-text">2024 Süper Lig Şampiyonluğu</div>
-                    </div>
-                    <div class="achievement-item">
-                        <div class="achievement-title">En İyi Golcü</div>
-                        <div class="achievement-text">2023-2024 Sezonunda 15 Gol</div>
-                    </div>
-                    <div class="achievement-item">
-                        <div class="achievement-title">All-Star</div>
-                        <div class="achievement-text">2024 Yılında En İyi 11'e Girdi</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- İLETİŞİM -->
+        <section class="tab-panel" data-tab-panel="notes">
+            <h2 class="section-title">🧠 Scout Notları</h2>
             <div class="card">
-                <h3 class="card-title">📧 İletişim</h3>
-                <div class="stats-list">
-                    <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;">Mesaj Gönder</button>
-                    <button class="btn btn-secondary" style="width: 100%;">☎️ Aracı Ara</button>
-                </div>
+                <div id="scoutNotesList" style="display:grid;gap:10px;"></div>
             </div>
-        </div>
+        </section>
     </div>
 
+    <script src="assets/js/site-core.js"></script>
+    <script src="assets/js/growth-upgrade.js"></script>
     <script>
         function getApiBaseUrl() {
             if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
@@ -656,6 +657,96 @@
             heroImage.appendChild(img);
         }
 
+        function esc(value) {
+            return (value || '').toString()
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function renderTabs() {
+            const tabs = document.querySelectorAll('.profile-tab');
+            const panels = document.querySelectorAll('.tab-panel');
+            tabs.forEach((tab) => {
+                tab.addEventListener('click', () => {
+                    const key = tab.getAttribute('data-tab');
+                    tabs.forEach((t) => t.classList.toggle('active', t === tab));
+                    panels.forEach((p) => p.classList.toggle('active', p.getAttribute('data-tab-panel') === key));
+                });
+            });
+        }
+
+        function renderAdvancedPanels(data, sourceLabel) {
+            const meta = document.getElementById('playerDataMeta');
+            const stamp = window.NextScoutData?.sourceStamp
+                ? window.NextScoutData.sourceStamp(sourceLabel || 'Sistem', new Date())
+                : `Kaynak: ${sourceLabel || 'Sistem'} • Son guncelleme: ${new Date().toLocaleString('tr-TR')}`;
+            if (meta) meta.textContent = stamp;
+
+            const galleryGrid = document.getElementById('galleryGrid');
+            const galleryItems = Array.isArray(data?.gallery) && data.gallery.length
+                ? data.gallery
+                : ['📷','📷','📷','📷'];
+            if (galleryGrid) {
+                galleryGrid.innerHTML = galleryItems.map((item) => {
+                    const url = typeof item === 'string' ? item : (item?.url || '');
+                    if (/^https?:/i.test(url) || /^data:image\//i.test(url)) {
+                        return `<div class="gallery-item"><img src="${esc(url)}" alt="Oyuncu"></div>`;
+                    }
+                    return `<div class="gallery-item"><div class="gallery-item-empty">${esc(url || '📷')}</div></div>`;
+                }).join('');
+            }
+
+            const videosGrid = document.getElementById('videosGrid');
+            const videos = Array.isArray(data?.videos) && data.videos.length
+                ? data.videos
+                : [{ title: 'Sezon Ozeti', url: '#' }, { title: 'Gol Koleksiyonu', url: '#' }];
+            if (videosGrid) {
+                videosGrid.innerHTML = videos.map((v) => `
+                    <div class="video-card">
+                        <div class="video-thumbnail"><div class="play-btn">▶</div></div>
+                        <div class="video-info">
+                            <div class="video-title">${esc(v?.title || 'Video')}</div>
+                            <a href="${esc(v?.url || '#')}" class="video-link" target="_blank" rel="noopener">Videoyu izle →</a>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            const transferBody = document.getElementById('transferHistoryBody');
+            const transfers = Array.isArray(data?.transfers) && data.transfers.length
+                ? data.transfers
+                : [
+                    { season: '2025/26', from: 'Bakirkoy SK', to: 'Yeni Kulup', fee: '€250K' },
+                    { season: '2024/25', from: 'Altyapi', to: 'Bakirkoy SK', fee: 'Bedelsiz' },
+                ];
+            if (transferBody) {
+                transferBody.innerHTML = transfers.map((row) => `<tr><td>${esc(row.season)}</td><td>${esc(row.from)}</td><td>${esc(row.to)}</td><td>${esc(row.fee)}</td></tr>`).join('');
+            }
+
+            const achievementList = document.getElementById('achievementList');
+            const achievements = Array.isArray(data?.achievements) && data.achievements.length
+                ? data.achievements
+                : [{ title: 'Lig Sampiyonlugu', text: '2024 sezonu' }, { title: 'En Iyi Golcu', text: '15 gol' }];
+            if (achievementList) {
+                achievementList.innerHTML = achievements.map((a) => `<div class="achievement-item"><div class="achievement-title">${esc(a.title)}</div><div class="achievement-text">${esc(a.text)}</div></div>`).join('');
+            }
+
+            const notesRoot = document.getElementById('scoutNotesList');
+            const notes = Array.isArray(data?.scout_notes) && data.scout_notes.length
+                ? data.scout_notes
+                : [{ text: 'Bitiricilik guclu, hizli gecis oyununa uygun.', source: 'Scout Paneli' }];
+            if (notesRoot) {
+                notesRoot.innerHTML = notes.map((n) => `<div class="achievement-item"><div class="achievement-title">${esc(n.text || '-')}</div><div class="achievement-text">Kaynak: ${esc(n.source || 'Scout')}</div></div>`).join('');
+            }
+
+            setText('contractStatusValue', (data?.contract_status === 'free' || data?.contractStatus === 'free') ? 'Bosta' : 'Sozlesmeli');
+            setText('contractEndValue', data?.contract_end || '2027-06-30');
+            setText('contractOptionValue', data?.contract_option || '1 yil');
+        }
+
         function renderLocalProfile() {
             const savedProfile = localStorage.getItem('playerProfile');
             const savedPhoto = localStorage.getItem('playerPhoto');
@@ -682,12 +773,14 @@
                     setText('contractStatusBadge', data.contract_status === 'free' ? 'Bosta' : 'Sozlesmeli');
                     setText('seekingClubBadge', data.seeking_club ? 'Kulup Ariyor' : 'Kulup Aramiyor');
                     setText('currentClubBadge', `Kulup: ${data.current_club || '-'}`);
+                    renderAdvancedPanels(data, 'Local Profil');
                 } catch (e) {
                     console.error('Profile parse hatası:', e);
                 }
             }
 
             if (savedPhoto) setHeroImage(savedPhoto);
+            if (!savedProfile) renderAdvancedPanels({}, 'Local Profil');
         }
 
         function renderPublicProfile(payload) {
@@ -723,6 +816,15 @@
             setText('currentClubBadge', `Kulup: ${currentClub}`);
 
             if (card.profile_photo_url) setHeroImage(card.profile_photo_url);
+            renderAdvancedPanels({
+                contract_status: profile.contract_status || 'active',
+                contract_end: profile.contract_expires || profile.contract_end || '',
+                transfers: payload?.transfers || [],
+                scout_notes: payload?.scout_notes || [],
+                videos: payload?.videos || [],
+                gallery: payload?.gallery || [],
+                achievements: payload?.achievements || [],
+            }, 'API /public/players/{id}/profile');
         }
 
         async function loadProfileData() {
@@ -756,8 +858,12 @@
         }
 
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', loadProfileData);
+            document.addEventListener('DOMContentLoaded', () => {
+                renderTabs();
+                loadProfileData();
+            });
         } else {
+            renderTabs();
             loadProfileData();
         }
     </script>
