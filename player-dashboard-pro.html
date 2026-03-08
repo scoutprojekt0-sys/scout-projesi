@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oyuncu Dashboard - NextScout Pro</title>
+    <meta name="description" content="NextScout player dashboard pro sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="https://nextscout.app/player-dashboard-pro.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Oyuncu Dashboard - NextScout Pro">
+    <meta property="og:description" content="NextScout player dashboard pro sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/player-dashboard-pro.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Oyuncu Dashboard - NextScout Pro">
+    <meta name="twitter:description" content="NextScout player dashboard pro sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -791,7 +806,7 @@
             if (modal) modal.style.display = 'none';
         }
 
-        document.getElementById('boostFormPro').addEventListener('submit', function(e) {
+        document.getElementById('boostFormPro')?.addEventListener('submit', function(e) {
             e.preventDefault();
             const approved = document.getElementById('boostApprovePro').checked;
             const cardLast4 = (document.getElementById('boostCardLast4Pro').value || '').trim();
@@ -838,7 +853,13 @@
             }
         }
     </script>
+    <script src="assets/js/core-stability.js"></script>
 </body>
 </html>
+
+
+
+
+
 
 

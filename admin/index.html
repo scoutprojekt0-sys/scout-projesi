@@ -1,0 +1,1094 @@
+﻿﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - NextScout</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .top-navbar {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0 20px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex: 1;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            min-width: 150px;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+
+        .nav-icon:hover {
+            background: #e5e7eb;
+            transform: scale(1.05);
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 20px;
+            padding: 20px;
+            min-height: calc(100vh - 70px);
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            height: fit-content;
+            position: sticky;
+            top: 90px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #9ca3af;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-item {
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .sidebar-item:hover {
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .sidebar-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 500;
+        }
+
+        .sidebar-item-icon {
+            font-size: 18px;
+            min-width: 20px;
+        }
+
+        .admin-section {
+            border-top: 2px solid #e5e7eb;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+
+        .admin-section .sidebar-title {
+            color: #dc2626;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .welcome-left h1 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .welcome-right {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-top: 3px solid #dc2626;
+        }
+
+        .stat-card-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #dc2626;
+            margin-bottom: 8px;
+        }
+
+        .stat-card-label {
+            font-size: 13px;
+            color: #9ca3af;
+            text-transform: uppercase;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1f2937;
+        }
+
+        .user-list-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .user-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .user-role {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-player {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+        }
+
+        .badge-admin {
+            background: rgba(220, 38, 38, 0.15);
+            color: #dc2626;
+        }
+
+        .badge-manager {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+
+        .badge-coach {
+            background: rgba(139, 92, 246, 0.15);
+            color: #8b5cf6;
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-card {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                padding: 15px;
+            }
+
+            .quick-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- TOP NAVBAR -->
+    <div class="top-navbar">
+        <div class="navbar-left">
+            <div class="logo">⚽ Scout Platform</div>
+        </div>
+        <div class="navbar-right">
+            <div class="nav-icon">🔔</div>
+            <div class="nav-icon">👤</div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="main-container">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">📋 Navigasyon</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item active">
+                        <span class="sidebar-item-icon">🏠</span>
+                        <span>Dashboard</span>
+                    </li>
+                    <li class="sidebar-item">
+                        <span class="sidebar-item-icon">👥</span>
+                        <span>Kullanıcılar</span>
+                    </li>
+                    <li class="sidebar-item">
+                        <span class="sidebar-item-icon">⚽</span>
+                        <span>Oyuncular</span>
+                    </li>
+                    <li class="sidebar-item">
+                        <span class="sidebar-item-icon">🏆</span>
+                        <span>Takımlar</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">📊 Verilerim</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item">
+                        <span class="sidebar-item-icon">📈</span>
+                        <span>Raporlar</span>
+                    </li>
+                    <li class="sidebar-item">
+                        <span class="sidebar-item-icon">⚙️</span>
+                        <span>Ayarlar</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-section admin-section">
+                <div class="sidebar-title">🔐 ADMIN İŞLEMLERİ</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item" onclick="alert('🗑️ Kullanıcı silme sayfası açılacak')">
+                        <span class="sidebar-item-icon">🗑️</span>
+                        <span>Sil/Kapat</span>
+                    </li>
+                    <li class="sidebar-item" onclick="alert('🔒 Rol değiştirme sayfası açılacak')">
+                        <span class="sidebar-item-icon">🔒</span>
+                        <span>Rol Değiştir</span>
+                    </li>
+                    <li class="sidebar-item" onclick="alert('📊 Sistem logları açılacak')">
+                        <span class="sidebar-item-icon">📋</span>
+                        <span>Loglar</span>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- CONTENT -->
+        <div class="content">
+            <!-- WELCOME CARD -->
+            <div class="welcome-card">
+                <div class="welcome-left">
+                    <h1>👑 Admin Paneline Hoş Geldiniz</h1>
+                    <p style="margin: 0; font-size: 16px; line-height: 1.6;">Sistemi yönet, kullanıcıları kontrol et ve raporları incele.</p>
+                </div>
+                <div class="welcome-right">
+                    <div class="stat-box">
+                        <div class="stat-value" id="totalUsers">0</div>
+                        <div class="stat-label">Toplam Kullanıcı</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="totalPlayers">0</div>
+                        <div class="stat-label">Oyuncular</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="totalTeams">0</div>
+                        <div class="stat-label">Takımlar</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="totalAdmins">0</div>
+                        <div class="stat-label">Admin</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUICK STATS -->
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-card-value">📱</div>
+                    <div class="stat-card-label">Aktif Oturum</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-value">⚠️</div>
+                    <div class="stat-card-label">Uyarılar</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-value">✅</div>
+                    <div class="stat-card-label">Sistem Durumu</div>
+                </div>
+            </div>
+
+            <!-- MAIN GRID -->
+            <div class="dashboard-grid">
+                <!-- RECENT USERS -->
+                <div class="card">
+                    <div class="card-title">👥 Son Kayıtlı Kullanıcılar</div>
+                    <div id="recentUsers">
+                        <div class="user-list-item">
+                            <div class="user-avatar">A</div>
+                            <div class="user-info">
+                                <div class="user-name">Ahmet Yılmaz</div>
+                                <div class="user-role">player • 2 saat önce</div>
+                            </div>
+                            <span class="badge badge-player">Player</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROLE DISTRIBUTION -->
+                <div class="card">
+                    <div class="card-title">🏷️ Rol Dağılımı</div>
+                    <div id="roleStats">
+                        <div style="display: grid; gap: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f3f4f6;">
+                                <span style="font-size: 13px; color: #6b7280;">Oyuncular</span>
+                                <span style="font-weight: 700; color: #3b82f6;">0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f3f4f6;">
+                                <span style="font-size: 13px; color: #6b7280;">Admin</span>
+                                <span style="font-weight: 700; color: #dc2626;">0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f3f4f6;">
+                                <span style="font-size: 13px; color: #6b7280;">Menejer</span>
+                                <span style="font-weight: 700; color: #f59e0b;">0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
+                                <span style="font-size: 13px; color: #6b7280;">Antrenör</span>
+                                <span style="font-weight: 700; color: #8b5cf6;">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "http://127.0.0.1:9000/api";
+
+        async function loadAdminStats() {
+            try {
+                const token = localStorage.getItem("nextscout_token");
+                if (!token) {
+                    window.location.href = "../index.html";
+                    return;
+                }
+
+                const response = await fetch(`${API_BASE}/users?per_page=1`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+
+                const data = await response.json();
+                if (data.ok && data.data) {
+                    document.getElementById("totalUsers").textContent = data.data.total || 0;
+                    
+                    // Mock role distribution
+                    document.getElementById("totalPlayers").textContent = Math.floor((data.data.total || 0) * 0.7);
+                    document.getElementById("totalTeams").textContent = Math.floor((data.data.total || 0) * 0.2);
+                    document.getElementById("totalAdmins").textContent = Math.floor((data.data.total || 0) * 0.1);
+                }
+            } catch (error) {
+                console.log("Stats yüklenemedi");
+            }
+        }
+
+        loadAdminStats();
+    </script>
+</body>
+</html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel | NextScout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #061329;
+      --bg-soft: #0b2242;
+      --surface: #0f2c55;
+      --surface-2: #153a6f;
+      --line: #2a5d9f;
+      --text: #f1f7ff;
+      --muted: #9bb7de;
+      --primary: #29a4ff;
+      --primary-2: #6cc6ff;
+      --ok: #52e0c1;
+      --error: #ff5a5a;
+      --max: 1200px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 12%, rgba(57, 140, 255, 0.28) 0%, transparent 32%),
+        radial-gradient(circle at 92% 0%, rgba(85, 184, 255, 0.2) 0%, transparent 28%),
+        linear-gradient(145deg, #051024, var(--bg));
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: min(var(--max), 94%);
+      margin: 0 auto;
+      padding: 24px 0 48px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(66, 118, 184, 0.35);
+    }
+
+    .brand {
+      margin: 0;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      font-size: 1.2rem;
+    }
+
+    .brand span { color: var(--primary); }
+
+    .logout-btn {
+      border: 1px solid rgba(79, 152, 237, 0.55);
+      border-radius: 10px;
+      background: rgba(18, 53, 96, 0.45);
+      color: #d8e9ff;
+      padding: 8px 16px;
+      font: inherit;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .logout-btn:hover {
+      background: rgba(18, 53, 96, 0.65);
+      border-color: rgba(108, 198, 255, 0.65);
+    }
+
+    h1 {
+      margin: 0 0 20px;
+      font-size: 1.8rem;
+      font-weight: 800;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      border: 1px solid rgba(66, 118, 184, 0.45);
+      border-radius: 14px;
+      background: linear-gradient(160deg, rgba(17, 45, 86, 0.88), rgba(10, 29, 58, 0.92));
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .stat-card:hover {
+      border-color: rgba(108, 198, 255, 0.65);
+      transform: translateY(-2px);
+    }
+
+    .stat-card.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(41, 164, 255, 0.2);
+    }
+
+    .stat-label {
+      margin: 0 0 8px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+      margin: 0;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--primary-2);
+    }
+
+    .users-panel {
+      border: 1px solid rgba(66, 118, 184, 0.45);
+      border-radius: 14px;
+      background: linear-gradient(160deg, rgba(17, 45, 86, 0.88), rgba(10, 29, 58, 0.92));
+      padding: 20px;
+      display: none;
+    }
+
+    .users-panel.show {
+      display: block;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 800;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 8px;
+      flex: 1;
+      max-width: 400px;
+    }
+
+    .search-input {
+      flex: 1;
+      border: 1px solid rgba(79, 152, 237, 0.55);
+      border-radius: 10px;
+      background: rgba(8, 21, 40, 0.7);
+      color: #e4f2ff;
+      padding: 8px 12px;
+      font: inherit;
+      font-size: 0.88rem;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+    }
+
+    .search-btn {
+      border: 1px solid rgba(79, 152, 237, 0.55);
+      border-radius: 10px;
+      background: var(--primary);
+      color: #03203e;
+      padding: 8px 16px;
+      font: inherit;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .users-table-wrap {
+      overflow-x: auto;
+      border: 1px solid rgba(66, 118, 184, 0.35);
+      border-radius: 10px;
+      margin-bottom: 16px;
+    }
+
+    .users-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    .users-table th {
+      background: rgba(18, 53, 96, 0.55);
+      color: #bfe0ff;
+      text-align: left;
+      padding: 12px 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid rgba(66, 118, 184, 0.35);
+    }
+
+    .users-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(66, 118, 184, 0.25);
+      color: #d8e9ff;
+    }
+
+    .users-table tr:hover td {
+      background: rgba(18, 53, 96, 0.25);
+    }
+
+    .role-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .role-badge.player { background: rgba(41, 164, 255, 0.25); color: #6cc6ff; }
+    .role-badge.manager { background: rgba(255, 180, 0, 0.25); color: #ffb400; }
+    .role-badge.coach { background: rgba(82, 224, 193, 0.25); color: #52e0c1; }
+    .role-badge.team { background: rgba(255, 90, 90, 0.25); color: #ff5a5a; }
+    .role-badge.scout { background: rgba(180, 140, 255, 0.25); color: #b48cff; }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pagination button {
+      border: 1px solid rgba(79, 152, 237, 0.55);
+      border-radius: 8px;
+      background: rgba(18, 53, 96, 0.45);
+      color: #d8e9ff;
+      padding: 8px 14px;
+      font: inherit;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+
+    .pagination button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .pagination button:not(:disabled):hover {
+      background: rgba(18, 53, 96, 0.65);
+      border-color: var(--primary);
+    }
+
+    .page-info {
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .loading,
+    .empty-state,
+    .error-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+
+    .error-state {
+      color: var(--error);
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, rgba(43, 70, 96, 0.3) 25%, rgba(66, 118, 184, 0.2) 50%, rgba(43, 70, 96, 0.3) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 6px;
+      height: 18px;
+      margin: 6px 0;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .panel-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .search-box {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="header">
+      <h1 class="brand">next<span>scout</span> <small style="font-size:0.65rem;opacity:0.7;">admin</small></h1>
+      <a href="../index.html" class="logout-btn">← Anasayfa</a>
+    </header>
+
+    <h1>Üye Yönetimi</h1>
+
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card" data-role="all">
+        <p class="stat-label">Toplam Üye</p>
+        <p class="stat-value" id="totalAll">-</p>
+      </div>
+      <div class="stat-card" data-role="player">
+        <p class="stat-label">🏃 Oyuncular</p>
+        <p class="stat-value" id="totalPlayers">-</p>
+      </div>
+      <div class="stat-card" data-role="manager">
+        <p class="stat-label">💼 Menejerler</p>
+        <p class="stat-value" id="totalManagers">-</p>
+      </div>
+      <div class="stat-card" data-role="coach">
+        <p class="stat-label">🎯 Antrenörler</p>
+        <p class="stat-value" id="totalCoaches">-</p>
+      </div>
+      <div class="stat-card" data-role="team">
+        <p class="stat-label">⚽ Takımlar</p>
+        <p class="stat-value" id="totalTeams">-</p>
+      </div>
+      <div class="stat-card" data-role="scout">
+        <p class="stat-label">🔍 Scout'lar</p>
+        <p class="stat-value" id="totalScouts">-</p>
+      </div>
+    </div>
+
+    <div class="users-panel" id="usersPanel">
+      <div class="panel-header">
+        <h2 class="panel-title" id="panelTitle">Tüm Üyeler</h2>
+        <div class="search-box">
+          <input type="text" class="search-input" id="searchInput" placeholder="İsim veya e-posta ara...">
+          <button class="search-btn" id="searchBtn">Ara</button>
+        </div>
+      </div>
+
+      <div id="tableContent">
+        <div class="loading">Yükleniyor...</div>
+      </div>
+
+      <div class="pagination" id="pagination" style="display:none;">
+        <button id="prevBtn">← Önceki</button>
+        <span class="page-info" id="pageInfo">-</span>
+        <button id="nextBtn">Sonraki →</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const API_BASE = "http://127.0.0.1:8000/api";
+
+      let currentRole = null;
+      let currentPage = 1;
+      let currentSearch = "";
+      const perPage = 20;
+
+      const statsGrid = document.getElementById("statsGrid");
+      const usersPanel = document.getElementById("usersPanel");
+      const panelTitle = document.getElementById("panelTitle");
+      const tableContent = document.getElementById("tableContent");
+      const pagination = document.getElementById("pagination");
+      const pageInfo = document.getElementById("pageInfo");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const searchInput = document.getElementById("searchInput");
+      const searchBtn = document.getElementById("searchBtn");
+
+      const roleTitles = {
+        all: "Tüm Üyeler",
+        player: "Oyuncular",
+        manager: "Menejerler",
+        coach: "Antrenörler",
+        team: "Takımlar",
+        scout: "Scout'lar",
+      };
+
+      async function fetchUsers(role, page, search) {
+        try {
+          const params = new URLSearchParams();
+          if (role && role !== "all") params.set("role", role);
+          if (search) params.set("search", search);
+          params.set("per_page", perPage);
+          params.set("page", page);
+
+          const url = `${API_BASE}/users?${params.toString()}`;
+          const response = await fetch(url);
+          const payload = await response.json();
+
+          if (!response.ok || !payload.ok) {
+            throw new Error(payload.message || "API hatası");
+          }
+
+          return payload.data;
+        } catch (error) {
+          console.error("API error:", error);
+          throw error;
+        }
+      }
+
+      async function loadStats() {
+        try {
+          const [all, players, managers, coaches, teams, scouts] = await Promise.all([
+            fetchUsers(null, 1, ""),
+            fetchUsers("player", 1, ""),
+            fetchUsers("manager", 1, ""),
+            fetchUsers("coach", 1, ""),
+            fetchUsers("team", 1, ""),
+            fetchUsers("scout", 1, ""),
+          ]);
+
+          document.getElementById("totalAll").textContent = all.total || 0;
+          document.getElementById("totalPlayers").textContent = players.total || 0;
+          document.getElementById("totalManagers").textContent = managers.total || 0;
+          document.getElementById("totalCoaches").textContent = coaches.total || 0;
+          document.getElementById("totalTeams").textContent = teams.total || 0;
+          document.getElementById("totalScouts").textContent = scouts.total || 0;
+        } catch (error) {
+          console.error("Stats error:", error);
+          document.querySelectorAll(".stat-value").forEach((el) => (el.textContent = "?"));
+        }
+      }
+
+      function renderTable(users) {
+        if (!users || users.length === 0) {
+          return `<div class="empty-state">Sonuç bulunamadı.</div>`;
+        }
+
+        let html = `<div class="users-table-wrap"><table class="users-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Ad Soyad</th>
+              <th>E-posta</th>
+              <th>Rol</th>
+              <th>Kayıt Tarihi</th>
+            </tr>
+          </thead>
+          <tbody>`;
+
+        users.forEach((user) => {
+          const date = new Date(user.created_at);
+          const dateStr = date.toLocaleDateString("tr-TR");
+          html += `<tr>
+            <td>${user.id}</td>
+            <td>${user.name || "-"}</td>
+            <td>${user.email || "-"}</td>
+            <td><span class="role-badge ${user.role}">${user.role}</span></td>
+            <td>${dateStr}</td>
+          </tr>`;
+        });
+
+        html += `</tbody></table></div>`;
+        return html;
+      }
+
+      function renderPagination(paginationData) {
+        const current = paginationData.current_page;
+        const last = paginationData.last_page;
+        const from = paginationData.from || 0;
+        const to = paginationData.to || 0;
+        const total = paginationData.total || 0;
+
+        pageInfo.textContent = `${from}-${to} / ${total}`;
+        prevBtn.disabled = current <= 1;
+        nextBtn.disabled = current >= last;
+
+        pagination.style.display = "flex";
+      }
+
+      async function loadUsers() {
+        try {
+          tableContent.innerHTML = `<div class="loading">Yükleniyor...</div>`;
+          pagination.style.display = "none";
+
+          const data = await fetchUsers(currentRole, currentPage, currentSearch);
+
+          tableContent.innerHTML = renderTable(data.data);
+          renderPagination(data);
+        } catch (error) {
+          tableContent.innerHTML = `<div class="error-state">❌ ${error.message || "API çalışmıyor. Sunucuyu başlatın."}</div>`;
+          pagination.style.display = "none";
+        }
+      }
+
+      function selectRole(role) {
+        currentRole = role === "all" ? null : role;
+        currentPage = 1;
+        currentSearch = "";
+        searchInput.value = "";
+
+        document.querySelectorAll(".stat-card").forEach((card) => {
+          card.classList.toggle("active", card.dataset.role === role);
+        });
+
+        panelTitle.textContent = roleTitles[role] || "Üyeler";
+        usersPanel.classList.add("show");
+        loadUsers();
+      }
+
+      statsGrid.addEventListener("click", (e) => {
+        const card = e.target.closest(".stat-card");
+        if (card) {
+          selectRole(card.dataset.role);
+        }
+      });
+
+      searchBtn.addEventListener("click", () => {
+        currentSearch = searchInput.value.trim();
+        currentPage = 1;
+        loadUsers();
+      });
+
+      searchInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          searchBtn.click();
+        }
+      });
+
+      prevBtn.addEventListener("click", () => {
+        if (currentPage > 1) {
+          currentPage--;
+          loadUsers();
+        }
+      });
+
+      nextBtn.addEventListener("click", () => {
+        currentPage++;
+        loadUsers();
+      });
+
+      loadStats();
+    })();
+  </script>
+</body>
+</html>

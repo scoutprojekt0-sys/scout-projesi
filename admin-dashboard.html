@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - NextScout</title>
+    <meta name="description" content="NextScout admin dashboard sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="https://nextscout.app/admin-dashboard.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Admin Dashboard - NextScout">
+    <meta property="og:description" content="NextScout admin dashboard sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/admin-dashboard.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Admin Dashboard - NextScout">
+    <meta name="twitter:description" content="NextScout admin dashboard sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -42,6 +57,7 @@
         .users-table th { background: #FEF2F2; color: #991B1B; font-weight: 700; text-align: left; padding: 12px; border-bottom: 2px solid #FEE2E2; }
         .users-table td { padding: 12px; border-bottom: 1px solid #F3F4F6; }
         .users-table tr:hover { background: #FEFCE8; }
+        .message-cell { max-width: 520px; white-space: pre-wrap; overflow-wrap: anywhere; }
         
         .badge { padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
         .badge-success { background: #D1FAE5; color: #065F46; }
@@ -115,6 +131,24 @@
                 <a href="#" class="btn btn-secondary"><i class="fas fa-cog"></i> Sistem Ayarları</a>
                 <a href="#" class="btn btn-secondary"><i class="fas fa-database"></i> Yedek Al</a>
             </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title"><i class="fas fa-envelope-open-text"></i> Iletisim Mesajlari</div>
+            <div class="action-buttons" style="margin-bottom:12px;">
+                <button class="btn btn-secondary" type="button" onclick="loadContactMessages()"><i class="fas fa-rotate"></i> Mesajlari Yenile</button>
+            </div>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Ad Soyad</th>
+                        <th>E-posta</th>
+                        <th>Mesaj</th>
+                        <th>Tarih</th>
+                    </tr>
+                </thead>
+                <tbody id="contactMessagesBody"></tbody>
+            </table>
         </div>
 
         <!-- Google Entegrasyonu -->
@@ -352,6 +386,54 @@
             }).join('');
         }
 
+        async function loadContactMessages() {
+            const tbody = document.getElementById('contactMessagesBody');
+            if (!tbody) return;
+
+            let rows = [];
+            const apiBase = getApiBaseUrl();
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+
+            if (token) {
+                try {
+                    const response = await fetch(`${apiBase}/admin/contact-messages?per_page=100`, {
+                        headers: {
+                            Accept: 'application/json',
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    const payload = await response.json().catch(() => ({}));
+                    if (response.ok && payload?.ok !== false) {
+                        rows = Array.isArray(payload?.data?.data) ? payload.data.data : [];
+                    }
+                } catch (error) {
+                    rows = [];
+                }
+            }
+
+            if (!rows.length) {
+                try {
+                    rows = JSON.parse(localStorage.getItem('nextscout_contact_messages') || '[]');
+                } catch (error) {
+                    rows = [];
+                }
+            }
+
+            if (!Array.isArray(rows) || rows.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#64748B;">Henuz iletisim mesaji yok.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = rows.map((row) => `
+                <tr>
+                    <td><strong>${escapeHtml(row?.name || '-')}</strong></td>
+                    <td>${escapeHtml(row?.email || '-')}</td>
+                    <td class="message-cell">${escapeHtml(row?.message || '-')}</td>
+                    <td>${formatDate(row?.created_at)}</td>
+                </tr>
+            `).join('');
+        }
+
         function getApiBaseUrl() {
             if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
             return '/api';
@@ -431,6 +513,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             loadPendingUsers();
+            loadContactMessages();
             loadTrialModerationQueue();
         });
 
@@ -566,7 +649,12 @@
 
         document.addEventListener('DOMContentLoaded', loadAmateurResults);
     </script>
+    <script src="assets/js/core-stability.js"></script>
 </body>
 </html>
+
+
+
+
 
 

@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayarlar - NextScout</title>
+    <meta name="description" content="NextScout settings sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="https://nextscout.app/settings.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Ayarlar - NextScout">
+    <meta property="og:description" content="NextScout settings sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/settings.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Ayarlar - NextScout">
+    <meta name="twitter:description" content="NextScout settings sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+  <style>
+    :root{--bg:#f8fafc;--card:#fff;--line:#dbeafe;--text:#0f172a;--muted:#64748b;--primary:#2563eb;}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
+    .wrap{max-width:980px;margin:0 auto;padding:24px 16px}
+    .head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+    .title{margin:0;font-size:30px;font-weight:800}
+    .sub{margin-top:6px;color:var(--muted);font-size:14px}
+    .btn{border:1px solid var(--line);background:#fff;color:var(--primary);padding:10px 14px;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+    .card h3{margin:0 0 10px 0;font-size:17px}
+    .row{display:grid;grid-template-columns:180px 1fr;gap:10px;align-items:center;margin:10px 0}
+    .row label{font-size:13px;color:#334155;font-weight:700}
+    input,select{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;outline:none}
+    input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+    .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+    .btn-primary{background:var(--primary);border-color:var(--primary);color:#fff}
+    @media(max-width:760px){.row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <h1 class="title">Ayarlar</h1>
+        <div class="sub">Hesap ve görünüm tercihlerini buradan yönetebilirsin.</div>
+      </div>
+      <a href="DASHBOARD_DESIGN.html" class="btn">← Dashboard</a>
+    </div>
+
+    <div class="card">
+      <h3>Hesap Ayarları</h3>
+      <div class="row"><label>Görünen İsim</label><input id="displayName" type="text" placeholder="Görünen isim"></div>
+      <div class="row"><label>E-posta</label><input id="email" type="email" placeholder="mail@example.com"></div>
+      <div class="row"><label>Dil</label>
+        <select id="lang"><option value="tr">Türkçe</option><option value="en">English</option></select>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Uygulama Tercihleri</h3>
+      <div class="row"><label>Bildirimler</label><select id="notify"><option value="on">Açık</option><option value="off">Kapalı</option></select></div>
+      <div class="row"><label>Profil Görünürlüğü</label><select id="visibility"><option value="public">Herkese Açık</option><option value="private">Sadece Bağlantılar</option></select></div>
+      <div class="actions">
+        <button class="btn" id="resetBtn">Sıfırla</button>
+        <button class="btn btn-primary" id="saveBtn">Kaydet</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Şifre Değiştir</h3>
+      <div class="row"><label>Mevcut Şifre</label><input id="currentPassword" type="password" placeholder="Mevcut şifren"></div>
+      <div class="row"><label>Yeni Şifre</label><input id="newPassword" type="password" placeholder="En az 6 karakter"></div>
+      <div class="row"><label>Yeni Şifre (Tekrar)</label><input id="confirmPassword" type="password" placeholder="Yeni şifreyi tekrar yaz"></div>
+      <div class="actions">
+        <button class="btn btn-primary" id="changePasswordBtn">Şifreyi Güncelle</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const KEY='nextscout_settings';
+    function load(){
+      const userRaw=localStorage.getItem('nextscout_user');
+      const user=userRaw?JSON.parse(userRaw):{};
+      const sRaw=localStorage.getItem(KEY);
+      const s=sRaw?JSON.parse(sRaw):{};
+      document.getElementById('displayName').value=s.displayName||user.name||'';
+      document.getElementById('email').value=s.email||user.email||'';
+      document.getElementById('lang').value=s.lang||'tr';
+      document.getElementById('notify').value=s.notify||'on';
+      document.getElementById('visibility').value=s.visibility||'public';
+    }
+    function save(){
+      const data={
+        displayName:document.getElementById('displayName').value.trim(),
+        email:document.getElementById('email').value.trim(),
+        lang:document.getElementById('lang').value,
+        notify:document.getElementById('notify').value,
+        visibility:document.getElementById('visibility').value
+      };
+      localStorage.setItem(KEY,JSON.stringify(data));
+      try{
+        const uRaw=localStorage.getItem('nextscout_user');
+        const u=uRaw?JSON.parse(uRaw):{};
+        u.name=data.displayName||u.name||'Oyuncu';
+        u.email=data.email||u.email||'';
+        localStorage.setItem('nextscout_user',JSON.stringify(u));
+      }catch(e){}
+      alert('Ayarlar kaydedildi.');
+    }
+    function reset(){ localStorage.removeItem(KEY); load(); }
+    function changePassword(){
+      const current = document.getElementById('currentPassword').value;
+      const next = document.getElementById('newPassword').value;
+      const confirm = document.getElementById('confirmPassword').value;
+
+      if(!current || !next || !confirm){
+        alert('Lütfen tüm şifre alanlarını doldur.');
+        return;
+      }
+      if(next.length < 6){
+        alert('Yeni şifre en az 6 karakter olmalı.');
+        return;
+      }
+      if(next !== confirm){
+        alert('Yeni şifreler eşleşmiyor.');
+        return;
+      }
+
+      const userRaw = localStorage.getItem('nextscout_user');
+      const user = userRaw ? JSON.parse(userRaw) : {};
+      const email = (user.email || document.getElementById('email').value || '').trim().toLowerCase();
+      if(!email){
+        alert('Hesap e-postası bulunamadı.');
+        return;
+      }
+
+      const key = 'nextscout_registered_users';
+      const listRaw = localStorage.getItem(key);
+      const list = listRaw ? JSON.parse(listRaw) : [];
+      const idx = list.findIndex(x => (x.email || '').toLowerCase() === email);
+
+      if(idx === -1){
+        alert('Bu hesap için yerel kayıt bulunamadı. (Sadece local kayıtlar güncellenir)');
+        return;
+      }
+      if((list[idx].password || '') !== current){
+        alert('Mevcut şifre yanlış.');
+        return;
+      }
+
+      list[idx].password = next;
+      localStorage.setItem(key, JSON.stringify(list));
+      document.getElementById('currentPassword').value = '';
+      document.getElementById('newPassword').value = '';
+      document.getElementById('confirmPassword').value = '';
+      alert('Şifre başarıyla güncellendi.');
+    }
+    document.getElementById('saveBtn')?.addEventListener('click',save);
+    document.getElementById('resetBtn')?.addEventListener('click',reset);
+    document.getElementById('changePasswordBtn')?.addEventListener('click',changePassword);
+    load();
+  </script>
+    <script src="assets/js/core-stability.js"></script>
+</body>
+</html>
+
+
+
+
+

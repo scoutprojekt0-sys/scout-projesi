@@ -4,6 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mesajlarım - NextScout</title>
+  <meta name="description" content="Mesaj ve bildirim merkezi: teklifler, duyurular ve sistem bildirimlerini tek ekranda gorun.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="canonical" href="https://nextscout.app/notifications.html">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:site_name" content="NextScout">
+  <meta property="og:title" content="Mesajlar ve Bildirimler | NextScout">
+  <meta property="og:description" content="Mesaj ve bildirim merkezi: teklifler, duyurular ve sistem bildirimlerini tek ekranda gorun.">
+  <meta property="og:url" content="https://nextscout.app/notifications.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+  <meta name="theme-color" content="#2563eb">
   <style>
     :root {
       --bg: #f8fafc;
@@ -545,13 +558,13 @@
         </div>
       `;
 
-      document.getElementById('toggleReadBtn').addEventListener('click', () => {
+      document.getElementById('toggleReadBtn')?.addEventListener('click', () => {
         msg.read = !msg.read;
         saveMessages(state.messages);
         render();
       });
 
-      document.getElementById('deleteBtn').addEventListener('click', () => {
+      document.getElementById('deleteBtn')?.addEventListener('click', () => {
         state.messages = state.messages.filter(x => x.id !== msg.id);
         saveMessages(state.messages);
         state.selectedId = null;
@@ -579,5 +592,11 @@
 
     render();
   </script>
+    <script src="assets/js/core-stability.js"></script>
 </body>
 </html>
+
+
+
+
+

@@ -1,91 +1,394 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Canli Maclar - NextScout</title>
+  <title>Lig Mac Sonuclari - NextScout</title>
+  <meta name="description" content="Canli mac akisi, skor guncellemeleri ve lig bazli sonuc gorunumleri.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://nextscout.app/live-matches.html">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:site_name" content="NextScout">
+  <meta property="og:title" content="Lig Mac Sonuclari | NextScout">
+  <meta property="og:description" content="Canli mac akisi, skor guncellemeleri ve lig bazli sonuc gorunumleri.">
+  <meta property="og:url" content="https://nextscout.app/live-matches.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-matches.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Lig Mac Sonuclari | NextScout">
+  <meta name="twitter:description" content="Canli mac akisi, skor guncellemeleri ve lig bazli sonuc gorunumleri.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-matches.jpg">
+  <meta name="theme-color" content="#0B3B8A">
   <style>
-    body{font-family:Inter,Arial,sans-serif;background:#f8fafc;color:#1f2937;margin:0}
-    .wrap{max-width:900px;margin:0 auto;padding:24px}
-    .top{display:flex;justify-content:space-between;align-items:center}
-    a{color:#2563eb;text-decoration:none}
-    .card{background:#fff;border:1px solid #dbeafe;border-radius:10px;padding:14px;margin-top:12px}
-    .card.live{border-color:#93c5fd;background:#eff6ff}
-    .tag{display:inline-block;padding:4px 8px;border-radius:999px;background:#1d4ed8;color:#fff;font-size:11px;font-weight:700;margin-bottom:8px}
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #dbe7f5;
+      --accent: #0b3b8a;
+      --ok: #14532d;
+      --ok-bg: #dcfce7;
+      --warn: #854d0e;
+      --warn-bg: #fef3c7;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background:
+        radial-gradient(circle at 20% 0%, #dbeafe 0%, transparent 28%),
+        radial-gradient(circle at 80% 0%, #e2e8f0 0%, transparent 24%),
+        var(--bg);
+    }
+
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 24px; }
+
+    .hero {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px 20px;
+      background: linear-gradient(130deg, #0f2f6c 0%, #123f8b 55%, #1e3a8a 100%);
+      color: #fff;
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.14);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .hero h1 { margin: 0; font-size: 28px; letter-spacing: .2px; }
+    .hero p { margin: 6px 0 0; opacity: 0.9; font-size: 14px; }
+
+    .home-link {
+      color: #fff;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.45);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      background: rgba(255,255,255,0.09);
+    }
+
+    .stats {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .stat .k { color: var(--muted); font-size: 12px; }
+    .stat .v { margin-top: 6px; font-size: 24px; font-weight: 700; color: var(--accent); }
+
+    .grid {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .headline-shell {
+      margin-top: 14px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .news-square {
+      width: 350px;
+      height: 350px;
+      background: linear-gradient(160deg, #0b3b8a 0%, #1d4ed8 100%);
+      color: #fff;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 14px;
+      box-shadow: 0 14px 24px rgba(13, 39, 92, 0.22);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .news-square h3 {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: .2px;
+    }
+
+    .news-square .sub {
+      margin-top: 4px;
+      font-size: 12px;
+      opacity: .84;
+    }
+
+    .news-list {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .news-item {
+      display: block;
+      text-decoration: none;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 9px 10px;
+      transition: background .15s ease;
+    }
+
+    .news-item:hover { background: rgba(255, 255, 255, 0.14); }
+    .news-item .t { font-size: 13px; font-weight: 700; line-height: 1.35; }
+    .news-item .m { margin-top: 4px; font-size: 11px; opacity: .86; }
+
+    .section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      min-height: 220px;
+    }
+
+    .section h2 { margin: 0 0 12px; font-size: 18px; }
+    .list { display: grid; gap: 10px; }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .row { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .teams { font-weight: 700; letter-spacing: .1px; }
+    .league { color: var(--muted); font-size: 13px; margin-top: 2px; }
+    .score { font-size: 22px; font-weight: 800; color: var(--accent); }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .chip.end { background: var(--ok-bg); color: var(--ok); }
+    .chip.next { background: var(--warn-bg); color: var(--warn); }
+
+    .muted { color: var(--muted); font-size: 13px; margin-top: 6px; }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .headline-shell { justify-content: stretch; }
+      .news-square { width: 100%; height: 350px; }
+    }
+
+    @media (max-width: 560px) {
+      .stats { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 24px; }
+      .wrap { padding: 14px; }
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="top"><h1>Canli Maclar</h1><a href="index.html">Anasayfa</a></div>
-    <div id="list"></div>
-  </div>
-  <script>
-  function getApiBaseUrl() {
-    const query = new URLSearchParams(window.location.search);
-    const fromQuery = (query.get('api_base') || '').trim();
-    if (fromQuery) return fromQuery.replace(/\/$/, '');
-    if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
-    return '/api';
-  }
-
-  function esc(value) {
-    return String(value == null ? '' : value)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
-  }
-
-  function renderMatchCard(match) {
-    const title = match.title || `${match.home_team || ''} - ${match.away_team || ''}`.trim();
-    const teams = `${match.home_team || ''} - ${match.away_team || ''}`.trim();
-    const score = `${match.home_score ?? '-'} : ${match.away_score ?? '-'}`;
-    const minute = match.minute ? ` | ${match.minute}'` : '';
-    const league = match.league ? `<div><strong>${esc(match.league)}</strong></div>` : '';
-    const sportAndLocation = (match.sport || match.location)
-      ? `<div>${match.sport ? `Spor: ${esc(match.sport)}` : ''}${match.sport && match.location ? ' | ' : ''}${match.location ? `Konum: ${esc(match.location)}` : ''}</div>`
-      : '';
-    const focus = match.focus ? `<div>Odak: ${esc(match.focus)}</div>` : '';
-    const note = match.note ? `<div>Not: ${esc(match.note)}</div>` : '';
-    const scout = match.scout_name ? `<div>Scout: ${esc(match.scout_name)}</div>` : '';
-    const stream = match.stream_url ? `<div><a href="${esc(match.stream_url)}" target="_blank" rel="noopener">Yayini Ac</a></div>` : '';
-
-    return `
-      <div class="card">
-        <div class="tag">CANLI</div>
-        <div><strong>${esc(title || 'Mac')}</strong></div>
-        ${league}
-        ${teams ? `<div>${esc(teams)}</div>` : ''}
-        <div><strong>${score}</strong>${minute}</div>
-        ${sportAndLocation}
-        ${focus}
-        ${note}
-        ${scout}
-        ${stream}
+    <div class="hero">
+      <div>
+        <h1>Canli Mac Merkezi</h1>
+        <p>Lig sonuclari ve yaklasan karsilasmalari tek ekranda takip et.</p>
       </div>
-    `;
-  }
+      <a class="home-link" href="index.html">Anasayfa</a>
+    </div>
 
-  (async function() {
-    const el = document.getElementById('list');
-    const apiBase = getApiBaseUrl();
-    try {
-      const res = await fetch(`${apiBase}/live-matches`, { headers: { Accept: 'application/json' } });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      const matches = Array.isArray(data.matches) ? data.matches : [];
+    <div class="stats">
+      <div class="stat">
+        <div class="k">Toplam Sonuc</div>
+        <div class="v" id="statRecent">0</div>
+      </div>
+      <div class="stat">
+        <div class="k">Yaklasan Mac</div>
+        <div class="v" id="statUpcoming">0</div>
+      </div>
+      <div class="stat">
+        <div class="k">Guncellenme</div>
+        <div class="v" id="statUpdated" style="font-size:15px;color:#334155;">-</div>
+      </div>
+    </div>
 
-      if (!matches.length) {
-        el.innerHTML = '<div class="card">Su an canli mac yok.</div>';
-        return;
+    <div class="headline-shell">
+      <aside class="news-square">
+        <h3>Canli Spor Gündemi</h3>
+        <div class="sub">Backend: News API / BBC kaynakli akış</div>
+        <div class="news-list" id="newsList">
+          <div class="news-item">
+            <div class="t">Haberler yükleniyor...</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="grid">
+      <div class="section">
+        <h2>Son Mac Sonuclari</h2>
+        <div class="list" id="recentList"></div>
+      </div>
+      <div class="section">
+        <h2>Yaklasan Maclar</h2>
+        <div class="list" id="upcomingList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function getApiBaseUrl() {
+      const query = new URLSearchParams(window.location.search);
+      const fromQuery = (query.get('api_base') || '').trim();
+      if (fromQuery) return fromQuery.replace(/\/$/, '');
+      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      return '/api';
+    }
+
+    function esc(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function renderRecent(item) {
+      return `
+        <div class="card">
+          <div class="row">
+            <div>
+              <div class="teams">${esc(item.home_team || '')} - ${esc(item.away_team || '')}</div>
+              <div class="league">${esc(item.league || 'Lig')}</div>
+            </div>
+            <div class="score">${item.home_score ?? '-'} : ${item.away_score ?? '-'}</div>
+          </div>
+          <div class="muted"><span class="chip end">BITTI</span></div>
+        </div>
+      `;
+    }
+
+    function renderUpcoming(item) {
+      const kickoff = item.kickoff ? new Date(item.kickoff).toLocaleString('tr-TR') : '-';
+      return `
+        <div class="card">
+          <div class="row">
+            <div>
+              <div class="teams">${esc(item.home_team || '')} - ${esc(item.away_team || '')}</div>
+              <div class="league">${esc(item.league || 'Lig')}</div>
+            </div>
+            <span class="chip next">YAKLASAN</span>
+          </div>
+          <div class="muted">Baslangic: ${esc(kickoff)}</div>
+        </div>
+      `;
+    }
+
+    function normalizeNewsItem(item) {
+      if (!item || typeof item !== 'object') return null;
+      return {
+        title: item.title || item.headline || item.name || 'Baslik yok',
+        source: item.source || item.provider || 'Spor Haber',
+        url: item.url || item.link || '',
+        publishedAt: item.published_at || item.publishedAt || item.created_at || null,
+      };
+    }
+
+    function renderNewsItem(item) {
+      const when = item.publishedAt ? new Date(item.publishedAt).toLocaleString('tr-TR') : 'Simdi';
+      const meta = `${item.source} • ${when}`;
+      const safeTitle = esc(item.title);
+      const safeMeta = esc(meta);
+
+      if (item.url) {
+        return `
+          <a class="news-item" href="${esc(item.url)}" target="_blank" rel="noopener">
+            <div class="t">${safeTitle}</div>
+            <div class="m">${safeMeta}</div>
+          </a>
+        `;
       }
 
-      el.innerHTML = matches.map(renderMatchCard).join('');
-    } catch (e) {
-      el.innerHTML = '<div class="card">Veri alinamadi. Laravel server calisiyor mu kontrol edin.</div>';
+      return `
+        <div class="news-item">
+          <div class="t">${safeTitle}</div>
+          <div class="m">${safeMeta}</div>
+        </div>
+      `;
     }
-  })();
+
+    async function loadLiveNews(apiBase) {
+      const newsEl = document.getElementById('newsList');
+      if (!newsEl) return;
+
+      try {
+        const res = await fetch(`${apiBase}/news/live`, { headers: { Accept: 'application/json' } });
+        const body = res.ok ? await res.json() : {};
+        const listRaw = Array.isArray(body.data) ? body.data : [];
+        const list = listRaw.map(normalizeNewsItem).filter(Boolean).slice(0, 8);
+
+        newsEl.innerHTML = list.length
+          ? list.map(renderNewsItem).join('')
+          : '<div class="news-item"><div class="t">Haber bulunamadi.</div><div class="m">Kaynak bekleniyor.</div></div>';
+      } catch (error) {
+        newsEl.innerHTML = '<div class="news-item"><div class="t">Haber servisine baglanilamadi.</div><div class="m">Backend kontrol et.</div></div>';
+      }
+    }
+
+    async function init() {
+      const recentEl = document.getElementById('recentList');
+      const upcomingEl = document.getElementById('upcomingList');
+      const apiBase = getApiBaseUrl();
+
+      try {
+        const [recentRes, upcomingRes] = await Promise.all([
+          fetch(`${apiBase}/matches/recent`, { headers: { Accept: 'application/json' } }),
+          fetch(`${apiBase}/matches/upcoming`, { headers: { Accept: 'application/json' } }),
+        ]);
+
+        const recentData = recentRes.ok ? await recentRes.json() : { results: [] };
+        const upcomingData = upcomingRes.ok ? await upcomingRes.json() : { matches: [] };
+
+        const recent = Array.isArray(recentData.results) ? recentData.results : [];
+        const upcoming = Array.isArray(upcomingData.matches) ? upcomingData.matches : [];
+
+        document.getElementById('statRecent').textContent = String(recent.length);
+        document.getElementById('statUpcoming').textContent = String(upcoming.length);
+        document.getElementById('statUpdated').textContent = new Date().toLocaleTimeString('tr-TR');
+
+        recentEl.innerHTML = recent.length ? recent.map(renderRecent).join('') : '<div class="card">Sonuc bulunamadi.</div>';
+        upcomingEl.innerHTML = upcoming.length ? upcoming.map(renderUpcoming).join('') : '<div class="card">Yaklasan mac bulunamadi.</div>';
+      } catch (error) {
+        recentEl.innerHTML = '<div class="card">Veri alinamadi.</div>';
+        upcomingEl.innerHTML = '<div class="card">Veri alinamadi.</div>';
+      }
+
+      await loadLiveNews(apiBase);
+    }
+
+    init();
   </script>
+    <script src="assets/js/core-stability.js"></script>
 </body>
 </html>
+
+
+

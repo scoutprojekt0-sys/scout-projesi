@@ -3,8 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NextScout - AI Scout Platform</title>
-    
+    <title>NextScout | Futbol Scout, Kulup ve Oyuncu Veri Platformu</title>
+    <meta name="description" content="NextScout ana sayfasi: scout radar, haftanin trendleri, yukselen yildizlar ve kulup ihtiyaclarini tek merkezde gosterir.">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://nextscout.app/">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="NextScout | Futbol Scout, Kulup ve Oyuncu Veri Platformu">
+    <meta property="og:description" content="NextScout ana sayfasi: scout radar, haftanin trendleri, yukselen yildizlar ve kulup ihtiyaclarini tek merkezde gosterir.">
+    <meta property="og:url" content="https://nextscout.app/">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-home.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="NextScout | Futbol Scout Platformu">
+    <meta name="twitter:description" content="NextScout ana sayfasi: scout radar, haftanin trendleri, yukselen yildizlar ve kulup ihtiyaclarini tek merkezde gosterir.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-home.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "NextScout",
+      "url": "https://nextscout.app/",
+      "description": "Futbol scout, kulup ve oyuncu veri platformu"
+    }
+    </script>
+
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
     
@@ -1643,6 +1670,47 @@
             filter: blur(0.2px);
         }
 
+        .home-data-center-panel {
+            width: 100%;
+            margin-top: 16px;
+            border-radius: 14px;
+            border: 1px solid #bfdbfe;
+            background: linear-gradient(165deg, #0a2f70 0%, #1d4ed8 100%);
+            box-shadow: 0 14px 28px rgba(30, 58, 138, 0.18);
+            padding: 14px;
+        }
+
+        .home-data-center-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .home-data-card {
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 9px 10px;
+            color: #ffffff;
+        }
+
+        .home-data-card .k {
+            font-size: 10px;
+            opacity: 0.78;
+        }
+
+        .home-data-card .v {
+            margin-top: 4px;
+            font-size: 20px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .home-data-center-panel .data-status-strip {
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+
         .card-mini-meta {
             margin-top: 6px;
             font-size: 10px;
@@ -2163,6 +2231,10 @@
 
             .top-adboards-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .home-data-center-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
             .below-card {
@@ -3266,7 +3338,6 @@
                     </div>
                 </div>
             </section>
-            <section class="data-status-strip" id="dataStatusStrip">Veri Durumu: Yukleniyor...</section>
             <section class="contract-live-panel" id="homeStep2">
                 <div class="contract-live-head">
                     <div class="contract-live-title">Sozlesme Durumu Canli Akisi</div>
@@ -3368,6 +3439,32 @@
                 </div>
             </section>
 
+            <section class="home-data-center-panel">
+                <div class="home-data-center-grid">
+                    <article class="home-data-card">
+                        <div class="k">Lig</div>
+                        <div class="v" id="homeLeagueCount">-</div>
+                    </article>
+                    <article class="home-data-card">
+                        <div class="k">Kulup</div>
+                        <div class="v" id="homeClubCount">-</div>
+                    </article>
+                    <article class="home-data-card">
+                        <div class="k">Oyuncu</div>
+                        <div class="v" id="homePlayerCount">-</div>
+                    </article>
+                    <article class="home-data-card">
+                        <div class="k">Antrenor</div>
+                        <div class="v" id="homeCoachCount">-</div>
+                    </article>
+                    <article class="home-data-card">
+                        <div class="k">Trend</div>
+                        <div class="v" id="homeTrendCount">-</div>
+                    </article>
+                </div>
+                <section class="data-status-strip" id="dataStatusStrip">Veri Durumu: Yukleniyor...</section>
+            </section>
+
         </section>
 
         <!-- Right Ad Panel -->
@@ -3379,6 +3476,7 @@
         </div>
     </div>
 
+    <script src="assets/js/site-core.js"></script>
     <script>
         // API Base URL - Fully automatic detection
         function getAPIBaseURL() {
@@ -4191,13 +4289,16 @@
             const root = document.getElementById('dataStatusStrip');
             if (!root) return;
 
-            const [playersPayload, clubNeedsPayload] = await Promise.all([
+            const [playersPayload, clubNeedsPayload, coachesPayload, trendsPayload] = await Promise.all([
                 fetchJsonSafe(`${API_BASE_URL}/public/players?limit=250`),
                 fetchJsonSafe(`${API_BASE_URL}/club-needs?limit=250`),
+                fetchJsonSafe(`${API_BASE_URL}/users?role=coach&per_page=1`),
+                fetchJsonSafe(`${API_BASE_URL}/trending/week`),
             ]);
 
-            const players = Array.isArray(playersPayload?.data) ? playersPayload.data : [];
-            const clubNeeds = Array.isArray(clubNeedsPayload?.data) ? clubNeedsPayload.data : [];
+            const toArray = window.NextScoutData?.toArray || ((input) => Array.isArray(input) ? input : []);
+            const players = toArray(playersPayload?.data ?? playersPayload);
+            const clubNeeds = toArray(clubNeedsPayload?.data ?? clubNeedsPayload);
             const leaguesCount = (() => {
                 const allCountries = Object.values(LEAGUES_DATA || {}).flat();
                 return allCountries.length || 0;
@@ -4216,8 +4317,22 @@
                 }
             })();
             const playerCount = players.length || 0;
+            const coachCount = Number(coachesPayload?.data?.total)
+                || (Array.isArray(coachesPayload?.data?.data) ? coachesPayload.data.data.length : 0);
+            const trendCount = toArray(trendsPayload?.data ?? trendsPayload).length;
 
-            root.textContent = `Veri Durumu: Guncel veri ${leaguesCount} lig / ${clubCount} kulup / ${playerCount} oyuncu`;
+            const leagueCountEl = document.getElementById('homeLeagueCount');
+            const clubCountEl = document.getElementById('homeClubCount');
+            const playerCountEl = document.getElementById('homePlayerCount');
+            const coachCountEl = document.getElementById('homeCoachCount');
+            const trendCountEl = document.getElementById('homeTrendCount');
+            if (leagueCountEl) leagueCountEl.textContent = String(leaguesCount);
+            if (clubCountEl) clubCountEl.textContent = String(clubCount);
+            if (playerCountEl) playerCountEl.textContent = String(playerCount);
+            if (coachCountEl) coachCountEl.textContent = String(coachCount);
+            if (trendCountEl) trendCountEl.textContent = String(trendCount);
+
+            root.textContent = `Veri Durumu: Guncel veri ${leaguesCount} lig / ${clubCount} kulup / ${playerCount} oyuncu / ${coachCount} antrenor`;
         }
 
         async function renderSuccessStoriesPanel() {
@@ -5612,5 +5727,6 @@
     <script src="assets/js/core-stability.js"></script>
 </body>
 </html>
+
 
 

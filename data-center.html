@@ -3,7 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veri Merkezi</title>
+    <title>Veri Merkezi | NextScout</title>
+    <meta name="description" content="Veri Merkezi: lig, kulup, oyuncu, antrenor ve haftalik trend sayilarinin guncel ozeti.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://nextscout.app/data-center.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Veri Merkezi | NextScout">
+    <meta property="og:description" content="Veri Merkezi: lig, kulup, oyuncu, antrenor ve haftalik trend sayilarinin guncel ozeti.">
+    <meta property="og:url" content="https://nextscout.app/data-center.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-data-center.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-data-center.jpg">
+    <meta name="theme-color" content="#0B3B8A">
     <style>
         :root {
             --bg: #071a33;
@@ -26,6 +39,9 @@
             max-width: 1100px;
             margin: 0 auto;
             padding: 20px 16px 36px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         .top {
             display: flex;
@@ -60,9 +76,8 @@
         }
         .grid {
             display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-columns: repeat(5, minmax(0, 1fr));
             gap: 10px;
-            margin-top: 14px;
         }
         .card {
             background: linear-gradient(160deg, var(--panel) 0%, var(--panel2) 100%);
@@ -89,13 +104,19 @@
             opacity: .86;
         }
         .status-row {
-            margin-top: 12px;
             padding: 10px 12px;
             border: 1px solid #17548e;
             border-radius: 10px;
             background: rgba(10, 37, 73, .8);
             font-size: 12px;
             color: #d9e9ff;
+        }
+        .bottom-zone {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-top: 24px;
         }
         .dot {
             display: inline-block;
@@ -105,6 +126,9 @@
             background: var(--ok);
             margin-right: 6px;
             box-shadow: 0 0 10px rgba(52,211,153,.8);
+        }
+        @media (max-width: 1080px) {
+            .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
         }
         @media (max-width: 900px) {
             .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -125,32 +149,39 @@
         <a class="home-link" href="index.html">Anasayfaya Don</a>
     </div>
 
-    <div class="status-row" id="statusRow"><span class="dot"></span>Veri baglantisi kontrol ediliyor...</div>
-
-    <div class="grid">
-        <article class="card">
-            <div class="label">Lig Sayisi</div>
-            <div class="value" id="leagueCount">-</div>
-            <div class="meta">Kaynak: sabit lig verisi</div>
-        </article>
-        <article class="card">
-            <div class="label">Kulup Sayisi</div>
-            <div class="value" id="clubCount">-</div>
-            <div class="meta">Kaynak: /api/club-needs</div>
-        </article>
-        <article class="card">
-            <div class="label">Oyuncu Sayisi</div>
-            <div class="value" id="playerCount">-</div>
-            <div class="meta">Kaynak: /api/public/players</div>
-        </article>
-        <article class="card">
-            <div class="label">Trend Kayitlari</div>
-            <div class="value" id="trendCount">-</div>
-            <div class="meta">Kaynak: /api/trending/week</div>
-        </article>
+    <div class="bottom-zone">
+        <div class="grid">
+            <article class="card">
+                <div class="label">Lig Sayisi</div>
+                <div class="value" id="leagueCount">-</div>
+                <div class="meta">Kaynak: sabit lig verisi</div>
+            </article>
+            <article class="card">
+                <div class="label">Kulup Sayisi</div>
+                <div class="value" id="clubCount">-</div>
+                <div class="meta">Kaynak: /api/club-needs</div>
+            </article>
+            <article class="card">
+                <div class="label">Oyuncu Sayisi</div>
+                <div class="value" id="playerCount">-</div>
+                <div class="meta">Kaynak: /api/public/players</div>
+            </article>
+            <article class="card">
+                <div class="label">Antrenor Sayisi</div>
+                <div class="value" id="coachCount">-</div>
+                <div class="meta">Kaynak: /api/users?role=coach</div>
+            </article>
+            <article class="card">
+                <div class="label">Trend Kayitlari</div>
+                <div class="value" id="trendCount">-</div>
+                <div class="meta">Kaynak: /api/trending/week</div>
+            </article>
+        </div>
+        <div class="status-row" id="statusRow"><span class="dot"></span>Veri baglantisi kontrol ediliyor...</div>
     </div>
 </div>
 
+<script src="assets/js/site-core.js"></script>
 <script>
     function getAPIBaseURL() {
         const query = new URLSearchParams(window.location.search);
@@ -180,15 +211,19 @@
 
     async function renderDataCenter() {
         const api = getAPIBaseURL();
-        const [playersPayload, clubsPayload, trendsPayload] = await Promise.all([
+        const [playersPayload, clubsPayload, trendsPayload, coachesPayload] = await Promise.all([
             fetchJsonSafe(`${api}/public/players?limit=500`),
             fetchJsonSafe(`${api}/club-needs?limit=500`),
-            fetchJsonSafe(`${api}/trending/week`)
+            fetchJsonSafe(`${api}/trending/week`),
+            fetchJsonSafe(`${api}/users?role=coach&per_page=1`)
         ]);
 
-        const players = Array.isArray(playersPayload?.data) ? playersPayload.data : [];
-        const needs = Array.isArray(clubsPayload?.data) ? clubsPayload.data : [];
-        const trends = Array.isArray(trendsPayload?.data) ? trendsPayload.data : [];
+        const toArray = window.NextScoutData?.toArray || ((input) => Array.isArray(input) ? input : []);
+        const players = toArray(playersPayload?.data ?? playersPayload);
+        const needs = toArray(clubsPayload?.data ?? clubsPayload);
+        const trends = toArray(trendsPayload?.data ?? trendsPayload);
+        const coachCount = Number(coachesPayload?.data?.total)
+            || (Array.isArray(coachesPayload?.data?.data) ? coachesPayload.data.data.length : 0);
 
         const allCountries = Object.values(LEAGUES_DATA).flat();
         const clubNames = new Set(needs.map((row) => (row?.club_name || '').toString().trim()).filter(Boolean));
@@ -196,6 +231,7 @@
         document.getElementById('leagueCount').textContent = String(allCountries.length);
         document.getElementById('clubCount').textContent = String(clubNames.size);
         document.getElementById('playerCount').textContent = String(players.length);
+        document.getElementById('coachCount').textContent = String(coachCount);
         document.getElementById('trendCount').textContent = String(trends.length);
 
         const statusRow = document.getElementById('statusRow');
@@ -210,3 +246,5 @@
 </script>
 </body>
 </html>
+
+

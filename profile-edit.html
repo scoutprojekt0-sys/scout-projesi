@@ -1,9 +1,24 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profili Düzenle | NextScout</title>
+    <title>Profili DÃ¼zenle | NextScout</title>
+    <meta name="description" content="NextScout profile edit sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="https://nextscout.app/profile-edit.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Profili DÃ¼zenle | NextScout">
+    <meta property="og:description" content="NextScout profile edit sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/profile-edit.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Profili DÃ¼zenle | NextScout">
+    <meta name="twitter:description" content="NextScout profile edit sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
     <style>
         * {
             margin: 0;
@@ -90,7 +105,7 @@
             gap: 30px;
         }
 
-        /* PROFIL RESMİ */
+        /* PROFIL RESMÄ° */
         .profile-photo-section {
             background: white;
             border-radius: 16px;
@@ -217,7 +232,7 @@
             gap: 15px;
         }
 
-        /* GALERİ */
+        /* GALERÄ° */
         .gallery-section {
             background: white;
             border-radius: 16px;
@@ -275,7 +290,7 @@
             border-color: #667eea;
         }
 
-        /* VİDEOLAR */
+        /* VÄ°DEOLAR */
         .videos-section {
             background: white;
             border-radius: 16px;
@@ -354,7 +369,7 @@
             color: white;
         }
 
-        /* İSTATİSTİKLER */
+        /* Ä°STATÄ°STÄ°KLER */
         .stats-section {
             background: white;
             border-radius: 16px;
@@ -417,10 +432,10 @@
     <!-- HEADER -->
     <div class="header">
         <div class="header-content">
-            <h1>✏️ Profili Düzenle</h1>
+            <h1>âœï¸ Profili DÃ¼zenle</h1>
             <div class="header-buttons">
-                <a href="DASHBOARD_DESIGN.html" class="btn btn-cancel">← Geri Dön</a>
-                <button class="btn btn-save" onclick="saveProfile()">✅ Kaydet</button>
+                <a href="DASHBOARD_DESIGN.html" class="btn btn-cancel">â† Geri DÃ¶n</a>
+                <button class="btn btn-save" onclick="saveProfile()">âœ… Kaydet</button>
             </div>
         </div>
     </div>
@@ -428,23 +443,23 @@
     <!-- CONTENT -->
     <div class="container">
         <div class="edit-grid">
-            <!-- SOL: PROFIL RESMİ -->
+            <!-- SOL: PROFIL RESMÄ° -->
             <div class="profile-photo-section">
-                <h2 class="section-title">📸 Profil Resmi</h2>
-                <div class="photo-preview" id="photoPreview">⚽</div>
+                <h2 class="section-title">ğŸ“¸ Profil Resmi</h2>
+                <div class="photo-preview" id="photoPreview">âš½</div>
                 <div class="upload-zone" id="uploadZone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
-                    <div class="upload-icon">📤</div>
-                    <div class="upload-text">Resmi Sürükle veya Tıkla</div>
+                    <div class="upload-icon">ğŸ“¤</div>
+                    <div class="upload-text">Resmi SÃ¼rÃ¼kle veya TÄ±kla</div>
                     <div class="upload-subtext">JPG, PNG (Maks 5MB)</div>
                     <input type="file" id="photoInput" class="file-input" accept="image/*">
                 </div>
-                <button class="btn btn-cancel" style="width: 100%; margin-bottom: 10px;" onclick="document.getElementById('photoInput').click()">Dosya Seç</button>
-                <button class="btn btn-cancel" style="width: 100%;" onclick="removePhoto()">Kaldır</button>
+                <button class="btn btn-cancel" style="width: 100%; margin-bottom: 10px;" onclick="document.getElementById('photoInput').click()">Dosya SeÃ§</button>
+                <button class="btn btn-cancel" style="width: 100%;" onclick="removePhoto()">KaldÄ±r</button>
             </div>
 
-            <!-- SAĞ: TEMEL BİLGİLER -->
+            <!-- SAÄ: TEMEL BÄ°LGÄ°LER -->
             <div class="form-section">
-                <h2 class="section-title">👤 Temel Bilgiler</h2>
+                <h2 class="section-title">ğŸ‘¤ Temel Bilgiler</h2>
                 <form id="profileForm">
                     <div class="form-group">
                         <label>Ad Soyad</label>
@@ -452,7 +467,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>⚽ Pozisyon</label>
+                        <label>âš½ Pozisyon</label>
                         <select id="positionSelect">
                             <option>Kaleci</option>
                             <option selected>Forvet</option>
@@ -470,7 +485,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Branş</label>
+                            <label>BranÅŸ</label>
                             <select id="sportSelect">
                                 <option value="futbol">Futbol</option>
                                 <option value="basketbol">Basketbol</option>
@@ -481,11 +496,11 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label>👤 Yaş</label>
+                            <label>ğŸ‘¤ YaÅŸ</label>
                             <input type="number" id="ageInput" value="24" min="15" max="50">
                         </div>
                         <div class="form-group">
-                            <label>📏 Boy (cm)</label>
+                            <label>ğŸ“ Boy (cm)</label>
                             <input type="number" id="heightInput" value="180" min="150" max="210">
                         </div>
                     </div>
@@ -513,19 +528,19 @@
                     </div>
 
                     <div class="form-group">
-                        <label>📝 Hakkında</label>
-                        <textarea id="bioInput">Türkiye'nin en yetenekli forvet oyuncularından biri. Güçlü fizik yapısı, hızı ve gol yeteneği ile biliniyor.</textarea>
+                        <label>ğŸ“ HakkÄ±nda</label>
+                        <textarea id="bioInput">TÃ¼rkiye'nin en yetenekli forvet oyuncularÄ±ndan biri. GÃ¼Ã§lÃ¼ fizik yapÄ±sÄ±, hÄ±zÄ± ve gol yeteneÄŸi ile biliniyor.</textarea>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- İSTATİSTİKLER -->
+        <!-- Ä°STATÄ°STÄ°KLER -->
         <div class="stats-section" style="margin-top: 30px;">
-            <h2 class="section-title">📊 İstatistikler</h2>
+            <h2 class="section-title">ğŸ“Š Ä°statistikler</h2>
             <div class="stats-grid">
                 <div class="stat-input">
-                    <label>Oynan Maçlar</label>
+                    <label>Oynan MaÃ§lar</label>
                     <input type="number" id="matchesInput" value="28" min="0">
                 </div>
                 <div class="stat-input">
@@ -543,25 +558,25 @@
             </div>
         </div>
 
-        <!-- GALERİ -->
+        <!-- GALERÄ° -->
         <div class="gallery-section" style="margin-top: 30px;">
-            <h2 class="section-title">📸 Foto Galerisi</h2>
+            <h2 class="section-title">ğŸ“¸ Foto Galerisi</h2>
             <div class="gallery-grid" id="galleryGrid">
-                <div class="gallery-item" onclick="uploadGalleryPhoto(0)">➕</div>
-                <div class="gallery-item" onclick="uploadGalleryPhoto(1)">➕</div>
-                <div class="gallery-item" onclick="uploadGalleryPhoto(2)">➕</div>
-                <div class="gallery-item" onclick="uploadGalleryPhoto(3)">➕</div>
-                <div class="gallery-item" onclick="uploadGalleryPhoto(4)">➕</div>
-                <div class="gallery-item" onclick="uploadGalleryPhoto(5)">➕</div>
+                <div class="gallery-item" onclick="uploadGalleryPhoto(0)">â•</div>
+                <div class="gallery-item" onclick="uploadGalleryPhoto(1)">â•</div>
+                <div class="gallery-item" onclick="uploadGalleryPhoto(2)">â•</div>
+                <div class="gallery-item" onclick="uploadGalleryPhoto(3)">â•</div>
+                <div class="gallery-item" onclick="uploadGalleryPhoto(4)">â•</div>
+                <div class="gallery-item" onclick="uploadGalleryPhoto(5)">â•</div>
             </div>
             <input type="file" id="galleryInput" class="file-input" accept="image/*">
         </div>
 
-        <!-- VİDEOLAR -->
+        <!-- VÄ°DEOLAR -->
         <div class="videos-section" style="margin-top: 30px;">
-            <h2 class="section-title">🎬 Video Portfolio</h2>
+            <h2 class="section-title">ğŸ¬ Video Portfolio</h2>
             <div class="add-video-form">
-                <input type="text" id="videoTitleInput" placeholder="Video Başlığı (ör: Sezon Özetleri)">
+                <input type="text" id="videoTitleInput" placeholder="Video BaÅŸlÄ±ÄŸÄ± (Ã¶r: Sezon Ã–zetleri)">
                 <input type="url" id="videoUrlInput" placeholder="Video Linki (YouTube, Vimeo vb)">
                 <button type="button" class="add-video-btn" onclick="addVideo()">+ Video Ekle</button>
             </div>
@@ -573,7 +588,7 @@
         let currentGalleryIndex = 0;
         const galleryImages = new Array(6);
 
-        // Profil resmini yükle
+        // Profil resmini yÃ¼kle
         const uploadZone = document.getElementById('uploadZone');
         const photoInput = document.getElementById('photoInput');
 
@@ -612,12 +627,12 @@
         }
 
         function removePhoto() {
-            document.getElementById('photoPreview').innerHTML = '⚽';
+            document.getElementById('photoPreview').innerHTML = 'âš½';
             photoInput.value = '';
             localStorage.removeItem('playerPhoto');
         }
 
-        // Galeri fotoğrafı yükle
+        // Galeri fotoÄŸrafÄ± yÃ¼kle
         const galleryInput = document.getElementById('galleryInput');
 
         function uploadGalleryPhoto(index) {
@@ -638,7 +653,7 @@
             }
         });
 
-        // Video yönetimi
+        // Video yÃ¶netimi
         let videos = [];
 
         function addVideo() {
@@ -663,7 +678,7 @@
             videosList.innerHTML = videos.map((video, index) => `
                 <div class="video-item">
                     <div class="video-info">
-                        <div class="video-title">🎬 ${video.title}</div>
+                        <div class="video-title">ğŸ¬ ${video.title}</div>
                         <div class="video-url">${video.url}</div>
                     </div>
                     <button type="button" class="remove-btn" onclick="removeVideo(${index})">Sil</button>
@@ -696,7 +711,7 @@
             localStorage.setItem('playerGallery', JSON.stringify(galleryImages));
             localStorage.setItem('playerVideos', JSON.stringify(videos));
 
-            // Dashboard ve profilde aynı isim görünsün
+            // Dashboard ve profilde aynÄ± isim gÃ¶rÃ¼nsÃ¼n
             try {
                 const currentUserRaw = localStorage.getItem('nextscout_user');
                 const currentUser = currentUserRaw ? JSON.parse(currentUserRaw) : {};
@@ -711,11 +726,11 @@
                 // ignore parse errors
             }
 
-            alert('✅ Profil başarıyla kaydedildi!');
+            alert('âœ… Profil baÅŸarÄ±yla kaydedildi!');
             window.location.href = 'DASHBOARD_DESIGN.html';
         }
 
-        // Sayfa yüklenirken verileri geri yükle
+        // Sayfa yÃ¼klenirken verileri geri yÃ¼kle
         window.addEventListener('load', () => {
             const savedProfile = localStorage.getItem('playerProfile');
             let sessionUser = null;
@@ -773,5 +788,10 @@
             }
         });
     </script>
+    <script src="assets/js/core-stability.js"></script>
 </body>
 </html>
+
+
+
+

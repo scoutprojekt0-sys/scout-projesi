@@ -5,6 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scout Platform - Dashboard</title>
+    <meta name="description" content="NextScout DASHBOARD_DESIGN sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="https://nextscout.app/DASHBOARD_DESIGN.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Scout Platform - Dashboard">
+    <meta property="og:description" content="NextScout DASHBOARD_DESIGN sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/DASHBOARD_DESIGN.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Scout Platform - Dashboard">
+    <meta name="twitter:description" content="NextScout DASHBOARD_DESIGN sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
     <style>
         * {
             margin: 0;
@@ -473,6 +488,52 @@
             text-transform: uppercase;
         }
 
+        .mvp-tools {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .mvp-box {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 14px;
+            background: #f9fafb;
+        }
+
+        .mvp-box h4 {
+            margin: 0 0 8px;
+            font-size: 14px;
+            font-weight: 800;
+            color: #1f2937;
+        }
+
+        .mvp-note {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 10px;
+            line-height: 1.35;
+        }
+
+        .mvp-result {
+            font-size: 13px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .mvp-inline {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
         /* ═════════════════════════════════════════════ */
         /* DASHBOARD GRID */
         /* ═════════════════════════════════════════════ */
@@ -634,6 +695,10 @@
 
             .cards-grid {
                 grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+
+            .mvp-tools {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -848,6 +913,25 @@
                 <div class="stat-card">
                     <div class="stat-card-value">2.4K</div>
                     <div class="stat-card-label">❤️ Beğeni</div>
+                </div>
+            </div>
+
+            <div class="mvp-tools">
+                <div class="mvp-box">
+                    <h4>✅ 2 Dakika Profil Check</h4>
+                    <div class="mvp-note">Profil eksiklerini kontrol edip yayın öncesi hazır olma puanı verir.</div>
+                    <div class="mvp-result" id="profileCheckResult">Profil puani hesaplaniyor...</div>
+                    <button class="btn btn-primary" type="button" onclick="runProfileCheck()">Tekrar Hesapla</button>
+                </div>
+                <div class="mvp-box">
+                    <h4>🔔 Akilli Eslesme Alarmi</h4>
+                    <div class="mvp-note">Pozisyon ve sehre gore yeni menajer ilanlari gelince uyarir.</div>
+                    <div class="mvp-inline">
+                        <input id="alertPosition" type="text" placeholder="Pozisyon (or: LB)" style="padding:9px;border:1px solid #d1d5db;border-radius:8px;">
+                        <input id="alertCity" type="text" placeholder="Sehir (or: Istanbul)" style="padding:9px;border:1px solid #d1d5db;border-radius:8px;">
+                    </div>
+                    <div class="mvp-result" id="matchingAlertResult">Alarm kapali.</div>
+                    <button class="btn btn-primary" type="button" onclick="saveMatchingAlert()">Alarmi Kaydet</button>
                 </div>
             </div>
 
@@ -1070,7 +1154,7 @@
             if (modal) modal.style.display = 'none';
         }
 
-        document.getElementById('boostFormDesign').addEventListener('submit', async function(e) {
+        document.getElementById('boostFormDesign')?.addEventListener('submit', async function(e) {
             e.preventDefault();
             const approved = document.getElementById('boostApproveDesign').checked;
             const cardLast4 = (document.getElementById('boostCardLast4Design').value || '').trim();
@@ -1162,6 +1246,94 @@
             const textarea = document.getElementById('aboutTextarea');
             if (textarea) textarea.value = '';
             alert('Hakkımda notu silindi.');
+        }
+
+        function readPlayerProfileData() {
+            try {
+                const raw = localStorage.getItem('playerProfile');
+                return raw ? JSON.parse(raw) : {};
+            } catch (error) {
+                return {};
+            }
+        }
+
+        function runProfileCheck() {
+            const profile = readPlayerProfileData();
+            let score = 0;
+            const missing = [];
+
+            if (profile.position) score += 20; else missing.push('pozisyon');
+            if (profile.age) score += 15; else missing.push('yas');
+            if (profile.height) score += 15; else missing.push('boy');
+            if (profile.bio && String(profile.bio).trim().length >= 30) score += 20; else missing.push('biyografi');
+            if (profile.videoUrl && String(profile.videoUrl).trim()) score += 15; else missing.push('video');
+            if (localStorage.getItem('playerPhoto')) score += 15; else missing.push('profil resmi');
+
+            const root = document.getElementById('profileCheckResult');
+            if (!root) return;
+
+            if (missing.length === 0) {
+                root.textContent = `Profil puani: ${score}/100 • Tam hazir`;
+                return;
+            }
+            root.textContent = `Profil puani: ${score}/100 • Eksik: ${missing.join(', ')}`;
+        }
+
+        async function refreshMatchingAlertInfo() {
+            const root = document.getElementById('matchingAlertResult');
+            if (!root) return;
+
+            const settingsRaw = localStorage.getItem('nextscout_matching_alert');
+            if (!settingsRaw) {
+                root.textContent = 'Alarm kapali.';
+                return;
+            }
+
+            let settings = {};
+            try {
+                settings = JSON.parse(settingsRaw) || {};
+            } catch (error) {
+                root.textContent = 'Alarm kapali.';
+                return;
+            }
+
+            const apiBase = getApiBaseUrl();
+            try {
+                const response = await fetch(`${apiBase}/discovery/manager-needs`, { headers: { Accept: 'application/json' } });
+                const payload = await response.json();
+                const rows = Array.isArray(payload?.data) ? payload.data : [];
+                const matches = rows.filter((row) => {
+                    const samePosition = !settings.position || String(row?.position || '').toLowerCase().includes(String(settings.position).toLowerCase());
+                    const sameCity = !settings.city || String(row?.city || '').toLowerCase().includes(String(settings.city).toLowerCase());
+                    return samePosition && sameCity;
+                });
+                root.textContent = `Alarm aktif • ${matches.length} ilan eslesti`;
+            } catch (error) {
+                root.textContent = 'Alarm aktif • eslesen ilan sayisi alinamadi';
+            }
+        }
+
+        function saveMatchingAlert() {
+            const position = (document.getElementById('alertPosition')?.value || '').trim();
+            const city = (document.getElementById('alertCity')?.value || '').trim();
+            localStorage.setItem('nextscout_matching_alert', JSON.stringify({
+                position,
+                city,
+                updated_at: new Date().toISOString(),
+            }));
+            refreshMatchingAlertInfo();
+        }
+
+        function loadMatchingAlertForm() {
+            try {
+                const raw = localStorage.getItem('nextscout_matching_alert');
+                const data = raw ? JSON.parse(raw) : null;
+                if (!data) return;
+                const posEl = document.getElementById('alertPosition');
+                const cityEl = document.getElementById('alertCity');
+                if (posEl) posEl.value = data.position || '';
+                if (cityEl) cityEl.value = data.city || '';
+            } catch (error) {}
         }
 
         function logout() {
@@ -1269,10 +1441,20 @@
                     img.style.display = 'block';
                 }
             }
+
+            runProfileCheck();
+            loadMatchingAlertForm();
+            refreshMatchingAlertInfo();
         });
         // ...existing code...
     </script>
+    <script src="assets/js/core-stability.js"></script>
 </body>
 </html>
+
+
+
+
+
 
 

@@ -1,0 +1,318 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lawyer Dashboard | NextScout</title>
+    <meta name="description" content="NextScout lawyer dashboard sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="https://nextscout.app/lawyer-dashboard.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Lawyer Dashboard | NextScout">
+    <meta property="og:description" content="NextScout lawyer dashboard sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/lawyer-dashboard.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Lawyer Dashboard | NextScout">
+    <meta name="twitter:description" content="NextScout lawyer dashboard sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f3f4f6; color: #1f2937; }
+
+    .top-navbar { background: white; border-bottom: 1px solid #e5e7eb; padding: 0 20px; height: 70px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .navbar-left { display: flex; align-items: center; gap: 30px; flex: 1; }
+    .logo { font-size: 20px; font-weight: bold; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; min-width: 150px; }
+    .navbar-right { display: flex; align-items: center; gap: 15px; }
+
+    .btn-small { padding: 8px 14px; border: none; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+    .btn-small.primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+    .btn-small.secondary { background: #f3f4f6; color: #667eea; border: 1px solid #e5e7eb; }
+
+    .main-container { display: grid; grid-template-columns: 240px 1fr; gap: 20px; padding: 20px; min-height: calc(100vh - 70px); }
+    .sidebar { background: white; border-radius: 12px; padding: 20px; height: fit-content; position: sticky; top: 90px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .sidebar-title { font-size: 11px; text-transform: uppercase; color: #9ca3af; font-weight: 600; margin-bottom: 12px; letter-spacing: .5px; }
+    .sidebar-menu { list-style: none; }
+    .sidebar-item { padding: 10px 12px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 10px; font-size: 14px; color: #6b7280; }
+    .sidebar-item:hover { background: #f3f4f6; color: #1f2937; }
+    .sidebar-item.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: 500; }
+
+    .content { display: grid; grid-template-columns: 1fr; gap: 20px; }
+    .welcome-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 12px rgba(102,126,234,0.15); }
+    .welcome-card h1 { font-size: 28px; margin-bottom: 10px; }
+    .welcome-card p { margin: 0; opacity: .95; font-size: 15px; }
+
+    .quick-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+    .stat-card { background: white; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-top: 3px solid #667eea; }
+    .stat-card-value { font-size: 28px; font-weight: bold; color: #667eea; margin-bottom: 8px; }
+    .stat-card-label { font-size: 13px; color: #9ca3af; text-transform: uppercase; }
+
+    .section { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .section h2 { margin-bottom: 16px; font-size: 18px; font-weight: 800; color: #1f2937; }
+
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 16px; }
+    .case-card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; background: #fff; transition: all 0.2s; }
+    .case-card:hover { border-color: #667eea; box-shadow: 0 8px 20px rgba(102,126,234,0.15); transform: translateY(-2px); }
+    .case-top { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+    .case-title { font-size: 15px; font-weight: 700; color: #1f2937; }
+    .badge { padding: 4px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .badge.pending { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; }
+    .badge.review { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+    .badge.done { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+    .row { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; margin: 5px 0; }
+    .row .k { color: #6b7280; }
+    .row .v { font-weight: 700; color: #1f2937; }
+
+    .card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .action-btn { padding: 8px 10px; border: 1px solid #e5e7eb; background: #f9fafb; color: #667eea; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+    .action-btn:hover { background: #667eea; color: white; border-color: #667eea; }
+    .action-btn.primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-color: transparent; }
+
+    @media (max-width: 1024px) {
+      .quick-stats { grid-template-columns: repeat(2, 1fr); }
+      .cards-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .main-container { grid-template-columns: 1fr; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .quick-stats { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-navbar">
+    <div class="navbar-left">
+      <div class="logo">NextScout Lawyer</div>
+    </div>
+    <div class="navbar-right">
+      <button class="btn-small secondary" onclick="openProfile()">Profilim</button>
+      <button class="btn-small primary" onclick="window.location.href='index.html'">Ana Sayfa</button>
+      <button class="btn-small secondary" onclick="logout()">Cikis</button>
+    </div>
+  </div>
+
+  <div class="main-container">
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-title">MENU</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-item active" onclick="location.reload()"><span style="font-size:18px;min-width:20px;">🏛️</span><span>Dashboard</span></li>
+          <li class="sidebar-item" onclick="openProfile()"><span style="font-size:18px;min-width:20px;">👤</span><span>Profilim</span></li>
+          <li class="sidebar-item" onclick="scrollToSection('contractsSection')"><span style="font-size:18px;min-width:20px;">📄</span><span>Sozlesmeler</span></li>
+          <li class="sidebar-item" onclick="scrollToSection('consultSection')"><span style="font-size:18px;min-width:20px;">⚖️</span><span>Danismanlik</span></li>
+          <li class="sidebar-item" onclick="openMessages()"><span style="font-size:18px;min-width:20px;">💬</span><span>Mesajlarim</span></li>
+          <li class="sidebar-item" onclick="openSettings()"><span style="font-size:18px;min-width:20px;">⚙️</span><span>Ayarlar</span></li>
+          <li class="sidebar-item" onclick="openHelp()"><span style="font-size:18px;min-width:20px;">❓</span><span>Yardim</span></li>
+        </ul>
+      </div>
+    </aside>
+
+    <div class="content">
+      <div class="welcome-card">
+        <h1>Avukat Dashboard</h1>
+        <p>Sozlesme incele, hukuki riskleri yonet ve danismanlik surecini takip et.</p>
+      </div>
+
+      <div class="quick-stats">
+        <div class="stat-card"><div class="stat-card-value" id="statContracts">0</div><div class="stat-card-label">Aktif Sozlesme</div></div>
+        <div class="stat-card"><div class="stat-card-value" id="statPending">0</div><div class="stat-card-label">Bekleyen Inceleme</div></div>
+        <div class="stat-card"><div class="stat-card-value" id="statConsults">0</div><div class="stat-card-label">Danismanlik Talebi</div></div>
+        <div class="stat-card"><div class="stat-card-value" id="statCompleted">0</div><div class="stat-card-label">Tamamlanan Is</div></div>
+      </div>
+
+      <div id="contractsSection" class="section">
+        <h2>Sozlesme Talepleri</h2>
+        <div id="contractsGrid" class="cards-grid"></div>
+      </div>
+
+      <div id="consultSection" class="section">
+        <h2>Danismanlik Talepleri</h2>
+        <div id="consultGrid" class="cards-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const CONTRACTS_KEY = 'nextscout_lawyer_contracts';
+    const CONSULTS_KEY = 'nextscout_lawyer_consults';
+
+    function getDefaultContracts() {
+      return [
+        { id: 1, title: 'Transfer Sozlesmesi - Ahmet Y.', client: 'Manager', fee: '€2.500', status: 'pending', deadline: '2026-03-10' },
+        { id: 2, title: 'Kulup Anlasma Revizyonu', client: 'Kulup', fee: '€4.200', status: 'review', deadline: '2026-03-12' },
+        { id: 3, title: 'Oyuncu Temsil Sozlesmesi', client: 'Scout', fee: '€1.800', status: 'done', deadline: '2026-03-06' }
+      ];
+    }
+
+    function getDefaultConsults() {
+      return [
+        { id: 11, title: 'Fesih Maddesi Danismanligi', requester: 'Manager', priority: 'Yuksek', status: 'pending' },
+        { id: 12, title: 'Bonservis Uyuşmazligi', requester: 'Kulup', priority: 'Orta', status: 'review' },
+        { id: 13, title: 'Menajerlik Yetki Kontrolu', requester: 'Player', priority: 'Dusuk', status: 'done' }
+      ];
+    }
+
+    function loadItems(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) {
+          localStorage.setItem(key, JSON.stringify(fallback));
+          return fallback;
+        }
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : fallback;
+      } catch (error) {
+        return fallback;
+      }
+    }
+
+    function saveItems(key, items) {
+      localStorage.setItem(key, JSON.stringify(items));
+    }
+
+    let contracts = loadItems(CONTRACTS_KEY, getDefaultContracts());
+    let consults = loadItems(CONSULTS_KEY, getDefaultConsults());
+
+    function badgeClass(status) {
+      if (status === 'done') return 'done';
+      if (status === 'review') return 'review';
+      return 'pending';
+    }
+
+    function badgeText(status) {
+      if (status === 'done') return 'Tamamlandi';
+      if (status === 'review') return 'Incelemede';
+      return 'Bekliyor';
+    }
+
+    function nextStatus(status) {
+      if (status === 'pending') return 'review';
+      if (status === 'review') return 'done';
+      return 'pending';
+    }
+
+    function updateStats() {
+      const pendingContracts = contracts.filter((x) => x.status === 'pending').length;
+      const completed = contracts.filter((x) => x.status === 'done').length + consults.filter((x) => x.status === 'done').length;
+      document.getElementById('statContracts').textContent = String(contracts.length);
+      document.getElementById('statPending').textContent = String(pendingContracts);
+      document.getElementById('statConsults').textContent = String(consults.length);
+      document.getElementById('statCompleted').textContent = String(completed);
+    }
+
+    function renderContracts() {
+      const grid = document.getElementById('contractsGrid');
+      if (!contracts.length) {
+        grid.innerHTML = '<div class="case-card">Aktif sozlesme talebi yok.</div>';
+        return;
+      }
+
+      grid.innerHTML = contracts.map((c) => `
+        <div class="case-card">
+          <div class="case-top">
+            <div class="case-title">${c.title}</div>
+            <span class="badge ${badgeClass(c.status)}">${badgeText(c.status)}</span>
+          </div>
+          <div class="row"><span class="k">Musteri</span><span class="v">${c.client}</span></div>
+          <div class="row"><span class="k">Ucret</span><span class="v">${c.fee}</span></div>
+          <div class="row"><span class="k">Son Tarih</span><span class="v">${c.deadline}</span></div>
+          <div class="card-actions">
+            <button class="action-btn primary" onclick="openContract(${c.id})">Detay</button>
+            <button class="action-btn" onclick="advanceContract(${c.id})">Durum Degistir</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderConsults() {
+      const grid = document.getElementById('consultGrid');
+      if (!consults.length) {
+        grid.innerHTML = '<div class="case-card">Danismanlik talebi yok.</div>';
+        return;
+      }
+
+      grid.innerHTML = consults.map((c) => `
+        <div class="case-card">
+          <div class="case-top">
+            <div class="case-title">${c.title}</div>
+            <span class="badge ${badgeClass(c.status)}">${badgeText(c.status)}</span>
+          </div>
+          <div class="row"><span class="k">Talep Eden</span><span class="v">${c.requester}</span></div>
+          <div class="row"><span class="k">Oncelik</span><span class="v">${c.priority}</span></div>
+          <div class="card-actions">
+            <button class="action-btn primary" onclick="openConsult(${c.id})">Detay</button>
+            <button class="action-btn" onclick="advanceConsult(${c.id})">Durum Degistir</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function advanceContract(id) {
+      const i = contracts.findIndex((x) => Number(x.id) === Number(id));
+      if (i === -1) return;
+      contracts[i].status = nextStatus(contracts[i].status);
+      saveItems(CONTRACTS_KEY, contracts);
+      renderContracts();
+      updateStats();
+    }
+
+    function advanceConsult(id) {
+      const i = consults.findIndex((x) => Number(x.id) === Number(id));
+      if (i === -1) return;
+      consults[i].status = nextStatus(consults[i].status);
+      saveItems(CONSULTS_KEY, consults);
+      renderConsults();
+      updateStats();
+    }
+
+    function openContract(id) {
+      const item = contracts.find((x) => Number(x.id) === Number(id));
+      if (!item) return;
+      alert(`Sozlesme: ${item.title}\nMusteri: ${item.client}\nDurum: ${badgeText(item.status)}`);
+    }
+
+    function openConsult(id) {
+      const item = consults.find((x) => Number(x.id) === Number(id));
+      if (!item) return;
+      alert(`Danismanlik: ${item.title}\nTalep Eden: ${item.requester}\nDurum: ${badgeText(item.status)}`);
+    }
+
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function openProfile() { window.location.href = 'lawyer-profile.html'; }
+    function openMessages() { window.location.href = 'notifications.html'; }
+    function openSettings() { window.location.href = 'settings.html'; }
+    function openHelp() { window.location.href = 'help.html'; }
+
+    function logout() {
+      localStorage.removeItem('nextscout_token');
+      localStorage.removeItem('nextscout_user');
+      localStorage.removeItem('nextscout_user_email');
+      localStorage.removeItem('nextscout_user_name');
+      localStorage.removeItem('nextscout_user_role');
+      localStorage.removeItem('nextscout_user_id');
+      localStorage.removeItem('nextscout_demo_login');
+      window.location.href = 'index.html';
+    }
+
+    function init() {
+      renderContracts();
+      renderConsults();
+      updateStats();
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+    <script src="assets/js/core-stability.js"></script>
+</body>
+</html>
+
+
+
+

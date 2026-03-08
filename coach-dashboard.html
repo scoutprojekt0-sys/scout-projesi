@@ -4,6 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Scout Dashboard | NextScout</title>
+  <meta name="description" content="Scout paneli: kesif listeleri, canli akis ve teknik degerlendirme sureclerini takip edin.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="canonical" href="https://nextscout.app/coach-dashboard.html">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:site_name" content="NextScout">
+  <meta property="og:title" content="Scout Dashboard | NextScout">
+  <meta property="og:description" content="Scout paneli: kesif listeleri, canli akis ve teknik degerlendirme sureclerini takip edin.">
+  <meta property="og:url" content="https://nextscout.app/coach-dashboard.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+  <meta name="theme-color" content="#4f46e5">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f3f4f6; color: #1f2937; }
@@ -74,10 +87,14 @@
     .action-btn { padding: 8px 10px; border: 1px solid #e5e7eb; background: #f9fafb; color: #667eea; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; transition: all .2s; }
     .action-btn:hover { background: #667eea; color: white; border-color: #667eea; }
     .action-btn.primary { background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); color: white; border-color: transparent; }
+    .quick-report-section { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,.05); }
+    .quick-report-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
+    .quick-report-result { border: 1px solid #e5e7eb; border-radius: 10px; background: #f9fafb; padding: 10px 12px; font-size: 12px; color: #1f2937; }
 
     @media (max-width: 1024px) {
       .search-grid { grid-template-columns: repeat(2,1fr); }
       .players-grid { grid-template-columns: repeat(2,1fr); }
+      .quick-report-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 768px) {
       .main-container { grid-template-columns: 1fr; }
@@ -130,6 +147,32 @@
         <div class="stat-card"><div class="stat-card-value" id="statFiltered">0</div><div class="stat-card-label">Filtre Sonucu</div></div>
         <div class="stat-card"><div class="stat-card-value" id="statWatch">0</div><div class="stat-card-label">Takip Listem</div></div>
         <div class="stat-card"><div class="stat-card-value" id="statAvg">0.0</div><div class="stat-card-label">Ortalama Rating</div></div>
+      </div>
+
+      <div class="quick-report-section">
+        <h2 style="margin-bottom:14px;font-size:18px;font-weight:800;color:#1f2937;">Mac Sonu Anlik Rapor</h2>
+        <div class="quick-report-grid">
+          <div class="form-group"><label>Mac Basligi</label><input type="text" id="quickReportTitle" placeholder="U19 Hazirlik Maci"></div>
+          <div class="form-group"><label>Oyuncu ID (ops.)</label><input type="number" id="quickReportPlayerId" placeholder="123"></div>
+          <div class="form-group"><label>Puan (1-100)</label><input type="number" id="quickReportRating" min="1" max="100" value="75"></div>
+          <div class="form-group">
+            <label>Oneri</label>
+            <select id="quickReportRecommendation">
+              <option value="recommended">Recommended</option>
+              <option value="highly_recommended">Highly Recommended</option>
+              <option value="neutral">Neutral</option>
+              <option value="not_recommended">Not Recommended</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:10px;">
+          <label>Kisa Teknik Not</label>
+          <textarea id="quickReportNote" style="min-height:80px;" placeholder="Kisa analiz notu..."></textarea>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="btn-small primary" type="button" onclick="saveQuickScoutReport()">Raporu Kaydet</button>
+          <div class="quick-report-result" id="quickReportResult">Henuz rapor kaydi yok.</div>
+        </div>
       </div>
 
       <div class="search-section">
@@ -541,6 +584,100 @@
       return body?.data || null;
     }
 
+    function getQuickScoutReports() {
+      try {
+        const raw = localStorage.getItem('nextscout_quick_scout_reports');
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function setQuickScoutReports(items) {
+      localStorage.setItem('nextscout_quick_scout_reports', JSON.stringify(items.slice(0, 200)));
+    }
+
+    async function saveQuickScoutReport() {
+      const title = (document.getElementById('quickReportTitle')?.value || '').trim();
+      const playerId = Number(document.getElementById('quickReportPlayerId')?.value || 0);
+      const rating = Number(document.getElementById('quickReportRating')?.value || 0);
+      const recommendation = (document.getElementById('quickReportRecommendation')?.value || 'recommended').trim();
+      const note = (document.getElementById('quickReportNote')?.value || '').trim();
+      const root = document.getElementById('quickReportResult');
+
+      if (!title) {
+        if (root) root.textContent = 'Baslik zorunlu.';
+        return;
+      }
+      if (!rating || rating < 1 || rating > 100) {
+        if (root) root.textContent = 'Puan 1-100 arasi olmali.';
+        return;
+      }
+
+      const localRecord = {
+        id: Date.now(),
+        title,
+        player_user_id: playerId || null,
+        overall_rating: rating,
+        recommendation,
+        technical_assessment: note,
+        watched_location: (document.getElementById('liveLocation')?.value || '').trim() || null,
+        created_at: new Date().toISOString(),
+      };
+
+      const all = getQuickScoutReports();
+      all.unshift(localRecord);
+      setQuickScoutReports(all);
+
+      const token = (localStorage.getItem('nextscout_token') || '').trim();
+      const apiBase = getApiBaseUrl();
+      let sentToApi = false;
+
+      if (token && playerId > 0) {
+        try {
+          const response = await fetch(`${apiBase}/scout-reports`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              player_user_id: playerId,
+              title,
+              technical_assessment: note || null,
+              overall_rating: rating,
+              recommendation,
+              watched_location: localRecord.watched_location,
+              watched_date: new Date().toISOString().slice(0, 10),
+              is_private: false,
+            }),
+          });
+          sentToApi = response.ok;
+        } catch (error) {
+          sentToApi = false;
+        }
+      }
+
+      if (root) {
+        root.textContent = sentToApi
+          ? `Rapor kaydedildi ve APIye gonderildi. (${title})`
+          : `Rapor local kaydedildi. API gonderimi icin Oyuncu ID + giris gerekli.`;
+      }
+    }
+
+    function initQuickScoutReportWidget() {
+      const root = document.getElementById('quickReportResult');
+      if (!root) return;
+      const first = getQuickScoutReports()[0];
+      if (!first) {
+        root.textContent = 'Henuz rapor kaydi yok.';
+        return;
+      }
+      root.textContent = `Son rapor: ${first.title} • ${first.overall_rating}/100`;
+    }
+
     function logout() {
       localStorage.removeItem('nextscout_token');
       localStorage.removeItem('nextscout_user');
@@ -552,7 +689,7 @@
       window.location.href = 'index.html';
     }
 
-    document.getElementById('coachNeedForm').addEventListener('submit', async function(e) {
+    document.getElementById('coachNeedForm')?.addEventListener('submit', async function(e) {
       e.preventDefault();
       const title = (document.getElementById('coachNeedTitle').value || '').trim();
       const text = (document.getElementById('coachNeedText').value || '').trim();
@@ -584,7 +721,7 @@
       }
     });
 
-    document.getElementById('liveScoutForm').addEventListener('submit', async function(e) {
+    document.getElementById('liveScoutForm')?.addEventListener('submit', async function(e) {
       e.preventDefault();
       const matchName = (document.getElementById('liveMatchName').value || '').trim();
       const location = (document.getElementById('liveLocation').value || '').trim();
@@ -695,7 +832,7 @@
       }
     });
 
-    document.getElementById('trialPublishForm').addEventListener('submit', function(e) {
+    document.getElementById('trialPublishForm')?.addEventListener('submit', function(e) {
       e.preventDefault();
       const type = (document.getElementById('trialEventType').value || 'trial').trim();
       const title = (document.getElementById('trialEventTitle').value || '').trim();
@@ -757,9 +894,16 @@
       if (query.get('open_live') === '1') {
         openLiveScoutModal();
       }
+      initQuickScoutReportWidget();
     }
 
     window.addEventListener('DOMContentLoaded', init);
   </script>
+    <script src="assets/js/core-stability.js"></script>
 </body>
 </html>
+
+
+
+
+

@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yardım - NextScout</title>
+    <meta name="description" content="NextScout help sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://nextscout.app/help.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Yardım - NextScout">
+    <meta property="og:description" content="NextScout help sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/help.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Yardım - NextScout">
+    <meta name="twitter:description" content="NextScout help sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+  <style>
+    :root{--bg:#f8fafc;--card:#fff;--line:#dbeafe;--text:#0f172a;--muted:#64748b;--primary:#2563eb}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
+    .wrap{max-width:980px;margin:0 auto;padding:24px 16px}
+    .head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+    .title{margin:0;font-size:30px;font-weight:800}
+    .sub{margin-top:6px;color:var(--muted);font-size:14px}
+    .btn{border:1px solid var(--line);background:#fff;color:var(--primary);padding:10px 14px;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px}
+    .item{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden}
+    .q{padding:12px 14px;font-weight:800;cursor:pointer;background:#fff}
+    .a{padding:0 14px;max-height:0;overflow:hidden;transition:max-height .25s ease,color .2s ease;color:#374151}
+    .item.open .a{padding:0 14px 12px;max-height:180px}
+    .contact{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:8px}
+    .contact p{margin:8px 0;color:#334155}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <h1 class="title">Yardım Merkezi</h1>
+        <div class="sub">Sık sorulan sorular ve destek bilgileri.</div>
+      </div>
+      <a href="DASHBOARD_DESIGN.html" class="btn">← Dashboard</a>
+    </div>
+
+    <div class="item"><div class="q">Profilimi nasıl güncellerim?</div><div class="a">Dashboard'da <strong>Profili Düzenle</strong> butonuna tıkla, bilgileri değiştir ve <strong>Kaydet</strong> yap.</div></div>
+    <div class="item"><div class="q">Favori oyunculara nasıl ulaşırım?</div><div class="a">Oyuncu Ara ekranında ❤️ ile eklediğin oyuncuları <strong>Favorilerim</strong> menüsünde görebilirsin.</div></div>
+    <div class="item"><div class="q">Mesajlarımda okundu/okunmadı nasıl yönetilir?</div><div class="a">Mesaj detayı sağ panelinde <strong>Okundu Yap / Okunmadı Yap</strong> düğmesini kullanabilirsin.</div></div>
+    <div class="item"><div class="q">İstatistikler ve başarılar nerede görünür?</div><div class="a">Veri girişi dashboard/profile-edit üzerinden yapılır. Görüntüleme oyuncu profilindeki ilgili bölümlerde yapılır.</div></div>
+
+    <div class="contact">
+      <h3 style="margin:0 0 10px 0;">Destek</h3>
+      <p><strong>E-posta:</strong> support@nextscout.local</p>
+      <p><strong>Çalışma Saatleri:</strong> Hafta içi 09:00 - 18:00</p>
+      <p><strong>Hızlı İpucu:</strong> Sorun yaşarsan önce sayfayı <code>Ctrl+F5</code> ile yenile.</p>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.item .q').forEach(q=>{
+      q.addEventListener('click',()=>q.parentElement.classList.toggle('open'));
+    });
+  </script>
+    <script src="assets/js/core-stability.js"></script>
+</body>
+</html>
+
+
+
+
