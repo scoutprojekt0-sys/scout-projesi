@@ -555,6 +555,7 @@
         </div>
 
         <div class="data-meta" id="playerDataMeta">Kaynak: Sistem • Son guncelleme: -</div>
+        <div class="data-meta" id="playerQualityMeta" style="opacity:.75;">Veri Kalitesi: -</div>
         <div class="profile-tabs" id="profileTabs">
             <button class="profile-tab active" data-tab="overview" type="button">Genel</button>
             <button class="profile-tab" data-tab="media" type="button">Medya</button>
@@ -606,6 +607,14 @@
                 <thead><tr><th>Sezon</th><th>Kulüp</th><th>Yeni Kulüp</th><th>Bedel</th></tr></thead>
                 <tbody id="transferHistoryBody"></tbody>
             </table>
+            <h2 class="section-title" style="margin-top:18px;">💶 Piyasa Degeri Tarihcesi</h2>
+            <div class="card">
+                <div id="marketHistoryList" style="display:grid;gap:8px;"></div>
+            </div>
+            <h2 class="section-title" style="margin-top:18px;">🕒 Kariyer Akisi</h2>
+            <div class="card">
+                <div id="timelineList" style="display:grid;gap:8px;"></div>
+            </div>
         </section>
 
         <section class="tab-panel" data-tab-panel="contract">
@@ -684,6 +693,11 @@
                 ? window.NextScoutData.sourceStamp(sourceLabel || 'Sistem', new Date())
                 : `Kaynak: ${sourceLabel || 'Sistem'} • Son guncelleme: ${new Date().toLocaleString('tr-TR')}`;
             if (meta) meta.textContent = stamp;
+            const qualityMeta = document.getElementById('playerQualityMeta');
+            if (qualityMeta) {
+                const score = Number(data?.quality_score || 0);
+                qualityMeta.textContent = `Veri Kalitesi: ${score > 0 ? score : '-'} / 100`;
+            }
 
             const galleryGrid = document.getElementById('galleryGrid');
             const galleryItems = Array.isArray(data?.gallery) && data.gallery.length
@@ -724,6 +738,22 @@
                 ];
             if (transferBody) {
                 transferBody.innerHTML = transfers.map((row) => `<tr><td>${esc(row.season)}</td><td>${esc(row.from)}</td><td>${esc(row.to)}</td><td>${esc(row.fee)}</td></tr>`).join('');
+            }
+
+            const marketRoot = document.getElementById('marketHistoryList');
+            const marketRows = Array.isArray(data?.market_history) && data.market_history.length
+                ? data.market_history
+                : [{ date: '-', value: '-' }];
+            if (marketRoot) {
+                marketRoot.innerHTML = marketRows.map((row) => `<div class="achievement-item"><div class="achievement-title">${esc(row.date || '-')}</div><div class="achievement-text">Deger: ${esc(row.value || '-')}</div></div>`).join('');
+            }
+
+            const timelineRoot = document.getElementById('timelineList');
+            const timelineRows = Array.isArray(data?.timeline_events) && data.timeline_events.length
+                ? data.timeline_events
+                : [{ title: 'Akis verisi yok', text: 'Bu oyuncu icin timeline kaydi bulunamadi.' }];
+            if (timelineRoot) {
+                timelineRoot.innerHTML = timelineRows.map((row) => `<div class="achievement-item"><div class="achievement-title">${esc(row.title || '-')}</div><div class="achievement-text">${esc(row.text || '-')}</div></div>`).join('');
             }
 
             const achievementList = document.getElementById('achievementList');
@@ -835,6 +865,14 @@
             const history = Array.isArray(marketPayload?.data?.history) ? marketPayload.data.history : [];
             const achievements = [];
             const notes = [];
+            const marketHistory = history.slice(0, 8).map((row) => ({
+                date: row?.valuation_date ? new Date(row.valuation_date).toLocaleDateString('tr-TR') : '-',
+                value: row?.market_value ? `€${row.market_value}` : '-',
+            }));
+            const timelineEvents = history.slice(0, 6).map((row) => ({
+                title: `Piyasa Guncellemesi • ${row?.valuation_date ? new Date(row.valuation_date).toLocaleDateString('tr-TR') : '-'}`,
+                text: `Deger ${row?.market_value ? `€${row.market_value}` : '-'}`,
+            }));
 
             if (summary.current_value) achievements.push({ title: 'Guncel Piyasa Degeri', text: `€${summary.current_value}` });
             if (summary.highest_value) achievements.push({ title: 'Zirve Deger', text: `€${summary.highest_value}` });
@@ -844,7 +882,7 @@
                     source: 'Market Value',
                 });
             }
-            return { achievements, notes };
+            return { achievements, notes, marketHistory, timelineEvents };
         }
 
         async function fetchSupplementaryData(userId) {
@@ -859,12 +897,19 @@
             ]);
 
             const marketInsights = mapMarketInsights(marketRes || {});
+            const transferTimeline = mapTransfers(transferRes || {}).slice(0, 6).map((row) => ({
+                title: `Transfer • ${row.season || '-'}`,
+                text: `${row.from || '-'} → ${row.to || '-'} (${row.fee || '-'})`,
+            }));
+            const combinedTimeline = [...transferTimeline, ...(marketInsights.timelineEvents || [])].slice(0, 10);
             return {
                 transfers: mapTransfers(transferRes || {}),
                 videos: mapVideos(videoRes || {}),
                 gallery: mapGallery(mediaRes || {}),
                 achievements: marketInsights.achievements,
                 scout_notes: marketInsights.notes,
+                market_history: marketInsights.marketHistory || [],
+                timeline_events: combinedTimeline,
                 sourceLabel: hasToken ? 'API (birlesik)' : 'API (public + fallback)',
             };
         }
@@ -910,6 +955,9 @@
                 videos: extras?.videos?.length ? extras.videos : (payload?.videos || []),
                 gallery: extras?.gallery?.length ? extras.gallery : (payload?.gallery || []),
                 achievements: extras?.achievements?.length ? extras.achievements : (payload?.achievements || []),
+                market_history: extras?.market_history?.length ? extras.market_history : [],
+                timeline_events: extras?.timeline_events?.length ? extras.timeline_events : [],
+                quality_score: payload?.data_quality?.score || 0,
             }, extras?.sourceLabel || 'API /public/players/{id}/profile');
         }
 

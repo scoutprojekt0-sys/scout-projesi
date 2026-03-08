@@ -488,10 +488,28 @@
         <input type="number" id="ratingFilter" placeholder="7.0" min="0" max="10" step="0.1">
       </div>
       <div class="filter">
+        <label>Piyasa Degeri Min (€)</label>
+        <input type="number" id="marketMinFilter" placeholder="500000" min="0" step="1000">
+      </div>
+      <div class="filter">
+        <label>Sozlesme</label>
+        <select id="contractFilter">
+          <option value="">Tum Durumlar</option>
+          <option value="active">Sozlesmeli</option>
+          <option value="free">Bosta</option>
+        </select>
+      </div>
+      <div class="filter">
+        <label>Guven Skoru (Min)</label>
+        <input type="number" id="qualityMinFilter" placeholder="60" min="0" max="100" step="5">
+      </div>
+      <div class="filter">
         <label>Sıralama</label>
         <select id="sortFilter">
           <option value="rating_desc">Rating (Yuksekten)</option>
           <option value="rating_asc">Rating (Dusukten)</option>
+          <option value="value_desc">Piyasa Degeri (Yuksekten)</option>
+          <option value="updated_desc">Son Guncelleme</option>
           <option value="age_asc">Yas (Gencten)</option>
           <option value="age_desc">Yas (Buyukten)</option>
           <option value="name_asc">Isim (A-Z)</option>
@@ -519,9 +537,9 @@
 
     <!-- Pagination -->
     <div class="pagination" id="pagination">
-      <button class="active">1</button>
-      <button>2</button>
-      <button>3</button>
+      <button id="prevPageBtn" type="button">Önceki</button>
+      <button class="active" id="pageInfoBtn" type="button">1 / 1</button>
+      <button id="nextPageBtn" type="button">Sonraki</button>
     </div>
 
     </div>
@@ -556,6 +574,9 @@
     const leagueFilter = document.getElementById("leagueFilter");
     const ageFilter = document.getElementById("ageFilter");
     const ratingFilter = document.getElementById("ratingFilter");
+    const marketMinFilter = document.getElementById("marketMinFilter");
+    const contractFilter = document.getElementById("contractFilter");
+    const qualityMinFilter = document.getElementById("qualityMinFilter");
     const sortFilter = document.getElementById("sortFilter");
     const savePresetBtn = document.getElementById("savePresetBtn");
     const loadPresetBtn = document.getElementById("loadPresetBtn");
@@ -565,7 +586,13 @@
     const compareModal = document.getElementById("compareModal");
     const compareContent = document.getElementById("compareContent");
     const openCompareBtn = document.getElementById("openCompareBtn");
+    const prevPageBtn = document.getElementById("prevPageBtn");
+    const nextPageBtn = document.getElementById("nextPageBtn");
+    const pageInfoBtn = document.getElementById("pageInfoBtn");
     let compareIds = [];
+    let serverPage = 1;
+    let serverLastPage = 1;
+    let serverTotal = 0;
 
     function getApiBaseUrl() {
       if (window.location.protocol === "http:" || window.location.protocol === "https:") {
@@ -789,6 +816,10 @@
               <span class="rating-stars">★★★★★</span>
               <span class="rating-value">${player.rating}/10</span>
             </div>
+            <div style="font-size:11px;opacity:.65;margin-top:6px;">
+              Kaynak: ${player.data_source || 'Sistem'} • Guven: ${player.quality_score || 0}
+              ${player.updated_at ? ` • ${new Date(player.updated_at).toLocaleDateString('tr-TR')}` : ""}
+            </div>
 
             <div class="player-actions">
               <button onclick="viewProfile(${player.id})">Profil</button>
@@ -801,7 +832,7 @@
       `).join("");
     }
 
-    async function loadPlayersFromApi() {
+    async function loadPlayersFromApi(page = 1) {
       try {
         const apiBase = getApiBaseUrl();
         const params = new URLSearchParams(window.location.search);
@@ -819,6 +850,28 @@
         if (selectedSport) {
           apiQuery.set("sport", selectedSport);
         }
+        const selectedPosition = (positionFilter?.value || "").trim();
+        if (selectedPosition) apiQuery.set("position", selectedPosition);
+        const selectedLeague = (leagueFilter?.value || "").trim();
+        if (selectedLeague) apiQuery.set("league", selectedLeague);
+        const ageRange = parseAgeRange(ageFilter?.value || "");
+        if (ageRange) {
+          apiQuery.set("age_min", String(ageRange.min));
+          apiQuery.set("age_max", String(ageRange.max));
+        }
+        const ratingMin = parseFloat((ratingFilter?.value || "").trim());
+        if (!Number.isNaN(ratingMin) && ratingMin > 0) apiQuery.set("rating_min", String(ratingMin));
+        const marketMin = parseFloat((marketMinFilter?.value || "").trim());
+        if (!Number.isNaN(marketMin) && marketMin > 0) apiQuery.set("market_min", String(marketMin));
+        const contractStatus = (contractFilter?.value || "").trim();
+        if (contractStatus) apiQuery.set("contract_status", contractStatus);
+        const qualityMin = parseInt((qualityMinFilter?.value || "").trim(), 10);
+        if (!Number.isNaN(qualityMin) && qualityMin > 0) apiQuery.set("quality_min", String(qualityMin));
+        const sortMode = (sortFilter?.value || "rating_desc").trim();
+        if (sortMode) apiQuery.set("sort", sortMode);
+        apiQuery.set("page", String(page));
+        apiQuery.set("per_page", "24");
+        apiQuery.set("limit", "1500");
 
         const url = apiQuery.toString()
           ? `${apiBase}/public/players?${apiQuery.toString()}`
@@ -840,14 +893,28 @@
           height: p.height || "-",
           nationality: p.nationality || "-",
           contract_status: p.contract_status || "active",
+          market_value: p.market_value || 0,
+          quality_score: p.quality_score || 0,
+          data_source: p.data_source || "NextScout API",
+          updated_at: p.updated_at || "",
           seeking_club: Boolean(p.seeking_club),
           radar_new: Boolean(p.radar_new),
           radar_rising: Boolean(p.radar_rising),
           radar_hidden: Boolean(p.radar_hidden),
         }));
+        serverPage = Number(data?.meta?.page || page || 1);
+        serverLastPage = Number(data?.meta?.last_page || 1);
+        serverTotal = Number(data?.meta?.total || allPlayers.length || 0);
+        renderPagination();
       } catch (e) {
         // Fallback mock data kullanılacak
       }
+    }
+
+    function renderPagination() {
+      if (pageInfoBtn) pageInfoBtn.textContent = `${serverPage} / ${serverLastPage}`;
+      if (prevPageBtn) prevPageBtn.disabled = serverPage <= 1;
+      if (nextPageBtn) nextPageBtn.disabled = serverPage >= serverLastPage;
     }
 
     function getTransferCategoryFromQuery() {
@@ -894,6 +961,15 @@
       if (ratingFilter.value) {
         filtered = filtered.filter(p => p.rating >= parseFloat(ratingFilter.value));
       }
+      if (marketMinFilter.value) {
+        filtered = filtered.filter(p => Number(p.market_value || 0) >= parseFloat(marketMinFilter.value));
+      }
+      if (contractFilter.value) {
+        filtered = filtered.filter(p => String(p.contract_status || "") === String(contractFilter.value));
+      }
+      if (qualityMinFilter.value) {
+        filtered = filtered.filter(p => Number(p.quality_score || 0) >= parseInt(qualityMinFilter.value, 10));
+      }
 
       const ageRange = parseAgeRange(ageFilter.value);
       if (ageRange) {
@@ -925,12 +1001,15 @@
       const sortMode = (sortFilter?.value || "rating_desc").toLowerCase();
       if (sortMode === "rating_desc") filtered.sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
       if (sortMode === "rating_asc") filtered.sort((a, b) => Number(a.rating || 0) - Number(b.rating || 0));
+      if (sortMode === "value_desc") filtered.sort((a, b) => Number(b.market_value || 0) - Number(a.market_value || 0));
+      if (sortMode === "updated_desc") filtered.sort((a, b) => new Date(b.updated_at || 0) - new Date(a.updated_at || 0));
       if (sortMode === "age_asc") filtered.sort((a, b) => Number(a.age || 999) - Number(b.age || 999));
       if (sortMode === "age_desc") filtered.sort((a, b) => Number(b.age || 0) - Number(a.age || 0));
       if (sortMode === "name_asc") filtered.sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "tr"));
 
       if (resultsMeta) {
-        resultsMeta.textContent = `Toplam ${filtered.length} oyuncu • Son guncelleme: ${new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}`;
+        const localCount = filtered.length;
+        resultsMeta.textContent = `Toplam ${serverTotal || localCount} oyuncu • Sayfa: ${serverPage}/${serverLastPage} • Son guncelleme: ${new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}`;
       }
       renderPlayers(filtered);
     }
@@ -942,6 +1021,9 @@
         league: leagueFilter?.value || "",
         age: ageFilter?.value || "",
         rating: ratingFilter?.value || "",
+        marketMin: marketMinFilter?.value || "",
+        contract: contractFilter?.value || "",
+        qualityMin: qualityMinFilter?.value || "",
         sort: sortFilter?.value || "rating_desc"
       };
     }
@@ -953,8 +1035,12 @@
       if (leagueFilter) leagueFilter.value = preset.league || "";
       if (ageFilter) ageFilter.value = preset.age || "";
       if (ratingFilter) ratingFilter.value = preset.rating || "";
+      if (marketMinFilter) marketMinFilter.value = preset.marketMin || "";
+      if (contractFilter) contractFilter.value = preset.contract || "";
+      if (qualityMinFilter) qualityMinFilter.value = preset.qualityMin || "";
       if (sortFilter) sortFilter.value = preset.sort || "rating_desc";
-      filterPlayers();
+      serverPage = 1;
+      loadPlayersFromApi(1).then(filterPlayers);
     }
 
     function viewProfile(id) {
@@ -1124,12 +1210,19 @@
     }
 
     // Event listeners
-    sportFilter.addEventListener("change", filterPlayers);
-    positionFilter.addEventListener("change", filterPlayers);
-    leagueFilter.addEventListener("change", filterPlayers);
-    ageFilter.addEventListener("input", filterPlayers);
-    ratingFilter.addEventListener("change", filterPlayers);
-    sortFilter.addEventListener("change", filterPlayers);
+    function refreshFromServerFirstPage() {
+      serverPage = 1;
+      loadPlayersFromApi(1).then(filterPlayers);
+    }
+    sportFilter.addEventListener("change", refreshFromServerFirstPage);
+    positionFilter.addEventListener("change", refreshFromServerFirstPage);
+    leagueFilter.addEventListener("change", refreshFromServerFirstPage);
+    ageFilter.addEventListener("input", refreshFromServerFirstPage);
+    ratingFilter.addEventListener("change", refreshFromServerFirstPage);
+    marketMinFilter.addEventListener("change", refreshFromServerFirstPage);
+    contractFilter.addEventListener("change", refreshFromServerFirstPage);
+    qualityMinFilter.addEventListener("change", refreshFromServerFirstPage);
+    sortFilter.addEventListener("change", refreshFromServerFirstPage);
 
     savePresetBtn.addEventListener("click", () => {
       localStorage.setItem("nextscout_player_filter_preset", JSON.stringify(getCurrentPreset()));
@@ -1142,7 +1235,17 @@
       } catch (error) {}
     });
     resetFilterBtn.addEventListener("click", () => {
-      applyPreset({ sport: "", position: "", league: "", age: "", rating: "", sort: "rating_desc" });
+      applyPreset({ sport: "", position: "", league: "", age: "", rating: "", marketMin: "", contract: "", qualityMin: "", sort: "rating_desc" });
+    });
+    prevPageBtn?.addEventListener("click", async () => {
+      if (serverPage <= 1) return;
+      await loadPlayersFromApi(serverPage - 1);
+      filterPlayers();
+    });
+    nextPageBtn?.addEventListener("click", async () => {
+      if (serverPage >= serverLastPage) return;
+      await loadPlayersFromApi(serverPage + 1);
+      filterPlayers();
     });
     openCompareBtn.addEventListener("click", openCompareModal);
 

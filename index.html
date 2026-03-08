@@ -4292,11 +4292,12 @@
             const root = document.getElementById('dataStatusStrip');
             if (!root) return;
 
-            const [playersPayload, clubNeedsPayload, coachesPayload, trendsPayload] = await Promise.all([
+            const [playersPayload, clubNeedsPayload, coachesPayload, trendsPayload, qualityPayload] = await Promise.all([
                 fetchJsonSafe(`${API_BASE_URL}/public/players?limit=250`),
                 fetchJsonSafe(`${API_BASE_URL}/club-needs?limit=250`),
                 fetchJsonSafe(`${API_BASE_URL}/users?role=coach&per_page=1`),
                 fetchJsonSafe(`${API_BASE_URL}/trending/week`),
+                fetchJsonSafe(`${API_BASE_URL}/public/players/quality-summary`),
             ]);
 
             const toArray = window.NextScoutData?.toArray || ((input) => Array.isArray(input) ? input : []);
@@ -4323,6 +4324,7 @@
             const coachCount = Number(coachesPayload?.data?.total)
                 || (Array.isArray(coachesPayload?.data?.data) ? coachesPayload.data.data.length : 0);
             const trendCount = toArray(trendsPayload?.data ?? trendsPayload).length;
+            const qualityHigh = Number(qualityPayload?.data?.quality_high || 0);
 
             const leagueCountEl = document.getElementById('homeLeagueCount');
             const clubCountEl = document.getElementById('homeClubCount');
@@ -4335,7 +4337,7 @@
             if (coachCountEl) coachCountEl.textContent = String(coachCount);
             if (trendCountEl) trendCountEl.textContent = String(trendCount);
 
-            root.textContent = `Veri Durumu: Guncel veri ${leaguesCount} lig / ${clubCount} kulup / ${playerCount} oyuncu / ${coachCount} antrenor`;
+            root.textContent = `Veri Durumu: Guncel veri ${leaguesCount} lig / ${clubCount} kulup / ${playerCount} oyuncu / ${coachCount} antrenor / ${qualityHigh} yuksek kalite profil`;
         }
 
         async function renderSuccessStoriesPanel() {
