@@ -94,7 +94,7 @@
         .welcome-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 12px rgba(102,126,234,0.15); }
         .welcome-card h1 { font-size: 28px; margin-bottom: 10px; }
         .welcome-card p { margin: 0; opacity: 0.95; font-size: 15px; }
-        .quick-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .quick-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
         .stat-card { background: white; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-top: 3px solid #667eea; }
         .stat-card-value { font-size: 28px; font-weight: bold; color: #667eea; margin-bottom: 8px; }
         .stat-card-label { font-size: 13px; color: #9ca3af; text-transform: uppercase; }
@@ -179,6 +179,7 @@
                 <div class="stat-card"><div class="stat-card-value" id="statFilteredPlayers">0</div><div class="stat-card-label">Filtre Sonucu</div></div>
                 <div class="stat-card"><div class="stat-card-value" id="statOffersSent">0</div><div class="stat-card-label">Gonderilen Teklif</div></div>
                 <div class="stat-card"><div class="stat-card-value" id="statAverageRating">0.0</div><div class="stat-card-label">Ortalama Rating</div></div>
+                <div class="stat-card"><div class="stat-card-value" id="statProfileCompletion">0%</div><div class="stat-card-label">Profil Tamamlama</div></div>
             </div>
 
 
@@ -337,6 +338,22 @@
             document.getElementById('statFilteredPlayers').textContent = String(filtered);
             document.getElementById('statOffersSent').textContent = String(offers);
             document.getElementById('statAverageRating').textContent = String(avgRating);
+            const completionEl = document.getElementById('statProfileCompletion');
+            if (completionEl) completionEl.textContent = `${computeProfileCompletion()}%`;
+        }
+
+        function computeProfileCompletion() {
+            let user = {};
+            try { user = JSON.parse(localStorage.getItem('nextscout_user') || '{}'); } catch (error) { user = {}; }
+            const checks = [
+                Boolean((user?.name || '').toString().trim()),
+                Boolean((user?.email || '').toString().trim()),
+                Boolean((user?.club_name || '').toString().trim()),
+                Boolean((user?.city || '').toString().trim()),
+                Boolean((user?.phone || '').toString().trim()),
+            ];
+            const hit = checks.filter(Boolean).length;
+            return Math.round((hit / checks.length) * 100);
         }
 
         function renderPlayers(players) {

@@ -322,6 +322,71 @@
       border-color: #3b82f6;
     }
 
+    .compare-bar {
+      position: sticky;
+      bottom: 8px;
+      z-index: 40;
+      margin-top: 14px;
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .compare-list {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: #1e3a8a;
+      font-weight: 700;
+    }
+
+    .compare-chip {
+      border: 1px solid #93c5fd;
+      background: #ffffff;
+      border-radius: 999px;
+      padding: 4px 8px;
+    }
+
+    .compare-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      background: rgba(2, 6, 23, 0.6);
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+
+    .compare-modal.show { display: flex; }
+
+    .compare-card {
+      width: min(860px, 100%);
+      background: #fff;
+      border: 1px solid #dbeafe;
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+    .compare-table th, .compare-table td {
+      border: 1px solid #e2e8f0;
+      padding: 8px;
+      text-align: left;
+    }
+
     @media (max-width: 768px) {
       .filters {
         grid-template-columns: 1fr;
@@ -434,6 +499,10 @@
     <div class="players-grid" id="playersGrid">
       <!-- Dinamik oyuncular yüklenecek -->
     </div>
+    <div class="compare-bar">
+      <div class="compare-list" id="compareList">Karsilastirma secimi yok</div>
+      <button class="btn" id="openCompareBtn" type="button">Karsilastir</button>
+    </div>
 
     <!-- Pagination -->
     <div class="pagination" id="pagination">
@@ -450,6 +519,16 @@
         Scout Kampanyası
       </div>
     </aside>
+  </div>
+
+  <div class="compare-modal" id="compareModal" onclick="if(event.target===this) closeCompareModal()">
+    <div class="compare-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+        <strong style="font-size:16px;color:#1e3a8a;">Oyuncu Karsilastirma</strong>
+        <button class="btn" type="button" onclick="closeCompareModal()">Kapat</button>
+      </div>
+      <div id="compareContent">Oyuncu seciniz.</div>
+    </div>
   </div>
 
   <script src="assets/js/growth-upgrade.js"></script>
@@ -469,6 +548,11 @@
     const loadPresetBtn = document.getElementById("loadPresetBtn");
     const resetFilterBtn = document.getElementById("resetFilterBtn");
     const resultsMeta = document.getElementById("resultsMeta");
+    const compareList = document.getElementById("compareList");
+    const compareModal = document.getElementById("compareModal");
+    const compareContent = document.getElementById("compareContent");
+    const openCompareBtn = document.getElementById("openCompareBtn");
+    let compareIds = [];
 
     function getApiBaseUrl() {
       if (window.location.protocol === "http:" || window.location.protocol === "https:") {
@@ -696,6 +780,7 @@
             <div class="player-actions">
               <button onclick="viewProfile(${player.id})">Profil</button>
               <button onclick="addToFavorite(${player.id})">❤️</button>
+              <button onclick="toggleCompare(${player.id})">Kıyasla</button>
               <button onclick="contact(${player.id})">İletişim</button>
             </div>
           </div>
@@ -898,6 +983,58 @@
       alert(`${player.name} ile iletişime geçiyorsunuz...`);
     }
 
+    function toggleCompare(id) {
+      const num = Number(id);
+      if (!num) return;
+      if (compareIds.includes(num)) {
+        compareIds = compareIds.filter((x) => x !== num);
+      } else {
+        if (compareIds.length >= 2) compareIds.shift();
+        compareIds.push(num);
+      }
+      renderCompareBar();
+    }
+
+    function renderCompareBar() {
+      const selected = compareIds
+        .map((id) => allPlayers.find((p) => Number(p.id) === Number(id)))
+        .filter(Boolean);
+      if (!selected.length) {
+        compareList.textContent = "Karsilastirma secimi yok";
+        return;
+      }
+      compareList.innerHTML = selected.map((p) => `<span class="compare-chip">${p.name}</span>`).join("");
+    }
+
+    function openCompareModal() {
+      const selected = compareIds
+        .map((id) => allPlayers.find((p) => Number(p.id) === Number(id)))
+        .filter(Boolean);
+      if (selected.length < 2) {
+        alert("Karsilastirma icin en az 2 oyuncu sec.");
+        return;
+      }
+      const [a, b] = selected;
+      compareContent.innerHTML = `
+        <table class="compare-table">
+          <thead><tr><th>Alan</th><th>${a.name}</th><th>${b.name}</th></tr></thead>
+          <tbody>
+            <tr><td>Pozisyon</td><td>${a.position || '-'}</td><td>${b.position || '-'}</td></tr>
+            <tr><td>Yas</td><td>${a.age || '-'}</td><td>${b.age || '-'}</td></tr>
+            <tr><td>Boy</td><td>${a.height || '-'} cm</td><td>${b.height || '-'} cm</td></tr>
+            <tr><td>Lig</td><td>${a.league || '-'}</td><td>${b.league || '-'}</td></tr>
+            <tr><td>Kulup</td><td>${a.club || '-'}</td><td>${b.club || '-'}</td></tr>
+            <tr><td>Rating</td><td>${a.rating || '-'}</td><td>${b.rating || '-'}</td></tr>
+          </tbody>
+        </table>
+      `;
+      compareModal.classList.add("show");
+    }
+
+    function closeCompareModal() {
+      compareModal.classList.remove("show");
+    }
+
     // Event listeners
     sportFilter.addEventListener("change", filterPlayers);
     positionFilter.addEventListener("change", filterPlayers);
@@ -919,6 +1056,7 @@
     resetFilterBtn.addEventListener("click", () => {
       applyPreset({ sport: "", position: "", league: "", age: "", rating: "", sort: "rating_desc" });
     });
+    openCompareBtn.addEventListener("click", openCompareModal);
 
     // Initial render
     (async function init() {

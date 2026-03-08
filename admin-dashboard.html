@@ -322,6 +322,8 @@
             </table>
         </div>
     </div>
+    <script src="assets/js/site-core.js"></script>
+    <script src="assets/js/growth-upgrade.js"></script>
     <script>
         function formatRole(role) {
             const map = {
@@ -491,6 +493,17 @@
                 alert('Admin token bulunamadi.');
                 return;
             }
+            let reason = '';
+            if (action === 'reject' || action === 'cancel') {
+                reason = (prompt('Moderasyon notu gir (min 10 karakter):', '') || '').trim();
+                const checklist = window.NextScoutData?.editorialChecklist
+                    ? window.NextScoutData.editorialChecklist({ title: `Trial-${id}`, body: reason })
+                    : { ok: true, warnings: [] };
+                if (!checklist.ok) {
+                    alert(`Moderasyon notu yetersiz: ${checklist.warnings.join(', ')}`);
+                    return;
+                }
+            }
             try {
                 const response = await fetch(`${apiBase}/admin/trial-events/${encodeURIComponent(id)}/moderate`, {
                     method: 'POST',
@@ -499,12 +512,13 @@
                         Accept: 'application/json',
                         Authorization: `Bearer ${token}`,
                     },
-                    body: JSON.stringify({ action }),
+                    body: JSON.stringify({ action, reason }),
                 });
                 const payload = await response.json().catch(() => ({}));
                 if (!response.ok || payload?.ok === false) {
                     throw new Error(payload?.message || `HTTP ${response.status}`);
                 }
+                window.NextScoutGrowth?.track('trial_event_moderated', { id: Number(id), action });
                 loadTrialModerationQueue();
             } catch (error) {
                 alert(`Moderasyon hatasi: ${error.message}`);
@@ -544,6 +558,13 @@
                 alert('Lig, sezon, takimlar ve skor alanlarini doldur.');
                 return;
             }
+            const checklist = window.NextScoutData?.editorialChecklist
+                ? window.NextScoutData.editorialChecklist({ title: `${league} ${season}`, body: `${home} ${homeScore} - ${awayScore} ${away}` })
+                : { ok: true, warnings: [] };
+            if (!checklist.ok) {
+                alert(`Icerik kontrolu: ${checklist.warnings.join(', ')}`);
+                return;
+            }
 
             const rows = getAmateurResults();
             rows.unshift({
@@ -562,6 +583,7 @@
             });
             saveAmateurResults(rows);
             loadAmateurResults();
+            window.NextScoutGrowth?.track('amateur_result_added', { league: league.slice(0, 50) });
             alert('Sonuc eklendi. Admin onayi bekliyor.');
         }
 
