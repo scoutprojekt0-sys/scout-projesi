@@ -1970,6 +1970,8 @@
             color: #ffffff;
             display: block;
             min-height: 230px;
+            content-visibility: auto;
+            contain-intrinsic-size: 260px;
         }
 
         .success-stories-head {
@@ -3477,6 +3479,7 @@
     </div>
 
     <script src="assets/js/site-core.js"></script>
+    <script src="assets/js/growth-upgrade.js"></script>
     <script>
         // API Base URL - Fully automatic detection
         function getAPIBaseURL() {
@@ -4407,6 +4410,14 @@
                 story_text: (formData.get('story_text') || '').toString().trim(),
                 image_url: (formData.get('image_url') || '').toString().trim(),
             };
+            const checklist = window.NextScoutData?.editorialChecklist
+                ? window.NextScoutData.editorialChecklist({ title: payload.full_name, body: payload.story_text })
+                : { ok: true, warnings: [] };
+            if (!checklist.ok) {
+                alert(`Icerik kalite kontrolu: ${checklist.warnings.join(', ')}`);
+                return;
+            }
+            window.NextScoutGrowth?.track('success_story_submit_attempt', { sport: payload.sport || 'unknown' });
 
             try {
                 const response = await fetch(`${API_BASE_URL}/success-stories`, {
@@ -4425,10 +4436,12 @@
                 }
 
                 alert('Hikayen alindi. Admin onayindan sonra anasayfada yayinlanacak.');
+                window.NextScoutGrowth?.track('success_story_submit_success', { sport: payload.sport || 'unknown' });
                 form.reset();
                 closeSuccessStoryModal();
                 renderSuccessStoriesPanel();
             } catch (error) {
+                window.NextScoutGrowth?.track('success_story_submit_error', { message: (error?.message || '').slice(0, 80) });
                 alert('Hikaye gonderilemedi. Lutfen tekrar dene.');
             }
         }
@@ -4499,6 +4512,7 @@
 
         // Sayfa yüklendiğinde başlat
         document.addEventListener('DOMContentLoaded', function() {
+            window.NextScoutGrowth?.bindAutoTelemetry(document);
             // Auth status kontrol et (önce bunu)
             checkAuthStatus();
             if (localStorage.getItem('nextscout_open_login') === '1') {
@@ -4517,13 +4531,13 @@
             bindContractTickerEvents();
             renderManagerNeedsButtonPanel();
             renderContractStatusTicker();
-            renderIdeaNewsSquare();
-            renderSiteNewsSquare();
-            renderHomepageInfoCards();
-            renderClubNeedsInlineList();
-            renderPaidClubPromoNamesInline();
-            renderDataStatusStrip();
-            renderSuccessStoriesPanel();
+            window.NextScoutGrowth?.idle(() => renderIdeaNewsSquare(), 900);
+            window.NextScoutGrowth?.idle(() => renderSiteNewsSquare(), 1100);
+            window.NextScoutGrowth?.idle(() => renderHomepageInfoCards(), 1300);
+            window.NextScoutGrowth?.idle(() => renderClubNeedsInlineList(), 1400);
+            window.NextScoutGrowth?.idle(() => renderPaidClubPromoNamesInline(), 1500);
+            window.NextScoutGrowth?.idle(() => renderDataStatusStrip(), 1600);
+            window.NextScoutGrowth?.idle(() => renderSuccessStoriesPanel(), 1700);
             initDashboardFeatureCards();
             loadFooterPagesFromApi();
             const successStoryForm = document.getElementById('successStoryForm');

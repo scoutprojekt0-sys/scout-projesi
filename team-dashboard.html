@@ -284,6 +284,7 @@
     </div>
 
     <script src="assets/js/site-core.js"></script>
+    <script src="assets/js/growth-upgrade.js"></script>
     <script>
         const OFFERS_KEY = 'nextscout_team_offers';
         const CLUB_NEEDS_KEY = 'nextscout_club_needs_notes';
@@ -480,6 +481,10 @@
                 if (msg) msg.textContent = 'Not bos olamaz.';
                 return;
             }
+            if (note.length < 10) {
+                if (msg) msg.textContent = 'Not daha acik olmali (min 10 karakter).';
+                return;
+            }
 
             let items = [];
             try {
@@ -504,6 +509,7 @@
             };
             items.unshift(newItem);
             localStorage.setItem(CLUB_NEEDS_KEY, JSON.stringify(items.slice(0, 200)));
+            window.NextScoutGrowth?.track('club_need_note_publish', { note_len: note.length });
 
             try {
                 const apiBase = getApiBaseUrl();
@@ -579,6 +585,13 @@
                 if (msg) msg.textContent = 'Yayinlamak icin odeme onayi gerekli.';
                 return;
             }
+            const checklist = window.NextScoutData?.editorialChecklist
+                ? window.NextScoutData.editorialChecklist({ title: name, body: notes || 'Kulup tanitim metni' })
+                : { ok: true, warnings: [] };
+            if (!checklist.ok) {
+                if (msg) msg.textContent = `Icerik kontrolu: ${checklist.warnings.join(', ')}`;
+                return;
+            }
 
             const [image1, image2] = await Promise.all([
                 readFileAsDataUrl(image1File),
@@ -606,6 +619,7 @@
             });
 
             localStorage.setItem(CLUB_PROMOS_KEY, JSON.stringify(filtered.slice(0, 100)));
+            window.NextScoutGrowth?.track('club_promo_publish', { club: name.slice(0, 40) });
             if (msg) msg.textContent = 'Kulup tanitimi odeme onayi ile anasayfada yayina alindi.';
             setTimeout(() => toggleClubPromoPanel(false), 700);
         }
@@ -727,6 +741,7 @@
         }
 
         async function init() {
+            window.NextScoutGrowth?.bindAutoTelemetry(document);
             const grid = document.getElementById('playersGrid');
             grid.innerHTML = '<div style="padding:18px;border:1px solid #e5e7eb;border-radius:10px;background:#f9fafb;color:#6b7280;">Oyuncular yukleniyor...</div>';
             try {

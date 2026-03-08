@@ -146,6 +146,31 @@
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
 
+    .filter-tools {
+      display: flex;
+      gap: 8px;
+      align-items: end;
+      flex-wrap: wrap;
+    }
+
+    .filter-tools button {
+      padding: 8px 10px;
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      background: #eff6ff;
+      color: #1e3a8a;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .results-meta {
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: #1e3a8a;
+      opacity: 0.9;
+    }
+
     .players-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -384,7 +409,26 @@
         <label>Rating (Min)</label>
         <input type="number" id="ratingFilter" placeholder="7.0" min="0" max="10" step="0.1">
       </div>
+      <div class="filter">
+        <label>Sıralama</label>
+        <select id="sortFilter">
+          <option value="rating_desc">Rating (Yuksekten)</option>
+          <option value="rating_asc">Rating (Dusukten)</option>
+          <option value="age_asc">Yas (Gencten)</option>
+          <option value="age_desc">Yas (Buyukten)</option>
+          <option value="name_asc">Isim (A-Z)</option>
+        </select>
+      </div>
+      <div class="filter">
+        <label>Filtre Araçları</label>
+        <div class="filter-tools">
+          <button id="savePresetBtn" type="button">Preset Kaydet</button>
+          <button id="loadPresetBtn" type="button">Preset Yukle</button>
+          <button id="resetFilterBtn" type="button">Sifirla</button>
+        </div>
+      </div>
     </div>
+    <div class="results-meta" id="resultsMeta">Sonuc hazirlaniyor...</div>
 
     <!-- Players Grid -->
     <div class="players-grid" id="playersGrid">
@@ -408,13 +452,23 @@
     </aside>
   </div>
 
+  <script src="assets/js/growth-upgrade.js"></script>
   <script>
+    // Performance: defer non-critical observers and telemetry setup.
+    if (window.NextScoutGrowth && typeof window.NextScoutGrowth.bindAutoTelemetry === 'function') {
+      window.NextScoutGrowth.bindAutoTelemetry(document);
+    }
     const playersGrid = document.getElementById("playersGrid");
     const sportFilter = document.getElementById("sportFilter");
     const positionFilter = document.getElementById("positionFilter");
     const leagueFilter = document.getElementById("leagueFilter");
     const ageFilter = document.getElementById("ageFilter");
     const ratingFilter = document.getElementById("ratingFilter");
+    const sortFilter = document.getElementById("sortFilter");
+    const savePresetBtn = document.getElementById("savePresetBtn");
+    const loadPresetBtn = document.getElementById("loadPresetBtn");
+    const resetFilterBtn = document.getElementById("resetFilterBtn");
+    const resultsMeta = document.getElementById("resultsMeta");
 
     function getApiBaseUrl() {
       if (window.location.protocol === "http:" || window.location.protocol === "https:") {
@@ -770,7 +824,39 @@
         filtered = filtered.filter((p) => Boolean(p.radar_hidden));
       }
 
+      const sortMode = (sortFilter?.value || "rating_desc").toLowerCase();
+      if (sortMode === "rating_desc") filtered.sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
+      if (sortMode === "rating_asc") filtered.sort((a, b) => Number(a.rating || 0) - Number(b.rating || 0));
+      if (sortMode === "age_asc") filtered.sort((a, b) => Number(a.age || 999) - Number(b.age || 999));
+      if (sortMode === "age_desc") filtered.sort((a, b) => Number(b.age || 0) - Number(a.age || 0));
+      if (sortMode === "name_asc") filtered.sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "tr"));
+
+      if (resultsMeta) {
+        resultsMeta.textContent = `Toplam ${filtered.length} oyuncu • Son guncelleme: ${new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}`;
+      }
       renderPlayers(filtered);
+    }
+
+    function getCurrentPreset() {
+      return {
+        sport: sportFilter?.value || "",
+        position: positionFilter?.value || "",
+        league: leagueFilter?.value || "",
+        age: ageFilter?.value || "",
+        rating: ratingFilter?.value || "",
+        sort: sortFilter?.value || "rating_desc"
+      };
+    }
+
+    function applyPreset(preset) {
+      if (!preset || typeof preset !== "object") return;
+      if (sportFilter) sportFilter.value = preset.sport || "";
+      if (positionFilter) positionFilter.value = preset.position || "";
+      if (leagueFilter) leagueFilter.value = preset.league || "";
+      if (ageFilter) ageFilter.value = preset.age || "";
+      if (ratingFilter) ratingFilter.value = preset.rating || "";
+      if (sortFilter) sortFilter.value = preset.sort || "rating_desc";
+      filterPlayers();
     }
 
     function viewProfile(id) {
@@ -818,6 +904,21 @@
     leagueFilter.addEventListener("change", filterPlayers);
     ageFilter.addEventListener("input", filterPlayers);
     ratingFilter.addEventListener("change", filterPlayers);
+    sortFilter.addEventListener("change", filterPlayers);
+
+    savePresetBtn.addEventListener("click", () => {
+      localStorage.setItem("nextscout_player_filter_preset", JSON.stringify(getCurrentPreset()));
+      alert("Filtre preset kaydedildi.");
+    });
+    loadPresetBtn.addEventListener("click", () => {
+      try {
+        const preset = JSON.parse(localStorage.getItem("nextscout_player_filter_preset") || "{}");
+        applyPreset(preset);
+      } catch (error) {}
+    });
+    resetFilterBtn.addEventListener("click", () => {
+      applyPreset({ sport: "", position: "", league: "", age: "", rating: "", sort: "rating_desc" });
+    });
 
     // Initial render
     (async function init() {
