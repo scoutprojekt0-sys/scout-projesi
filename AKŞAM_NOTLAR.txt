@@ -1,0 +1,123 @@
+# 📋 AKŞAM İÇİN HIZLI NOTLAR
+
+**Tarih:** 2 Mart 2026 Akşam
+
+---
+
+## ✅ YAPILACAKLAR (Öncelik Sırasıyla)
+
+### **1. ESKİ DOSYALARI SİL**
+```
+DELETE_OLD_HOMEPAGE.bat çalıştır
+```
+
+### **2. YENİ ANASAYFA YAP**
+```
+Özellikler:
+✅ Canlı haber feed (Twitter gibi)
+✅ En çok tıklananlar widget
+✅ Canlı maç skorları (gerçek zamanlı)
+✅ Trending oyuncular
+✅ Yorum sistemi
+✅ Amatör piyasa (tıklanan puan)
+✅ Scout raporları feed
+```
+
+### **3. API BAĞLA**
+```
+GET /api/radar/news (Haberler)
+GET /api/radar/trending (Trendler)
+GET /api/radar/matches/live (Canlı maçlar)
+GET /api/market/amateur/leaderboard (Top oyuncular)
+GET /api/profile/comments/recent (Yorumlar)
+GET /api/scout/reports/latest (Scout raporları)
+```
+
+---
+
+## 🎨 TASARIM
+
+**Stil:** Modern, Dinamik, Bilgi Akışı
+**Renk:** Mavi tonlar (#0066cc)
+**Layout:** Card-based, Pinterest-like
+**Animasyon:** Smooth transitions
+**Responsive:** Mobile-first
+
+---
+
+## 📊 SAYFA DÜZENİ
+
+```
+┌─────────────────────────────────────────┐
+│ HEADER (Logo, Arama, Bildirim, Profil) │
+├─────────────────────────────────────────┤
+│                                         │
+│ [ANA FEED - Bilgi Akışı]              │
+│ - Canlı haberler                       │
+│ - Maç sonuçları                        │
+│ - Transfer haberleri                   │
+│                                         │
+│ [WIDGETS]                              │
+│ ├─ En Çok Tıklananlar                 │
+│ ├─ Canlı Maç Skoru                    │
+│ ├─ Trending Oyuncular                 │
+│ ├─ Son Yorumlar                       │
+│ └─ Amatör Piyasa Top 5                │
+│                                         │
+└─────────────────────────────────────────┘
+```
+
+---
+
+## ⚡ ÖNEMLİ NOTLAR
+
+- ❌ Standart şirket sitesi gibi OLMASIN
+- ✅ Dinamik bilgi akışı OLSUN
+- ✅ Canlı veriler göster
+- ✅ Sosyal etkileşim (yorumlar, beğeniler)
+- ✅ Real-time updates
+
+---
+
+## 🕐 ZAMAN PLANI
+
+```
+3 saat toplam:
+- 1 saat: Layout + Header
+- 1 saat: Widgets + Feed
+- 30 dk: API entegrasyonu
+- 30 dk: Test + polish
+```
+
+---
+
+## 📁 DOSYALAR
+
+**Oluşturulacak:**
+- NEXTSCOUT_MODERN_HOME.html (Yeni anasayfa)
+- modern-home.css (Styles)
+- modern-home.js (JavaScript)
+
+**Silinecek:**
+- NEXTSCOUT_HOMEPAGE.html (Eski)
+- LAUNCH_NEXTSCOUT.bat
+- OPEN.bat
+- TEST.bat
+- Eski dökümanlar
+
+---
+
+## 🎯 HEDEF
+
+**Modern Scout Platform Anasayfası:**
+- Canlı haber feed ✅
+- En çok tıklananlar ✅
+- Yorum sistemi ✅
+- Dinamik içerik ✅
+- Bilgi akışı ✅
+
+---
+
+**İyi günler! Akşam görüşürüz! 🌙**
+
+**AKŞAM_PLAN.md dosyasında detaylı plan var!**
