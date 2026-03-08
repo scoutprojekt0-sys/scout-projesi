@@ -5148,8 +5148,15 @@
                 const featureKey = card.getAttribute('data-dashboard-feature');
                 if (!featureKey) return;
 
-                card.addEventListener('click', () => openDashboardFeature(featureKey));
+                card.addEventListener('click', (event) => {
+                    const interactiveTarget = event.target && event.target.closest
+                        ? event.target.closest('.club-needs-inline-item, .club-promo-name-pill, .club-needs-inline-list, .club-promo-name-list')
+                        : null;
+                    if (interactiveTarget) return;
+                    openDashboardFeature(featureKey);
+                });
                 card.addEventListener('keydown', (event) => {
+                    if (event.target !== card) return;
                     if (event.key === 'Enter' || event.key === ' ') {
                         event.preventDefault();
                         openDashboardFeature(featureKey);

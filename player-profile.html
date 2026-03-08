@@ -783,7 +783,93 @@
             if (!savedProfile) renderAdvancedPanels({}, 'Local Profil');
         }
 
-        function renderPublicProfile(payload) {
+        function getAuthHeaders() {
+            const headers = { 'Accept': 'application/json' };
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            if (token) headers.Authorization = `Bearer ${token}`;
+            return headers;
+        }
+
+        async function fetchJsonSafe(url, useAuth) {
+            try {
+                const res = await fetch(url, { headers: useAuth ? getAuthHeaders() : { 'Accept': 'application/json' } });
+                const data = await res.json().catch(() => null);
+                if (!res.ok || !data?.ok) return null;
+                return data;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function toArrayPayload(input) {
+            if (Array.isArray(input)) return input;
+            if (Array.isArray(input?.data)) return input.data;
+            if (Array.isArray(input?.data?.data)) return input.data.data;
+            return [];
+        }
+
+        function mapTransfers(rows) {
+            return toArrayPayload(rows).map((row) => ({
+                season: row?.season?.name || row?.season || (row?.transfer_date ? String(row.transfer_date).slice(0, 4) : '-'),
+                from: row?.from_club?.name || row?.fromClub?.name || '-',
+                to: row?.to_club?.name || row?.toClub?.name || '-',
+                fee: row?.transfer_fee ? `€${row.transfer_fee}` : (row?.transfer_type === 'free' ? 'Bedelsiz' : '-'),
+            }));
+        }
+
+        function mapVideos(rows) {
+            return toArrayPayload(rows).map((row) => ({
+                title: row?.title || 'Video',
+                url: row?.video_url || row?.url || '#',
+            }));
+        }
+
+        function mapGallery(rows) {
+            return toArrayPayload(rows)
+                .map((row) => row?.url || row?.thumb_url || '')
+                .filter(Boolean);
+        }
+
+        function mapMarketInsights(marketPayload) {
+            const summary = marketPayload?.data?.summary || {};
+            const history = Array.isArray(marketPayload?.data?.history) ? marketPayload.data.history : [];
+            const achievements = [];
+            const notes = [];
+
+            if (summary.current_value) achievements.push({ title: 'Guncel Piyasa Degeri', text: `€${summary.current_value}` });
+            if (summary.highest_value) achievements.push({ title: 'Zirve Deger', text: `€${summary.highest_value}` });
+            if (history.length) {
+                notes.push({
+                    text: `Deger degisimi: ${Number(summary.change_percentage || 0).toFixed(1)}%`,
+                    source: 'Market Value',
+                });
+            }
+            return { achievements, notes };
+        }
+
+        async function fetchSupplementaryData(userId) {
+            const apiBase = getApiBaseUrl();
+            const hasToken = Boolean((localStorage.getItem('nextscout_token') || '').trim());
+
+            const [transferRes, marketRes, videoRes, mediaRes] = await Promise.all([
+                fetchJsonSafe(`${apiBase}/transfers/player/${encodeURIComponent(userId)}/history`, true),
+                fetchJsonSafe(`${apiBase}/market-values/player/${encodeURIComponent(userId)}/history`, true),
+                fetchJsonSafe(`${apiBase}/video-portfolio/player/${encodeURIComponent(userId)}`, true),
+                fetchJsonSafe(`${apiBase}/users/${encodeURIComponent(userId)}/media`, true),
+            ]);
+
+            const marketInsights = mapMarketInsights(marketRes || {});
+            return {
+                transfers: mapTransfers(transferRes || {}),
+                videos: mapVideos(videoRes || {}),
+                gallery: mapGallery(mediaRes || {}),
+                achievements: marketInsights.achievements,
+                scout_notes: marketInsights.notes,
+                sourceLabel: hasToken ? 'API (birlesik)' : 'API (public + fallback)',
+            };
+        }
+
+        function renderPublicProfile(payload, extras) {
             const user = payload?.user || {};
             const profile = payload?.profile || {};
             const card = payload?.card || {};
@@ -819,12 +905,12 @@
             renderAdvancedPanels({
                 contract_status: profile.contract_status || 'active',
                 contract_end: profile.contract_expires || profile.contract_end || '',
-                transfers: payload?.transfers || [],
-                scout_notes: payload?.scout_notes || [],
-                videos: payload?.videos || [],
-                gallery: payload?.gallery || [],
-                achievements: payload?.achievements || [],
-            }, 'API /public/players/{id}/profile');
+                transfers: extras?.transfers?.length ? extras.transfers : (payload?.transfers || []),
+                scout_notes: extras?.scout_notes?.length ? extras.scout_notes : (payload?.scout_notes || []),
+                videos: extras?.videos?.length ? extras.videos : (payload?.videos || []),
+                gallery: extras?.gallery?.length ? extras.gallery : (payload?.gallery || []),
+                achievements: extras?.achievements?.length ? extras.achievements : (payload?.achievements || []),
+            }, extras?.sourceLabel || 'API /public/players/{id}/profile');
         }
 
         async function loadProfileData() {
@@ -843,7 +929,8 @@
                 });
                 const data = await res.json();
                 if (!res.ok || !data.ok) throw new Error(data?.message || 'Profil alınamadı');
-                renderPublicProfile(data.data);
+                const extras = await fetchSupplementaryData(userId);
+                renderPublicProfile(data.data, extras);
             } catch (e) {
                 console.error('Public profil yüklenemedi:', e);
                 renderLocalProfile();

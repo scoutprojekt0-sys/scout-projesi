@@ -293,6 +293,19 @@
       color: #1e40af;
     }
 
+    .player-actions .compare-btn {
+      background: #fef3c7;
+      border-color: #f59e0b;
+      color: #92400e;
+      font-weight: 800;
+    }
+
+    .player-actions .compare-btn:hover {
+      background: #fde68a;
+      border-color: #d97706;
+      color: #78350f;
+    }
+
     .pagination {
       display: flex;
       justify-content: center;
@@ -780,7 +793,7 @@
             <div class="player-actions">
               <button onclick="viewProfile(${player.id})">Profil</button>
               <button onclick="addToFavorite(${player.id})">❤️</button>
-              <button onclick="toggleCompare(${player.id})">Kıyasla</button>
+              <button class="compare-btn" onclick="toggleCompare(${player.id})">⚖ Karsilastir</button>
               <button onclick="contact(${player.id})">İletişim</button>
             </div>
           </div>
@@ -1006,7 +1019,7 @@
       compareList.innerHTML = selected.map((p) => `<span class="compare-chip">${p.name}</span>`).join("");
     }
 
-    function openCompareModal() {
+    async function openCompareModal() {
       const selected = compareIds
         .map((id) => allPlayers.find((p) => Number(p.id) === Number(id)))
         .filter(Boolean);
@@ -1014,25 +1027,100 @@
         alert("Karsilastirma icin en az 2 oyuncu sec.");
         return;
       }
-      const [a, b] = selected;
-      compareContent.innerHTML = `
-        <table class="compare-table">
-          <thead><tr><th>Alan</th><th>${a.name}</th><th>${b.name}</th></tr></thead>
-          <tbody>
-            <tr><td>Pozisyon</td><td>${a.position || '-'}</td><td>${b.position || '-'}</td></tr>
-            <tr><td>Yas</td><td>${a.age || '-'}</td><td>${b.age || '-'}</td></tr>
-            <tr><td>Boy</td><td>${a.height || '-'} cm</td><td>${b.height || '-'} cm</td></tr>
-            <tr><td>Lig</td><td>${a.league || '-'}</td><td>${b.league || '-'}</td></tr>
-            <tr><td>Kulup</td><td>${a.club || '-'}</td><td>${b.club || '-'}</td></tr>
-            <tr><td>Rating</td><td>${a.rating || '-'}</td><td>${b.rating || '-'}</td></tr>
-          </tbody>
-        </table>
-      `;
+      compareContent.innerHTML = "Karsilastirma verisi yukleniyor...";
+      let rows = buildComparisonFromSelected(selected);
+      try {
+        const apiRows = await fetchComparisonFromApi(selected.map((p) => Number(p.id)));
+        if (apiRows.length >= 2) rows = apiRows.slice(0, 2);
+      } catch (error) {
+        // Auth yoksa veya endpoint hata verirse lokal veriye dus.
+      }
+      renderComparisonTable(rows);
       compareModal.classList.add("show");
     }
 
     function closeCompareModal() {
       compareModal.classList.remove("show");
+    }
+
+    function esc(value) {
+      return String(value == null ? "" : value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function getAuthHeaders() {
+      const headers = { "Accept": "application/json", "Content-Type": "application/json" };
+      const token = (localStorage.getItem("nextscout_token") || "").trim();
+      if (token) headers.Authorization = `Bearer ${token}`;
+      return headers;
+    }
+
+    function normalizeComparePlayer(player) {
+      const profile = player?.profile || {};
+      const statistics = player?.statistics || {};
+      const attributes = player?.attributes || {};
+      const latestMarket = Array.isArray(player?.market_values) && player.market_values.length
+        ? player.market_values[0]
+        : null;
+
+      return {
+        id: Number(player?.id || 0),
+        name: player?.name || "Oyuncu",
+        position: profile?.primary_position?.name || profile?.position || profile?.primary_position_name || "-",
+        age: profile?.age || statistics?.age || "-",
+        height: profile?.height_cm || profile?.height || "-",
+        club: profile?.current_club?.name || profile?.club_name || profile?.current_club_name || "-",
+        rating: Number(player?.overall_rating || attributes?.overall_rating || 0).toFixed(1),
+        market: latestMarket?.market_value || profile?.current_market_value || "-",
+      };
+    }
+
+    function renderComparisonTable(players) {
+      if (!Array.isArray(players) || players.length < 2) return;
+      const [a, b] = players;
+      compareContent.innerHTML = `
+        <table class="compare-table">
+          <thead><tr><th>Alan</th><th>${esc(a.name)}</th><th>${esc(b.name)}</th></tr></thead>
+          <tbody>
+            <tr><td>Pozisyon</td><td>${esc(a.position || "-")}</td><td>${esc(b.position || "-")}</td></tr>
+            <tr><td>Yas</td><td>${esc(a.age || "-")}</td><td>${esc(b.age || "-")}</td></tr>
+            <tr><td>Boy</td><td>${esc(a.height || "-")} cm</td><td>${esc(b.height || "-")} cm</td></tr>
+            <tr><td>Kulup</td><td>${esc(a.club || "-")}</td><td>${esc(b.club || "-")}</td></tr>
+            <tr><td>Rating</td><td>${esc(a.rating || "-")}</td><td>${esc(b.rating || "-")}</td></tr>
+            <tr><td>Piyasa Degeri</td><td>${esc(a.market || "-")}</td><td>${esc(b.market || "-")}</td></tr>
+          </tbody>
+        </table>
+      `;
+    }
+
+    function buildComparisonFromSelected(selected) {
+      return selected.map((p) => ({
+        id: Number(p.id || 0),
+        name: p.name || "Oyuncu",
+        position: p.position || "-",
+        age: p.age || "-",
+        height: p.height || "-",
+        club: p.club || "-",
+        rating: p.rating || "-",
+        market: "-",
+      }));
+    }
+
+    async function fetchComparisonFromApi(ids) {
+      const apiBase = getApiBaseUrl();
+      const res = await fetch(`${apiBase}/players/compare`, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ player_ids: ids }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.ok) throw new Error(data?.message || "Karsilastirma verisi alinamadi");
+      const players = Array.isArray(data?.data?.players) ? data.data.players : [];
+      return players.map(normalizeComparePlayer).filter((p) => p.id);
     }
 
     // Event listeners
