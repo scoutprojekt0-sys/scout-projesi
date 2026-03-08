@@ -3,3 +3,33 @@
 *.iml
 
 .vercel
+
+# Dependency and package manager caches
+node_modules/
+.npm/
+.npm-cache/
+.pnpm-store/
+yarn-error.log*
+
+# Build outputs and temp files
+dist/
+build/
+tmp/
+temp/
+*.tmp
+*.log
+
+# Local env/config secrets
+.env
+.env.*
+!.env.example
+
+# OS noise
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor/backup artifacts
+*.bak
+*.swp
+*~
