@@ -107,15 +107,19 @@
         .search-btn { padding: 10px 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.2s; align-self: flex-end; }
         .search-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102,126,234,0.3); }
         .players-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
-        .compare-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
-        .compare-chip-list { display: flex; gap: 8px; flex-wrap: wrap; }
-        .compare-chip { background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; border-radius: 999px; font-size: 12px; font-weight: 700; padding: 6px 10px; }
-        .compare-result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 14px; }
-        .compare-result-card { border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; background: #fff; }
-        .compare-result-card h4 { font-size: 14px; margin-bottom: 6px; color: #111827; }
-        .compare-result-meta { font-size: 12px; color: #6b7280; margin-bottom: 8px; }
-        .compare-metric { font-size: 12px; color: #374151; margin-bottom: 4px; }
-        .compare-metric strong { color: #111827; }
+        .compare-rank {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #3730a3;
+            font-size: 12px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
         .transfer-summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
         .transfer-summary-card {
             background: #f8fafc;
@@ -294,10 +298,11 @@
                         <strong style="font-size:13px;color:#374151;">Hafta 6 - Oyuncu Kiyaslama</strong>
                         <div id="compareSelection" class="compare-chip-list" style="margin-top:6px;"></div>
                     </div>
-                    <div style="display:flex;gap:8px;">
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
                         <button class="btn-small secondary" type="button" onclick="clearCompareSelection()">Secimi Temizle</button>
                         <button class="btn-small primary" type="button" onclick="runPlayerComparison()">Kiyaslamayi Calistir</button>
-                        <button class="btn-small light" type="button" onclick="downloadCompareReport()">Raporu Indir</button>
+                        <button class="btn-small light" type="button" onclick="downloadCompareCsv()">CSV Indir</button>
+                        <button class="btn-small light" type="button" onclick="downloadCompareJson()">JSON Indir</button>
                     </div>
                 </div>
                 <div id="compareResult" class="compare-result-grid" style="display:none;"></div>
@@ -683,7 +688,7 @@
             }
 
             root.style.display = 'grid';
-            root.innerHTML = players.map((item) => {
+            root.innerHTML = players.map((item, idx) => {
                 const currentId = Number(item.player_id || 0);
                 const rankIndex = sortedByValue.findIndex((p) => Number(p.player_id) === currentId);
                 const tier = getValueTier(rankIndex);
@@ -698,6 +703,7 @@
                 const trendArrow = renderValueTrendArrow(item.value_trend);
                 return `
                 <div class="compare-result-card">
+                    <div class="compare-rank">#${idx + 1}</div>
                     ${valueBadge}
                     ${formBadge}
                     <h4>${escapeHtml(item.player_name || '-')}</h4>
@@ -731,14 +737,13 @@
             return lines.join('\n');
         }
 
-        function downloadCompareReport() {
+        function exportCompareReport(format) {
             const players = Array.isArray(lastComparePayload?.players) ? lastComparePayload.players : [];
             if (!players.length) {
                 alert('Once kiyastirma calistir, sonra raporu indir.');
                 return;
             }
 
-            const format = (prompt('Rapor formati sec: csv veya json', 'csv') || 'csv').trim().toLowerCase();
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
             let content = '';
             let mime = 'text/csv;charset=utf-8;';
@@ -761,6 +766,14 @@
             link.click();
             link.remove();
             URL.revokeObjectURL(url);
+        }
+
+        function downloadCompareCsv() {
+            exportCompareReport('csv');
+        }
+
+        function downloadCompareJson() {
+            exportCompareReport('json');
         }
 
         async function runPlayerComparison() {

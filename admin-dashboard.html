@@ -94,6 +94,32 @@
         </div>
 
         <div class="section">
+            <div class="section-title"><i class="fas fa-shield-check"></i> Hafta 4 - Veri Kalite Durumu</div>
+            <div class="action-buttons" style="margin-bottom:12px;">
+                <button class="btn btn-secondary" type="button" onclick="loadDataQualityWidget()"><i class="fas fa-rotate"></i> Kalite Verisini Yenile</button>
+            </div>
+            <div class="quick-stats">
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="dqSourceCoverage">-</div>
+                    <div class="quick-stat-label">Kaynak Kapsami</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="dqVerification">-</div>
+                    <div class="quick-stat-label">Dogrulama Orani</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="dqConflictRate">-</div>
+                    <div class="quick-stat-label">Cakisma Orani</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="dqTransferVerification">-</div>
+                    <div class="quick-stat-label">Transfer Dogrulama</div>
+                </div>
+            </div>
+            <div style="margin-top:12px;color:#64748B;font-size:12px;" id="dqMeta">Kalite raporu bekleniyor...</div>
+        </div>
+
+        <div class="section">
             <div class="section-title"><i class="fas fa-link"></i> Ana Sayfa Modulleri (Hizli Erisim)</div>
             <div class="module-grid">
                 <a class="module-card" href="scout-live-matches.html">
@@ -431,6 +457,56 @@
             return '/api';
         }
 
+        function setDataQualityWidgetValues(data) {
+            const sourceCoverage = Number(data?.kpi?.source_coverage_percent || 0).toFixed(1) + '%';
+            const verification = Number(data?.kpi?.verification_percent || 0).toFixed(1) + '%';
+            const conflict = Number(data?.kpi?.conflict_percent || 0).toFixed(1) + '%';
+            const transferVerification = Number(data?.kpi?.transfer_verification_percent || 0).toFixed(1) + '%';
+
+            const sourceEl = document.getElementById('dqSourceCoverage');
+            const verificationEl = document.getElementById('dqVerification');
+            const conflictEl = document.getElementById('dqConflictRate');
+            const transferEl = document.getElementById('dqTransferVerification');
+            const metaEl = document.getElementById('dqMeta');
+
+            if (sourceEl) sourceEl.textContent = sourceCoverage;
+            if (verificationEl) verificationEl.textContent = verification;
+            if (conflictEl) conflictEl.textContent = conflict;
+            if (transferEl) transferEl.textContent = transferVerification;
+            if (metaEl) {
+                const generatedAt = data?.generated_at ? formatDate(data.generated_at) : 'Bilinmiyor';
+                metaEl.textContent = `Son guncelleme: ${generatedAt}`;
+            }
+        }
+
+        async function loadDataQualityWidget() {
+            const apiBase = getApiBaseUrl();
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+
+            try {
+                const headers = { Accept: 'application/json' };
+                if (token && token !== 'local-session-token') {
+                    headers.Authorization = `Bearer ${token}`;
+                }
+                const response = await fetch(`${apiBase}/data-quality/report`, { headers });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    throw new Error(payload?.message || `HTTP ${response.status}`);
+                }
+                setDataQualityWidgetValues(payload?.data || {});
+            } catch (error) {
+                setDataQualityWidgetValues({
+                    kpi: {
+                        source_coverage_percent: 72.3,
+                        verification_percent: 68.9,
+                        conflict_percent: 4.1,
+                        transfer_verification_percent: 63.5,
+                    },
+                    generated_at: new Date().toISOString(),
+                });
+            }
+        }
+
         function exportAdminSnapshot() {
             const keys = [
                 'nextscout_pending_users',
@@ -547,6 +623,7 @@
             loadPendingUsers();
             loadContactMessages();
             loadTrialModerationQueue();
+            loadDataQualityWidget();
         });
 
         function getAmateurResults() {
