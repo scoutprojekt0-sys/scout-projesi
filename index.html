@@ -6,18 +6,18 @@
     <title>NextScout | Futbol Scout, Kulup ve Oyuncu Veri Platformu</title>
     <meta name="description" content="NextScout ana sayfasi: scout radar, haftanin trendleri, yukselen yildizlar ve kulup ihtiyaclarini tek merkezde gosterir.">
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-    <link rel="canonical" href="https://nextscout.app/">
+    <link rel="canonical" href="https://nextscout.pro/">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
     <meta property="og:title" content="NextScout | Futbol Scout, Kulup ve Oyuncu Veri Platformu">
     <meta property="og:description" content="NextScout ana sayfasi: scout radar, haftanin trendleri, yukselen yildizlar ve kulup ihtiyaclarini tek merkezde gosterir.">
-    <meta property="og:url" content="https://nextscout.app/">
-    <meta property="og:image" content="https://nextscout.app/assets/img/og-home.jpg">
+    <meta property="og:url" content="https://nextscout.pro/">
+    <meta property="og:image" content="https://nextscout.pro/assets/img/og-home.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="NextScout | Futbol Scout Platformu">
     <meta name="twitter:description" content="NextScout ana sayfasi: scout radar, haftanin trendleri, yukselen yildizlar ve kulup ihtiyaclarini tek merkezde gosterir.">
-    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-home.jpg">
+    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-home.jpg">
     <meta name="theme-color" content="#0B3B8A">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,7 +27,7 @@
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "NextScout",
-      "url": "https://nextscout.app/",
+      "url": "https://nextscout.pro/",
       "description": "Futbol scout, kulup ve oyuncu veri platformu"
     }
     </script>
@@ -37,103 +37,12 @@
     
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/index-core.css">
+    <link rel="stylesheet" href="assets/css/index-modern.css">
+    <link rel="stylesheet" href="assets/css/index-responsive.css">
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html, body {
-            height: 100%;
-            max-width: 100%;
-            overflow-x: hidden;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #F8FAFC;
-            color: #1F2937;
-            line-height: 1.6;
-        }
-
-        /* ========== HEADER ========== */
-        header {
-            background: #FFFFFF;
-            border-bottom: 2px solid #3B82F6;
-            padding: 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
-            position: relative;
-        }
-
-        .header-container {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 0 40px;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        /* Header Left Section */
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
-
-        /* Header Center Section */
-        .header-center {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            max-width: 600px;
-        }
-
-        /* Logo */
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            font-size: 28px;
-            font-weight: 800;
-            font-family: 'Poppins', sans-serif;
-            color: #3B82F6;
-            flex-shrink: 0;
-            transition: all 0.3s ease;
-        }
-
-        .logo:hover {
-            color: #0EA5E9;
-            transform: scale(1.05);
-        }
-
-        .logo i {
-            font-size: 32px;
-        }
-
-        /* Header Navigation */
-        .header-nav {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            flex: 1;
-            justify-content: flex-start;
-        }
-
-        /* Auth Section (Right side) */
-        .auth-section {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
+        /* Core reset/header rules moved to assets/css/index-core.css */
 
         /* ========== ADVANCED SEARCH MODAL ========== */
         .modal-overlay {
@@ -3480,13 +3389,21 @@
 
     <script src="assets/js/site-core.js"></script>
     <script src="assets/js/growth-upgrade.js"></script>
+    <script src="assets/js/index-runtime.js"></script>
     <script>
+        const runtime = window.NextScoutRuntime || {
+            debug: true,
+            log: (...args) => console.log(...args),
+            warn: (...args) => console.warn(...args),
+            error: (...args) => console.error(...args),
+        };
+
         // API Base URL - Fully automatic detection
         function getAPIBaseURL() {
             // Check if opened from Laravel (http://)
             if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
                 const currentOrigin = window.location.origin;
-                console.log('📍 Running from web server:', currentOrigin);
+                runtime.log('📍 Running from web server:', currentOrigin);
                 return currentOrigin + '/api';
             }
             
@@ -3495,12 +3412,12 @@
             const apiBaseParam = urlParams.get('api_base');
             
             if (apiBaseParam) {
-                console.log('📍 API URL (query parameter):', apiBaseParam);
+                runtime.log('📍 API URL (query parameter):', apiBaseParam);
                 return apiBaseParam;
             }
             
             // Default fallback
-            console.log('📍 Using default API URL');
+            runtime.log('📍 Using default API URL');
             return 'http://localhost:8000/api';
         }
 
@@ -3540,7 +3457,7 @@
                         userData = JSON.stringify(fallbackUser);
                     }
                 } catch (e) {
-                    console.error('File mode auth fallback hatası:', e);
+                    runtime.error('File mode auth fallback hatası:', e);
                 }
             }
 
@@ -3554,9 +3471,9 @@
                     logoutBtn.style.display = 'flex';
                     
                     document.getElementById('profileName').textContent = user.name || 'Profilim';
-                    console.log('✅ Kullanıcı giriş yapılı:', user.name);
+                    runtime.log('✅ Kullanıcı giriş yapılı:', user.name);
                 } catch (e) {
-                    console.error('Kullanıcı bilgisi parse hatası:', e);
+                    runtime.error('Kullanıcı bilgisi parse hatası:', e);
                     clearAuth();
                 }
             } else {
@@ -3582,7 +3499,7 @@
 
                         window.location.href = resolveLocalPage(getDashboardByRole(role, window.location.protocol === 'file:'));
             } catch (e) {
-                console.error('Profil yönlendirme hatası:', e);
+                runtime.error('Profil yönlendirme hatası:', e);
                         window.location.href = resolveLocalPage('DASHBOARD_DESIGN.html');
             }
         }
@@ -3601,21 +3518,21 @@
             localStorage.removeItem('nextscout_user');
             localStorage.removeItem('nextscout_demo_login');
             checkAuthStatus();
-            console.log('Çıkış yapıldı');
+            runtime.log('Çıkış yapıldı');
         }
 
         // Test API connectivity on page load
         async function testAPIConnection() {
             // file:// modunda backend zorunlu değil (local demo akışı)
             if (IS_FILE_MODE) {
-                console.log('📍 File mode: API bağlantı testi atlandı.');
+                runtime.log('📍 File mode: API bağlantı testi atlandı.');
                 return true;
             }
 
             // If we're on http://, API should be on same server
             if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
                 try {
-                    console.log(`🔍 Testing current server API: ${API_BASE_URL}`);
+                    runtime.log(`🔍 Testing current server API: ${API_BASE_URL}`);
                     const response = await fetch(`${API_BASE_URL}/ping`, { 
                         method: 'GET',
                         signal: AbortSignal.timeout(3000)
@@ -3623,12 +3540,12 @@
                     
                     const data = await response.json();
                     if (data.ok) {
-                        console.log(`✅ API bağlantısı başarılı:`, data.message);
-                        console.log(`📍 API URL: ${API_BASE_URL}`);
+                        runtime.log(`✅ API bağlantısı başarılı:`, data.message);
+                        runtime.log(`📍 API URL: ${API_BASE_URL}`);
                         return true;
                     }
                 } catch (error) {
-                    console.log(`❌ Current server API failed:`, error.message);
+                    runtime.warn(`❌ Current server API failed:`, error.message);
                 }
             }
 
@@ -3638,7 +3555,7 @@
             
             if (apiBaseParam) {
                 try {
-                    console.log(`🔍 Testing query param API: ${apiBaseParam}`);
+                    runtime.log(`🔍 Testing query param API: ${apiBaseParam}`);
                     const response = await fetch(`${apiBaseParam}/ping`, { 
                         method: 'GET',
                         signal: AbortSignal.timeout(2000)
@@ -3646,20 +3563,20 @@
                     
                     const data = await response.json();
                     if (data.ok) {
-                        console.log(`✅ API bağlantısı başarılı:`, data.message);
+                        runtime.log(`✅ API bağlantısı başarılı:`, data.message);
                         return true;
                     }
                 } catch (error) {
-                    console.log(`❌ Query param API failed`);
+                    runtime.warn(`❌ Query param API failed`);
                 }
             }
 
             // Try common ports
-            console.log('🔄 Trying common ports...');
+            runtime.log('🔄 Trying common ports...');
             for (const port of API_PORTS) {
                 try {
                     const testUrl = `http://localhost:${port}/api/ping`;
-                    console.log(`🔍 Testing port ${port}...`);
+                    runtime.log(`🔍 Testing port ${port}...`);
                     
                     const response = await fetch(testUrl, { 
                         method: 'GET',
@@ -3669,12 +3586,12 @@
                     const data = await response.json();
                     if (data.ok) {
                         API_BASE_URL = `http://localhost:${port}/api`;
-                        console.log(`✅ API bağlantısı başarılı (Port ${port})`);
-                        console.log(`📍 API URL: ${API_BASE_URL}`);
+                        runtime.log(`✅ API bağlantısı başarılı (Port ${port})`);
+                        runtime.log(`📍 API URL: ${API_BASE_URL}`);
                         return true;
                     }
                 } catch (error) {
-                    console.log(`❌ Port ${port} failed`);
+                    runtime.warn(`❌ Port ${port} failed`);
                 }
             }
             

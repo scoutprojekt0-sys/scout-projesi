@@ -2,89 +2,49 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Admin Dashboard - NextScout</title>
     <meta name="description" content="NextScout admin dashboard sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
     <meta name="robots" content="noindex,follow">
-    <link rel="canonical" href="https://nextscout.app/admin-dashboard.html">
+    <link rel="canonical" href="https://nextscout.pro/admin-dashboard.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
     <meta property="og:title" content="Admin Dashboard - NextScout">
     <meta property="og:description" content="NextScout admin dashboard sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
-    <meta property="og:url" content="https://nextscout.app/admin-dashboard.html">
-    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta property="og:url" content="https://nextscout.pro/admin-dashboard.html">
+    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Admin Dashboard - NextScout">
     <meta name="twitter:description" content="NextScout admin dashboard sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
-    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #F8FAFC; color: #1F2937; }
-        
-        .header { background: #FFFFFF; border-bottom: 2px solid #EF4444; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.1); }
-        .logo { font-size: 24px; font-weight: 800; color: #EF4444; display: flex; align-items: center; gap: 8px; }
-        .admin-badge { background: #EF4444; color: #FFFFFF; padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; }
-        
-        .container { max-width: 1600px; margin: 0 auto; padding: 24px; }
-        .welcome { background: linear-gradient(135deg, #EF4444, #DC2626); color: #FFFFFF; padding: 32px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 8px 24px rgba(239, 68, 68, 0.2); }
-        .welcome h1 { font-size: 32px; margin-bottom: 8px; }
-        
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 24px; }
-        .stat-card { background: #FFFFFF; padding: 24px; border-radius: 12px; border: 1px solid #FEE2E2; transition: transform 0.3s, box-shadow 0.3s; position: relative; overflow: hidden; }
-        .stat-card::before { content: ''; position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: #FEE2E2; border-radius: 50%; transform: translate(30%, -30%); }
-        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(239, 68, 68, 0.15); }
-        .stat-label { font-size: 14px; color: #64748B; margin-bottom: 8px; position: relative; z-index: 1; }
-        .stat-value { font-size: 36px; font-weight: 800; color: #EF4444; position: relative; z-index: 1; }
-        .stat-change { font-size: 14px; color: #10B981; font-weight: 600; margin-top: 8px; position: relative; z-index: 1; }
-        .stat-icon { position: absolute; right: 24px; top: 24px; font-size: 32px; color: #FECACA; z-index: 1; }
-        
-        .section { background: #FFFFFF; padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid #FEE2E2; }
-        .section-title { font-size: 20px; font-weight: 700; color: #1F2937; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
-        .section-title i { color: #EF4444; }
-        
-        .action-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
-        .btn { padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s; text-decoration: none; }
-        .btn-primary { background: linear-gradient(135deg, #EF4444, #DC2626); color: #FFFFFF; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4); }
-        .btn-secondary { background: #FEF2F2; color: #EF4444; border: 2px solid #EF4444; }
-        .btn-secondary:hover { background: #FEE2E2; }
-        
-        .users-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .users-table th { background: #FEF2F2; color: #991B1B; font-weight: 700; text-align: left; padding: 12px; border-bottom: 2px solid #FEE2E2; }
-        .users-table td { padding: 12px; border-bottom: 1px solid #F3F4F6; }
-        .users-table tr:hover { background: #FEFCE8; }
-        .message-cell { max-width: 520px; white-space: pre-wrap; overflow-wrap: anywhere; }
-        
-        .badge { padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
-        .badge-success { background: #D1FAE5; color: #065F46; }
-        .badge-warning { background: #FEF3C7; color: #92400E; }
-        .badge-danger { background: #FEE2E2; color: #991B1B; }
-        .badge-info { background: #DBEAFE; color: #1E40AF; }
-        
-        .quick-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-top: 16px; }
-        .quick-stat { background: linear-gradient(135deg, #FEF2F2, #FEE2E2); padding: 20px; border-radius: 8px; text-align: center; }
-        .quick-stat-value { font-size: 24px; font-weight: 800; color: #EF4444; }
-        .quick-stat-label { font-size: 12px; color: #64748B; margin-top: 4px; text-transform: uppercase; }
-        
-        @media (max-width: 768px) {
-            .stats-grid { grid-template-columns: 1fr; }
-            .container { padding: 16px; }
-            .users-table { font-size: 14px; }
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/admin-dashboard.css">
+    <link rel="stylesheet" href="assets/css/admin-modern.css">
+    <link rel="stylesheet" href="assets/css/admin-responsive.css">
 </head>
 <body>
     <div class="header">
-        <div class="logo">
+        <a class="logo" href="index.html">
             <i class="fas fa-shield-alt"></i> NextScout
             <span class="admin-badge">ADMIN</span>
+        </a>
+        <div class="header-right">
+            <a class="header-link" href="index.html"><i class="fas fa-home"></i> Ana Sayfa</a>
+            <a class="header-link" href="statistics.html"><i class="fas fa-chart-line"></i> Istatistik</a>
+            <a class="header-link" href="settings.html"><i class="fas fa-cog"></i> Ayarlar</a>
         </div>
-        <div class="nav">
-            <a href="index.html"><i class="fas fa-home"></i> Ana Sayfa</a>
+    </div>
+
+    <div class="subnav">
+        <div class="subnav-inner">
+            <a class="subnav-link" href="live-matches.html"><i class="fas fa-futbol"></i> Canli Maclar</a>
+            <a class="subnav-link" href="manager-needs.html"><i class="fas fa-briefcase"></i> Menajer Ihtiyaclari</a>
+            <a class="subnav-link" href="notifications.html"><i class="fas fa-bell"></i> Bildirimler</a>
+            <a class="subnav-link" href="trial-center.html"><i class="fas fa-calendar-check"></i> Trial Center</a>
+            <a class="subnav-link" href="help.html"><i class="fas fa-circle-question"></i> Yardim</a>
         </div>
     </div>
 
@@ -126,10 +86,40 @@
         <div class="section">
             <div class="section-title"><i class="fas fa-bolt"></i> Hızlı İşlemler</div>
             <div class="action-buttons">
-                <a href="#" class="btn btn-primary"><i class="fas fa-user-plus"></i> Yeni Kullanıcı Ekle</a>
-                <a href="#" class="btn btn-secondary"><i class="fas fa-file-alt"></i> Raporları Görüntüle</a>
-                <a href="#" class="btn btn-secondary"><i class="fas fa-cog"></i> Sistem Ayarları</a>
-                <a href="#" class="btn btn-secondary"><i class="fas fa-database"></i> Yedek Al</a>
+                <a href="settings.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Kullanici Yonetimi</a>
+                <a href="statistics.html" class="btn btn-secondary"><i class="fas fa-file-alt"></i> Raporlari Goruntule</a>
+                <a href="settings.html" class="btn btn-secondary"><i class="fas fa-cog"></i> Sistem Ayarlari</a>
+                <button type="button" class="btn btn-secondary" onclick="exportAdminSnapshot()"><i class="fas fa-database"></i> Yedek Al</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title"><i class="fas fa-link"></i> Ana Sayfa Modulleri (Hizli Erisim)</div>
+            <div class="module-grid">
+                <a class="module-card" href="scout-live-matches.html">
+                    <div class="module-title"><i class="fas fa-tower-broadcast"></i> Live Matches</div>
+                    <div class="module-desc">Ana sayfadaki canli mac akisina yonetici gozuyle ulas.</div>
+                </a>
+                <a class="module-card" href="scout-watchlist.html">
+                    <div class="module-title"><i class="fas fa-star"></i> Watchlist</div>
+                    <div class="module-desc">Oyuncu takip listesi, trend ve favori akislarini izle.</div>
+                </a>
+                <a class="module-card" href="scout-reports.html">
+                    <div class="module-title"><i class="fas fa-clipboard-list"></i> Scout Reports</div>
+                    <div class="module-desc">Rapor kalitesi ve icerik akislarini hizli denetle.</div>
+                </a>
+                <a class="module-card" href="manager-needs.html">
+                    <div class="module-title"><i class="fas fa-users-viewfinder"></i> Manager Needs</div>
+                    <div class="module-desc">Kulup/menajer taleplerini panelden dogrudan gor.</div>
+                </a>
+                <a class="module-card" href="weekly-digest.html">
+                    <div class="module-title"><i class="fas fa-newspaper"></i> Weekly Digest</div>
+                    <div class="module-desc">Ana sayfadaki haftalik ozet iceriklerini kontrol et.</div>
+                </a>
+                <a class="module-card" href="data-center.html">
+                    <div class="module-title"><i class="fas fa-database"></i> Data Center</div>
+                    <div class="module-desc">Metrikler ve veri kaynaklari icin merkez ekran.</div>
+                </a>
             </div>
         </div>
 
@@ -439,6 +429,34 @@
         function getApiBaseUrl() {
             if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
             return '/api';
+        }
+
+        function exportAdminSnapshot() {
+            const keys = [
+                'nextscout_pending_users',
+                'nextscout_contact_messages',
+                'nextscout_amateur_results',
+                'nextscout_amateur_standings'
+            ];
+            const snapshot = {
+                created_at: new Date().toISOString(),
+                source: 'admin-dashboard',
+                data: {}
+            };
+
+            keys.forEach((key) => {
+                snapshot.data[key] = localStorage.getItem(key);
+            });
+
+            const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `nextscout-admin-backup-${Date.now()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
         }
 
         async function loadTrialModerationQueue() {
