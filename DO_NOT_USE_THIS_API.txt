@@ -1,0 +1,4 @@
+﻿Bu dosya artık geçersizdir.
+scout_api_pr_clean, ANA BACKEND klasörüdür. Kullanılacak olan budur.
+Eski backend (untitled/scout_api) silinmiştir.
+Tarih: 11 Mart 2026

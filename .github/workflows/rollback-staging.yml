@@ -1,0 +1,44 @@
+name: Rollback Staging
+
+on:
+  workflow_dispatch:
+    inputs:
+      rollback_ref:
+        description: Git ref (tag/sha/branch) to roll back to
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: staging-deploy
+  cancel-in-progress: false
+
+jobs:
+  rollback:
+    name: Rollback To Previous Ref
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      - name: Checkout rollback ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.rollback_ref }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Redeploy rollback ref to staging
+        run: |
+          chmod +x scripts/railway_deploy_staging.sh
+          ./scripts/railway_deploy_staging.sh
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+          RAILWAY_ENVIRONMENT_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
+          RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_SERVICE_ID }}
+          STAGING_HEALTHCHECK_URL: ${{ secrets.STAGING_HEALTHCHECK_URL }}

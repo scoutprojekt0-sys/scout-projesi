@@ -1,0 +1,7 @@
+﻿STATUS: ACTIVE / YENI BACKEND (PROCLEAN)
+
+Bu klasor AKTIF backend olarak kullanilacaktir.
+Tum yeni gelistirmeler ve yayin hazirligi bu backend uzerinden yapilmalidir.
+
+Kaynak klasor:
+C:\Users\Hp\Desktop\PhpstormProjects\scout_api_pr_clean

@@ -1,0 +1,33 @@
+name: Health Monitor
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-health:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check staging health
+        run: |
+          curl -fsS "${STAGING_HEALTHCHECK_URL}" > /dev/null
+        env:
+          STAGING_HEALTHCHECK_URL: ${{ secrets.STAGING_HEALTHCHECK_URL }}
+
+      - name: Check production health
+        run: |
+          curl -fsS "${PROD_HEALTHCHECK_URL}" > /dev/null
+        env:
+          PROD_HEALTHCHECK_URL: ${{ secrets.PROD_HEALTHCHECK_URL }}
+
+      - name: Notify Slack on failure
+        if: failure()
+        run: |
+          payload='{"text":"NextScout health monitor failed. Check Actions: '${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'"}'
+          curl -X POST -H "Content-type: application/json" --data "${payload}" "${ALERT_SLACK_WEBHOOK_URL}"
+        env:
+          ALERT_SLACK_WEBHOOK_URL: ${{ secrets.ALERT_SLACK_WEBHOOK_URL }}

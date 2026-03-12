@@ -1,0 +1,334 @@
+<?php
+
+use App\Http\Controllers\Api\ApplicationController;
+use App\Http\Controllers\Api\AdminBillingController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BillingController;
+use App\Http\Controllers\Api\ContactController;
+use App\Http\Controllers\Api\ContractController;
+use App\Http\Controllers\Api\ContributionController;
+use App\Http\Controllers\Api\ClubController;
+use App\Http\Controllers\Api\DataQualityController;
+use App\Http\Controllers\Api\DiscoveryController;
+use App\Http\Controllers\Api\FavoriteController;
+use App\Http\Controllers\Api\FeaturedController;
+use App\Http\Controllers\Api\HelpController;
+use App\Http\Controllers\Api\LawyerController;
+use App\Http\Controllers\Api\LeagueController;
+use App\Http\Controllers\Api\LegacyCompatibilityController;
+use App\Http\Controllers\Api\LiveMatchController;
+use App\Http\Controllers\Api\LocalizationController;
+use App\Http\Controllers\Api\MediaController;
+use App\Http\Controllers\Api\ModerationController;
+use App\Http\Controllers\Api\NewsController;
+use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\OpportunityController;
+use App\Http\Controllers\Api\PlayerAnalyticsController;
+use App\Http\Controllers\Api\PlayerCareerController;
+use App\Http\Controllers\Api\PlayerController;
+use App\Http\Controllers\Api\PlayerMarketValueController;
+use App\Http\Controllers\Api\PlayerSearchController;
+use App\Http\Controllers\Api\PlayerTransferController;
+use App\Http\Controllers\Api\ProfileViewController;
+use App\Http\Controllers\Api\ReportController;
+use App\Http\Controllers\Api\SocialMediaController;
+use App\Http\Controllers\Api\StaffController;
+use App\Http\Controllers\Api\SupportTicketController;
+use App\Http\Controllers\Api\SystemController;
+use App\Http\Controllers\Api\TeamController;
+use App\Http\Controllers\Api\TrendingController;
+use App\Http\Controllers\Api\VideoClipController;
+use App\Http\Controllers\Api\WebhookController;
+use App\Http\Controllers\Api\Week7AnalyticsController;
+use App\Http\Controllers\Api\Week8TransparencyController;
+use App\Http\Controllers\Api\Week10AnomalyController;
+use App\Http\Controllers\Api\Week11WorkloadController;
+use App\Http\Controllers\Api\Week12PublicTransparencyController;
+use Illuminate\Support\Facades\Route;
+
+// System endpoints
+Route::get('/ping', [SystemController::class, 'ping']);
+Route::get('/locales', [LocalizationController::class, 'getSupportedLocales']);
+Route::get('/translations', [LocalizationController::class, 'getTranslations']);
+
+// Webhook endpoints (CSRF'den muaf, imza ile korunuyor)
+Route::post('/webhooks/stripe', [WebhookController::class, 'stripe'])->withoutMiddleware([\App\Http\Middleware\SanitizeInput::class]);
+Route::post('/webhooks/paypal', [WebhookController::class, 'paypal'])->withoutMiddleware([\App\Http\Middleware\SanitizeInput::class]);
+
+// Week 12 - Public Transparency (no auth required)
+Route::get('/transparency/trust-report', [Week12PublicTransparencyController::class, 'platformTrustReport']);
+
+// Data Quality & Trust endpoints (Week 1)
+Route::prefix('data-quality')->group(function () {
+    Route::get('/dashboard', [DataQualityController::class, 'dashboard']);
+    Route::get('/report', [DataQualityController::class, 'report']);
+    Route::get('/source-health', [Week8TransparencyController::class, 'sourceHealth']);
+    Route::get('/transparency/players', [Week8TransparencyController::class, 'players']);
+    Route::get('/transparency/players/{playerId}', [Week8TransparencyController::class, 'playerDetail']);
+    Route::get('/audit-log', [DataQualityController::class, 'auditLog']);
+    Route::get('/conflicts', [DataQualityController::class, 'conflictingData']);
+    Route::get('/missing-source', [DataQualityController::class, 'missingSource']);
+});
+
+// Moderation Queue endpoints
+Route::prefix('moderation')->middleware('auth:sanctum')->group(function () {
+    Route::get('/', [ModerationController::class, 'index']);
+    Route::get('/high-risk', [Week10AnomalyController::class, 'highRiskQueue']);
+    Route::get('/stats', [ModerationController::class, 'stats']);
+    Route::get('/{id}', [ModerationController::class, 'show']);
+    Route::post('/{id}/score', [Week10AnomalyController::class, 'scoreQueue']);
+    Route::post('/{id}/approve', [ModerationController::class, 'approve']);
+    Route::post('/{id}/reject', [ModerationController::class, 'reject']);
+    Route::post('/{id}/flag', [ModerationController::class, 'flag']);
+});
+
+// Player Transfer endpoints
+Route::prefix('transfers')->group(function () {
+    Route::get('/', [PlayerTransferController::class, 'index']);
+    Route::get('/{id}', [PlayerTransferController::class, 'show']);
+    Route::get('/player/{playerId}/timeline', [PlayerTransferController::class, 'timeline']);
+    Route::post('/', [PlayerTransferController::class, 'store'])->middleware('auth:sanctum');
+});
+
+// Player Career Timeline endpoints
+Route::prefix('career')->group(function () {
+    Route::get('/player/{playerId}/timeline', [PlayerCareerController::class, 'timeline']);
+    Route::get('/player/{playerId}/statistics', [PlayerCareerController::class, 'statistics']);
+    Route::post('/', [PlayerCareerController::class, 'store'])->middleware('auth:sanctum');
+});
+
+// Week 6 - Player analytics endpoints
+Route::prefix('players')->group(function () {
+    Route::post('/compare', [PlayerAnalyticsController::class, 'compare']);
+    Route::get('/{playerId}/trend-summary', [PlayerAnalyticsController::class, 'trendSummary']);
+    Route::get('/{playerId}/similar', [PlayerAnalyticsController::class, 'similar']);
+});
+
+// Player Market Value endpoints
+Route::prefix('market-values')->group(function () {
+    Route::get('/', [PlayerMarketValueController::class, 'index']);
+    Route::get('/leaderboard', [PlayerMarketValueController::class, 'leaderboard']);
+    Route::get('/player/{playerId}/history', [PlayerMarketValueController::class, 'history']);
+    Route::get('/player/{playerId}/calculate', [PlayerMarketValueController::class, 'calculate']);
+    Route::get('/player/{playerId}/trends', [PlayerMarketValueController::class, 'trends']);
+    Route::post('/compare', [PlayerMarketValueController::class, 'compare']);
+    Route::post('/', [PlayerMarketValueController::class, 'store'])->middleware('auth:sanctum');
+});
+
+// User Contributions endpoints (Week 3)
+Route::prefix('contributions')->middleware('auth:sanctum')->group(function () {
+    Route::get('/', [ContributionController::class, 'index']);
+    Route::get('/my', [ContributionController::class, 'myContributions']);
+    Route::get('/stats', [ContributionController::class, 'stats']);
+    Route::get('/{id}', [ContributionController::class, 'show']);
+    Route::post('/', [ContributionController::class, 'store']);
+    Route::post('/{id}/approve', [ContributionController::class, 'approve']);
+    Route::post('/{id}/reject', [ContributionController::class, 'reject']);
+    Route::post('/{id}/request-info', [ContributionController::class, 'requestInfo']);
+});
+Route::get('/live-matches/count', [LiveMatchController::class, 'getCount']);
+Route::get('/live-matches', [LiveMatchController::class, 'liveMatches']);
+Route::get('/match-center/live-matches', [LiveMatchController::class, 'liveMatches']);
+Route::get('/matches/recent', [LiveMatchController::class, 'recentResults']);
+Route::get('/recent-results', [LiveMatchController::class, 'recentResults']);
+Route::get('/matches/upcoming', [LiveMatchController::class, 'upcomingMatches']);
+Route::get('/upcoming-matches', [LiveMatchController::class, 'upcomingMatches']);
+Route::get('/matches/{matchId}', [LiveMatchController::class, 'matchDetails']);
+Route::get('/match/{matchId}/details', [LiveMatchController::class, 'matchDetails']);
+Route::get('/matches/{matchId}/scorers', [LiveMatchController::class, 'matchScorers']);
+Route::get('/match/{matchId}/scorers', [LiveMatchController::class, 'matchScorers']);
+
+// Public Discovery Endpoints
+Route::get('/public/players', [DiscoveryController::class, 'publicPlayers']);
+Route::get('/contracts/live', [DiscoveryController::class, 'contractsLive']);
+Route::get('/player-of-week', [DiscoveryController::class, 'playerOfWeek']);
+Route::get('/trending/week', [DiscoveryController::class, 'trendingWeek']);
+Route::get('/trending/today', [TrendingController::class, 'getTodayTrending']);
+Route::post('/trending/track', [TrendingController::class, 'trackInteraction']);
+Route::get('/featured', [FeaturedController::class, 'getFeatured']);
+Route::get('/featured/rising-stars', [FeaturedController::class, 'getRisingStars']);
+Route::get('/featured/hot-transfers', [FeaturedController::class, 'getHotTransfers']);
+Route::get('/featured/player-of-week', [FeaturedController::class, 'getPlayerOfWeek']);
+Route::get('/help/categories', [HelpController::class, 'getCategories']);
+Route::get('/help/categories/{categorySlug}/articles', [HelpController::class, 'getCategoryArticles']);
+Route::get('/help/articles/{slug}', [HelpController::class, 'getArticle']);
+Route::post('/help/articles/{slug}/helpful', [HelpController::class, 'markArticleHelpful']);
+Route::post('/help/articles/{slug}/unhelpful', [HelpController::class, 'markArticleUnhelpful']);
+Route::get('/help/faq', [HelpController::class, 'getFaq']);
+Route::post('/help/faq/{faqId}/helpful', [HelpController::class, 'markFaqHelpful']);
+Route::get('/help/search', [HelpController::class, 'search']);
+Route::get('/rising-stars', [DiscoveryController::class, 'risingStars']);
+Route::get('/club-needs', [DiscoveryController::class, 'clubNeeds']);
+Route::get('/public/players/quality-summary', [LegacyCompatibilityController::class, 'publicPlayersQualitySummary']);
+Route::get('/community-events', [LegacyCompatibilityController::class, 'communityEventsIndex']);
+Route::get('/community-events/{id}', [LegacyCompatibilityController::class, 'communityEventsShow']);
+Route::get('/success-stories', [LegacyCompatibilityController::class, 'successStoriesIndex']);
+Route::prefix('discovery')->group(function () {
+    Route::get('/manager-needs', [DiscoveryController::class, 'managerNeeds']);
+    Route::get('/coach-needs', [LegacyCompatibilityController::class, 'discoveryCoachNeeds']);
+    Route::get('/boosts', [LegacyCompatibilityController::class, 'discoveryBoosts']);
+});
+
+// Public News & Billing
+Route::get('/news/live', [NewsController::class, 'live']);
+Route::get('/news', [NewsController::class, 'index']);
+Route::get('/billing/plans', [BillingController::class, 'plans']);
+Route::get('/teams/{id}/overview', [TeamController::class, 'overview']);
+Route::get('/clubs', [ClubController::class, 'index']);
+Route::get('/clubs/most-valuable', [ClubController::class, 'mostValuable']);
+Route::get('/clubs/{id}', [ClubController::class, 'show']);
+Route::get('/clubs/{id}/squad', [ClubController::class, 'squad']);
+Route::get('/clubs/{id}/transfers', [ClubController::class, 'transfers']);
+Route::get('/leagues', [LeagueController::class, 'index']);
+Route::get('/leagues/{league}', [LeagueController::class, 'show']);
+Route::get('/leagues/{league}/standings', [LeagueController::class, 'standings']);
+Route::get('/leagues/{league}/top-scorers', [LeagueController::class, 'topScorers']);
+Route::get('/leagues/{league}/top-assists', [LeagueController::class, 'topAssists']);
+Route::get('/lawyers', [LawyerController::class, 'publicIndex']);
+Route::get('/lawyers/{lawyerId}', [LawyerController::class, 'show']);
+Route::get('/profiles/{userId}/views/count', [ProfileViewController::class, 'viewCount']);
+
+Route::prefix('auth')->group(function () {
+    Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:auth');
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:auth');
+    Route::get('/verify-email', [AuthController::class, 'verifyEmail'])->middleware('throttle:auth');
+    Route::post('/resend-verification', [AuthController::class, 'resendVerification'])->middleware('throttle:auth');
+    Route::post('/password/forgot', [AuthController::class, 'forgotPassword'])->middleware('throttle:auth');
+    Route::post('/password/reset', [AuthController::class, 'resetPassword'])->middleware('throttle:auth');
+
+    Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->group(function () {
+        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('ability:profile:write');
+        Route::get('/sessions', [AuthController::class, 'sessions'])->middleware('ability:profile:read');
+        Route::delete('/sessions', [AuthController::class, 'logoutAll'])->middleware('ability:profile:write');
+        Route::delete('/sessions/{tokenId}', [AuthController::class, 'revokeSession'])->middleware('ability:profile:write');
+        Route::get('/me', [AuthController::class, 'me']);
+        Route::put('/me', [AuthController::class, 'updateMe']);
+    });
+});
+
+Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->group(function () {
+    // Week 7 analytics
+    Route::get('/analytics/admin-overview', [Week7AnalyticsController::class, 'adminOverview']);
+    Route::get('/analytics/team/{teamId}', [Week7AnalyticsController::class, 'teamScoutingFunnel']);
+
+    // System
+    Route::get('/notifications/count', [SystemController::class, 'notificationsCount']);
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+    Route::get('/users', [SystemController::class, 'usersIndex'])->middleware('admin');
+    Route::get('/users/{id}/profile-card', [SystemController::class, 'userProfileCard'])->middleware('admin');
+    Route::get('/admin/ops/rate-limit-summary', [SystemController::class, 'adminRateLimitSummary'])->middleware('admin');
+
+    // Players, Teams, Staff
+    Route::get('/players', [PlayerController::class, 'index']);
+    Route::get('/players/{id}', [PlayerController::class, 'show']);
+    Route::put('/players/{id}', [PlayerController::class, 'update'])->middleware('ability:player');
+    Route::patch('/players/{id}', [PlayerController::class, 'update'])->middleware('ability:player');
+    Route::apiResource('teams', TeamController::class)->only(['index', 'show', 'update']);
+    Route::get('/teams/{id}/transfer-summary', [TeamController::class, 'transferSummary']);
+    Route::apiResource('staff', StaffController::class)->only(['index', 'show', 'update']);
+
+    Route::post('/media', [MediaController::class, 'store'])->middleware('ability:media:write');
+    Route::get('/users/{id}/media', [MediaController::class, 'indexByUser'])->middleware('ability:media:read');
+    Route::delete('/media/{id}', [MediaController::class, 'destroy'])->middleware('ability:media:write');
+
+    Route::get('/opportunities', [OpportunityController::class, 'index']);
+    Route::get('/opportunities/{id}', [OpportunityController::class, 'show']);
+    Route::post('/opportunities', [OpportunityController::class, 'store'])->middleware('ability:team');
+    Route::put('/opportunities/{id}', [OpportunityController::class, 'update'])->middleware('ability:team');
+    Route::patch('/opportunities/{id}', [OpportunityController::class, 'update'])->middleware('ability:team');
+    Route::delete('/opportunities/{id}', [OpportunityController::class, 'destroy'])->middleware('ability:team');
+
+    Route::post('/opportunities/{id}/apply', [ApplicationController::class, 'apply'])->middleware('ability:player');
+    Route::get('/applications/incoming', [ApplicationController::class, 'incoming'])->middleware('ability:team');
+    Route::get('/applications/outgoing', [ApplicationController::class, 'outgoing'])->middleware('ability:player');
+    Route::patch('/applications/{id}/status', [ApplicationController::class, 'changeStatus'])->middleware('ability:team');
+
+    Route::post('/contacts', [ContactController::class, 'store'])->middleware('ability:contact:write');
+    Route::get('/contacts/inbox', [ContactController::class, 'inbox'])->middleware('ability:contact:read');
+    Route::get('/contacts/sent', [ContactController::class, 'sent'])->middleware('ability:contact:read');
+    Route::patch('/contacts/{id}/status', [ContactController::class, 'changeStatus'])->middleware('ability:contact:write');
+    Route::post('/messages', [ContactController::class, 'sendMessage'])->middleware('ability:contact:write');
+    Route::get('/messages/inbox', [ContactController::class, 'inbox'])->middleware('ability:contact:read');
+    Route::get('/messages/sent', [ContactController::class, 'sent'])->middleware('ability:contact:read');
+    Route::post('/messages/read-all', [ContactController::class, 'markAllAsRead'])->middleware('ability:contact:write');
+    Route::patch('/messages/{id}/read', [ContactController::class, 'readMessage'])->middleware('ability:contact:write');
+    Route::post('/messages/{id}/archive', [ContactController::class, 'archiveMessage'])->middleware('ability:contact:write');
+
+    Route::post('/search/players', [PlayerSearchController::class, 'search'])->middleware('ability:profile:write');
+    Route::get('/search/saved', [PlayerSearchController::class, 'getSavedSearches'])->middleware('ability:profile:read');
+    Route::get('/search/{searchId}/results', [PlayerSearchController::class, 'getSearchResults'])->middleware('ability:profile:read');
+    Route::post('/reports', [ReportController::class, 'store'])->middleware('ability:profile:write');
+    Route::get('/reports/my-reports', [ReportController::class, 'myReports'])->middleware('ability:profile:read');
+    Route::get('/reports/{id}', [ReportController::class, 'show'])->middleware('ability:profile:read');
+    Route::get('/support-tickets', [SupportTicketController::class, 'index'])->middleware('ability:profile:read');
+    Route::post('/support-tickets', [SupportTicketController::class, 'store'])->middleware('ability:profile:write');
+    Route::get('/support-tickets/{id}', [SupportTicketController::class, 'show'])->middleware('ability:profile:read');
+    Route::post('/support-tickets/{id}/messages', [SupportTicketController::class, 'addMessage'])->middleware('ability:profile:write');
+    Route::post('/support-tickets/{id}/close', [SupportTicketController::class, 'close'])->middleware('ability:profile:write');
+    Route::post('/live-matches', [LiveMatchController::class, 'store'])->middleware('ability:profile:write');
+    Route::post('/match/{matchId}/live-update', [LiveMatchController::class, 'updateLiveMatch'])->middleware('ability:profile:write');
+
+    Route::get('/favorites', [FavoriteController::class, 'index'])->middleware('ability:profile:read');
+    Route::post('/favorites/{targetUserId}/toggle', [FavoriteController::class, 'toggle'])->middleware('ability:profile:write');
+    Route::get('/favorites/{targetUserId}/check', [FavoriteController::class, 'check'])->middleware('ability:profile:read');
+    Route::get('/lawyers/private', [LawyerController::class, 'index'])->middleware('ability:profile:read');
+    Route::post('/lawyers/register', [LawyerController::class, 'register'])->middleware('ability:profile:write');
+    Route::put('/lawyers/{lawyerId}', [LawyerController::class, 'update'])->middleware('ability:profile:write');
+    Route::post('/profiles/{userId}/view', [ProfileViewController::class, 'track'])->middleware('ability:profile:write');
+    Route::get('/profiles/my-views', [ProfileViewController::class, 'myViews'])->middleware('ability:profile:read');
+    Route::get('/featured/admin', [FeaturedController::class, 'adminList'])->middleware('ability:profile:read');
+    Route::post('/featured/admin', [FeaturedController::class, 'adminStore'])->middleware('ability:profile:write');
+    Route::patch('/featured/admin/{id}/active', [FeaturedController::class, 'adminToggleActive'])->middleware('ability:profile:write');
+
+    // Legacy frontend compatibility endpoints
+    Route::post('/community-events/{id}/register', [LegacyCompatibilityController::class, 'communityEventsRegister']);
+    Route::post('/success-stories', [LegacyCompatibilityController::class, 'successStoriesStore']);
+    Route::post('/profile-cards/{cardType}/{cardOwnerId}/like', [LegacyCompatibilityController::class, 'profileCardLike']);
+
+    // Billing
+    Route::get('/billing/subscription', [BillingController::class, 'currentSubscription']);
+    Route::post('/billing/subscribe', [BillingController::class, 'subscribe']);
+    Route::post('/billing/cancel', [BillingController::class, 'cancel']);
+    Route::get('/billing/payments', [BillingController::class, 'payments']);
+    Route::get('/billing/invoices', [BillingController::class, 'invoices']);
+
+    // Admin Billing (Test/Development için)
+    Route::post('/admin/billing/test-payment', [AdminBillingController::class, 'createTestPayment'])->middleware('admin');
+    Route::post('/admin/billing/complete/{paymentId}', [AdminBillingController::class, 'completeTestPayment'])->middleware('admin');
+    Route::get('/admin/billing/payments', [AdminBillingController::class, 'getPayments'])->middleware('admin');
+    Route::get('/admin/billing/subscriptions', [AdminBillingController::class, 'getSubscriptions'])->middleware('admin');
+    Route::get('/admin/billing/stats', [AdminBillingController::class, 'getPaymentStats'])->middleware('admin');
+    Route::post('/admin/billing/refund/{paymentId}', [AdminBillingController::class, 'refundPayment'])->middleware('admin');
+
+    // Contracts
+    Route::get('/contracts', [ContractController::class, 'index']);
+    Route::post('/contracts', [ContractController::class, 'store'])->middleware('ability:team');
+    Route::get('/contracts/{id}', [ContractController::class, 'show']);
+    Route::patch('/contracts/{id}', [ContractController::class, 'update'])->middleware('ability:team');
+
+    // Social Media
+    Route::get('/users/{userId}/social-media', [SocialMediaController::class, 'index']);
+    Route::post('/social-media', [SocialMediaController::class, 'store'])->middleware('ability:profile:write');
+    Route::patch('/social-media/{id}', [SocialMediaController::class, 'update'])->middleware('ability:profile:write');
+    Route::delete('/social-media/{id}', [SocialMediaController::class, 'destroy'])->middleware('ability:profile:write');
+
+    // Video Clips
+    Route::get('/videos/trending', [VideoClipController::class, 'trending']);
+    Route::get('/videos/tag/{tag}', [VideoClipController::class, 'byTag']);
+    Route::get('/users/{userId}/videos', [VideoClipController::class, 'index']);
+    Route::get('/videos/{id}', [VideoClipController::class, 'show']);
+    Route::post('/videos', [VideoClipController::class, 'store'])->middleware('ability:profile:write');
+    Route::delete('/videos/{id}', [VideoClipController::class, 'destroy'])->middleware('ability:profile:write');
+
+    // Player Statistics
+    Route::get('/players/{playerId}/statistics', [\App\Http\Controllers\Api\PlayerStatisticsController::class, 'index']);
+    Route::post('/player-statistics', [\App\Http\Controllers\Api\PlayerStatisticsController::class, 'store'])->middleware('ability:profile:write');
+    Route::get('/seasons/{season}/top-scorers', [\App\Http\Controllers\Api\PlayerStatisticsController::class, 'topScorers']);
+
+    // Week 11 - Reviewer Workload & SLA
+    Route::get('/analytics/reviewer-workload', [Week11WorkloadController::class, 'reviewerWorkload']);
+    Route::get('/analytics/sla-dashboard', [Week11WorkloadController::class, 'slaDashboard']);
+});

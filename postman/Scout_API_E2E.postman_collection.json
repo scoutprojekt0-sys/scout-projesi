@@ -1,0 +1,310 @@
+{
+  "info": {
+    "_postman_id": "6f8a49a2-6bd9-4f3d-9f66-2b85ec9f5e79",
+    "name": "Scout API E2E",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth - Register Team",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Team User\",\n  \"email\": \"team@example.com\",\n  \"password\": \"Password123\",\n  \"password_confirmation\": \"Password123\",\n  \"role\": \"team\",\n  \"city\": \"Istanbul\"\n}"
+        },
+        "url": "{{base_url}}/api/auth/register"
+      }
+    },
+    {
+      "name": "Auth - Register Player",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Player User\",\n  \"email\": \"player@example.com\",\n  \"password\": \"Password123\",\n  \"password_confirmation\": \"Password123\",\n  \"role\": \"player\",\n  \"city\": \"Ankara\"\n}"
+        },
+        "url": "{{base_url}}/api/auth/register"
+      }
+    },
+    {
+      "name": "Auth - Login Team",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "  const json = pm.response.json();",
+              "  if (json?.data?.token) pm.collectionVariables.set('team_token', json.data.token);",
+              "  if (json?.data?.user?.id) pm.collectionVariables.set('team_user_id', String(json.data.user.id));",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"team@example.com\",\n  \"password\": \"Password123\"\n}"
+        },
+        "url": "{{base_url}}/api/auth/login"
+      }
+    },
+    {
+      "name": "Opportunity - Create",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 201 || pm.response.code === 200) {",
+              "  const json = pm.response.json();",
+              "  if (json?.data?.id) pm.collectionVariables.set('opportunity_id', String(json.data.id));",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{team_token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Scout Needed\",\n  \"position\": \"FW\",\n  \"city\": \"Istanbul\",\n  \"status\": \"open\"\n}"
+        },
+        "url": "{{base_url}}/api/opportunities"
+      }
+    },
+    {
+      "name": "Auth - Login Player",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "  const json = pm.response.json();",
+              "  if (json?.data?.token) pm.collectionVariables.set('player_token', json.data.token);",
+              "  if (json?.data?.user?.id) pm.collectionVariables.set('player_user_id', String(json.data.user.id));",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"player@example.com\",\n  \"password\": \"Password123\"\n}"
+        },
+        "url": "{{base_url}}/api/auth/login"
+      }
+    },
+    {
+      "name": "Application - Apply",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{player_token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"message\": \"I am interested\"\n}"
+        },
+        "url": "{{base_url}}/api/opportunities/{{opportunity_id}}/apply"
+      }
+    },
+    {
+      "name": "Application - Incoming (Team)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "  const json = pm.response.json();",
+              "  const first = json?.data?.data?.[0];",
+              "  if (first?.id) pm.collectionVariables.set('application_id', String(first.id));",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{team_token}}" }
+        ],
+        "url": "{{base_url}}/api/applications/incoming"
+      }
+    },
+    {
+      "name": "Auth - Sessions (Player)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "  const json = pm.response.json();",
+              "  const sessions = Array.isArray(json?.data) ? json.data : [];",
+              "  const revokable = sessions.find(s => s && s.is_current === false);",
+              "  if (revokable?.id) pm.collectionVariables.set('session_token_id', String(revokable.id));",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{player_token}}" }
+        ],
+        "url": "{{base_url}}/api/auth/sessions"
+      }
+    },
+    {
+      "name": "Auth - Refresh Player Token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "  const json = pm.response.json();",
+              "  if (json?.data?.token) pm.collectionVariables.set('player_token', json.data.token);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{player_token}}" }
+        ],
+        "url": "{{base_url}}/api/auth/refresh"
+      }
+    },
+    {
+      "name": "Auth - Revoke Session By ID (Player)",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{player_token}}" }
+        ],
+        "url": "{{base_url}}/api/auth/sessions/{{session_token_id}}"
+      }
+    },
+    {
+      "name": "Auth - Logout Other Sessions (Player)",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{player_token}}" }
+        ],
+        "url": "{{base_url}}/api/auth/sessions"
+      }
+    },
+    {
+      "name": "Application - Change Status",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{team_token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"accepted\"\n}"
+        },
+        "url": "{{base_url}}/api/applications/{{application_id}}/status"
+      }
+    },
+    {
+      "name": "Contact - Send Message",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{player_token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"to_user_id\": {{team_user_id}},\n  \"subject\": \"Hello\",\n  \"message\": \"Can we talk?\"\n}"
+        },
+        "url": "{{base_url}}/api/contacts"
+      }
+    },
+    {
+      "name": "Contact - Inbox",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{team_token}}" }
+        ],
+        "url": "{{base_url}}/api/contacts/inbox"
+      }
+    },
+    {
+      "name": "Media - Upload",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{player_token}}" }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "{{media_file_path}}"
+            },
+            {
+              "key": "title",
+              "type": "text",
+              "value": "Highlight"
+            }
+          ]
+        },
+        "url": "{{base_url}}/api/media"
+      }
+    }
+  ],
+  "variable": [
+    { "key": "base_url", "value": "http://127.0.0.1:8000" },
+    { "key": "team_token", "value": "" },
+    { "key": "player_token", "value": "" },
+    { "key": "team_user_id", "value": "1" },
+    { "key": "player_user_id", "value": "2" },
+    { "key": "opportunity_id", "value": "1" },
+    { "key": "application_id", "value": "1" },
+    { "key": "session_token_id", "value": "" },
+    { "key": "media_file_path", "value": "C:/tmp/sample.jpg" }
+  ]
+}

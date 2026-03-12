@@ -1,0 +1,86 @@
+name: Release Candidate Gate
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rc-gate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: dom, curl, libxml, mbstring, zip, pdo, sqlite, pdo_sqlite
+          coverage: none
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+        env:
+          APP_ENV: local
+          APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+
+      - name: Prepare environment
+        run: |
+          cp .env.example .env
+          touch database/database.sqlite
+          php artisan key:generate
+          php artisan migrate --force
+
+      - name: Lint and test
+        run: composer quality
+
+      - name: Install Newman
+        run: npm install --global newman
+
+      - name: Start API server
+        run: |
+          php artisan serve --host=127.0.0.1 --port=8000 > /tmp/laravel-serve.log 2>&1 &
+          for i in {1..20}; do
+            if curl -sSf http://127.0.0.1:8000/up > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Server did not become ready in time"
+          cat /tmp/laravel-serve.log
+          exit 1
+
+      - name: Run baseline E2E
+        run: |
+          base64 -d > /tmp/sample.jpg <<'EOF'
+          /9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxAQEBUQEA8QFQ8QDw8QEA8PEA8QFREWFhUVFRUY
+          HSggGBolHRUVITEhJSkrLi4uFx8zODMsNygtLisBCgoKDg0OFQ8QFS0dFR0tLS0tLS0tLS0tLS0tLS0t
+          LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAAEAAQMBIgACEQEDEQH/xAAXAAEBAQEAAAAA
+          AAAAAAAAAQID/8QAFhEBAQEAAAAAAAAAAAAAAAAAAQAC/9oADAMBAAIQAxAAAAH2VwP/xAAaEAADAQEA
+          AQAAAAAAAAAAAAABAgMEEQUS/9oACAEBAAEFAkUrk6Ms9X//xAAWEQEBAQAAAAAAAAAAAAAAAAABEBH/
+          2gAIAQMBAT8BtP/EABYRAQEBAAAAAAAAAAAAAAAAAAABEf/aAAgBAgEBPwG7/8QAGxAAAgIDAQAAAAAA
+          AAAAAAERACExQVFhcaH/2gAIAQEABj8C2c1S5fRjv//EABkQAAMBAQEAAAAAAAAAAAAAAAABERAhQf/a
+          AAgBAQABPyGQh0c41mF0Xv/aAAwDAQACAAMAAAAQ8//EABcRAAMBAAAAAAAAAAAAAAAAAAABESH/2gAI
+          AQMBAT8QfZP/xAAXEQEAAwAAAAAAAAAAAAAAAAABABEh/9oACAECAQE/EKQ8/8QAGhABAQACAwAAAAAA
+          AAAAAAERACExQVFhcf/aAAgBAQABPxDKFkWmR8I7uR3Q9JjV6j//2Q==
+          EOF
+          newman run postman/Scout_API_E2E.postman_collection.json \
+            --environment postman/Scout_API_E2E.postman_environment.json \
+            --env-var base_url=http://127.0.0.1:8000 \
+            --env-var media_file_path=/tmp/sample.jpg
+
+      - name: Run communication/media E2E
+        run: |
+          newman run postman/Scout_API_E2E_Communication_Media.postman_collection.json \
+            --environment postman/Scout_API_E2E.postman_environment.json \
+            --env-var base_url=http://127.0.0.1:8000 \
+            --env-var media_file_path=/tmp/sample.jpg
+
