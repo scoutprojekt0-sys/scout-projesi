@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profesyonel Futbolcular | NextScout</title>
-  <meta name="description" content="Profesyonel oyuncu havuzu: pozisyon, yas, performans ve transfer odakli filtreleme ile scout kesfi.">
+  <title>Profesyonel Futbolcular ve Scout Oyuncu Havuzu | NextScout</title>
+  <meta name="description" content="Pozisyon, yas, form ve performans filtreleri ile profesyonel oyuncu arama deneyimi.">
   <meta name="robots" content="index,follow">
-  <link rel="canonical" href="https://nextscout.app/professional-players.html">
+  <link rel="canonical" href="https://nextscout.pro/professional-players.html">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="tr_TR">
   <meta property="og:site_name" content="NextScout">
-  <meta property="og:title" content="Profesyonel Futbolcular | NextScout">
-  <meta property="og:description" content="Profesyonel oyuncu havuzu: pozisyon, yas, performans ve transfer odakli filtreleme ile scout kesfi.">
-  <meta property="og:url" content="https://nextscout.app/professional-players.html">
-    <meta property="og:image" content="https://nextscout.app/assets/img/og-players.jpg">
+  <meta property="og:title" content="Profesyonel Futbolcular ve Scout Oyuncu Havuzu | NextScout">
+  <meta property="og:description" content="Pozisyon, yas, form ve performans filtreleri ile profesyonel oyuncu arama deneyimi.">
+  <meta property="og:url" content="https://nextscout.pro/professional-players.html">
+    <meta property="og:image" content="https://nextscout.pro/assets/img/og-players.jpg">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Profesyonel Futbolcular | NextScout">
-  <meta name="twitter:description" content="Profesyonel oyuncu havuzu: pozisyon, yas, performans ve transfer odakli filtreleme ile scout kesfi.">
-    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-players.jpg">
+  <meta name="twitter:title" content="Profesyonel Futbolcular ve Scout Oyuncu Havuzu | NextScout">
+  <meta name="twitter:description" content="Pozisyon, yas, form ve performans filtreleri ile profesyonel oyuncu arama deneyimi.">
+    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-players.jpg">
   <meta name="theme-color" content="#0B3B8A">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,6 +37,17 @@
       max-width: 1200px;
       margin: 0 auto;
     }
+    .seo-market-intro {
+      margin: 0 auto 22px;
+      max-width: 1460px;
+      border: 1px solid #dbeafe;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 16px 18px;
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+    }
+    .seo-market-intro h2 { margin: 0 0 8px; font-size: 18px; color: #0f172a; }
+    .seo-market-intro p { margin: 0; color: #475569; line-height: 1.75; }
 
     .market-wrapper {
       display: grid;
@@ -509,7 +520,11 @@
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
 <body>
-  <div class="market-wrapper">
+<section class="seo-market-intro" aria-label="Oyuncu havuzu aciklama">
+  <h2>Profesyonel futbolcu havuzu ve scout filtreleri</h2>
+  <p>NextScout oyuncu havuzu; pozisyon, yas, form, lig seviyesi ve performans odakli filtrelerle profesyonel futbolculari daha hizli kesfetmek icin hazirlandi. Scout ekipleri, kulup yoneticileri ve menajerler aradiklari oyuncu profiline gore listeleme yapabilir, transfer odakli oyuncu takibini tek merkezden yurutabilir.</p>
+</section>
+<div class="market-wrapper">
     <aside class="market-ad-panel">
       <div class="market-ad-content">
         <strong>Reklam Alanı</strong>
@@ -940,7 +955,7 @@
                 <span class="info-value" style="font-size: 12px;">${player.league}</span>
               </div>
               <div class="info-item">
-                <span class="info-label">KULÜP</span>
+                <span class="info-label">KULUP</span>
                 <span class="info-value" style="font-size: 12px;">${player.club}</span>
               </div>
             </div>
@@ -1055,7 +1070,7 @@
       const category = (params.get("transfer_category") || "").toLowerCase();
       if (category === "sozlesmeli") return "contracted";
       if (category === "bosta") return "free";
-      if (category === "KULÜP-ariyor") return "seeking";
+      if (category === "KULUP-ariyor") return "seeking";
       return "";
     }
 
@@ -1142,7 +1157,7 @@
 
       if (resultsMeta) {
         const localCount = filtered.length;
-        resultsMeta.textContent = `Toplam ${serverTotal || localCount} oyuncu • Sayfa: ${serverPage}/${serverLastPage} • Son güncelleme: ${new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}`;
+        resultsMeta.textContent = `Toplam ${serverTotal || localCount} oyuncu • Sayfa: ${serverPage}/${serverLastPage} • Son guncelleme: ${new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}`;
       }
       renderPlayers(filtered);
     }
@@ -1308,7 +1323,7 @@
             <tr><td>Pozisyon</td><td>${esc(a.position || "-")}</td><td>${esc(b.position || "-")}</td></tr>
             <tr><td>Yas</td><td>${esc(a.age || "-")}</td><td>${esc(b.age || "-")}</td></tr>
             <tr><td>Boy</td><td>${esc(a.height || "-")} cm</td><td>${esc(b.height || "-")} cm</td></tr>
-            <tr><td>KULÜP</td><td>${esc(a.club || "-")}</td><td>${esc(b.club || "-")}</td></tr>
+            <tr><td>KULUP</td><td>${esc(a.club || "-")}</td><td>${esc(b.club || "-")}</td></tr>
             <tr><td>Rating</td><td>${esc(a.rating || "-")}</td><td>${esc(b.rating || "-")}</td></tr>
             <tr><td>Piyasa Degeri</td><td>${esc(a.market || "-")}</td><td>${esc(b.market || "-")}</td></tr>
           </tbody>
@@ -1393,6 +1408,8 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+
+
 
 
 

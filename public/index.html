@@ -242,6 +242,182 @@
             backdrop-filter: blur(14px);
         }
 
+        .desktop-support-grid {
+            display: grid;
+            gap: 14px;
+            margin-top: 16px;
+        }
+
+        .desktop-support-card {
+            background: linear-gradient(180deg, rgba(24, 31, 67, 0.94), rgba(13, 18, 40, 0.97));
+            border: 1px solid var(--ns-line);
+            border-radius: 22px;
+            padding: 18px 20px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 36px rgba(2, 5, 18, 0.28);
+        }
+
+        .below-card,
+        .top-adboard,
+        .home-data-card,
+        .contract-card,
+        .idea-news-square,
+        .idea-news-item,
+        .breaking-news-strip,
+        .promo-ad-card,
+        .success-stories-panel,
+        .home-data-center-panel,
+        .ad-panel {
+            background: linear-gradient(180deg, rgba(24, 31, 67, 0.94), rgba(13, 18, 40, 0.97)) !important;
+            border: 1px solid var(--ns-line) !important;
+            border-radius: 22px !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 36px rgba(2, 5, 18, 0.28) !important;
+        }
+
+        .below-card,
+        .top-adboard,
+        .contract-card,
+        .idea-news-square,
+        .idea-news-item,
+        .promo-ad-card,
+        .home-data-card,
+        .ad-panel {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .below-card::before,
+        .top-adboard::before,
+        .home-data-card::before,
+        .contract-card::before,
+        .idea-news-square::before,
+        .idea-news-item::before,
+        .promo-ad-card::before,
+        .ad-panel::before,
+        .desktop-support-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background: radial-gradient(circle at top left, rgba(118, 144, 255, 0.18), transparent 36%);
+        }
+
+        .home-data-card,
+        .promo-ad-card,
+        .top-adboard,
+        .below-card,
+        .idea-news-square {
+            padding: 18px !important;
+        }
+
+        .top-adboard-title,
+        .below-card .title,
+        .home-data-card .v,
+        .home-data-card .k,
+        .success-stories-head h3,
+        .contract-live-title,
+        .contract-live-sub {
+            position: relative;
+            z-index: 1;
+        }
+
+        .top-adboard-title,
+        .below-card .title,
+        .home-data-card .v,
+        .success-stories-head h3,
+        .contract-live-title,
+        .idea-news-square h3,
+        .idea-news-item .t,
+        .breaking-news-name {
+            color: var(--ns-text) !important;
+        }
+
+        .home-data-card .k,
+        .below-card .desc,
+        .top-adboard-desc,
+        .club-promo-name-pill,
+        .club-needs-inline-item .note,
+        .data-status-strip,
+        .contract-live-sub,
+        .idea-news-square .sub,
+        .idea-news-item .m,
+        .idea-news-item .body {
+            color: var(--ns-muted) !important;
+        }
+
+        .club-promo-name-pill,
+        .club-needs-inline-item,
+        .club-promo-tag,
+        .contract-badge,
+        .success-story-cta-btn {
+            background: rgba(23, 31, 67, 0.82) !important;
+            border: 1px solid rgba(110, 138, 255, 0.34) !important;
+            color: var(--ns-text) !important;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03), 0 0 16px rgba(88, 112, 255, 0.1) !important;
+        }
+
+        .breaking-news-badge {
+            background: linear-gradient(135deg, var(--ns-primary), var(--ns-primary-2)) !important;
+            color: #f8faff !important;
+            border: 1px solid rgba(140, 157, 255, 0.42) !important;
+            box-shadow: 0 10px 20px rgba(76, 106, 255, 0.22) !important;
+        }
+
+        .idea-news-list {
+            gap: 10px !important;
+        }
+
+        .idea-news-item {
+            border-radius: 18px !important;
+            border: 1px solid rgba(110, 138, 255, 0.24) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 14px 28px rgba(2, 5, 18, 0.18) !important;
+        }
+
+        .desktop-support-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            font-size: 1.02rem;
+            font-weight: 800;
+            color: var(--ns-text);
+        }
+
+        .desktop-support-head i {
+            color: #98abff;
+        }
+
+        .desktop-chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .desktop-chip,
+        .desktop-chip-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(110, 138, 255, 0.34);
+            background: rgba(23, 31, 67, 0.82);
+            color: var(--ns-text);
+            font-size: 0.95rem;
+            font-weight: 700;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03), 0 0 16px rgba(88, 112, 255, 0.1);
+        }
+
+        .desktop-chip-btn {
+            cursor: pointer;
+        }
+
+        .desktop-chip-btn:hover {
+            border-color: rgba(140, 157, 255, 0.48);
+            background: rgba(31, 41, 86, 0.92);
+        }
+
         .mobile-discover-panel,
         .mobile-bottom-search-panel,
         .mobile-icon-square,
@@ -254,7 +430,8 @@
             .hero-wrapper,
             #homeStep2,
             #homeStep3,
-            .home-data-center-panel {
+            .home-data-center-panel,
+            .desktop-support-grid {
                 display: none !important;
             }
 
@@ -291,7 +468,8 @@
             .hero-wrapper,
             #homeStep2,
             #homeStep3,
-            .home-data-center-panel {
+            .home-data-center-panel,
+            .desktop-support-grid {
                 display: grid !important;
             }
 
@@ -5356,6 +5534,38 @@
                     </article>
                 </div>
                 <section class="data-status-strip" id="dataStatusStrip">Veri Durumu: Yukleniyor...</section>
+            </section>
+
+            <section class="desktop-support-grid" aria-label="Sponsor ve kurumsal bilgiler">
+                <article class="desktop-support-card">
+                    <div class="desktop-support-head"><i class="fas fa-handshake"></i> Ana Sponsorlar</div>
+                    <div class="desktop-chip-row" id="desktopSponsorChips">
+                        <span class="desktop-chip">NextScout Pro</span>
+                        <span class="desktop-chip">Talent Partner</span>
+                        <span class="desktop-chip">Performance Lab</span>
+                    </div>
+                </article>
+
+                <article class="desktop-support-card">
+                    <div class="desktop-support-head"><i class="fas fa-hashtag"></i> Sosyal Medya</div>
+                    <div class="desktop-chip-row">
+                        <span class="desktop-chip">Instagram: @nextscout</span>
+                        <span class="desktop-chip">X: @nextscoutapp</span>
+                        <span class="desktop-chip">YouTube: NextScout TV</span>
+                    </div>
+                </article>
+
+                <article class="desktop-support-card">
+                    <div class="desktop-support-head"><i class="fas fa-building"></i> Kurumsal</div>
+                    <div class="desktop-chip-row">
+                        <button type="button" class="desktop-chip-btn" onclick="openAboutModal()">Hakkimizda</button>
+                        <button type="button" class="desktop-chip-btn" onclick="openHomeInfoModal('contact')">İletişim</button>
+                        <button type="button" class="desktop-chip-btn" onclick="openHomeInfoModal('faq')">SSS</button>
+                        <button type="button" class="desktop-chip-btn" onclick="openHomeInfoModal('trust')">Guven & Referans</button>
+                        <button type="button" class="desktop-chip-btn" onclick="openHomeInfoModal('terms')">Kullanim Sartlari</button>
+                        <button type="button" class="desktop-chip-btn" onclick="openHomeInfoModal('privacy')">Gizlilik</button>
+                    </div>
+                </article>
             </section>
 
         </section>

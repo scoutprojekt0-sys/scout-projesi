@@ -3,19 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Deneme & Idman Merkezi - NextScout</title>
-  <meta name="description" content="Deneme ve idman merkezi: KULÜP secmeleri, etkinlik takvimi ve katilim sureci takibi.">
+  <title>Futbol Deneme Gunleri ve Secmeler | NextScout Trial Center</title>
+  <meta name="description" content="Futbol deneme gunleri, secmeler, idman takvimi ve deneme maclari. Oyuncular, scoutlar ve kulup ekipleri icin guncel trial merkezi.">
   <meta name="robots" content="index,follow">
-  <link rel="canonical" href="https://nextscout.app/trial-center.html">
+  <link rel="canonical" href="https://nextscout.pro/trial-center.html">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="tr_TR">
   <meta property="og:site_name" content="NextScout">
-  <meta property="og:title" content="Deneme ve Idman Merkezi | NextScout">
-  <meta property="og:description" content="Deneme ve idman merkezi: KULÜP secmeleri, etkinlik takvimi ve katilim sureci takibi.">
-  <meta property="og:url" content="https://nextscout.app/trial-center.html">
-    <meta property="og:image" content="https://nextscout.app/assets/img/og-trials.jpg">
+  <meta property="og:title" content="Futbol Deneme Gunleri ve Secmeler | NextScout">
+  <meta property="og:description" content="Futbol deneme gunleri, secmeler, idman takvimi ve deneme maclari. Oyuncular, scoutlar ve kulup ekipleri icin guncel trial merkezi.">
+  <meta property="og:url" content="https://nextscout.pro/trial-center.html">
+    <meta property="og:image" content="https://nextscout.pro/assets/img/og-trials.jpg">
   <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-trials.jpg">
+  <meta name="twitter:title" content="Futbol Deneme Gunleri ve Secmeler | NextScout">
+  <meta name="twitter:description" content="Oyuncular ve scoutlar icin guncel trial ilanlari, idmanlar ve deneme maclari.">
+    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-trials.jpg">
   <meta name="theme-color" content="#1d4ed8">
   <style>
     :root {
@@ -73,6 +75,9 @@
     .list { margin-top: 10px; display: grid; gap: 10px; }
     .empty { border: 1px dashed #475569; border-radius: 10px; background: #1f2937; color: var(--muted); padding: 20px; text-align: center; }
     .notice { margin-top: 12px; background: #232a33; border: 1px solid #334155; border-radius: 12px; padding: 12px; }
+    .seo-copy { margin-top: 14px; background: #232a33; border: 1px solid #334155; border-radius: 14px; padding: 16px; box-shadow: 0 12px 24px rgba(2,6,23,.16); }
+    .seo-copy h2 { margin: 0 0 10px; font-size: 18px; }
+    .seo-copy p { margin: 0; color: var(--muted); line-height: 1.7; }
     .event-item { padding: 10px; border-radius: 10px; background: #1f2937; border: 1px solid #475569; }
     .btn:hover { border-color: #60a5fa; background: #334155; color: #fff; }
     @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
@@ -95,12 +100,16 @@
     <div class="hero">
       <div>
         <h1>Deneme & Idman Merkezi</h1>
-        <p>KULÜP ve ANTRENÖRLERİN yayınladigi deneme gunleri, idmanlar ve deneme maclari.</p>
+        <p>Kulup secmeleri, deneme gunleri, idman takvimi ve scout izlemeye acik trial maclari.</p>
       </div>
       <a class="home-btn-global" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a>
     </div>
 
     <div class="notice" id="notice"></div>
+    <section class="seo-copy" aria-label="Trial center aciklama">
+      <h2>Futbol deneme gunleri ve oyuncu secmeleri icin merkezi sayfa</h2>
+      <p>NextScout Trial Center, acik futbol secmeleri, deneme maclari, haftalik idmanlar ve oyuncu basvurusuna acik etkinlikleri tek yerde toplar. Oyuncular trial ilanlarini takip edebilir, scoutlar guncel secme akisini inceleyebilir, kulup ekipleri ise deneme organizasyonlarini hizli sekilde goruntuleyebilir.</p>
+    </section>
 
     <div id="appRoot" style="display:block">
       <div class="grid">
@@ -112,7 +121,7 @@
 
         <div class="card">
           <h3>Haftalik Idman Takvimi</h3>
-          <div class="muted">KULÜP/coach tarafindan planlanan idmanlar</div>
+          <div class="muted">KULUP/coach tarafindan planlanan idmanlar</div>
           <div class="list" id="trainingList"></div>
         </div>
 
@@ -260,7 +269,7 @@
             <div class="row"><strong>${esc(item.title)}</strong><span class="tag">${esc(item.type.toUpperCase())}</span></div>
             <div class="muted">${esc(item.date)} ${esc(item.time)} • ${esc(item.city)}${item.venue ? ' • ' + esc(item.venue) : ''}</div>
             <div class="row">
-              <span class="muted">Duzenleyen: ${esc(item.owner || '-')}${item.club_name ? ` • KULÜP: ${esc(item.club_name)}` : ''}</span>
+              <span class="muted">Duzenleyen: ${esc(item.owner || '-')}${item.club_name ? ` • KULUP: ${esc(item.club_name)}` : ''}</span>
               ${action}
             </div>
           </div>
@@ -289,6 +298,8 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+
+
 
 
 

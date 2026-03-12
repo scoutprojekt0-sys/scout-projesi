@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NextScout - MENAJERLERİN Aradigi Oyuncular</title>
-    <meta name="description" content="NextScout manager needs sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <title>Menajerlerin Aradigi Oyuncular | NextScout</title>
+    <meta name="description" content="Menajerlerin aradigi oyuncular, acik menajer ilanlari ve futbolcu ihtiyaclari NextScout manager needs sayfasinda listelenir.">
     <meta name="robots" content="index,follow">
-    <link rel="canonical" href="https://nextscout.app/manager-needs.html">
+    <link rel="canonical" href="https://nextscout.pro/manager-needs.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="NextScout - MENAJERLERİN Aradigi Oyuncular">
-    <meta property="og:description" content="NextScout manager needs sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
-    <meta property="og:url" content="https://nextscout.app/manager-needs.html">
-    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta property="og:title" content="Menajerlerin Aradigi Oyuncular | NextScout">
+    <meta property="og:description" content="Menajerlerin aradigi oyuncular, acik menajer ilanlari ve futbolcu ihtiyaclari NextScout manager needs sayfasinda listelenir.">
+    <meta property="og:url" content="https://nextscout.pro/manager-needs.html">
+    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="NextScout - MENAJERLERİN Aradigi Oyuncular">
-    <meta name="twitter:description" content="NextScout manager needs sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
-    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:title" content="Menajerlerin Aradigi Oyuncular | NextScout">
+    <meta name="twitter:description" content="Menajerlerin aradigi oyuncular, acik menajer ilanlari ve futbolcu ihtiyaclari NextScout manager needs sayfasinda listelenir.">
+    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -36,6 +36,9 @@
         .control { width: 100%; padding: 10px 12px; border: 1px solid #CBD5E1; border-radius: 10px; background: #F8FAFC; font-size: 14px; }
         .list { display: grid; gap: 12px; margin-top: 14px; }
         .job { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 14px; padding: 16px; }
+        .seo-intro { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 16px; padding: 18px; margin-bottom: 16px; box-shadow: 0 10px 22px rgba(37, 99, 235, 0.06); }
+        .seo-intro h2 { font-size: 18px; margin-bottom: 8px; }
+        .seo-intro p { color: #475569; line-height: 1.7; }
         .job-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
         .job-head h3 { font-size: 19px; }
         .reward { background: #DCFCE7; color: #166534; border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 800; }
@@ -59,8 +62,8 @@
 
 <main class="page">
     <section class="hero">
-        <h1><i class="fa-solid fa-filter"></i> MENAJERLERİN Aradigi Oyuncular</h1>
-        <p>DASHBOARD'da kaydedilen ilanlar burada yayınlanir. Oyuncular filtreleyip kendine uygun ilani bulur.</p>
+        <h1><i class="fa-solid fa-filter"></i> MENAJERLERIN Aradigi Oyuncular</h1>
+        <p>DASHBOARD'da kaydedilen ilanlar burada yayinlanir. Oyuncular filtreleyip kendine uygun ilani bulur.</p>
         <div class="filters">
             <select class="control" id="positionFilter">
                 <option value="">Pozisyon (Tumu)</option>
@@ -79,6 +82,10 @@
         </div>
     </section>
 
+    <section class="seo-intro" aria-label="Menajer ihtiyaclari aciklama">
+        <h2>Oyuncu arayan menajer ilanlari ve acik ihtiyac listesi</h2>
+        <p>Bu sayfa futbol menajerlerinin aradigi oyuncu profillerini, pozisyon bazli ihtiyaclarini ve basvuruya acik ilanlarini tek yerde toplar. Oyuncular kendilerine uygun menajer aramalarini filtreleyebilir, scout ve kulup ekipleri ise piyasadaki aktif talep sinyallerini hizli sekilde gorebilir.</p>
+    </section>
     <section class="list" id="jobList"></section>
 </main>
 
@@ -172,6 +179,10 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+
+
+
+
 
 
 
