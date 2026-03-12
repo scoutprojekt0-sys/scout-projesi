@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Admin Dashboard - NextScout</title>
+    <meta name="description" content="NextScout admin dashboard sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="https://nextscout.pro/admin-dashboard.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Admin Dashboard - NextScout">
+    <meta property="og:description" content="NextScout admin dashboard sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.pro/admin-dashboard.html">
+    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Admin Dashboard - NextScout">
+    <meta name="twitter:description" content="NextScout admin dashboard sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/admin-dashboard.css">
+    <link rel="stylesheet" href="assets/css/admin-modern.css">
+    <link rel="stylesheet" href="assets/css/admin-responsive.css">
+    <link rel="stylesheet" href="assets/css/mobile-unified.css">
+    <link rel="stylesheet" href="assets/css/mobile-polish.css">
+</head>
+<body>
+    <div class="header">
+        <a class="logo" href="index.html">
+            <i class="fas fa-shield-alt"></i> NextScout
+            <span class="admin-badge">ADMIN</span>
+        </a>
+        <div class="header-right">
+            <a class="home-btn-global header-link" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a>
+            <a class="header-link" href="statistics.html"><i class="fas fa-chart-line"></i> İstatistik</a>
+            <a class="header-link" href="settings.html"><i class="fas fa-cog"></i> Ayarlar</a>
+        </div>
+    </div>
+
+    <div class="subnav">
+        <div class="subnav-inner">
+            <a class="subnav-link" href="live-matches.html"><i class="fas fa-futbol"></i> Canlı Maclar</a>
+            <a class="subnav-link" href="manager-needs.html"><i class="fas fa-briefcase"></i> MENAJER Ihtiyaclari</a>
+            <a class="subnav-link" href="notifications.html"><i class="fas fa-bell"></i> Bildirimler</a>
+            <a class="subnav-link" href="trial-center.html"><i class="fas fa-calendar-check"></i> Trial Center</a>
+            <a class="subnav-link" href="help.html"><i class="fas fa-circle-question"></i> Yardim</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="adminAuthNotice" style="display:none;margin-bottom:14px;padding:12px 14px;border-radius:10px;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;">
+            <strong>Oturum uyarisi:</strong> Admin token bulunamadi. API tabanli bolumler kisitli calisabilir.
+            <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+                <a href="index.html" class="btn btn-secondary" style="padding:6px 10px;font-size:12px;text-decoration:none;">Ana sayfadan giris yap</a>
+                <a href="menejer-giris.html" class="btn btn-secondary" style="padding:6px 10px;font-size:12px;text-decoration:none;">Menajer girisi</a>
+                <button type="button" class="btn btn-primary" style="padding:6px 10px;font-size:12px;" onclick="bootstrapLocalAdminSession()">Local oturum olustur</button>
+            </div>
+        </div>
+        <div class="welcome">
+            <h1>Hoş Geldin, Admin!</h1>
+            <p>NextScout yönetim paneline hoş geldin. Platformu buradan yönetebilirsin.</p>
+        </div>
+
+        <!-- Ana İstatistikler -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-users stat-icon"></i>
+                <div class="stat-label">Toplam Kullanıcı</div>
+                <div class="stat-value" id="statTotalUsers">-</div>
+                <div class="stat-change" id="statTotalUsersMeta">API baglantisi bekleniyor</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-user-check stat-icon"></i>
+                <div class="stat-label">Aktif Kullanıcı</div>
+                <div class="stat-value" id="statActiveUsers">-</div>
+                <div class="stat-change" id="statActiveUsersMeta">API baglantisi bekleniyor</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-handshake stat-icon"></i>
+                <div class="stat-label">Toplam Transfer</div>
+                <div class="stat-value" id="statTransfers">-</div>
+                <div class="stat-change" id="statTransfersMeta">API baglantisi bekleniyor</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-dollar-sign stat-icon"></i>
+                <div class="stat-label">Aylık Gelir</div>
+                <div class="stat-value" id="statMonthlyRevenue">-</div>
+                <div class="stat-change" id="statMonthlyRevenueMeta">API baglantisi bekleniyor</div>
+            </div>
+        </div>
+
+        <!-- Hızlı İşlemler -->
+        <div class="section">
+            <div class="section-title"><i class="fas fa-bolt"></i> Hızlı İşlemler</div>
+            <div class="action-buttons">
+                <a href="settings.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Kullanici Yönetimi</a>
+                <a href="statistics.html" class="btn btn-secondary"><i class="fas fa-file-alt"></i> Raporlari Goruntule</a>
+                <a href="settings.html" class="btn btn-secondary"><i class="fas fa-cog"></i> Sistem Ayarlari</a>
+                <button type="button" class="btn btn-secondary" onclick="exportAdminSnapshot()"><i class="fas fa-database"></i> Yedek Al</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title"><i class="fas fa-shield-check"></i> Hafta 4 - Veri Kalite Durumu</div>
+            <div class="action-buttons" style="margin-bottom:12px;">
+                <button class="btn btn-secondary" type="button" onclick="loadDataQualityWidget()"><i class="fas fa-rotate"></i> Kalite Verisini Yenile</button>
+            </div>
+            <div class="quick-stats">
+                <div class="quick-stat" id="dqCardSource" style="cursor:pointer;">
+                    <div class="quick-stat-value" id="dqSourceCoverage">-</div>
+                    <div class="quick-stat-label">Kaynak Kapsami</div>
+                </div>
+                <div class="quick-stat" id="dqCardVerification" style="cursor:pointer;">
+                    <div class="quick-stat-value" id="dqVerification">-</div>
+                    <div class="quick-stat-label">Doğrulama Orani</div>
+                </div>
+                <div class="quick-stat" id="dqCardConflict" style="cursor:pointer;">
+                    <div class="quick-stat-value" id="dqConflictRate">-</div>
+                    <div class="quick-stat-label">Cakisma Orani</div>
+                </div>
+                <div class="quick-stat" id="dqCardTransfer" style="cursor:pointer;">
+                    <div class="quick-stat-value" id="dqTransferVerification">-</div>
+                    <div class="quick-stat-label">Transfer Doğrulama</div>
+                </div>
+            </div>
+            <div style="margin-top:12px;color:#64748B;font-size:12px;" id="dqMeta">Kalite raporu bekleniyor...</div>
+        </div>
+
+        <div class="section">
+            <div class="section-title"><i class="fas fa-gauge-high"></i> Operasyon ve Guvenlik Ozeti</div>
+            <div class="action-buttons" style="margin-bottom:12px;">
+                <button class="btn btn-secondary" type="button" onclick="loadOpsSummary()"><i class="fas fa-rotate"></i> Ozeti Yenile</button>
+                <button id="ops429ProbeBtn" class="btn btn-secondary" type="button" onclick="runLocalRateLimitProbe()"><i class="fas fa-flask"></i> 429 Testi (Local)</button>
+            </div>
+            <div class="quick-stats">
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="opsUsersTotal">-</div>
+                    <div class="quick-stat-label">Toplam Kullanici</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="opsOpenOpportunities">-</div>
+                    <div class="quick-stat-label">Acik Firsat</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="opsPendingApplications">-</div>
+                    <div class="quick-stat-label">Bekleyen Basvuru</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="opsUnreadNotifications">-</div>
+                    <div class="quick-stat-label">Okunmamis Bildirim</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="opsRateLimited">-</div>
+                    <div class="quick-stat-label">429 (Rate Limited)</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="opsServerErrors">-</div>
+                    <div class="quick-stat-label">5xx Sunucu Hatasi</div>
+                </div>
+            </div>
+            <div style="margin-top:12px;color:#64748B;font-size:12px;" id="opsMeta">Operasyon ozeti bekleniyor...</div>
+        </div>
+
+        <div class="section">
+            <div class="section-title"><i class="fas fa-bug"></i> Istemci Hata Gunlugu</div>
+            <div class="action-buttons" style="margin-bottom:12px;">
+                <button class="btn btn-secondary" type="button" onclick="loadClientErrorLogs()"><i class="fas fa-rotate"></i> Loglari Yenile</button>
+                <button class="btn btn-secondary" type="button" onclick="clearClientErrorLogs()"><i class="fas fa-trash"></i> Loglari Temizle</button>
+            </div>
+            <div style="margin-bottom:8px;color:#64748B;font-size:13px;" id="clientErrorsMeta">Loglar bekleniyor...</div>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Zaman</th>
+                        <th>Tip</th>
+                        <th>Mesaj</th>
+                        <th>Kaynak</th>
+                    </tr>
+                </thead>
+                <tbody id="clientErrorsBody">
+                    <tr><td colspan="4" style="text-align:center;color:#64748B;">Henüz istemci hata logu yok.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <div class="section-title"><i class="fas fa-link"></i> Ana Sayfa Modulleri (Hizli Erisim)</div>
+            <div class="module-grid">
+                <a class="module-card" href="scout-live-matches.html">
+                    <div class="module-title"><i class="fas fa-tower-broadcast"></i> Live Matches</div>
+                    <div class="module-desc">Ana sayfadaki canlı mac akisina yonetici gozuyle ulas.</div>
+                </a>
+                <a class="module-card" href="scout-watchlist.html">
+                    <div class="module-title"><i class="fas fa-star"></i> Watchlist</div>
+                    <div class="module-desc">Oyuncu takip listesi, trend ve favori akislarini izle.</div>
+                </a>
+                <a class="module-card" href="scout-reports.html">
+                    <div class="module-title"><i class="fas fa-clipboard-list"></i> Scout Reports</div>
+                    <div class="module-desc">Rapor kalitesi ve icerik akislarini hizli denetle.</div>
+                </a>
+                <a class="module-card" href="manager-needs.html">
+                    <div class="module-title"><i class="fas fa-users-viewfinder"></i> Manager Needs</div>
+                    <div class="module-desc">KULÜP/MENAJER taleplerini panelden dogrudan gor.</div>
+                </a>
+                <a class="module-card" href="weekly-digest.html">
+                    <div class="module-title"><i class="fas fa-newspaper"></i> Weekly Digest</div>
+                    <div class="module-desc">Ana sayfadaki haftalik ozet iceriklerini kontrol et.</div>
+                </a>
+                <a class="module-card" href="data-center.html">
+                    <div class="module-title"><i class="fas fa-database"></i> Data Center</div>
+                    <div class="module-desc">Metrikler ve veri kaynaklari icin merkez ekran.</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title"><i class="fas fa-envelope-open-text"></i> İletişim Mesajlari</div>
+            <div class="action-buttons" style="margin-bottom:12px;">
+                <button class="btn btn-secondary" type="button" onclick="loadContactMessages()"><i class="fas fa-rotate"></i> Mesajlari Yenile</button>
+            </div>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Ad Soyad</th>
+                        <th>E-posta</th>
+                        <th>Mesaj</th>
+                        <th>Tarih</th>
+                    </tr>
+                </thead>
+                <tbody id="contactMessagesBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Google Entegrasyonu -->
+        <div class="section" style="border: 2px solid #4285F4;">
+            <div class="section-title">
+                <i class="fab fa-google" style="color: #4285F4;"></i> 
+                Google Entegrasyonu
+                <span class="badge badge-success" style="margin-left: 12px;">Aktif</span>
+            </div>
+            
+            <div class="stats-grid" style="margin-bottom: 20px;">
+                <div class="stat-card" style="border-color: #4285F4;">
+                    <i class="fab fa-google stat-icon" style="color: #4285F4;"></i>
+                    <div class="stat-label">Google Ads Geliri</div>
+                    <div class="stat-value" style="color: #4285F4;">€42,580</div>
+                    <div class="stat-change"><i class="fas fa-arrow-up"></i> +18.3% bu ay</div>
+                </div>
+                <div class="stat-card" style="border-color: #EA4335;">
+                    <i class="fab fa-youtube stat-icon" style="color: #EA4335;"></i>
+                    <div class="stat-label">YouTube Geliri</div>
+                    <div class="stat-value" style="color: #EA4335;">€8,240</div>
+                    <div class="stat-change"><i class="fas fa-arrow-up"></i> +24.7% bu ay</div>
+                </div>
+                <div class="stat-card" style="border-color: #34A853;">
+                    <i class="fas fa-chart-line stat-icon" style="color: #34A853;"></i>
+                    <div class="stat-label">Google Analytics</div>
+                    <div class="stat-value" style="color: #34A853;">284K</div>
+                    <div class="stat-change">Aylık ziyaretçi</div>
+                </div>
+                <div class="stat-card" style="border-color: #FBBC04;">
+                    <i class="fas fa-mouse-pointer stat-icon" style="color: #FBBC04;"></i>
+                    <div class="stat-label">Tıklama Oranı (CTR)</div>
+                    <div class="stat-value" style="color: #FBBC04;">3.8%</div>
+                    <div class="stat-change"><i class="fas fa-arrow-up"></i> +0.5% artış</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <div style="font-weight: 700; margin-bottom: 12px; color: #1F2937;">Google Gelir Detayları (Bu Ay)</div>
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Kaynak</th>
+                            <th>Günlük Ort.</th>
+                            <th>Bu Hafta</th>
+                            <th>Bu Ay</th>
+                            <th>Trend</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><i class="fab fa-google" style="color: #4285F4; margin-right: 8px;"></i><strong>Google Ads</strong></td>
+                            <td><strong>€1,419</strong></td>
+                            <td>€9,933</td>
+                            <td><strong style="color: #4285F4;">€42,580</strong></td>
+                            <td><span class="badge badge-success"><i class="fas fa-arrow-up"></i> +18.3%</span></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fab fa-youtube" style="color: #EA4335; margin-right: 8px;"></i><strong>YouTube Partner</strong></td>
+                            <td><strong>€275</strong></td>
+                            <td>€1,925</td>
+                            <td><strong style="color: #EA4335;">€8,240</strong></td>
+                            <td><span class="badge badge-success"><i class="fas fa-arrow-up"></i> +24.7%</span></td>
+                        </tr>
+                        <tr style="background: #FEF3C7; font-weight: 700;">
+                            <td><strong>TOPLAM GOOGLE GELİRİ</strong></td>
+                            <td><strong>€1,694</strong></td>
+                            <td><strong>€11,858</strong></td>
+                            <td><strong style="color: #4285F4; font-size: 18px;">€50,820</strong></td>
+                            <td><span class="badge badge-success"><i class="fas fa-arrow-up"></i> +20.1%</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Platform İstatistikleri -->
+        <div class="section">
+            <div class="section-title"><i class="fas fa-chart-pie"></i> Platform İstatistikleri</div>
+            <div class="quick-stats">
+                <div class="quick-stat">
+                    <div class="quick-stat-value">4,523</div>
+                    <div class="quick-stat-label">Oyuncu</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value">1,847</div>
+                    <div class="quick-stat-label">Scout</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value">892</div>
+                    <div class="quick-stat-label">MENAJER</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value">247</div>
+                    <div class="quick-stat-label">KULÜP</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Onay Bekleyen Kullanıcılar -->
+        <div class="section">
+            <div class="section-title"><i class="fas fa-user-clock"></i> Son Kayıtlar (Onay Bekleyen)</div>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Kullanıcı</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody id="pendingUsersBody"></tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <div class="section-title"><i class="fas fa-magnifying-glass"></i> Kayitli Kullanici Arama (API)</div>
+            <div style="display:grid;grid-template-columns:2fr 1fr auto;gap:10px;align-items:end;margin-bottom:12px;">
+                <div>
+                    <label for="registeredUserQuery" style="display:block;font-weight:600;margin-bottom:6px;">Isim / E-posta</label>
+                    <input id="registeredUserQuery" type="text" placeholder="or: ahmet veya mail@..." style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;width:100%;">
+                </div>
+                <div>
+                    <label for="registeredUserRole" style="display:block;font-weight:600;margin-bottom:6px;">Rol</label>
+                    <select id="registeredUserRole" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;width:100%;">
+                        <option value="">Tum roller</option>
+                        <option value="player">Oyuncu</option>
+                        <option value="manager">Menajer</option>
+                        <option value="coach">Antrenor</option>
+                        <option value="scout">Scout</option>
+                        <option value="team">KULUP</option>
+                    </select>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="btn btn-primary" type="button" style="height:40px;" onclick="loadRegisteredUsers(1)"><i class="fas fa-search"></i> Ara</button>
+                    <button class="btn btn-secondary" type="button" style="height:40px;" onclick="clearRegisteredUsersFilters()"><i class="fas fa-eraser"></i> Temizle</button>
+                    <button class="btn btn-secondary" type="button" style="height:40px;" onclick="exportRegisteredUsersCsv()"><i class="fas fa-file-csv"></i> CSV Aktar</button>
+                </div>
+            </div>
+
+            <div style="margin-bottom:8px;color:#64748B;font-size:13px;" id="registeredUsersMeta">Sonuclar bekleniyor...</div>
+
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Kullanici</th>
+                        <th>E-posta</th>
+                        <th>Rol</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Detay</th>
+                    </tr>
+                </thead>
+                <tbody id="registeredUsersBody">
+                    <tr><td colspan="6" style="text-align:center;color:#64748B;">Arama yaparak kayitli kullanicilari listeleyebilirsin.</td></tr>
+                </tbody>
+            </table>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap;">
+                <div id="registeredUsersPageInfo" style="font-size:13px;color:#64748B;">Sayfa: -</div>
+                <div style="display:flex;gap:8px;">
+                    <button id="registeredUsersPrevBtn" class="btn btn-secondary" type="button" style="padding:6px 10px;font-size:12px;" onclick="changeRegisteredUsersPage(-1)">← Onceki</button>
+                    <button id="registeredUsersNextBtn" class="btn btn-secondary" type="button" style="padding:6px 10px;font-size:12px;" onclick="changeRegisteredUsersPage(1)">Sonraki →</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title"><i class="fas fa-calendar-check"></i> Deneme/Idman İlan Moderasyonu (API)</div>
+            <div class="action-buttons" style="margin-bottom:12px;">
+                <button class="btn btn-secondary" type="button" onclick="loadTrialModerationQueue()"><i class="fas fa-rotate"></i> Listeyi Yenile</button>
+            </div>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Etkinlik</th>
+                        <th>Tur</th>
+                        <th>Sehir</th>
+                        <th>Tarih</th>
+                        <th>Duzenleyen</th>
+                        <th>Durum</th>
+                        <th>Islem</th>
+                    </tr>
+                </thead>
+                <tbody id="trialModerationBody">
+                    <tr><td colspan="7" style="text-align:center;color:#64748B;">Yukleniyor...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Amator Lig Sonuc Moderasyonu -->
+        <div class="section" id="amateurModerationSection">
+            <div class="section-title"><i class="fas fa-futbol"></i> Amator Lig Sonuc Moderasyonu</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">
+                <input id="amLeague" type="text" placeholder="Lig (or: Izmir 1. Amator A)" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amSeason" type="text" placeholder="Sezon (or: 2025-2026)" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amCountry" type="text" placeholder="Ülke (or: Türkiye)" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amSport" type="text" placeholder="Brans (or: futbol)" value="futbol" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amHome" type="text" placeholder="Ev sahibi takım" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amAway" type="text" placeholder="Deplasman takım" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amHomeScore" type="number" min="0" placeholder="Ev gol" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amAwayScore" type="number" min="0" placeholder="Dep gol" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+            </div>
+            <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+                <button class="btn btn-primary" type="button" onclick="addAmateurResult()"><i class="fas fa-plus"></i> Sonuc Ekle (Beklemede)</button>
+                <button class="btn btn-secondary" type="button" onclick="rebuildAmateurStandings()"><i class="fas fa-calculator"></i> Puan Durumu Hesapla</button>
+            </div>
+
+            <div style="margin-top:16px;font-weight:700;">Bekleyen / Dogrulanan Sonuclar</div>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Lig</th>
+                        <th>Mac</th>
+                        <th>Skor</th>
+                        <th>Durum</th>
+                        <th>Islem</th>
+                    </tr>
+                </thead>
+                <tbody id="amateurResultsBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="dqDetailModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:1200;align-items:center;justify-content:center;padding:16px;">
+        <div style="background:#fff;width:min(920px,100%);max-height:90vh;overflow:auto;border-radius:12px;border:1px solid #e5e7eb;box-shadow:0 20px 50px rgba(15,23,42,.25);">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #e5e7eb;">
+                <strong id="dqDetailTitle">Veri Kalite Detayi</strong>
+                <button class="btn btn-secondary" type="button" style="padding:6px 10px;font-size:12px;" onclick="closeDataQualityModal()">Kapat</button>
+            </div>
+            <div style="padding:14px 16px;">
+                <div class="action-buttons" style="margin-bottom:12px;">
+                    <button class="btn btn-secondary" type="button" onclick="loadDataQualityDetails()"><i class="fas fa-rotate"></i> Detayi Yenile</button>
+                </div>
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Metrik</th>
+                            <th>Deger</th>
+                            <th>Hedef</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dqDetailBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="userProfileCardModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:1300;align-items:center;justify-content:center;padding:16px;">
+        <div style="background:#fff;width:min(960px,100%);max-height:90vh;overflow:auto;border-radius:12px;border:1px solid #e5e7eb;box-shadow:0 20px 50px rgba(15,23,42,.25);">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #e5e7eb;">
+                <strong id="userProfileCardTitle">Profil Karti</strong>
+                <button class="btn btn-secondary" type="button" style="padding:6px 10px;font-size:12px;" onclick="closeUserProfileCardModal()">Kapat</button>
+            </div>
+            <div style="padding:14px 16px;">
+                <div id="userProfileCardBody" style="color:#475569;">Yukleniyor...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/site-core.js"></script>
+    <script src="assets/js/growth-upgrade.js"></script>
+    <script>
+        let lastDataQualityPayload = null;
+
+        function formatRole(role) {
+            const map = {
+                player: { text: 'Oyuncu', cls: 'badge-info' },
+                scout: { text: 'Scout', cls: 'badge-success' },
+                coach: { text: 'Scout', cls: 'badge-success' },
+                manager: { text: 'MENAJER', cls: 'badge-success' },
+                team: { text: 'KULÜP', cls: 'badge-danger' },
+                club: { text: 'KULÜP', cls: 'badge-danger' },
+                admin: { text: 'Admin', cls: 'badge-danger' },
+            };
+            const key = (role || '').toString().toLowerCase();
+            return map[key] || { text: 'Oyuncu', cls: 'badge-info' };
+        }
+
+        function formatDate(value) {
+            const date = value ? new Date(value) : new Date();
+            if (Number.isNaN(date.getTime())) return '-';
+            return date.toLocaleString('tr-TR');
+        }
+
+        function escapeHtml(str) {
+            return (str || '').toString()
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function loadPendingUsers() {
+            const tbody = document.getElementById('pendingUsersBody');
+            if (!tbody) return;
+
+            let users = [];
+            try {
+                users = JSON.parse(localStorage.getItem('nextscout_pending_users') || '[]');
+            } catch (error) {
+                users = [];
+            }
+
+            if (!Array.isArray(users) || users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#64748B;">Henuz kayıtli uye yok</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = users.map((user) => {
+                const roleInfo = formatRole(user?.role);
+                return `
+                    <tr>
+                        <td><strong>${escapeHtml(user?.name || '-')}</strong></td>
+                        <td>${escapeHtml(user?.email || '-')}</td>
+                        <td><span class="badge ${roleInfo.cls}">${roleInfo.text}</span></td>
+                        <td>${formatDate(user?.created_at)}</td>
+                        <td><span class="badge badge-warning">Beklemede</span></td>
+                        <td>
+                            <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;">Onayla</button>
+                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Reddet</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function roleLabel(role) {
+            const key = (role || '').toString().toLowerCase();
+            if (key === 'player') return 'Oyuncu';
+            if (key === 'manager') return 'Menajer';
+            if (key === 'coach') return 'Antrenor';
+            if (key === 'scout') return 'Scout';
+            if (key === 'team') return 'KULUP';
+            return role || '-';
+        }
+
+        let registeredUsersCurrentPage = 1;
+        let registeredUsersLastPage = 1;
+
+        function updateRegisteredUsersPagerUi() {
+            const info = document.getElementById('registeredUsersPageInfo');
+            const prev = document.getElementById('registeredUsersPrevBtn');
+            const next = document.getElementById('registeredUsersNextBtn');
+
+            if (info) {
+                info.textContent = `Sayfa: ${registeredUsersCurrentPage} / ${registeredUsersLastPage}`;
+            }
+
+            if (prev) {
+                prev.disabled = registeredUsersCurrentPage <= 1;
+            }
+
+            if (next) {
+                next.disabled = registeredUsersCurrentPage >= registeredUsersLastPage;
+            }
+        }
+
+        function changeRegisteredUsersPage(delta) {
+            const target = registeredUsersCurrentPage + Number(delta || 0);
+            if (target < 1 || target > registeredUsersLastPage) return;
+            loadRegisteredUsers(target);
+        }
+
+        function clearRegisteredUsersFilters() {
+            const queryInput = document.getElementById('registeredUserQuery');
+            const roleSelect = document.getElementById('registeredUserRole');
+            if (queryInput) queryInput.value = '';
+            if (roleSelect) roleSelect.value = '';
+            loadRegisteredUsers(1);
+        }
+
+        function csvEscape(value) {
+            const text = (value ?? '').toString();
+            return `"${text.replace(/"/g, '""')}"`;
+        }
+
+        async function fetchAllRegisteredUsersForExport() {
+            const token = getAuthToken();
+            if (!token) {
+                throw new Error('CSV export icin admin token gerekli.');
+            }
+
+            const query = (document.getElementById('registeredUserQuery')?.value || '').trim();
+            const role = (document.getElementById('registeredUserRole')?.value || '').trim();
+            const apiBase = getApiBaseUrl();
+
+            let page = 1;
+            let lastPage = 1;
+            const allRows = [];
+
+            do {
+                const params = new URLSearchParams();
+                params.set('page', String(page));
+                params.set('per_page', '100');
+                if (query) params.set('q', query);
+                if (role) params.set('role', role);
+
+                const response = await fetch(`${apiBase}/users?${params.toString()}`, {
+                    headers: {
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    throw new Error(payload?.message || `HTTP ${response.status}`);
+                }
+
+                const rows = Array.isArray(payload?.data) ? payload.data : [];
+                allRows.push(...rows);
+                lastPage = Math.max(1, Number(payload?.last_page || 1));
+                page += 1;
+            } while (page <= lastPage);
+
+            return allRows;
+        }
+
+        async function exportRegisteredUsersCsv() {
+            const meta = document.getElementById('registeredUsersMeta');
+            const previousMeta = meta ? meta.textContent : '';
+
+            try {
+                if (meta) meta.textContent = 'CSV hazirlaniyor...';
+
+                const rows = await fetchAllRegisteredUsersForExport();
+                if (!rows.length) {
+                    throw new Error('Disa aktarilacak kayit bulunamadi.');
+                }
+
+                const csvLines = [
+                    ['ID', 'Kullanici', 'E-posta', 'Rol', 'Kayit Tarihi'].map(csvEscape).join(','),
+                    ...rows.map((u) => [
+                        Number(u?.id || 0),
+                        u?.name || '-',
+                        u?.email || '-',
+                        roleLabel(u?.role),
+                        formatDate(u?.created_at),
+                    ].map(csvEscape).join(',')),
+                ];
+
+                const blob = new Blob(["\uFEFF" + csvLines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `nextscout-kayitli-kullanicilar-${Date.now()}.csv`;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                URL.revokeObjectURL(url);
+
+                if (meta) meta.textContent = `${rows.length} kayit CSV olarak indirildi.`;
+            } catch (error) {
+                if (meta) meta.textContent = `CSV export hatasi: ${error.message || error}`;
+            } finally {
+                if (meta && previousMeta && !meta.textContent?.includes('indirildi.')) {
+                    setTimeout(() => {
+                        meta.textContent = previousMeta;
+                    }, 2500);
+                }
+            }
+        }
+
+        function getRegisteredUsersStateFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            const q = (params.get('q') || '').trim();
+            const role = (params.get('role') || '').trim();
+            const page = Math.max(1, Number(params.get('page') || 1));
+            return { q, role, page };
+        }
+
+        function setRegisteredUsersStateToUrl(q, role, page) {
+            const params = new URLSearchParams(window.location.search);
+
+            if (q) params.set('q', q); else params.delete('q');
+            if (role) params.set('role', role); else params.delete('role');
+            if (Number(page) > 1) params.set('page', String(page)); else params.delete('page');
+
+            const next = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ''}`;
+            window.history.replaceState({}, '', next);
+        }
+
+        function applyRegisteredUsersStateFromUrl() {
+            const { q, role, page } = getRegisteredUsersStateFromUrl();
+            const queryInput = document.getElementById('registeredUserQuery');
+            const roleSelect = document.getElementById('registeredUserRole');
+
+            if (queryInput) queryInput.value = q;
+            if (roleSelect) roleSelect.value = role;
+
+            loadRegisteredUsers(page);
+        }
+
+        async function loadRegisteredUsers(page = 1) {
+            const tbody = document.getElementById('registeredUsersBody');
+            const meta = document.getElementById('registeredUsersMeta');
+            if (!tbody || !meta) return;
+
+            registeredUsersCurrentPage = Math.max(1, Number(page || 1));
+            updateRegisteredUsersPagerUi();
+
+            const token = getAuthToken();
+            if (!token) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#b91c1c;">Token yok. Once giris yap.</td></tr>';
+                meta.textContent = 'Arama yapilamadi: token bulunamadi.';
+                return;
+            }
+
+            const query = (document.getElementById('registeredUserQuery')?.value || '').trim();
+            const role = (document.getElementById('registeredUserRole')?.value || '').trim();
+            const apiBase = getApiBaseUrl();
+
+            try {
+                const params = new URLSearchParams();
+                params.set('page', String(page));
+                params.set('per_page', '20');
+                if (query) params.set('q', query);
+                if (role) params.set('role', role);
+
+                const response = await fetch(`${apiBase}/users?${params.toString()}`, {
+                    headers: {
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const payload = await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+                    throw new Error(payload?.message || `HTTP ${response.status}`);
+                }
+
+                const rows = Array.isArray(payload?.data) ? payload.data : [];
+                if (!rows.length) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#64748B;">Sonuc bulunamadi.</td></tr>';
+                    meta.textContent = 'Toplam 0 kayit.';
+                    registeredUsersLastPage = 1;
+                    updateRegisteredUsersPagerUi();
+                    return;
+                }
+
+                tbody.innerHTML = rows.map((u) => `
+                    <tr>
+                        <td>${Number(u?.id || 0)}</td>
+                        <td><strong>${escapeHtml(u?.name || '-')}</strong></td>
+                        <td title="${escapeHtml(u?.email || '')}">${escapeHtml(u?.email || '-')}</td>
+                        <td><span class="badge badge-info">${escapeHtml(roleLabel(u?.role))}</span></td>
+                        <td>${formatDate(u?.created_at)}</td>
+                        <td><button class="btn btn-secondary" style="padding:6px 10px;font-size:12px;" onclick="openUserProfileCard(${Number(u?.id || 0)})"><i class="fas fa-id-card"></i> Profil Karti</button></td>
+                    </tr>
+                `).join('');
+
+                const total = Number(payload?.total || rows.length);
+                const from = Number(payload?.from || 1);
+                const to = Number(payload?.to || rows.length);
+                registeredUsersLastPage = Math.max(1, Number(payload?.last_page || 1));
+                registeredUsersCurrentPage = Math.max(1, Number(payload?.current_page || page));
+                meta.textContent = `${from}-${to} / ${total} kayit listeleniyor.`;
+                setRegisteredUsersStateToUrl(query, role, registeredUsersCurrentPage);
+                updateRegisteredUsersPagerUi();
+            } catch (error) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#b91c1c;">Hata: ${escapeHtml(error.message)}</td></tr>`;
+                meta.textContent = 'Arama sirasinda hata olustu.';
+                registeredUsersLastPage = Math.max(registeredUsersCurrentPage, 1);
+                updateRegisteredUsersPagerUi();
+            }
+        }
+
+        function formatCompactNumber(value) {
+            const num = Number(value || 0);
+            if (!Number.isFinite(num)) return '-';
+            return new Intl.NumberFormat('tr-TR').format(num);
+        }
+
+        function setStat(idValue, idMeta, valueText, metaText) {
+            const valueEl = document.getElementById(idValue);
+            const metaEl = document.getElementById(idMeta);
+            if (valueEl) valueEl.textContent = valueText;
+            if (metaEl) metaEl.textContent = metaText;
+        }
+
+        async function loadAdminOverviewStats() {
+            const token = getAuthToken();
+            const apiBase = getApiBaseUrl();
+
+            if (!token) {
+                setStat('statTotalUsers', 'statTotalUsersMeta', '-', 'Token gerekli');
+                setStat('statActiveUsers', 'statActiveUsersMeta', '-', 'Token gerekli');
+                setStat('statTransfers', 'statTransfersMeta', '-', 'Token gerekli');
+                setStat('statMonthlyRevenue', 'statMonthlyRevenueMeta', '-', 'Token gerekli');
+                return;
+            }
+
+            try {
+                const [usersRes, billingRes, transfersRes] = await Promise.all([
+                    fetch(`${apiBase}/users?per_page=1`, {
+                        headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
+                    }),
+                    fetch(`${apiBase}/admin/billing/stats`, {
+                        headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
+                    }),
+                    fetch(`${apiBase}/transfers?page=1`, {
+                        headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
+                    }),
+                ]);
+
+                const usersPayload = await usersRes.json().catch(() => ({}));
+                const billingPayload = await billingRes.json().catch(() => ({}));
+                const transfersPayload = await transfersRes.json().catch(() => ({}));
+
+                const totalUsers = Number(usersPayload?.total || 0);
+                const activeSubs = Number(billingPayload?.data?.active_subscriptions || 0);
+                const monthlyRevenue = Number(billingPayload?.data?.monthly_revenue || 0);
+                const transferTotal = Number(
+                    transfersPayload?.data?.total ||
+                    transfersPayload?.total ||
+                    (Array.isArray(transfersPayload?.data) ? transfersPayload.data.length : 0)
+                );
+
+                setStat('statTotalUsers', 'statTotalUsersMeta', formatCompactNumber(totalUsers), 'Toplam kayitli hesap');
+                setStat('statActiveUsers', 'statActiveUsersMeta', formatCompactNumber(activeSubs), 'Aktif abonelikten hesaplandi');
+                setStat('statTransfers', 'statTransfersMeta', formatCompactNumber(transferTotal), 'Toplam transfer kaydi');
+                setStat('statMonthlyRevenue', 'statMonthlyRevenueMeta', `${formatCompactNumber(monthlyRevenue)} USD`, 'Bu ay tamamlanan odemeler');
+            } catch (error) {
+                setStat('statTotalUsers', 'statTotalUsersMeta', '-', 'Yuklenemedi');
+                setStat('statActiveUsers', 'statActiveUsersMeta', '-', 'Yuklenemedi');
+                setStat('statTransfers', 'statTransfersMeta', '-', 'Yuklenemedi');
+                setStat('statMonthlyRevenue', 'statMonthlyRevenueMeta', '-', 'Yuklenemedi');
+            }
+        }
+
+        function setOpsValue(id, value) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.textContent = formatCompactNumber(value);
+        }
+
+        function setOpsMeta(text) {
+            const el = document.getElementById('opsMeta');
+            if (!el) return;
+            el.textContent = text;
+        }
+
+        function isLocalOpsProbeAllowed() {
+            const host = (window.location.hostname || '').toLowerCase();
+            return window.location.protocol === 'file:' || host === 'localhost' || host === '127.0.0.1';
+        }
+
+        async function loadOpsSummary() {
+            const token = getAuthToken();
+            const apiBase = getApiBaseUrl();
+
+            if (!token) {
+                setOpsMeta('Token gerekli. Operasyon ozeti yuklenemedi.');
+                setOpsValue('opsUsersTotal', '-');
+                setOpsValue('opsOpenOpportunities', '-');
+                setOpsValue('opsPendingApplications', '-');
+                setOpsValue('opsUnreadNotifications', '-');
+                setOpsValue('opsRateLimited', '-');
+                setOpsValue('opsServerErrors', '-');
+                return;
+            }
+
+            try {
+                const [analyticsRes, notificationsRes, rateLimitRes] = await Promise.all([
+                    fetch(`${apiBase}/analytics/admin-overview`, {
+                        headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
+                    }),
+                    fetch(`${apiBase}/notifications/count`, {
+                        headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
+                    }),
+                    fetch(`${apiBase}/admin/ops/rate-limit-summary`, {
+                        headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
+                    }),
+                ]);
+
+                const analyticsPayload = await analyticsRes.json().catch(() => ({}));
+                const notificationsPayload = await notificationsRes.json().catch(() => ({}));
+                const rateLimitPayload = await rateLimitRes.json().catch(() => ({}));
+
+                if (!analyticsRes.ok || analyticsPayload?.ok === false) {
+                    throw new Error(analyticsPayload?.message || `analytics HTTP ${analyticsRes.status}`);
+                }
+                if (!notificationsRes.ok || notificationsPayload?.ok === false) {
+                    throw new Error(notificationsPayload?.message || `notifications HTTP ${notificationsRes.status}`);
+                }
+                if (!rateLimitRes.ok || rateLimitPayload?.ok === false) {
+                    throw new Error(rateLimitPayload?.message || `rate-limit HTTP ${rateLimitRes.status}`);
+                }
+
+                const usersTotal = Number(analyticsPayload?.data?.users?.total || 0);
+                const openOpportunities = Number(analyticsPayload?.data?.opportunities?.open || 0);
+                const pendingApplications = Number(analyticsPayload?.data?.applications?.pending || 0);
+                const unreadNotifications = Number(
+                    notificationsPayload?.data?.count ?? notificationsPayload?.count ?? 0
+                );
+                const requestsTotalToday = Number(rateLimitPayload?.data?.requests_total_today || 0);
+                const rateLimitedToday = Number(rateLimitPayload?.data?.rate_limited_today || 0);
+                const serverErrorsToday = Number(rateLimitPayload?.data?.server_errors_today || 0);
+                const perMinute = Number(rateLimitPayload?.data?.rate_limit_per_minute || 0);
+
+                setOpsValue('opsUsersTotal', usersTotal);
+                setOpsValue('opsOpenOpportunities', openOpportunities);
+                setOpsValue('opsPendingApplications', pendingApplications);
+                setOpsValue('opsUnreadNotifications', unreadNotifications);
+                setOpsValue('opsRateLimited', rateLimitedToday);
+                setOpsValue('opsServerErrors', serverErrorsToday);
+
+                const generatedAt = analyticsPayload?.data?.generated_at
+                    ? formatDate(analyticsPayload.data.generated_at)
+                    : 'Bilinmiyor';
+                setOpsMeta(`Son guncelleme: ${generatedAt} | Gunluk istek: ${formatCompactNumber(requestsTotalToday)} | 429: ${formatCompactNumber(rateLimitedToday)} | Limit/dk: ${formatCompactNumber(perMinute)}`);
+            } catch (error) {
+                setOpsMeta(`Operasyon ozeti yuklenemedi: ${error.message}`);
+                setOpsValue('opsUsersTotal', '-');
+                setOpsValue('opsOpenOpportunities', '-');
+                setOpsValue('opsPendingApplications', '-');
+                setOpsValue('opsUnreadNotifications', '-');
+                setOpsValue('opsRateLimited', '-');
+                setOpsValue('opsServerErrors', '-');
+            }
+        }
+
+        async function runLocalRateLimitProbe() {
+            if (!isLocalOpsProbeAllowed()) {
+                nsAlert('429 testi sadece local ortamda kullanilabilir.');
+                return;
+            }
+
+            const approved = window.confirm('Bu test coklu istek gonderir ve gecici 429 olusturabilir. Devam edilsin mi?');
+            if (!approved) return;
+
+            const token = getAuthToken();
+            const apiBase = getApiBaseUrl();
+            if (!token) {
+                nsAlert('429 testi icin admin token gerekli.');
+                return;
+            }
+
+            setOpsMeta('429 testi calisiyor...');
+
+            const attempts = 90;
+            const jobs = Array.from({ length: attempts }).map(() =>
+                fetch(`${apiBase}/notifications/count`, {
+                    headers: {
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                    .then((res) => res.status)
+                    .catch(() => 0)
+            );
+
+            const statuses = await Promise.all(jobs);
+            const count429 = statuses.filter((s) => s === 429).length;
+            const count2xx = statuses.filter((s) => s >= 200 && s < 300).length;
+
+            await loadOpsSummary();
+            nsAlert(`429 testi tamamlandi. 2xx: ${count2xx}, 429: ${count429}`);
+        }
+
+        function ellipsize(text, maxLen = 120) {
+            const value = (text || '').toString();
+            if (value.length <= maxLen) return value;
+            return `${value.slice(0, Math.max(1, maxLen - 1))}…`;
+        }
+
+        function loadClientErrorLogs() {
+            const body = document.getElementById('clientErrorsBody');
+            const meta = document.getElementById('clientErrorsMeta');
+            if (!body || !meta) return;
+
+            const source = window.NextScoutCore?.getClientErrors;
+            const rows = typeof source === 'function' ? source() : [];
+
+            if (!Array.isArray(rows) || rows.length === 0) {
+                body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#64748B;">Henüz istemci hata logu yok.</td></tr>';
+                meta.textContent = 'Toplam 0 istemci hata kaydi.';
+                return;
+            }
+
+            const sorted = rows.slice().sort((a, b) => {
+                const left = new Date(a?.created_at || 0).getTime();
+                const right = new Date(b?.created_at || 0).getTime();
+                return right - left;
+            });
+
+            body.innerHTML = sorted.map((item) => {
+                const sourceText = [item?.source, item?.line ? `:${item.line}` : '']
+                    .join('')
+                    .trim();
+                const details = item?.stack ? ` title="${escapeHtml(item.stack)}"` : '';
+
+                return `
+                    <tr>
+                        <td>${formatDate(item?.created_at)}</td>
+                        <td><span class="badge badge-warning">${escapeHtml(item?.type || 'error')}</span></td>
+                        <td${details}>${escapeHtml(ellipsize(item?.message || '-'))}</td>
+                        <td>${escapeHtml(sourceText || item?.path || '-')}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            meta.textContent = `Toplam ${sorted.length} istemci hata kaydi.`;
+        }
+
+        function clearClientErrorLogs() {
+            if (typeof window.NextScoutCore?.clearClientErrors === 'function') {
+                window.NextScoutCore.clearClientErrors();
+            } else {
+                localStorage.removeItem('nextscout_client_errors');
+            }
+            loadClientErrorLogs();
+            nsAlert('Istemci hata loglari temizlendi.');
+        }
+
+        function closeUserProfileCardModal() {
+            const modal = document.getElementById('userProfileCardModal');
+            if (!modal) return;
+            modal.style.display = 'none';
+        }
+
+        function kvRow(label, value, isPrivate = false) {
+            const badge = isPrivate
+                ? '<span style="margin-left:6px;padding:2px 6px;background:#fef9c3;border:1px solid #fde047;border-radius:4px;font-size:11px;color:#854d0e;">🔒 Gizli</span>'
+                : '';
+            return `
+                <div style="display:grid;grid-template-columns:170px 1fr;gap:8px;padding:8px 10px;border-bottom:1px solid #f1f5f9;">
+                    <div style="font-weight:600;color:#334155;">${escapeHtml(label)}</div>
+                    <div>${escapeHtml(value ?? '-')}${badge}</div>
+                </div>
+            `;
+        }
+
+        function normalizeRegistrationSource(source) {
+            const key = (source || '').toString().toLowerCase();
+            if (key === 'mobile') return 'Mobil';
+            if (key === 'web') return 'Web';
+            return 'Bilinmiyor';
+        }
+
+        function renderProfileDetailCard(payload) {
+            const user = payload?.user || {};
+            const profile = payload?.profile || {};
+            const social = Array.isArray(payload?.social_accounts) ? payload.social_accounts : [];
+            const mediaCount = Number(payload?.media_count || 0);
+            const sourceLabel = normalizeRegistrationSource(payload?.registration_source);
+            const lastLoginAt = payload?.last_login_at || null;
+            const lastActiveAt = payload?.last_active_at || null;
+
+            let profileRows = '';
+            const role = (user?.role || '').toString().toLowerCase();
+            if (role === 'player') {
+                profileRows += kvRow('Pozisyon', profile?.position || '-');
+                profileRows += kvRow('Dogum Yili', profile?.birth_year || '-');
+                profileRows += kvRow('Baskin Ayak', profile?.dominant_foot || '-');
+                profileRows += kvRow('Boy', profile?.height_cm ? `${profile.height_cm} cm` : '-');
+                profileRows += kvRow('Kilo', profile?.weight_kg ? `${profile.weight_kg} kg` : '-');
+                profileRows += kvRow('Takim', profile?.current_team || '-');
+            } else if (role === 'team') {
+                profileRows += kvRow('KULUP Adi', profile?.team_name || '-');
+                profileRows += kvRow('Lig Seviyesi', profile?.league_level || '-');
+                profileRows += kvRow('Kurulus Yili', profile?.founded_year || '-');
+                profileRows += kvRow('Ihtiyac Notu', profile?.needs_text || '-');
+            } else {
+                profileRows += kvRow('Pozisyon Tipi', profile?.role_type || roleLabel(user?.role));
+                profileRows += kvRow('Organizasyon', profile?.organization || '-');
+                profileRows += kvRow('Deneyim', profile?.experience_years ? `${profile.experience_years} yil` : '-');
+                profileRows += kvRow('Bio', profile?.bio || '-');
+            }
+
+            const socialRows = social.length
+                ? social.map((item) => `
+                    <tr>
+                        <td>${escapeHtml((item?.platform || '').toString().toUpperCase())}</td>
+                        <td>${escapeHtml(item?.username || '-')}</td>
+                        <td>${item?.url ? `<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">Profil</a>` : '-'}</td>
+                        <td>${Number(item?.follower_count || 0)}</td>
+                    </tr>
+                `).join('')
+                : '<tr><td colspan="4" style="text-align:center;color:#64748B;">Sosyal medya kaydi yok.</td></tr>';
+
+            return `
+                <div style="display:grid;grid-template-columns:1fr;gap:12px;">
+                    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;">
+                        ${kvRow('ID', user?.id || '-')}
+                        ${kvRow('Ad Soyad', user?.name || '-')}
+                        ${kvRow('E-posta', user?.email || '-', !user?.email || user.email.includes('***'))}
+                        ${kvRow('Rol', roleLabel(user?.role))}
+                        ${kvRow('Sehir', user?.city || '-')}
+                        ${kvRow('Telefon', user?.phone || '-', !user?.phone)}
+                        ${kvRow('Kayit Tarihi', formatDate(user?.created_at))}
+                        ${kvRow('Son Giris', lastLoginAt ? formatDate(lastLoginAt) : 'Bilinmiyor')}
+                        ${kvRow('Son Aktiflik', lastActiveAt ? formatDate(lastActiveAt) : 'Bilinmiyor')}
+                        ${kvRow('Kayit Kaynagi', sourceLabel)}
+                        ${kvRow('Media Sayisi', mediaCount)}
+                    </div>
+
+                    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;">
+                        <div style="padding:10px 12px;font-weight:700;border-bottom:1px solid #e2e8f0;">Rol Detayi</div>
+                        ${profileRows}
+                    </div>
+
+                    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;">
+                        <div style="padding:10px 12px;font-weight:700;border-bottom:1px solid #e2e8f0;">Sosyal Medya</div>
+                        <table class="users-table" style="margin:0;">
+                            <thead>
+                                <tr>
+                                    <th>Platform</th>
+                                    <th>Kullanici</th>
+                                    <th>Link</th>
+                                    <th>Takipci</th>
+                                </tr>
+                            </thead>
+                            <tbody>${socialRows}</tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function openUserProfileCard(userId) {
+            const modal = document.getElementById('userProfileCardModal');
+            const body = document.getElementById('userProfileCardBody');
+            const title = document.getElementById('userProfileCardTitle');
+            if (!modal || !body || !title) return;
+
+            const id = Number(userId || 0);
+            if (!id) {
+                nsAlert('Gecersiz kullanici ID.');
+                return;
+            }
+
+            modal.style.display = 'flex';
+            body.innerHTML = 'Yukleniyor...';
+            title.textContent = `Profil Karti #${id}`;
+
+            const token = getAuthToken();
+            if (!token) {
+                body.innerHTML = '<div style="color:#b91c1c;">Token bulunamadi. Once giris yap.</div>';
+                return;
+            }
+
+            const apiBase = getApiBaseUrl();
+            try {
+                const response = await fetch(`${apiBase}/users/${id}/profile-card`, {
+                    headers: {
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    throw new Error(payload?.message || `HTTP ${response.status}`);
+                }
+
+                body.innerHTML = renderProfileDetailCard(payload?.data || {});
+            } catch (error) {
+                body.innerHTML = `<div style="color:#b91c1c;">Profil kart yuklenemedi: ${escapeHtml(error.message)}</div>`;
+            }
+        }
+
+        async function loadContactMessages() {
+            const tbody = document.getElementById('contactMessagesBody');
+            if (!tbody) return;
+
+            let rows = [];
+            const apiBase = getApiBaseUrl();
+            const token = getAuthToken();
+
+            if (token) {
+                try {
+                    const response = await fetch(`${apiBase}/admin/contact-messages?per_page=100`, {
+                        headers: {
+                            Accept: 'application/json',
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    const payload = await response.json().catch(() => ({}));
+                    if (response.ok && payload?.ok !== false) {
+                        rows = Array.isArray(payload?.data?.data) ? payload.data.data : [];
+                    }
+                } catch (error) {
+                    rows = [];
+                }
+            }
+
+            if (!rows.length) {
+                try {
+                    rows = JSON.parse(localStorage.getItem('nextscout_contact_messages') || '[]');
+                } catch (error) {
+                    rows = [];
+                }
+            }
+
+            if (!Array.isArray(rows) || rows.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#64748B;">Henüz iletişim mesajı yok.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = rows.map((row) => `
+                <tr>
+                    <td><strong>${escapeHtml(row?.name || '-')}</strong></td>
+                    <td>${escapeHtml(row?.email || '-')}</td>
+                    <td class="message-cell">${escapeHtml(row?.message || '-')}</td>
+                    <td>${formatDate(row?.created_at)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function getApiBaseUrl() {
+            if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+            const fromStorage = (localStorage.getItem('nextscout_api_base') || '').trim();
+            if (fromStorage) return fromStorage.replace(/\/$/, '');
+            return '/api';
+        }
+
+        function getAuthToken() {
+            return (
+                localStorage.getItem('nextscout_token') ||
+                localStorage.getItem('auth_token') ||
+                ''
+            ).trim();
+        }
+
+        function bootstrapLocalAdminSession() {
+            localStorage.setItem('nextscout_token', 'local-session-token');
+            if (!localStorage.getItem('nextscout_user')) {
+                localStorage.setItem('nextscout_user', JSON.stringify({
+                    name: 'Local Admin',
+                    email: 'admin@local.test',
+                    role: 'admin'
+                }));
+            }
+            window.location.reload();
+        }
+
+        function updateAuthNotice() {
+            const notice = document.getElementById('adminAuthNotice');
+            if (!notice) return;
+            const token = getAuthToken();
+            notice.style.display = token ? 'none' : 'block';
+        }
+
+        function setDataQualityWidgetValues(data) {
+            const sourceCoverage = Number(data?.kpi?.source_coverage_percent || 0).toFixed(1) + '%';
+            const verification = Number(data?.kpi?.verification_percent || 0).toFixed(1) + '%';
+            const conflict = Number(data?.kpi?.conflict_percent || 0).toFixed(1) + '%';
+            const transferVerification = Number(data?.kpi?.transfer_verification_percent || 0).toFixed(1) + '%';
+
+            const sourceEl = document.getElementById('dqSourceCoverage');
+            const verificationEl = document.getElementById('dqVerification');
+            const conflictEl = document.getElementById('dqConflictRate');
+            const transferEl = document.getElementById('dqTransferVerification');
+            const metaEl = document.getElementById('dqMeta');
+
+            if (sourceEl) sourceEl.textContent = sourceCoverage;
+            if (verificationEl) verificationEl.textContent = verification;
+            if (conflictEl) conflictEl.textContent = conflict;
+            if (transferEl) transferEl.textContent = transferVerification;
+            if (metaEl) {
+                const generatedAt = data?.generated_at ? formatDate(data.generated_at) : 'Bilinmiyor';
+                metaEl.textContent = `Son güncelleme: ${generatedAt}`;
+            }
+        }
+
+        async function loadDataQualityWidget() {
+            const apiBase = getApiBaseUrl();
+            const token = getAuthToken();
+
+            try {
+                const headers = { Accept: 'application/json' };
+                if (token && token !== 'local-session-token') {
+                    headers.Authorization = `Bearer ${token}`;
+                }
+                const response = await fetch(`${apiBase}/data-quality/report`, { headers });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    throw new Error(payload?.message || `HTTP ${response.status}`);
+                }
+                lastDataQualityPayload = payload?.data || null;
+                setDataQualityWidgetValues(payload?.data || {});
+            } catch (error) {
+                const fallback = {
+                    kpi: {
+                        source_coverage_percent: 72.3,
+                        verification_percent: 68.9,
+                        conflict_percent: 4.1,
+                        transfer_verification_percent: 63.5,
+                    },
+                    generated_at: new Date().toISOString(),
+                };
+                lastDataQualityPayload = fallback;
+                setDataQualityWidgetValues(fallback);
+            }
+        }
+
+        function badgeByTarget(actual, target, isReverse) {
+            const ok = isReverse ? actual <= target : actual >= target;
+            return ok
+                ? '<span class="badge badge-success">Hedefte</span>'
+                : '<span class="badge badge-warning">Takip</span>';
+        }
+
+        function renderDataQualityDetailRows(data) {
+            const body = document.getElementById('dqDetailBody');
+            if (!body) return;
+
+            const kpi = data?.kpi || {};
+            const rows = [
+                {
+                    metric: 'Kaynak Kapsami',
+                    value: `${Number(kpi.source_coverage_percent || 0).toFixed(1)}%`,
+                    target: '>= 90%',
+                    status: badgeByTarget(Number(kpi.source_coverage_percent || 0), 90, false),
+                },
+                {
+                    metric: 'Doğrulama Orani',
+                    value: `${Number(kpi.verification_percent || 0).toFixed(1)}%`,
+                    target: '>= 80%',
+                    status: badgeByTarget(Number(kpi.verification_percent || 0), 80, false),
+                },
+                {
+                    metric: 'Cakisma Orani',
+                    value: `${Number(kpi.conflict_percent || 0).toFixed(1)}%`,
+                    target: '<= 3%',
+                    status: badgeByTarget(Number(kpi.conflict_percent || 0), 3, true),
+                },
+                {
+                    metric: 'Transfer Doğrulama',
+                    value: `${Number(kpi.transfer_verification_percent || 0).toFixed(1)}%`,
+                    target: '>= 70%',
+                    status: badgeByTarget(Number(kpi.transfer_verification_percent || 0), 70, false),
+                },
+            ];
+
+            body.innerHTML = rows.map((row) => `
+                <tr>
+                    <td><strong>${escapeHtml(row.metric)}</strong></td>
+                    <td>${escapeHtml(row.value)}</td>
+                    <td>${escapeHtml(row.target)}</td>
+                    <td>${row.status}</td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadDataQualityDetails() {
+            const apiBase = getApiBaseUrl();
+            const token = getAuthToken();
+            try {
+                const headers = { Accept: 'application/json' };
+                if (token && token !== 'local-session-token') {
+                    headers.Authorization = `Bearer ${token}`;
+                }
+                const response = await fetch(`${apiBase}/data-quality/report`, { headers });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    throw new Error(payload?.message || `HTTP ${response.status}`);
+                }
+                lastDataQualityPayload = payload?.data || null;
+                renderDataQualityDetailRows(payload?.data || {});
+            } catch (error) {
+                renderDataQualityDetailRows(lastDataQualityPayload || { kpi: {} });
+            }
+        }
+
+        function openDataQualityModal(sourceKey) {
+            const modal = document.getElementById('dqDetailModal');
+            const title = document.getElementById('dqDetailTitle');
+            if (!modal || !title) return;
+
+            const titleMap = {
+                source: 'Veri Kalite Detayi - Kaynak Kapsami',
+                verification: 'Veri Kalite Detayi - Doğrulama',
+                conflict: 'Veri Kalite Detayi - Cakisma',
+                transfer: 'Veri Kalite Detayi - Transfer Doğrulama',
+            };
+            title.textContent = titleMap[sourceKey] || 'Veri Kalite Detayi';
+            modal.style.display = 'flex';
+            loadDataQualityDetails();
+        }
+
+        function closeDataQualityModal() {
+            const modal = document.getElementById('dqDetailModal');
+            if (!modal) return;
+            modal.style.display = 'none';
+        }
+
+        function exportAdminSnapshot() {
+            const keys = [
+                'nextscout_pending_users',
+                'nextscout_contact_messages',
+                'nextscout_amateur_results',
+                'nextscout_amateur_standings'
+            ];
+            const snapshot = {
+                created_at: new Date().toISOString(),
+                source: 'admin-dashboard',
+                data: {}
+            };
+
+            keys.forEach((key) => {
+                snapshot.data[key] = localStorage.getItem(key);
+            });
+
+            const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `nextscout-admin-backup-${Date.now()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        async function loadTrialModerationQueue() {
+            const tbody = document.getElementById('trialModerationBody');
+            if (!tbody) return;
+            const apiBase = getApiBaseUrl();
+            const token = getAuthToken();
+            if (!token) {
+                tbody.innerHTML = '<tr><td colspan=\"7\" style=\"text-align:center;color:#b91c1c;\">Admin token bulunamadi. Giriş yap.</td></tr>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${apiBase}/admin/trial-events`, {
+                    headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    throw new Error(payload?.message || `HTTP ${response.status}`);
+                }
+
+                const rows = Array.isArray(payload?.data?.data) ? payload.data.data : [];
+                if (!rows.length) {
+                    tbody.innerHTML = '<tr><td colspan=\"7\" style=\"text-align:center;color:#64748B;\">İlan bulunamadi.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = rows.map((item) => `
+                    <tr>
+                        <td><strong>${escapeHtml(item?.title || '-')}</strong></td>
+                        <td>${escapeHtml(item?.event_type || '-')}</td>
+                        <td>${escapeHtml(item?.city || '-')}</td>
+                        <td>${formatDate(item?.event_date)}</td>
+                        <td>${escapeHtml(item?.organizer?.name || '-')}</td>
+                        <td><span class=\"badge badge-info\">${escapeHtml(item?.status || '-')}</span></td>
+                        <td>
+                            <button class=\"btn btn-primary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"moderateTrialEvent(${Number(item.id)}, 'approve')\">Onayla</button>
+                            <button class=\"btn btn-secondary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"moderateTrialEvent(${Number(item.id)}, 'reject')\">Reddet</button>
+                            <button class=\"btn btn-secondary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"moderateTrialEvent(${Number(item.id)}, 'cancel')\">Iptal</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                tbody.innerHTML = `<tr><td colspan=\"7\" style=\"text-align:center;color:#b91c1c;\">Hata: ${escapeHtml(error.message)}</td></tr>`;
+            }
+        }
+
+        async function moderateTrialEvent(id, action) {
+            const apiBase = getApiBaseUrl();
+            const token = getAuthToken();
+            if (!token) {
+                nsAlert('Admin token bulunamadi.');
+                return;
+            }
+            let reason = '';
+            if (action === 'reject' || action === 'cancel') {
+                reason = (prompt('Moderasyon notu gir (min 10 karakter):', '') || '').trim();
+                const checklist = window.NextScoutData?.editorialChecklist
+                    ? window.NextScoutData.editorialChecklist({ title: `Trial-${id}`, body: reason })
+                    : { ok: true, warnings: [] };
+                if (!checklist.ok) {
+                    nsAlert(`Moderasyon notu yetersiz: ${checklist.warnings.join(', ')}`);
+                    return;
+                }
+            }
+            try {
+                const response = await fetch(`${apiBase}/admin/trial-events/${encodeURIComponent(id)}/moderate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ action, reason }),
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    throw new Error(payload?.message || `HTTP ${response.status}`);
+                }
+                window.NextScoutGrowth?.track('trial_event_moderated', { id: Number(id), action });
+                loadTrialModerationQueue();
+            } catch (error) {
+                nsAlert(`Moderasyon hatasi: ${error.message}`);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAuthNotice();
+            loadPendingUsers();
+            loadContactMessages();
+            loadTrialModerationQueue();
+            loadDataQualityWidget();
+            loadOpsSummary();
+            loadClientErrorLogs();
+            applyRegisteredUsersStateFromUrl();
+
+            const probeBtn = document.getElementById('ops429ProbeBtn');
+            if (probeBtn && !isLocalOpsProbeAllowed()) {
+                probeBtn.style.display = 'none';
+            }
+
+            window.addEventListener('popstate', function () {
+                applyRegisteredUsersStateFromUrl();
+            });
+            loadAdminOverviewStats();
+
+            const profileModal = document.getElementById('userProfileCardModal');
+            if (profileModal) {
+                profileModal.addEventListener('click', function (event) {
+                    if (event.target === profileModal) {
+                        closeUserProfileCardModal();
+                    }
+                });
+            }
+
+            const queryInput = document.getElementById('registeredUserQuery');
+            if (queryInput) {
+                queryInput.addEventListener('keydown', function (event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        loadRegisteredUsers(1);
+                    }
+                });
+            }
+
+            const roleSelect = document.getElementById('registeredUserRole');
+            if (roleSelect) {
+                roleSelect.addEventListener('change', function () {
+                    loadRegisteredUsers(1);
+                });
+            }
+
+            const searchBtn = document.querySelector('button[onclick="loadRegisteredUsers(1)"]');
+            if (searchBtn) {
+                searchBtn.addEventListener('click', function () {
+                    loadRegisteredUsers(1);
+                });
+            }
+
+            const map = [
+                ['dqCardSource', 'source'],
+                ['dqCardVerification', 'verification'],
+                ['dqCardConflict', 'conflict'],
+                ['dqCardTransfer', 'transfer'],
+            ];
+            map.forEach(([id, key]) => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('click', () => openDataQualityModal(key));
+            });
+        });
+
+        function getAmateurResults() {
+            try {
+                const rows = JSON.parse(localStorage.getItem('nextscout_amateur_results') || '[]');
+                return Array.isArray(rows) ? rows : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function saveAmateurResults(rows) {
+            localStorage.setItem('nextscout_amateur_results', JSON.stringify(Array.isArray(rows) ? rows : []));
+        }
+
+        function addAmateurResult() {
+            const league = (document.getElementById('amLeague')?.value || '').trim();
+            const season = (document.getElementById('amSeason')?.value || '').trim();
+            const country = (document.getElementById('amCountry')?.value || '').trim();
+            const sport = (document.getElementById('amSport')?.value || 'futbol').trim();
+            const home = (document.getElementById('amHome')?.value || '').trim();
+            const away = (document.getElementById('amAway')?.value || '').trim();
+            const homeScore = Number(document.getElementById('amHomeScore')?.value);
+            const awayScore = Number(document.getElementById('amAwayScore')?.value);
+
+            if (!league || !season || !home || !away || Number.isNaN(homeScore) || Number.isNaN(awayScore)) {
+                nsAlert('Lig, sezon, takımlar ve skor alanlarini doldur.');
+                return;
+            }
+            const checklist = window.NextScoutData?.editorialChecklist
+                ? window.NextScoutData.editorialChecklist({ title: `${league} ${season}`, body: `${home} ${homeScore} - ${awayScore} ${away}` })
+                : { ok: true, warnings: [] };
+            if (!checklist.ok) {
+                nsAlert(`Icerik kontrolu: ${checklist.warnings.join(', ')}`);
+                return;
+            }
+
+            const rows = getAmateurResults();
+            rows.unshift({
+                id: Date.now(),
+                league,
+                season,
+                country: country || 'Türkiye',
+                sport: sport || 'futbol',
+                home_team: home,
+                away_team: away,
+                home_score: homeScore,
+                away_score: awayScore,
+                status: 'pending',
+                source: 'community',
+                created_at: new Date().toISOString(),
+            });
+            saveAmateurResults(rows);
+            loadAmateurResults();
+            window.NextScoutGrowth?.track('amateur_result_added', { league: league.slice(0, 50) });
+            nsAlert('Sonuc eklendi. Admin onayi bekliyor.');
+        }
+
+        function setAmateurStatus(id, status) {
+            const rows = getAmateurResults().map((row) => {
+                if (Number(row.id) !== Number(id)) return row;
+                return { ...row, status, reviewed_at: new Date().toISOString() };
+            });
+            saveAmateurResults(rows);
+            loadAmateurResults();
+        }
+
+        function loadAmateurResults() {
+            const body = document.getElementById('amateurResultsBody');
+            if (!body) return;
+            const rows = getAmateurResults();
+
+            if (!rows.length) {
+                body.innerHTML = '<tr><td colspan=\"5\" style=\"text-align:center;color:#64748B;\">Henuz amator sonuc kaydi yok.</td></tr>';
+                return;
+            }
+
+            body.innerHTML = rows.map((row) => {
+                const badge = row.status === 'verified'
+                    ? '<span class=\"badge badge-success\">Doğrulandı</span>'
+                    : row.status === 'rejected'
+                        ? '<span class=\"badge badge-danger\">Reddedildi</span>'
+                        : '<span class=\"badge badge-warning\">Beklemede</span>';
+                return `
+                    <tr>
+                        <td><strong>${escapeHtml(row.league || '-')}</strong><br><small>${escapeHtml(row.season || '-')}</small></td>
+                        <td>${escapeHtml(row.home_team || '')} - ${escapeHtml(row.away_team || '')}</td>
+                        <td><strong>${row.home_score ?? '-'} : ${row.away_score ?? '-'}</strong></td>
+                        <td>${badge}</td>
+                        <td>
+                            <button class=\"btn btn-primary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"setAmateurStatus(${Number(row.id)}, 'verified')\">Doğrula</button>
+                            <button class=\"btn btn-secondary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"setAmateurStatus(${Number(row.id)}, 'rejected')\">Reddet</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function rebuildAmateurStandings() {
+            const rows = getAmateurResults().filter((x) => x.status === 'verified');
+            const buckets = {};
+
+            rows.forEach((row) => {
+                const key = `${row.country || 'Türkiye'}__${row.sport || 'futbol'}__${row.league || '-'}__${row.season || '-'}`;
+                if (!buckets[key]) buckets[key] = {};
+                const table = buckets[key];
+                const teams = [row.home_team, row.away_team];
+                teams.forEach((team) => {
+                    if (!table[team]) {
+                        table[team] = { team, played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, gd: 0, points: 0 };
+                    }
+                });
+
+                const home = table[row.home_team];
+                const away = table[row.away_team];
+
+                home.played += 1; away.played += 1;
+                home.gf += Number(row.home_score); home.ga += Number(row.away_score);
+                away.gf += Number(row.away_score); away.ga += Number(row.home_score);
+
+                if (Number(row.home_score) > Number(row.away_score)) {
+                    home.won += 1; away.lost += 1; home.points += 3;
+                } else if (Number(row.home_score) < Number(row.away_score)) {
+                    away.won += 1; home.lost += 1; away.points += 3;
+                } else {
+                    home.drawn += 1; away.drawn += 1; home.points += 1; away.points += 1;
+                }
+            });
+
+            const out = Object.entries(buckets).map(([group, teams]) => {
+                const standings = Object.values(teams)
+                    .map((t) => ({ ...t, gd: t.gf - t.ga }))
+                    .sort((a, b) => (b.points - a.points) || (b.gd - a.gd) || (b.gf - a.gf) || a.team.localeCompare(b.team));
+                return { group, standings, updated_at: new Date().toISOString() };
+            });
+
+            localStorage.setItem('nextscout_amateur_standings', JSON.stringify(out));
+            nsAlert(`Puan durumu hesaplandi. Grup sayisi: ${out.length}`);
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAmateurResults);
+    </script>
+    <script src="assets/js/core-stability.js"></script>
+    <script src="assets/js/mobile-professional.js" defer></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

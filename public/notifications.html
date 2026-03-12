@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mesajlarım - NextScout</title>
+  <meta name="description" content="Mesaj ve bildirim merkezi: teklifler, duyurular ve sistem bildirimlerini tek ekranda gorun.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="canonical" href="https://nextscout.app/notifications.html">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:site_name" content="NextScout">
+  <meta property="og:title" content="Mesajlar ve Bildirimler | NextScout">
+  <meta property="og:description" content="Mesaj ve bildirim merkezi: teklifler, duyurular ve sistem bildirimlerini tek ekranda gorun.">
+  <meta property="og:url" content="https://nextscout.app/notifications.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+  <meta name="theme-color" content="#2563eb">
+  <style>
+    :root {
+      --bg: #1f252d;
+      --card: #232a33;
+      --line: #334155;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --primary: #60a5fa;
+      --primary-soft: #1f2937;
+      --success: #34d399;
+      --warning: #f59e0b;
+      --danger: #f87171;
+      --shadow: 0 12px 28px rgba(2, 6, 23, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      background: radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.14), transparent 34%), radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.12), transparent 36%), var(--bg);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 18px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .title-sub {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: #dbeafe;
+      padding: 10px 14px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .home-btn {
+      background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+      border: 1px solid #2563eb;
+      color: #ffffff;
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 14px;
+    }
+    .layout > * { min-width: 0; }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      min-width: 0;
+    }
+
+    .panel-head {
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      border: 1px solid var(--line);
+      background: #2b3440;
+      color: #dbeafe;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: 1fr 140px;
+      gap: 8px;
+      width: 100%;
+    }
+
+    input, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 9px 10px;
+      font-size: 13px;
+      color: var(--text);
+      background: #2b3440;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+    }
+
+    .list {
+      max-height: 70vh;
+      overflow: auto;
+    }
+
+    .msg-item {
+      border-bottom: 1px solid #334155;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      position: relative;
+    }
+
+    .msg-item:hover { background: #2b3440; }
+    .msg-item.active { background: #1f2937; }
+    .msg-item.unread::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+      position: absolute;
+      top: 16px;
+      right: 14px;
+    }
+
+    .msg-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .msg-name {
+      font-size: 13px;
+      font-weight: 700;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .msg-time {
+      color: var(--muted);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .msg-subject {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .msg-preview {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .badge {
+      font-size: 10px;
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-weight: 700;
+      border: 1px solid;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .badge.read { color: #a7f3d0; background: #064e3b; border-color: #10b981; }
+    .badge.unread { color: #fde68a; background: #78350f; border-color: #f59e0b; }
+    .badge.inbox { color: #bfdbfe; background: #1e3a8a; border-color: #60a5fa; }
+    .badge.sent { color: #ddd6fe; background: #4c1d95; border-color: #8b5cf6; }
+
+    .detail {
+      min-height: 70vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .detail-empty {
+      margin: auto;
+      text-align: center;
+      color: var(--muted);
+      padding: 28px;
+    }
+
+    .detail-head {
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .detail-title {
+      margin: 0 0 8px 0;
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .detail-body {
+      padding: 16px;
+      color: #e2e8f0;
+      line-height: 1.65;
+      font-size: 14px;
+      white-space: pre-line;
+      flex: 1;
+      word-break: break-word;
+    }
+
+    .detail-actions {
+      display: flex;
+      gap: 8px;
+      padding: 14px 16px;
+      border-top: 1px solid var(--line);
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .btn-danger {
+      background: #2b3440;
+      color: var(--danger);
+      border-color: #7f1d1d;
+    }
+
+    .empty-list {
+      padding: 22px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 960px) {
+      .layout { grid-template-columns: 1fr; }
+      .detail { min-height: 45vh; }
+      .list { max-height: 45vh; }
+      .wrap { padding: 14px 12px; }
+      .title { font-size: 24px; }
+      .header { align-items: flex-start; flex-direction: column; }
+    }
+
+    @media (max-width: 560px) {
+      .title { font-size: 22px; }
+      .title-sub { font-size: 13px; }
+      .btn { padding: 8px 10px; font-size: 12px; }
+      .panel-head { padding: 12px; }
+      .search-row { grid-template-columns: 1fr; }
+      .wrap { padding: 12px 10px 18px; overflow-x: hidden; }
+      .layout { gap: 10px; }
+      .panel, .detail { width: 100%; min-width: 0; overflow-x: hidden; }
+      .msg-item { padding-right: 10px; }
+      .msg-item.unread::before { right: 10px; }
+      .msg-top { align-items: flex-start; }
+      .msg-time { max-width: 42%; text-align: right; }
+      .detail-head { padding: 12px; }
+      .detail-title { font-size: 18px; }
+      .detail-body { padding: 12px; font-size: 13px; }
+      .detail-actions { padding: 12px; }
+      .detail-actions .btn { width: 100%; }
+    }
+  </style>
+    <link rel="stylesheet" href="assets/css/mobile-unified.css">
+    <link rel="stylesheet" href="assets/css/mobile-polish.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div>
+        <h1 class="title">Mesajlarım</h1>
+        <div class="title-sub">Gelen, giden, okundu ve okunmadı mesajları buradan yönetebilirsin.</div>
+      </div>
+      <a class="btn home-btn" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
+    </div>
+
+    <div class="layout">
+      <section class="panel">
+        <div class="panel-head">
+          <div class="tabs" id="tabs"></div>
+          <div class="search-row">
+            <input id="searchInput" type="text" placeholder="Mesaj ara (konu, içerik, kişi)">
+            <select id="statusFilter">
+              <option value="all">Tümü</option>
+              <option value="unread">Okunmadı</option>
+              <option value="read">Okundu</option>
+            </select>
+          </div>
+        </div>
+        <div class="list" id="messageList"></div>
+      </section>
+
+      <section class="panel detail" id="detailPanel">
+        <div class="detail-empty">Soldan bir mesaj seç.</div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const USER_RAW = localStorage.getItem('nextscout_user');
+    const USER = USER_RAW ? JSON.parse(USER_RAW) : { name: 'Oyuncu', email: 'oyuncu@nextscout.com' };
+    const API_BASE = (function() {
+      const p = new URLSearchParams(window.location.search);
+      const fromQuery = (p.get('api_base') || '').trim();
+      if (fromQuery) return fromQuery.replace(/\/$/, '');
+      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      return '/api';
+    })();
+
+    function authToken() {
+      return (localStorage.getItem('nextscout_token') || '').trim();
+    }
+
+    function parseDate(value) {
+      const d = new Date(value);
+      return Number.isNaN(d.getTime()) ? new Date() : d;
+    }
+
+    function formatDate(value) {
+      return parseDate(value).toLocaleString('tr-TR', {
+        day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+      });
+    }
+
+    async function fetchJson(url, options = {}) {
+      const token = authToken();
+      const headers = {
+        Accept: 'application/json',
+        ...(options.headers || {}),
+      };
+      if (token && token !== 'local-session-token') {
+        headers.Authorization = `Bearer ${token}`;
+      }
+      const response = await fetch(url, { ...options, headers });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload?.message || `HTTP ${response.status}`);
+      return payload;
+    }
+
+    function normalizeContact(item, box) {
+      const status = (item?.status || '').toLowerCase();
+      const read = status === 'read' || status === 'resolved' || Boolean(item?.read_at) || Boolean(item?.read);
+      const fromName = item?.from_name || item?.sender_name || item?.name || item?.author_name || (box === 'sent' ? USER.name : 'Kullanici');
+      const toName = item?.to_name || item?.receiver_name || (box === 'sent' ? (item?.name || 'Alici') : USER.name);
+      return {
+        id: `contact-${box}-${item?.id || Date.now()}`,
+        rawId: Number(item?.id || 0),
+        apiType: 'contact',
+        box,
+        read,
+        from: String(fromName || '-'),
+        to: String(toName || '-'),
+        subject: String(item?.subject || 'Mesaj'),
+        body: String(item?.body || item?.message || ''),
+        time: item?.created_at || item?.time || new Date().toISOString(),
+      };
+    }
+
+    function normalizeNotification(item) {
+      return {
+        id: `notification-${item?.id || Date.now()}`,
+        rawId: Number(item?.id || 0),
+        apiType: 'notification',
+        box: 'inbox',
+        read: Boolean(item?.is_read) || Boolean(item?.read_at) || Boolean(item?.read),
+        from: 'Sistem',
+        to: USER.name,
+        subject: String(item?.title || item?.type || 'Bildirim'),
+        body: String(item?.body || item?.message || ''),
+        time: item?.created_at || item?.time || new Date().toISOString(),
+      };
+    }
+
+    function toRows(payload) {
+      if (Array.isArray(payload?.data?.data)) return payload.data.data;
+      if (Array.isArray(payload?.data)) return payload.data;
+      if (Array.isArray(payload)) return payload;
+      return [];
+    }
+
+    async function safeFetchRows(url) {
+      try {
+        const payload = await fetchJson(url);
+        return toRows(payload);
+      } catch (error) {
+        return [];
+      }
+    }
+
+    async function loadMessagesFromApi() {
+      const token = authToken();
+      if (!token || token === 'local-session-token') {
+        throw new Error('Mesajlar icin giriş gerekli.');
+      }
+
+      const [inboxRowsRaw, sentRowsRaw, notifRowsRaw] = await Promise.all([
+        safeFetchRows(`${API_BASE}/contacts/inbox?per_page=100`),
+        safeFetchRows(`${API_BASE}/contacts/sent?per_page=100`),
+        safeFetchRows(`${API_BASE}/notifications?limit=100`),
+      ]);
+
+      const inboxRows = inboxRowsRaw.map((x) => normalizeContact(x, 'inbox'));
+      const sentRows = sentRowsRaw.map((x) => normalizeContact(x, 'sent'));
+      const notifRows = notifRowsRaw.map(normalizeNotification);
+      return [...inboxRows, ...sentRows, ...notifRows].sort((a, b) => parseDate(b.time) - parseDate(a.time));
+    }
+
+    async function updateReadState(msg, makeRead) {
+      if (!msg?.rawId) return;
+      if (msg.apiType === 'notification') {
+        if (!makeRead) return;
+        await fetchJson(`${API_BASE}/notifications/${encodeURIComponent(msg.rawId)}/read`, { method: 'PATCH' });
+        return;
+      }
+      const status = makeRead ? 'read' : 'unread';
+      await fetchJson(`${API_BASE}/contacts/${encodeURIComponent(msg.rawId)}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+    }
+
+    async function deleteMessageApi(msg) {
+      if (!msg?.rawId) return;
+      if (msg.apiType === 'notification') {
+        await fetchJson(`${API_BASE}/notifications/${encodeURIComponent(msg.rawId)}`, { method: 'DELETE' });
+        return;
+      }
+      await fetchJson(`${API_BASE}/contacts/${encodeURIComponent(msg.rawId)}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'archived' }),
+      });
+    }
+
+    let state = {
+      tab: 'all',
+      status: 'all',
+      query: '',
+      selectedId: null,
+      messages: []
+    };
+
+    const tabsEl = document.getElementById('tabs');
+    const listEl = document.getElementById('messageList');
+    const detailEl = document.getElementById('detailPanel');
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+
+    function getTabCounts(messages) {
+      const unread = messages.filter(m => !m.read).length;
+      const inbox = messages.filter(m => m.box === 'inbox').length;
+      const sent = messages.filter(m => m.box === 'sent').length;
+      return {
+        all: messages.length,
+        inbox,
+        sent,
+        unread
+      };
+    }
+
+    function filteredMessages() {
+      const q = state.query.trim().toLowerCase();
+      return state.messages
+        .filter(m => {
+          if (state.tab === 'inbox' && m.box !== 'inbox') return false;
+          if (state.tab === 'sent' && m.box !== 'sent') return false;
+          if (state.tab === 'unread' && m.read) return false;
+          if (state.status === 'read' && !m.read) return false;
+          if (state.status === 'unread' && m.read) return false;
+          if (!q) return true;
+          return [m.from, m.to, m.subject, m.body].some(v => (v || '').toLowerCase().includes(q));
+        })
+        .sort((a, b) => parseDate(b.time) - parseDate(a.time));
+    }
+
+    function renderTabs() {
+      const counts = getTabCounts(state.messages);
+      const tabs = [
+        { id: 'all', label: 'Tümü', count: counts.all },
+        { id: 'inbox', label: 'Gelen', count: counts.inbox },
+        { id: 'sent', label: 'Giden', count: counts.sent },
+        { id: 'unread', label: 'Okunmadı', count: counts.unread }
+      ];
+
+      tabsEl.innerHTML = tabs.map(t => `
+        <button class="tab ${state.tab === t.id ? 'active' : ''}" data-tab="${t.id}">
+          ${t.label} (${t.count})
+        </button>
+      `).join('');
+
+      tabsEl.querySelectorAll('[data-tab]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.tab = btn.dataset.tab;
+          state.selectedId = null;
+          render();
+        });
+      });
+    }
+
+    function renderList() {
+      const rows = filteredMessages();
+      if (!rows.length) {
+        listEl.innerHTML = '<div class="empty-list">Bu filtrede mesaj bulunamadı.</div>';
+        return;
+      }
+
+      if (!state.selectedId) state.selectedId = rows[0].id;
+
+      listEl.innerHTML = rows.map(m => `
+        <div class="msg-item ${m.read ? '' : 'unread'} ${state.selectedId === m.id ? 'active' : ''}" data-id="${m.id}">
+          <div class="msg-top">
+            <div class="msg-name">${m.box === 'inbox' ? m.from : m.to}</div>
+            <div class="msg-time">${formatDate(m.time)}</div>
+          </div>
+          <div class="msg-subject">${m.subject}</div>
+          <div class="msg-preview">${m.body.replace(/\n/g, ' ')}</div>
+        </div>
+      `).join('');
+
+      listEl.querySelectorAll('[data-id]').forEach(row => {
+        row.addEventListener('click', async () => {
+          state.selectedId = row.dataset.id;
+          const msg = state.messages.find(x => x.id === state.selectedId);
+          if (msg && msg.box === 'inbox' && !msg.read) {
+            try { await updateReadState(msg, true); } catch (error) {}
+            msg.read = true;
+          }
+          render();
+        });
+      });
+    }
+
+    function renderDetail() {
+      const msg = state.messages.find(x => x.id === state.selectedId);
+      if (!msg) {
+        detailEl.innerHTML = '<div class="detail-empty">Soldan bir mesaj seç.</div>';
+        return;
+      }
+
+      detailEl.innerHTML = `
+        <div class="detail-head">
+          <h2 class="detail-title">${msg.subject}</h2>
+          <div class="meta">
+            <span class="badge ${msg.box === 'inbox' ? 'inbox' : 'sent'}">${msg.box === 'inbox' ? 'GELEN' : 'GİDEN'}</span>
+            <span class="badge ${msg.read ? 'read' : 'unread'}">${msg.read ? 'OKUNDU' : 'OKUNMADI'}</span>
+            <span><strong>Kimden:</strong> ${msg.from}</span>
+            <span><strong>Kime:</strong> ${msg.to}</span>
+            <span>${formatDate(msg.time)}</span>
+          </div>
+        </div>
+        <div class="detail-body">${msg.body}</div>
+        <div class="detail-actions">
+          <button class="btn ${msg.read ? '' : 'btn-primary'}" id="toggleReadBtn">${msg.read ? 'Okunmadı Yap' : 'Okundu Yap'}</button>
+          <button class="btn btn-danger" id="deleteBtn">Mesajı Sil</button>
+        </div>
+      `;
+
+      document.getElementById('toggleReadBtn')?.addEventListener('click', async () => {
+        const nextRead = !msg.read;
+        try { await updateReadState(msg, nextRead); } catch (error) {}
+        msg.read = nextRead;
+        render();
+      });
+
+      document.getElementById('deleteBtn')?.addEventListener('click', async () => {
+        try { await deleteMessageApi(msg); } catch (error) {}
+        state.messages = state.messages.filter(x => x.id !== msg.id);
+        state.selectedId = null;
+        render();
+      });
+    }
+
+    function render() {
+      renderTabs();
+      renderList();
+      renderDetail();
+    }
+
+    searchInput.addEventListener('input', () => {
+      state.query = searchInput.value;
+      state.selectedId = null;
+      render();
+    });
+
+    statusFilter.addEventListener('change', () => {
+      state.status = statusFilter.value;
+      state.selectedId = null;
+      render();
+    });
+
+    async function init() {
+      try {
+        state.messages = await loadMessagesFromApi();
+        if (!Array.isArray(state.messages) || !state.messages.length) {
+          listEl.innerHTML = '<div class="empty-list">Mesaj bulunamadi.</div>';
+          detailEl.innerHTML = '<div class="detail-empty">Hesabinda henuz mesaj/bildirim yok.</div>';
+          return;
+        }
+        render();
+      } catch (error) {
+        listEl.innerHTML = `<div class="empty-list">API mesajları yüklenemedi: ${String(error.message || 'Bilinmeyen hata')}</div>`;
+        detailEl.innerHTML = '<div class="detail-empty">Mesajları görüntülemek için giriş yap.</div>';
+      }
+    }
+
+    init();
+  </script>
+    <script src="assets/js/core-stability.js"></script>
+    <script src="assets/js/mobile-professional.js" defer></script>
+</body>
+</html>
+
+
+
+
+
+
+
+

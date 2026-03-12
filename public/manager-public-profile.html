@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manager Public Profil - NextScout</title>
+    <meta name="description" content="NextScout manager public profile sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://nextscout.app/manager-public-profile.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Manager Public Profil - NextScout">
+    <meta property="og:description" content="NextScout manager public profile sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/manager-public-profile.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Manager Public Profil - NextScout">
+    <meta name="twitter:description" content="NextScout manager public profile sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+  <style>
+    :root { --bg:#f4f7fc; --card:#fff; --line:#dbe3f0; --text:#0f172a; --muted:#64748b; --primary:#2563eb; --shadow:0 12px 32px rgba(37,99,235,.08); }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .wrap{max-width:850px;margin:0 auto;padding:22px 16px}
+    .head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+    .title{margin:0;font-size:30px;font-weight:800}
+    .btn{border:1px solid var(--line);background:#fff;color:var(--primary);padding:10px 14px;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px}
+    .hero{display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:center}
+    .photo{width:120px;height:120px;border-radius:14px;border:1px solid var(--line);object-fit:cover;background:#eef2ff}
+    .name{font-size:26px;font-weight:800}
+    .meta{color:var(--muted);font-size:14px;margin-top:6px}
+    .rows{margin-top:14px}
+    .row{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #edf2f7;font-size:14px}
+    .row:last-child{border-bottom:0}
+    .muted{color:var(--muted)}
+    .bio{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:10px;background:#f8fbff;line-height:1.6}
+    @media (max-width:600px){.hero{grid-template-columns:1fr}.photo{width:96px;height:96px}}
+  </style>
+    <link rel="stylesheet" href="assets/css/mobile-unified.css">
+    <link rel="stylesheet" href="assets/css/mobile-polish.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <h1 class="title">Manager Profili</h1>
+      <a class="btn" href="DASHBOARD_DESIGN.html">DASHBOARD</a>
+    </div>
+
+    <div class="card">
+      <div class="hero">
+        <img id="photo" class="photo" alt="Manager Fotograf">
+        <div>
+          <div id="name" class="name">-</div>
+          <div id="branch" class="meta">-</div>
+        </div>
+      </div>
+
+      <div class="rows">
+        <div class="row"><span class="muted">Ajans</span><strong id="agency">-</strong></div>
+        <div class="row"><span class="muted">Sehir</span><strong id="city">-</strong></div>
+        <div class="row"><span class="muted">Ülke</span><strong id="country">-</strong></div>
+        <div class="row"><span class="muted">Telefon</span><strong id="phone">-</strong></div>
+      </div>
+
+      <div id="bio" class="bio">Manager bilgisi henuz doldurulmadi.</div>
+    </div>
+  </div>
+
+  <script>
+    const KEY = 'nextscout_manager_profile';
+    function loadLocal(){
+      try {
+        const raw = localStorage.getItem(KEY);
+        if(!raw) return null;
+        return JSON.parse(raw);
+      } catch { return null; }
+    }
+
+    function getApiBaseUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = (params.get('api_base') || '').trim();
+      if (fromQuery) return fromQuery.replace(/\/$/, '');
+      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      return '/api';
+    }
+
+    function getToken() {
+      return (localStorage.getItem('nextscout_token') || '').trim();
+    }
+
+    function render(p) {
+      document.getElementById('photo').src = p.photo || 'https://via.placeholder.com/120x120?text=Manager';
+      document.getElementById('name').textContent = p.name || 'Manager';
+      document.getElementById('branch').textContent = p.branch ? `${p.branch} MENAJERİ` : 'MENAJER';
+      document.getElementById('agency').textContent = p.agency || '-';
+      document.getElementById('city').textContent = p.city || '-';
+      document.getElementById('country').textContent = p.country || '-';
+      document.getElementById('phone').textContent = p.phone || '-';
+      document.getElementById('bio').textContent = p.bio || 'Manager bilgisi henuz doldurulmadi.';
+    }
+
+    async function fetchPublicProfileById(userId) {
+      const res = await fetch(`${getApiBaseUrl()}/public/staff/${encodeURIComponent(userId)}/profile`, {
+        headers: { Accept: 'application/json' },
+      });
+      if (!res.ok) return null;
+      const payload = await res.json();
+      const data = payload?.data || {};
+      return {
+        photo: data.profile_photo_url || '',
+        name: data.name || '',
+        branch: data.branch || '',
+        agency: data.organization || '',
+        city: data.city || '',
+        country: data.country || '',
+        phone: data.phone || '',
+        bio: data.bio || '',
+      };
+    }
+
+    async function findAnyManagerAndFetch() {
+      const token = getToken();
+      if (!token) return null;
+      const listRes = await fetch(`${getApiBaseUrl()}/staff?role_type=manager&per_page=1`, {
+        headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
+      });
+      if (!listRes.ok) return null;
+      const listPayload = await listRes.json();
+      const first = listPayload?.data?.data?.[0];
+      if (!first?.id) return null;
+      return fetchPublicProfileById(first.id);
+    }
+
+    async function init() {
+      const params = new URLSearchParams(window.location.search);
+      const userId = (params.get('user_id') || '').trim();
+      let profile = null;
+
+      try {
+        if (userId) {
+          profile = await fetchPublicProfileById(userId);
+        } else {
+          profile = await findAnyManagerAndFetch();
+        }
+      } catch (error) {
+        profile = null;
+      }
+
+      if (!profile) {
+        profile = loadLocal() || {};
+      }
+      render(profile);
+    }
+
+    init();
+  </script>
+    <script src="assets/js/core-stability.js"></script>
+    <script src="assets/js/mobile-professional.js" defer></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

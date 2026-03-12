@@ -1,0 +1,1469 @@
+﻿<!-- 🏠 ANASAYFA (DASHBOARD) - ŞIK TASARIM -->
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scout Platform - DASHBOARD</title>
+    <meta name="description" content="NextScout DASHBOARD_DESIGN sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="https://nextscout.app/DASHBOARD_DESIGN.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Scout Platform - DASHBOARD">
+    <meta property="og:description" content="NextScout DASHBOARD_DESIGN sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/DASHBOARD_DESIGN.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Scout Platform - DASHBOARD">
+    <meta name="twitter:description" content="NextScout DASHBOARD_DESIGN sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        /* ═════════════════════════════════════════════ */
+        /* TOP NAVIGATION BAR */
+        /* ═════════════════════════════════════════════ */
+
+        .top-navbar {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0 20px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex: 1;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            min-width: 150px;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-bar::before {
+            content: "🔍";
+            position: absolute;
+            left: 12px;
+            top: 10px;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .nav-icon:hover {
+            background: #e5e7eb;
+            transform: scale(1.05);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        /* ═════════════════════════════════════════════ */
+        /* MAIN LAYOUT */
+        /* ═════════════════════════════════════════════ */
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 20px;
+            padding: 20px;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            height: fit-content;
+            position: sticky;
+            top: 90px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-section {
+            margin-bottom: 25px;
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #9ca3af;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-item {
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .sidebar-item:hover {
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .sidebar-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 500;
+        }
+
+        /* ═════════════════════════════════════════════ */
+        /* USER MENU BUTTONS */
+        /* ═════════════════════════════════════════════ */
+
+        .user-menu-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .user-menu-section .sidebar-title {
+            color: #667eea;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .user-action-btn {
+            width: 100%;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border: 2px solid #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .user-action-btn:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .user-action-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+            color: white;
+        }
+
+        .user-action-btn.primary:hover {
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.55);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal-card {
+            width: min(560px, 100%);
+            background: #ffffff;
+            border: 1px solid #dbeafe;
+            border-radius: 14px;
+            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.18);
+            overflow: hidden;
+        }
+
+        .boost-modal-card {
+            width: min(960px, 96vw);
+        }
+
+        .modal-close-x {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            color: #334155;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .modal-close-x:hover {
+            background: #eef2ff;
+            border-color: #c7d2fe;
+            color: #1d4ed8;
+        }
+
+        .modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-head h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+            color: #1f2937;
+        }
+
+        .modal-body {
+            padding: 14px 16px;
+        }
+
+        .modal-body p {
+            margin: 0 0 10px;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .modal-body textarea {
+            width: 100%;
+            min-height: 140px;
+            border: 1px solid #dbeafe;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-family: inherit;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #1f2937;
+            resize: vertical;
+            outline: none;
+        }
+
+        .modal-body textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            padding: 14px 16px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .sidebar-item-icon {
+            font-size: 18px;
+            min-width: 20px;
+        }
+
+        /* CONTENT AREA */
+        .content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        /* ═════════════════════════════════════════════ */
+        /* WELCOME CARD */
+        /* ═════════════════════════════════════════════ */
+
+        .welcome-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .welcome-left h1 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .welcome-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .welcome-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .welcome-right {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* ═════════════════════════════════════════════ */
+        /* QUICK STATS */
+        /* ═════════════════════════════════════════════ */
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-top: 3px solid #667eea;
+        }
+
+        .stat-card-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .stat-card-label {
+            font-size: 13px;
+            color: #9ca3af;
+            text-transform: uppercase;
+        }
+
+        .mvp-tools {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .mvp-box {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 14px;
+            background: #f9fafb;
+        }
+
+        .mvp-box h4 {
+            margin: 0 0 8px;
+            font-size: 14px;
+            font-weight: 800;
+            color: #1f2937;
+        }
+
+        .mvp-note {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 10px;
+            line-height: 1.35;
+        }
+
+        .mvp-result {
+            font-size: 13px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .mvp-inline {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        /* ═════════════════════════════════════════════ */
+        /* DASHBOARD GRID */
+        /* ═════════════════════════════════════════════ */
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1f2937;
+        }
+
+        /* Activity List */
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            font-size: 20px;
+            min-width: 30px;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            font-size: 13px;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .activity-time {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        /* ═════════════════════════════════════════════ */
+        /* RECOMMENDED CARDS */
+        /* ═════════════════════════════════════════════ */
+
+        .recommended-section {
+            grid-column: 1 / -1;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .player-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .player-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .player-card-image {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        .player-card-info {
+            padding: 12px;
+        }
+
+        .player-card-name {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #1f2937;
+        }
+
+        .player-card-position {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-bottom: 8px;
+        }
+
+        .player-card-rating {
+            color: #fbbf24;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* ═════════════════════════════════════════════ */
+        /* RESPONSIVE */
+        /* ═════════════════════════════════════════════ */
+
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-card {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                padding: 15px;
+            }
+
+            .search-bar {
+                display: none;
+            }
+
+            .quick-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .cards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+
+            .mvp-tools {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-left {
+                gap: 15px;
+            }
+
+            .quick-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-card {
+                padding: 20px;
+            }
+
+            .welcome-right {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="assets/css/mobile-unified.css">
+    <link rel="stylesheet" href="assets/css/mobile-polish.css">
+</head>
+<body>
+    <!-- TOP NAVBAR -->
+    <div class="top-navbar">
+        <div class="navbar-left">
+            <div class="logo">⚽ Scout Platform</div>
+            <div class="search-bar">
+                <input type="text" placeholder="Oyuncu, Takım veya Makale Ara...">
+            </div>
+        </div>
+        <div class="navbar-right">
+            <div class="nav-icon">
+                💬
+                <span class="notification-badge">5</span>
+            </div>
+            <div class="nav-icon">
+                🔔
+                <span class="notification-badge">3</span>
+            </div>
+            <button style="padding: 8px 14px; background: linear-gradient(135deg, #F59E0B, #D97706); color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer;" onclick="openBoostModalDesign()">⚡ Beni Keşfedin</button>
+            <button style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;" onclick="window.location.href='index.html'">Ana Sayfa</button>
+            <button style="padding: 8px 14px; background: #f3f4f6; color: #667eea; border: 1px solid #e5e7eb; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer;" onclick="logout()">Çıkış</button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="main-container">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">📋 Navigasyon</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item active" onclick="window.location.href='index.html'">
+                        <span class="sidebar-item-icon">🏠</span>
+                        <span>Ana Sayfa</span>
+                    </li>
+                    <li class="sidebar-item">
+                        <span class="sidebar-item-icon">🔍</span>
+                        <span><a href="professional-players.html" style="color: inherit; text-decoration: none;">Oyuncu Ara</a></span>
+                    </li>
+                    <li class="sidebar-item" onclick="window.location.href='notifications.html'">
+                        <span class="sidebar-item-icon">📱</span>
+                        <span>Mesajlarım</span>
+                    </li>
+                    <li class="sidebar-item" onclick="window.location.href='favorites.html'">
+                        <span class="sidebar-item-icon">⭐</span>
+                        <span>Favorilerim</span>
+                    </li>
+                    <li class="sidebar-item" onclick="window.location.href='trial-center.html?view=player'">
+                        <span class="sidebar-item-icon">📅</span>
+                        <span>Deneme & İdmanlar</span>
+                    </li>
+                    <li class="sidebar-item" onclick="window.location.href='manager-public-profile.html'">
+                        <span class="sidebar-item-icon">👔</span>
+                        <span>MENAJER Profili</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">📊 Verilerim</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item" onclick="window.location.href='player-profile.html#stats'">
+                        <span class="sidebar-item-icon">📈</span>
+                        <span>İstatistikler</span>
+                    </li>
+                    <li class="sidebar-item" onclick="window.location.href='player-profile.html#achievements'">
+                        <span class="sidebar-item-icon">🏆</span>
+                        <span>Başarılarım</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">⚙️ Ayarlar</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item" onclick="window.location.href='settings.html'">
+                        <span class="sidebar-item-icon">⚙️</span>
+                        <span>Ayarlar</span>
+                    </li>
+                    <li class="sidebar-item" onclick="window.location.href='help.html'">
+                        <span class="sidebar-item-icon">❓</span>
+                        <span>Yardım</span>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- CONTENT -->
+        <div class="content">
+            <!-- WELCOME CARD -->
+            <div class="welcome-card">
+                <div class="welcome-left">
+                    <h1>Merhaba, Ahmet Demir! 👋</h1>
+                    <div class="welcome-info">
+                        <div class="info-item">⚽ Spor: <strong>Futbol</strong></div>
+                        <div class="info-item">📍 Pozisyon: <strong>Forvet</strong></div>
+                        <div class="info-item">👤 Yaş: <strong>24</strong> | 📏 Boy: <strong>180cm</strong></div>
+                    </div>
+                    <div class="welcome-buttons">
+                        <button class="btn btn-primary" onclick="window.location.href='profile-edit.html'">Profili Düzenle</button>
+                        <button class="btn btn-secondary" onclick="openAboutModal()">Hakkımda</button>
+                        <button class="btn btn-secondary" onclick="nsAlert('Bağlantı kopyalandı!')">Bağlantıyı Kopyala</button>
+                    </div>
+                </div>
+                <div class="welcome-right">
+                    <div class="stat-box">
+                        <div class="stat-value">4.8</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">15</div>
+                        <div class="stat-label">Gol</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">Asist</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">28</div>
+                        <div class="stat-label">Maç</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OYUNCU KENDİ PROFİL KARTINI GÖRÜYOR -->
+            <div style="margin-top: 20px; background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);">
+                <h2 style="margin: 0 0 20px; font-size: 16px; font-weight: 600; color: #1f2937;">👁️ Profil Kartı Önizlemesi</h2>
+                <p style="font-size: 12px; color: #9ca3af; margin-bottom: 15px;">Bu, MENAJERLER ve ANTRENÖRLERİN göreceği senin profil kartı:</p>
+                
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);">
+                    <!-- FOTO -->
+                    <div style="padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; position: relative; overflow: hidden;">
+                        <div style="width: 150px; height: 150px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); border: 4px solid white; display: flex; align-items: center; justify-content: center; font-size: 60px; margin-bottom: 15px;">⚽</div>
+                        <span style="display: inline-block; background: #52e0c1; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;">✓ AKTİF</span>
+                    </div>
+                    
+                    <!-- BİLGİLER -->
+                    <div style="padding: 40px; display: flex; flex-direction: column; justify-content: center; background: white;">
+                        <h3 style="margin: 0 0 5px; font-size: 24px; font-weight: 800; color: #1f2937;">Ahmet Yılmaz</h3>
+                        <p style="margin: 0 0 15px; font-size: 14px; color: #667eea; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Forvet</p>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 15px;">
+                            <div style="background: #f9fafb; padding: 12px; border-radius: 10px; border-left: 3px solid #667eea;">
+                                <p style="margin: 0 0 4px; font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 600;">Yaş</p>
+                                <p style="margin: 0; font-size: 18px; font-weight: 800; color: #1f2937;">24</p>
+                            </div>
+                            <div style="background: #f9fafb; padding: 12px; border-radius: 10px; border-left: 3px solid #667eea;">
+                                <p style="margin: 0 0 4px; font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 600;">Boy</p>
+                                <p style="margin: 0; font-size: 18px; font-weight: 800; color: #1f2937;">180cm</p>
+                            </div>
+                            <div style="background: #f9fafb; padding: 12px; border-radius: 10px; border-left: 3px solid #667eea;">
+                                <p style="margin: 0 0 4px; font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 600;">Maçlar</p>
+                                <p style="margin: 0; font-size: 18px; font-weight: 800; color: #1f2937;">28</p>
+                            </div>
+                            <div style="background: #f9fafb; padding: 12px; border-radius: 10px; border-left: 3px solid #667eea;">
+                                <p style="margin: 0 0 4px; font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 600;">Goller</p>
+                                <p style="margin: 0; font-size: 18px; font-weight: 800; color: #1f2937;">15</p>
+                            </div>
+                        </div>
+
+                        <div style="background: #fff9e6; padding: 12px; border-radius: 10px; border: 2px solid #fbbf24; text-align: center;">
+                            <p style="margin: 0 0 5px; font-size: 16px; color: #fbbf24;">★★★★★</p>
+                            <p style="margin: 0; font-size: 12px; font-weight: 600; color: #1f2937;">4.8/5 Rating</p>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+                            <button style="padding: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; transition: all 0.2s;">💬 Mesaj</button>
+                            <button style="padding: 10px; background: #f3f4f6; color: #667eea; border: 2px solid #667eea; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; transition: all 0.2s;">⭐ Favori</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 15px; padding: 12px; background: #f0f9ff; border-left: 4px solid #3b82f6; border-radius: 8px;">
+                    <p style="margin: 0; font-size: 12px; color: #1f2937;">
+                        💡 <strong>İpucu:</strong> "Profili Düzenle" butonuna tıklayarak resim, bilgi ve istatistiklerini güncelleyebilirsin.
+                    </p>
+                </div>
+            </div>
+
+            <!-- QUICK STATS -->
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-card-value">4.2K</div>
+                    <div class="stat-card-label">👁️ Görünüm</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-value">156</div>
+                    <div class="stat-card-label">📌 Favori</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-value">2.4K</div>
+                    <div class="stat-card-label">❤️ Beğeni</div>
+                </div>
+            </div>
+
+            <div class="mvp-tools">
+                <div class="mvp-box">
+                    <h4>✅ 2 Dakika Profil Check</h4>
+                    <div class="mvp-note">Profil eksiklerini kontrol edip yayın öncesi hazır olma puanı verir.</div>
+                    <div class="mvp-result" id="profileCheckResult">Profil puani hesaplaniyor...</div>
+                    <button class="btn btn-primary" type="button" onclick="runProfileCheck()">Tekrar Hesapla</button>
+                </div>
+                <div class="mvp-box">
+                    <h4>🔔 Akilli Eslesme Alarmi</h4>
+                    <div class="mvp-note">Pozisyon ve sehre gore yeni MENAJER ilanlari gelince uyarir.</div>
+                    <div class="mvp-inline">
+                        <input id="alertPosition" type="text" placeholder="Pozisyon (or: LB)" style="padding:9px;border:1px solid #d1d5db;border-radius:8px;">
+                        <input id="alertCity" type="text" placeholder="Sehir (or: Istanbul)" style="padding:9px;border:1px solid #d1d5db;border-radius:8px;">
+                    </div>
+                    <div class="mvp-result" id="matchingAlertResult">Alarm kapali.</div>
+                    <button class="btn btn-primary" type="button" onclick="saveMatchingnsAlert()">Alarmi Kaydet</button>
+                </div>
+            </div>
+
+            <!-- MAIN GRID -->
+            <div class="dashboard-grid">
+                <!-- RECENT ACTIVITY -->
+                <div class="card">
+                    <div class="card-title">📰 Son Aktiviteler</div>
+                    <div class="activity-item">
+                        <div class="activity-icon">👥</div>
+                        <div class="activity-content">
+                            <div class="activity-text">Halit Yılmaz seni açtı</div>
+                            <div class="activity-time">2 saat önce</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">💬</div>
+                        <div class="activity-content">
+                            <div class="activity-text">Yeni mesajın var</div>
+                            <div class="activity-time">5 saat önce</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">⚽</div>
+                        <div class="activity-content">
+                            <div class="activity-text">Maç sonuç: 3-1 Kazandık</div>
+                            <div class="activity-time">1 gün önce</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">🤝</div>
+                        <div class="activity-content">
+                            <div class="activity-text">MENAJERİN seni favori etti</div>
+                            <div class="activity-time">1 gün önce</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QUICK ACTIONS -->
+                <div class="card">
+                    <div class="card-title">⚡ Hızlı İşlemler</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <button class="btn btn-primary" style="width: 100%;">📱 Mesaj Gönder</button>
+                        <button class="btn btn-primary" style="width: 100%;">🔍 Oyuncu Ara</button>
+                        <button class="btn btn-primary" style="width: 100%;">⭐ Favori Ekle</button>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="window.location.href='player-profile.html#stats'">📊 İstat Gör</button>
+                        <button class="btn btn-primary" style="width: 100%; background: linear-gradient(135deg, #F59E0B, #D97706);" onclick="openBoostModalDesign()">⚡ Beni Keşfedin (Boost)</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RECOMMENDED -->
+            <div class="card recommended-section">
+                <div class="card-title">🌟 Önerilen Oyuncular</div>
+                <div class="cards-grid">
+                    <div class="player-card">
+                        <div class="player-card-image">📷</div>
+                        <div class="player-card-info">
+                            <div class="player-card-name">Ali Yıldız</div>
+                            <div class="player-card-position">Forvet</div>
+                            <div class="player-card-rating">⭐ 4.7/5</div>
+                        </div>
+                    </div>
+                    <div class="player-card">
+                        <div class="player-card-image">📷</div>
+                        <div class="player-card-info">
+                            <div class="player-card-name">Mehmet Kaya</div>
+                            <div class="player-card-position">Orta Saha</div>
+                            <div class="player-card-rating">⭐ 4.9/5</div>
+                        </div>
+                    </div>
+                    <div class="player-card">
+                        <div class="player-card-image">📷</div>
+                        <div class="player-card-info">
+                            <div class="player-card-name">Zeynep Çöl</div>
+                            <div class="player-card-position">Hitter</div>
+                            <div class="player-card-rating">⭐ 4.6/5</div>
+                        </div>
+                    </div>
+                    <div class="player-card">
+                        <div class="player-card-image">📷</div>
+                        <div class="player-card-info">
+                            <div class="player-card-name">Cem Ateş</div>
+                            <div class="player-card-position">Defans</div>
+                            <div class="player-card-rating">⭐ 4.5/5</div>
+                        </div>
+                    </div>
+                    <div class="player-card">
+                        <div class="player-card-image">📷</div>
+                        <div class="player-card-info">
+                            <div class="player-card-name">Gözde Ak</div>
+                            <div class="player-card-position">Kaleci</div>
+                            <div class="player-card-rating">⭐ 4.8/5</div>
+                        </div>
+                    </div>
+                    <div class="player-card">
+                        <div class="player-card-image">📷</div>
+                        <div class="player-card-info">
+                            <div class="player-card-name">Tarık Mert</div>
+                            <div class="player-card-position">Forvet</div>
+                            <div class="player-card-rating">⭐ 4.4/5</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="aboutModal">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="modal-head">
+                <h3>Hakkımda Notu</h3>
+                <button class="btn btn-secondary" onclick="closeAboutModal()">Kapat</button>
+            </div>
+            <div class="modal-body">
+                <p>Bu not oyuncu profilinde “Hakkında” alanında görünür.</p>
+                <textarea id="aboutTextarea" placeholder="Kendin hakkında kısa ve profesyonel bir not yaz..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="deleteAboutNote()">Sil</button>
+                <button class="btn btn-primary" onclick="saveAboutNote()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="boostModalDesign">
+        <div class="modal-card boost-modal-card" onclick="event.stopPropagation()">
+            <div class="modal-head">
+                <h3>⚡ Beni Keşfedin - Ücretli Boost</h3>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <button class="btn btn-secondary" onclick="closeBoostModalDesign()">Kapat</button>
+                    <button class="modal-close-x" onclick="closeBoostModalDesign()" aria-label="Kapat">×</button>
+                </div>
+            </div>
+            <form id="boostFormDesign">
+                <div class="modal-body" style="display: grid; gap: 10px;">
+                    <p>Bilgilerini gir, ödeme onayı ver ve profilini 24/72 saat öne çıkar.</p>
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px;">
+                        <input id="boostNameDesign" placeholder="Ad Soyad" required style="padding:10px;border:1px solid #dbeafe;border-radius:10px;">
+                        <select id="boostPositionDesign" required style="padding:10px;border:1px solid #dbeafe;border-radius:10px;">
+                            <option value="">Pozisyon Seç</option>
+                            <option value="Kaleci">Kaleci</option>
+                            <option value="Defans">Defans</option>
+                            <option value="Orta Saha">Orta Saha</option>
+                            <option value="Forvet">Forvet</option>
+                        </select>
+                    </div>
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px;">
+                        <input id="boostCityDesign" placeholder="Şehir" required style="padding:10px;border:1px solid #dbeafe;border-radius:10px;">
+                        <textarea id="boostSummaryDesign" placeholder="Kısa tanıtım" required style="min-height:80px;"></textarea>
+                    </div>
+                    <div style="border:1px solid #FDE68A;background:#FFFBEB;border-radius:10px;padding:10px;">
+                        <div style="font-weight:800;color:#B45309;margin-bottom:8px;">Ödeme: 149 TL / 24 Saat</div>
+                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:10px;">
+                            <input id="boostCardNameDesign" placeholder="Kart İsmi" required style="padding:10px;border:1px solid #fcd34d;border-radius:10px;">
+                            <input id="boostCardLast4Design" placeholder="Son 4 Hane" maxlength="4" required style="padding:10px;border:1px solid #fcd34d;border-radius:10px;">
+                            <select id="boostPackageDesign" required style="padding:10px;border:1px solid #fcd34d;border-radius:10px;">
+                                <option value="24h">24 Saat (149 TL)</option>
+                                <option value="72h">72 Saat (349 TL)</option>
+                            </select>
+                        </div>
+                        <label style="display:flex;align-items:center;gap:8px;margin-top:8px;color:#92400E;font-size:13px;">
+                            <input type="checkbox" id="boostApproveDesign" required>
+                            Ödemeyi onaylıyorum.
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeBoostModalDesign()">İptal</button>
+                    <button type="submit" class="btn btn-primary" style="background: linear-gradient(135deg, #F59E0B, #D97706);">Ödeme Yap ve Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PROFIL DÜZENLEME MODAL KALDIRıLDı - profile-edit.html'e taşındı -->
+
+    <script>
+        function getApiBaseUrl() {
+            const query = new URLSearchParams(window.location.search);
+            const fromQuery = (query.get('api_base') || '').trim();
+            if (fromQuery) return fromQuery.replace(/\/$/, '');
+            if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+            return '/api';
+        }
+
+        async function saveBoostRecord(record) {
+            const apiBase = getApiBaseUrl();
+            const response = await fetch(`${apiBase}/discovery/boosts`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                },
+                body: JSON.stringify(record),
+            });
+            if (!response.ok) {
+                const body = await response.json().catch(() => ({}));
+                throw new Error(body?.message || `HTTP ${response.status}`);
+            }
+            const body = await response.json();
+            return body?.data || null;
+        }
+
+        function openBoostModalDesign() {
+            const modal = document.getElementById('boostModalDesign');
+            if (!modal) return;
+            try {
+                const raw = localStorage.getItem('nextscout_user');
+                const user = raw ? JSON.parse(raw) : null;
+                if (user?.name && !document.getElementById('boostNameDesign').value) {
+                    document.getElementById('boostNameDesign').value = user.name;
+                }
+            } catch (e) {}
+            modal.style.display = 'flex';
+        }
+
+        function closeBoostModalDesign() {
+            const modal = document.getElementById('boostModalDesign');
+            if (modal) modal.style.display = 'none';
+        }
+
+        document.getElementById('boostFormDesign')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const approved = document.getElementById('boostApproveDesign').checked;
+            const cardLast4 = (document.getElementById('boostCardLast4Design').value || '').trim();
+            if (!approved) {
+                nsAlert('Lütfen ödeme onayını işaretleyin.');
+                return;
+            }
+            if (!/^\d{4}$/.test(cardLast4)) {
+                nsAlert('Kart son 4 haneyi doğru girin.');
+                return;
+            }
+
+            const selectedPackage = document.getElementById('boostPackageDesign').value;
+            const pkg = selectedPackage === '72h'
+                ? { hours: 72, price: 349, label: '72 Saat' }
+                : { hours: 24, price: 149, label: '24 Saat' };
+
+            const now = new Date();
+            const expires = new Date(now.getTime() + pkg.hours * 60 * 60 * 1000);
+            const record = {
+                id: Date.now(),
+                name: document.getElementById('boostNameDesign').value.trim(),
+                position: document.getElementById('boostPositionDesign').value,
+                city: document.getElementById('boostCityDesign').value.trim(),
+                summary: document.getElementById('boostSummaryDesign').value.trim(),
+                card_name: document.getElementById('boostCardNameDesign').value.trim(),
+                card_last4: cardLast4,
+                package_code: selectedPackage,
+                package_label: pkg.label,
+                price_tl: pkg.price,
+                paid: true,
+                created_at: now.toISOString(),
+                expires_at: expires.toISOString()
+            };
+
+            try {
+                await saveBoostRecord(record);
+                this.reset();
+                closeBoostModalDesign();
+                nsAlert(`Boost kaydedildi. Paket: ${pkg.label}`);
+            } catch (error) {
+                nsAlert(`Boost kaydedilemedi: ${error.message}`);
+            }
+        });
+
+        function openAboutModal() {
+            const modal = document.getElementById('aboutModal');
+            const textarea = document.getElementById('aboutTextarea');
+            if (!modal || !textarea) return;
+            textarea.value = localStorage.getItem('playerAboutNote') || '';
+            modal.style.display = 'flex';
+        }
+
+        function closeAboutModal() {
+            const modal = document.getElementById('aboutModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function saveAboutNote() {
+            const textarea = document.getElementById('aboutTextarea');
+            if (!textarea) return;
+            const note = (textarea.value || '').trim();
+            localStorage.setItem('playerAboutNote', note);
+
+            // playerProfile.bio ile senkron tut
+            try {
+                const raw = localStorage.getItem('playerProfile');
+                const profile = raw ? JSON.parse(raw) : {};
+                profile.bio = note;
+                localStorage.setItem('playerProfile', JSON.stringify(profile));
+            } catch (e) {
+                // ignore parse errors
+            }
+
+            nsAlert('Hakkımda notu kaydedildi.');
+            closeAboutModal();
+        }
+
+        function deleteAboutNote() {
+            localStorage.removeItem('playerAboutNote');
+            try {
+                const raw = localStorage.getItem('playerProfile');
+                const profile = raw ? JSON.parse(raw) : {};
+                profile.bio = '';
+                localStorage.setItem('playerProfile', JSON.stringify(profile));
+            } catch (e) {
+                // ignore parse errors
+            }
+            const textarea = document.getElementById('aboutTextarea');
+            if (textarea) textarea.value = '';
+            nsAlert('Hakkımda notu silindi.');
+        }
+
+        function readPlayerProfileData() {
+            try {
+                const raw = localStorage.getItem('playerProfile');
+                return raw ? JSON.parse(raw) : {};
+            } catch (error) {
+                return {};
+            }
+        }
+
+        function runProfileCheck() {
+            const profile = readPlayerProfileData();
+            let score = 0;
+            const missing = [];
+
+            if (profile.position) score += 20; else missing.push('pozisyon');
+            if (profile.age) score += 15; else missing.push('yas');
+            if (profile.height) score += 15; else missing.push('boy');
+            if (profile.bio && String(profile.bio).trim().length >= 30) score += 20; else missing.push('biyografi');
+            if (profile.videoUrl && String(profile.videoUrl).trim()) score += 15; else missing.push('video');
+            if (localStorage.getItem('playerPhoto')) score += 15; else missing.push('profil resmi');
+
+            const root = document.getElementById('profileCheckResult');
+            if (!root) return;
+
+            if (missing.length === 0) {
+                root.textContent = `Profil puani: ${score}/100 • Tam hazir`;
+                return;
+            }
+            root.textContent = `Profil puani: ${score}/100 • Eksik: ${missing.join(', ')}`;
+        }
+
+        async function refreshMatchingAlertInfo() {
+            const root = document.getElementById('matchingAlertResult');
+            if (!root) return;
+
+            const settingsRaw = localStorage.getItem('nextscout_matching_alert');
+            if (!settingsRaw) {
+                root.textContent = 'Alarm kapali.';
+                return;
+            }
+
+            let settings = {};
+            try {
+                settings = JSON.parse(settingsRaw) || {};
+            } catch (error) {
+                root.textContent = 'Alarm kapali.';
+                return;
+            }
+
+            const apiBase = getApiBaseUrl();
+            try {
+                const response = await fetch(`${apiBase}/discovery/manager-needs`, { headers: { Accept: 'application/json' } });
+                const payload = await response.json();
+                const rows = Array.isArray(payload?.data) ? payload.data : [];
+                const matches = rows.filter((row) => {
+                    const samePosition = !settings.position || String(row?.position || '').toLowerCase().includes(String(settings.position).toLowerCase());
+                    const sameCity = !settings.city || String(row?.city || '').toLowerCase().includes(String(settings.city).toLowerCase());
+                    return samePosition && sameCity;
+                });
+                root.textContent = `Alarm aktif • ${matches.length} ilan eslesti`;
+            } catch (error) {
+                root.textContent = 'Alarm aktif • eslesen ilan sayisi alinamadi';
+            }
+        }
+
+        function saveMatchingnsAlert() {
+            const position = (document.getElementById('alertPosition')?.value || '').trim();
+            const city = (document.getElementById('alertCity')?.value || '').trim();
+            localStorage.setItem('nextscout_matching_alert', JSON.stringify({
+                position,
+                city,
+                updated_at: new Date().toISOString(),
+            }));
+            refreshMatchingAlertInfo();
+        }
+
+        function loadMatchingAlertForm() {
+            try {
+                const raw = localStorage.getItem('nextscout_matching_alert');
+                const data = raw ? JSON.parse(raw) : null;
+                if (!data) return;
+                const posEl = document.getElementById('alertPosition');
+                const cityEl = document.getElementById('alertCity');
+                if (posEl) posEl.value = data.position || '';
+                if (cityEl) cityEl.value = data.city || '';
+            } catch (error) {}
+        }
+
+        function logout() {
+            localStorage.removeItem('nextscout_token');
+            localStorage.removeItem('nextscout_user_email');
+            localStorage.removeItem('nextscout_user_name');
+            localStorage.removeItem('nextscout_user_role');
+            localStorage.removeItem('nextscout_user_id');
+            window.location.href = 'index.html';
+        }
+        
+        // ...existing code...
+        function openProfileEdit() {
+            document.getElementById('profileEditModal').style.display = 'flex';
+        }
+
+        function closeProfileEditModal() {
+            document.getElementById('profileEditModal').style.display = 'none';
+        }
+
+        // Dışa tıklanınca kapat
+        const legacyProfileEditModal = document.getElementById('profileEditModal');
+        if (legacyProfileEditModal) {
+            legacyProfileEditModal.addEventListener('click', (e) => {
+                if (e.target.id === 'profileEditModal') {
+                    closeProfileEditModal();
+                }
+            });
+        }
+
+        const aboutModal = document.getElementById('aboutModal');
+        if (aboutModal) {
+            aboutModal.addEventListener('click', (e) => {
+                if (e.target.id === 'aboutModal') {
+                    closeAboutModal();
+                }
+            });
+        }
+
+        // Sayfa yüklenirken profil verilerini DASHBOARD'ta göster
+        window.addEventListener('load', () => {
+            const savedProfile = localStorage.getItem('playerProfile');
+            const savedPhoto = localStorage.getItem('playerPhoto');
+
+            if (savedProfile) {
+                const data = JSON.parse(savedProfile);
+
+                // Kartın pozisyon bilgisini güncelle
+                const positionElement = document.querySelector('.player-position');
+                if (positionElement) {
+                    positionElement.textContent = data.position.toUpperCase();
+                }
+
+                // İstatistikleri güncelle (Kartın içinde)
+                const stats = document.querySelectorAll('.stat-item');
+                if (stats[0]) stats[0].querySelector('.stat-value').textContent = data.age;
+                if (stats[1]) stats[1].querySelector('.stat-value').textContent = data.height + 'cm';
+                if (stats[2]) stats[2].querySelector('.stat-value').textContent = data.matches;
+                if (stats[3]) stats[3].querySelector('.stat-value').textContent = data.goals;
+                if (stats[4]) stats[4].querySelector('.stat-value').textContent = data.assists;
+                if (stats[5]) stats[5].querySelector('.stat-value').textContent = data.rating;
+
+                // Rating güncelle
+                const ratingText = document.querySelector('.rating-text');
+                if (ratingText) {
+                    ratingText.textContent = data.rating + '/10 Rating';
+                }
+            }
+
+            // Fotoğrafı güncelle
+            if (savedPhoto) {
+                const profileImage = document.querySelector('.profile-image');
+                if (profileImage) {
+                    profileImage.textContent = '';
+                    const img = document.createElement('img');
+                    img.src = savedPhoto;
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.borderRadius = '50%';
+                    img.style.objectFit = 'cover';
+                    profileImage.appendChild(img);
+                }
+            }
+
+            // Modal form verilerini yükle
+            const savedProfileData = localStorage.getItem('playerProfile');
+            if (savedProfileData) {
+                const data = JSON.parse(savedProfileData);
+                document.getElementById('positionSelect').value = data.position;
+                document.getElementById('ageInput').value = data.age;
+                document.getElementById('heightInput').value = data.height;
+                document.getElementById('matchesInput').value = data.matches;
+                document.getElementById('goalsInput').value = data.goals;
+                document.getElementById('assistsInput').value = data.assists;
+                document.getElementById('ratingInput').value = data.rating;
+                document.getElementById('bioInput').value = data.bio;
+                document.getElementById('videoUrl').value = data.videoUrl;
+            }
+
+            const savedPhotoData = localStorage.getItem('playerPhoto');
+            if (savedPhotoData) {
+                const img = document.getElementById('photoImg');
+                if (img) {
+                    img.src = savedPhotoData;
+                    img.style.display = 'block';
+                }
+            }
+
+            runProfileCheck();
+            loadMatchingAlertForm();
+            refreshMatchingAlertInfo();
+        });
+        // ...existing code...
+    </script>
+    <script src="assets/js/core-stability.js"></script>
+    <script src="assets/js/mobile-professional.js" defer></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+

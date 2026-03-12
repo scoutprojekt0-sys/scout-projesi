@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Takım Dashboard | NextScout</title>
+    <meta name="description" content="Takım dashboard: KULÜP ihtiyaçlari, tanitim akisi, deneme ilanlari ve oyuncu tarama paneli.">
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="https://nextscout.app/team-dashboard.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Takım Dashboard | NextScout">
+    <meta property="og:description" content="Takım dashboard: KULÜP ihtiyaçlari, tanitim akisi, deneme ilanlari ve oyuncu tarama paneli.">
+    <meta property="og:url" content="https://nextscout.app/team-dashboard.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#4f46e5">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/mobile-unified.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Inter, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f3f4f6; color: #1f2937; }
+        .top-navbar { background: white; border-bottom: 1px solid #e5e7eb; padding: 0 20px; height: 70px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .navbar-left { display: flex; align-items: center; gap: 30px; flex: 1; }
+        .logo { font-size: 20px; font-weight: bold; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; min-width: 150px; }
+        .navbar-right { display: flex; align-items: center; gap: 15px; }
+        .btn-small {
+            padding: 8px 14px;
+            border: 1px solid transparent;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+        .btn-small.primary { background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%); color: #fff; }
+        .btn-small.secondary { background: #2b3440; color: #e2e8f0; border-color: #475569; }
+        .btn-small.light { background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; }
+        .btn-small:hover { transform: translateY(-1px); filter: brightness(1.06); }
+        .needs-panel {
+            position: fixed;
+            right: 16px;
+            bottom: 16px;
+            width: 300px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
+            padding: 12px;
+            display: none;
+            z-index: 999;
+        }
+        .needs-panel.active { display: block; }
+        .needs-panel h3 { font-size: 14px; margin-bottom: 8px; }
+        .needs-panel textarea {
+            width: 100%;
+            min-height: 90px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 8px;
+            font-size: 13px;
+            resize: vertical;
+        }
+        .needs-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+        .needs-msg { font-size: 12px; color: #059669; min-height: 16px; margin-top: 6px; }
+        .promo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .promo-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        .promo-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 4px;
+        }
+        .promo-check {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #334155;
+            margin-top: 4px;
+        }
+        .main-container { display: grid; grid-template-columns: 240px 1fr; gap: 20px; padding: 20px; min-height: calc(100vh - 70px); }
+        .sidebar { background: white; border-radius: 12px; padding: 20px; height: fit-content; position: sticky; top: 90px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .sidebar-title { font-size: 11px; text-transform: uppercase; color: #9ca3af; font-weight: 700; margin-bottom: 12px; letter-spacing: 0.6px; }
+        .sidebar-menu { list-style: none; }
+        .sidebar-item { padding: 10px 12px; margin-bottom: 8px; border-radius: 10px; border: 1px solid #e5e7eb; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 10px; font-size: 13px; color: #6b7280; background: #f8fafc; }
+        .sidebar-item i { width: 18px; text-align: center; color: #4f46e5; font-size: 13px; }
+        .sidebar-item:hover { background: #f3f4f6; color: #1f2937; }
+        .sidebar-item.active { background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%); color: #fff; font-weight: 700; border-color: #60a5fa; }
+        .sidebar-item.active i { color: #e0e7ff; }
+        .sidebar-item span:last-child { font-weight: 600; letter-spacing: .1px; }
+        .content { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        .welcome-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 12px rgba(102,126,234,0.15); }
+        .welcome-card h1 { font-size: 28px; margin-bottom: 10px; font-weight: 800; letter-spacing: .2px; }
+        .welcome-card p { margin: 0; opacity: 0.95; font-size: 14px; font-weight: 500; }
+        .quick-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
+        .stat-card { background: white; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-top: 3px solid #667eea; }
+        .stat-card-value { font-size: 28px; font-weight: bold; color: #667eea; margin-bottom: 8px; }
+        .stat-card-label { font-size: 13px; color: #9ca3af; text-transform: uppercase; }
+        .search-section { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .search-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 15px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-weight: 600; font-size: 13px; color: #1f2937; }
+        .form-group input, .form-group select { padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+        .search-btn {
+            padding: 11px 16px;
+            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .2s;
+            align-self: flex-end;
+        }
+        .search-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(29,78,216,0.35); }
+        .players-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+        .compare-rank {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #3730a3;
+            font-size: 12px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        .transfer-summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+        .transfer-summary-card {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 14px;
+        }
+        .transfer-summary-card .k { font-size: 11px; color: #6b7280; text-transform: uppercase; font-weight: 700; }
+        .transfer-summary-card .v { font-size: 20px; font-weight: 800; color: #111827; margin-top: 6px; }
+        .transfer-lists { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .transfer-list-box { border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; background: #fff; }
+        .transfer-list-title { font-size: 13px; font-weight: 800; color: #374151; margin-bottom: 8px; }
+        .transfer-list { list-style: none; display: grid; gap: 6px; }
+        .transfer-list li { font-size: 12px; color: #4b5563; padding: 7px 8px; border-radius: 8px; background: #f9fafb; }
+        .transfer-list li strong { color: #1f2937; }
+        .transfer-empty { font-size: 12px; color: #9ca3af; }
+        .compare-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+        .compare-chip-list { display: flex; gap: 8px; flex-wrap: wrap; }
+        .compare-chip { background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; border-radius: 999px; font-size: 12px; font-weight: 700; padding: 6px 10px; }
+        .compare-result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 14px; }
+        .compare-result-card { border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; background: #fff; }
+        .compare-result-card h4 { font-size: 14px; margin-bottom: 6px; color: #111827; }
+        .compare-result-meta { font-size: 12px; color: #6b7280; margin-bottom: 8px; }
+        .compare-metric { font-size: 12px; color: #374151; margin-bottom: 4px; }
+        .compare-metric strong { color: #111827; }
+        .compare-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        .compare-badge.value { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+        .compare-badge.form { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        .compare-badge.tier-gold { background: #fef3c7; color: #92400e; border-color: #f59e0b; }
+        .compare-badge.tier-silver { background: #e5e7eb; color: #374151; border-color: #9ca3af; }
+        .compare-trend { font-size: 11px; font-weight: 800; margin-left: 6px; }
+        .compare-trend.up { color: #059669; }
+        .compare-trend.down { color: #dc2626; }
+        .compare-trend.flat { color: #6b7280; }
+        .player-card { background: white; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb; transition: all 0.3s; cursor: pointer; }
+        .player-card:hover { transform: translateY(-8px); box-shadow: 0 12px 30px rgba(102,126,234,0.2); border-color: #667eea; }
+        .player-card-image { width: 100%; height: 150px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; font-size: 60px; }
+        .player-card-content { padding: 16px; }
+        .player-name { font-size: 16px; font-weight: 700; color: #1f2937; margin-bottom: 4px; }
+        .player-position { font-size: 12px; color: #667eea; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
+        .player-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; font-size: 12px; }
+        .player-info-item { display: flex; flex-direction: column; gap: 2px; }
+        .player-info-label { color: #9ca3af; font-size: 11px; }
+        .player-info-value { color: #1f2937; font-weight: 700; }
+        .player-rating { display: flex; align-items: center; gap: 8px; padding: 10px; background: #fff9e6; border-radius: 8px; margin-bottom: 12px; }
+        .rating-stars { color: #fbbf24; font-size: 14px; }
+        .rating-value { color: #fbbf24; font-weight: 700; font-size: 13px; }
+        .card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .action-btn {
+            padding: 8px 10px;
+            border: 1px solid #475569;
+            background: #1f2937;
+            color: #bfdbfe;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all .2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .action-btn:hover { background: #334155; border-color: #60a5fa; color: #fff; }
+        .action-btn.primary { background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%); color: white; border-color: transparent; }
+
+        @media (max-width: 1024px) {
+            .search-grid { grid-template-columns: repeat(2, 1fr); }
+            .players-grid { grid-template-columns: repeat(2, 1fr); }
+            .transfer-summary-grid { grid-template-columns: repeat(2, 1fr); }
+            .transfer-lists { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            body { background: #1f252d; color: #e2e8f0; }
+            .top-navbar {
+                height: auto;
+                min-height: 60px;
+                padding: 8px 10px;
+                align-items: flex-start;
+                flex-wrap: wrap;
+                gap: 8px;
+                background: rgba(31, 37, 45, 0.95);
+                border-bottom-color: #334155;
+                box-shadow: 0 8px 24px rgba(2,6,23,.35);
+            }
+            .navbar-left { width: 100%; }
+            .logo {
+                font-size: 19px;
+                color: #bfdbfe;
+                background: none;
+                -webkit-text-fill-color: #bfdbfe;
+            }
+            .navbar-right {
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+            }
+            .btn-small {
+                width: 100%;
+                min-height: 42px;
+                white-space: normal;
+                text-align: center;
+                font-size: 12px;
+                line-height: 1.2;
+            }
+            .btn-small.secondary { background: #2b3440; color: #dbeafe; border-color: #475569; }
+            .btn-small.light { background: #1f2937; color: #dbeafe; border-color: #475569; }
+            .btn-small.primary { background: linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%); }
+
+            .main-container { grid-template-columns: 1fr; padding: 10px; gap: 10px; }
+            .sidebar {
+                position: static;
+                top: auto;
+                background: #1f2937;
+                border: 1px solid #374151;
+                box-shadow: none;
+                padding: 12px;
+            }
+            .sidebar-title { color: #9ca3af; }
+            .sidebar-menu {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+            }
+            .sidebar-item {
+                margin-bottom: 0;
+                min-height: 42px;
+                padding: 8px 10px;
+                background: #111827;
+                border: 1px solid #374151;
+                color: #cbd5e1;
+                font-size: 13px;
+            }
+            .sidebar-item i { color: #93c5fd; }
+            .sidebar-item:hover { background: #0b1220; color: #f3f4f6; }
+            .sidebar-item.active { background: linear-gradient(135deg,#4f46e5 0%,#3730a3 100%); border-color: #6366f1; }
+
+            .content { gap: 10px; }
+            .welcome-card,
+            .search-section,
+            .stat-card {
+                background: #232a33;
+                border: 1px solid #334155;
+                color: #e2e8f0;
+                box-shadow: none;
+            }
+            .welcome-card h1,
+            .search-section h2 { color: #e5e7eb !important; }
+            .welcome-card { padding: 16px; }
+            .welcome-card h1 { font-size: 22px; }
+            .welcome-card p { font-size: 13px; opacity: .92; }
+
+            .search-grid { grid-template-columns: 1fr; }
+            .players-grid { grid-template-columns: 1fr; }
+            .quick-stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .transfer-summary-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .transfer-summary-card,
+            .transfer-list-box,
+            .compare-result-card {
+                background: #1f2937;
+                border-color: #374151;
+                color: #e5e7eb;
+            }
+            .transfer-summary-card .v,
+            .transfer-list-title,
+            .compare-result-card h4,
+            .compare-metric strong { color: #f3f4f6; }
+            .transfer-list li { background: #111827; color: #cbd5e1; }
+            .compare-chip { background: #1e3a8a; border-color: #3b82f6; color: #dbeafe; }
+
+            .compare-toolbar { align-items: stretch; }
+            .compare-toolbar > div:last-child { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+            .compare-toolbar > div:last-child .btn-small { margin: 0; }
+
+            .form-group label { color: #e2e8f0; }
+            .form-group input, .form-group select {
+                background: #1f2937;
+                color: #f8fafc;
+                border-color: #475569;
+            }
+            .form-group input:focus, .form-group select:focus {
+                border-color: #60a5fa;
+                box-shadow: 0 0 0 3px rgba(96,165,250,.18);
+            }
+
+            .player-card {
+                background: #2b3440;
+                border-color: #475569;
+            }
+            .player-name { color: #f8fafc; }
+            .player-info-value { color: #f8fafc; }
+            .player-rating { background: #1f2937; }
+            .action-btn {
+                background: #1f2937;
+                border-color: #475569;
+                color: #bfdbfe;
+            }
+            .action-btn:hover { background: #334155; color: #fff; border-color: #60a5fa; }
+            .action-btn.primary { background: linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%); border-color: transparent; }
+
+            .needs-panel,
+            #trialPublishPanel,
+            #clubPromoPanel {
+                left: 10px !important;
+                right: 10px !important;
+                width: auto !important;
+                bottom: 10px !important;
+                border-color: #334155;
+                background: #232a33;
+                color: #e2e8f0;
+            }
+            .needs-panel textarea,
+            .promo-input,
+            #trialPublishPanel input,
+            #trialPublishPanel select {
+                background: #1f2937 !important;
+                color: #f8fafc !important;
+                border-color: #475569 !important;
+            }
+            #trialPublishPanel > div[style*="grid-template-columns:1fr 1fr"] {
+                grid-template-columns: 1fr !important;
+            }
+            .promo-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .navbar-right { grid-template-columns: 1fr; }
+            .quick-stats { grid-template-columns: 1fr; }
+            .transfer-summary-grid { grid-template-columns: 1fr; }
+            .compare-toolbar > div:last-child { grid-template-columns: 1fr; }
+            .btn-small { font-size: 11px; min-height: 40px; }
+        }
+    </style>
+    <link rel="stylesheet" href="assets/css/mobile-polish.css">
+</head>
+<body>
+    <div class="top-navbar">
+        <div class="navbar-left">
+            <div class="logo">NextScout Club</div>
+        </div>
+        <div class="navbar-right">
+            <button class="btn-small light" onclick="toggleClubNeedsPanel()">KULÜP Ihtiyaclari</button>
+            <button class="btn-small light" onclick="toggleClubPromoPanel()">Kulübünü Tanit</button>
+            <button class="btn-small light" onclick="toggleTrialPublishPanel()">Deneme/Idman Ilani</button>
+            <button class="btn-small home-btn-global" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;" onclick="window.location.href='index.html'">Ana Sayfa</button>
+            <button class="btn-small secondary" onclick="logout()">Çıkış</button>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">MENU</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item active" onclick="location.reload()"><i class="fas fa-magnifying-glass"></i><span>Oyuncu Ara</span></li>
+                    <li class="sidebar-item" onclick="openScoutReports()"><i class="fas fa-chart-line"></i><span>Scout Raporlari</span></li>
+                    <li class="sidebar-item" onclick="openTeamProfile()"><i class="fas fa-trophy"></i><span>KULÜP Profili</span></li>
+                    <li class="sidebar-item" onclick="openTrialCenter()"><i class="fas fa-calendar-check"></i><span>Deneme & Idmanlar</span></li>
+                    <li class="sidebar-item" onclick="openMessages()"><i class="fas fa-comments"></i><span>Mesajlarim</span></li>
+                    <li class="sidebar-item" onclick="openSettings()"><i class="fas fa-gear"></i><span>Ayarlar</span></li>
+                    <li class="sidebar-item" onclick="openHelp()"><i class="fas fa-circle-question"></i><span>Yardim</span></li>
+                </ul>
+            </div>
+        </aside>
+
+        <div class="content">
+            <div class="welcome-card">
+                <h1>KULÜP Dashboard</h1>
+                <p>Oyuncu ara, profilleri incele ve transfer teklifi gönder.</p>
+            </div>
+
+            <div class="quick-stats">
+                <div class="stat-card"><div class="stat-card-value" id="statTotalPlayers">0</div><div class="stat-card-label">Oyuncu Havuzu</div></div>
+                <div class="stat-card"><div class="stat-card-value" id="statFilteredPlayers">0</div><div class="stat-card-label">Filtre Sonucu</div></div>
+                <div class="stat-card"><div class="stat-card-value" id="statOffersSent">0</div><div class="stat-card-label">Gonderilen Teklif</div></div>
+                <div class="stat-card"><div class="stat-card-value" id="statAverageRating">0.0</div><div class="stat-card-label">Ortalama Rating</div></div>
+                <div class="stat-card"><div class="stat-card-value" id="statProfileCompletion">0%</div><div class="stat-card-label">Profil Tamamlama</div></div>
+            </div>
+
+            <div class="search-section">
+                <h2 style="margin-bottom:16px;font-size:18px;font-weight:800;color:#1f2937;">Hafta 5 - Transfer Ozet</h2>
+                <div class="transfer-summary-grid">
+                    <div class="transfer-summary-card"><div class="k">Gelen Transfer</div><div class="v" id="tsIncomingCount">-</div></div>
+                    <div class="transfer-summary-card"><div class="k">Giden Transfer</div><div class="v" id="tsOutgoingCount">-</div></div>
+                    <div class="transfer-summary-card"><div class="k">Gelen Harcama</div><div class="v" id="tsIncomingSpend">-</div></div>
+                    <div class="transfer-summary-card"><div class="k">Net Harcama</div><div class="v" id="tsNetSpend">-</div></div>
+                </div>
+                <div class="transfer-lists">
+                    <div class="transfer-list-box">
+                        <div class="transfer-list-title">Son Gelen Transferler</div>
+                        <ul class="transfer-list" id="tsLatestIncoming"></ul>
+                    </div>
+                    <div class="transfer-list-box">
+                        <div class="transfer-list-title">Son Giden Transferler</div>
+                        <ul class="transfer-list" id="tsLatestOutgoing"></ul>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="search-section">
+                <h2 style="margin-bottom:20px;font-size:18px;font-weight:800;color:#1f2937;">Oyuncu Scout</h2>
+                <div class="search-grid">
+                    <div class="form-group"><label>Oyuncu Adi</label><input type="text" id="playerName" placeholder="Oyuncu adi gir"></div>
+                    <div class="form-group">
+                        <label>Pozisyon</label>
+                        <select id="position">
+                            <option value="">Tumu</option>
+                            <option value="Kaleci">Kaleci</option>
+                            <option value="Defans">Defans</option>
+                            <option value="Orta Saha">Orta Saha</option>
+                            <option value="Forvet">Forvet</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Yas Araligi</label><input type="text" id="ageRange" placeholder="18-30"></div>
+                    <div class="form-group">
+                        <label>Min. Rating</label>
+                        <select id="rating">
+                            <option value="">Tumu</option>
+                            <option value="7.0">7.0+</option>
+                            <option value="7.5">7.5+</option>
+                            <option value="8.0">8.0+</option>
+                            <option value="8.5">8.5+</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="search-btn" onclick="searchPlayers()">Scout Baslat</button>
+            </div>
+
+            <div class="search-section">
+                <h2 style="margin-bottom:20px;font-size:18px;font-weight:800;color:#1f2937;">Scout Sonuclari</h2>
+                <div class="compare-toolbar">
+                    <div>
+                        <strong style="font-size:13px;color:#374151;">Hafta 6 - Oyuncu Kiyaslama</strong>
+                        <div id="compareSelection" class="compare-chip-list" style="margin-top:6px;"></div>
+                    </div>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                        <button class="btn-small secondary" type="button" onclick="clearCompareSelection()">Secimi Temizle</button>
+                        <button class="btn-small primary" type="button" onclick="runPlayerComparison()">Kiyaslamayi Calistir</button>
+                        <button class="btn-small light" type="button" onclick="downloadCompareCsv()">CSV Indir</button>
+                        <button class="btn-small light" type="button" onclick="downloadCompareJson()">JSON Indir</button>
+                    </div>
+                </div>
+                <div id="compareResult" class="compare-result-grid" style="display:none;"></div>
+                <div class="players-grid" id="playersGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="clubNeedsPanel" class="needs-panel">
+        <h3>KULÜP İhtiyaç Notu</h3>
+        <textarea id="clubNeedsText" placeholder="İhtiyaç notunu yaz..."></textarea>
+        <div class="needs-actions">
+            <button class="btn-small secondary" onclick="toggleClubNeedsPanel(false)">Kapat</button>
+            <button class="btn-small primary" onclick="sendClubNeedsNote()">Gönder</button>
+        </div>
+        <div id="clubNeedsMsg" class="needs-msg"></div>
+    </div>
+
+    <div id="trialPublishPanel" class="needs-panel" style="right: 330px;">
+        <h3>Deneme / Idman Ilani</h3>
+        <select id="trialType" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;margin-bottom:8px;">
+            <option value="trial">Deneme</option>
+            <option value="training">Idman</option>
+            <option value="match">Deneme Maci</option>
+        </select>
+        <input id="trialTitle" type="text" placeholder="Baslik" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;margin-bottom:8px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+            <input id="trialDate" type="date" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;">
+            <input id="trialTime" type="time" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;">
+        </div>
+        <input id="trialCity" type="text" placeholder="Sehir" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;margin-bottom:8px;">
+        <input id="trialVenue" type="text" placeholder="Saha/Tesis" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;">
+        <div class="needs-actions">
+            <button class="btn-small secondary" onclick="toggleTrialPublishPanel(false)">Kapat</button>
+            <button class="btn-small primary" onclick="publishTrialEvent()">Yayina Al</button>
+        </div>
+        <div id="trialPublishMsg" class="needs-msg"></div>
+    </div>
+
+    <div id="clubPromoPanel" class="needs-panel" style="right: 644px; width: 360px;">
+        <h3>Kulübünü Tanit</h3>
+        <label class="promo-label" for="clubPromoName">KULÜP Ismi</label>
+        <input id="clubPromoName" class="promo-input" type="text" placeholder="KULÜP adini gir">
+
+        <div class="promo-grid">
+            <div>
+                <label class="promo-label" for="clubPromoImage1">Resim 1</label>
+                <input id="clubPromoImage1" class="promo-input" type="file" accept="image/*">
+            </div>
+            <div>
+                <label class="promo-label" for="clubPromoImage2">Resim 2</label>
+                <input id="clubPromoImage2" class="promo-input" type="file" accept="image/*">
+            </div>
+        </div>
+
+        <label class="promo-label" for="clubPromoVideoUrl">Video Linki (YouTube/Instagram)</label>
+        <input id="clubPromoVideoUrl" class="promo-input" type="url" placeholder="https://...">
+
+        <label class="promo-label" for="clubPromoNotes">KULÜP Notlari</label>
+        <textarea id="clubPromoNotes" placeholder="KULÜP, tesis, hedef, altyapi bilgisi..."></textarea>
+
+        <label class="promo-check">
+            <input id="clubPromoPaid" type="checkbox">
+            Odemeyi tamamladim (yalnizca ödemesi tamamlanan tanitimlar anasayfada yayınlanir)
+        </label>
+
+        <div class="needs-actions">
+            <button class="btn-small secondary" onclick="toggleClubPromoPanel(false)">Kapat</button>
+            <button class="btn-small primary" onclick="publishClubPromo()">Yayinla</button>
+        </div>
+        <div id="clubPromoMsg" class="needs-msg"></div>
+    </div>
+
+    <script src="assets/js/site-core.js"></script>
+    <script src="assets/js/growth-upgrade.js"></script>
+    <script>
+        const OFFERS_KEY = 'nextscout_team_offers';
+        const CLUB_NEEDS_KEY = 'nextscout_club_needs_notes';
+        const CLUB_PROMOS_KEY = 'nextscout_paid_club_promos';
+        let allPlayers = [];
+        let filteredPlayers = [];
+        let selectedCompareIds = [];
+        let lastComparePayload = null;
+        let searchDebounceTimer = null;
+
+        function getApiBaseUrl() {
+            if (window.NextScoutApi && typeof window.NextScoutApi.base === 'function') {
+                return window.NextScoutApi.base();
+            }
+            const configured = (window.NEXTSCOUT_API_BASE || '').toString().trim();
+            if (configured) return configured.replace(/\/$/, '');
+            const query = new URLSearchParams(window.location.search);
+            const fromQuery = (query.get('api_base') || '').trim();
+            if (fromQuery) return fromQuery.replace(/\/$/, '');
+            if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+            return '/api';
+        }
+
+        function escapeHtml(value) {
+            return String(value == null ? '' : value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function parseAgeRange(value) {
+            const raw = (value || '').toString().trim();
+            if (!raw || !raw.includes('-')) return null;
+            const parts = raw.split('-').map((p) => Number(p.trim()));
+            if (parts.length !== 2 || Number.isNaN(parts[0]) || Number.isNaN(parts[1])) return null;
+            return { min: Math.min(parts[0], parts[1]), max: Math.max(parts[0], parts[1]) };
+        }
+
+        function formatMoney(amount, currency) {
+            const value = Number(amount || 0);
+            if (!Number.isFinite(value)) return '-';
+            return `${value.toLocaleString('tr-TR')} ${currency || 'EUR'}`;
+        }
+
+        function getCurrentTeamId() {
+            const query = new URLSearchParams(window.location.search);
+            const fromQuery = Number(query.get('team_id') || 0);
+            if (fromQuery > 0) return fromQuery;
+
+            const fromStorage = Number(localStorage.getItem('nextscout_user_id') || 0);
+            if (fromStorage > 0) return fromStorage;
+
+            try {
+                const user = JSON.parse(localStorage.getItem('nextscout_user') || '{}');
+                const id = Number(user?.id || 0);
+                return id > 0 ? id : 0;
+            } catch (error) {
+                return 0;
+            }
+        }
+
+        function renderTransferList(elementId, rows) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            if (!Array.isArray(rows) || rows.length === 0) {
+                el.innerHTML = '<li class="transfer-empty">Kayıt bulunamadi.</li>';
+                return;
+            }
+            el.innerHTML = rows.map((row) => {
+                const player = escapeHtml(row?.player_name || '-');
+                const fee = formatMoney(row?.fee, row?.currency);
+                const date = row?.transfer_date ? new Date(row.transfer_date).toLocaleDateString('tr-TR') : '-';
+                return `<li><strong>${player}</strong><br><span>${fee} • ${date}</span></li>`;
+            }).join('');
+        }
+
+        function applyTransferSummary(data) {
+            const incoming = Number(data?.incoming_count || 0);
+            const outgoing = Number(data?.outgoing_count || 0);
+            const incomingSpend = Number(data?.incoming_spend || 0);
+            const netSpend = Number(data?.net_spend || 0);
+
+            const incomingEl = document.getElementById('tsIncomingCount');
+            const outgoingEl = document.getElementById('tsOutgoingCount');
+            const incomingSpendEl = document.getElementById('tsIncomingSpend');
+            const netSpendEl = document.getElementById('tsNetSpend');
+
+            if (incomingEl) incomingEl.textContent = String(incoming);
+            if (outgoingEl) outgoingEl.textContent = String(outgoing);
+            if (incomingSpendEl) incomingSpendEl.textContent = formatMoney(incomingSpend, 'EUR');
+            if (netSpendEl) netSpendEl.textContent = formatMoney(netSpend, 'EUR');
+
+            renderTransferList('tsLatestIncoming', data?.latest_incoming || []);
+            renderTransferList('tsLatestOutgoing', data?.latest_outgoing || []);
+        }
+
+        async function loadTeamTransferSummary() {
+            const teamId = getCurrentTeamId();
+            if (!teamId) {
+                renderTransferList('tsLatestIncoming', []);
+                renderTransferList('tsLatestOutgoing', []);
+                return;
+            }
+
+            const apiBase = getApiBaseUrl();
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            const headers = { Accept: 'application/json' };
+            if (token && token !== 'local-session-token') {
+                headers.Authorization = `Bearer ${token}`;
+            }
+
+            try {
+                const response = await fetch(`${apiBase}/teams/${teamId}/transfer-summary`, { headers });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const payload = await response.json();
+                if (!payload?.ok) throw new Error(payload?.message || 'Summary failed');
+                applyTransferSummary(payload.data || {});
+            } catch (error) {
+                try {
+                    const fallback = await fetch(`${apiBase}/teams/${teamId}/overview`, { headers: { Accept: 'application/json' } });
+                    const payload = await fallback.json();
+                    const rows = Array.isArray(payload?.data?.latest_transfers) ? payload.data.latest_transfers : [];
+                    applyTransferSummary({
+                        incoming_count: rows.length,
+                        outgoing_count: 0,
+                        incoming_spend: 0,
+                        net_spend: 0,
+                        latest_incoming: rows.slice(0, 5),
+                        latest_outgoing: [],
+                    });
+                } catch (fallbackError) {
+                    applyTransferSummary({
+                        incoming_count: 0,
+                        outgoing_count: 0,
+                        incoming_spend: 0,
+                        net_spend: 0,
+                        latest_incoming: [],
+                        latest_outgoing: [],
+                    });
+                }
+            }
+        }
+
+        function getOffers() {
+            try { return JSON.parse(localStorage.getItem(OFFERS_KEY) || '[]'); } catch (error) { return []; }
+        }
+
+        function saveOffers(offers) {
+            localStorage.setItem(OFFERS_KEY, JSON.stringify(Array.isArray(offers) ? offers : []));
+        }
+
+        function updateStats() {
+            const total = allPlayers.length;
+            const filtered = filteredPlayers.length;
+            const offers = getOffers().length;
+            const avgRating = filtered > 0
+                ? (filteredPlayers.reduce((sum, p) => sum + (Number(p.rating) || 0), 0) / filtered).toFixed(1)
+                : '0.0';
+
+            document.getElementById('statTotalPlayers').textContent = String(total);
+            document.getElementById('statFilteredPlayers').textContent = String(filtered);
+            document.getElementById('statOffersSent').textContent = String(offers);
+            document.getElementById('statAverageRating').textContent = String(avgRating);
+            const completionEl = document.getElementById('statProfileCompletion');
+            if (completionEl) completionEl.textContent = `${computeProfileCompletion()}%`;
+        }
+
+        function computeProfileCompletion() {
+            let user = {};
+            try { user = JSON.parse(localStorage.getItem('nextscout_user') || '{}'); } catch (error) { user = {}; }
+            const checks = [
+                Boolean((user?.name || '').toString().trim()),
+                Boolean((user?.email || '').toString().trim()),
+                Boolean((user?.club_name || '').toString().trim()),
+                Boolean((user?.city || '').toString().trim()),
+                Boolean((user?.phone || '').toString().trim()),
+            ];
+            const hit = checks.filter(Boolean).length;
+            return Math.round((hit / checks.length) * 100);
+        }
+
+        function renderPlayers(players) {
+            const grid = document.getElementById('playersGrid');
+            if (!Array.isArray(players) || players.length === 0) {
+                grid.innerHTML = '<div style="padding:18px;border:1px solid #e5e7eb;border-radius:10px;background:#f9fafb;color:#6b7280;">Filtreye uygun oyuncu bulunamadi.</div>';
+                return;
+            }
+
+            grid.innerHTML = players.map((player) => {
+                const rating = Number(player.rating) || 0;
+                const starCount = Math.max(1, Math.min(5, Math.round(rating / 2)));
+                const stars = '★'.repeat(starCount) + '☆'.repeat(5 - starCount);
+                const selected = selectedCompareIds.includes(Number(player.id));
+
+                return `
+                <div class="player-card">
+                    <div class="player-card-image">⚽</div>
+                    <div class="player-card-content">
+                        <div class="player-name">${escapeHtml(player.name || '-')}</div>
+                        <div class="player-position">${escapeHtml(player.position || '-')}</div>
+                        <div class="player-info">
+                            <div class="player-info-item"><span class="player-info-label">Yas</span><span class="player-info-value">${escapeHtml(player.age || '-')}</span></div>
+                            <div class="player-info-item"><span class="player-info-label">Boy</span><span class="player-info-value">${escapeHtml(player.height || '-')}</span></div>
+                        </div>
+                        <div class="player-rating"><span class="rating-stars">${stars}</span><span class="rating-value">${rating ? rating.toFixed(1) : '-'}</span></div>
+                        <div class="card-actions">
+                            <button class="action-btn primary" onclick="openPlayerProfile(${Number(player.id) || 0})">Profil</button>
+                            <button class="action-btn" onclick="sendOffer(${Number(player.id) || 0})">Teklif</button>
+                            <button class="action-btn" style="grid-column: span 2; ${selected ? 'background:#4f46e5;color:#fff;border-color:#4f46e5;' : ''}" onclick="toggleComparePlayer(${Number(player.id) || 0})">${selected ? 'Kiyastan Cikar' : 'Kıyas Icin Ekle'}</button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function renderCompareSelection() {
+            const container = document.getElementById('compareSelection');
+            if (!container) return;
+            if (!selectedCompareIds.length) {
+                container.innerHTML = '<span class="compare-chip">Henuz oyuncu secilmedi</span>';
+                return;
+            }
+            const selectedPlayers = allPlayers.filter((p) => selectedCompareIds.includes(Number(p.id)));
+            container.innerHTML = selectedPlayers
+                .map((p) => `<span class="compare-chip">${escapeHtml(p.name || '-')}</span>`)
+                .join('');
+        }
+
+        function toggleComparePlayer(playerId) {
+            const id = Number(playerId);
+            if (!id) return;
+            if (selectedCompareIds.includes(id)) {
+                selectedCompareIds = selectedCompareIds.filter((x) => x !== id);
+            } else {
+                if (selectedCompareIds.length >= 5) {
+                    window.nsNotify?.error ? window.nsNotify.error('En fazla 5 oyuncu secilebilir.') : nsnsAlert('En fazla 5 oyuncu secilebilir.');
+                    return;
+                }
+                selectedCompareIds.push(id);
+            }
+            renderCompareSelection();
+            requestAnimationFrame(() => renderPlayers(filteredPlayers));
+        }
+
+        function clearCompareSelection() {
+            selectedCompareIds = [];
+            const compareResult = document.getElementById('compareResult');
+            if (compareResult) {
+                compareResult.style.display = 'none';
+                compareResult.innerHTML = '';
+            }
+            renderCompareSelection();
+            requestAnimationFrame(() => renderPlayers(filteredPlayers));
+        }
+
+        function scheduleSearchPlayers() {
+            if (searchDebounceTimer) {
+                clearTimeout(searchDebounceTimer);
+            }
+            searchDebounceTimer = setTimeout(() => searchPlayers(), 140);
+        }
+
+        function resolveWinners(payload, players) {
+            const winnerById = (candidate) => {
+                const cid = Number(candidate?.player_id || 0);
+                if (cid) return cid;
+                const name = (candidate?.player_name || '').toString().trim().toLowerCase();
+                if (!name) return 0;
+                const found = players.find((p) => (p.player_name || '').toString().trim().toLowerCase() === name);
+                return Number(found?.player_id || 0);
+            };
+
+            let bestValueId = winnerById(payload?.best_market_value);
+            let bestFormId = winnerById(payload?.best_goal_contribution);
+
+            if (!bestValueId && players.length) {
+                bestValueId = Number(
+                    players
+                        .filter((p) => p.market_value != null)
+                        .sort((a, b) => Number(b.market_value || 0) - Number(a.market_value || 0))[0]?.player_id || 0
+                );
+            }
+
+            if (!bestFormId && players.length) {
+                bestFormId = Number(
+                    players
+                        .sort((a, b) => Number(b?.stats?.goal_contribution || 0) - Number(a?.stats?.goal_contribution || 0))[0]?.player_id || 0
+                );
+            }
+
+            return { bestValueId, bestFormId };
+        }
+
+        function getValueTier(index) {
+            if (index === 0) return 'tier-gold';
+            if (index === 1) return 'tier-silver';
+            return '';
+        }
+
+        function renderValueTrendArrow(valueTrend) {
+            const trend = String(valueTrend || '').toLowerCase();
+            if (trend === 'increasing') return '<span class="compare-trend up">↑</span>';
+            if (trend === 'decreasing') return '<span class="compare-trend down">↓</span>';
+            return '<span class="compare-trend flat">→</span>';
+        }
+
+        function renderComparisonResult(payload) {
+            const root = document.getElementById('compareResult');
+            if (!root) return;
+
+            const players = Array.isArray(payload?.players) ? payload.players : [];
+            const sortedByValue = [...players].sort((a, b) => Number(b.market_value || 0) - Number(a.market_value || 0));
+            const { bestValueId, bestFormId } = resolveWinners(payload, players);
+
+            if (!Array.isArray(players) || players.length === 0) {
+                root.style.display = 'grid';
+                root.innerHTML = '<div class="compare-result-card">Kıyas sonucu bulunamadi.</div>';
+                return;
+            }
+
+            root.style.display = 'grid';
+            root.innerHTML = players.map((item, idx) => {
+                const currentId = Number(item.player_id || 0);
+                const rankIndex = sortedByValue.findIndex((p) => Number(p.player_id) === currentId);
+                const tier = getValueTier(rankIndex);
+                const valueBadge = currentId && currentId === bestValueId
+                    ? `<div class="compare-badge value ${tier}">🏆 En Yuksek Piyasa Degeri</div>`
+                    : '';
+                const formBadge = currentId && currentId === bestFormId
+                    ? '<div class="compare-badge form">⚡ En Yuksek Gol Katkisi</div>'
+                    : '';
+                const value = Number(item.market_value || 0).toLocaleString('tr-TR');
+                const stats = item.stats || {};
+                const trendArrow = renderValueTrendArrow(item.value_trend);
+                return `
+                <div class="compare-result-card">
+                    <div class="compare-rank">#${idx + 1}</div>
+                    ${valueBadge}
+                    ${formBadge}
+                    <h4>${escapeHtml(item.player_name || '-')}</h4>
+                    <div class="compare-result-meta">${escapeHtml(item.position || '-')} • Yas: ${escapeHtml(item.age || '-')}</div>
+                    <div class="compare-metric"><strong>Piyasa Degeri:</strong> ${value} ${escapeHtml(item.currency || 'EUR')} ${trendArrow}</div>
+                    <div class="compare-metric"><strong>Mac:</strong> ${escapeHtml(stats.appearances || 0)}</div>
+                    <div class="compare-metric"><strong>Gol + Asist:</strong> ${escapeHtml(stats.goal_contribution || 0)}</div>
+                    <div class="compare-metric"><strong>Katki/Mac:</strong> ${escapeHtml(stats.goal_contribution_per_game || 0)}</div>
+                </div>`;
+            }).join('');
+        }
+
+        function toCsv(rows) {
+            const header = ['player_id', 'player_name', 'position', 'age', 'market_value', 'currency', 'appearances', 'goal_contribution', 'goal_contribution_per_game'];
+            const lines = [header.join(',')];
+            rows.forEach((r) => {
+                const s = r.stats || {};
+                const values = [
+                    r.player_id,
+                    `"${String(r.player_name || '').replace(/"/g, '""')}"`,
+                    `"${String(r.position || '').replace(/"/g, '""')}"`,
+                    r.age ?? '',
+                    r.market_value ?? '',
+                    r.currency || 'EUR',
+                    s.appearances ?? 0,
+                    s.goal_contribution ?? 0,
+                    s.goal_contribution_per_game ?? 0,
+                ];
+                lines.push(values.join(','));
+            });
+            return lines.join('\n');
+        }
+
+        function exportCompareReport(format) {
+            const players = Array.isArray(lastComparePayload?.players) ? lastComparePayload.players : [];
+            if (!players.length) {
+                window.nsNotify?.info ? window.nsNotify.info('Once kıyastirma calistir, sonra raporu indir.') : nsnsAlert('Once kıyastirma calistir, sonra raporu indir.');
+                return;
+            }
+
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            let content = '';
+            let mime = 'text/csv;charset=utf-8;';
+            let fileName = `nextscout-compare-${timestamp}.csv`;
+
+            if (format === 'json') {
+                content = JSON.stringify(lastComparePayload, null, 2);
+                mime = 'application/json;charset=utf-8;';
+                fileName = `nextscout-compare-${timestamp}.json`;
+            } else {
+                content = toCsv(players);
+            }
+
+            const blob = new Blob([content], { type: mime });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadCompareCsv() {
+            exportCompareReport('csv');
+        }
+
+        function downloadCompareJson() {
+            exportCompareReport('json');
+        }
+
+        async function runPlayerComparison() {
+            if (selectedCompareIds.length < 2) {
+                window.nsNotify?.error ? window.nsNotify.error('Kiyaslama icin en az 2 oyuncu sec.') : nsnsAlert('Kiyaslama icin en az 2 oyuncu sec.');
+                return;
+            }
+
+            const apiBase = getApiBaseUrl();
+            try {
+                const response = await fetch(`${apiBase}/players/compare`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                    },
+                    body: JSON.stringify({ player_ids: selectedCompareIds }),
+                });
+
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    throw new Error(payload?.message || `HTTP ${response.status}`);
+                }
+                lastComparePayload = payload?.data || null;
+                renderComparisonResult(payload?.data || {});
+            } catch (error) {
+                const fallbackPlayers = allPlayers
+                    .filter((p) => selectedCompareIds.includes(Number(p.id)))
+                    .map((p) => ({
+                        player_id: Number(p.id) || 0,
+                        player_name: p.name,
+                        position: p.position,
+                        age: p.age,
+                        market_value: 0,
+                        currency: 'EUR',
+                        stats: { appearances: 0, goal_contribution: 0, goal_contribution_per_game: 0 },
+                    }));
+                const fallbackPayload = {
+                    players: fallbackPlayers,
+                    best_market_value: fallbackPlayers[0] || null,
+                    best_goal_contribution: fallbackPlayers[0] || null,
+                };
+                lastComparePayload = fallbackPayload;
+                renderComparisonResult(fallbackPayload);
+            }
+        }
+
+        function normalizePlayer(raw) {
+            return {
+                id: Number(raw && raw.id) || 0,
+                name: (raw && raw.name) || '-',
+                position: (raw && raw.position) || '-',
+                age: (raw && raw.age) || '-',
+                height: (raw && raw.height) || '-',
+                rating: Number(raw && raw.rating) || 0,
+            };
+        }
+
+        async function loadPlayersFromApi() {
+            const apiBase = getApiBaseUrl();
+            const response = await fetch(`${apiBase}/public/players`, { headers: { Accept: 'application/json' } });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const payload = await response.json();
+            const rows = Array.isArray(payload && payload.data) ? payload.data : [];
+            return rows.map(normalizePlayer);
+        }
+
+        function getFallbackPlayers() {
+            return [
+                { id: 1, name: 'Ahmet Yilmaz', position: 'Forvet', age: 24, height: '180cm', rating: 8.1 },
+                { id: 2, name: 'Serdar Aziz', position: 'Defans', age: 28, height: '185cm', rating: 7.6 },
+                { id: 3, name: 'Kerem Akturkoglu', position: 'Forvet', age: 26, height: '183cm', rating: 8.2 },
+                { id: 4, name: 'Okay Yokuslu', position: 'Orta Saha', age: 27, height: '188cm', rating: 7.9 },
+            ];
+        }
+
+        function searchPlayers() {
+            const name = document.getElementById('playerName').value.trim().toLowerCase();
+            const position = document.getElementById('position').value.trim().toLowerCase();
+            const ageText = document.getElementById('ageRange').value.trim();
+            const ratingMin = Number(document.getElementById('rating').value || 0);
+            const parsedAge = parseAgeRange(ageText);
+
+            filteredPlayers = allPlayers.filter((p) => {
+                const pName = String(p.name || '').toLowerCase();
+                const pPosition = String(p.position || '').toLowerCase();
+                const pAge = Number(p.age) || 0;
+                const pRating = Number(p.rating) || 0;
+                if (name && !pName.includes(name)) return false;
+                if (position && pPosition !== position) return false;
+                if (ratingMin && pRating < ratingMin) return false;
+                if (parsedAge && (pAge < parsedAge.min || pAge > parsedAge.max)) return false;
+                return true;
+            });
+
+            renderPlayers(filteredPlayers);
+            updateStats();
+        }
+
+        function openPlayerProfile(playerId) {
+            if (!playerId) return;
+            window.location.href = `player-profile.html?user_id=${encodeURIComponent(playerId)}`;
+        }
+
+        function sendOffer(playerId) {
+            const player = allPlayers.find((p) => Number(p.id) === Number(playerId));
+            if (!player) { window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.'); return; }
+
+            const amountInput = prompt(`${player.name} icin teklif tutari (EUR):`, '250000');
+            if (amountInput === null) return;
+            const amount = Number(String(amountInput).replace(/[^\d.]/g, ''));
+            if (!amount || amount <= 0) { window.nsNotify?.error ? window.nsNotify.error('Gecerli tutar gir.') : nsnsAlert('Gecerli tutar gir.'); return; }
+
+            const note = prompt('Kisa not (opsiyonel):', '') || '';
+            const offers = getOffers();
+            offers.unshift({
+                id: Date.now(),
+                player_id: player.id,
+                player_name: player.name,
+                amount,
+                note: note.trim(),
+                created_at: new Date().toISOString(),
+                status: 'sent',
+            });
+            saveOffers(offers.slice(0, 500));
+            updateStats();
+            window.nsNotify?.success ? window.nsNotify.success(`Teklif gönderildi: ${player.name}`) : nsnsAlert(`Teklif gönderildi: ${player.name}`);
+        }
+
+        function openScoutReports() { window.location.href = 'scout-reports.html'; }
+        function openTeamProfile() { window.location.href = 'club-profile.html'; }
+        function openTrialCenter() { window.location.href = 'trial-center.html?view=club'; }
+        function openMessages() { window.location.href = 'notifications.html'; }
+        function openSettings() { window.location.href = 'settings.html'; }
+        function openHelp() { window.location.href = 'help.html'; }
+
+        function toggleClubNeedsPanel(forceState) {
+            const panel = document.getElementById('clubNeedsPanel');
+            if (!panel) return;
+            const shouldOpen = typeof forceState === 'boolean' ? forceState : !panel.classList.contains('active');
+            panel.classList.toggle('active', shouldOpen);
+            if (shouldOpen) {
+                const textarea = document.getElementById('clubNeedsText');
+                const msg = document.getElementById('clubNeedsMsg');
+                if (msg) msg.textContent = '';
+                if (textarea) textarea.focus();
+            }
+        }
+
+        async function sendClubNeedsNote() {
+            const textarea = document.getElementById('clubNeedsText');
+            const msg = document.getElementById('clubNeedsMsg');
+            const note = (textarea && textarea.value || '').trim();
+            if (!note) {
+                if (msg) msg.textContent = 'Not bos olamaz.';
+                return;
+            }
+            if (note.length < 10) {
+                if (msg) msg.textContent = 'Not daha acik olmali (min 10 karakter).';
+                return;
+            }
+
+            let items = [];
+            try {
+                const parsed = JSON.parse(localStorage.getItem(CLUB_NEEDS_KEY) || '[]');
+                items = Array.isArray(parsed) ? parsed : [];
+            } catch (error) {
+                items = [];
+            }
+
+            const newItem = {
+                id: Date.now(),
+                club_name: (function() {
+                    try {
+                        const user = JSON.parse(localStorage.getItem('nextscout_user') || '{}');
+                        return (user?.club_name || user?.name || 'KULÜP').toString().trim() || 'KULÜP';
+                    } catch (error) {
+                        return 'KULÜP';
+                    }
+                })(),
+                note,
+                created_at: new Date().toISOString(),
+            };
+            items.unshift(newItem);
+            localStorage.setItem(CLUB_NEEDS_KEY, JSON.stringify(items.slice(0, 200)));
+            window.NextScoutGrowth?.track('club_need_note_publish', { note_len: note.length });
+
+            try {
+                const apiBase = getApiBaseUrl();
+                await fetch(`${apiBase}/club-needs`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                    },
+                    body: JSON.stringify({
+                        club_name: newItem.club_name,
+                        position: 'Belirtilmedi',
+                        priority: 'medium',
+                        note: newItem.note,
+                    }),
+                });
+            } catch (error) {}
+
+            if (textarea) textarea.value = '';
+            if (msg) msg.textContent = 'Not gönderildi (API + yerel).';
+            setTimeout(() => {
+                if (msg) msg.textContent = '';
+                toggleClubNeedsPanel(false);
+            }, 900);
+        }
+
+        function toggleClubPromoPanel(forceState) {
+            const panel = document.getElementById('clubPromoPanel');
+            if (!panel) return;
+            const shouldOpen = typeof forceState === 'boolean' ? forceState : !panel.classList.contains('active');
+            panel.classList.toggle('active', shouldOpen);
+            if (!shouldOpen) return;
+
+            const nameInput = document.getElementById('clubPromoName');
+            const msg = document.getElementById('clubPromoMsg');
+            if (msg) msg.textContent = '';
+            if (nameInput && !nameInput.value.trim()) {
+                try {
+                    const user = JSON.parse(localStorage.getItem('nextscout_user') || '{}');
+                    const fallbackName = (user?.club_name || user?.name || '').toString().trim();
+                    if (fallbackName) nameInput.value = fallbackName;
+                } catch (error) {}
+            }
+        }
+
+        function readFileAsDataUrl(file) {
+            return new Promise((resolve) => {
+                if (!file) {
+                    resolve('');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = () => resolve(typeof reader.result === 'string' ? reader.result : '');
+                reader.onerror = () => resolve('');
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function publishClubPromo() {
+            const msg = document.getElementById('clubPromoMsg');
+            const name = (document.getElementById('clubPromoName')?.value || '').trim();
+            const notes = (document.getElementById('clubPromoNotes')?.value || '').trim();
+            const videoUrl = (document.getElementById('clubPromoVideoUrl')?.value || '').trim();
+            const paid = Boolean(document.getElementById('clubPromoPaid')?.checked);
+            const image1File = document.getElementById('clubPromoImage1')?.files?.[0] || null;
+            const image2File = document.getElementById('clubPromoImage2')?.files?.[0] || null;
+
+            if (!name) {
+                if (msg) msg.textContent = 'KULÜP ismi zorunlu.';
+                return;
+            }
+            if (!paid) {
+                if (msg) msg.textContent = 'Yayinlamak icin ödeme onayi gerekli.';
+                return;
+            }
+            const checklist = window.NextScoutData?.editorialChecklist
+                ? window.NextScoutData.editorialChecklist({ title: name, body: notes || 'KULÜP tanitim metni' })
+                : { ok: true, warnings: [] };
+            if (!checklist.ok) {
+                if (msg) msg.textContent = `Icerik kontrolu: ${checklist.warnings.join(', ')}`;
+                return;
+            }
+
+            const [image1, image2] = await Promise.all([
+                readFileAsDataUrl(image1File),
+                readFileAsDataUrl(image2File),
+            ]);
+
+            let promos = [];
+            try {
+                const parsed = JSON.parse(localStorage.getItem(CLUB_PROMOS_KEY) || '[]');
+                promos = Array.isArray(parsed) ? parsed : [];
+            } catch (error) {
+                promos = [];
+            }
+
+            const safeName = name.toLowerCase();
+            const filtered = promos.filter((item) => (item?.club_name || '').toString().trim().toLowerCase() !== safeName);
+            filtered.unshift({
+                id: Date.now(),
+                club_name: name,
+                notes,
+                video_url: videoUrl,
+                images: [image1, image2].filter(Boolean).slice(0, 2),
+                paid: true,
+                created_at: new Date().toISOString(),
+            });
+
+            localStorage.setItem(CLUB_PROMOS_KEY, JSON.stringify(filtered.slice(0, 100)));
+            window.NextScoutGrowth?.track('club_promo_publish', { club: name.slice(0, 40) });
+            if (msg) msg.textContent = 'KULÜP tanitimi ödeme onayi ile anasayfada yayına alindi.';
+            setTimeout(() => toggleClubPromoPanel(false), 700);
+        }
+
+        async function publishTrialEventApi(payload) {
+            const apiBase = getApiBaseUrl();
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            const persistLocal = () => {
+                const rows = JSON.parse(localStorage.getItem('nextscout_trial_events') || '[]');
+                rows.unshift({
+                    id: Date.now(),
+                    type: payload.event_type === 'trial_day' ? 'trial' : (payload.event_type === 'training_session' ? 'training' : 'match'),
+                    title: payload.title,
+                    date: payload.event_date.slice(0, 10),
+                    time: payload.event_date.slice(11, 16),
+                    city: payload.city,
+                    venue: payload.venue,
+                    owner: 'KULÜP Yetkilisi',
+                    owner_role: 'club',
+                    club_name: 'KULÜP',
+                    status: 'registration_open',
+                });
+                localStorage.setItem('nextscout_trial_events', JSON.stringify(rows));
+                return rows[0];
+            };
+
+            if (!token || token === 'local-session-token') {
+                return persistLocal();
+            }
+
+            try {
+                const response = await fetch(`${apiBase}/community-events`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                const body = await response.json().catch(() => ({}));
+                if (!response.ok || body?.ok === false) {
+                    return persistLocal();
+                }
+                return body?.data || null;
+            } catch (error) {
+                return persistLocal();
+            }
+        }
+
+        function toggleTrialPublishPanel(forceState) {
+            const panel = document.getElementById('trialPublishPanel');
+            if (!panel) return;
+            const shouldOpen = typeof forceState === 'boolean' ? forceState : !panel.classList.contains('active');
+            panel.classList.toggle('active', shouldOpen);
+        }
+
+        function pushLocalNotification(title, message) {
+            try {
+                const key = 'nextscout_local_notifications';
+                const rows = JSON.parse(localStorage.getItem(key) || '[]');
+                rows.unshift({
+                    id: Date.now(),
+                    title,
+                    message,
+                    type: 'trial_event',
+                    created_at: new Date().toISOString(),
+                    read: false,
+                });
+                localStorage.setItem(key, JSON.stringify(rows.slice(0, 300)));
+            } catch (error) {}
+        }
+
+        function publishTrialEvent() {
+            const type = (document.getElementById('trialType')?.value || 'trial').trim();
+            const title = (document.getElementById('trialTitle')?.value || '').trim();
+            const date = (document.getElementById('trialDate')?.value || '').trim();
+            const time = (document.getElementById('trialTime')?.value || '').trim();
+            const city = (document.getElementById('trialCity')?.value || '').trim();
+            const venue = (document.getElementById('trialVenue')?.value || '').trim();
+            const msg = document.getElementById('trialPublishMsg');
+
+            if (!title || !date || !time || !city) {
+                if (msg) msg.textContent = 'Baslik, tarih, saat ve sehir zorunlu.';
+                return;
+            }
+
+            const typeMap = { trial: 'trial_day', training: 'training_session', match: 'trial_match' };
+            const eventDateIso = new Date(`${date}T${time}:00`).toISOString();
+
+            const payload = {
+                title,
+                description: 'KULÜP dashboard ilani',
+                event_type: typeMap[type] || 'trial_day',
+                city,
+                district: null,
+                venue: venue || 'Belirtilecek',
+                event_date: eventDateIso,
+                max_participants: 60,
+                entry_fee: 0,
+                is_free: true,
+                skill_level: 'all_levels',
+                contact_info: '',
+            };
+
+            publishTrialEventApi(payload)
+                .then(() => {
+                    pushLocalNotification('Yeni Deneme/Idman Ilani', `${title} yayına alindi.`);
+                    if (msg) msg.textContent = 'İlan yayına alindi.';
+                    setTimeout(() => toggleTrialPublishPanel(false), 500);
+                })
+                .catch((error) => {
+                    if (msg) msg.textContent = `İlan yayınlanamadi: ${error.message}`;
+                });
+        }
+
+        function logout() {
+            localStorage.removeItem('nextscout_token');
+            localStorage.removeItem('nextscout_user');
+            localStorage.removeItem('nextscout_user_email');
+            localStorage.removeItem('nextscout_user_name');
+            localStorage.removeItem('nextscout_user_role');
+            localStorage.removeItem('nextscout_user_id');
+            localStorage.removeItem('nextscout_demo_login');
+            window.location.href = 'index.html';
+        }
+
+        async function init() {
+            window.NextScoutGrowth?.bindAutoTelemetry(document);
+            const grid = document.getElementById('playersGrid');
+            grid.innerHTML = '<div style="padding:18px;border:1px solid #e5e7eb;border-radius:10px;background:#f9fafb;color:#6b7280;">Oyuncular yukleniyor...</div>';
+            try {
+                allPlayers = await loadPlayersFromApi();
+            } catch (error) {
+                allPlayers = getFallbackPlayers();
+            }
+            filteredPlayers = allPlayers.slice();
+            renderPlayers(filteredPlayers);
+            updateStats();
+            await loadTeamTransferSummary();
+            renderCompareSelection();
+
+            ['playerName', 'position', 'ageRange', 'rating'].forEach((id) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const evt = id === 'position' || id === 'rating' ? 'change' : 'input';
+                el.addEventListener(evt, scheduleSearchPlayers);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+    <script src="assets/js/core-stability.js"></script>
+    <script src="assets/js/mobile-professional.js" defer></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,402 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Favorilerim - NextScout</title>
+    <meta name="description" content="NextScout favorites sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://nextscout.app/favorites.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Favorilerim - NextScout">
+    <meta property="og:description" content="NextScout favorites sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/favorites.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Favorilerim - NextScout">
+    <meta name="twitter:description" content="NextScout favorites sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #1f252d;
+      --card: #232a33;
+      --line: #334155;
+      --line-soft: #475569;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --primary: #60a5fa;
+      --danger: #dc2626;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.16), transparent 34%),
+        radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.14), transparent 36%),
+        var(--bg);
+      color: var(--text);
+    }
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 18px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(35, 42, 51, 0.9);
+      padding: 12px;
+      box-shadow: 0 12px 26px rgba(2, 6, 23, 0.24);
+    }
+    .title {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 800;
+      color: #dbeafe;
+    }
+    .sub {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .btn {
+      border: 1px solid var(--line-soft);
+      background: #2b3440;
+      color: var(--primary);
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .toolbar {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .count {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .btn-danger {
+      color: var(--danger);
+      border-color: #7f1d1d;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 12px 24px rgba(2, 6, 23, 0.25);
+    }
+    .card-photo {
+      height: 136px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 100%);
+      border-bottom: 1px solid var(--line-soft);
+      color: #dbeafe;
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+    .content {
+      padding: 12px;
+    }
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .name {
+      font-size: 16px;
+      font-weight: 800;
+      margin: 0;
+      color: #f8fafc;
+    }
+    .pos-tag {
+      font-size: 10px;
+      font-weight: 700;
+      color: #bfdbfe;
+      border: 1px solid #1d4ed8;
+      background: rgba(30, 58, 138, 0.25);
+      border-radius: 999px;
+      padding: 3px 8px;
+      white-space: nowrap;
+    }
+    .meta {
+      color: #94a3b8;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .chip {
+      font-size: 10px;
+      color: #bfdbfe;
+      background: rgba(30, 58, 138, 0.28);
+      border: 1px solid #1d4ed8;
+      border-radius: 8px;
+      padding: 2px 6px;
+      font-weight: 700;
+    }
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .actions button {
+      flex: 1;
+      border: 1px solid var(--line-soft);
+      background: #1f2937;
+      color: #bfdbfe;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .actions .remove {
+      background: #1f2937;
+      color: var(--danger);
+      border-color: #7f1d1d;
+    }
+    .empty {
+      border: 1px dashed #475569;
+      border-radius: 12px;
+      padding: 26px;
+      text-align: center;
+      color: var(--muted);
+      background: var(--card);
+      font-weight: 600;
+    }
+    .auth-gate {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--card);
+      padding: 28px;
+      text-align: center;
+      box-shadow: 0 14px 30px rgba(2, 6, 23, 0.35);
+      margin-top: 10px;
+    }
+    .auth-gate h2 { margin: 0; font-size: 24px; color: #dbeafe; }
+    .auth-gate p { margin: 10px 0 0; color: var(--muted); }
+    .auth-actions {
+      margin-top: 16px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .auth-actions .btn { min-width: 130px; text-align: center; }
+    @media (max-width: 768px) {
+      .wrap { padding: 12px 10px 18px; }
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .title { font-size: 23px; }
+      .sub { font-size: 12px; }
+      .toolbar {
+        padding: 10px;
+        gap: 8px;
+      }
+      .btn {
+        padding: 9px 12px;
+      }
+      .grid { grid-template-columns: 1fr; }
+      .actions { display: grid; grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .actions { grid-template-columns: 1fr; }
+      .btn { width: 100%; justify-content: center; }
+      .header .btn { width: auto; }
+    }
+  </style>
+    <link rel="stylesheet" href="assets/css/mobile-unified.css">
+    <link rel="stylesheet" href="assets/css/mobile-polish.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div>
+        <h1 class="title">Favorilerim</h1>
+        <div class="sub">Favoriye eklediğin oyuncular burada listelenir.</div>
+      </div>
+      <a class="btn" href="manager-dashboard.html"><i class="fas fa-arrow-left"></i><span>Dashboard</span></a>
+    </div>
+
+    <div class="toolbar">
+      <span class="count" id="countText">0 oyuncu</span>
+      <button class="btn btn-danger" id="clearBtn"><i class="fas fa-trash"></i><span>Tümünü Temizle</span></button>
+    </div>
+
+    <div id="list"></div>
+    <div id="authGate" style="display:none;"></div>
+  </div>
+
+  <script>
+    const KEY = 'nextscout_favorite_players';
+    const listEl = document.getElementById('list');
+    const countText = document.getElementById('countText');
+    const clearBtn = document.getElementById('clearBtn');
+    const authGate = document.getElementById('authGate');
+    const toolbarEl = document.querySelector('.toolbar');
+
+    function isAuthenticated() {
+      const token = (localStorage.getItem('nextscout_token') || '').trim();
+      const userRaw = (localStorage.getItem('nextscout_user') || '').trim();
+      return Boolean(token || userRaw);
+    }
+
+    function showAuthGate() {
+      if (toolbarEl) toolbarEl.style.display = 'none';
+      listEl.style.display = 'none';
+      authGate.style.display = 'block';
+      authGate.innerHTML = `
+        <div class="auth-gate">
+          <h2>Favorileri Görmek İçin Üye Ol</h2>
+          <p>Favori oyuncu, ilan ve takip listesini görmek için önce giriş yapmalısın.</p>
+          <div class="auth-actions">
+            <a class="btn" href="#" onclick="goLogin();return false;">Giriş Yap</a>
+            <a class="btn" href="#" onclick="goRegister();return false;">Üye Ol</a>
+          </div>
+        </div>
+      `;
+    }
+
+    function goLogin() {
+      localStorage.setItem('nextscout_open_login', '1');
+      window.location.href = 'index.html';
+    }
+
+    function goRegister() {
+      localStorage.setItem('nextscout_open_register', '1');
+      window.location.href = 'index.html';
+    }
+
+    function loadFavorites() {
+      try {
+        const raw = localStorage.getItem(KEY);
+        const data = raw ? JSON.parse(raw) : [];
+        return Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveFavorites(items) {
+      localStorage.setItem(KEY, JSON.stringify(items));
+    }
+
+    function render() {
+      const items = loadFavorites();
+      countText.textContent = `${items.length} oyuncu`;
+
+      if (!items.length) {
+        listEl.innerHTML = '<div class="empty">Henüz favori oyuncu eklenmedi.</div>';
+        return;
+      }
+
+      listEl.innerHTML = `
+        <div class="grid">
+          ${items.map(p => `
+            <div class="card">
+              <div class="card-photo">${((p.name || 'O').split(' ').map(s => s[0] || '').join('').slice(0,2) || 'OY').toUpperCase()}</div>
+              <div class="content">
+                <div class="top">
+                  <h3 class="name">${p.name || '-'}</h3>
+                  <span class="pos-tag">${p.position || '-'}</span>
+                </div>
+                <div class="meta">${p.club || '-'} • ${p.league || '-'}</div>
+                <div class="stats">
+                  <span class="chip">Yas ${p.age || '-'}</span>
+                  <span class="chip">Boy ${p.height || '-'} cm</span>
+                  <span class="chip">Rating ${p.rating || '-'} / 10</span>
+                </div>
+                <div class="actions">
+                  <button onclick="contact('${p.id}')"><i class="fas fa-comments"></i> İletişim</button>
+                  <button class="remove" onclick="removeFav('${p.id}')"><i class="fas fa-xmark"></i> Kaldır</button>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function removeFav(id) {
+      const items = loadFavorites().filter(x => String(x.id) !== String(id));
+      saveFavorites(items);
+      render();
+    }
+
+    function contact(id) {
+      const item = loadFavorites().find(x => String(x.id) === String(id));
+      if (!item) return;
+      nsAlert(`${item.name} ile iletişim başlatılıyor...`);
+    }
+
+    clearBtn.addEventListener('click', () => {
+      if (!confirm('Tüm favorileri silmek istediğine emin misin?')) return;
+      saveFavorites([]);
+      render();
+    });
+
+    if (!isAuthenticated()) {
+      showAuthGate();
+    } else {
+      render();
+    }
+  </script>
+    <script src="assets/js/core-stability.js"></script>
+    <script src="assets/js/mobile-professional.js" defer></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

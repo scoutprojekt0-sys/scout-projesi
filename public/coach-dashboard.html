@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scout DASHBOARD | NextScout</title>
+  <meta name="description" content="Scout paneli: kesif listeleri, canlı akis ve teknik degerlendirme sureclerini takip edin.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="canonical" href="https://nextscout.app/coach-dashboard.html">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:site_name" content="NextScout">
+  <meta property="og:title" content="Scout DASHBOARD | NextScout">
+  <meta property="og:description" content="Scout paneli: kesif listeleri, canlı akis ve teknik degerlendirme sureclerini takip edin.">
+  <meta property="og:url" content="https://nextscout.app/coach-dashboard.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+  <meta name="theme-color" content="#4f46e5">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/mobile-unified.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.16), transparent 34%),
+        radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.14), transparent 36%),
+        #1f252d;
+      color: #e2e8f0;
+    }
+
+    .top-navbar { background: rgba(31, 37, 45, 0.92); border-bottom: 1px solid #334155; padding: 0 20px; height: 70px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 8px 24px rgba(2,6,23,.35); backdrop-filter: blur(8px); }
+    .navbar-left { display: flex; align-items: center; gap: 30px; flex: 1; }
+    .logo { font-size: 20px; font-weight: 800; color: #bfdbfe; min-width: 150px; }
+    .navbar-right { display: flex; align-items: center; gap: 15px; }
+    .btn-small { padding: 8px 14px; border: 1px solid transparent; border-radius: 999px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all .2s; display:inline-flex; align-items:center; gap:6px; }
+    .btn-small.primary { background: linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%); color: white; }
+    .btn-small.secondary { background: #2b3440; color: #e2e8f0; border-color: #475569; }
+    .btn-small.success { background: linear-gradient(135deg,#0ea5a1 0%,#0f766e 100%); color: white; }
+
+    .need-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(2, 6, 23, 0.62); z-index: 1500; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
+    .need-modal-overlay.show { display: flex; }
+    .need-modal { width: min(860px, 100%); background: #232a33; border: 1px solid #334155; border-radius: 14px; overflow: hidden; box-shadow: 0 30px 60px rgba(2,6,23,.45); }
+    .live-modal { width: min(860px, 100%); }
+    .player-search-modal { width: min(980px, 100%); max-height: 92vh; display: flex; flex-direction: column; }
+    .player-search-modal .need-modal-body { overflow: auto; }
+    .player-search-results { margin-top: 12px; }
+    .need-modal-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 16px 18px; border-bottom: 1px solid #334155; }
+    .need-modal-head h3 { font-size: 18px; font-weight: 800; color: #dbeafe; margin: 0; }
+    .need-modal-body { padding: 16px 18px; display: grid; gap: 10px; }
+    .need-modal-body input, .need-modal-body textarea { width: 100%; padding: 10px; border: 1px solid #475569; border-radius: 8px; font-size: 14px; font-family: inherit; background:#1f2937; color:#f8fafc; }
+    .need-modal-body textarea { min-height: 120px; resize: vertical; }
+    .need-modal-body select { width: 100%; padding: 10px; border: 1px solid #475569; border-radius: 8px; font-size: 14px; font-family: inherit; background:#1f2937; color:#f8fafc; }
+    .need-modal-body input:focus, .need-modal-body textarea:focus, .need-modal-body select:focus { outline: none; border-color: #60a5fa; box-shadow: 0 0 0 3px rgba(96,165,250,.16); }
+    .live-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .need-modal-actions { display: flex; justify-content: flex-end; gap: 10px; padding: 0 18px 18px; }
+
+    .main-container { display: grid; grid-template-columns: 240px 1fr; gap: 20px; padding: 20px; min-height: calc(100vh - 70px); }
+    .sidebar { background: #232a33; border: 1px solid #334155; border-radius: 12px; padding: 20px; height: fit-content; position: sticky; top: 90px; box-shadow: 0 12px 26px rgba(2,6,23,.24); }
+    .sidebar-title { font-size: 11px; text-transform: uppercase; color: #9ca3af; font-weight: 600; margin-bottom: 12px; letter-spacing: .5px; }
+    .sidebar-menu { list-style: none; }
+    .sidebar-item { padding: 10px 12px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; transition: all .2s; display: flex; align-items: center; gap: 10px; font-size: 14px; color: #cbd5e1; border:1px solid #334155; background:#2b3440; }
+    .sidebar-item i { width: 18px; text-align: center; color: #93c5fd; font-size: 13px; }
+    .sidebar-item span:last-child { font-weight: 600; letter-spacing: 0.1px; }
+    .sidebar-item:hover { background: #1f2937; color: #f8fafc; }
+    .sidebar-item.active { background: linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%); color: white; font-weight: 500; border-color:#60a5fa; }
+    .sidebar-item.active i { color: #e0e7ff; }
+
+    .content { display: grid; grid-template-columns: 1fr; gap: 20px; }
+    .welcome-card { background: linear-gradient(135deg,#1e40af 0%,#0ea5e9 100%); color: white; border-radius: 12px; padding: 30px; box-shadow: 0 12px 28px rgba(2,6,23,.35); }
+    .welcome-card h1 { font-size: 28px; margin-bottom: 10px; }
+    .welcome-card p { margin: 0; opacity: .95; font-size: 15px; }
+
+    .quick-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 15px; }
+    .stat-card { background: #232a33; border: 1px solid #334155; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 12px 24px rgba(2,6,23,.2); border-top: 3px solid #1d4ed8; }
+    .stat-card-value { font-size: 28px; font-weight: bold; color: #60a5fa; margin-bottom: 8px; }
+    .stat-card-label { font-size: 13px; color: #9ca3af; text-transform: uppercase; }
+
+    .search-section, .results-section { background: #232a33; border:1px solid #334155; border-radius: 12px; padding: 20px; box-shadow: 0 12px 24px rgba(2,6,23,.2); }
+    .search-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 15px; margin-bottom: 15px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-group label { font-weight: 600; font-size: 13px; color: #e2e8f0; }
+    .form-group input, .form-group select { padding: 10px; border: 1px solid #475569; border-radius: 8px; font-size: 13px; background:#1f2937; color:#f8fafc; }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: #60a5fa; box-shadow: 0 0 0 3px rgba(96,165,250,.16); }
+    .search-btn { padding: 10px 16px; background: linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all .2s; }
+    .search-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(29,78,216,.35); }
+
+    .players-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(250px,1fr)); gap: 20px; margin-top: 20px; }
+    .player-card { background: #2b3440; border-radius: 12px; overflow: hidden; border: 1px solid #475569; transition: all .3s; }
+    .player-card:hover { transform: translateY(-8px); box-shadow: 0 12px 30px rgba(2,6,23,.35); border-color: #60a5fa; }
+    .player-card-image { width: 100%; height: 150px; background: linear-gradient(135deg,#1e40af 0%,#0ea5e9 100%); display: flex; align-items: center; justify-content: center; font-size: 60px; }
+    .player-card-content { padding: 16px; }
+    .player-name { font-size: 16px; font-weight: 700; color: #f8fafc; margin-bottom: 4px; }
+    .player-position { font-size: 12px; color: #93c5fd; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
+    .player-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; font-size: 12px; }
+    .player-info-label { color: #9ca3af; font-size: 11px; }
+    .player-info-value { color: #f8fafc; font-weight: 700; }
+    .player-rating { display: flex; align-items: center; gap: 8px; padding: 10px; background: #1f2937; border:1px solid #475569; border-radius: 8px; margin-bottom: 12px; }
+    .rating-stars { color: #fbbf24; font-size: 14px; }
+    .rating-value { color: #fbbf24; font-weight: 700; font-size: 13px; }
+    .card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .action-btn { padding: 8px 10px; border: 1px solid #475569; background: #1f2937; color: #bfdbfe; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; transition: all .2s; }
+    .action-btn:hover { background: #334155; color: white; border-color: #60a5fa; }
+    .action-btn.primary { background: linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%); color: white; border-color: transparent; }
+    .quick-report-section { background: #232a33; border:1px solid #334155; border-radius: 12px; padding: 20px; box-shadow: 0 12px 24px rgba(2,6,23,.2); }
+    .quick-report-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
+    .quick-report-result { border: 1px solid #475569; border-radius: 10px; background: #1f2937; padding: 10px 12px; font-size: 12px; color: #dbeafe; }
+
+    @media (max-width: 1024px) {
+      .search-grid { grid-template-columns: repeat(2,1fr); }
+      .players-grid { grid-template-columns: repeat(2,1fr); }
+      .quick-report-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .top-navbar { height:auto; min-height:60px; padding:8px 10px; align-items:flex-start; flex-wrap:wrap; gap:8px; }
+      .navbar-left { width:100%; }
+      .navbar-right { width:100%; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; overflow:visible; }
+      .btn-small { width:100%; justify-content:center; white-space:normal; text-align:center; min-height:42px; padding:8px 10px; font-size:12px; line-height:1.2; }
+      .btn-small span { white-space:normal; }
+      .main-container { grid-template-columns: 1fr; padding:10px; gap:10px; }
+      .sidebar { position: static; top:auto; padding:12px; }
+      .sidebar-menu { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+      .sidebar-item { margin-bottom:0; font-size:13px; min-height:42px; }
+      .search-grid { grid-template-columns: 1fr; }
+      .players-grid { grid-template-columns: 1fr; }
+      .quick-stats { grid-template-columns: repeat(2,1fr); gap:10px; }
+      .quick-report-grid { grid-template-columns: 1fr; }
+      .live-grid { grid-template-columns: 1fr; }
+      .search-section h2,
+      .results-section h2,
+      .quick-report-section h2 { color:#e5e7eb !important; }
+      .need-modal-overlay { padding:10px; align-items:flex-end; }
+      .need-modal { width:100%; max-height:92vh; border-radius:14px 14px 0 0; display:grid; grid-template-rows:auto 1fr auto; }
+      .need-modal-head { border-bottom-color:#374151; }
+      .need-modal-body { overflow-y:auto; max-height:calc(92vh - 128px); }
+      .need-modal-actions { border-top:1px solid #374151; padding-top:10px; }
+    }
+    @media (max-width: 480px) {
+      .navbar-right { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .btn-small { font-size:11px; min-height:40px; }
+    }
+  </style>
+    <link rel="stylesheet" href="assets/css/mobile-polish.css">
+</head>
+<body>
+    <div class="top-navbar">
+      <div class="navbar-left"><div class="logo">NextScout Scout</div></div>
+      <div class="navbar-right">
+      <button class="btn-small success" onclick="openCoachNeedModal()"><i class="fas fa-plus-circle"></i><span>İlan Ver</span></button>
+      <button class="btn-small success" onclick="openTrialPublishModal()"><i class="fas fa-calendar-check"></i><span>Deneme/Idman Ilani</span></button>
+      <button class="btn-small primary" onclick="openLiveScoutModal()"><i class="fas fa-tower-broadcast"></i><span>Canlı Scout Baslat</span></button>
+      <button class="btn-small home-btn-global" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;" onclick="window.location.href='index.html'"><i class="fas fa-house"></i><span>Ana Sayfa</span></button>
+      <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Çıkış</span></button>
+      </div>
+    </div>
+
+  <div class="main-container">
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-title">MENU</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-item active" onclick="openPlayerSearchModal()"><i class="fas fa-magnifying-glass"></i><span>Oyuncu Ara</span></li>
+          <li class="sidebar-item" onclick="openScoutProfile()"><i class="fas fa-user"></i><span>Profilim</span></li>
+          <li class="sidebar-item" onclick="openWatchlist()"><i class="fas fa-list-check"></i><span>Takip Listem</span></li>
+          <li class="sidebar-item" onclick="openTrialCenter()"><i class="fas fa-calendar-check"></i><span>Deneme & Idmanlar</span></li>
+          <li class="sidebar-item" onclick="openPerformance()"><i class="fas fa-chart-line"></i><span>Performans Analizi</span></li>
+          <li class="sidebar-item" onclick="openVideoAnalysis()"><i class="fas fa-video"></i><span>Video Analiz</span></li>
+          <li class="sidebar-item" onclick="openLiveScoutModal()"><i class="fas fa-tower-broadcast"></i><span>Canlı Scout</span></li>
+          <li class="sidebar-item" onclick="openMessages()"><i class="fas fa-comments"></i><span>Mesajlarim</span></li>
+          <li class="sidebar-item" onclick="openSettings()"><i class="fas fa-gear"></i><span>Ayarlar</span></li>
+          <li class="sidebar-item" onclick="openHelp()"><i class="fas fa-circle-question"></i><span>Yardim</span></li>
+        </ul>
+      </div>
+    </aside>
+
+    <div class="content">
+      <div class="welcome-card">
+        <h1>Scout DASHBOARD</h1>
+        <p>Oyuncu izle, analiz et ve takip listene ekle.</p>
+      </div>
+
+      <div class="quick-stats">
+        <div class="stat-card"><div class="stat-card-value" id="statPool">0</div><div class="stat-card-label">Oyuncu Havuzu</div></div>
+        <div class="stat-card"><div class="stat-card-value" id="statFiltered">0</div><div class="stat-card-label">Filtre Sonucu</div></div>
+        <div class="stat-card"><div class="stat-card-value" id="statWatch">0</div><div class="stat-card-label">Takip Listem</div></div>
+        <div class="stat-card"><div class="stat-card-value" id="statAvg">0.0</div><div class="stat-card-label">Ortalama Rating</div></div>
+      </div>
+
+      <div class="quick-report-section">
+        <h2 style="margin-bottom:14px;font-size:18px;font-weight:800;color:#e5e7eb;">Mac Sonu Anlik Rapor</h2>
+        <div class="quick-report-grid">
+          <div class="form-group"><label>Mac Basligi</label><input type="text" id="quickReportTitle" placeholder="U19 Hazirlik Maci"></div>
+          <div class="form-group"><label>Oyuncu ID (ops.)</label><input type="number" id="quickReportPlayerId" placeholder="123"></div>
+          <div class="form-group"><label>Puan (1-100)</label><input type="number" id="quickReportRating" min="1" max="100" value="75"></div>
+          <div class="form-group">
+            <label>Oneri</label>
+            <select id="quickReportRecommendation">
+              <option value="recommended">Recommended</option>
+              <option value="highly_recommended">Highly Recommended</option>
+              <option value="neutral">Neutral</option>
+              <option value="not_recommended">Not Recommended</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:10px;">
+          <label>Kisa Teknik Not</label>
+          <textarea id="quickReportNote" style="min-height:80px;" placeholder="Kisa analiz notu..."></textarea>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="btn-small primary" type="button" onclick="saveQuickScoutReport()">Raporu Kaydet</button>
+          <div class="quick-report-result" id="quickReportResult">Henuz rapor kaydi yok.</div>
+        </div>
+      </div>
+
+      <div class="search-section">
+        <h2 style="margin-bottom:20px;font-size:18px;font-weight:800;color:#e5e7eb;">Oyuncu Filtresi</h2>
+        <div class="search-grid">
+          <div class="form-group"><label>Oyuncu Adi</label><input type="text" id="playerName" placeholder="Oyuncu adi gir"></div>
+          <div class="form-group"><label>Pozisyon</label><select id="position"><option value="">Tumu</option><option value="Kaleci">Kaleci</option><option value="Defans">Defans</option><option value="Orta Saha">Orta Saha</option><option value="Forvet">Forvet</option></select></div>
+          <div class="form-group"><label>Yas Araligi</label><input type="text" id="ageRange" placeholder="18-30"></div>
+          <div class="form-group"><label>Min. Rating</label><select id="rating"><option value="">Tumu</option><option value="7.0">7.0+</option><option value="7.5">7.5+</option><option value="8.0">8.0+</option><option value="8.5">8.5+</option></select></div>
+        </div>
+        <button class="search-btn" onclick="searchPlayers()">Ara</button>
+      </div>
+
+      <div class="results-section">
+        <h2 style="margin-bottom:20px;font-size:18px;font-weight:800;color:#e5e7eb;">Scout Sonuclari</h2>
+        <div class="players-grid" id="playersGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="need-modal-overlay" id="coachNeedModal" onclick="if(event.target.id==='coachNeedModal'){closeCoachNeedModal();}">
+    <div class="need-modal" onclick="event.stopPropagation()">
+      <div class="need-modal-head">
+        <h3>ANTRENÖR Ilani Ver</h3>
+        <button class="btn-small secondary" type="button" onclick="closeCoachNeedModal()">Kapat</button>
+      </div>
+      <form id="coachNeedForm">
+        <div class="need-modal-body">
+          <input type="text" id="coachNeedTitle" placeholder="Baslik (or: U19 icin hizli sol kanat araniyor)" required>
+          <textarea id="coachNeedText" placeholder="Ne aradigini yaz... (pozisyon, yas, fizik, oyun tarzi vb.)" required></textarea>
+        </div>
+        <div class="need-modal-actions">
+          <button class="btn-small secondary" type="button" onclick="closeCoachNeedModal()">Iptal</button>
+          <button class="btn-small success" type="submit">Kaydet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="need-modal-overlay" id="playerSearchModal" onclick="if(event.target.id==='playerSearchModal'){closePlayerSearchModal();}">
+    <div class="need-modal player-search-modal" onclick="event.stopPropagation()">
+      <div class="need-modal-head">
+        <h3>Oyuncu Ara</h3>
+        <button class="btn-small secondary" type="button" onclick="closePlayerSearchModal()">Kapat</button>
+      </div>
+      <div class="need-modal-body">
+        <div class="search-grid">
+          <div class="form-group"><label>Oyuncu Adi</label><input type="text" id="modalPlayerName" placeholder="Oyuncu adi gir"></div>
+          <div class="form-group"><label>Pozisyon</label><select id="modalPosition"><option value="">Tumu</option><option value="Kaleci">Kaleci</option><option value="Defans">Defans</option><option value="Orta Saha">Orta Saha</option><option value="Forvet">Forvet</option></select></div>
+          <div class="form-group"><label>Yas Araligi</label><input type="text" id="modalAgeRange" placeholder="18-30"></div>
+          <div class="form-group"><label>Min. Rating</label><select id="modalRating"><option value="">Tumu</option><option value="7.0">7.0+</option><option value="7.5">7.5+</option><option value="8.0">8.0+</option><option value="8.5">8.5+</option></select></div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <button class="search-btn" type="button" onclick="searchPlayersModal()">Ara</button>
+          <button class="btn-small secondary" type="button" onclick="resetPlayersModal()">Sıfırla</button>
+        </div>
+        <div class="players-grid player-search-results" id="playersGridModal"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="need-modal-overlay" id="liveScoutModal" onclick="if(event.target.id==='liveScoutModal'){closeLiveScoutModal();}">
+    <div class="need-modal live-modal" onclick="event.stopPropagation()">
+      <div class="need-modal-head">
+        <h3>Canlı Scout Baslat</h3>
+        <button class="btn-small secondary" type="button" onclick="closeLiveScoutModal()">Kapat</button>
+      </div>
+      <form id="liveScoutForm">
+        <div class="need-modal-body">
+          <div class="live-grid">
+            <input type="text" id="liveMatchName" placeholder="Mac adi (or: U19 Hazirlik Maci)" required>
+            <input type="text" id="liveLocation" placeholder="Konum (or: Izmir Buca)">
+          </div>
+          <div class="live-grid">
+            <select id="liveSport">
+              <option value="futbol">Futbol</option>
+              <option value="basketbol">Basketbol</option>
+              <option value="voleybol">Voleybol</option>
+            </select>
+            <input type="text" id="liveFocusPlayer" placeholder="Odak oyuncu / pozisyon (or: Sol Bek #3)">
+          </div>
+          <input type="url" id="liveStreamUrl" placeholder="Ana yayın linki (opsiyonel)">
+          <div class="live-grid">
+            <input type="url" id="liveStreamYoutube" placeholder="YouTube linki">
+            <input type="url" id="liveStreamInstagram" placeholder="Instagram linki">
+          </div>
+          <div class="live-grid">
+            <input type="url" id="liveStreamFacebook" placeholder="Facebook linki">
+            <input type="url" id="liveStreamX" placeholder="X (Twitter) linki">
+          </div>
+          <textarea id="liveNote" placeholder="Kisa not (opsiyonel): Bu oyuncu hizli gecislerde etkili."></textarea>
+        </div>
+        <div class="need-modal-actions">
+          <button class="btn-small secondary" type="button" onclick="closeLiveScoutModal()">Iptal</button>
+          <button class="btn-small success" type="submit">Yayini Baslat</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="need-modal-overlay" id="trialPublishModal" onclick="if(event.target.id==='trialPublishModal'){closeTrialPublishModal();}">
+    <div class="need-modal live-modal" onclick="event.stopPropagation()">
+      <div class="need-modal-head">
+        <h3>Deneme / Idman Ilani</h3>
+        <button class="btn-small secondary" type="button" onclick="closeTrialPublishModal()">Kapat</button>
+      </div>
+      <form id="trialPublishForm">
+        <div class="need-modal-body">
+          <div class="live-grid">
+            <select id="trialEventType">
+              <option value="trial">Deneme</option>
+              <option value="training">Idman</option>
+              <option value="match">Deneme Maci</option>
+            </select>
+            <input type="text" id="trialEventTitle" placeholder="Baslik (or: U19 Acik Deneme)" required>
+          </div>
+          <div class="live-grid">
+            <input type="date" id="trialEventDate" required>
+            <input type="time" id="trialEventTime" required>
+          </div>
+          <div class="live-grid">
+            <input type="text" id="trialEventCity" placeholder="Sehir" required>
+            <input type="text" id="trialEventVenue" placeholder="Saha / Tesis">
+          </div>
+        </div>
+        <div class="need-modal-actions">
+          <button class="btn-small secondary" type="button" onclick="closeTrialPublishModal()">Iptal</button>
+          <button class="btn-small success" type="submit">Yayina Al</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const WATCH_KEY = 'nextscout_scout_watchlist';
+    let allPlayers = [];
+    let filteredPlayers = [];
+
+    function getApiBaseUrl() {
+      if (window.NextScoutApi && typeof window.NextScoutApi.base === 'function') {
+        return window.NextScoutApi.base();
+      }
+      const configured = (window.NEXTSCOUT_API_BASE || '').toString().trim();
+      if (configured) return configured.replace(/\/$/, '');
+      const query = new URLSearchParams(window.location.search);
+      const fromQuery = (query.get('api_base') || '').trim();
+      if (fromQuery) return fromQuery.replace(/\/$/, '');
+      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      return '/api';
+    }
+
+    function escapeHtml(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function parseAgeRange(value) {
+      const raw = (value || '').toString().trim();
+      if (!raw || !raw.includes('-')) return null;
+      const parts = raw.split('-').map((p) => Number(p.trim()));
+      if (parts.length !== 2 || Number.isNaN(parts[0]) || Number.isNaN(parts[1])) return null;
+      return { min: Math.min(parts[0], parts[1]), max: Math.max(parts[0], parts[1]) };
+    }
+
+    function getWatchlist() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(WATCH_KEY) || '[]');
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveWatchlist(items) {
+      localStorage.setItem(WATCH_KEY, JSON.stringify(Array.isArray(items) ? items : []));
+    }
+
+    function updateStats() {
+      const total = allPlayers.length;
+      const filtered = filteredPlayers.length;
+      const watch = getWatchlist().length;
+      const avg = filtered
+        ? (filteredPlayers.reduce((sum, p) => sum + (Number(p.rating) || 0), 0) / filtered).toFixed(1)
+        : '0.0';
+      document.getElementById('statPool').textContent = String(total);
+      document.getElementById('statFiltered').textContent = String(filtered);
+      document.getElementById('statWatch').textContent = String(watch);
+      document.getElementById('statAvg').textContent = String(avg);
+    }
+
+    function renderPlayersTo(players, gridId) {
+      const grid = document.getElementById(gridId);
+      if (!grid) return;
+      if (!Array.isArray(players) || players.length === 0) {
+        grid.innerHTML = '<div style="padding:18px;border:1px solid #475569;border-radius:10px;background:#1f2937;color:#cbd5e1;">Filtreye uygun oyuncu bulunamadi.</div>';
+        return;
+      }
+
+      grid.innerHTML = players.map((player) => {
+        const rating = Number(player.rating) || 0;
+        const starCount = Math.max(1, Math.min(5, Math.round(rating / 2)));
+        const stars = '★'.repeat(starCount) + '☆'.repeat(5 - starCount);
+        return `
+          <div class="player-card">
+            <div class="player-card-image">⚽</div>
+            <div class="player-card-content">
+              <div class="player-name">${escapeHtml(player.name || '-')}</div>
+              <div class="player-position">${escapeHtml(player.position || '-')}</div>
+              <div class="player-info">
+                <div><div class="player-info-label">Yas</div><div class="player-info-value">${escapeHtml(player.age || '-')}</div></div>
+                <div><div class="player-info-label">Boy</div><div class="player-info-value">${escapeHtml(player.height || '-')}</div></div>
+              </div>
+              <div class="player-rating"><span class="rating-stars">${stars}</span><span class="rating-value">${rating ? rating.toFixed(1) : '-'}</span></div>
+              <div class="card-actions">
+                <button class="action-btn primary" onclick="openPlayerProfile(${Number(player.id) || 0})">Profil</button>
+                <button class="action-btn" onclick="addToWatchlist(${Number(player.id) || 0})">Takip Et</button>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function renderPlayers(players) {
+      renderPlayersTo(players, 'playersGrid');
+    }
+
+    function normalizePlayer(raw) {
+      return {
+        id: Number(raw && raw.id) || 0,
+        name: (raw && raw.name) || '-',
+        position: (raw && raw.position) || '-',
+        age: (raw && raw.age) || '-',
+        height: (raw && raw.height) || '-',
+        rating: Number(raw && raw.rating) || 0,
+        club: (raw && raw.club) || '-',
+      };
+    }
+
+    async function loadPlayersFromApi() {
+      const apiBase = getApiBaseUrl();
+      const response = await fetch(`${apiBase}/public/players`, { headers: { Accept: 'application/json' } });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const payload = await response.json();
+      const rows = Array.isArray(payload && payload.data) ? payload.data : [];
+      return rows.map(normalizePlayer);
+    }
+
+    function getFallbackPlayers() {
+      return [
+        { id: 1, name: 'Ahmet Yilmaz', position: 'Forvet', age: 24, height: '180cm', rating: 8.1, club: 'Fenerbahce' },
+        { id: 2, name: 'Serdar Aziz', position: 'Defans', age: 28, height: '185cm', rating: 7.6, club: 'Galatasaray' },
+        { id: 3, name: 'Kerem Akturkoglu', position: 'Forvet', age: 26, height: '183cm', rating: 8.2, club: 'Benfica' },
+        { id: 4, name: 'Okay Yokuslu', position: 'Orta Saha', age: 27, height: '188cm', rating: 7.9, club: 'Trabzonspor' },
+      ];
+    }
+
+    function searchPlayers() {
+      const name = document.getElementById('playerName').value.trim().toLowerCase();
+      const position = document.getElementById('position').value.trim().toLowerCase();
+      const ageText = document.getElementById('ageRange').value.trim();
+      const ratingMin = Number(document.getElementById('rating').value || 0);
+      const parsedAge = parseAgeRange(ageText);
+
+      filteredPlayers = allPlayers.filter((p) => {
+        const pName = String(p.name || '').toLowerCase();
+        const pPos = String(p.position || '').toLowerCase();
+        const pAge = Number(p.age) || 0;
+        const pRating = Number(p.rating) || 0;
+
+        if (name && !pName.includes(name)) return false;
+        if (position && pPos !== position) return false;
+        if (ratingMin && pRating < ratingMin) return false;
+        if (parsedAge && (pAge < parsedAge.min || pAge > parsedAge.max)) return false;
+        return true;
+      });
+
+      renderPlayers(filteredPlayers);
+      updateStats();
+    }
+
+    function searchPlayersModal() {
+      const name = document.getElementById('modalPlayerName').value.trim().toLowerCase();
+      const position = document.getElementById('modalPosition').value.trim().toLowerCase();
+      const ageText = document.getElementById('modalAgeRange').value.trim();
+      const ratingMin = Number(document.getElementById('modalRating').value || 0);
+      const parsedAge = parseAgeRange(ageText);
+
+      const modalFiltered = allPlayers.filter((p) => {
+        const pName = String(p.name || '').toLowerCase();
+        const pPos = String(p.position || '').toLowerCase();
+        const pAge = Number(p.age) || 0;
+        const pRating = Number(p.rating) || 0;
+
+        if (name && !pName.includes(name)) return false;
+        if (position && pPos !== position) return false;
+        if (ratingMin && pRating < ratingMin) return false;
+        if (parsedAge && (pAge < parsedAge.min || pAge > parsedAge.max)) return false;
+        return true;
+      });
+
+      renderPlayersTo(modalFiltered, 'playersGridModal');
+    }
+
+    function openPlayerProfile(playerId) {
+      if (!playerId) return;
+      window.location.href = `player-profile.html?user_id=${encodeURIComponent(playerId)}`;
+    }
+
+    async function addToWatchlist(playerId) {
+      const player = allPlayers.find((p) => Number(p.id) === Number(playerId));
+      if (!player) { window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.'); return; }
+
+      const token = (localStorage.getItem('nextscout_token') || '').trim();
+      const apiBase = getApiBaseUrl();
+      if (token && token !== 'local-session-token') {
+        try {
+          const response = await fetch(`${apiBase}/favorites/${encodeURIComponent(player.id)}/toggle`, {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          if (!response.ok) {
+            const body = await response.json().catch(() => ({}));
+            throw new Error(body?.message || `HTTP ${response.status}`);
+          }
+          window.nsNotify?.success ? window.nsNotify.success(`Takip listesine eklendi: ${player.name}`) : nsnsAlert(`Takip listesine eklendi: ${player.name}`);
+          return;
+        } catch (error) {
+          // API endpoint yoksa veya gecici olarak ulasilamazsa local fallback'e devam et.
+        }
+      }
+
+      const items = getWatchlist();
+      if (items.some((x) => Number(x.id) === Number(player.id))) {
+        window.nsNotify?.info ? window.nsNotify.info('Bu oyuncu zaten takip listesinde.') : nsnsAlert('Bu oyuncu zaten takip listesinde.');
+        return;
+      }
+
+      items.unshift({
+        id: player.id,
+        name: player.name,
+        position: player.position,
+        age: player.age,
+        rating: player.rating,
+        club: player.club,
+        added_at: new Date().toISOString(),
+      });
+      saveWatchlist(items.slice(0, 500));
+      updateStats();
+      window.nsNotify?.success ? window.nsNotify.success(`Takip listesine eklendi: ${player.name}`) : nsnsAlert(`Takip listesine eklendi: ${player.name}`);
+    }
+
+    function openWatchlist() { window.location.href = 'scout-watchlist.html'; }
+    function openTrialCenter() { window.location.href = 'trial-center.html?view=coach'; }
+    function openScoutProfile() { window.location.href = 'scout-profile.html'; }
+    function openPerformance() { window.location.href = 'statistics.html'; }
+    function openVideoAnalysis() { window.location.href = 'scout-live-matches.html'; }
+    function openMessages() { window.location.href = 'notifications.html'; }
+    function openSettings() { window.location.href = 'settings.html'; }
+    function openHelp() { window.location.href = 'help.html'; }
+
+    function openPlayerSearchModal() {
+      const modal = document.getElementById('playerSearchModal');
+      if (!modal) return;
+      modal.classList.add('show');
+      resetPlayersModal();
+    }
+
+    function closePlayerSearchModal() {
+      const modal = document.getElementById('playerSearchModal');
+      if (modal) modal.classList.remove('show');
+    }
+
+    function resetPlayersModal() {
+      const name = document.getElementById('modalPlayerName');
+      const pos = document.getElementById('modalPosition');
+      const age = document.getElementById('modalAgeRange');
+      const rating = document.getElementById('modalRating');
+      if (name) name.value = '';
+      if (pos) pos.value = '';
+      if (age) age.value = '';
+      if (rating) rating.value = '';
+      renderPlayersTo(allPlayers, 'playersGridModal');
+    }
+
+    function openCoachNeedModal() {
+      const modal = document.getElementById('coachNeedModal');
+      if (modal) modal.classList.add('show');
+    }
+
+    function closeCoachNeedModal() {
+      const modal = document.getElementById('coachNeedModal');
+      if (modal) modal.classList.remove('show');
+    }
+
+    function openLiveScoutModal() {
+      const modal = document.getElementById('liveScoutModal');
+      if (modal) modal.classList.add('show');
+    }
+
+    function closeLiveScoutModal() {
+      const modal = document.getElementById('liveScoutModal');
+      if (modal) modal.classList.remove('show');
+    }
+
+    function openTrialPublishModal() {
+      const modal = document.getElementById('trialPublishModal');
+      if (modal) modal.classList.add('show');
+    }
+
+    function closeTrialPublishModal() {
+      const modal = document.getElementById('trialPublishModal');
+      if (modal) modal.classList.remove('show');
+    }
+
+    function pushLocalNotification(title, message) {
+      try {
+        const key = 'nextscout_local_notifications';
+        const rows = JSON.parse(localStorage.getItem(key) || '[]');
+        rows.unshift({
+          id: Date.now(),
+          title,
+          message,
+          type: 'trial_event',
+          created_at: new Date().toISOString(),
+          read: false,
+        });
+        localStorage.setItem(key, JSON.stringify(rows.slice(0, 300)));
+      } catch (error) {}
+    }
+
+    async function publishTrialEventApi(payload) {
+      const apiBase = getApiBaseUrl();
+      const token = (localStorage.getItem('nextscout_token') || '').trim();
+      const persistLocal = () => {
+        const rows = JSON.parse(localStorage.getItem('nextscout_trial_events') || '[]');
+        rows.unshift({
+          id: Date.now(),
+          type: payload.event_type === 'trial_day' ? 'trial' : (payload.event_type === 'training_session' ? 'training' : 'match'),
+          title: payload.title,
+          date: payload.event_date.slice(0, 10),
+          time: payload.event_date.slice(11, 16),
+          city: payload.city,
+          venue: payload.venue,
+          owner: 'Scout',
+          owner_role: 'coach',
+          club_name: '',
+          status: 'registration_open',
+        });
+        localStorage.setItem('nextscout_trial_events', JSON.stringify(rows));
+        return rows[0];
+      };
+
+      if (!token || token === 'local-session-token') {
+        return persistLocal();
+      }
+
+      try {
+        const response = await fetch(`${apiBase}/community-events`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok || body?.ok === false) {
+          return persistLocal();
+        }
+        return body?.data || null;
+      } catch (error) {
+        return persistLocal();
+      }
+    }
+
+    async function saveCoachNeed(payload) {
+      const apiBase = getApiBaseUrl();
+      const token = (localStorage.getItem('nextscout_token') || '').trim();
+      const persistLocal = () => {
+        const rows = JSON.parse(localStorage.getItem('nextscout_coach_needs') || '[]');
+        const row = {
+          id: Date.now(),
+          author_name: payload?.author_name || 'ANTRENÖR',
+          title: payload?.title || '',
+          description: payload?.description || '',
+          created_at: new Date().toISOString(),
+          source: 'local',
+        };
+        rows.unshift(row);
+        localStorage.setItem('nextscout_coach_needs', JSON.stringify(rows.slice(0, 200)));
+        return row;
+      };
+
+      if (!token || token === 'local-session-token') return persistLocal();
+
+      try {
+        const response = await fetch(`${apiBase}/discovery/coach-needs`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+        if (!response.ok) return persistLocal();
+        const body = await response.json().catch(() => ({}));
+        return body?.data || persistLocal();
+      } catch (error) {
+        return persistLocal();
+      }
+    }
+
+    async function saveLiveScoutMatch(payload) {
+      const apiBase = getApiBaseUrl();
+      const persistLocal = () => {
+        const rows = JSON.parse(localStorage.getItem('nextscout_live_matches') || '[]');
+        const row = {
+          id: Date.now(),
+          match_name: payload?.match_name || 'Canlı Mac',
+          location: payload?.location || '',
+          sport: payload?.sport || 'futbol',
+          stream_url: payload?.stream_url || '',
+          note: payload?.note || '',
+          created_at: new Date().toISOString(),
+          source: 'local',
+        };
+        rows.unshift(row);
+        localStorage.setItem('nextscout_live_matches', JSON.stringify(rows.slice(0, 200)));
+        return row;
+      };
+
+      try {
+        const response = await fetch(`${apiBase}/live-matches`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+        if (!response.ok) return persistLocal();
+        const body = await response.json().catch(() => ({}));
+        return body?.data || persistLocal();
+      } catch (error) {
+        return persistLocal();
+      }
+    }
+
+    function getQuickScoutReports() {
+      try {
+        const raw = localStorage.getItem('nextscout_quick_scout_reports');
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function setQuickScoutReports(items) {
+      localStorage.setItem('nextscout_quick_scout_reports', JSON.stringify(items.slice(0, 200)));
+    }
+
+    async function saveQuickScoutReport() {
+      const title = (document.getElementById('quickReportTitle')?.value || '').trim();
+      const playerId = Number(document.getElementById('quickReportPlayerId')?.value || 0);
+      const rating = Number(document.getElementById('quickReportRating')?.value || 0);
+      const recommendation = (document.getElementById('quickReportRecommendation')?.value || 'recommended').trim();
+      const note = (document.getElementById('quickReportNote')?.value || '').trim();
+      const root = document.getElementById('quickReportResult');
+
+      if (!title) {
+        if (root) root.textContent = 'Baslik zorunlu.';
+        return;
+      }
+      if (!rating || rating < 1 || rating > 100) {
+        if (root) root.textContent = 'Puan 1-100 arasi olmali.';
+        return;
+      }
+
+      const localRecord = {
+        id: Date.now(),
+        title,
+        player_user_id: playerId || null,
+        overall_rating: rating,
+        recommendation,
+        technical_assessment: note,
+        watched_location: (document.getElementById('liveLocation')?.value || '').trim() || null,
+        created_at: new Date().toISOString(),
+      };
+
+      const all = getQuickScoutReports();
+      all.unshift(localRecord);
+      setQuickScoutReports(all);
+
+      const token = (localStorage.getItem('nextscout_token') || '').trim();
+      const apiBase = getApiBaseUrl();
+      let sentToApi = false;
+
+      if (token && playerId > 0) {
+        try {
+          const response = await fetch(`${apiBase}/scout-reports`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              player_user_id: playerId,
+              title,
+              technical_assessment: note || null,
+              overall_rating: rating,
+              recommendation,
+              watched_location: localRecord.watched_location,
+              watched_date: new Date().toISOString().slice(0, 10),
+              is_private: false,
+            }),
+          });
+          sentToApi = response.ok;
+        } catch (error) {
+          sentToApi = false;
+        }
+      }
+
+      if (root) {
+        root.textContent = sentToApi
+          ? `Rapor kaydedildi ve APIye gönderildi. (${title})`
+          : `Rapor local kaydedildi. API gönderimi icin Oyuncu ID + giriş gerekli.`;
+      }
+    }
+
+    function initQuickScoutReportWidget() {
+      const root = document.getElementById('quickReportResult');
+      if (!root) return;
+      const first = getQuickScoutReports()[0];
+      if (!first) {
+        root.textContent = 'Henuz rapor kaydi yok.';
+        return;
+      }
+      root.textContent = `Son rapor: ${first.title} • ${first.overall_rating}/100`;
+    }
+
+    function logout() {
+      localStorage.removeItem('nextscout_token');
+      localStorage.removeItem('nextscout_user');
+      localStorage.removeItem('nextscout_user_email');
+      localStorage.removeItem('nextscout_user_name');
+      localStorage.removeItem('nextscout_user_role');
+      localStorage.removeItem('nextscout_user_id');
+      localStorage.removeItem('nextscout_demo_login');
+      window.location.href = 'index.html';
+    }
+
+    document.getElementById('coachNeedForm')?.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const title = (document.getElementById('coachNeedTitle').value || '').trim();
+      const text = (document.getElementById('coachNeedText').value || '').trim();
+      if (!title || !text) {
+        window.nsNotify?.error ? window.nsNotify.error('Baslik ve ilan aciklamasi zorunlu.') : nsnsAlert('Baslik ve ilan aciklamasi zorunlu.');
+        return;
+      }
+
+      let coachName = '';
+      try {
+        const raw = localStorage.getItem('nextscout_user');
+        const user = raw ? JSON.parse(raw) : null;
+        coachName = (user && user.name) ? String(user.name) : '';
+      } catch (error) {}
+
+      const row = {
+        author_name: coachName || 'ANTRENÖR',
+        title,
+        description: text,
+      };
+
+      try {
+        await saveCoachNeed(row);
+        this.reset();
+        closeCoachNeedModal();
+        window.nsNotify?.success ? window.nsNotify.success('İlan APIye kaydedildi. Anasayfa 4. ikonda gorunecek.') : nsnsAlert('İlan APIye kaydedildi. Anasayfa 4. ikonda gorunecek.');
+      } catch (error) {
+        window.nsNotify?.error ? window.nsNotify.error(`İlan APIye kaydedilemedi: ${error.message}`) : nsnsAlert(`İlan APIye kaydedilemedi: ${error.message}`);
+      }
+    });
+
+    document.getElementById('liveScoutForm')?.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const matchName = (document.getElementById('liveMatchName').value || '').trim();
+      const location = (document.getElementById('liveLocation').value || '').trim();
+      const sport = (document.getElementById('liveSport').value || 'futbol').trim();
+      const focus = (document.getElementById('liveFocusPlayer').value || '').trim();
+      const stream = (document.getElementById('liveStreamUrl').value || '').trim();
+      const streamYoutube = (document.getElementById('liveStreamYoutube').value || '').trim();
+      const streamInstagram = (document.getElementById('liveStreamInstagram').value || '').trim();
+      const streamFacebook = (document.getElementById('liveStreamFacebook').value || '').trim();
+      const streamX = (document.getElementById('liveStreamX').value || '').trim();
+      const note = (document.getElementById('liveNote').value || '').trim();
+
+      function isValidHttpUrl(url) {
+        try {
+          const parsed = new URL(String(url));
+          return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+        } catch (error) {
+          return false;
+        }
+      }
+
+      function isAllowedPlatformUrl(url, platformKey) {
+        if (!url) return true;
+        let host = '';
+        try {
+          host = (new URL(String(url)).hostname || '').toLowerCase();
+        } catch (error) {
+          return false;
+        }
+        const rules = {
+          youtube: ['youtube.com', 'www.youtube.com', 'youtu.be'],
+          instagram: ['instagram.com', 'www.instagram.com'],
+          facebook: ['facebook.com', 'www.facebook.com', 'fb.watch'],
+          x: ['x.com', 'www.x.com', 'twitter.com', 'www.twitter.com'],
+        };
+        const allowedHosts = rules[platformKey] || [];
+        return allowedHosts.some((allowed) => host === allowed || host.endsWith(`.${allowed}`));
+      }
+
+      if (!matchName) {
+        window.nsNotify?.error ? window.nsNotify.error('Mac adi zorunlu.') : nsnsAlert('Mac adi zorunlu.');
+        return;
+      }
+      if (stream && /(^|:\/\/)(www\.)?example\.com(\/|$)/i.test(stream)) {
+        window.nsNotify?.error ? window.nsNotify.error('Lütfen gercek bir yayın linki girin. example.com test alanidir.') : nsnsAlert('Lütfen gercek bir yayın linki girin. example.com test alanidir.');
+        return;
+      }
+      const allStreams = [streamYoutube, streamInstagram, streamFacebook, streamX];
+      if (allStreams.some((url) => url && /(^|:\/\/)(www\.)?example\.com(\/|$)/i.test(url))) {
+        window.nsNotify?.error ? window.nsNotify.error('Platform linklerinde example.com kullanmayin.') : nsnsAlert('Platform linklerinde example.com kullanmayin.');
+        return;
+      }
+      if (stream && !isValidHttpUrl(stream)) {
+        window.nsNotify?.error ? window.nsNotify.error('Ana yayın linki http/https formatinda olmali.') : nsnsAlert('Ana yayın linki http/https formatinda olmali.');
+        return;
+      }
+      if (streamYoutube && (!isValidHttpUrl(streamYoutube) || !isAllowedPlatformUrl(streamYoutube, 'youtube'))) {
+        window.nsNotify?.error ? window.nsNotify.error('YouTube linki gecersiz. youtube.com veya youtu.be kullanin.') : nsnsAlert('YouTube linki gecersiz. youtube.com veya youtu.be kullanin.');
+        return;
+      }
+      if (streamInstagram && (!isValidHttpUrl(streamInstagram) || !isAllowedPlatformUrl(streamInstagram, 'instagram'))) {
+        window.nsNotify?.error ? window.nsNotify.error('Instagram linki gecersiz. instagram.com kullanin.') : nsnsAlert('Instagram linki gecersiz. instagram.com kullanin.');
+        return;
+      }
+      if (streamFacebook && (!isValidHttpUrl(streamFacebook) || !isAllowedPlatformUrl(streamFacebook, 'facebook'))) {
+        window.nsNotify?.error ? window.nsNotify.error('Facebook linki gecersiz. facebook.com veya fb.watch kullanin.') : nsnsAlert('Facebook linki gecersiz. facebook.com veya fb.watch kullanin.');
+        return;
+      }
+      if (streamX && (!isValidHttpUrl(streamX) || !isAllowedPlatformUrl(streamX, 'x'))) {
+        window.nsNotify?.error ? window.nsNotify.error('X linki gecersiz. x.com veya twitter.com kullanin.') : nsnsAlert('X linki gecersiz. x.com veya twitter.com kullanin.');
+        return;
+      }
+
+      let scoutName = '';
+      try {
+        const raw = localStorage.getItem('nextscout_user');
+        const user = raw ? JSON.parse(raw) : null;
+        scoutName = (user && user.name) ? String(user.name) : '';
+      } catch (error) {}
+
+      const streamLinks = {
+        youtube: streamYoutube || null,
+        instagram: streamInstagram || null,
+        facebook: streamFacebook || null,
+        x: streamX || null,
+      };
+      const firstPlatformStream = streamYoutube || streamFacebook || streamInstagram || streamX || '';
+      const primaryStream = stream || firstPlatformStream || null;
+
+      const payload = {
+        match_name: matchName,
+        location: location || null,
+        sport: sport || null,
+        focus: focus || null,
+        stream_url: primaryStream,
+        stream_links: streamLinks,
+        note: note || null,
+        scout_name: scoutName || null,
+      };
+
+      try {
+        await saveLiveScoutMatch(payload);
+        this.reset();
+        closeLiveScoutModal();
+        window.location.href = 'scout-live-matches.html';
+      } catch (error) {
+        window.nsNotify?.error ? window.nsNotify.error(`Canlı mac kaydedilemedi: ${error.message}`) : nsnsAlert(`Canlı mac kaydedilemedi: ${error.message}`);
+      }
+    });
+
+    document.getElementById('trialPublishForm')?.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const type = (document.getElementById('trialEventType').value || 'trial').trim();
+      const title = (document.getElementById('trialEventTitle').value || '').trim();
+      const date = (document.getElementById('trialEventDate').value || '').trim();
+      const time = (document.getElementById('trialEventTime').value || '').trim();
+      const city = (document.getElementById('trialEventCity').value || '').trim();
+      const venue = (document.getElementById('trialEventVenue').value || '').trim();
+
+      if (!title || !date || !time || !city) {
+        window.nsNotify?.error ? window.nsNotify.error('Baslik, tarih, saat ve sehir zorunlu.') : nsnsAlert('Baslik, tarih, saat ve sehir zorunlu.');
+        return;
+      }
+
+      const typeMap = { trial: 'trial_day', training: 'training_session', match: 'trial_match' };
+      const eventDateIso = new Date(`${date}T${time}:00`).toISOString();
+
+      const payload = {
+        title,
+        description: 'DASHBOARD ilani',
+        event_type: typeMap[type] || 'trial_day',
+        city,
+        district: null,
+        venue: venue || 'Belirtilecek',
+        event_date: eventDateIso,
+        max_participants: 40,
+        entry_fee: 0,
+        is_free: true,
+        skill_level: 'all_levels',
+        contact_info: '',
+      };
+
+      publishTrialEventApi(payload)
+        .then(() => {
+          this.reset();
+          closeTrialPublishModal();
+          pushLocalNotification('Yeni Deneme/Idman Ilani', `${title} yayına alindi.`);
+          window.nsNotify?.success ? window.nsNotify.success('Deneme/Idman ilani yayına alindi.') : nsnsAlert('Deneme/Idman ilani yayına alindi.');
+        })
+        .catch((error) => {
+          window.nsNotify?.error ? window.nsNotify.error(`İlan yayınlanamadi: ${error.message}`) : nsnsAlert(`İlan yayınlanamadi: ${error.message}`);
+        });
+    });
+
+    async function init() {
+      const grid = document.getElementById('playersGrid');
+      grid.innerHTML = '<div style="padding:18px;border:1px solid #475569;border-radius:10px;background:#1f2937;color:#cbd5e1;">Oyuncular yukleniyor...</div>';
+
+      try {
+        allPlayers = await loadPlayersFromApi();
+      } catch (error) {
+        allPlayers = getFallbackPlayers();
+      }
+
+      filteredPlayers = allPlayers.slice();
+      renderPlayers(filteredPlayers);
+      updateStats();
+
+      const query = new URLSearchParams(window.location.search);
+      if (query.get('open_live') === '1') {
+        openLiveScoutModal();
+      }
+      initQuickScoutReportWidget();
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+    <script src="assets/js/core-stability.js"></script>
+    <script src="assets/js/mobile-professional.js" defer></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

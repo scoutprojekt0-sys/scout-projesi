@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manager Profili - NextScout</title>
+    <meta name="description" content="NextScout manager profile sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="https://nextscout.app/manager-profile.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Manager Profili - NextScout">
+    <meta property="og:description" content="NextScout manager profile sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/manager-profile.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Manager Profili - NextScout">
+    <meta name="twitter:description" content="NextScout manager profile sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg:#1f252d;
+      --ink:#e2e8f0;
+      --muted:#94a3b8;
+      --line:#334155;
+      --panel:#232a33;
+      --panel-soft:#2b3440;
+      --primary:#60a5fa;
+      --primary-strong:#1d4ed8;
+      --success:#14b8a6;
+      --shadow:0 14px 30px rgba(2,6,23,.35);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.16), transparent 34%),
+        radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.14), transparent 36%),
+        var(--bg);
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 24px}
+    .head{
+      display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px;
+      border:1px solid var(--line);border-radius:14px;background:rgba(35,42,51,.92);padding:14px 16px;
+      box-shadow:var(--shadow);
+    }
+    .title{margin:0;font-size:30px;font-weight:800;color:#dbeafe;line-height:1.1}
+    .sub{margin-top:8px;color:var(--muted);font-size:13px}
+    .head-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .btn{
+      border:1px solid #475569;background:var(--panel-soft);color:var(--ink);padding:10px 14px;border-radius:999px;
+      text-decoration:none;font-weight:700;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;
+      transition:all .2s ease;
+    }
+    .btn:hover{transform:translateY(-1px);border-color:var(--primary)}
+    .btn-primary{background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;border-color:transparent}
+    .home-btn{
+      background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);
+      border:1px solid #2563eb;
+      color:#fff;
+      border-radius:10px;
+      padding:10px 14px;
+    }
+    .layout{display:grid;grid-template-columns:1.8fr 1fr;gap:12px}
+    .card{
+      background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:14px;
+    }
+    .section-title{margin:0 0 10px 0;font-size:16px;font-weight:800;color:#dbeafe}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .field{display:flex;flex-direction:column;gap:6px}
+    .label{font-size:12px;font-weight:700;color:#cbd5e1}
+    .input,.textarea,.select{
+      border:1px solid #475569;border-radius:10px;padding:10px 12px;font-size:13px;background:#1f2937;color:#f8fafc;
+    }
+    .input::placeholder,.textarea::placeholder{color:#94a3b8}
+    .input:focus,.textarea:focus,.select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(96,165,250,.16)}
+    .textarea{min-height:100px;resize:vertical}
+    .full{grid-column:1/-1}
+    .act{display:flex;gap:8px;margin-top:12px}
+    .photo-box{display:flex;flex-direction:column;align-items:center;gap:10px}
+    .photo{width:132px;height:132px;border-radius:16px;border:1px solid #475569;object-fit:cover;background:#1f2937}
+    .row{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #334155;font-size:13px}
+    .row:last-child{border-bottom:0}
+    .muted{color:var(--muted)}
+    .ok{color:#34d399;font-size:12px;min-height:16px;margin-top:8px;font-weight:700}
+    .preview-modal{
+      position:fixed;inset:0;background:rgba(2,6,23,.62);backdrop-filter:blur(4px);
+      display:none;align-items:center;justify-content:center;padding:14px;z-index:9999;
+    }
+    .preview-modal.show{display:flex}
+    .preview-card{
+      width:min(560px,100%);max-height:90vh;overflow:auto;background:var(--panel);border:1px solid var(--line);
+      border-radius:16px;box-shadow:0 24px 50px rgba(2,6,23,.45);
+    }
+    .preview-head{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 14px 10px;border-bottom:1px solid var(--line);
+    }
+    .preview-title{margin:0;font-size:18px;font-weight:800;color:#dbeafe}
+    .preview-close{
+      width:34px;height:34px;border-radius:10px;border:1px solid #475569;background:#2b3440;color:#dbeafe;cursor:pointer;
+      display:inline-flex;align-items:center;justify-content:center;
+    }
+    .preview-body{padding:14px;display:grid;gap:12px}
+    .preview-top{
+      display:flex;align-items:center;gap:12px;padding:10px;border:1px solid #475569;border-radius:12px;background:#1f2937;
+    }
+    .preview-photo{
+      width:78px;height:78px;border-radius:12px;border:1px solid #475569;object-fit:cover;background:#111827;flex:0 0 auto;
+    }
+    .preview-name{font-size:17px;font-weight:800;color:#f8fafc}
+    .preview-branch{font-size:12px;color:#93c5fd;font-weight:700}
+    .preview-bio{
+      border:1px solid #475569;border-radius:12px;background:#1f2937;padding:10px;font-size:13px;color:#cbd5e1;line-height:1.45;
+    }
+    .preview-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .preview-item{
+      border:1px solid #475569;border-radius:10px;background:#1f2937;padding:9px 10px;
+    }
+    .preview-k{font-size:10px;color:#94a3b8;text-transform:uppercase;font-weight:700;margin-bottom:4px}
+    .preview-v{font-size:13px;color:#f8fafc;font-weight:700;word-break:break-word}
+
+    @media (max-width:900px){
+      .layout{grid-template-columns:1fr}
+      .form-grid{grid-template-columns:1fr}
+    }
+    @media (max-width:768px){
+      .wrap{padding:10px 10px 18px}
+      .head{padding:12px;gap:10px;flex-direction:column}
+      .title{font-size:24px}
+      .sub{font-size:12px}
+      .head-actions{width:100%;justify-content:flex-start}
+      .btn{padding:9px 12px}
+      .card{padding:12px}
+      .section-title{font-size:15px}
+      .act{display:grid;grid-template-columns:1fr 1fr}
+      .photo{width:120px;height:120px}
+      .row{font-size:12px}
+      .preview-card{max-height:94vh;border-radius:14px}
+      .preview-grid{grid-template-columns:1fr}
+    }
+    @media (max-width:480px){
+      .act{grid-template-columns:1fr}
+      .btn{width:100%;justify-content:center}
+      .head-actions .btn{width:auto}
+      .input,.textarea,.select{font-size:16px}
+    }
+  </style>
+    <link rel="stylesheet" href="assets/css/mobile-unified.css">
+    <link rel="stylesheet" href="assets/css/mobile-polish.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <h1 class="title">Manager Profili</h1>
+                        <div class="sub">İsim ve foto dâhil profil bilgilerini düzenle.</div>
+      </div>
+      <div class="head-actions">
+        <button type="button" class="btn" id="openPublicPreviewBtn"><i class="fas fa-user-check"></i><span>Public Gorunum</span></button>
+        <a class="btn home-btn" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div class="card">
+        <h2 class="section-title">Profil Bilgileri</h2>
+        <form id="managerForm" class="form-grid">
+          <div class="field">
+            <label class="label" for="name">Isim Soyisim</label>
+            <input class="input" id="name" required placeholder="Ad Soyad">
+          </div>
+          <div class="field">
+            <label class="label" for="agency">Sirket / Ajans</label>
+            <input class="input" id="agency" placeholder="Ornek Sports Management">
+          </div>
+          <div class="field">
+            <label class="label" for="city">Sehir</label>
+            <input class="input" id="city" placeholder="Istanbul">
+          </div>
+          <div class="field">
+            <label class="label" for="country">Ülke</label>
+            <input class="input" id="country" placeholder="Türkiye">
+          </div>
+          <div class="field">
+            <label class="label" for="phone">Telefon</label>
+            <input class="input" id="phone" placeholder="+90 5xx xxx xx xx">
+          </div>
+          <div class="field full">
+            <label class="label" for="branch">Brans</label>
+            <select class="select" id="branch">
+              <option value="">Seciniz</option>
+              <option value="Futbol">Futbol</option>
+              <option value="Basketbol">Basketbol</option>
+              <option value="Voleybol">Voleybol</option>
+              <option value="Coklu Brans">Coklu Brans</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label class="label" for="bio">Hakkimda</label>
+            <textarea class="textarea" id="bio" placeholder="Kisa manager tanitimi..."></textarea>
+          </div>
+          <div class="act full">
+            <button class="btn btn-primary" type="submit"><i class="fas fa-floppy-disk"></i><span>Kaydet</span></button>
+            <button class="btn" type="button" id="resetBtn"><i class="fas fa-rotate-left"></i><span>Sıfırla</span></button>
+          </div>
+        </form>
+        <div id="saveMsg" class="ok"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Profil Fotografi</h2>
+        <div class="photo-box">
+          <img id="photoPreview" class="photo" alt="Manager Fotograf">
+          <input type="file" id="photoInput" accept="image/*">
+          <button class="btn" type="button" id="clearPhotoBtn"><i class="fas fa-trash"></i><span>Fotografi Kaldir</span></button>
+        </div>
+
+        <h2 class="section-title" style="margin-top:14px;">Public Ozet</h2>
+        <div class="row"><span class="muted">Isim</span><strong id="sumName">-</strong></div>
+        <div class="row"><span class="muted">Brans</span><strong id="sumBranch">-</strong></div>
+        <div class="row"><span class="muted">Ajans</span><strong id="sumAgency">-</strong></div>
+        <div class="row"><span class="muted">Sehir</span><strong id="sumCity">-</strong></div>
+        <div class="row"><span class="muted">Ülke</span><strong id="sumCountry">-</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="preview-modal" id="publicPreviewModal" onclick="if(event.target===this) closePublicPreviewModal()">
+    <div class="preview-card">
+      <div class="preview-head">
+        <h3 class="preview-title">Public Profil Onizleme</h3>
+        <button type="button" class="preview-close" onclick="closePublicPreviewModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="preview-body">
+        <div class="preview-top">
+          <img id="previewPhoto" class="preview-photo" alt="Manager">
+          <div>
+            <div id="previewName" class="preview-name">-</div>
+            <div id="previewBranch" class="preview-branch">-</div>
+          </div>
+        </div>
+        <div id="previewBio" class="preview-bio">-</div>
+        <div class="preview-grid">
+          <div class="preview-item"><div class="preview-k">Ajans</div><div class="preview-v" id="previewAgency">-</div></div>
+          <div class="preview-item"><div class="preview-k">Sehir</div><div class="preview-v" id="previewCity">-</div></div>
+          <div class="preview-item"><div class="preview-k">Ülke</div><div class="preview-v" id="previewCountry">-</div></div>
+          <div class="preview-item"><div class="preview-k">Telefon</div><div class="preview-v" id="previewPhone">-</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const KEY = 'nextscout_manager_profile';
+
+    function getApiBaseUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = (params.get('api_base') || '').trim();
+      if (fromQuery) return fromQuery.replace(/\/$/, '');
+      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      return '/api';
+    }
+
+    function getToken() {
+      return (localStorage.getItem('nextscout_token') || '').trim();
+    }
+
+    function authHeaders() {
+      const token = getToken();
+      if (!token) return null;
+      return {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      };
+    }
+
+    function defaults(){
+      return { name:'Manager', agency:'', city:'', country:'Türkiye', phone:'', branch:'Futbol', bio:'', photo:'' };
+    }
+
+    function loadProfile(){
+      try {
+        const raw = localStorage.getItem(KEY);
+        if(!raw) return defaults();
+        const parsed = JSON.parse(raw);
+        return Object.assign(defaults(), parsed || {});
+      } catch { return defaults(); }
+    }
+
+    function saveProfile(p){ localStorage.setItem(KEY, JSON.stringify(p)); }
+
+    function setForm(p){
+      document.getElementById('name').value = p.name || '';
+      document.getElementById('agency').value = p.agency || '';
+      document.getElementById('city').value = p.city || '';
+      document.getElementById('country').value = p.country || '';
+      document.getElementById('phone').value = p.phone || '';
+      document.getElementById('branch').value = p.branch || '';
+      document.getElementById('bio').value = p.bio || '';
+      document.getElementById('photoPreview').src = p.photo || 'https://via.placeholder.com/120x120?text=Manager';
+    }
+
+    function readForm(current){
+      return {
+        name: document.getElementById('name').value.trim(),
+        agency: document.getElementById('agency').value.trim(),
+        city: document.getElementById('city').value.trim(),
+        country: document.getElementById('country').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        branch: document.getElementById('branch').value,
+        bio: document.getElementById('bio').value.trim(),
+        photo: current.photo || ''
+      };
+    }
+
+    function renderSummary(p){
+      document.getElementById('sumName').textContent = p.name || '-';
+      document.getElementById('sumBranch').textContent = p.branch || '-';
+      document.getElementById('sumAgency').textContent = p.agency || '-';
+      document.getElementById('sumCity').textContent = p.city || '-';
+      document.getElementById('sumCountry').textContent = p.country || '-';
+    }
+
+    function renderPublicPreviewModal(p){
+      const photo = p.photo || 'https://via.placeholder.com/120x120?text=Manager';
+      document.getElementById('previewPhoto').src = photo;
+      document.getElementById('previewName').textContent = p.name || '-';
+      document.getElementById('previewBranch').textContent = p.branch || '-';
+      document.getElementById('previewBio').textContent = p.bio || 'Tanitim metni yok.';
+      document.getElementById('previewAgency').textContent = p.agency || '-';
+      document.getElementById('previewCity').textContent = p.city || '-';
+      document.getElementById('previewCountry').textContent = p.country || '-';
+      document.getElementById('previewPhone').textContent = p.phone || '-';
+    }
+
+    function openPublicPreviewModal(){
+      const modal = document.getElementById('publicPreviewModal');
+      if (!modal) return;
+      profile = readForm(profile);
+      renderPublicPreviewModal(profile);
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePublicPreviewModal(){
+      const modal = document.getElementById('publicPreviewModal');
+      if (!modal) return;
+      modal.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    async function loadBackendProfile() {
+      const headers = authHeaders();
+      if (!headers) return null;
+      const res = await fetch(`${getApiBaseUrl()}/staff-profiles/me`, { headers: { 'Accept': 'application/json', 'Authorization': headers.Authorization } });
+      if (!res.ok) return null;
+      const payload = await res.json();
+      const data = payload?.data || {};
+      return {
+        name: data.name || '',
+        agency: data.organization || '',
+        city: data.city || '',
+        country: data.country || '',
+        phone: data.phone || '',
+        branch: data.branch || '',
+        bio: data.bio || '',
+        photo: data.profile_photo_url || '',
+      };
+    }
+
+    async function saveBackendProfile(p) {
+      const headers = authHeaders();
+      if (!headers) return false;
+      const body = {
+        name: p.name,
+        city: p.city,
+        phone: p.phone,
+        organization: p.agency,
+        experience_years: null,
+        bio: p.bio,
+        country: p.country,
+        branch: p.branch,
+        profile_photo_url: p.photo || '',
+      };
+      const res = await fetch(`${getApiBaseUrl()}/staff-profiles/me`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify(body),
+      });
+      return res.ok;
+    }
+
+    let profile = loadProfile();
+
+    async function init() {
+      const remote = await loadBackendProfile();
+      if (remote) {
+        profile = Object.assign(profile, remote);
+        saveProfile(profile);
+      }
+      setForm(profile);
+      renderSummary(profile);
+    }
+
+    document.getElementById('managerForm')?.addEventListener('submit', async function(e){
+      e.preventDefault();
+      profile = readForm(profile);
+      if(!profile.name){
+        document.getElementById('saveMsg').textContent = 'Isim zorunlu.';
+        return;
+      }
+
+      let backendSaved = false;
+      try {
+        backendSaved = await saveBackendProfile(profile);
+      } catch (error) {
+        backendSaved = false;
+      }
+
+      saveProfile(profile);
+      renderSummary(profile);
+      renderPublicPreviewModal(profile);
+      document.getElementById('saveMsg').textContent = backendSaved ? 'Profil backend kaydedildi.' : 'Profil local kaydedildi.';
+      setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 1800);
+    });
+
+    document.getElementById('resetBtn')?.addEventListener('click', function(){
+      profile = defaults();
+      saveProfile(profile);
+      setForm(profile);
+      renderSummary(profile);
+      renderPublicPreviewModal(profile);
+      document.getElementById('saveMsg').textContent = 'Profil sıfırlandi.';
+      setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 1500);
+    });
+
+    document.getElementById('photoInput')?.addEventListener('change', async function(e){
+      const file = e.target.files && e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = async function(evt){
+        profile.photo = String((evt.target && evt.target.result) || '');
+        document.getElementById('photoPreview').src = profile.photo || 'https://via.placeholder.com/120x120?text=Manager';
+        saveProfile(profile);
+        renderPublicPreviewModal(profile);
+        try { await saveBackendProfile(profile); } catch (error) {}
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById('clearPhotoBtn')?.addEventListener('click', async function(){
+      profile.photo = '';
+      saveProfile(profile);
+      document.getElementById('photoPreview').src = 'https://via.placeholder.com/120x120?text=Manager';
+      document.getElementById('photoInput').value = '';
+      renderPublicPreviewModal(profile);
+      try { await saveBackendProfile(profile); } catch (error) {}
+    });
+
+    document.getElementById('openPublicPreviewBtn')?.addEventListener('click', openPublicPreviewModal);
+
+    init();
+  </script>
+    <script src="assets/js/core-stability.js"></script>
+    <script src="assets/js/mobile-professional.js" defer></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,299 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>İstatistikler - NextScout</title>
+    <meta name="description" content="NextScout statistics sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://nextscout.app/statistics.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="İstatistikler - NextScout">
+    <meta property="og:description" content="NextScout statistics sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/statistics.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="İstatistikler - NextScout">
+    <meta name="twitter:description" content="NextScout statistics sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+  <style>
+    :root {
+      --bg: #1f252d;
+      --card: #232a33;
+      --line: #334155;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --primary: #1d4ed8;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --shadow: 0 12px 28px rgba(2, 6, 23, 0.24);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.12), transparent 34%),
+        radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.10), transparent 36%),
+        var(--bg);
+      color: var(--text);
+    }
+    .wrap {
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .title { margin: 0; font-size: 30px; font-weight: 800; }
+    .subtitle { margin-top: 6px; color: var(--muted); font-size: 14px; }
+    .btn {
+      border: 1px solid #2563eb;
+      background: linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+    .k { font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; }
+    .v { margin-top: 6px; font-size: 28px; font-weight: 800; }
+    .delta { margin-top: 6px; font-size: 12px; font-weight: 700; }
+    .up { color: var(--green); }
+    .mid { color: var(--amber); }
+
+    .panel {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 12px;
+    }
+    .chart-wrap {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+    .panel-title {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+      font-weight: 800;
+    }
+    .list {
+      display: grid;
+      gap: 8px;
+    }
+    .row {
+      background: #1f2937;
+      border: 1px solid #475569;
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .row .rk { color: var(--muted); }
+    .row .rv { font-weight: 700; }
+
+    canvas {
+      width: 100%;
+      height: 260px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #0f172a 0%, #1f2937 100%);
+      border: 1px solid #334155;
+    }
+
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr 1fr; }
+      .panel { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .grid { grid-template-columns: 1fr; }
+      .title { font-size: 24px; }
+      .wrap { padding: 14px 10px; }
+      .header { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .btn { width: 100%; text-align: center; }
+      .chart-wrap { padding: 12px; }
+      canvas { height: 220px; }
+    }
+  </style>
+    <link rel="stylesheet" href="assets/css/mobile-unified.css">
+    <link rel="stylesheet" href="assets/css/mobile-polish.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div>
+        <h1 class="title">İstatistikler</h1>
+        <div class="subtitle">Sezon performansın ve son form durumun.</div>
+      </div>
+      <a class="btn" href="coach-dashboard.html">Ana Sayfa</a>
+    </div>
+
+    <div class="grid" id="statsCards"></div>
+
+    <div class="panel">
+      <div class="chart-wrap">
+        <h2 class="panel-title">Son 6 Maç Form Grafiği</h2>
+        <canvas id="formChart" width="760" height="260"></canvas>
+      </div>
+
+      <div class="chart-wrap">
+        <h2 class="panel-title">Detay Dağılım</h2>
+        <div class="list" id="detailList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const profileRaw = localStorage.getItem('playerProfile');
+    let p = {};
+    try { p = profileRaw ? JSON.parse(profileRaw) : {}; } catch { p = {}; }
+
+    const stats = {
+      matches: Number(p.matches || 28),
+      goals: Number(p.goals || 15),
+      assists: Number(p.assists || 6),
+      rating: Number(p.rating || 4.8),
+      keyPasses: Number(p.keyPasses || 19),
+      duelsWon: Number(p.duelsWon || 42)
+    };
+
+    const cards = [
+      { k: 'Maç', v: stats.matches, d: '+3 bu ay', c: 'up' },
+      { k: 'Gol', v: stats.goals, d: '+2 son hafta', c: 'up' },
+      { k: 'Asist', v: stats.assists, d: '+1 son hafta', c: 'up' },
+      { k: 'Rating', v: stats.rating.toFixed(1), d: 'stabil', c: 'mid' }
+    ];
+
+    const statsCards = document.getElementById('statsCards');
+    statsCards.innerHTML = cards.map(x => `
+      <div class="card">
+        <div class="k">${x.k}</div>
+        <div class="v">${x.v}</div>
+        <div class="delta ${x.c}">${x.d}</div>
+      </div>
+    `).join('');
+
+    const detailList = document.getElementById('detailList');
+    detailList.innerHTML = `
+      <div class="row"><span class="rk">Toplam Maç</span><span class="rv">${stats.matches}</span></div>
+      <div class="row"><span class="rk">Toplam Gol</span><span class="rv">${stats.goals}</span></div>
+      <div class="row"><span class="rk">Toplam Asist</span><span class="rv">${stats.assists}</span></div>
+      <div class="row"><span class="rk">Kilit Pas</span><span class="rv">${stats.keyPasses}</span></div>
+      <div class="row"><span class="rk">Kazanılan İkili Mücadele</span><span class="rv">${stats.duelsWon}</span></div>
+      <div class="row"><span class="rk">Ortalama Rating</span><span class="rv">${stats.rating.toFixed(1)}</span></div>
+    `;
+
+    const form = [6.8, 7.2, 7.6, 8.1, 7.9, Math.max(6.5, Math.min(9.8, stats.rating + 2))];
+    const labels = ['M1', 'M2', 'M3', 'M4', 'M5', 'M6'];
+
+    const canvas = document.getElementById('formChart');
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+
+    function drawChart() {
+      ctx.clearRect(0, 0, w, h);
+
+      const pad = { l: 46, r: 20, t: 22, b: 34 };
+      const cw = w - pad.l - pad.r;
+      const ch = h - pad.t - pad.b;
+
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = pad.t + (ch / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(pad.l, y);
+        ctx.lineTo(w - pad.r, y);
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '12px Inter, Arial';
+      for (let i = 0; i < labels.length; i++) {
+        const x = pad.l + (cw / (labels.length - 1)) * i;
+        ctx.fillText(labels[i], x - 10, h - 12);
+      }
+
+      const minY = 6.0;
+      const maxY = 10.0;
+      const toX = i => pad.l + (cw / (form.length - 1)) * i;
+      const toY = v => pad.t + (1 - (v - minY) / (maxY - minY)) * ch;
+
+      const grad = ctx.createLinearGradient(0, pad.t, 0, h - pad.b);
+      grad.addColorStop(0, 'rgba(37,99,235,0.30)');
+      grad.addColorStop(1, 'rgba(37,99,235,0.05)');
+
+      ctx.beginPath();
+      ctx.moveTo(toX(0), h - pad.b);
+      form.forEach((v, i) => ctx.lineTo(toX(i), toY(v)));
+      ctx.lineTo(toX(form.length - 1), h - pad.b);
+      ctx.closePath();
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      ctx.beginPath();
+      form.forEach((v, i) => {
+        const x = toX(i), y = toY(v);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.strokeStyle = '#60a5fa';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      form.forEach((v, i) => {
+        const x = toX(i), y = toY(v);
+        ctx.beginPath();
+        ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#0f172a';
+        ctx.fill();
+        ctx.strokeStyle = '#60a5fa';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = '#bfdbfe';
+        ctx.font = '11px Inter, Arial';
+        ctx.fillText(v.toFixed(1), x - 10, y - 10);
+      });
+    }
+
+    drawChart();
+  </script>
+    <script src="assets/js/core-stability.js"></script>
+    <script src="assets/js/mobile-professional.js" defer></script>
+</body>
+</html>
+
+
+
+
+
+
+
+

@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard | NextScout</title>
+    <meta name="description" content="MENAJER paneli: oyuncu portfoyu, teklif yönetimi ve ihtiyaç eslesme akislarini yonetin.">
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="https://nextscout.app/manager-dashboard.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Manager Dashboard | NextScout">
+    <meta property="og:description" content="MENAJER paneli: oyuncu portfoyu, teklif yönetimi ve ihtiyaç eslesme akislarini yonetin.">
+    <meta property="og:url" content="https://nextscout.app/manager-dashboard.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#4f46e5">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/mobile-unified.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #1f252d;
+            --ink: #e2e8f0;
+            --muted: #94a3b8;
+            --line: #334155;
+            --panel: #232a33;
+            --panel-soft: #2b3440;
+            --primary: #60a5fa;
+            --primary-strong: #1d4ed8;
+            --accent: #0ea5e9;
+            --success: #14b8a6;
+        }
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.16), transparent 34%),
+                radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.14), transparent 36%),
+                var(--bg);
+        }
+        .top-navbar {
+            background: rgba(31, 37, 45, 0.92);
+            border-bottom: 1px solid var(--line);
+            padding: 0 20px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 8px 24px rgba(2, 6, 23, 0.35);
+            backdrop-filter: blur(8px);
+        }
+        .navbar-left { display: flex; align-items: center; gap: 24px; flex: 1; }
+        .logo {
+            font-size: 21px;
+            font-weight: 800;
+            color: #bfdbfe;
+            letter-spacing: 0.2px;
+            min-width: 170px;
+        }
+        .navbar-right { display: flex; align-items: center; gap: 10px; }
+        .btn-small {
+            padding: 8px 14px;
+            border: 1px solid transparent;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+        .btn-small.primary { background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%); color: #fff; }
+        .btn-small.secondary { background: #2b3440; color: #e2e8f0; border-color: #475569; }
+        .btn-small.success { background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%); color: #fff; }
+        .btn-small:hover { transform: translateY(-1px); filter: brightness(1.06); }
+        .home-btn {
+            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%) !important;
+            border: 1px solid #2563eb !important;
+            color: #ffffff !important;
+            border-radius: 10px !important;
+            padding: 10px 14px !important;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 16px;
+            padding: 18px;
+            min-height: calc(100vh - 70px);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .sidebar {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 14px;
+            height: fit-content;
+            position: sticky;
+            top: 86px;
+            box-shadow: 0 12px 26px rgba(2, 6, 23, 0.24);
+        }
+        .sidebar-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: 0.6px;
+        }
+        .sidebar-menu { list-style: none; }
+        .sidebar-item {
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #cbd5e1;
+            background: var(--panel-soft);
+        }
+        .sidebar-item i {
+            width: 18px;
+            text-align: center;
+            color: #93c5fd;
+            font-size: 13px;
+        }
+        .sidebar-item span:last-child {
+            font-weight: 600;
+            letter-spacing: 0.1px;
+        }
+        .sidebar-item:hover { border-color: var(--primary); color: #f8fafc; transform: translateY(-1px); }
+        .sidebar-item.active { background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%); border-color: #60a5fa; color: #fff; font-weight: 700; }
+        .sidebar-item.active i { color: #e0e7ff; }
+
+        .content { display: grid; grid-template-columns: 1fr; gap: 14px; }
+        .welcome-card {
+            background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 100%);
+            color: #fff;
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 14px 32px rgba(30, 64, 175, 0.22);
+        }
+        .welcome-card h1 { font-size: 30px; margin-bottom: 8px; }
+        .welcome-card p { margin: 0; opacity: 0.96; font-size: 14px; }
+
+        .quick-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .stat-card {
+            background: var(--panel);
+            border-radius: 12px;
+            padding: 16px 12px;
+            text-align: center;
+            border: 1px solid var(--line);
+            box-shadow: 0 10px 22px rgba(2, 6, 23, 0.2);
+        }
+        .stat-card-value { font-size: 30px; font-weight: 800; color: var(--primary); margin-bottom: 6px; }
+        .stat-card-label { font-size: 11px; color: var(--muted); text-transform: uppercase; font-weight: 700; letter-spacing: .5px; }
+
+        .search-section,
+        .results-section,
+        .need-section,
+        .offer-score-section {
+            background: var(--panel);
+            border-radius: 14px;
+            padding: 18px;
+            border: 1px solid var(--line);
+            box-shadow: 0 12px 24px rgba(2, 6, 23, 0.2);
+        }
+        .search-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
+        .form-group { display: flex; flex-direction: column; gap: 7px; }
+        .form-group label { font-weight: 700; font-size: 12px; color: #cbd5e1; letter-spacing: .2px; }
+        .form-group input, .form-group select {
+            padding: 10px 11px;
+            border: 1px solid #475569;
+            border-radius: 9px;
+            font-size: 13px;
+            background: #1f2937;
+            color: #f8fafc;
+        }
+        .form-group input::placeholder { color: #94a3b8; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(96,165,250,0.16); }
+        .search-btn {
+            padding: 11px 16px;
+            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            align-self: flex-end;
+        }
+        .search-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(29,78,216,0.35); }
+
+        .players-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; margin-top: 16px; }
+        .player-card {
+            background: var(--panel-soft);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #475569;
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+        .player-card:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(2, 6, 23, 0.35); border-color: var(--primary); }
+        .player-card-image {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 58px;
+        }
+        .player-card-content { padding: 14px; }
+        .player-name { font-size: 16px; font-weight: 800; color: #f8fafc; margin-bottom: 4px; }
+        .player-position { font-size: 11px; color: #93c5fd; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; letter-spacing: .4px; }
+        .player-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; font-size: 12px; }
+        .player-info-item { display: flex; flex-direction: column; gap: 2px; }
+        .player-info-label { color: var(--muted); font-size: 11px; }
+        .player-info-value { color: #f1f5f9; font-weight: 700; }
+        .player-rating { display: flex; align-items: center; gap: 8px; padding: 9px; background: #1f2937; border: 1px solid #475569; border-radius: 8px; margin-bottom: 12px; }
+        .rating-stars { color: #fbbf24; font-size: 13px; }
+        .rating-value { color: #fcd34d; font-weight: 700; font-size: 12px; }
+        .card-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+        .action-btn {
+            padding: 8px 10px;
+            border: 1px solid #475569;
+            background: #1f2937;
+            color: #bfdbfe;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .action-btn:hover { background: #334155; border-color: #60a5fa; color: #fff; }
+        .action-btn.primary { background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%); color: white; border-color: transparent; }
+        .need-list { display: grid; gap: 10px; margin-top: 12px; }
+        .need-item { border: 1px solid #475569; border-radius: 10px; padding: 12px; background: #1f2937; }
+        .need-item-title { font-size: 14px; font-weight: 800; color: #f8fafc; margin-bottom: 6px; }
+        .need-item-meta { font-size: 12px; color: #cbd5e1; display: flex; gap: 10px; flex-wrap: wrap; }
+        .need-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(2, 6, 23, 0.62); z-index: 1500; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
+        .need-modal-overlay.show { display: flex; }
+        .need-modal { width: min(860px, 100%); background: var(--panel); border-radius: 14px; box-shadow: 0 30px 60px rgba(2, 6, 23, 0.45); border: 1px solid var(--line); overflow: hidden; }
+        .need-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 18px; border-bottom: 1px solid var(--line); }
+        .need-modal-title { font-size: 18px; font-weight: 800; color: #dbeafe; }
+        .need-modal-body { padding: 16px 18px; }
+        .need-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .need-grid .form-group { margin: 0; }
+        .need-modal-footer { display: flex; justify-content: flex-end; gap: 10px; padding: 0 18px 18px; }
+        .offer-score-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
+        .offer-score-result { border: 1px solid #475569; border-radius: 10px; background: #1f2937; padding: 10px 12px; font-size: 13px; font-weight: 700; color: #dbeafe; }
+        .applications-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(2, 6, 23, 0.62); z-index: 1600; align-items: center; justify-content: center; padding: 16px; }
+        .applications-modal-overlay.show { display: flex; }
+        .applications-modal {
+            width: min(760px, 100%);
+            max-height: 90vh;
+            overflow: hidden;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            box-shadow: 0 24px 48px rgba(2, 6, 23, 0.45);
+            display: grid;
+            grid-template-rows: auto 1fr;
+        }
+        .applications-modal-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--line);
+        }
+        .applications-modal-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+            color: #dbeafe;
+        }
+        .applications-modal-body {
+            padding: 12px;
+            overflow: auto;
+            display: grid;
+            gap: 8px;
+        }
+        .application-item {
+            border: 1px solid #475569;
+            border-radius: 10px;
+            background: #1f2937;
+            padding: 10px;
+            display: grid;
+            gap: 6px;
+        }
+        .application-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .application-name {
+            font-size: 14px;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+        .application-meta {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .application-message {
+            font-size: 13px;
+            color: #cbd5e1;
+            line-height: 1.45;
+            border-top: 1px solid #334155;
+            padding-top: 6px;
+        }
+        .application-badge {
+            font-size: 10px;
+            font-weight: 700;
+            border: 1px solid #475569;
+            border-radius: 999px;
+            padding: 3px 8px;
+            color: #bfdbfe;
+            background: #1e3a8a;
+            white-space: nowrap;
+        }
+        .application-empty {
+            border: 1px dashed #475569;
+            border-radius: 10px;
+            background: #1f2937;
+            color: #94a3b8;
+            font-size: 13px;
+            text-align: center;
+            padding: 22px 10px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 1024px) {
+            .search-grid { grid-template-columns: repeat(2, 1fr); }
+            .players-grid { grid-template-columns: repeat(2, 1fr); }
+            .offer-score-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            body {
+                background: #111827;
+                color: #e5e7eb;
+            }
+            .top-navbar {
+                height: auto;
+                min-height: 60px;
+                padding: 8px 10px;
+                gap: 8px;
+                align-items: flex-start;
+                flex-wrap: wrap;
+                background: #1f2937;
+                border-bottom-color: #374151;
+                box-shadow: none;
+            }
+            .navbar-left {
+                width: 100%;
+                gap: 8px;
+            }
+            .logo {
+                font-size: 18px;
+                min-width: 0;
+            }
+            .navbar-right {
+                width: 100%;
+                gap: 8px;
+                overflow-x: auto;
+                padding-bottom: 2px;
+                scrollbar-width: thin;
+            }
+            .btn-small {
+                white-space: nowrap;
+                flex: 0 0 auto;
+                border-radius: 10px;
+            }
+
+            .main-container {
+                grid-template-columns: 1fr;
+                padding: 10px;
+                gap: 10px;
+                min-height: calc(100vh - 60px);
+            }
+            .sidebar {
+                position: static;
+                top: auto;
+                border: 1px solid #374151;
+                background: #1f2937;
+                box-shadow: none;
+                padding: 12px;
+            }
+            .sidebar-title {
+                color: #9ca3af;
+            }
+            .sidebar-menu {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+            }
+            .sidebar-item {
+                margin-bottom: 0;
+                border: 1px solid #374151;
+                background: #111827;
+                color: #cbd5e1;
+                min-height: 42px;
+                font-size: 13px;
+                padding: 8px 10px;
+            }
+            .sidebar-item:hover {
+                background: #0b1220;
+                color: #f3f4f6;
+            }
+            .sidebar-item.active {
+                border-color: #6366f1;
+                background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+            }
+
+            .content {
+                gap: 10px;
+            }
+            .welcome-card,
+            .need-section,
+            .offer-score-section,
+            .search-section,
+            .results-section {
+                border: 1px solid #374151;
+                background: #1f2937;
+                color: #e5e7eb;
+                box-shadow: none;
+                padding: 14px;
+            }
+            .welcome-card h1 {
+                font-size: 22px;
+            }
+            .welcome-card p {
+                font-size: 13px;
+                opacity: 0.92;
+            }
+
+            .search-grid { grid-template-columns: 1fr; }
+            .players-grid { grid-template-columns: 1fr; gap: 12px; }
+            .quick-stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .need-grid { grid-template-columns: 1fr; }
+            .offer-score-grid { grid-template-columns: 1fr; }
+
+            .form-group label {
+                color: #e5e7eb;
+            }
+            .form-group input,
+            .form-group select {
+                background: #0b1220;
+                color: #f3f4f6;
+                border-color: #4b5563;
+            }
+            .form-group input::placeholder {
+                color: #9ca3af;
+            }
+            .search-btn {
+                width: 100%;
+                align-self: stretch;
+            }
+
+            .need-item {
+                border-color: #374151;
+                background: #111827;
+            }
+            .need-item-title {
+                color: #f3f4f6;
+            }
+            .need-item-meta {
+                color: #cbd5e1;
+            }
+            .offer-score-result {
+                width: 100%;
+                background: #111827;
+                border-color: #374151;
+                color: #e5e7eb;
+            }
+            .stat-card {
+                background: #111827;
+                border: 1px solid #374151;
+                border-top-color: #6366f1;
+                box-shadow: none;
+            }
+            .stat-card-label {
+                color: #9ca3af;
+            }
+
+            .player-card {
+                background: #111827;
+                border-color: #374151;
+            }
+            .player-card:hover {
+                transform: none;
+                box-shadow: none;
+                border-color: #4f46e5;
+            }
+            .player-name,
+            .player-info-value {
+                color: #f3f4f6;
+            }
+            .player-info-label {
+                color: #9ca3af;
+            }
+            .player-rating {
+                background: #1f2937;
+            }
+            .action-btn {
+                background: #1f2937;
+                border-color: #4b5563;
+                color: #bfdbfe;
+            }
+            .action-btn:hover {
+                background: #4f46e5;
+                border-color: #4f46e5;
+                color: #ffffff;
+            }
+
+            .need-modal-overlay {
+                padding: 10px;
+                align-items: flex-end;
+            }
+            .need-modal {
+                width: 100%;
+                max-height: 92vh;
+                border-radius: 14px 14px 0 0;
+                border-color: #374151;
+                background: #1f2937;
+            }
+            .applications-modal {
+                width: 100%;
+                max-height: 92vh;
+                border-radius: 14px 14px 0 0;
+            }
+            .need-modal-header {
+                border-bottom-color: #374151;
+            }
+            .need-modal-title {
+                color: #f3f4f6;
+                font-size: 16px;
+            }
+            .need-modal-body {
+                overflow-y: auto;
+                max-height: calc(92vh - 120px);
+            }
+            .need-modal-footer {
+                border-top: 1px solid #374151;
+                padding-top: 10px;
+                background: #1f2937;
+            }
+        }
+        @media (max-width: 480px) {
+            .quick-stats {
+                grid-template-columns: 1fr;
+            }
+            .sidebar-menu {
+                grid-template-columns: 1fr;
+            }
+            .card-actions {
+                grid-template-columns: 1fr;
+            }
+            .player-info {
+                grid-template-columns: 1fr;
+            }
+            .offer-score-section > div[style*="display:flex"] {
+                flex-direction: column;
+                align-items: stretch !important;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="assets/css/mobile-polish.css">
+</head>
+<body>
+    <div class="top-navbar">
+        <div class="navbar-left">
+            <div class="logo">NextScout Manager</div>
+        </div>
+        <div class="navbar-right">
+            <button class="btn-small success" onclick="openNeedModal()"><i class="fas fa-plus-circle"></i><span>İlan Gir</span></button>
+            <button class="btn-small primary" onclick="window.location.href='manager-needs.html'"><i class="fas fa-list-check"></i><span>İlan Listesi</span></button>
+            <button class="btn-small home-btn" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;" onclick="window.location.href='index.html'"><i class="fas fa-house"></i><span>Ana Sayfa</span></button>
+            <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Çıkış</span></button>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">MENU</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item active" onclick="location.reload()"><i class="fas fa-magnifying-glass"></i><span>Oyuncu Ara</span></li>
+                    <li class="sidebar-item" onclick="openManagerProfile()"><i class="fas fa-user"></i><span>Profilim</span></li>
+                    <li class="sidebar-item" onclick="openSentApplications()"><i class="fas fa-paper-plane"></i><span>Gonderilen Basvurular</span></li>
+                    <li class="sidebar-item" onclick="openAnsweredApplications()"><i class="fas fa-circle-check"></i><span>Yanitlanan Basvurular</span></li>
+                    <li class="sidebar-item" onclick="openFavorites()"><i class="fas fa-star"></i><span>Favorilerim</span></li>
+                    <li class="sidebar-item" onclick="openWatchlist()"><i class="fas fa-list-check"></i><span>Takip Listem</span></li>
+                    <li class="sidebar-item" onclick="window.location.href='manager-needs.html'"><i class="fas fa-thumbtack"></i><span>Aradigim Oyuncular</span></li>
+                    <li class="sidebar-item" onclick="openMessages()"><i class="fas fa-comments"></i><span>Mesajlarim</span></li>
+                    <li class="sidebar-item" onclick="openSettings()"><i class="fas fa-gear"></i><span>Ayarlar</span></li>
+                    <li class="sidebar-item" onclick="openHelp()"><i class="fas fa-circle-question"></i><span>Yardim</span></li>
+                </ul>
+            </div>
+        </aside>
+
+        <div class="content">
+            <div class="welcome-card">
+                <h1>Manager Dashboard</h1>
+                <p>Oyuncu ara, profil incele, başvuru gönder ve favori listeni yonet.</p>
+            </div>
+
+            <div class="need-section">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+                    <h2 style="font-size:18px;font-weight:800;color:#e5e7eb;">Aradigim Oyuncu Ilanlari</h2>
+                    <button class="btn-small success" onclick="openNeedModal()">+ Yeni İlan</button>
+                </div>
+                <div class="need-list" id="managerNeedRecent"></div>
+            </div>
+
+            <div class="offer-score-section">
+                <h2 style="margin-bottom:14px;font-size:18px;font-weight:800;color:#e5e7eb;">MENAJER Teklif Skoru</h2>
+                <div class="offer-score-grid">
+                    <div class="form-group">
+                        <label>Butce Guveni (0-100)</label>
+                        <input type="number" id="offerBudgetTrust" min="0" max="100" value="70">
+                    </div>
+                    <div class="form-group">
+                        <label>Sozlesme Netligi (0-100)</label>
+                        <input type="number" id="offerContractClarity" min="0" max="100" value="70">
+                    </div>
+                    <div class="form-group">
+                        <label>Ödeme Hizi (0-100)</label>
+                        <input type="number" id="offerPaymentSpeed" min="0" max="100" value="70">
+                    </div>
+                    <div class="form-group">
+                        <label>Proje Uyum (0-100)</label>
+                        <input type="number" id="offerProjectFit" min="0" max="100" value="70">
+                    </div>
+                </div>
+                <div style="display:flex;gap:10px;align-items:center;">
+                    <button class="btn-small primary" type="button" onclick="calculateOfferScore()">Skoru Hesapla</button>
+                    <div class="offer-score-result" id="offerScoreResult">Skor bekleniyor...</div>
+                </div>
+            </div>
+
+            <div class="quick-stats">
+                <div class="stat-card"><div class="stat-card-value" id="statPool">0</div><div class="stat-card-label">Oyuncu Havuzu</div></div>
+                <div class="stat-card"><div class="stat-card-value" id="statFiltered">0</div><div class="stat-card-label">Filtre Sonucu</div></div>
+                <div class="stat-card"><div class="stat-card-value" id="statFavorites">0</div><div class="stat-card-label">Favori Oyuncu</div></div>
+                <div class="stat-card"><div class="stat-card-value" id="statApplications">0</div><div class="stat-card-label">Gonderilen Başvuru</div></div>
+            </div>
+
+            <div class="search-section">
+                <h2 style="margin-bottom:20px;font-size:18px;font-weight:800;color:#e5e7eb;">Oyuncu Ara</h2>
+                <div class="search-grid">
+                    <div class="form-group"><label>Oyuncu Adi</label><input type="text" id="playerName" placeholder="Oyuncu adi gir"></div>
+                    <div class="form-group">
+                        <label>Pozisyon</label>
+                        <select id="position">
+                            <option value="">Tumu</option>
+                            <option value="Kaleci">Kaleci</option>
+                            <option value="Defans">Defans</option>
+                            <option value="Orta Saha">Orta Saha</option>
+                            <option value="Forvet">Forvet</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Yas Araligi</label><input type="text" id="ageRange" placeholder="18-30"></div>
+                    <div class="form-group">
+                        <label>Min. Rating</label>
+                        <select id="rating">
+                            <option value="">Tumu</option>
+                            <option value="7.0">7.0+</option>
+                            <option value="7.5">7.5+</option>
+                            <option value="8.0">8.0+</option>
+                            <option value="8.5">8.5+</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="search-btn" onclick="searchPlayers()">Ara</button>
+            </div>
+
+            <div class="results-section">
+                <h2 style="margin-bottom:20px;font-size:18px;font-weight:800;color:#e5e7eb;">Arama Sonuclari</h2>
+                <div class="players-grid" id="playersGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="need-modal-overlay" id="needModalOverlay" onclick="if (event.target.id === 'needModalOverlay') closeNeedModal();">
+        <div class="need-modal">
+            <div class="need-modal-header">
+                <div class="need-modal-title">Aradigin Oyuncuyu Ekle</div>
+                <button class="btn-small secondary" type="button" onclick="closeNeedModal()">Kapat</button>
+            </div>
+            <form id="managerNeedForm">
+                <div class="need-modal-body">
+                    <div class="need-grid">
+                        <div class="form-group">
+                            <label>MENAJER Adi</label>
+                            <input type="text" id="needManagerFirstName" placeholder="Ad" required>
+                        </div>
+                        <div class="form-group">
+                            <label>MENAJER Soyadi</label>
+                            <input type="text" id="needManagerLastName" placeholder="Soyad" required>
+                        </div>
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <input type="text" value="Ilanda gorunecek isim" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Pozisyon</label>
+                            <select id="needPosition" required>
+                                <option value="">Seciniz</option>
+                                <option value="CB">Stoper</option>
+                                <option value="LB">Sol Bek</option>
+                                <option value="RB">Sag Bek</option>
+                                <option value="AM">10 Numara</option>
+                                <option value="RW">Sag Kanat</option>
+                                <option value="LW">Sol Kanat</option>
+                                <option value="ST">Santrfor</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Min Boy (cm)</label>
+                            <input type="number" id="needMinHeight" min="150" max="220" placeholder="190">
+                        </div>
+                        <div class="form-group">
+                            <label>Ayak</label>
+                            <select id="needFoot">
+                                <option value="">Farketmez</option>
+                                <option value="Sol">Sol</option>
+                                <option value="Sag">Sag</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Yas Min</label>
+                            <input type="number" id="needAgeMin" min="14" max="45" placeholder="18">
+                        </div>
+                        <div class="form-group">
+                            <label>Yas Max</label>
+                            <input type="number" id="needAgeMax" min="14" max="45" placeholder="26">
+                        </div>
+                        <div class="form-group">
+                            <label>Bonservis</label>
+                            <select id="needFreeOnly">
+                                <option value="any">Farketmez</option>
+                                <option value="true">Bonservisi Elinde</option>
+                                <option value="false">Kulubunde</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Ucret Min (TL)</label>
+                            <input type="number" id="needBudgetMin" min="0" placeholder="30000" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Ucret Max (TL)</label>
+                            <input type="number" id="needBudgetMax" min="0" placeholder="50000" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Sehir</label>
+                            <input type="text" id="needCity" placeholder="Istanbul">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top:12px;">
+                        <label>Aciklama</label>
+                        <input type="text" id="needNote" placeholder="Agresif, hava toplarinda guclu, lider stoper">
+                    </div>
+                </div>
+                <div class="need-modal-footer">
+                    <button class="btn-small secondary" type="button" onclick="closeNeedModal()">Iptal</button>
+                    <button class="btn-small success" type="submit">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="applications-modal-overlay" id="applicationsModalOverlay" onclick="if(event.target.id==='applicationsModalOverlay') closeApplicationsModal()">
+        <div class="applications-modal">
+            <div class="applications-modal-head">
+                <h3 class="applications-modal-title" id="applicationsModalTitle">Basvurular</h3>
+                <button class="btn-small secondary" type="button" onclick="closeApplicationsModal()">Kapat</button>
+            </div>
+            <div class="applications-modal-body" id="applicationsModalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        const APPLICATIONS_KEY = 'nextscout_manager_applications';
+        const FAVORITES_KEY = 'nextscout_favorite_players';
+        let allPlayers = [];
+        let filteredPlayers = [];
+
+        function getApiBaseUrl() {
+            if (window.NextScoutApi && typeof window.NextScoutApi.base === 'function') {
+                return window.NextScoutApi.base();
+            }
+            const configured = (window.NEXTSCOUT_API_BASE || '').toString().trim();
+            if (configured) return configured.replace(/\/$/, '');
+            const query = new URLSearchParams(window.location.search);
+            const fromQuery = (query.get('api_base') || '').trim();
+            if (fromQuery) return fromQuery.replace(/\/$/, '');
+            if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+            return '/api';
+        }
+
+        function escapeHtml(value) {
+            return String(value == null ? '' : value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function parseAgeRange(value) {
+            const raw = (value || '').toString().trim();
+            if (!raw || !raw.includes('-')) return null;
+            const parts = raw.split('-').map((p) => Number(p.trim()));
+            if (parts.length !== 2 || Number.isNaN(parts[0]) || Number.isNaN(parts[1])) return null;
+            return { min: Math.min(parts[0], parts[1]), max: Math.max(parts[0], parts[1]) };
+        }
+
+        function getApplications() {
+            try {
+                const parsed = JSON.parse(localStorage.getItem(APPLICATIONS_KEY) || '[]');
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function saveApplications(items) {
+            localStorage.setItem(APPLICATIONS_KEY, JSON.stringify(Array.isArray(items) ? items : []));
+        }
+
+        function getAuthToken() {
+            return (localStorage.getItem('nextscout_token') || '').trim();
+        }
+
+        function getAuthHeadersJson() {
+            const token = getAuthToken();
+            if (!token) return null;
+            return {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+            };
+        }
+
+        async function fetchContactsSentFromApi() {
+            const headers = getAuthHeadersJson();
+            if (!headers) return [];
+
+            const apiBase = getApiBaseUrl();
+            const response = await fetch(`${apiBase}/contacts/sent?per_page=100`, { headers });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const payload = await response.json();
+            const rows = Array.isArray(payload?.data?.data)
+                ? payload.data.data
+                : (Array.isArray(payload?.data) ? payload.data : []);
+
+            return rows.map((row) => ({
+                id: row?.id || Date.now(),
+                player_id: row?.recipient_id || 0,
+                player_name: row?.recipient_name || 'Oyuncu',
+                message: row?.message || '',
+                status: row?.status || 'sent',
+                created_at: row?.created_at || new Date().toISOString(),
+                source: 'api',
+            }));
+        }
+
+        function getFavorites() {
+            try {
+                const parsed = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function saveFavorites(items) {
+            localStorage.setItem(FAVORITES_KEY, JSON.stringify(Array.isArray(items) ? items : []));
+        }
+
+        async function fetchManagerNeeds() {
+            const apiBase = getApiBaseUrl();
+            const response = await fetch(`${apiBase}/discovery/manager-needs`, {
+                headers: { Accept: 'application/json' },
+            });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const payload = await response.json();
+            return Array.isArray(payload?.data) ? payload.data : [];
+        }
+
+        async function saveManagerNeed(row) {
+            const apiBase = getApiBaseUrl();
+            const persistLocal = () => {
+                let items = [];
+                try {
+                    const parsed = JSON.parse(localStorage.getItem('nextscout_manager_needs_local') || '[]');
+                    items = Array.isArray(parsed) ? parsed : [];
+                } catch (error) {
+                    items = [];
+                }
+                const local = {
+                    id: Date.now(),
+                    author_name: row?.author_name || 'MENAJER',
+                    position: row?.position || '',
+                    city: row?.city || '',
+                    age_min: row?.age_min || null,
+                    age_max: row?.age_max || null,
+                    budget_min: row?.budget_min || null,
+                    budget_max: row?.budget_max || null,
+                    free_only: row?.free_only ?? null,
+                    details: row?.description || row?.note || 'Yeni MENAJER ilani',
+                    created_at: new Date().toISOString(),
+                    source: 'local-manager-need',
+                };
+                items.unshift(local);
+                localStorage.setItem('nextscout_manager_needs_local', JSON.stringify(items.slice(0, 300)));
+                return local;
+            };
+
+            try {
+                const response = await fetch(`${apiBase}/discovery/manager-needs`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                    },
+                    body: JSON.stringify(row),
+                });
+                if (!response.ok) return persistLocal();
+                const payload = await response.json().catch(() => ({}));
+                return payload?.data || persistLocal();
+            } catch (error) {
+                return persistLocal();
+            }
+        }
+
+        function formatMoney(value) {
+            const n = Number(value) || 0;
+            return `${n.toLocaleString('tr-TR')} TL`;
+        }
+
+        async function renderRecentNeeds() {
+            const root = document.getElementById('managerNeedRecent');
+            if (!root) return;
+            let items = [];
+            try {
+                items = (await fetchManagerNeeds()).slice(0, 4);
+            } catch (error) {
+                try {
+                    const parsed = JSON.parse(localStorage.getItem('nextscout_manager_needs_local') || '[]');
+                    items = Array.isArray(parsed) ? parsed.slice(0, 4) : [];
+                } catch (e) {
+                    items = [];
+                }
+            }
+            if (!items.length) {
+                root.innerHTML = '<div class="need-item">Henuz ilan yok. "Yeni İlan" ile ilk ilani olustur.</div>';
+                return;
+            }
+            root.innerHTML = items.map((item) => {
+                const price = `${formatMoney(item.budget_min)} - ${formatMoney(item.budget_max)}`;
+                const details = [
+                    item.position || 'Pozisyon',
+                    item.min_height ? `Min ${item.min_height} cm` : null,
+                    item.dominant_side || null,
+                    item.city || null,
+                ].filter(Boolean).join(' | ');
+                return `<div class="need-item">
+                    <div class="need-item-title">${details}</div>
+                    <div class="need-item-meta">
+                        <span>MENAJER: ${item.author_name || '-'}</span>
+                        <span>Ucret: ${price}</span>
+                        <span>Yas: ${item.age_min || '-'}-${item.age_max || '-'}</span>
+                        <span>${item.free_only === 'true' ? 'Bonservisi elinde' : (item.free_only === 'false' ? 'Kulubunde olabilir' : 'Bonservis farketmez')}</span>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function getManagerNameFromSession() {
+            try {
+                const rawUser = localStorage.getItem('nextscout_user');
+                const parsed = rawUser ? JSON.parse(rawUser) : null;
+                const fullName = String((parsed && parsed.name) || localStorage.getItem('nextscout_user_name') || '').trim();
+                if (!fullName) return { first: '', last: '' };
+                const parts = fullName.split(/\s+/).filter(Boolean);
+                const first = parts[0] || '';
+                const last = parts.slice(1).join(' ') || '';
+                return { first, last };
+            } catch (error) {
+                return { first: '', last: '' };
+            }
+        }
+
+        function openNeedModal() {
+            const overlay = document.getElementById('needModalOverlay');
+            if (overlay) overlay.classList.add('show');
+            const { first, last } = getManagerNameFromSession();
+            const firstInput = document.getElementById('needManagerFirstName');
+            const lastInput = document.getElementById('needManagerLastName');
+            if (firstInput && !firstInput.value.trim()) firstInput.value = first;
+            if (lastInput && !lastInput.value.trim()) lastInput.value = last;
+        }
+
+        function closeNeedModal() {
+            const overlay = document.getElementById('needModalOverlay');
+            if (overlay) overlay.classList.remove('show');
+        }
+
+        function updateStats() {
+            document.getElementById('statPool').textContent = String(allPlayers.length);
+            document.getElementById('statFiltered').textContent = String(filteredPlayers.length);
+            document.getElementById('statFavorites').textContent = String(getFavorites().length);
+            document.getElementById('statApplications').textContent = String(getApplications().length);
+        }
+
+        function renderPlayers(players) {
+            const grid = document.getElementById('playersGrid');
+            if (!Array.isArray(players) || players.length === 0) {
+                grid.innerHTML = '<div style="padding:18px;border:1px solid #475569;border-radius:10px;background:#1f2937;color:#cbd5e1;">Filtreye uygun oyuncu bulunamadi.</div>';
+                return;
+            }
+
+            grid.innerHTML = players.map((player) => {
+                const rating = Number(player.rating) || 0;
+                const starCount = Math.max(1, Math.min(5, Math.round(rating / 2)));
+                const stars = '★'.repeat(starCount) + '☆'.repeat(5 - starCount);
+                return `
+                <div class="player-card">
+                    <div class="player-card-image">⚽</div>
+                    <div class="player-card-content">
+                        <div class="player-name">${escapeHtml(player.name || '-')}</div>
+                        <div class="player-position">${escapeHtml(player.position || '-')}</div>
+                        <div class="player-info">
+                            <div class="player-info-item"><span class="player-info-label">Yas</span><span class="player-info-value">${escapeHtml(player.age || '-')}</span></div>
+                            <div class="player-info-item"><span class="player-info-label">Boy</span><span class="player-info-value">${escapeHtml(player.height || '-')}</span></div>
+                        </div>
+                        <div class="player-rating"><span class="rating-stars">${stars}</span><span class="rating-value">${rating ? rating.toFixed(1) : '-'}</span></div>
+                        <div class="card-actions">
+                            <button class="action-btn primary" onclick="openPlayerProfile(${Number(player.id) || 0})"><i class="fas fa-id-card"></i><span>Profil</span></button>
+                            <button class="action-btn" onclick="sendApplication(${Number(player.id) || 0})"><i class="fas fa-paper-plane"></i><span>Basvur</span></button>
+                            <button class="action-btn" onclick="toggleFavorite(${Number(player.id) || 0})"><i class="fas fa-star"></i><span>Favori</span></button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function normalizePlayer(raw) {
+            return {
+                id: Number(raw && raw.id) || 0,
+                name: (raw && raw.name) || '-',
+                position: (raw && raw.position) || '-',
+                age: (raw && raw.age) || '-',
+                height: (raw && raw.height) || '-',
+                rating: Number(raw && raw.rating) || 0,
+                club: (raw && raw.club) || '-',
+            };
+        }
+
+        async function loadPlayersFromApi() {
+            const apiBase = getApiBaseUrl();
+            const response = await fetch(`${apiBase}/public/players`, { headers: { Accept: 'application/json' } });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const payload = await response.json();
+            const rows = Array.isArray(payload && payload.data) ? payload.data : [];
+            return rows.map(normalizePlayer);
+        }
+
+        function getFallbackPlayers() {
+            return [
+                { id: 1, name: 'Ahmet Yilmaz', position: 'Forvet', age: 24, height: '180cm', rating: 8.1, club: 'Fenerbahce' },
+                { id: 2, name: 'Serdar Aziz', position: 'Defans', age: 28, height: '185cm', rating: 7.6, club: 'Galatasaray' },
+                { id: 3, name: 'Kerem Akturkoglu', position: 'Forvet', age: 26, height: '183cm', rating: 8.2, club: 'Benfica' },
+                { id: 4, name: 'Okay Yokuslu', position: 'Orta Saha', age: 27, height: '188cm', rating: 7.9, club: 'Trabzonspor' },
+            ];
+        }
+
+        function searchPlayers() {
+            const name = document.getElementById('playerName').value.trim().toLowerCase();
+            const position = document.getElementById('position').value.trim().toLowerCase();
+            const ageText = document.getElementById('ageRange').value.trim();
+            const ratingMin = Number(document.getElementById('rating').value || 0);
+            const parsedAge = parseAgeRange(ageText);
+
+            filteredPlayers = allPlayers.filter((p) => {
+                const pName = String(p.name || '').toLowerCase();
+                const pPos = String(p.position || '').toLowerCase();
+                const pAge = Number(p.age) || 0;
+                const pRating = Number(p.rating) || 0;
+
+                if (name && !pName.includes(name)) return false;
+                if (position && pPos !== position) return false;
+                if (ratingMin && pRating < ratingMin) return false;
+                if (parsedAge && (pAge < parsedAge.min || pAge > parsedAge.max)) return false;
+                return true;
+            });
+
+            renderPlayers(filteredPlayers);
+            updateStats();
+        }
+
+        function openPlayerProfile(playerId) {
+            if (!playerId) return;
+            window.location.href = `player-profile.html?user_id=${encodeURIComponent(playerId)}`;
+        }
+
+        async function sendApplication(playerId) {
+            const player = allPlayers.find((p) => Number(p.id) === Number(playerId));
+            if (!player) { window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.'); return; }
+            const message = prompt(`${player.name} icin kisa başvuru notu:`, 'Ilgileniyoruz, gorusmek isteriz.');
+            if (message === null) return;
+
+            const items = getApplications();
+            const draft = {
+                id: Date.now(),
+                player_id: player.id,
+                player_name: player.name,
+                message: String(message || '').trim(),
+                status: 'sent',
+                created_at: new Date().toISOString(),
+            };
+
+            let persisted = false;
+            try {
+                const headers = getAuthHeadersJson();
+                if (headers) {
+                    const apiBase = getApiBaseUrl();
+                    const response = await fetch(`${apiBase}/contacts`, {
+                        method: 'POST',
+                        headers,
+                        body: JSON.stringify({
+                            to_user_id: Number(player.id),
+                            subject: 'Başvuru',
+                            message: draft.message,
+                        }),
+                    });
+                    if (response.ok) {
+                        const payload = await response.json().catch(() => ({}));
+                        const created = payload?.data || {};
+                        items.unshift({
+                            id: created?.id || draft.id,
+                            player_id: created?.to_user_id || draft.player_id,
+                            player_name: player.name,
+                            message: created?.message || draft.message,
+                            status: created?.status || 'sent',
+                            created_at: created?.created_at || draft.created_at,
+                            source: 'api',
+                        });
+                        persisted = true;
+                    }
+                }
+            } catch (error) {
+                persisted = false;
+            }
+
+            if (!persisted) items.unshift(draft);
+            saveApplications(items.slice(0, 500));
+            updateStats();
+            window.nsNotify?.success ? window.nsNotify.success(`Başvuru gönderildi: ${player.name}`) : nsnsAlert(`Başvuru gönderildi: ${player.name}`);
+        }
+
+        function toggleFavorite(playerId) {
+            const player = allPlayers.find((p) => Number(p.id) === Number(playerId));
+            if (!player) { window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.'); return; }
+            const items = getFavorites();
+            const exists = items.some((x) => Number(x.id) === Number(player.id));
+
+            if (exists) {
+                const next = items.filter((x) => Number(x.id) !== Number(player.id));
+                saveFavorites(next);
+                window.nsNotify?.info ? window.nsNotify.info('Favoriden cikarildi.') : nsnsAlert('Favoriden cikarildi.');
+            } else {
+                items.unshift({
+                    id: player.id,
+                    name: player.name,
+                    position: player.position,
+                    age: player.age,
+                    rating: player.rating,
+                    club: player.club,
+                    saved_at: new Date().toISOString(),
+                });
+                saveFavorites(items.slice(0, 500));
+                window.nsNotify?.success ? window.nsNotify.success('Favorilere eklendi.') : nsnsAlert('Favorilere eklendi.');
+            }
+            updateStats();
+        }
+
+        function formatApplicationDate(value) {
+            const d = new Date(value || '');
+            if (Number.isNaN(d.getTime())) return '-';
+            return d.toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function renderApplicationsModal(items, title) {
+            const overlay = document.getElementById('applicationsModalOverlay');
+            const titleEl = document.getElementById('applicationsModalTitle');
+            const bodyEl = document.getElementById('applicationsModalBody');
+            if (!overlay || !titleEl || !bodyEl) return;
+
+            titleEl.textContent = title;
+
+            if (!Array.isArray(items) || !items.length) {
+                bodyEl.innerHTML = '<div class="application-empty">Bu listede başvuru bulunamadi.</div>';
+            } else {
+                bodyEl.innerHTML = items.map((item) => {
+                    const statusRaw = String(item?.status || 'sent').toLowerCase();
+                    const statusText = statusRaw === 'accepted'
+                        ? 'Kabul'
+                        : (statusRaw === 'rejected' ? 'Reddedildi' : (statusRaw === 'answered' ? 'Yanitlandi' : 'Gonderildi'));
+                    const playerName = escapeHtml(item?.player_name || 'Oyuncu');
+                    const createdAt = formatApplicationDate(item?.created_at);
+                    const message = escapeHtml(item?.message || '-');
+                    return `
+                        <article class="application-item">
+                            <div class="application-top">
+                                <div class="application-name">${playerName}</div>
+                                <span class="application-badge">${statusText}</span>
+                            </div>
+                            <div class="application-meta">Tarih: ${createdAt}</div>
+                            <div class="application-message">${message}</div>
+                        </article>
+                    `;
+                }).join('');
+            }
+
+            overlay.classList.add('show');
+        }
+
+        function closeApplicationsModal() {
+            const overlay = document.getElementById('applicationsModalOverlay');
+            if (!overlay) return;
+            overlay.classList.remove('show');
+        }
+
+        async function openSentApplications() {
+            let items = [];
+            try {
+                items = await fetchContactsSentFromApi();
+                if (items.length) {
+                    saveApplications(items);
+                    updateStats();
+                } else {
+                    items = getApplications();
+                }
+            } catch (error) {
+                items = getApplications();
+            }
+            renderApplicationsModal(items, `Gonderilen Basvurular (${items.length})`);
+        }
+
+        async function openAnsweredApplications() {
+            let base = [];
+            try {
+                const apiRows = await fetchContactsSentFromApi();
+                base = apiRows.length ? apiRows : getApplications();
+            } catch (error) {
+                base = getApplications();
+            }
+
+            const answered = base.filter((x) => {
+                const status = String(x.status || '').toLowerCase();
+                return ['accepted', 'rejected', 'answered', 'read', 'completed', 'closed'].includes(status);
+            });
+            renderApplicationsModal(answered, `Yanitlanan Basvurular (${answered.length})`);
+        }
+
+        function openFavorites() { window.location.href = 'favorites.html'; }
+        function openWatchlist() { window.location.href = 'scout-watchlist.html'; }
+        function openMessages() { window.location.href = 'notifications.html'; }
+        function openManagerProfile() { window.location.href = 'manager-profile.html'; }
+        function openSettings() { window.location.href = 'settings.html'; }
+        function openHelp() { window.location.href = 'help.html'; }
+
+        function clampScoreInput(value) {
+            const n = Number(value || 0);
+            if (!Number.isFinite(n)) return 0;
+            return Math.max(0, Math.min(100, n));
+        }
+
+        function calculateOfferScore() {
+            const budgetTrust = clampScoreInput(document.getElementById('offerBudgetTrust')?.value);
+            const contractClarity = clampScoreInput(document.getElementById('offerContractClarity')?.value);
+            const paymentSpeed = clampScoreInput(document.getElementById('offerPaymentSpeed')?.value);
+            const projectFit = clampScoreInput(document.getElementById('offerProjectFit')?.value);
+
+            const score = Math.round(
+                budgetTrust * 0.30 +
+                contractClarity * 0.30 +
+                paymentSpeed * 0.20 +
+                projectFit * 0.20
+            );
+
+            let verdict = 'Guclendirilmeli';
+            if (score >= 85) verdict = 'Cok Guclu Teklif';
+            else if (score >= 70) verdict = 'Guvenli Teklif';
+            else if (score >= 55) verdict = 'Orta Seviye';
+
+            const root = document.getElementById('offerScoreResult');
+            if (root) root.textContent = `Teklif Skoru: ${score}/100 • ${verdict}`;
+
+            localStorage.setItem('nextscout_offer_score_snapshot', JSON.stringify({
+                budgetTrust,
+                contractClarity,
+                paymentSpeed,
+                projectFit,
+                score,
+                verdict,
+                updated_at: new Date().toISOString(),
+            }));
+        }
+
+        function loadOfferScoreSnapshot() {
+            try {
+                const raw = localStorage.getItem('nextscout_offer_score_snapshot');
+                const data = raw ? JSON.parse(raw) : null;
+                if (!data) {
+                    calculateOfferScore();
+                    return;
+                }
+                document.getElementById('offerBudgetTrust').value = data.budgetTrust ?? 70;
+                document.getElementById('offerContractClarity').value = data.contractClarity ?? 70;
+                document.getElementById('offerPaymentSpeed').value = data.paymentSpeed ?? 70;
+                document.getElementById('offerProjectFit').value = data.projectFit ?? 70;
+                calculateOfferScore();
+            } catch (error) {
+                calculateOfferScore();
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('nextscout_token');
+            localStorage.removeItem('nextscout_user');
+            localStorage.removeItem('nextscout_user_email');
+            localStorage.removeItem('nextscout_user_name');
+            localStorage.removeItem('nextscout_user_role');
+            localStorage.removeItem('nextscout_user_id');
+            localStorage.removeItem('nextscout_demo_login');
+            window.location.href = 'index.html';
+        }
+
+        async function init() {
+            const grid = document.getElementById('playersGrid');
+            grid.innerHTML = '<div style="padding:18px;border:1px solid #475569;border-radius:10px;background:#1f2937;color:#cbd5e1;">Oyuncular yukleniyor...</div>';
+            try {
+                allPlayers = await loadPlayersFromApi();
+            } catch (error) {
+                allPlayers = getFallbackPlayers();
+            }
+            filteredPlayers = allPlayers.slice();
+            renderPlayers(filteredPlayers);
+            updateStats();
+            await renderRecentNeeds();
+        }
+
+        document.getElementById('managerNeedForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const budgetMin = Number(document.getElementById('needBudgetMin').value || 0);
+            const budgetMax = Number(document.getElementById('needBudgetMax').value || 0);
+            const managerFirstName = document.getElementById('needManagerFirstName').value.trim();
+            const managerLastName = document.getElementById('needManagerLastName').value.trim();
+            if (!budgetMin || !budgetMax || budgetMin > budgetMax) {
+                window.nsNotify?.error ? window.nsNotify.error('Ucret araligini dogru girin.') : nsnsAlert('Ucret araligini dogru girin.');
+                return;
+            }
+            if (!managerFirstName || !managerLastName) {
+                window.nsNotify?.error ? window.nsNotify.error('MENAJER adi ve soyadi zorunludur.') : nsnsAlert('MENAJER adi ve soyadi zorunludur.');
+                return;
+            }
+
+            const item = {
+                author_name: `${managerFirstName} ${managerLastName}`.trim(),
+                title: `${document.getElementById('needPosition').value || 'Oyuncu'} pozisyonu icin ilan`,
+                description: document.getElementById('needNote').value.trim(),
+                position: document.getElementById('needPosition').value,
+                min_height: Number(document.getElementById('needMinHeight').value || 0),
+                dominant_side: document.getElementById('needFoot').value,
+                age_min: Number(document.getElementById('needAgeMin').value || 0),
+                age_max: Number(document.getElementById('needAgeMax').value || 0),
+                free_only: document.getElementById('needFreeOnly').value,
+                budget_min: budgetMin,
+                budget_max: budgetMax,
+                city: document.getElementById('needCity').value.trim(),
+            };
+
+            if (!item.position) {
+                window.nsNotify?.error ? window.nsNotify.error('Pozisyon secmelisin.') : nsnsAlert('Pozisyon secmelisin.');
+                return;
+            }
+
+            try {
+                await saveManagerNeed(item);
+                this.reset();
+                closeNeedModal();
+                await renderRecentNeeds();
+                window.nsNotify?.success ? window.nsNotify.success('İlan kaydedildi. Anasayfa ve MENAJER ilan listesinde gorunecek.') : nsnsAlert('İlan kaydedildi. Anasayfa ve MENAJER ilan listesinde gorunecek.');
+            } catch (error) {
+                window.nsNotify?.error ? window.nsNotify.error(`İlan kaydedilemedi: ${error.message}`) : nsnsAlert(`İlan kaydedilemedi: ${error.message}`);
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', init);
+        window.addEventListener('DOMContentLoaded', loadOfferScoreSnapshot);
+    </script>
+    <script src="assets/js/core-stability.js"></script>
+    <script src="assets/js/mobile-professional.js" defer></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

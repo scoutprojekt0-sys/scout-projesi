@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scout Profili - NextScout</title>
+    <meta name="description" content="NextScout scout profile sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="https://nextscout.app/scout-profile.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Scout Profili - NextScout">
+    <meta property="og:description" content="NextScout scout profile sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/scout-profile.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Scout Profili - NextScout">
+    <meta name="twitter:description" content="NextScout scout profile sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg:#1f252d;
+      --ink:#e2e8f0;
+      --muted:#94a3b8;
+      --line:#334155;
+      --panel:#232a33;
+      --panel-soft:#2b3440;
+      --primary:#60a5fa;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.16), transparent 34%),
+        radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.14), transparent 36%),
+        var(--bg);
+    }
+    .wrap{max-width:980px;margin:0 auto;padding:18px 14px}
+    .head{
+      display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px;
+      border:1px solid var(--line);border-radius:14px;background:rgba(35,42,51,.9);padding:12px;
+      box-shadow:0 12px 26px rgba(2,6,23,.24);
+    }
+    .title{margin:0;font-size:30px;font-weight:800;color:#dbeafe}
+    .sub{margin-top:6px;color:var(--muted);font-size:14px}
+    .btn{
+      border:1px solid #475569;background:var(--panel-soft);color:#dbeafe;padding:10px 14px;border-radius:10px;
+      text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;
+    }
+    .btn-primary{background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;border-color:#2563eb}
+    .layout{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 24px rgba(2,6,23,.2);padding:14px}
+    .section-title{margin:0 0 10px 0;font-size:16px;font-weight:800;color:#dbeafe}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .field{display:flex;flex-direction:column;gap:6px}
+    .label{font-size:12px;font-weight:700;color:#cbd5e1}
+    .input,.textarea,.select{border:1px solid #475569;border-radius:10px;padding:10px 12px;font-size:13px;background:#1f2937;color:#f8fafc}
+    .input::placeholder,.textarea::placeholder{color:#94a3b8}
+    .input:focus,.textarea:focus,.select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(96,165,250,.16)}
+    .textarea{min-height:90px;resize:vertical}
+    .full{grid-column:1/-1}
+    .act{display:flex;gap:8px;margin-top:12px}
+    .photo-box{display:flex;flex-direction:column;align-items:center;gap:10px}
+    .photo{width:120px;height:120px;border-radius:14px;border:1px solid #475569;object-fit:cover;background:#1f2937}
+    .row{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #334155;font-size:13px}
+    .row:last-child{border-bottom:0}
+    .muted{color:var(--muted)}
+    .ok{color:#34d399;font-size:12px;min-height:16px;margin-top:8px;font-weight:700}
+    @media (max-width:900px){.layout{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}}
+    @media (max-width:768px){
+      .wrap{padding:12px 10px 18px}
+      .head{flex-direction:column;align-items:flex-start}
+      .title{font-size:24px}
+      .sub{font-size:12px}
+      .act{display:grid;grid-template-columns:1fr 1fr}
+      .btn{padding:9px 12px}
+    }
+    @media (max-width:480px){
+      .act{grid-template-columns:1fr}
+      .act .btn{width:100%;justify-content:center}
+    }
+  </style>
+    <link rel="stylesheet" href="assets/css/mobile-unified.css">
+    <link rel="stylesheet" href="assets/css/mobile-polish.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <h1 class="title">Scout Profili</h1>
+        <div class="sub">Scout profilini düzenle ve kaydet.</div>
+      </div>
+      <a class="btn" href="index.html"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
+    </div>
+
+    <div class="layout">
+      <div class="card">
+        <h2 class="section-title">Profil Bilgileri</h2>
+        <form id="scoutForm" class="form-grid">
+          <div class="field"><label class="label" for="name">Isim Soyisim</label><input class="input" id="name" required placeholder="Ad Soyad"></div>
+          <div class="field"><label class="label" for="experience">Deneyim (Yil)</label><input class="input" id="experience" type="number" min="0" max="50" placeholder="5"></div>
+          <div class="field"><label class="label" for="branch">Brans</label><select class="select" id="branch"><option value="">Seciniz</option><option value="Futbol">Futbol</option><option value="Basketbol">Basketbol</option><option value="Voleybol">Voleybol</option><option value="Coklu Brans">Coklu Brans</option></select></div>
+          <div class="field"><label class="label" for="country">Ülke</label><input class="input" id="country" placeholder="Türkiye"></div>
+          <div class="field"><label class="label" for="city">Sehir</label><input class="input" id="city" placeholder="Istanbul"></div>
+          <div class="field"><label class="label" for="phone">Telefon</label><input class="input" id="phone" placeholder="+90 5xx xxx xx xx"></div>
+          <div class="field full"><label class="label" for="bio">Hakkimda</label><textarea class="textarea" id="bio" placeholder="Kisa scout tanitimi..."></textarea></div>
+          <div class="act full"><button class="btn btn-primary" type="submit"><i class="fas fa-floppy-disk"></i><span>Kaydet</span></button><button class="btn" type="button" id="resetBtn"><i class="fas fa-rotate-left"></i><span>Sıfırla</span></button></div>
+        </form>
+        <div id="saveMsg" class="ok"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Profil Fotografi</h2>
+        <div class="photo-box">
+          <img id="photoPreview" class="photo" alt="Scout Fotograf">
+          <input type="file" id="photoInput" accept="image/*">
+          <button class="btn" type="button" id="clearPhotoBtn"><i class="fas fa-trash"></i><span>Fotografi Kaldir</span></button>
+        </div>
+
+        <h2 class="section-title" style="margin-top:14px;">Ozet</h2>
+        <div class="row"><span class="muted">Isim</span><strong id="sumName">-</strong></div>
+        <div class="row"><span class="muted">Brans</span><strong id="sumBranch">-</strong></div>
+        <div class="row"><span class="muted">Ülke</span><strong id="sumCountry">-</strong></div>
+        <div class="row"><span class="muted">Sehir</span><strong id="sumCity">-</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const KEY = 'nextscout_scout_profile';
+
+    function getApiBaseUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = (params.get('api_base') || '').trim();
+      if (fromQuery) return fromQuery.replace(/\/$/, '');
+      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      return '/api';
+    }
+
+    function getToken() {
+      return (localStorage.getItem('nextscout_token') || '').trim();
+    }
+
+    function authHeaders() {
+      const token = getToken();
+      if (!token) return null;
+      return {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      };
+    }
+
+    function defaults(){ return { name:'Scout', experience:'', branch:'Futbol', country:'Türkiye', city:'', phone:'', bio:'', photo:'' }; }
+    function loadProfile(){
+      try { const raw = localStorage.getItem(KEY); if(!raw) return defaults(); return Object.assign(defaults(), JSON.parse(raw) || {}); }
+      catch { return defaults(); }
+    }
+    function saveProfile(p){ localStorage.setItem(KEY, JSON.stringify(p)); }
+
+    function setForm(p){
+      document.getElementById('name').value = p.name || '';
+      document.getElementById('experience').value = p.experience || '';
+      document.getElementById('branch').value = p.branch || '';
+      document.getElementById('country').value = p.country || '';
+      document.getElementById('city').value = p.city || '';
+      document.getElementById('phone').value = p.phone || '';
+      document.getElementById('bio').value = p.bio || '';
+      document.getElementById('photoPreview').src = p.photo || 'https://via.placeholder.com/120x120?text=Scout';
+    }
+
+    function readForm(current){
+      return {
+        name: document.getElementById('name').value.trim(),
+        experience: document.getElementById('experience').value.trim(),
+        branch: document.getElementById('branch').value,
+        country: document.getElementById('country').value.trim(),
+        city: document.getElementById('city').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        bio: document.getElementById('bio').value.trim(),
+        photo: current.photo || ''
+      };
+    }
+
+    function renderSummary(p){
+      document.getElementById('sumName').textContent = p.name || '-';
+      document.getElementById('sumBranch').textContent = p.branch || '-';
+      document.getElementById('sumCountry').textContent = p.country || '-';
+      document.getElementById('sumCity').textContent = p.city || '-';
+    }
+
+    async function loadBackendProfile() {
+      const headers = authHeaders();
+      if (!headers) return null;
+      const res = await fetch(`${getApiBaseUrl()}/staff-profiles/me`, { headers: { 'Accept': 'application/json', 'Authorization': headers.Authorization } });
+      if (!res.ok) return null;
+      const payload = await res.json();
+      const data = payload?.data || {};
+      return {
+        name: data.name || '',
+        experience: data.experience_years || '',
+        branch: data.branch || '',
+        country: data.country || '',
+        city: data.city || '',
+        phone: data.phone || '',
+        bio: data.bio || '',
+        photo: data.profile_photo_url || '',
+      };
+    }
+
+    async function saveBackendProfile(p) {
+      const headers = authHeaders();
+      if (!headers) return false;
+      const body = {
+        name: p.name,
+        city: p.city,
+        phone: p.phone,
+        role_type: 'scout',
+        organization: '',
+        experience_years: Number(p.experience || 0),
+        bio: p.bio,
+        country: p.country,
+        branch: p.branch,
+        profile_photo_url: p.photo || '',
+      };
+      const res = await fetch(`${getApiBaseUrl()}/staff-profiles/me`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify(body),
+      });
+      return res.ok;
+    }
+
+    let profile = loadProfile();
+
+    async function init() {
+      const remote = await loadBackendProfile();
+      if (remote) {
+        profile = Object.assign(profile, remote);
+        saveProfile(profile);
+      }
+      setForm(profile);
+      renderSummary(profile);
+    }
+
+    document.getElementById('scoutForm')?.addEventListener('submit', async function(e){
+      e.preventDefault();
+      profile = readForm(profile);
+      if(!profile.name){ document.getElementById('saveMsg').textContent = 'Isim zorunlu.'; return; }
+
+      let backendSaved = false;
+      try {
+        backendSaved = await saveBackendProfile(profile);
+      } catch (error) {
+        backendSaved = false;
+      }
+
+      saveProfile(profile);
+      renderSummary(profile);
+      document.getElementById('saveMsg').textContent = backendSaved ? 'Profil backend kaydedildi.' : 'Profil local kaydedildi.';
+      setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 1800);
+    });
+
+    document.getElementById('resetBtn')?.addEventListener('click', function(){
+      profile = defaults();
+      saveProfile(profile);
+      setForm(profile);
+      renderSummary(profile);
+      document.getElementById('saveMsg').textContent = 'Profil sıfırlandi.';
+      setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 1500);
+    });
+
+    document.getElementById('photoInput')?.addEventListener('change', async function(e){
+      const file = e.target.files && e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = async function(evt){
+        profile.photo = String((evt.target && evt.target.result) || '');
+        document.getElementById('photoPreview').src = profile.photo || 'https://via.placeholder.com/120x120?text=Scout';
+        saveProfile(profile);
+        try { await saveBackendProfile(profile); } catch (error) {}
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById('clearPhotoBtn')?.addEventListener('click', async function(){
+      profile.photo = '';
+      saveProfile(profile);
+      document.getElementById('photoPreview').src = 'https://via.placeholder.com/120x120?text=Scout';
+      document.getElementById('photoInput').value = '';
+      try { await saveBackendProfile(profile); } catch (error) {}
+    });
+
+    init();
+  </script>
+    <script src="assets/js/core-stability.js"></script>
+    <script src="assets/js/mobile-professional.js" defer></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

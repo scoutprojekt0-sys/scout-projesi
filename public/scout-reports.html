@@ -1,0 +1,322 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scout Raporlari - NextScout</title>
+    <meta name="description" content="NextScout scout reports sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://nextscout.app/scout-reports.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Scout Raporlari - NextScout">
+    <meta property="og:description" content="NextScout scout reports sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/scout-reports.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Scout Raporlari - NextScout">
+    <meta name="twitter:description" content="NextScout scout reports sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #1f252d;
+      --card: #232a33;
+      --line: #334155;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --primary: #60a5fa;
+      --ok: #059669;
+      --warn: #d97706;
+      --bad: #dc2626;
+      --shadow: 0 12px 28px rgba(2, 6, 23, 0.24);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.12), transparent 34%),
+        radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.10), transparent 36%),
+        var(--bg);
+      color: var(--text);
+    }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 22px 16px; }
+    .head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .title { margin: 0; font-size: 30px; font-weight: 800; }
+    .sub { margin-top: 6px; color: var(--muted); font-size: 14px; }
+    .btn { border: 1px solid #475569; background: #2b3440; color: #dbeafe; padding: 10px 14px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 13px; cursor: pointer; }
+    .btn:hover { border-color: #60a5fa; background: #334155; color: #fff; }
+    .toolbar { display: grid; grid-template-columns: 1.2fr 1fr 1fr auto; gap: 10px; margin-bottom: 12px; }
+    .field { border: 1px solid #475569; border-radius: 10px; padding: 10px 12px; background: #1f2937; color: #f8fafc; font-size: 13px; }
+    .field:focus { outline: none; border-color: #60a5fa; box-shadow: 0 0 0 3px rgba(96,165,250,.16); }
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 12px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); padding: 12px; }
+    .k { font-size: 11px; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+    .v { margin-top: 6px; font-size: 26px; font-weight: 800; }
+    .table-wrap { background: var(--card); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px; text-align: left; font-size: 13px; border-bottom: 1px solid #3a4758; }
+    th { background: #1f2937; color: #cbd5e1; font-size: 12px; text-transform: uppercase; letter-spacing: .3px; }
+    td { color: #e2e8f0; }
+    tr:hover td { background: #2b3440; }
+    .tag { display: inline-block; padding: 4px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .st-shortlist { background: #ecfeff; color: #0f766e; border: 1px solid #99f6e4; }
+    .st-review { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .st-observe { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+    .st-reject { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+    .inline-btn { border: 1px solid #475569; background: #1f2937; color: #dbeafe; border-radius: 8px; padding: 6px 10px; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .inline-btn:hover { border-color: #60a5fa; background: #334155; color: #fff; }
+    .empty { padding: 20px; color: var(--muted); }
+
+    @media (max-width: 980px) {
+      .toolbar { grid-template-columns: 1fr 1fr; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .wrap { padding: 14px 10px; }
+      .head { flex-direction: column; align-items: flex-start; }
+      table { display: block; overflow-x: auto; }
+    }
+    @media (max-width: 560px) {
+      .toolbar, .stats { grid-template-columns: 1fr; }
+      .title { font-size: 24px; }
+      .btn { width: 100%; text-align: center; }
+      .table-wrap { padding: 8px; }
+      table, thead, tbody, tr, td { display: block; width: 100%; }
+      thead { display: none; }
+      tr {
+        background: #2b3440;
+        border: 1px solid #475569;
+        border-radius: 12px;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      td {
+        border-bottom: 1px solid #3a4758;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 4px;
+      }
+      td:last-child { border-bottom: none; }
+      td::before {
+        content: attr(data-label);
+        color: #94a3b8;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .25px;
+      }
+    }
+  </style>
+    <link rel="stylesheet" href="assets/css/mobile-unified.css">
+    <link rel="stylesheet" href="assets/css/mobile-polish.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <h1 class="title">Scout Raporlari</h1>
+        <div class="sub">KULÜP icin oyuncu izleme ve karar listesi.</div>
+      </div>
+      <a class="btn" href="team-dashboard.html">Ana Sayfa</a>
+    </div>
+
+    <div class="toolbar">
+      <input id="qInput" class="field" type="text" placeholder="Oyuncu, pozisyon veya not ara">
+      <select id="statusFilter" class="field">
+        <option value="">Tum Durumlar</option>
+        <option value="shortlist">Shortlist</option>
+        <option value="review">Incelemede</option>
+        <option value="observe">Izlemede</option>
+        <option value="reject">Uygun Degil</option>
+      </select>
+      <select id="ratingFilter" class="field">
+        <option value="">Tum Rating</option>
+        <option value="7">7.0+</option>
+        <option value="8">8.0+</option>
+        <option value="9">9.0+</option>
+      </select>
+      <button class="btn" id="resetBtn">Temizle</button>
+    </div>
+
+    <div class="stats">
+      <div class="card"><div class="k">Toplam Rapor</div><div class="v" id="stTotal">0</div></div>
+      <div class="card"><div class="k">Shortlist</div><div class="v" id="stShortlist">0</div></div>
+      <div class="card"><div class="k">Incelemede</div><div class="v" id="stReview">0</div></div>
+      <div class="card"><div class="k">Ortalama Rating</div><div class="v" id="stAvg">0.0</div></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Oyuncu</th>
+            <th>Pozisyon</th>
+            <th>Yas</th>
+            <th>Rating</th>
+            <th>Durum</th>
+            <th>Not</th>
+            <th>Islem</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div id="emptyState" class="empty" style="display:none;">Filtreye uygun rapor bulunamadi.</div>
+    </div>
+  </div>
+
+  <script>
+    const REPORTS_KEY = 'nextscout_scout_reports';
+
+    function escapeHtml(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function getDefaultReports() {
+      return [
+        { id: 1, player_id: 11, player_name: 'Ahmet Yilmaz', position: 'Forvet', age: 23, rating: 8.2, status: 'shortlist', note: 'Bitiricilik yuksek' },
+        { id: 2, player_id: 12, player_name: 'Mert Can', position: 'Orta Saha', age: 21, rating: 7.8, status: 'review', note: 'Top dagitimi iyi' },
+        { id: 3, player_id: 13, player_name: 'Kaan Demir', position: 'Defans', age: 25, rating: 7.4, status: 'observe', note: 'Fizik guclu, hiz orta' },
+      ];
+    }
+
+    function loadReports() {
+      try {
+        const raw = localStorage.getItem(REPORTS_KEY);
+        if (!raw) {
+          const defaults = getDefaultReports();
+          localStorage.setItem(REPORTS_KEY, JSON.stringify(defaults));
+          return defaults;
+        }
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveReports(items) {
+      localStorage.setItem(REPORTS_KEY, JSON.stringify(items));
+    }
+
+    function statusLabel(status) {
+      if (status === 'shortlist') return { text: 'Shortlist', cls: 'st-shortlist' };
+      if (status === 'review') return { text: 'Incelemede', cls: 'st-review' };
+      if (status === 'observe') return { text: 'Izlemede', cls: 'st-observe' };
+      return { text: 'Uygun Degil', cls: 'st-reject' };
+    }
+
+    let allReports = loadReports();
+    let visible = allReports.slice();
+
+    function updateStats() {
+      const total = visible.length;
+      const shortlist = visible.filter((x) => x.status === 'shortlist').length;
+      const review = visible.filter((x) => x.status === 'review').length;
+      const avg = total ? (visible.reduce((s, x) => s + (Number(x.rating) || 0), 0) / total).toFixed(1) : '0.0';
+      document.getElementById('stTotal').textContent = String(total);
+      document.getElementById('stShortlist').textContent = String(shortlist);
+      document.getElementById('stReview').textContent = String(review);
+      document.getElementById('stAvg').textContent = String(avg);
+    }
+
+    function render() {
+      const tbody = document.getElementById('tbody');
+      const empty = document.getElementById('emptyState');
+      if (!visible.length) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        updateStats();
+        return;
+      }
+      empty.style.display = 'none';
+
+      tbody.innerHTML = visible.map((item) => {
+        const st = statusLabel(item.status);
+        return `
+          <tr>
+            <td data-label="Oyuncu">${escapeHtml(item.player_name || '-')}</td>
+            <td data-label="Pozisyon">${escapeHtml(item.position || '-')}</td>
+            <td data-label="Yas">${escapeHtml(item.age || '-')}</td>
+            <td data-label="Rating">${Number(item.rating || 0).toFixed(1)}</td>
+            <td data-label="Durum"><span class="tag ${st.cls}">${st.text}</span></td>
+            <td data-label="Not">${escapeHtml(item.note || '-')}</td>
+            <td data-label="Islem">
+              <button class="inline-btn" onclick="openProfile(${Number(item.player_id) || 0})">Profil</button>
+              <button class="inline-btn" onclick="nextStatus(${Number(item.id) || 0})">Durum Degistir</button>
+            </td>
+          </tr>`;
+      }).join('');
+
+      updateStats();
+    }
+
+    function applyFilters() {
+      const q = document.getElementById('qInput').value.trim().toLowerCase();
+      const status = document.getElementById('statusFilter').value;
+      const rating = Number(document.getElementById('ratingFilter').value || 0);
+
+      visible = allReports.filter((item) => {
+        const blob = `${item.player_name || ''} ${item.position || ''} ${item.note || ''}`.toLowerCase();
+        if (q && !blob.includes(q)) return false;
+        if (status && item.status !== status) return false;
+        if (rating && Number(item.rating || 0) < rating) return false;
+        return true;
+      });
+
+      render();
+    }
+
+    function nextStatus(id) {
+      const order = ['observe', 'review', 'shortlist', 'reject'];
+      const idx = allReports.findIndex((x) => Number(x.id) === Number(id));
+      if (idx === -1) return;
+      const current = order.indexOf(allReports[idx].status);
+      allReports[idx].status = order[(current + 1) % order.length];
+      saveReports(allReports);
+      applyFilters();
+    }
+
+    function openProfile(playerId) {
+      if (!playerId) return;
+      window.location.href = `player-profile.html?user_id=${encodeURIComponent(playerId)}`;
+    }
+
+    function bind() {
+      document.getElementById('qInput')?.addEventListener('input', applyFilters);
+      document.getElementById('statusFilter')?.addEventListener('change', applyFilters);
+      document.getElementById('ratingFilter')?.addEventListener('change', applyFilters);
+      document.getElementById('resetBtn')?.addEventListener('click', () => {
+        document.getElementById('qInput').value = '';
+        document.getElementById('statusFilter').value = '';
+        document.getElementById('ratingFilter').value = '';
+        visible = allReports.slice();
+        render();
+      });
+    }
+
+    bind();
+    render();
+  </script>
+    <script src="assets/js/core-stability.js"></script>
+    <script src="assets/js/mobile-professional.js" defer></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

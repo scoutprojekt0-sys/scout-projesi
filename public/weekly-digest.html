@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NextScout - Haftalik Bulten</title>
+    <meta name="description" content="NextScout weekly digest sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://nextscout.app/weekly-digest.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="NextScout - Haftalik Bulten">
+    <meta property="og:description" content="NextScout weekly digest sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/weekly-digest.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="NextScout - Haftalik Bulten">
+    <meta name="twitter:description" content="NextScout weekly digest sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(180deg, #F8FAFC 0%, #EEF2FF 100%); color: #0F172A; min-height: 100vh; }
+        .topbar { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; background: #FFFFFF; border-bottom: 1px solid #DBEAFE; }
+        .brand { font-family: 'Poppins', sans-serif; font-size: 24px; color: #1D4ED8; text-decoration: none; }
+        .btn { border: 1px solid #BFDBFE; background: #EFF6FF; color: #1E3A8A; padding: 9px 14px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 13px; }
+        .page { max-width: 1180px; margin: 26px auto; padding: 0 20px; }
+        .hero { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 18px; padding: 24px; box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08); margin-bottom: 14px; }
+        .hero h1 { font-size: 30px; margin-bottom: 8px; }
+        .hero p { color: #475569; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        .card { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 14px; padding: 16px; }
+        .card h3 { margin-bottom: 10px; font-size: 18px; }
+        .card.clickable { cursor: pointer; transition: all .2s ease; }
+        .card.clickable:hover { border-color: #93C5FD; box-shadow: 0 8px 18px rgba(37, 99, 235, 0.12); transform: translateY(-1px); }
+        .kpi-value { font-size: 34px; font-weight: 800; color: #1D4ED8; }
+        .kpi-sub { margin-top: 6px; color: #64748B; font-size: 13px; }
+        .list { list-style: none; display: grid; gap: 8px; }
+        .item { padding: 10px 12px; border: 1px solid #E2E8F0; border-radius: 10px; background: #F8FAFC; font-size: 14px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: inherit; }
+        .item:hover { border-color: #BFDBFE; background: #EFF6FF; }
+        .badge { font-weight: 800; color: #1D4ED8; }
+        @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+    <link rel="stylesheet" href="assets/css/mobile-unified.css">
+    <link rel="stylesheet" href="assets/css/mobile-polish.css">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" href="./index.html">NextScout</a>
+    <div style="display:flex; gap:10px;">
+        <a class="home-btn-global" href="./index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a>
+        <a class="btn" href="./manager-needs.html">MENAJER Ilanlari</a>
+        <a class="btn" href="./coach-needs.html">ANTRENÖR Ilanlari</a>
+    </div>
+</header>
+
+<main class="page">
+    <section class="hero">
+        <h1><i class="fa-solid fa-newspaper"></i> Haftalik Bulten</h1>
+        <p>Sadece 4 veri: bu hafta eklenen oyuncular, en cok izlenen oyuncular, MENAJER ilanlari, ANTRENÖR ilanlari.</p>
+    </section>
+
+    <section class="grid">
+        <article class="card clickable" onclick="openWeeklyPlayers()">
+            <h3>Bu Hafta Eklenen Oyuncu</h3>
+            <div class="kpi-value" id="weeklyPlayerCount">0</div>
+            <div class="kpi-sub">Son 7 gunluk kayıt (tikla)</div>
+        </article>
+
+        <article class="card clickable" onclick="openManagerNeeds()">
+            <h3>MENAJER Ilanlari (Haftalik)</h3>
+            <div class="kpi-value" id="weeklyManagerNeeds">0</div>
+            <div class="kpi-sub">Son 7 gunde acilan ilan (tikla)</div>
+        </article>
+
+        <article class="card clickable" onclick="openCoachNeeds()">
+            <h3>ANTRENÖR Ilanlari (Haftalik)</h3>
+            <div class="kpi-value" id="weeklyCoachNeeds">0</div>
+            <div class="kpi-sub">Son 7 gunde acilan ilan (tikla)</div>
+        </article>
+
+        <article class="card">
+            <h3>En Cok Izlenen Oyuncular</h3>
+            <ul class="list" id="topViewedList"></ul>
+        </article>
+    </section>
+</main>
+
+<script>
+    function getApiBaseUrl() {
+        const query = new URLSearchParams(window.location.search);
+        const fromQuery = (query.get('api_base') || '').trim();
+        if (fromQuery) return fromQuery.replace(/\/$/, '');
+        if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+        return '/api';
+    }
+
+    async function loadWeeklyDigest() {
+        const apiBase = getApiBaseUrl();
+        const response = await fetch(`${apiBase}/discovery/weekly-digest`, {
+            headers: { Accept: 'application/json' },
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const payload = await response.json();
+        return payload?.data || {};
+    }
+
+    function renderTopViewedPlayers(rows) {
+        const list = document.getElementById('topViewedList');
+        const stats = Array.isArray(rows) ? rows : [];
+
+        if (!stats.length) {
+            list.innerHTML = '<li class="item"><span>Veri yok</span><span class="badge">0</span></li>';
+            return;
+        }
+
+        list.innerHTML = stats.map((row) => `
+            <a class="item" href="${getPlayerProfileUrl(row)}">
+                <span>${row.name || 'Oyuncu'}</span>
+                <span class="badge">${Number(row.views || 0)}</span>
+            </a>
+        `).join('');
+    }
+
+    function openWeeklyPlayers() {
+        window.location.href = './professional-players.html';
+    }
+
+    function openManagerNeeds() {
+        window.location.href = './manager-needs.html';
+    }
+
+    function openCoachNeeds() {
+        window.location.href = './coach-needs.html';
+    }
+
+    function getPlayerProfileUrl(row) {
+        const id = row?.player_id || row?.user_id || row?.id || '';
+        if (id) return `./player-profile.html?user_id=${encodeURIComponent(id)}`;
+        const name = row?.name ? String(row.name) : '';
+        if (name) return `./professional-players.html?q=${encodeURIComponent(name)}`;
+        return './professional-players.html';
+    }
+
+    async function initDigest() {
+        try {
+            const data = await loadWeeklyDigest();
+            document.getElementById('weeklyPlayerCount').textContent = String(Number(data?.weekly_player_count || 0));
+            document.getElementById('weeklyManagerNeeds').textContent = String(Number(data?.weekly_manager_needs || 0));
+            document.getElementById('weeklyCoachNeeds').textContent = String(Number(data?.weekly_coach_needs || 0));
+            renderTopViewedPlayers(data?.top_viewed_players || []);
+        } catch (error) {
+            document.getElementById('weeklyPlayerCount').textContent = '0';
+            document.getElementById('weeklyManagerNeeds').textContent = '0';
+            document.getElementById('weeklyCoachNeeds').textContent = '0';
+            renderTopViewedPlayers([]);
+        }
+    }
+
+    initDigest();
+</script>
+    <script src="assets/js/core-stability.js"></script>
+    <script src="assets/js/mobile-professional.js" defer></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+

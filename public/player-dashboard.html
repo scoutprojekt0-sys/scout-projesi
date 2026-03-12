@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oyuncu DASHBOARD - NextScout</title>
+    <meta name="description" content="NextScout player DASHBOARD sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="https://nextscout.app/player-dashboard.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Oyuncu DASHBOARD - NextScout">
+    <meta property="og:description" content="NextScout player DASHBOARD sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/player-dashboard.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Oyuncu DASHBOARD - NextScout">
+    <meta name="twitter:description" content="NextScout player DASHBOARD sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/mobile-unified.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #1f252d;
+            --ink: #e2e8f0;
+            --muted: #94a3b8;
+            --line: #334155;
+            --panel: #232a33;
+            --primary: #60a5fa;
+            --accent: #38bdf8;
+            --good: #10b981;
+            --warn: #f59e0b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.16), transparent 34%),
+                radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.14), transparent 36%),
+                var(--bg);
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: rgba(31, 37, 45, 0.92);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--line);
+            padding: 14px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: #bfdbfe;
+            letter-spacing: 0.2px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .nav a {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 13px;
+            border: 1px solid var(--line);
+            background: #2b3440;
+            border-radius: 999px;
+            padding: 8px 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s ease;
+        }
+
+        .nav a:hover { color: #dbeafe; border-color: #60a5fa; background: #334155; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 18px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .welcome {
+            background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 100%);
+            color: #ffffff;
+            padding: 18px;
+            border-radius: 14px;
+            box-shadow: 0 14px 32px rgba(30, 64, 175, 0.2);
+        }
+
+        .welcome h1 { font-size: clamp(22px, 3vw, 34px); margin-bottom: 6px; }
+        .welcome p { font-size: 14px; opacity: 0.96; }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 14px;
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 14px;
+            box-shadow: 0 12px 26px rgba(2, 6, 23, 0.26);
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: #dbeafe;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .stat-card {
+            border: 1px solid var(--line);
+            background: #2b3440;
+            border-radius: 12px;
+            padding: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card.is-clickable {
+            cursor: pointer;
+            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .stat-card.is-clickable:hover {
+            transform: translateY(-2px);
+            border-color: #60a5fa;
+            box-shadow: 0 12px 24px rgba(2, 6, 23, 0.35);
+        }
+
+        .stat-icon {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            color: #bfdbfe;
+            font-size: 24px;
+        }
+
+        .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+        .stat-value { font-size: 28px; font-weight: 800; color: var(--primary); }
+        .stat-sub { font-size: 11px; color: #cbd5e1; margin-top: 4px; }
+
+        .btn-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 10px;
+            padding: 11px 12px;
+            font-weight: 700;
+            font-size: 13px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+            color: #ffffff;
+        }
+
+        .btn-secondary {
+            background: #eef2ff;
+            color: #1e3a8a;
+            border: 1px solid #bfdbfe;
+        }
+
+
+        .mini-list { display: grid; gap: 8px; }
+        .mini-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 10px;
+            background: #2b3440;
+        }
+
+        .mini-item.is-clickable {
+            cursor: pointer;
+            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .mini-item.is-clickable:hover {
+            transform: translateY(-2px);
+            border-color: #60a5fa;
+            box-shadow: 0 10px 20px rgba(2, 6, 23, 0.3);
+        }
+
+        .mini-item .left { display: grid; gap: 2px; }
+        .mini-item .t { font-size: 13px; font-weight: 700; color: #e2e8f0; }
+        .mini-item .d { font-size: 11px; color: #94a3b8; }
+        .mini-item .tag {
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 999px;
+            padding: 4px 8px;
+            border: 1px solid #475569;
+            background: #1f2937;
+            color: #bfdbfe;
+            white-space: nowrap;
+        }
+
+        .progress-wrap { display: grid; gap: 8px; }
+        .progress-row { display: grid; gap: 4px; }
+        .progress-top { display: flex; justify-content: space-between; font-size: 12px; color: #cbd5e1; }
+        .progress-bar {
+            height: 8px;
+            border-radius: 999px;
+            background: #475569;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #1e40af, #0ea5e9);
+        }
+
+        .kpi-strip {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .kpi {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 9px;
+            text-align: center;
+            background: #2b3440;
+        }
+
+        .kpi .v { font-size: 16px; font-weight: 800; color: #0b3b8a; }
+        .kpi .k { font-size: 11px; color: #cbd5e1; margin-top: 2px; }
+
+        .metric-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.62);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 90;
+        }
+
+        .metric-modal.active {
+            display: flex;
+        }
+
+        .metric-modal-card {
+            width: min(760px, 100%);
+            max-height: 88vh;
+            overflow: auto;
+            border: 1px solid #334155;
+            background: #232a33;
+            border-radius: 14px;
+            box-shadow: 0 18px 34px rgba(2, 6, 23, 0.42);
+        }
+
+        .metric-modal-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 14px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .metric-modal-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: #dbeafe;
+        }
+
+        .metric-modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid #475569;
+            background: #2b3440;
+            color: #cbd5e1;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .metric-modal-body {
+            padding: 14px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .metric-summary {
+            border: 1px solid #334155;
+            border-radius: 10px;
+            background: #1f2937;
+            padding: 10px;
+            color: #bfdbfe;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .metric-item {
+            border: 1px solid #334155;
+            border-radius: 10px;
+            background: #2b3440;
+            padding: 10px;
+            display: grid;
+            gap: 4px;
+        }
+
+        .metric-item-title {
+            color: #e2e8f0;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .metric-item-meta {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .schedule-actions {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .schedule-btn {
+            border: 1px solid #475569;
+            background: #2b3440;
+            color: #dbeafe;
+            border-radius: 10px;
+            padding: 9px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .schedule-btn.primary {
+            background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+            border-color: #1d4ed8;
+            color: #fff;
+        }
+
+        .boost-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.72);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 95;
+        }
+
+        .boost-modal.active { display: flex; }
+
+        .boost-card {
+            width: min(760px, 100%);
+            max-height: 92vh;
+            overflow: auto;
+            border: 1px solid #334155;
+            background: #232a33;
+            border-radius: 14px;
+            box-shadow: 0 20px 40px rgba(2, 6, 23, 0.45);
+        }
+
+        .boost-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .boost-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #dbeafe;
+        }
+
+        .boost-close {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            background: #2b3440;
+            color: #cbd5e1;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .boost-form {
+            padding: 14px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .boost-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .boost-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #475569;
+            border-radius: 10px;
+            background: #2b3440;
+            color: #e2e8f0;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .boost-input:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+        }
+
+        .boost-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        @media (max-width: 980px) {
+            .layout-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 10px 12px;
+                align-items: center;
+                gap: 8px;
+                flex-direction: row;
+            }
+
+            .logo { font-size: 18px; white-space: nowrap; }
+            .nav {
+                flex: 1;
+                width: auto;
+                justify-content: flex-end;
+                overflow-x: auto;
+                scrollbar-width: none;
+            }
+            .nav::-webkit-scrollbar { display: none; }
+            .nav a { flex: 0 0 auto; font-size: 12px; padding: 7px 10px; }
+
+            .container { padding: 12px; gap: 10px; }
+            .welcome { padding: 14px; border-radius: 12px; }
+            .welcome p { font-size: 13px; }
+
+            .panel { padding: 10px; border-radius: 12px; }
+            .section-title { font-size: 15px; margin-bottom: 8px; }
+            .stats-grid { grid-template-columns: 1fr; gap: 8px; }
+            .stat-card { padding: 10px; }
+            .stat-value { font-size: 24px; }
+            .btn-row { grid-template-columns: 1fr; }
+            .kpi-strip { grid-template-columns: 1fr 1fr; }
+            .mini-item { align-items: flex-start; }
+            .metric-modal-card { max-height: 92vh; border-radius: 12px; }
+            .metric-modal-head, .metric-modal-body { padding: 12px; }
+            .schedule-actions { grid-template-columns: 1fr; }
+            .boost-grid { grid-template-columns: 1fr; }
+            .boost-actions { justify-content: stretch; }
+            .boost-actions button { width: 100%; }
+        }
+
+        @media (max-width: 480px) {
+            .header { padding: 10px; }
+            .logo { font-size: 17px; }
+            .nav a {
+                width: 34px;
+                height: 34px;
+                border-radius: 10px;
+                padding: 0;
+                font-size: 0;
+                justify-content: center;
+            }
+            .nav a i { font-size: 14px; margin: 0; }
+            .kpi-strip { grid-template-columns: 1fr; }
+        }
+    </style>
+    <link rel="stylesheet" href="assets/css/mobile-polish.css">
+</head>
+<body>
+    <div class="header">
+        <div class="logo"><i class="fas fa-search"></i> NextScout</div>
+        <div class="nav">
+            <a class="home-btn-global" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a>
+            <a href="player-profile.html"><i class="fas fa-user"></i> Profil</a>
+            <a href="notifications.html"><i class="fas fa-bell"></i> Bildirim</a>
+            <a href="scout-watchlist.html"><i class="fas fa-list-check"></i> Takip Listem</a>
+            <a href="professional-players.html"><i class="fas fa-compass"></i> Kesfet</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="welcome">
+            <h1>Hos Geldin, Oyuncu!</h1>
+            <p>Profilini guclendir, mac videolarini yukle ve scout ilgisini artir.</p>
+        </div>
+
+        <div class="kpi-strip">
+            <div class="kpi">
+                <div class="v">87%</div>
+                <div class="k">Profil Tamamlanma</div>
+            </div>
+            <div class="kpi">
+                <div class="v">+12%</div>
+                <div class="k">Haftalik Trend</div>
+            </div>
+            <div class="kpi">
+                <div class="v">4.7</div>
+                <div class="k">Scout Puani</div>
+            </div>
+        </div>
+
+        <div class="layout-grid">
+            <section class="panel">
+                <div class="section-title">Oyuncu Durumu</div>
+                <div class="stats-grid">
+                    <article class="stat-card is-clickable" onclick="openMetricModal('views')">
+                        <i class="fas fa-eye stat-icon"></i>
+                        <div class="stat-label">Profil Goruntulenme</div>
+                        <div class="stat-value" id="profileViewsValue">1,247</div>
+                        <div class="stat-sub" id="profileViewsSub">Son 7 gunde +94</div>
+                    </article>
+                    <article class="stat-card is-clickable" onclick="openMetricModal('videos')">
+                        <i class="fas fa-video stat-icon"></i>
+                        <div class="stat-label">Video Sayisi</div>
+                        <div class="stat-value" id="videoCountValue">8</div>
+                        <div class="stat-sub" id="videoCountSub">2 yeni video beklemede</div>
+                    </article>
+                    <article class="stat-card is-clickable" onclick="openMetricModal('interest')">
+                        <i class="fas fa-star stat-icon"></i>
+                        <div class="stat-label">Scout Ilgisi</div>
+                        <div class="stat-value" id="scoutInterestValue">23</div>
+                        <div class="stat-sub" id="scoutInterestSub">5 yeni takipci</div>
+                    </article>
+                    <article class="stat-card is-clickable" onclick="openMetricModal('offers')">
+                        <i class="fas fa-handshake stat-icon"></i>
+                        <div class="stat-label">Transfer Teklifi</div>
+                        <div class="stat-value" id="transferOfferValue">3</div>
+                        <div class="stat-sub" id="transferOfferSub">1 teklif acik</div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="panel">
+                <div class="section-title">Profil Gelisim</div>
+                <div class="progress-wrap">
+                    <div class="progress-row">
+                        <div class="progress-top">
+                            <span>Profil Bilgileri</span>
+                            <span>92%</span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" style="width:92%"></div></div>
+                    </div>
+                    <div class="progress-row">
+                        <div class="progress-top">
+                            <span>Mac Video Arsivi</span>
+                            <span>74%</span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" style="width:74%"></div></div>
+                    </div>
+                    <div class="progress-row">
+                        <div class="progress-top">
+                            <span>Scout Karti</span>
+                            <span>81%</span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" style="width:81%"></div></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <section class="panel">
+            <div class="section-title">Hizli Islemler</div>
+            <div class="btn-row">
+                <a href="profile-edit.html" class="btn btn-primary"><i class="fas fa-edit"></i> Profili Düzenle</a>
+                <a href="player-profile.html#stats" class="btn btn-secondary"><i class="fas fa-chart-line"></i> Istatistikler</a>
+                <a href="player-profile.html#videos" class="btn btn-primary"><i class="fas fa-upload"></i> Video Yukle</a>
+                <a href="look-alike.html" class="btn btn-secondary"><i class="fas fa-clone"></i> Look-alike</a>
+                <button type="button" class="btn btn-primary" onclick="openBoostModal()"><i class="fas fa-bolt"></i> Beni Kesfedin</button>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="section-title">Son Gelismeler</div>
+            <div class="mini-list">
+                <div class="mini-item is-clickable" onclick="openLatestItemModal('new-match')">
+                    <div class="left">
+                        <div class="t" id="latestNewTitle">Scout Radarinda yeni eslesme</div>
+                        <div class="d" id="latestNewDesc">2 saat once • Super Lig B takımi izlemeye aldi</div>
+                    </div>
+                    <span class="tag" id="latestNewTag">Yeni</span>
+                </div>
+                <div class="mini-item is-clickable" onclick="openLatestItemModal('trend')">
+                    <div class="left">
+                        <div class="t" id="latestTrendTitle">Video performansi yukseldi</div>
+                        <div class="d" id="latestTrendDesc">Dunku videonun izlenmesi +38%</div>
+                    </div>
+                    <span class="tag" id="latestTrendTag">Trend</span>
+                </div>
+                <div class="mini-item is-clickable" onclick="window.location.href='notifications.html'">
+                    <div class="left">
+                        <div class="t">MENAJER mesaji bekleniyor</div>
+                        <div class="d" id="incomingMessagesText">Gelen kutusunda 1 yeni mesaj var</div>
+                    </div>
+                    <span class="tag" id="incomingMessagesTag">Mesaj</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="section-title">Firsat Takvimi</div>
+            <div class="mini-list">
+                <div class="mini-item is-clickable" onclick="openScheduleModal('join')">
+                    <div class="left">
+                        <div class="t">Deneme Maci - Istanbul</div>
+                        <div class="d">16 Mart 2026 • Saat 18:30</div>
+                    </div>
+                    <span class="tag">Katil</span>
+                </div>
+                <div class="mini-item is-clickable" onclick="openScheduleModal('planned')">
+                    <div class="left">
+                        <div class="t">Scout Gozlem Seansi</div>
+                        <div class="d">19 Mart 2026 • Saat 14:00</div>
+                    </div>
+                    <span class="tag">Planli</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="section-title">Yaklasanlarim</div>
+            <div class="mini-list" id="upcomingScheduleList">
+                <div class="mini-item">
+                    <div class="left">
+                        <div class="t">Kayitli takvim etkinligi yok</div>
+                        <div class="d">Firsat Takvimi kartlarindan etkinlik ekleyebilirsin.</div>
+                    </div>
+                    <span class="tag">Bos</span>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="metric-modal" id="metricModal" onclick="if(event.target===this) closeMetricModal()">
+        <div class="metric-modal-card" onclick="event.stopPropagation()">
+            <div class="metric-modal-head">
+                <div class="metric-modal-title" id="metricModalTitle">Detay</div>
+                <button class="metric-modal-close" type="button" onclick="closeMetricModal()">×</button>
+            </div>
+            <div class="metric-modal-body">
+                <div class="metric-summary" id="metricModalSummary">-</div>
+                <div id="metricModalList"></div>
+            </div>
+        </div>
+    </div>
+    <div class="boost-modal" id="boostModal" onclick="if(event.target===this) closeBoostModal()">
+        <div class="boost-card" onclick="event.stopPropagation()">
+            <div class="boost-head">
+                <div class="boost-title">⚡ Beni Kesfedin - Ucretli Tanitim</div>
+                <button type="button" class="boost-close" onclick="closeBoostModal()">×</button>
+            </div>
+            <form class="boost-form" id="boostForm">
+                <div class="boost-grid">
+                    <input class="boost-input" id="boostName" placeholder="Ad Soyad" required>
+                    <input class="boost-input" id="boostPosition" placeholder="Pozisyon (Orn: Forvet)">
+                    <input class="boost-input" id="boostCity" placeholder="Sehir">
+                    <select class="boost-input" id="boostPackage" required>
+                        <option value="24h">24 Saat Vitrin (149 TL)</option>
+                        <option value="72h">72 Saat Vitrin (349 TL)</option>
+                    </select>
+                </div>
+                <textarea class="boost-input" id="boostSummary" placeholder="Kisa tanitim metni" rows="4"></textarea>
+                <div class="boost-grid">
+                    <input class="boost-input" id="boostCardLast4" maxlength="4" placeholder="Kart son 4 hane" required>
+                    <label style="display:flex;align-items:center;gap:8px;color:#fcd34d;font-size:12px;font-weight:700;">
+                        <input type="checkbox" id="boostApprove" required>
+                        Odemeyi onayliyorum
+                    </label>
+                </div>
+                <div class="boost-actions">
+                    <button type="button" class="schedule-btn" onclick="closeBoostModal()">Iptal</button>
+                    <button type="submit" class="schedule-btn primary">Yayinla</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="assets/js/core-stability.js"></script>
+    <script>
+        const dashboardApiState = {
+            loaded: false,
+            views: null,
+            videos: [],
+            likes: null,
+            incomingMessages: [],
+            offers: [],
+            notifications: [],
+            latestNeeds: [],
+            weeklyTrends: [],
+            weeklyDigest: null,
+            communityEvents: [],
+            selectedSchedule: null,
+        };
+
+        function normalizeText(value) {
+            return (value || '').toString().trim().toLowerCase();
+        }
+
+        function getApiBaseUrl() {
+            if (window.NextScoutApi && typeof window.NextScoutApi.base === 'function') {
+                return window.NextScoutApi.base();
+            }
+            const configured = (window.NEXTSCOUT_API_BASE || '').toString().trim();
+            if (configured) return configured.replace(/\/$/, '');
+            if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
+                return `${window.location.origin}/api`;
+            }
+            const params = new URLSearchParams(window.location.search);
+            const fromQuery = (params.get('api_base') || '').trim();
+            if (fromQuery) return fromQuery.replace(/\/$/, '');
+            return 'http://127.0.0.1:8000/api';
+        }
+
+        function getAuthHeaders() {
+            const headers = { Accept: 'application/json' };
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            if (token) headers.Authorization = `Bearer ${token}`;
+            return headers;
+        }
+
+        async function fetchJsonSafe(url) {
+            try {
+                const response = await fetch(url, { headers: getAuthHeaders() });
+                const payload = await response.json().catch(() => null);
+                if (!response.ok) return null;
+                return payload;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function getCurrentPlayerName() {
+            try {
+                const raw = localStorage.getItem('nextscout_user');
+                const user = raw ? JSON.parse(raw) : null;
+                return (user?.name || '').toString().trim();
+            } catch (e) {
+                return '';
+            }
+        }
+
+        function getPlayerLikeCount(playerName) {
+            const key = normalizeText(playerName);
+            if (!key) return 0;
+            try {
+                const raw = localStorage.getItem('nextscout_player_likes');
+                const store = raw ? JSON.parse(raw) : {};
+                return Number(store?.[key] || 0);
+            } catch (e) {
+                return 0;
+            }
+        }
+
+        function getIncomingMessageCount(playerName) {
+            const key = normalizeText(playerName);
+            if (!key) return 0;
+            try {
+                const rows = JSON.parse(localStorage.getItem('nextscout_messages') || '[]');
+                if (!Array.isArray(rows)) return 0;
+                return rows.filter((row) => normalizeText(row?.box) === 'inbox' && normalizeText(row?.to) === key).length;
+            } catch (e) {
+                return 0;
+            }
+        }
+
+        function readArrayStorage(key) {
+            try {
+                const raw = JSON.parse(localStorage.getItem(key) || '[]');
+                return Array.isArray(raw) ? raw : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function getProfileViewsCount(playerName) {
+            const key = normalizeText(playerName);
+            const fallback = 1247;
+            if (!key) return fallback;
+            try {
+                const raw = JSON.parse(localStorage.getItem('nextscout_profile_views') || '{}');
+                if (typeof raw === 'number') return raw;
+                if (raw && typeof raw === 'object') return Number(raw[key] || fallback);
+                return fallback;
+            } catch (e) {
+                return fallback;
+            }
+        }
+
+        function getVideoCount() {
+            const videos = readArrayStorage('playerVideos');
+            return videos.length || 8;
+        }
+
+        function getTransferOfferCount(playerName) {
+            const key = normalizeText(playerName);
+            const rows = readArrayStorage('nextscout_messages');
+            const matches = rows.filter((row) => {
+                const boxOk = normalizeText(row?.box) === 'inbox';
+                const toOk = !key || normalizeText(row?.to) === key;
+                const subject = normalizeText(row?.subject);
+                const body = normalizeText(row?.body);
+                const offerLike = /teklif|transfer|deneme|sozlesme/.test(subject) || /teklif|transfer|deneme|sozlesme/.test(body);
+                return boxOk && toOk && offerLike;
+            });
+            return matches.length || 3;
+        }
+
+        async function resolveCurrentUserId() {
+            try {
+                const raw = localStorage.getItem('nextscout_user');
+                const user = raw ? JSON.parse(raw) : null;
+                if (user?.id) return Number(user.id);
+            } catch (e) {}
+
+            const mePayload = await fetchJsonSafe(`${getApiBaseUrl()}/auth/me`);
+            const me = mePayload?.data?.user || mePayload?.data || mePayload?.user || null;
+            if (me?.id) {
+                try {
+                    const raw = localStorage.getItem('nextscout_user');
+                    const current = raw ? JSON.parse(raw) : {};
+                    localStorage.setItem('nextscout_user', JSON.stringify({ ...current, id: me.id }));
+                } catch (e) {}
+                return Number(me.id);
+            }
+            return null;
+        }
+
+        function parsePaginatedRows(payload) {
+            if (!payload) return [];
+            if (Array.isArray(payload?.data?.data)) return payload.data.data;
+            if (Array.isArray(payload?.data)) return payload.data;
+            if (Array.isArray(payload?.notifications)) return payload.notifications;
+            return [];
+        }
+
+        function parseAnyRows(payload) {
+            if (!payload) return [];
+            if (Array.isArray(payload)) return payload;
+            if (Array.isArray(payload?.data)) return payload.data;
+            if (Array.isArray(payload?.data?.items)) return payload.data.items;
+            if (Array.isArray(payload?.items)) return payload.items;
+            return [];
+        }
+
+        async function loadDashboardApiMetrics() {
+            const userId = await resolveCurrentUserId();
+            if (!userId) return;
+
+            const apiBase = getApiBaseUrl();
+            const [viewPayload, cardStatsPayload, videosPayload, inboxPayload, notifPayload] = await Promise.all([
+                fetchJsonSafe(`${apiBase}/profile-views/${userId}/count`),
+                fetchJsonSafe(`${apiBase}/profile-cards/player/${userId}/stats`),
+                fetchJsonSafe(`${apiBase}/video-portfolio/player/${userId}`),
+                fetchJsonSafe(`${apiBase}/contacts/inbox?per_page=100`),
+                fetchJsonSafe(`${apiBase}/notifications?limit=100`),
+            ]);
+
+            dashboardApiState.loaded = true;
+            dashboardApiState.views = Number(viewPayload?.data?.count ?? cardStatsPayload?.data?.total_views ?? 0) || null;
+            dashboardApiState.likes = Number(cardStatsPayload?.data?.likes ?? 0) || 0;
+            dashboardApiState.videos = Array.isArray(videosPayload?.data) ? videosPayload.data : [];
+            dashboardApiState.incomingMessages = parsePaginatedRows(inboxPayload);
+            dashboardApiState.notifications = parsePaginatedRows(notifPayload);
+            dashboardApiState.offers = dashboardApiState.incomingMessages.filter((row) => {
+                const subject = normalizeText(row?.subject);
+                const message = normalizeText(row?.message);
+                const type = normalizeText(row?.type);
+                return /teklif|transfer|deneme|sozlesme|offer/.test(subject) || /teklif|transfer|deneme|sozlesme|offer/.test(message) || /offer|transfer/.test(type);
+            });
+
+            refreshPlayerDashboardLiveStats();
+        }
+
+        async function loadLatestApiHighlights() {
+            const apiBase = getApiBaseUrl();
+            const [needsPayload, trendingPayload, digestPayload, eventsPayload] = await Promise.all([
+                fetchJsonSafe(`${apiBase}/discovery/manager-needs`),
+                fetchJsonSafe(`${apiBase}/trending/week`),
+                fetchJsonSafe(`${apiBase}/discovery/weekly-digest`),
+                fetchJsonSafe(`${apiBase}/community-events`),
+            ]);
+
+            dashboardApiState.latestNeeds = parseAnyRows(needsPayload);
+            dashboardApiState.weeklyTrends = parseAnyRows(trendingPayload);
+            dashboardApiState.weeklyDigest = digestPayload?.data || digestPayload || null;
+            dashboardApiState.communityEvents = parseAnyRows(eventsPayload);
+
+            const need = dashboardApiState.latestNeeds[0] || null;
+            const trend = dashboardApiState.weeklyTrends[0] || null;
+
+            const newTitleEl = document.getElementById('latestNewTitle');
+            const newDescEl = document.getElementById('latestNewDesc');
+            const newTagEl = document.getElementById('latestNewTag');
+            const trendTitleEl = document.getElementById('latestTrendTitle');
+            const trendDescEl = document.getElementById('latestTrendDesc');
+            const trendTagEl = document.getElementById('latestTrendTag');
+
+            if (need && newTitleEl) {
+                newTitleEl.textContent = need.title || need.position || 'Scout Radarinda yeni eslesme';
+            }
+            if (need && newDescEl) {
+                const city = need.city ? ` • ${need.city}` : '';
+                newDescEl.textContent = `${need.club_name || need.club || 'KULÜP ihtiyaçi'}${city}`;
+            }
+            if (need && newTagEl) {
+                newTagEl.textContent = 'Yeni';
+            }
+
+            if (trend && trendTitleEl) {
+                trendTitleEl.textContent = trend.title || trend.name || 'Video performansi yukseldi';
+            }
+            if (trend && trendDescEl) {
+                const change = trend.change_percentage ?? trend.change ?? trend.score ?? null;
+                trendDescEl.textContent = change !== null ? `Haftalik degisim: ${change}` : (trend.description || 'Haftalik trend güncellendi');
+            }
+            if (trend && trendTagEl) {
+                trendTagEl.textContent = 'Trend';
+            }
+        }
+
+        function openBoostModal() {
+            const modal = document.getElementById('boostModal');
+            if (!modal) return;
+
+            try {
+                const raw = localStorage.getItem('nextscout_user');
+                const user = raw ? JSON.parse(raw) : null;
+                const nameInput = document.getElementById('boostName');
+                if (nameInput && !nameInput.value && user?.name) {
+                    nameInput.value = String(user.name);
+                }
+            } catch (e) {}
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeBoostModal() {
+            const modal = document.getElementById('boostModal');
+            if (!modal) return;
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function getBoostPackageMeta(code) {
+            if (code === '72h') {
+                return { label: '72 Saat Vitrin', price: 349, hours: 72 };
+            }
+            return { label: '24 Saat Vitrin', price: 149, hours: 24 };
+        }
+
+        function persistLocalBoost(payload) {
+            try {
+                const rows = readArrayStorage('nextscout_discovery_boosts');
+                rows.unshift({
+                    ...payload,
+                    created_at: new Date().toISOString(),
+                    source: 'local',
+                });
+                localStorage.setItem('nextscout_discovery_boosts', JSON.stringify(rows.slice(0, 50)));
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        async function submitBoostForm(event) {
+            event.preventDefault();
+
+            const name = (document.getElementById('boostName')?.value || '').trim();
+            const position = (document.getElementById('boostPosition')?.value || '').trim();
+            const city = (document.getElementById('boostCity')?.value || '').trim();
+            const summary = (document.getElementById('boostSummary')?.value || '').trim();
+            const packageCode = (document.getElementById('boostPackage')?.value || '24h').trim();
+            const cardLast4 = (document.getElementById('boostCardLast4')?.value || '').replace(/\D/g, '').slice(0, 4);
+            const approved = Boolean(document.getElementById('boostApprove')?.checked);
+
+            if (!name || !approved || cardLast4.length !== 4) {
+                window.nsNotify?.error ? window.nsNotify.error('Lütfen ad-soyad, kart son 4 hane ve ödeme onayi alanlarini tamamlayin.') : nsnsAlert('Lütfen ad-soyad, kart son 4 hane ve ödeme onayi alanlarini tamamlayin.');
+                return;
+            }
+
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            if (!token) {
+                window.nsNotify?.error ? window.nsNotify.error('Ucretli tanitim icin once giriş yapman gerekiyor.') : nsnsAlert('Ucretli tanitim icin once giriş yapman gerekiyor.');
+                return;
+            }
+
+            const pkg = getBoostPackageMeta(packageCode);
+            const expiresAt = new Date(Date.now() + (pkg.hours * 60 * 60 * 1000)).toISOString();
+            const payload = {
+                name,
+                position,
+                city,
+                summary,
+                package_code: packageCode,
+                package_label: pkg.label,
+                price_tl: pkg.price,
+                paid: true,
+                expires_at: expiresAt,
+                card_last4: cardLast4,
+            };
+
+            try {
+                const res = await fetch(`${getApiBaseUrl()}/discovery/boosts`, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                const body = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    persistLocalBoost(payload);
+                    window.nsNotify?.info ? window.nsNotify.info('API su an ulasilamaz. Ödeme kaydi yerel olarak alindi ve Kesfet listesine eklendi.') : nsnsAlert('API su an ulasilamaz. Ödeme kaydi yerel olarak alindi ve Kesfet listesine eklendi.');
+                    const form = document.getElementById('boostForm');
+                    if (form) form.reset();
+                    closeBoostModal();
+                    window.location.href = 'professional-players.html';
+                    return;
+                }
+
+                persistLocalBoost(payload);
+
+                window.nsNotify?.success ? window.nsNotify.success('Ödeme alindi. Profilin Kesfet sponsorlu listesine eklendi.') : nsnsAlert('Ödeme alindi. Profilin Kesfet sponsorlu listesine eklendi.');
+                const form = document.getElementById('boostForm');
+                if (form) form.reset();
+                closeBoostModal();
+                window.location.href = 'professional-players.html';
+            } catch (e) {
+                persistLocalBoost(payload);
+                window.nsNotify?.info ? window.nsNotify.info('Sunucuya baglanilamadi. Ödeme kaydi yerel olarak alindi ve Kesfet listesine eklendi.') : nsnsAlert('Sunucuya baglanilamadi. Ödeme kaydi yerel olarak alindi ve Kesfet listesine eklendi.');
+                const form = document.getElementById('boostForm');
+                if (form) form.reset();
+                closeBoostModal();
+                window.location.href = 'professional-players.html';
+            }
+        }
+
+        function openMetricModal(metric) {
+            const playerName = getCurrentPlayerName();
+            const likes = dashboardApiState.loaded
+                ? Number(dashboardApiState.likes || 0)
+                : getPlayerLikeCount(playerName);
+            const incoming = dashboardApiState.loaded
+                ? dashboardApiState.incomingMessages.length
+                : getIncomingMessageCount(playerName);
+            const views = dashboardApiState.loaded && dashboardApiState.views
+                ? Number(dashboardApiState.views)
+                : getProfileViewsCount(playerName);
+            const videoCount = dashboardApiState.loaded
+                ? (dashboardApiState.videos.length || getVideoCount())
+                : getVideoCount();
+            const offerCount = dashboardApiState.loaded
+                ? (dashboardApiState.offers.length || getTransferOfferCount(playerName))
+                : getTransferOfferCount(playerName);
+
+            const config = {
+                views: {
+                    title: 'Profil Goruntulenme Detayi',
+                    summary: `Toplam ${views} goruntulenme • Son 7 gunde +94`,
+                    items: dashboardApiState.loaded && dashboardApiState.notifications.length
+                        ? dashboardApiState.notifications.slice(0, 3).map((n) => ({
+                            title: n.title || 'Profil etkilesimi',
+                            meta: n.time || n.created_at || 'Bildirim',
+                        }))
+                        : [
+                            { title: 'Scout izlemeleri', meta: `${Math.max(0, Math.round(views * 0.42))} goruntulenme` },
+                            { title: 'KULÜP profilleri', meta: `${Math.max(0, Math.round(views * 0.31))} goruntulenme` },
+                            { title: 'MENAJER incelemeleri', meta: `${Math.max(0, Math.round(views * 0.27))} goruntulenme` },
+                        ],
+                },
+                videos: {
+                    title: 'Video Arsivi',
+                    summary: `Toplam ${videoCount} video • Son ekleme bu hafta`,
+                    items: dashboardApiState.loaded && dashboardApiState.videos.length
+                        ? dashboardApiState.videos.slice(0, 3).map((v) => ({
+                            title: v.title || 'Video',
+                            meta: v.video_type || 'video',
+                        }))
+                        : [
+                            { title: 'Mac ozet videolari', meta: `${Math.max(1, Math.round(videoCount * 0.5))} adet` },
+                            { title: 'Antrenman kesitleri', meta: `${Math.max(1, Math.round(videoCount * 0.3))} adet` },
+                            { title: 'Scout oneri klipleri', meta: `${Math.max(1, Math.round(videoCount * 0.2))} adet` },
+                        ],
+                },
+                interest: {
+                    title: 'Scout Ilgisi',
+                    summary: `Toplam ilgi puani ${23 + likes} • ${likes} yeni begeni`,
+                    items: dashboardApiState.loaded && dashboardApiState.notifications.length
+                        ? dashboardApiState.notifications
+                            .filter((n) => /interest|like|begen|takip|favori/.test(normalizeText(n.type || '') + ' ' + normalizeText(n.title || '') + ' ' + normalizeText(n.message || '')))
+                            .slice(0, 3)
+                            .map((n) => ({ title: n.title || 'Ilgi bildirimi', meta: n.message || n.time || '-' }))
+                        : [
+                            { title: 'Yeni begeniler', meta: `${likes} adet` },
+                            { title: 'Mesajla ilgi gosteren', meta: `${incoming} kisi` },
+                            { title: 'Takipte tutan scout', meta: `${Math.max(2, 5 + Math.round(likes / 2))} scout` },
+                        ],
+                },
+                offers: {
+                    title: 'Transfer Teklifleri',
+                    summary: `Toplam ${offerCount} teklif kaydi • ${offerCount > 0 ? Math.max(1, offerCount - 1) : 0} teklif acik`,
+                    items: dashboardApiState.loaded && dashboardApiState.offers.length
+                        ? dashboardApiState.offers.slice(0, 3).map((row) => ({
+                            title: row.subject || row.title || 'Transfer teklifi',
+                            meta: row.message || row.created_at || row.time || '-',
+                        }))
+                        : [
+                            { title: 'Acil gorusme talebi', meta: offerCount > 0 ? 'Acik gorusme var' : 'Henuz teklif yok' },
+                            { title: 'Deneme mac daveti', meta: `${Math.max(0, offerCount - 1)} potansiyel davet` },
+                            { title: 'Sozlesme gorusmesi', meta: offerCount > 2 ? 'On degerlendirme asamasinda' : 'Beklemede' },
+                        ],
+                },
+            };
+
+            const data = config[metric];
+            if (!data) return;
+
+            const titleEl = document.getElementById('metricModalTitle');
+            const summaryEl = document.getElementById('metricModalSummary');
+            const listEl = document.getElementById('metricModalList');
+            const modal = document.getElementById('metricModal');
+            if (!titleEl || !summaryEl || !listEl || !modal) return;
+
+            titleEl.textContent = data.title;
+            summaryEl.textContent = data.summary;
+            listEl.innerHTML = data.items.map((item) => `
+                <article class="metric-item">
+                    <div class="metric-item-title">${item.title}</div>
+                    <div class="metric-item-meta">${item.meta}</div>
+                </article>
+            `).join('');
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function openLatestItemModal(type) {
+            const firstNeed = dashboardApiState.latestNeeds[0] || null;
+            const firstTrend = dashboardApiState.weeklyTrends[0] || null;
+            const config = {
+                'new-match': {
+                    title: 'Yeni Eslesme Detayi',
+                    summary: firstNeed
+                        ? `${firstNeed.title || firstNeed.position || 'Yeni ihtiyaç'} kaydi sisteme dustu.`
+                        : 'Scout radarinda yeni KULÜP eslesmesi bulundu.',
+                    items: dashboardApiState.latestNeeds.length
+                        ? dashboardApiState.latestNeeds.slice(0, 3).map((row) => ({
+                            title: row.title || row.position || row.club_name || 'KULÜP ihtiyaçi',
+                            meta: [row.club_name || row.club, row.city, row.created_at].filter(Boolean).join(' • ') || 'Yeni kayıt',
+                        }))
+                        : [
+                            { title: 'KULÜP', meta: 'Super Lig B Takimi' },
+                            { title: 'Tarih', meta: 'Bugün • Son 2 saat' },
+                            { title: 'Aksiyon', meta: 'Profilini güncel tut ve video ekle' },
+                        ],
+                },
+                trend: {
+                    title: 'Video Trend Detayi',
+                    summary: firstTrend
+                        ? `${firstTrend.title || firstTrend.name || 'Haftalik trend'} güncel API trendlerinden alindi.`
+                        : 'Video goruntulenme trendin yukseliyor.',
+                    items: dashboardApiState.weeklyTrends.length
+                        ? dashboardApiState.weeklyTrends.slice(0, 3).map((row) => ({
+                            title: row.title || row.name || 'Trend verisi',
+                            meta: [
+                                row.change_percentage !== undefined ? `Degisim: ${row.change_percentage}` : null,
+                                row.score !== undefined ? `Skor: ${row.score}` : null,
+                                row.description || null,
+                            ].filter(Boolean).join(' • ') || 'Haftalik trend',
+                        }))
+                        : [
+                            { title: 'Son video performansi', meta: '+38% izlenme artisi' },
+                            { title: 'En cok izlenen saat', meta: '20:00 - 22:00' },
+                            { title: 'Oneri', meta: 'Yeni mac kesiti ekleyebilirsin' },
+                        ],
+                },
+            };
+
+            const data = config[type];
+            if (!data) return;
+            const titleEl = document.getElementById('metricModalTitle');
+            const summaryEl = document.getElementById('metricModalSummary');
+            const listEl = document.getElementById('metricModalList');
+            const modal = document.getElementById('metricModal');
+            if (!titleEl || !summaryEl || !listEl || !modal) return;
+
+            titleEl.textContent = data.title;
+            summaryEl.textContent = data.summary;
+            listEl.innerHTML = data.items.map((item) => `
+                <article class="metric-item">
+                    <div class="metric-item-title">${item.title}</div>
+                    <div class="metric-item-meta">${item.meta}</div>
+                </article>
+            `).join('');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function openScheduleModal(type) {
+            const events = Array.isArray(dashboardApiState.communityEvents) ? dashboardApiState.communityEvents : [];
+            const fromApi = type === 'join' ? (events[0] || null) : (events[1] || events[0] || null);
+            const defaults = type === 'join'
+                ? {
+                    title: 'Deneme Maci - Istanbul',
+                    desc: '16 Mart 2026 • Saat 18:30',
+                    location: 'Istanbul',
+                    capacity: 'Kontenjan: 22',
+                    actionLabel: 'Katilim Onayi Ver',
+                }
+                : {
+                    title: 'Scout Gozlem Seansi',
+                    desc: '19 Mart 2026 • Saat 14:00',
+                    location: 'Istanbul',
+                    capacity: 'Kontenjan: 15',
+                    actionLabel: 'Hatirlatici Kur',
+                };
+
+            const schedule = {
+                id: fromApi?.id || null,
+                type,
+                title: fromApi?.title || defaults.title,
+                desc: fromApi?.start_at || fromApi?.event_date || defaults.desc,
+                location: fromApi?.city || fromApi?.location || defaults.location,
+                capacity: fromApi?.capacity ? `Kontenjan: ${fromApi.capacity}` : defaults.capacity,
+                organizer: fromApi?.organizer_name || fromApi?.club_name || 'NextScout',
+                source: fromApi ? 'api' : 'fallback',
+            };
+            dashboardApiState.selectedSchedule = schedule;
+
+            const titleEl = document.getElementById('metricModalTitle');
+            const summaryEl = document.getElementById('metricModalSummary');
+            const listEl = document.getElementById('metricModalList');
+            const modal = document.getElementById('metricModal');
+            if (!titleEl || !summaryEl || !listEl || !modal) return;
+
+            titleEl.textContent = schedule.title;
+            summaryEl.textContent = `${schedule.desc} • ${schedule.location}`;
+            listEl.innerHTML = `
+                <article class="metric-item">
+                    <div class="metric-item-title">Organizasyon</div>
+                    <div class="metric-item-meta">${schedule.organizer}</div>
+                </article>
+                <article class="metric-item">
+                    <div class="metric-item-title">Detay</div>
+                    <div class="metric-item-meta">${schedule.capacity}</div>
+                </article>
+                <article class="metric-item">
+                    <div class="metric-item-title">Kaynak</div>
+                    <div class="metric-item-meta">${schedule.source === 'api' ? 'Gercek API verisi' : 'Yerel takvim kaydi'}</div>
+                </article>
+                <div class="schedule-actions">
+                    <button type="button" class="schedule-btn primary" onclick="confirmScheduleAction()">${type === 'join' ? 'Katilim Onayi Ver' : 'Hatirlatici Kur'}</button>
+                    <button type="button" class="schedule-btn" onclick="saveScheduleToCalendar()">Takvime Ekle</button>
+                    <button type="button" class="schedule-btn" onclick="openScheduleMessage()">Mesaj Gönder</button>
+                </div>
+            `;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        async function confirmScheduleAction() {
+            const schedule = dashboardApiState.selectedSchedule;
+            if (!schedule) return;
+
+            if (schedule.source === 'api' && schedule.id) {
+                try {
+                    const token = (localStorage.getItem('nextscout_token') || '').trim();
+                    if (token) {
+                        await fetch(`${getApiBaseUrl()}/community-events/${encodeURIComponent(schedule.id)}/register`, {
+                            method: 'POST',
+                            headers: {
+                                Accept: 'application/json',
+                                Authorization: `Bearer ${token}`,
+                            },
+                        });
+                    }
+                } catch (e) {}
+            }
+
+            try {
+                const actions = readArrayStorage('nextscout_schedule_actions');
+                actions.unshift({
+                    type: schedule.type,
+                    title: schedule.title,
+                    action: schedule.type === 'join' ? 'join-approved' : 'reminder-set',
+                    at: new Date().toISOString(),
+                });
+                localStorage.setItem('nextscout_schedule_actions', JSON.stringify(actions.slice(0, 200)));
+            } catch (e) {}
+
+            window.nsNotify?.success ? window.nsNotify.success(schedule.type === 'join' ? 'Katilim onayin alindi.' : 'Hatirlatici olusturuldu.') : nsnsAlert(schedule.type === 'join' ? 'Katilim onayin alindi.' : 'Hatirlatici olusturuldu.');
+            closeMetricModal();
+        }
+
+        function saveScheduleToCalendar() {
+            const schedule = dashboardApiState.selectedSchedule;
+            if (!schedule) return;
+            try {
+                const items = readArrayStorage('nextscout_calendar_items');
+                items.unshift({
+                    title: schedule.title,
+                    time: schedule.desc,
+                    location: schedule.location,
+                    created_at: new Date().toISOString(),
+                });
+                localStorage.setItem('nextscout_calendar_items', JSON.stringify(items.slice(0, 200)));
+            } catch (e) {}
+            renderUpcomingSchedules();
+            window.nsNotify?.success ? window.nsNotify.success('Takvime eklendi.') : nsnsAlert('Takvime eklendi.');
+        }
+
+        function openScheduleMessage() {
+            window.location.href = 'notifications.html';
+        }
+
+        function renderUpcomingSchedules() {
+            const root = document.getElementById('upcomingScheduleList');
+            if (!root) return;
+            const items = readArrayStorage('nextscout_calendar_items');
+
+            if (!items.length) {
+                root.innerHTML = `
+                    <div class="mini-item">
+                        <div class="left">
+                            <div class="t">Kayitli takvim etkinligi yok</div>
+                            <div class="d">Firsat Takvimi kartlarindan etkinlik ekleyebilirsin.</div>
+                        </div>
+                        <span class="tag">Bos</span>
+                    </div>
+                `;
+                return;
+            }
+
+            root.innerHTML = items.slice(0, 4).map((item) => `
+                <div class="mini-item">
+                    <div class="left">
+                        <div class="t">${item.title || 'Etkinlik'}</div>
+                        <div class="d">${item.time || '-'} • ${item.location || 'Konum yok'}</div>
+                    </div>
+                    <span class="tag">Planli</span>
+                </div>
+            `).join('');
+        }
+
+        function closeMetricModal() {
+            const modal = document.getElementById('metricModal');
+            if (!modal) return;
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function refreshPlayerDashboardLiveStats() {
+            const playerName = getCurrentPlayerName();
+            const likes = dashboardApiState.loaded ? Number(dashboardApiState.likes || 0) : getPlayerLikeCount(playerName);
+            const incoming = dashboardApiState.loaded ? dashboardApiState.incomingMessages.length : getIncomingMessageCount(playerName);
+            const views = dashboardApiState.loaded && dashboardApiState.views ? Number(dashboardApiState.views) : getProfileViewsCount(playerName);
+            const videoCount = dashboardApiState.loaded ? (dashboardApiState.videos.length || getVideoCount()) : getVideoCount();
+            const offers = dashboardApiState.loaded ? (dashboardApiState.offers.length || getTransferOfferCount(playerName)) : getTransferOfferCount(playerName);
+
+            const interestValue = document.getElementById('scoutInterestValue');
+            const interestSub = document.getElementById('scoutInterestSub');
+            const incomingText = document.getElementById('incomingMessagesText');
+            const incomingTag = document.getElementById('incomingMessagesTag');
+            const viewsValue = document.getElementById('profileViewsValue');
+            const videoValue = document.getElementById('videoCountValue');
+            const videoSub = document.getElementById('videoCountSub');
+            const offerValue = document.getElementById('transferOfferValue');
+            const offerSub = document.getElementById('transferOfferSub');
+
+            if (interestValue) interestValue.textContent = String(23 + likes);
+            if (interestSub) interestSub.textContent = likes > 0 ? `${likes} yeni begeni` : 'Yeni begeni bekleniyor';
+            if (incomingText) incomingText.textContent = `Gelen kutusunda ${incoming} yeni mesaj var`;
+            if (incomingTag) incomingTag.textContent = incoming > 0 ? `${incoming} Mesaj` : 'Mesaj';
+            if (viewsValue) viewsValue.textContent = new Intl.NumberFormat('tr-TR').format(views);
+            if (videoValue) videoValue.textContent = String(videoCount);
+            if (videoSub) videoSub.textContent = videoCount > 1 ? `${Math.max(1, Math.round(videoCount / 4))} yeni video beklemede` : 'Video yuklemeye hazir';
+            if (offerValue) offerValue.textContent = String(offers);
+            if (offerSub) offerSub.textContent = offers > 0 ? `${Math.max(1, offers - 1)} teklif acik` : 'Henuz teklif yok';
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const raw = localStorage.getItem('nextscout_user');
+            try {
+                const u = raw ? JSON.parse(raw) : null;
+                const welcome = document.querySelector('.welcome h1');
+                if (welcome && u?.name) welcome.textContent = `Hos Geldin, ${u.name.split(' ')[0]}!`;
+            } catch (e) {}
+
+            refreshPlayerDashboardLiveStats();
+            loadDashboardApiMetrics();
+            loadLatestApiHighlights();
+            renderUpcomingSchedules();
+            const boostForm = document.getElementById('boostForm');
+            if (boostForm) {
+                boostForm.addEventListener('submit', submitBoostForm);
+            }
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closeMetricModal();
+                    closeBoostModal();
+                }
+            });
+        });
+    </script>
+    <script src="assets/js/mobile-professional.js" defer></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

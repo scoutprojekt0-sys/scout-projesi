@@ -1,0 +1,279 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avukatlar - NextScout</title>
+    <meta name="description" content="NextScout lawyers directory sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://nextscout.app/lawyers-directory.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Avukatlar - NextScout">
+    <meta property="og:description" content="NextScout lawyers directory sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/lawyers-directory.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Avukatlar - NextScout">
+    <meta name="twitter:description" content="NextScout lawyers directory sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+  <style>
+    :root { --bg:#f6f8fc; --card:#fff; --line:#dbe3f0; --text:#0f172a; --muted:#64748b; --primary:#2563eb; --shadow:0 10px 28px rgba(37,99,235,.08); }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .wrap{max-width:1200px;margin:0 auto;padding:22px 16px}
+    .head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+    .title{margin:0;font-size:30px;font-weight:800}
+    .sub{margin-top:6px;color:var(--muted);font-size:14px}
+    .btn{border:1px solid var(--line);background:#fff;color:var(--primary);padding:10px 14px;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer}
+    .toolbar{display:grid;grid-template-columns:1.2fr 1fr 1fr auto;gap:10px;margin-bottom:12px}
+    .field{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;font-size:13px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:14px}
+    .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px}
+    .name{font-size:18px;font-weight:800}
+    .spec{font-size:13px;color:#1d4ed8;font-weight:700}
+    .badge{padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700}
+    .ok{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+    .mid{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+    .row{display:flex;justify-content:space-between;gap:8px;font-size:13px;padding:6px 0}
+    .k{color:var(--muted)}
+    .v{font-weight:700}
+    .bio{margin-top:8px;padding:10px;border:1px solid #edf2f7;border-radius:10px;background:#f8fbff;font-size:13px;line-height:1.45;color:#334155}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+    .a-btn{padding:8px 10px;border:1px solid #dbe3f0;background:#fff;color:#334155;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}
+    .a-btn.primary{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border-color:transparent}
+    .empty{padding:20px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--muted)}
+    @media (max-width:900px){.toolbar{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr 1fr}}
+    @media (max-width:560px){.toolbar,.grid{grid-template-columns:1fr}.title{font-size:24px}}
+  </style>
+    <link rel="stylesheet" href="assets/css/mobile-unified.css">
+    <link rel="stylesheet" href="assets/css/mobile-polish.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <h1 class="title">Avukatlar</h1>
+        <div class="sub">Uyelikli avukat profillerini inceleyip dogrudan iletisime gec.</div>
+      </div>
+      <a class="home-btn-global" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a>
+    </div>
+
+    <div class="toolbar">
+      <input id="qInput" class="field" type="text" placeholder="Isim, uzmanlik veya ofis ara">
+      <input id="specInput" class="field" type="text" placeholder="Uzmanlik (orn: Spor Hukuku)">
+      <select id="verifiedFilter" class="field">
+        <option value="">Tum Profiller</option>
+        <option value="verified">Dogrulanmis</option>
+      </select>
+      <button id="resetBtn" class="btn">Temizle</button>
+    </div>
+
+    <div id="grid" class="grid"></div>
+    <div id="empty" class="empty" style="display:none;">Avukat bulunamadi.</div>
+  </div>
+
+  <script>
+    const LOCAL_KEY = 'nextscout_lawyer_profiles';
+    let allItems = [];
+    let visibleItems = [];
+
+    function getApiBaseUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = (params.get('api_base') || '').trim();
+      if (fromQuery) return fromQuery.replace(/\/$/, '');
+      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      return '/api';
+    }
+
+    function esc(v){
+      return String(v == null ? '' : v)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    function loadLocal() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(LOCAL_KEY) || '[]');
+        return Array.isArray(parsed) ? parsed : [];
+      } catch { return []; }
+    }
+
+    async function loadRemote() {
+      const res = await fetch(`${getApiBaseUrl()}/public/lawyers`, { headers: { Accept: 'application/json' } });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const payload = await res.json();
+      const rows = Array.isArray(payload?.data?.data) ? payload.data.data : (Array.isArray(payload?.data) ? payload.data : []);
+      return rows.map((r) => ({
+        id: Number(r.id) || 0,
+        user_id: Number(r.user_id) || 0,
+        name: r?.user?.name || 'Avukat',
+        specialization: r.specialization || '-',
+        years_experience: Number(r.years_experience || 0),
+        office_name: r.office_name || '-',
+        office_phone: r.office_phone || '',
+        office_email: r.office_email || '',
+        bio: r.bio || '',
+        is_verified: !!r.is_verified,
+      }));
+    }
+
+    async function loadLawyerUsers() {
+      const res = await fetch(`${getApiBaseUrl()}/users?role=lawyer&per_page=200`, { headers: { Accept: 'application/json' } });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const payload = await res.json();
+      const rows = Array.isArray(payload?.data?.data) ? payload.data.data : [];
+      return rows.map((u) => ({
+        id: Number(u.id) ? Number(u.id) + 1000000 : 0,
+        user_id: Number(u.id) || 0,
+        name: u.name || 'Avukat',
+        specialization: '-',
+        years_experience: 0,
+        office_name: '-',
+        office_phone: u.phone || '',
+        office_email: u.email || '',
+        bio: '',
+        is_verified: false,
+      }));
+    }
+
+    function normalizeLocal(rows){
+      return rows.map((r, i) => ({
+        id: Number(r.id) || (i + 1),
+        user_id: Number(r.user_id) || 0,
+        name: r.name || 'Avukat',
+        specialization: r.specialization || '-',
+        years_experience: Number(r.years_experience || 0),
+        office_name: r.office_name || '-',
+        office_phone: r.office_phone || '',
+        office_email: r.office_email || '',
+        bio: r.bio || '',
+        is_verified: !!r.is_verified,
+      }));
+    }
+
+    function render(){
+      const grid = document.getElementById('grid');
+      const empty = document.getElementById('empty');
+      if (!visibleItems.length) {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+
+      grid.innerHTML = visibleItems.map((x) => `
+        <div class="card">
+          <div class="top">
+            <div>
+              <div class="name">${esc(x.name)}</div>
+              <div class="spec">${esc(x.specialization)}</div>
+            </div>
+            <span class="badge ${x.is_verified ? 'ok' : 'mid'}">${x.is_verified ? 'Dogrulanmis' : 'Onay Bekliyor'}</span>
+          </div>
+
+          <div class="row"><span class="k">Deneyim</span><span class="v">${x.years_experience || 0} yil</span></div>
+          <div class="row"><span class="k">Ofis</span><span class="v">${esc(x.office_name || '-')}</span></div>
+          <div class="row"><span class="k">E-posta</span><span class="v">${esc(x.office_email || '-')}</span></div>
+          <div class="row"><span class="k">Telefon</span><span class="v">${esc(x.office_phone || '-')}</span></div>
+
+          <div class="bio">${esc(x.bio || 'Avukat biyografisi mevcut degil.')}</div>
+
+          <div class="actions">
+            <button class="a-btn" onclick="openLawyerProfile(${Number(x.id) || 0})">Profil</button>
+            <button class="a-btn primary" onclick="contactLawyer(${Number(x.id) || 0})">Iletisime Gec</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function applyFilters(){
+      const q = document.getElementById('qInput').value.trim().toLowerCase();
+      const spec = document.getElementById('specInput').value.trim().toLowerCase();
+      const verified = document.getElementById('verifiedFilter').value;
+
+      visibleItems = allItems.filter((x) => {
+        const blob = `${x.name || ''} ${x.specialization || ''} ${x.office_name || ''}`.toLowerCase();
+        if (q && !blob.includes(q)) return false;
+        if (spec && !String(x.specialization || '').toLowerCase().includes(spec)) return false;
+        if (verified === 'verified' && !x.is_verified) return false;
+        return true;
+      });
+      render();
+    }
+
+    function openLawyerProfile(id) {
+      if (!id) return;
+      window.location.href = `lawyer-profile.html?lawyer_id=${encodeURIComponent(id)}`;
+    }
+
+    function contactLawyer(id) {
+      const x = allItems.find((i) => Number(i.id) === Number(id));
+      if (!x) return;
+      if (x.office_email) {
+        const subject = encodeURIComponent('NextScout Hukuki Danismanlik Talebi');
+        const body = encodeURIComponent(`Merhaba ${x.name},\n\nSizinle hukuki destek icin iletisime gecmek istiyorum.`);
+        window.location.href = `mailto:${x.office_email}?subject=${subject}&body=${body}`;
+        return;
+      }
+      if (x.office_phone) {
+        window.location.href = `tel:${x.office_phone}`;
+        return;
+      }
+                    nsAlert('Bu avukat için iletişim bilgisi bulunamadı.');
+    }
+
+    function bind() {
+      document.getElementById('qInput')?.addEventListener('input', applyFilters);
+      document.getElementById('specInput')?.addEventListener('input', applyFilters);
+      document.getElementById('verifiedFilter')?.addEventListener('change', applyFilters);
+      document.getElementById('resetBtn')?.addEventListener('click', () => {
+        document.getElementById('qInput').value = '';
+        document.getElementById('specInput').value = '';
+        document.getElementById('verifiedFilter').value = '';
+        visibleItems = allItems.slice();
+        render();
+      });
+    }
+
+    async function init(){
+      const local = normalizeLocal(loadLocal());
+      allItems = local;
+      try {
+        const remote = await loadRemote();
+        const users = await loadLawyerUsers();
+        const merged = [...remote, ...users, ...local];
+        const seen = new Set();
+        allItems = merged.filter((x) => {
+          const key = `${Number(x.user_id) || 0}|${(x.office_email || '').toLowerCase()}|${(x.name || '').toLowerCase()}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+      } catch (error) {
+        // local fallback
+      }
+      visibleItems = allItems.slice();
+      bind();
+      render();
+    }
+
+    init();
+  </script>
+    <script src="assets/js/core-stability.js"></script>
+    <script src="assets/js/mobile-professional.js" defer></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
