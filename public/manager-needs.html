@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menajerlerin Aradigi Oyuncular | NextScout</title>
-    <meta name="description" content="Menajerlerin aradigi oyuncular, acik menajer ilanlari ve futbolcu ihtiyaclari NextScout manager needs sayfasinda listelenir.">
+    <title>Menajerlerin Aradığı Oyuncular | NextScout</title>
+    <meta name="description" content="Menajerlerin aradığı oyuncular, açık menajer ilanları ve futbolcu ihtiyaçları NextScout manager needs sayfasında listelenir.">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://nextscout.pro/manager-needs.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="Menajerlerin Aradigi Oyuncular | NextScout">
-    <meta property="og:description" content="Menajerlerin aradigi oyuncular, acik menajer ilanlari ve futbolcu ihtiyaclari NextScout manager needs sayfasinda listelenir.">
+    <meta property="og:title" content="Menajerlerin Aradığı Oyuncular | NextScout">
+    <meta property="og:description" content="Menajerlerin aradığı oyuncular, açık menajer ilanları ve futbolcu ihtiyaçları NextScout manager needs sayfasında listelenir.">
     <meta property="og:url" content="https://nextscout.pro/manager-needs.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Menajerlerin Aradigi Oyuncular | NextScout">
-    <meta name="twitter:description" content="Menajerlerin aradigi oyuncular, acik menajer ilanlari ve futbolcu ihtiyaclari NextScout manager needs sayfasinda listelenir.">
+    <meta name="twitter:title" content="Menajerlerin Aradığı Oyuncular | NextScout">
+    <meta name="twitter:description" content="Menajerlerin aradığı oyuncular, açık menajer ilanları ve futbolcu ihtiyaçları NextScout manager needs sayfasında listelenir.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
@@ -62,29 +62,29 @@
 
 <main class="page">
     <section class="hero">
-        <h1><i class="fa-solid fa-filter"></i> MENAJERLERIN Aradigi Oyuncular</h1>
-        <p>DASHBOARD'da kaydedilen ilanlar burada yayinlanir. Oyuncular filtreleyip kendine uygun ilani bulur.</p>
+        <h1><i class="fa-solid fa-filter"></i> MENAJERLERİN Aradığı Oyuncular</h1>
+        <p>DASHBOARD'da kaydedilen ilanlar burada yayınlanır. Oyuncular filtreleyip kendine uygun ilanı bulur.</p>
         <div class="filters">
             <select class="control" id="positionFilter">
-                <option value="">Pozisyon (Tumu)</option>
+                <option value="">Pozisyon (Tümü)</option>
                 <option value="CB">Stoper</option>
                 <option value="LB">Sol Bek</option>
-                <option value="RB">Sag Bek</option>
+                <option value="RB">Sağ Bek</option>
                 <option value="AM">10 Numara</option>
                 <option value="RW">Sag Kanat</option>
                 <option value="LW">Sol Kanat</option>
                 <option value="ST">Santrfor</option>
             </select>
             <input class="control" id="heightFilter" type="number" placeholder="Min boy (cm)">
-            <input class="control" id="budgetMinFilter" type="number" placeholder="Butce min (TL)">
-            <input class="control" id="budgetMaxFilter" type="number" placeholder="Butce max (TL)">
+            <input class="control" id="budgetMinFilter" type="number" placeholder="Bütçe min (TL)">
+            <input class="control" id="budgetMaxFilter" type="number" placeholder="Bütçe max (TL)">
             <button class="btn primary" id="applyFilter"><i class="fa-solid fa-magnifying-glass"></i> Filtrele</button>
         </div>
     </section>
 
-    <section class="seo-intro" aria-label="Menajer ihtiyaclari aciklama">
-        <h2>Oyuncu arayan menajer ilanlari ve acik ihtiyac listesi</h2>
-        <p>Bu sayfa futbol menajerlerinin aradigi oyuncu profillerini, pozisyon bazli ihtiyaclarini ve basvuruya acik ilanlarini tek yerde toplar. Oyuncular kendilerine uygun menajer aramalarini filtreleyebilir, scout ve kulup ekipleri ise piyasadaki aktif talep sinyallerini hizli sekilde gorebilir.</p>
+    <section class="seo-intro" aria-label="Menajer ihtiyaçları açıklama">
+        <h2>Oyuncu arayan menajer ilanları ve açık ihtiyaç listesi</h2>
+        <p>Bu sayfa futbol menajerlerinin aradığı oyuncu profillerini, pozisyon bazlı ihtiyaçlarını ve başvuruya açık ilanlarını tek yerde toplar. Oyuncular kendilerine uygun menajer aramalarını filtreleyebilir, scout ve kulüp ekipleri ise piyasadaki aktif talep sinyallerini hızlı şekilde görebilir.</p>
     </section>
     <section class="list" id="jobList"></section>
 </main>
@@ -117,14 +117,14 @@
     function render(data) {
         const root = document.getElementById('jobList');
         if (!data.length) {
-            root.innerHTML = '<div class="empty">Kriterlere uygun ilan bulunamadi.</div>';
+            root.innerHTML = '<div class="empty">Kriterlere uygun ilan bulunamadı.</div>';
             return;
         }
 
         root.innerHTML = data.map((job) => {
-            const title = job.title || `${job.position || '-'} pozisyonu icin oyuncu araniyor`;
-            const freeLabel = job.free_only === 'true' ? 'Bonservisi elinde' : (job.free_only === 'false' ? 'Kulubunde olabilir' : 'Bonservis farketmez');
-            const ageLabel = `${job.age_min || '-'}-${job.age_max || '-'} yas`;
+            const title = job.title || `${job.position || '-'} pozisyonu için oyuncu aranıyor`;
+            const freeLabel = job.free_only === 'true' ? 'Bonservisi elinde' : (job.free_only === 'false' ? 'Kulübünde olabilir' : 'Bonservis fark etmez');
+            const ageLabel = `${job.age_min || '-'}-${job.age_max || '-'} yaş`;
             return `
                 <article class="job">
                     <div class="job-head">
@@ -133,16 +133,16 @@
                     </div>
                     <div class="meta">
                         <span><i class="fa-solid fa-user-tie"></i> MENAJER: ${job.author_name || '-'}</span>
-                        <span><i class="fa-solid fa-location-dot"></i> ${job.city || 'Sehir belirtilmedi'}</span>
+                        <span><i class="fa-solid fa-location-dot"></i> ${job.city || 'Şehir belirtilmedi'}</span>
                         <span><i class="fa-solid fa-ruler-vertical"></i> Min ${job.min_height || '-'} cm</span>
                         <span><i class="fa-solid fa-user"></i> ${ageLabel}</span>
                     </div>
                     <div class="tags">
-                        <span class="tag">${job.dominant_side || 'Ayak farketmez'}</span>
+                        <span class="tag">${job.dominant_side || 'Ayak fark etmez'}</span>
                         <span class="tag">${freeLabel}</span>
-                        <span class="tag">${job.description || 'Ek aciklama yok'}</span>
+                        <span class="tag">${job.description || 'Ek açıklama yok'}</span>
                     </div>
-                    <button class="btn primary" onclick="nsAlert('Başvuru iletildi: ${title}')"><i class="fa-solid fa-paper-plane"></i> Bu Goreve Basvur</button>
+                    <button class="btn primary" onclick="nsAlert('Başvuru iletildi: ${title}')"><i class="fa-solid fa-paper-plane"></i> Bu Göreve Başvur</button>
                 </article>
             `;
         }).join('');
@@ -179,9 +179,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
 
 
 

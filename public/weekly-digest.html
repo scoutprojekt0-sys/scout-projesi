@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NextScout - Haftalik Bulten</title>
-    <meta name="description" content="NextScout weekly digest sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <title>Haftalık Bülten | Scout Trendleri ve Yeni Oyuncular | NextScout</title>
+    <meta name="description" content="Haftalık scout bülteni ile son 7 günde eklenen oyuncuları, en çok izlenen profilleri, menajer ilanlarını ve antrenör ihtiyaçlarını tek ekranda takip edin.">
     <meta name="robots" content="index,follow">
-    <link rel="canonical" href="https://nextscout.app/weekly-digest.html">
+    <link rel="canonical" href="https://nextscout.pro/weekly-digest.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="NextScout - Haftalik Bulten">
-    <meta property="og:description" content="NextScout weekly digest sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
-    <meta property="og:url" content="https://nextscout.app/weekly-digest.html">
-    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta property="og:title" content="Haftalık Bülten | Scout Trendleri ve Yeni Oyuncular | NextScout">
+    <meta property="og:description" content="Yeni oyuncular, en çok izlenen profiller ve haftalık scout hareketliliği için özet ekran. Kulüpler ve scout ekipleri için hızlı takip alanı.">
+    <meta property="og:url" content="https://nextscout.pro/weekly-digest.html">
+    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="NextScout - Haftalik Bulten">
-    <meta name="twitter:description" content="NextScout weekly digest sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
-    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:title" content="Haftalık Bülten | Scout Trendleri ve Yeni Oyuncular | NextScout">
+    <meta name="twitter:description" content="Son 7 günde eklenen oyuncular, en çok izlenen profiller ve haftalık ilan hareketleri tek ekranda.">
+    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -31,6 +31,9 @@
         .hero { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 18px; padding: 24px; box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08); margin-bottom: 14px; }
         .hero h1 { font-size: 30px; margin-bottom: 8px; }
         .hero p { color: #475569; }
+        .seo-intro { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 18px; padding: 18px 20px; box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08); margin-bottom: 14px; }
+        .seo-intro h2 { font-size: 18px; margin-bottom: 8px; }
+        .seo-intro p { color: #475569; line-height: 1.7; }
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
         .card { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 14px; padding: 16px; }
         .card h3 { margin-bottom: 10px; font-size: 18px; }
@@ -52,38 +55,43 @@
     <a class="brand" href="./index.html">NextScout</a>
     <div style="display:flex; gap:10px;">
         <a class="home-btn-global" href="./index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a>
-        <a class="btn" href="./manager-needs.html">MENAJER Ilanlari</a>
-        <a class="btn" href="./coach-needs.html">ANTRENÖR Ilanlari</a>
+        <a class="btn" href="./manager-needs.html">MENAJER İlanları</a>
+        <a class="btn" href="./coach-needs.html">ANTRENÖR İlanları</a>
     </div>
 </header>
 
 <main class="page">
     <section class="hero">
-        <h1><i class="fa-solid fa-newspaper"></i> Haftalik Bulten</h1>
-        <p>Sadece 4 veri: bu hafta eklenen oyuncular, en cok izlenen oyuncular, MENAJER ilanlari, ANTRENÖR ilanlari.</p>
+        <h1><i class="fa-solid fa-newspaper"></i> Haftalık Bülten</h1>
+        <p>Sadece 4 veri: bu hafta eklenen oyuncular, en çok izlenen oyuncular, MENAJER ilanları, ANTRENÖR ilanları.</p>
+    </section>
+
+    <section class="seo-intro" aria-label="Haftalık scout bülteni açıklaması">
+        <h2>Haftalık Scout Özeti</h2>
+        <p>NextScout Haftalık Bülten ekranı; son 7 günde sisteme eklenen oyuncuları, en çok görüntülenen profilleri ve aktif ilan hareketlerini tek merkezde toplar. Kulüpler, scout ekipleri ve menajerler için hızlı durum takibi ve kısa liste hazırlığı sağlar.</p>
     </section>
 
     <section class="grid">
         <article class="card clickable" onclick="openWeeklyPlayers()">
-            <h3>Bu Hafta Eklenen Oyuncu</h3>
+            <h3>Bu Hafta Eklenen Oyuncular</h3>
             <div class="kpi-value" id="weeklyPlayerCount">0</div>
-            <div class="kpi-sub">Son 7 gunluk kayıt (tikla)</div>
+            <div class="kpi-sub">Son 7 günlük kayıt (tıkla)</div>
         </article>
 
         <article class="card clickable" onclick="openManagerNeeds()">
-            <h3>MENAJER Ilanlari (Haftalik)</h3>
+            <h3>MENAJER İlanları (Haftalık)</h3>
             <div class="kpi-value" id="weeklyManagerNeeds">0</div>
-            <div class="kpi-sub">Son 7 gunde acilan ilan (tikla)</div>
+            <div class="kpi-sub">Son 7 günde açılan ilan (tıkla)</div>
         </article>
 
         <article class="card clickable" onclick="openCoachNeeds()">
-            <h3>ANTRENÖR Ilanlari (Haftalik)</h3>
+            <h3>ANTRENÖR İlanları (Haftalık)</h3>
             <div class="kpi-value" id="weeklyCoachNeeds">0</div>
-            <div class="kpi-sub">Son 7 gunde acilan ilan (tikla)</div>
+            <div class="kpi-sub">Son 7 günde açılan ilan (tıkla)</div>
         </article>
 
         <article class="card">
-            <h3>En Cok Izlenen Oyuncular</h3>
+            <h3>En Çok İzlenen Oyuncular</h3>
             <ul class="list" id="topViewedList"></ul>
         </article>
     </section>
@@ -162,17 +170,7 @@
 
     initDigest();
 </script>
-    <script src="assets/js/core-stability.js"></script>
-    <script src="assets/js/mobile-professional.js" defer></script>
+<script src="assets/js/core-stability.js"></script>
+<script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-

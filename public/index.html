@@ -2365,8 +2365,8 @@
 
         /* ========== HOMEPAGE IDEA LINKS ========== */
         .idea-links {
-            background: #F8FAFC;
-            border-bottom: 1px solid #DBEAFE;
+            background: transparent;
+            border-bottom: 0;
             padding: 14px 0;
         }
 
@@ -2386,8 +2386,8 @@
             padding: 10px 14px;
             border: 1px solid #BFDBFE;
             border-radius: 999px;
-            background: #EFF6FF;
-            color: #1E3A8A;
+            background: transparent;
+            color: #FFFFFF;
             text-decoration: none;
             font-size: 13px;
             font-weight: 700;
@@ -2395,7 +2395,7 @@
         }
 
         .idea-link-item:hover {
-            background: #DBEAFE;
+            background: rgba(219, 234, 254, 0.42);
             border-color: #93C5FD;
             transform: translateY(-1px);
         }
@@ -4303,7 +4303,7 @@
 
     <div class="mobile-icon-square" id="mobileIconSquare">
         <div class="mobile-icon-grid">
-            <button type="button" class="mobile-icon-btn" aria-label="Beni Kesfedin" onclick="openMobileBoostDiscover()">
+            <button type="button" class="mobile-icon-btn" aria-label="Beni Keşfedin" onclick="openMobileBoostDiscover()">
                 <i class="fas fa-bolt"></i>
             </button>
             <button type="button" class="mobile-icon-btn" aria-label="Haftanin Yildizlari" onclick="openMobileWeeklyStars()">
@@ -4321,7 +4321,7 @@
             <button type="button" class="mobile-icon-btn" aria-label="Canlı Scout" onclick="window.location.href=resolveLocalPage('scout-live-matches.html')">
                 <i class="fas fa-broadcast-tower"></i>
             </button>
-            <button type="button" class="mobile-icon-btn" aria-label="Deneme Mac Takvimi" onclick="openMobileTrialNeeds()">
+            <button type="button" class="mobile-icon-btn" aria-label="Deneme Maç Takvimi" onclick="openMobileTrialNeeds()">
                 <i class="fas fa-calendar-check"></i>
             </button>
         </div>
@@ -4329,9 +4329,9 @@
 
     <section class="mobile-discover-panel" id="mobileDiscoverPanel">
         <div class="mobile-discover-wrap">
-            <h3 class="mobile-discover-head" id="mobileDiscoverHead">Beni Kesfedin - Oyuncu Kartlari</h3>
+            <h3 class="mobile-discover-head" id="mobileDiscoverHead">Beni Keşfedin - Oyuncu Kartları</h3>
             <div class="mobile-player-list" id="mobileDiscoverList">
-                <article class="mobile-player-card" role="button" tabindex="0" onclick="openMobilePlayerProfile(this)" data-name="Arda K." data-role="Forvet" data-age="21" data-meta="Istanbul • KULÜP ariyor" data-about="Hizli kosulari ve ceza sahasi zamanlamasi ile one cikiyor." data-stats="Hiz 84 • Bitiricilik 79 • Form +12%" data-photo="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='160'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop stop-color='%231e3a8a'/><stop offset='1' stop-color='%230f172a'/></linearGradient></defs><rect width='100%25' height='100%25' fill='url(%23g)'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23dbeafe' font-size='42' font-family='Arial'>AK</text></svg>">
+                <article class="mobile-player-card" role="button" tabindex="0" onclick="openMobilePlayerProfile(this)" data-name="Arda K." data-role="Forvet" data-age="21" data-meta="İstanbul • KULÜP ariyor" data-about="Hizli kosulari ve ceza sahasi zamanlamasi ile one cikiyor." data-stats="Hiz 84 • Bitiricilik 79 • Form +12%" data-photo="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='160'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop stop-color='%231e3a8a'/><stop offset='1' stop-color='%230f172a'/></linearGradient></defs><rect width='100%25' height='100%25' fill='url(%23g)'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23dbeafe' font-size='42' font-family='Arial'>AK</text></svg>">
                     <div class="mobile-player-photo">
                         <img alt="Arda K." src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='160'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop stop-color='%231e3a8a'/><stop offset='1' stop-color='%230f172a'/></linearGradient></defs><rect width='100%25' height='100%25' fill='url(%23g)'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23dbeafe' font-size='42' font-family='Arial'>AK</text></svg>">
                     </div>
@@ -4339,7 +4339,7 @@
                         <div class="mobile-player-name">Arda K.</div>
                         <span class="mobile-player-tag">Forvet</span>
                     </div>
-                    <div class="mobile-player-meta">Istanbul • KULÜP ariyor</div>
+                    <div class="mobile-player-meta">İstanbul • KULÜP ariyor</div>
                     <div class="mobile-player-stats">
                         <span class="mobile-player-stat">Hiz 84</span>
                         <span class="mobile-player-stat">Bitiricilik 79</span>
@@ -4347,7 +4347,7 @@
                     </div>
                     <div class="mobile-player-about">Hakkında: Hizli kosulari ve bitiricilik zamanlamasi guclu.</div>
                 </article>
-                <article class="mobile-player-card" role="button" tabindex="0" onclick="openMobilePlayerProfile(this)" data-name="Mert A." data-role="Orta Saha" data-age="23" data-meta="Ankara • Bosda" data-about="Oyun kurulumunda pas baglantisi ve tempo kontrolu yuksek." data-stats="Pas 82 • Vizyon 80 • Guven +9%" data-photo="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='160'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop stop-color='%230ea5e9'/><stop offset='1' stop-color='%231f2937'/></linearGradient></defs><rect width='100%25' height='100%25' fill='url(%23g)'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23e0f2fe' font-size='42' font-family='Arial'>MA</text></svg>">
+                <article class="mobile-player-card" role="button" tabindex="0" onclick="openMobilePlayerProfile(this)" data-name="Mert A." data-role="Orta Saha" data-age="23" data-meta="Ankara • Boşta" data-about="Oyun kurulumunda pas bağlantısı ve tempo kontrolü yüksek." data-stats="Pas 82 • Vizyon 80 • Güven +9%" data-photo="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='160'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop stop-color='%230ea5e9'/><stop offset='1' stop-color='%231f2937'/></linearGradient></defs><rect width='100%25' height='100%25' fill='url(%23g)'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23e0f2fe' font-size='42' font-family='Arial'>MA</text></svg>">
                     <div class="mobile-player-photo">
                         <img alt="Mert A." src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='160'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop stop-color='%230ea5e9'/><stop offset='1' stop-color='%231f2937'/></linearGradient></defs><rect width='100%25' height='100%25' fill='url(%23g)'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23e0f2fe' font-size='42' font-family='Arial'>MA</text></svg>">
                     </div>
@@ -4355,15 +4355,15 @@
                         <div class="mobile-player-name">Mert A.</div>
                         <span class="mobile-player-tag">Orta Saha</span>
                     </div>
-                    <div class="mobile-player-meta">Ankara • Bosda</div>
+                    <div class="mobile-player-meta">Ankara • Boşta</div>
                     <div class="mobile-player-stats">
                         <span class="mobile-player-stat">Pas 82</span>
                         <span class="mobile-player-stat">Vizyon 80</span>
-                        <span class="mobile-player-stat">Guven +9%</span>
+                        <span class="mobile-player-stat">Güven +9%</span>
                     </div>
                     <div class="mobile-player-about">Hakkında: Pas kalitesi ve oyun temposunu belirleme becerisi iyi.</div>
                 </article>
-                <article class="mobile-player-card" role="button" tabindex="0" onclick="openMobilePlayerProfile(this)" data-name="Yusuf B." data-role="Bek" data-age="20" data-meta="Bursa • Sozlesmeli" data-about="Savunma yerlesiminde disiplinli ve cift yonlu katkisi dengeli." data-stats="Dayaniklilik 85 • Top Kapma 77 • Trend Yukselis" data-photo="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='160'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop stop-color='%233b82f6'/><stop offset='1' stop-color='%23111827'/></linearGradient></defs><rect width='100%25' height='100%25' fill='url(%23g)'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23dbeafe' font-size='42' font-family='Arial'>YB</text></svg>">
+                <article class="mobile-player-card" role="button" tabindex="0" onclick="openMobilePlayerProfile(this)" data-name="Yusuf B." data-role="Bek" data-age="20" data-meta="Bursa • Sözleşmeli" data-about="Savunma yerlesiminde disiplinli ve cift yonlu katkisi dengeli." data-stats="Dayaniklilik 85 • Top Kapma 77 • Trend Yukselis" data-photo="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='160'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop stop-color='%233b82f6'/><stop offset='1' stop-color='%23111827'/></linearGradient></defs><rect width='100%25' height='100%25' fill='url(%23g)'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23dbeafe' font-size='42' font-family='Arial'>YB</text></svg>">
                     <div class="mobile-player-photo">
                         <img alt="Yusuf B." src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='160'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop stop-color='%233b82f6'/><stop offset='1' stop-color='%23111827'/></linearGradient></defs><rect width='100%25' height='100%25' fill='url(%23g)'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23dbeafe' font-size='42' font-family='Arial'>YB</text></svg>">
                     </div>
@@ -4371,7 +4371,7 @@
                         <div class="mobile-player-name">Yusuf B.</div>
                         <span class="mobile-player-tag">Bek</span>
                     </div>
-                    <div class="mobile-player-meta">Bursa • Sozlesmeli</div>
+                    <div class="mobile-player-meta">Bursa • Sözleşmeli</div>
                     <div class="mobile-player-stats">
                         <span class="mobile-player-stat">Dayaniklilik 85</span>
                         <span class="mobile-player-stat">Top Kapma 77</span>
@@ -4383,13 +4383,13 @@
             <div class="mobile-home-extra" id="mobileHomeExtra">
                 <article class="mobile-extra-card" id="mobileSuccessStoriesCard">
                     <div class="mobile-extra-title">
-                        <i class="fas fa-trophy"></i> Basari Hikayeleri
+                        <i class="fas fa-trophy"></i> Başarı Hikayeleri
                     </div>
                     <div class="mobile-success-subtitle">
-                        OYUNCU, MENAJER, KULÜP ve ANTRENÖR basari paylasimlari (herkese acik)
+                        OYUNCU, MENAJER, KULÜP ve ANTRENÖR başarı paylaşımları (herkese açık)
                     </div>
                     <div class="mobile-success-list" id="mobileSuccessStoriesList">
-                        <div class="mobile-success-item">Hikayeler yukleniyor...</div>
+                        <div class="mobile-success-item">Hikayeler yükleniyor...</div>
                     </div>
                 </article>
                 <article class="mobile-extra-card">
@@ -4404,13 +4404,13 @@
                     </div>
                     <div class="mobile-data-toggle" id="mobileDataToggle">
                         <button type="button" class="mobile-data-btn active" id="mobileDataBtnDaily" onclick="renderMobileDataCenterPeriod('daily')">
-                            <i class="fas fa-sun"></i> Gunluk
+                            <i class="fas fa-sun"></i> Günlük
                         </button>
                         <button type="button" class="mobile-data-btn" id="mobileDataBtnWeekly" onclick="renderMobileDataCenterPeriod('weekly')">
-                            <i class="fas fa-chart-line"></i> Haftalik
+                            <i class="fas fa-chart-line"></i> Haftalık
                         </button>
                         <button type="button" class="mobile-data-btn" id="mobileDataBtnMonthly" onclick="renderMobileDataCenterPeriod('monthly')">
-                            <i class="fas fa-calendar-alt"></i> Aylik
+                            <i class="fas fa-calendar-alt"></i> Aylık
                         </button>
                     </div>
                 </article>
@@ -4579,7 +4579,7 @@
         <div class="modal-card mobile-manager-modal-card" onclick="event.stopPropagation()">
             <div class="mobile-manager-modal-head">
                 <div>
-                    <div class="mobile-manager-modal-title" id="mobileManagerNeedTitle">MENAJER Ilani</div>
+                    <div class="mobile-manager-modal-title" id="mobileManagerNeedTitle">MENAJER İlanı</div>
                     <div class="mobile-manager-modal-sub" id="mobileManagerNeedSub">Detay Bilgiler</div>
                 </div>
                 <button type="button" class="modal-close" onclick="closeMobileManagerNeedModal()">
@@ -4604,13 +4604,13 @@
             <div class="mobile-manager-modal-body">
                 <div class="mobile-data-toggle show" id="mobileDataModalToggle" style="margin-top:0;">
                     <button type="button" class="mobile-data-btn active" id="mobileModalDataBtnDaily" onclick="switchMobileDataCenterModalPeriod('daily')">
-                        <i class="fas fa-sun"></i> Gunluk
+                        <i class="fas fa-sun"></i> Günlük
                     </button>
                     <button type="button" class="mobile-data-btn" id="mobileModalDataBtnWeekly" onclick="switchMobileDataCenterModalPeriod('weekly')">
-                        <i class="fas fa-chart-line"></i> Haftalik
+                        <i class="fas fa-chart-line"></i> Haftalık
                     </button>
                     <button type="button" class="mobile-data-btn" id="mobileModalDataBtnMonthly" onclick="switchMobileDataCenterModalPeriod('monthly')">
-                        <i class="fas fa-calendar-alt"></i> Aylik
+                        <i class="fas fa-calendar-alt"></i> Aylık
                     </button>
                 </div>
                 <div id="mobileDataCenterBody"></div>
@@ -4629,7 +4629,7 @@
             <div class="contact-modal-body">
                 <div>
                     <label for="contactSubject">Konu</label>
-                    <input id="contactSubject" class="contact-input" type="text" placeholder="Orn: Deneme mac daveti">
+                    <input id="contactSubject" class="contact-input" type="text" placeholder="Örn: Deneme maç daveti">
                 </div>
                 <div>
                     <label for="contactMessage">Mesaj</label>
@@ -4641,7 +4641,7 @@
                         <button type="button" class="contact-template-btn" onclick="applyContactTemplate('trial')">Deneme Daveti</button>
                         <button type="button" class="contact-template-btn" onclick="applyContactTemplate('shortlist')">Shortlist</button>
                         <button type="button" class="contact-template-btn" onclick="applyContactTemplate('video')">Video Talebi</button>
-                        <button type="button" class="contact-template-btn" onclick="applyContactTemplate('meeting')">Gorusme</button>
+                        <button type="button" class="contact-template-btn" onclick="applyContactTemplate('meeting')">Görüşme</button>
                     </div>
                 </div>
                 <div class="contact-actions">
@@ -5237,7 +5237,7 @@
     <div class="modal-overlay" id="successStoryModal" onclick="closeSuccessStoryModal()">
         <div class="modal-card" style="max-width: 760px;" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <h2><i class="fas fa-trophy"></i> Basari Hikayesi Gönder</h2>
+                <h2><i class="fas fa-trophy"></i> Başarı Hikayesi Gönder</h2>
                 <button class="modal-close" onclick="closeSuccessStoryModal()">&times;</button>
             </div>
             <div class="modal-body">
@@ -5257,7 +5257,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Gorsel Linki (ops.)</label>
+                            <label class="form-label">Görsel Linki (ops.)</label>
                             <input type="url" class="form-control" name="image_url" maxlength="500" placeholder="https://...">
                         </div>
                     </div>
@@ -5411,17 +5411,17 @@
             </section>
             <section class="contract-live-panel" id="homeStep2">
                 <div class="contract-live-head">
-                    <div class="contract-live-title">Sozlesme Durumu Canlı Akisi</div>
-                    <div class="contract-live-sub">Sadece sozlesmesi biten ve askida oyuncular</div>
+                    <div class="contract-live-title">Sözleşme Durumu Canlı Akışı</div>
+                    <div class="contract-live-sub">Sadece sözleşmesi biten ve askıda oyuncular</div>
                 </div>
                 <div class="contract-ticker">
                     <div class="contract-ticker-track" id="contractTickerTrack">
                         <article class="contract-card">
                             <div class="contract-card-top">
-                                <span class="contract-card-player">Veri yukleniyor...</span>
+                                <span class="contract-card-player">Veri yükleniyor...</span>
                                 <span class="contract-badge">Canlı</span>
                             </div>
-                            <div class="contract-card-note">Akis hazirlaniyor...</div>
+                            <div class="contract-card-note">Akış hazırlanıyor...</div>
                         </article>
                     </div>
                 </div>
@@ -5487,7 +5487,7 @@
                     </div>
                 </article>
                 <article class="top-adboard" data-dashboard-feature="club-promo" role="button" tabindex="0">
-                    <div class="top-adboard-title"><i class="fas fa-bullhorn"></i> Odemeli KULÜP Tanitimlari</div>
+                    <div class="top-adboard-title"><i class="fas fa-bullhorn"></i> Ödemeli KULÜP Tanıtımları</div>
                     <div class="club-promo-name-list" id="clubPromoNamesInline">
                         <span class="club-promo-name-pill">Yukleniyor...</span>
                     </div>
@@ -5496,16 +5496,16 @@
 
             <section class="success-stories-panel" id="homeStep3">
                 <div class="success-stories-head">
-                    <h3 style="margin: 0; font-size: 16px;">Basari Hikayeleri</h3>
+                    <h3 style="margin: 0; font-size: 16px;">Başarı Hikayeleri</h3>
                     <button type="button" class="success-story-cta-btn" onclick="openSuccessStoryModal()">
                         <span class="cta-title">Hikayeni Paylas</span>
                     <span class="cta-desc">KULÜP değişikliği, seçmelere kabul veya performans sıçraması hikâyeni gönder.</span>
                     </button>
                 </div>
-                <p style="margin: 0 0 10px; font-size: 12px; opacity: 0.88;">Sadece admin onayli hikayeler listelenir.</p>
+                <p style="margin: 0 0 10px; font-size: 12px; opacity: 0.88;">Sadece admin onaylı hikayeler listelenir.</p>
                 <div class="success-stories-list" id="successStoriesList">
                     <div class="success-story-item">
-                        Hikayeler yukleniyor...
+                        Hikayeler yükleniyor...
                     </div>
                 </div>
             </section>
@@ -5979,7 +5979,7 @@
                 .filter((row) => row && typeof row === 'object')
                 .map((row) => ({
                     ...row,
-                    position: row?.position || 'ANTRENÖR Ilani',
+                    position: row?.position || 'ANTRENÖR İlanı',
                     dominant_side: row?.dominant_side || 'Farketmez',
                     min_height: Number(row?.min_height || 0),
                     age_min: row?.age_min ?? '-',
@@ -6015,7 +6015,7 @@
             window.__managerNeedsCache = Array.isArray(items) ? items : [];
 
             if (!items.length) {
-                root.innerHTML = '<div class="manager-needs-button-item"><div class="manager-needs-button-main">Henuz ilan yok.</div></div>';
+                root.innerHTML = '<div class="manager-needs-button-item"><div class="manager-needs-button-main">Henüz ilan yok.</div></div>';
                 return;
             }
 
@@ -6107,16 +6107,16 @@
             return [
                 { title: 'Güncel spor akisi hazirlaniyor', source: 'NextScout', publishedAt: now, url: '', imageUrl: '' },
                 { title: 'Yeni mansetler birazdan yansitilacak', source: 'NextScout', publishedAt: now, url: '', imageUrl: '' },
-                { title: 'Veri baglantisi stabil hale getiriliyor', source: 'NextScout', publishedAt: now, url: '', imageUrl: '' },
+                { title: 'Veri bağlantısı stabil hale getiriliyor', source: 'NextScout', publishedAt: now, url: '', imageUrl: '' },
             ];
         }
 
         function getFallbackContractStreamItems() {
             return [
-                { player_name: 'Arda K.', position: 'RW', club_name: 'Bakirkoy SK', status: 'expired', note: 'Sezon sonu sozlesmesi bitti, gorusmelere acik.' },
+                { player_name: 'Arda K.', position: 'RW', club_name: 'Bakırköy SK', status: 'expired', note: 'Sezon sonu sözleşmesi bitti, görüşmelere açık.' },
                 { player_name: 'Mert A.', position: 'CB', club_name: 'Kucukcekmece Spor', status: 'suspended', note: 'Lisansi askida, yeni sozlesme bekleniyor.' },
-                { player_name: 'Yusuf D.', position: 'ST', club_name: 'Anadolu Genclik', status: 'expired', note: 'Bosta ve deneme maclarina acik.' },
-                { player_name: 'Emirhan T.', position: 'CM', club_name: 'Beylikduzu FK', status: 'suspended', note: 'Sozlesme sureci askida, MENAJER gorusmesi suruyor.' },
+                { player_name: 'Yusuf D.', position: 'ST', club_name: 'Anadolu Gençlik', status: 'expired', note: 'Boşta ve deneme maçlarına açık.' },
+                { player_name: 'Emirhan T.', position: 'CM', club_name: 'Beylikdüzü FK', status: 'suspended', note: 'Sözleşme süreci askıda, MENAJER görüşmesi sürüyor.' },
             ];
         }
 
@@ -6165,7 +6165,7 @@
                 const badgeText = item.status === 'suspended' ? 'Sozlesmesi Askida' : 'Sozlesmesi Biten';
                 const badgeClass = item.status === 'suspended' ? 'contract-badge suspended' : 'contract-badge';
                 const note = item.note || (item.status === 'suspended'
-                    ? 'Lisansi askida, gorusmelere acik.'
+                    ? 'Lisansı askıda, görüşmelere açık.'
                     : 'Sozlesmesi bitti, yeni teklifler degerlendiriliyor.');
 
                 return `
@@ -6340,13 +6340,13 @@
                 const normalized = items.map(normalizeIdeaNewsItem).filter(Boolean).slice(0, 2);
 
                 if (!normalized.length) {
-                    root.innerHTML = '<div class="idea-news-item"><div class="t">Sitede haber yok.</div><div class="m">Yeni icerik bekleniyor.</div></div>';
+                    root.innerHTML = '<div class="idea-news-item"><div class="t">Sitede haber yok.</div><div class="m">Yeni içerik bekleniyor.</div></div>';
                     return;
                 }
 
                 root.innerHTML = normalized.map(renderIdeaNewsItem).join('');
             } catch (error) {
-                root.innerHTML = '<div class="idea-news-item"><div class="t">Site haberleri alinamadi.</div><div class="m">API kontrol et.</div></div>';
+                root.innerHTML = '<div class="idea-news-item"><div class="t">Site haberleri alınamadı.</div><div class="m">API kontrol et.</div></div>';
             }
         }
 
@@ -6389,9 +6389,9 @@
                 const playerName = esc(player?.name || player?.player_name || 'Oyuncu');
                 const voteText = player?.votes_count ? `Oy: ${esc(player.votes_count)}` : 'Haftanin secimi aktif';
                 const period = player?.period_end ? new Date(player.period_end).toLocaleDateString('tr-TR') : 'Güncel';
-                playerRoot.innerHTML = `<ul class="mini-lines"><li><strong>${playerName}</strong></li><li>${voteText}</li><li>Donem: ${esc(period)}</li></ul>`;
+                playerRoot.innerHTML = `<ul class="mini-lines"><li><strong>${playerName}</strong></li><li>${voteText}</li><li>Dönem: ${esc(period)}</li></ul>`;
             } else {
-                playerRoot.textContent = 'Bu hafta icin secim verisi henuz yayınlanmadi.';
+                playerRoot.textContent = 'Bu hafta için seçim verisi henüz yayınlanmadı.';
             }
 
             const trendItems = Array.isArray(trendsPayload?.data) ? trendsPayload.data.slice(0, 4) : [];
@@ -6399,17 +6399,17 @@
                 promoRoot.innerHTML = trendItems.map((item, idx) => {
                     const typeText = (item?.trendable_type || '').toString().split('\\').pop() || 'Icerik';
                     const entryName = `${typeText} #${esc(item?.trendable_id || (idx + 1))}`;
-                    const scoreText = `Goruntulenme: ${esc(item?.total_views || 0)}`;
+                    const scoreText = `Görüntülenme: ${esc(item?.total_views || 0)}`;
                     return `<li><span>${entryName}</span><span class="club-promo-tag">${scoreText}</span></li>`;
                 }).join('');
             } else {
                 promoRoot.innerHTML = [
-                    '<li><span>Haftalik trend verisi yok</span><span class="club-promo-tag">0</span></li>',
+                    '<li><span>Haftalık trend verisi yok</span><span class="club-promo-tag">0</span></li>',
                 ].join('');
             }
             if (weeklyMetaRoot) {
                 const trendCount = trendItems.length;
-                const score = trendCount >= 3 ? 'Yuksek' : (trendCount > 0 ? 'Orta' : 'Dusuk');
+                const score = trendCount >= 3 ? 'Yüksek' : (trendCount > 0 ? 'Orta' : 'Düşük');
                 weeklyMetaRoot.textContent = `Son güncelleme: ${new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })} • Kaynak: /api/trending/week • Guven: ${score}`;
             }
 
@@ -6421,7 +6421,7 @@
                     return `<li><strong>${name}</strong><br>${score}</li>`;
                 }).join('')}</ul>`;
             } else {
-                risingRoot.textContent = 'Yukselen yildiz verisi henuz olusmadi.';
+                risingRoot.textContent = 'Yükselen yıldız verisi henüz oluşmadı.';
             }
             if (risingMetaRoot) {
                 const numericScores = risingItems
@@ -6454,7 +6454,7 @@
 
             const uniqueNames = [...new Set(names)].slice(0, 14);
             if (!uniqueNames.length) {
-                root.innerHTML = '<span class="club-promo-name-pill">Henuz ödemeli tanitim yok</span>';
+                root.innerHTML = '<span class="club-promo-name-pill">Henüz ödemeli tanıtım yok</span>';
                 return;
             }
 
@@ -6489,7 +6489,7 @@
                 .slice(0, 10);
 
             if (!items.length) {
-                root.innerHTML = '<button type="button" class="club-needs-inline-item"><span class="club">Henuz not yok</span><span class="note">KULÜP ihtiyaç notu eklendiginde burada gorunecek.</span></button>';
+                root.innerHTML = '<button type="button" class="club-needs-inline-item"><span class="club">Henüz not yok</span><span class="note">KULÜP ihtiyaç notu eklendiğinde burada görünecek.</span></button>';
                 return;
             }
 
@@ -6550,7 +6550,7 @@
             if (coachCountEl) coachCountEl.textContent = String(coachCount);
             if (trendCountEl) trendCountEl.textContent = String(trendCount);
 
-            root.textContent = `Veri Durumu: Güncel veri ${leaguesCount} lig / ${clubCount} KULÜP / ${playerCount} oyuncu / ${coachCount} ANTRENÖR / ${qualityHigh} yuksek kalite profil`;
+            root.textContent = `Veri Durumu: Güncel veri ${leaguesCount} lig / ${clubCount} KULÜP / ${playerCount} oyuncu / ${coachCount} ANTRENÖR / ${qualityHigh} yüksek kalite profil`;
         }
 
         async function renderSuccessStoriesPanel() {
@@ -6562,8 +6562,8 @@
                 const payload = await fetchJsonSafe(`${API_BASE_URL}/success-stories?limit=8`);
                 const items = Array.isArray(payload?.data) ? payload.data.slice(0, 8) : [];
                 if (!items.length) {
-                    if (root) root.innerHTML = '<div class="success-story-item">Henuz onayli basari hikayesi yok.</div>';
-                    if (mobileRoot) mobileRoot.innerHTML = '<div class="mobile-success-item">Henuz onayli basari hikayesi yok.</div>';
+                    if (root) root.innerHTML = '<div class="success-story-item">Henüz onaylı başarı hikayesi yok.</div>';
+                    if (mobileRoot) mobileRoot.innerHTML = '<div class="mobile-success-item">Henüz onaylı başarı hikayesi yok.</div>';
                     return;
                 }
 
@@ -6600,8 +6600,8 @@
                     }).join('');
                 }
             } catch (error) {
-                if (root) root.innerHTML = '<div class="success-story-item">Hikayeler su an alinamiyor.</div>';
-                if (mobileRoot) mobileRoot.innerHTML = '<div class="mobile-success-item">Hikayeler su an alinamiyor.</div>';
+                if (root) root.innerHTML = '<div class="success-story-item">Hikayeler şu an alınamıyor.</div>';
+                if (mobileRoot) mobileRoot.innerHTML = '<div class="mobile-success-item">Hikayeler şu an alınamıyor.</div>';
             }
         }
 
@@ -6673,7 +6673,7 @@
                     throw new Error(result?.message || `HTTP ${response.status}`);
                 }
 
-                window.nsNotify?.success ? window.nsNotify.success('Hikayen alindi. Admin onayindan sonra anasayfada yayınlanacak.') : nsnsAlert('Hikayen alindi. Admin onayindan sonra anasayfada yayınlanacak.');
+                window.nsNotify?.success ? window.nsNotify.success('Hikayen alındı. Admin onayindan sonra anasayfada yayınlanacak.') : nsnsAlert('Hikayen alındı. Admin onayindan sonra anasayfada yayınlanacak.');
                 window.NextScoutGrowth?.track('success_story_submit_success', { sport: payload.sport || 'unknown' });
                 form.reset();
                 closeSuccessStoryModal();
@@ -6995,14 +6995,14 @@
         function getRoleBasedNotificationFallback(roleRaw) {
             const role = (roleRaw || '').toString().trim().toLowerCase();
             let items = [
-                { cat: 'sistem', text: 'Sistem bildirimi: Yeni veriler guncellendi.' },
+                { cat: 'sistem', text: 'Sistem bildirimi: Yeni veriler güncellendi.' },
                 { cat: 'mesaj', text: 'Yeni bir mesaj bildirimi var.' },
             ];
             if (role === 'player' || role === 'oyuncu') {
                 items = [
                     { cat: 'transfer', text: 'Bir MENAJER profilinizi inceledi.' },
                     { cat: 'transfer', text: 'Bir KULÜP sizinle iletisime gecmek istiyor.' },
-                    { cat: 'mesaj', text: 'Bir ANTRENÖR size mesaj gonderdi.' },
+                    { cat: 'mesaj', text: 'Bir ANTRENÖR size mesaj gönderdi.' },
                     ...items,
                 ];
             } else if (role === 'manager' || role === 'menajer') {
@@ -7014,16 +7014,16 @@
                 ];
             } else if (role === 'team' || role === 'club' || role === 'kulup' || role === 'klup') {
                 items = [
-                    { cat: 'transfer', text: 'Bir OYUNCU kulup ihtiyac ilanina yanit verdi.' },
+                    { cat: 'transfer', text: 'Bir OYUNCU kulüp ihtiyaç ilanına yanıt verdi.' },
                     { cat: 'mesaj', text: 'Bir MENAJER kulubunuzle iletisime gecti.' },
-                    { cat: 'sistem', text: 'Deneme mac takvimine yeni basvuru geldi.' },
+                    { cat: 'sistem', text: 'Deneme maç takvimine yeni başvuru geldi.' },
                     ...items,
                 ];
             } else if (role === 'coach' || role === 'antrenor') {
                 items = [
                     { cat: 'transfer', text: 'Bir OYUNCU idman ilanina basvurdu.' },
-                    { cat: 'mesaj', text: 'Bir KULÜP teknik ekip icin mesaj gonderdi.' },
-                    { cat: 'sistem', text: 'Antrenor profil goruntulenmesi artti.' },
+                    { cat: 'mesaj', text: 'Bir KULÜP teknik ekip için mesaj gönderdi.' },
+                    { cat: 'sistem', text: 'Antrenör profil görüntülenmesi arttı.' },
                     ...items,
                 ];
             }
@@ -7359,7 +7359,7 @@
         }
 
         async function loadMobileDiscoverBoosts() {
-            setMobileDiscoverTitle('Beni Kesfedin - Oyuncu Kartlari');
+            setMobileDiscoverTitle('Beni Keşfedin - Oyuncu Kartları');
             showMobileDiscoverPanel();
             renderMobileDiscoverSkeleton(4);
 
@@ -7379,14 +7379,14 @@
             }
 
             const fallbackMapped = [
-                { name: 'Vitrin Oyuncu #1', position: 'Forvet', city: 'Istanbul', summary: 'Gol odakli, hizli ve formda.', stat_tag: 'Sponsorlu' },
-                { name: 'Vitrin Oyuncu #2', position: 'Orta Saha', city: 'Ankara', summary: 'Pas kalitesi yuksek oyun kurucu.', stat_tag: 'Sponsorlu' },
+                { name: 'Vitrin Oyuncu #1', position: 'Forvet', city: 'İstanbul', summary: 'Gol odakli, hizli ve formda.', stat_tag: 'Sponsorlu' },
+                { name: 'Vitrin Oyuncu #2', position: 'Orta Saha', city: 'Ankara', summary: 'Pas kalitesi yüksek oyun kurucu.', stat_tag: 'Sponsorlu' },
                 { name: 'Vitrin Oyuncu #3', position: 'Bek', city: 'Izmir', summary: 'Savunma disiplini guclu profil.', stat_tag: 'Sponsorlu' },
             ];
 
             renderMobileDiscoverCards(
                 mapped.length ? mapped : fallbackMapped,
-                'Sponsorlu oyuncu henuz yok',
+                'Sponsorlu oyuncu henüz yok',
                 'Ödeme tamamlayan oyuncular burada listelenecek.'
             );
             applyMobileDiscoverFilter();
@@ -7478,7 +7478,7 @@
                 renderMobileDiscoverCards(
                     [],
                     'Oyuncu verisi bulunamadi',
-                    'Bugün eklenen oyuncular goruntulenemedi.'
+                    'Bugün eklenen oyuncular görüntülenemedi.'
                 );
                 return;
             }
@@ -7494,7 +7494,7 @@
             let html = '';
             if (hasPaid) {
                 html += '<div class="mobile-discover-section">';
-                html += sectionTitle('Beni Kesfedin (Odemeli)', 'fas fa-bolt');
+                html += sectionTitle('Beni Keşfedin (Ödemeli)', 'fas fa-bolt');
                 html += safePaid.map((row) => mobileDiscoverCardHtml(row)).join('');
                 html += '</div>';
                 html += sectionTitle('Son 24 Saatte Eklenenler', 'fas fa-clock', `${safeToday.length} Yeni`);
@@ -7510,7 +7510,7 @@
         async function initMobileHomeDefaultDiscover() {
             if (!window.matchMedia('(max-width: 768px)').matches) return;
             markMobileLastAction('initMobileHomeDefaultDiscover');
-            setMobileDiscoverTitle('Beni Kesfedin');
+            setMobileDiscoverTitle('Beni Keşfedin');
             showMobileDiscoverPanelNoScroll();
             renderMobileDiscoverSkeleton(5);
 
@@ -7561,7 +7561,7 @@
 
             if (!todayRows.length) {
                 todayRows = [
-                    { name: 'Yeni Oyuncu #1', position: 'Forvet', city: 'Istanbul', summary: 'Bugün eklenen oyuncu profili.', stat_tag: 'Yeni', verified: true, last_active_at: new Date().toISOString() },
+                    { name: 'Yeni Oyuncu #1', position: 'Forvet', city: 'İstanbul', summary: 'Bugün eklenen oyuncu profili.', stat_tag: 'Yeni', verified: true, last_active_at: new Date().toISOString() },
                     { name: 'Yeni Oyuncu #2', position: 'Orta Saha', city: 'Ankara', summary: 'Bugün eklenen oyuncu profili.', stat_tag: 'Yeni', verified: false, last_active_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() },
                     { name: 'Yeni Oyuncu #3', position: 'Bek', city: 'Izmir', summary: 'Bugün eklenen oyuncu profili.', stat_tag: 'Yeni', verified: false, last_active_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString() },
                 ];
@@ -7754,7 +7754,7 @@
             syncModalDataPeriodButtons(period);
 
             titleEl.textContent = conf.label;
-            subEl.textContent = period === 'daily' ? 'Gunluk' : period === 'weekly' ? 'Haftalik' : 'Aylik';
+            subEl.textContent = period === 'daily' ? 'Günlük' : period === 'weekly' ? 'Haftalık' : 'Aylık';
             bodyEl.innerHTML = `
                 <div class="mobile-manager-modal-row">
                     <div class="mobile-manager-modal-k">Yukleniyor</div>
@@ -7809,7 +7809,7 @@
 
         async function openMobileWeeklyStars() {
             markMobileLastAction('openMobileWeeklyStars');
-            setMobileDiscoverTitle('Haftanin Yildizlari - Oyuncu Kartlari');
+            setMobileDiscoverTitle('Haftanin Yildizlari - Oyuncu Kartları');
             showMobileDiscoverPanel();
             renderMobileDiscoverSkeleton(4);
 
@@ -7843,9 +7843,9 @@
             }
 
             const fallbackMapped = [
-                { name: 'Haftanin Yildizi #1', position: 'Forvet', city: 'Istanbul', summary: 'Son 7 gunde yuksek form grafigi.', stat_tag: 'Skor 92' },
+                { name: 'Haftanın Yıldızı #1', position: 'Forvet', city: 'İstanbul', summary: 'Son 7 günde yüksek form grafiği.', stat_tag: 'Skor 92' },
                 { name: 'Haftanin Yildizi #2', position: 'Orta Saha', city: 'Ankara', summary: 'Mac yonlendirmesi ve pas kalitesi one cikti.', stat_tag: 'Skor 89' },
-                { name: 'Haftanin Yildizi #3', position: 'Bek', city: 'Bursa', summary: 'Savunmada yuksek kazanma orani.', stat_tag: 'Skor 87' },
+                { name: 'Haftanın Yıldızı #3', position: 'Bek', city: 'Bursa', summary: 'Savunmada yüksek kazanma oranı.', stat_tag: 'Skor 87' },
             ];
 
             renderMobileDiscoverCards(
@@ -7878,7 +7878,7 @@
                 const managerRows = parseBoostRows(managerPayload).filter((row) => row && typeof row === 'object').map((row) => ({ ...row, source_role: 'manager' }));
                 const coachRows = parseBoostRows(coachPayload).filter((row) => row && typeof row === 'object').map((row) => ({
                     ...row,
-                    position: row?.position || 'ANTRENÖR Ilani',
+                    position: row?.position || 'ANTRENÖR İlanı',
                     city: row?.city || row?.location || 'Sehir bilgisi yok',
                     source_role: 'coach',
                 }));
@@ -7889,9 +7889,9 @@
             }
 
             const fallbackRows = [
-                { manager_name: 'MENAJER #1', position: 'Forvet', city: 'Istanbul', description: '20-24 yas hizli forvet araniyor.', club_name: 'MENAJER Ilani' },
-                { manager_name: 'MENAJER #2', position: 'Orta Saha', city: 'Ankara', description: 'Pas kalitesi yuksek oyun kurucu ihtiyaçi var.', club_name: 'MENAJER Ilani' },
-                { manager_name: 'MENAJER #3', position: 'Bek', city: 'Izmir', description: 'Savunma disiplini guclu bek araniyor.', club_name: 'MENAJER Ilani' },
+                { manager_name: 'MENAJER #1', position: 'Forvet', city: 'İstanbul', description: '20-24 yaş hızlı forvet aranıyor.', club_name: 'MENAJER İlanı' },
+                { manager_name: 'MENAJER #2', position: 'Orta Saha', city: 'Ankara', description: 'Pas kalitesi yüksek oyun kurucu ihtiyacı var.', club_name: 'MENAJER İlanı' },
+                { manager_name: 'MENAJER #3', position: 'Bek', city: 'Izmir', description: 'Savunma disiplini güçlü bek aranıyor.', club_name: 'MENAJER İlanı' },
             ];
             const finalRows = rows.length ? rows : fallbackRows;
             window.__mobileManagerNeedsRows = finalRows.slice(0, 40);
@@ -7907,7 +7907,7 @@
                 const manager = esc((row?.author_name || row?.manager_name || row?.name || `${roleLabel} ${idx + 1}`).toString().trim());
                 const position = esc((row?.position || 'İhtiyaç').toString().trim());
                 const city = esc((row?.city || row?.location || 'Sehir bilgisi yok').toString().trim());
-                const club = esc((row?.club_name || row?.club || 'MENAJER Ilani').toString().trim());
+                const club = esc((row?.club_name || row?.club || 'MENAJER İlanı').toString().trim());
                 const description = esc((row?.description || `Yas ${row?.age_min || '-'}-${row?.age_max || '-'} • ${budgetText}`).toString().trim());
 
                 return `
@@ -7959,7 +7959,7 @@
             const fallbackRows = [
                 { club_name: 'KULÜP #1', note: 'U19 icin hizli kanat oyuncusu araniyor.', source: 'KULÜP Paneli' },
                 { club_name: 'KULÜP #2', note: 'A takım icin stoper ihtiyaçi bulunuyor.', source: 'KULÜP Paneli' },
-                { club_name: 'KULÜP #3', note: 'Kaleci antrenmanina uygun oyuncu daveti acik.', source: 'KULÜP Paneli' },
+                { club_name: 'KULÜP #3', note: 'Kaleci antrenmanına uygun oyuncu daveti acik.', source: 'KULÜP Paneli' },
             ];
             const finalRows = rows.length ? rows : fallbackRows;
 
@@ -7974,7 +7974,7 @@
                     <article class="mobile-player-card" style="width:100%;aspect-ratio:auto;min-height:94px;text-align:left;">
                         <div class="mobile-player-top">
                             <div class="mobile-player-name">${club}</div>
-                            <span class="mobile-player-tag">KULÜP Ilani</span>
+                            <span class="mobile-player-tag">KULÜP İlanı</span>
                         </div>
                         <div class="mobile-player-meta">${city} • ${source} • ${created}</div>
                         <div class="mobile-player-about">${note}</div>
@@ -7986,7 +7986,7 @@
 
         async function openMobileTrialNeeds() {
             markMobileLastAction('openMobileTrialNeeds');
-            setMobileDiscoverTitle('KULÜP Deneme Ilanlari');
+            setMobileDiscoverTitle('KULÜP Deneme İlanları');
             showMobileDiscoverPanel();
 
             const listRoot = document.getElementById('mobileDiscoverList');
@@ -8008,8 +8008,8 @@
             }
 
             const fallbackRows = [
-                { title: 'U19 Deneme Gunu', event_type: 'trial_day', city: 'Istanbul', venue: 'Yan Saha', organizer: { name: 'KULÜP Scout Ekibi', club_name: 'Ornek SK' } },
-                { title: 'Deneme Maci', event_type: 'trial_match', city: 'Ankara', venue: 'Ana Saha', organizer: { name: 'Teknik Ekip', club_name: 'Ornek FK' } },
+                { title: 'U19 Deneme Günü', event_type: 'trial_day', city: 'İstanbul', venue: 'Yan Saha', organizer: { name: 'KULÜP Scout Ekibi', club_name: 'Ornek SK' } },
+                { title: 'Deneme Maçı', event_type: 'trial_match', city: 'Ankara', venue: 'Ana Saha', organizer: { name: 'Teknik Ekip', club_name: 'Ornek FK' } },
                 { title: 'A Takım Secmesi', event_type: 'trial', city: 'Izmir', venue: 'Tesis', organizer: { name: 'Altyapi Koordinatoru', club_name: 'Ornekspor' } },
             ];
             const finalRows = rows.length ? rows : fallbackRows;
@@ -8017,13 +8017,13 @@
             const typeLabel = (eventType) => {
                 const t = (eventType || '').toString().toLowerCase();
                 if (t === 'trial_day' || t === 'trial') return 'Deneme';
-                if (t === 'trial_match' || t === 'match') return 'Deneme Maci';
+                if (t === 'trial_match' || t === 'match') return 'Deneme Maçı';
                 if (t === 'training_session' || t === 'training') return 'Idman';
                 return 'Etkinlik';
             };
 
             listRoot.innerHTML = finalRows.slice(0, 40).map((row, idx) => {
-                const title = esc((row?.title || `Deneme Ilani ${idx + 1}`).toString().trim());
+                const title = esc((row?.title || `Deneme İlanı ${idx + 1}`).toString().trim());
                 const city = esc((row?.city || row?.location || 'Sehir bilgisi yok').toString().trim());
                 const venue = esc((row?.venue || '').toString().trim());
                 const dateText = row?.event_date
@@ -8063,7 +8063,7 @@
             const manager = (row?.author_name || row?.manager_name || row?.name || `MENAJER ${idx + 1}`).toString().trim();
             const position = (row?.position || 'İhtiyaç').toString().trim();
             const city = (row?.city || row?.location || 'Sehir bilgisi yok').toString().trim();
-            const club = (row?.club_name || row?.club || 'MENAJER Ilani').toString().trim();
+            const club = (row?.club_name || row?.club || 'MENAJER İlanı').toString().trim();
             const budgetMin = Number(row?.budget_min || 0);
             const budgetMax = Number(row?.budget_max || 0);
             const budgetText = (budgetMin || budgetMax)
@@ -8071,7 +8071,7 @@
                 : 'Butce belirtilmedi';
             const description = (row?.description || '').toString().trim();
 
-            titleEl.textContent = position || 'MENAJER Ilani';
+            titleEl.textContent = position || 'MENAJER İlanı';
             subEl.textContent = `${club} • ${manager}`;
 
             const baseRows = [
@@ -8081,7 +8081,7 @@
                 { k: 'KULÜP', v: club },
                 { k: 'Yas Araligi', v: `${row?.age_min || '-'} - ${row?.age_max || '-'}` },
                 { k: 'Butce', v: budgetText },
-                { k: 'Aciklama', v: description || 'Aciklama girilmedi' },
+                { k: 'Açıklama', v: description || 'Açıklama girilmedi' },
                 { k: 'İlan Tarihi', v: row?.created_at ? String(row.created_at) : '-' },
             ];
 
@@ -8343,19 +8343,19 @@
             const templates = {
                 trial: {
                     subject: 'Deneme daveti',
-                    message: `Merhaba ${targetName},\n\nProfilinizi inceledik. Sizi deneme antrenmanina davet etmek istiyoruz.\nUygun oldugunuz tarih araligini paylasir misiniz?`,
+                    message: `Merhaba ${targetName},\n\nProfilinizi inceledik. Sizi deneme antrenmanına davet etmek istiyoruz.\nUygun olduğunuz tarih araligini paylaşır misiniz?`,
                 },
                 shortlist: {
                     subject: 'Shortlist bilgilendirmesi',
-                    message: `Merhaba ${targetName},\n\nProfiliniz teknik ekip shortlist listesine alindi.\nKisa bir on gorusme planlamak istiyoruz.`,
+                    message: `Merhaba ${targetName},\n\nProfiliniz teknik ekip shortlist listesine alındı.\nKısa bir ön görüşme planlamak istiyoruz.`,
                 },
                 video: {
                     subject: 'Ek video talebi',
                     message: `Merhaba ${targetName},\n\nGuncel mac videolarinizi ve pozisyon bazli kliplerinizi paylasabilir misiniz?\nDegerlendirme surecini hizlandirmak istiyoruz.`,
                 },
                 meeting: {
-                    subject: 'Gorusme talebi',
-                    message: `Merhaba ${targetName},\n\nSizinle online kisa bir gorusme planlamak istiyoruz.\nUygun gun/saat bilgisi paylasabilir misiniz?`,
+                    subject: 'Görüşme talebi',
+                    message: `Merhaba ${targetName},\n\nSizinle online kısa bir görüşme planlamak istiyoruz.\nUygun gün/saat bilgisi paylasabilir misiniz?`,
                 },
             };
 
@@ -8949,7 +8949,7 @@
                     <p>Platformu kullanirken tum kullanicilar su temel kosullari kabul eder:</p>
                     <ol>
                         <li>Paylasilan profil ve performans verileri gercek ve güncel olmali.</li>
-                        <li>Hakaret, nefret soylemi veya manipule edici icerik yasaktir.</li>
+                        <li>Hakaret, nefret söylemi veya manipüle edici içerik yasaktır.</li>
                         <li>Hesap guvenligi kullanicinin sorumlulugundadir.</li>
                         <li>Kurallara aykiri durumlarda hesap gecici veya kalici askiya alinabilir.</li>
                     </ol>
@@ -9098,7 +9098,7 @@
                 try {
                     await submitContactMessageApi(payload);
                     form.reset();
-                    if (feedback) feedback.textContent = 'Mesajin alindi. Admin paneline gönderildi.';
+                    if (feedback) feedback.textContent = 'Mesajin alındı. Admin paneline gönderildi.';
                 } catch (error) {
                     // Offline fallback to avoid losing user input intent.
                     saveContactMessage({
@@ -9146,11 +9146,11 @@
 
         function openTransferMarketCategory(category) {
             const map = {
-                contracted: 'Sozlesmeli',
+                contracted: 'Sözleşmeli',
                 free: 'Bosta',
                 seeking: 'KULÜP-Ariyor',
             };
-            const selected = map[category] || 'Sozlesmeli';
+            const selected = map[category] || 'Sözleşmeli';
             window.location.href = resolveLocalPage(`professional-players.html?transfer_category=${encodeURIComponent(selected)}`);
         }
 
@@ -9167,11 +9167,11 @@
                 return;
             }
             const map = {
-                new: 'Yeni-Eslesenler',
+                new: 'Yeni-Eşleşenler',
                 rising: 'Yukselenler',
                 hidden: 'Gizli-Yetenek',
             };
-            const selected = map[category] || 'Yeni-Eslesenler';
+            const selected = map[category] || 'Yeni-Eşleşenler';
             window.location.href = resolveLocalPage(`professional-players.html?scout_radar=${encodeURIComponent(selected)}`);
         }
 
@@ -9742,7 +9742,7 @@
                 });
                 const data = await response.json().catch(() => ({}));
                 if (!response.ok || !data?.ok) {
-                    throw new Error(data?.message || 'Doğrulama basarisiz.');
+                    throw new Error(data?.message || 'Doğrulama başarısız.');
                 }
 
                 const apiToken = data?.data?.token || '';
@@ -9832,7 +9832,7 @@
                 console.log('📦 Veri:', data);
                 
                 if (!res.ok || !data.ok) {
-                    const msg = data?.message || data?.errors?.email?.[0] || 'Giriş basarisiz.';
+                    const msg = data?.message || data?.errors?.email?.[0] || 'Giriş başarısız.';
                     throw new Error(msg);
                 }
 
@@ -9911,7 +9911,7 @@
                 savePendingUser(payload);
                 saveLocalVerificationToken(payload.email, localToken);
                 closeRegisterModal();
-                nsnsAlert(`Kayıt alindi. Admin e-posta onayi sonrasi doğrulama linki gönderilecek.\n\nTest linki:\n${window.location.pathname}?verify_email_token=${localToken}`);
+                nsnsAlert(`Kayıt alındı. Admin e-posta onayi sonrasi doğrulama linki gönderilecek.\n\nTest linki:\n${window.location.pathname}?verify_email_token=${localToken}`);
                 return;
             }
 
@@ -9930,7 +9930,7 @@
                 
                 if (!res.ok || !data.ok) {
                     const firstError = data?.errors ? Object.values(data.errors)?.[0]?.[0] : null;
-                    const msg = firstError || data?.message || 'Kayıt basarisiz.';
+                    const msg = firstError || data?.message || 'Kayıt başarısız.';
                     throw new Error(msg);
                 }
 
@@ -9946,7 +9946,7 @@
                 });
 
                 closeRegisterModal();
-                let message = 'Kayıt alindi. Hesap doğrulamasi icin e-postadaki linke tikla.';
+                let message = 'Kayıt alındı. Hesap doğrulamasi icin e-postadaki linke tikla.';
                 if (adminEmail) message += `\nAdmin: ${adminEmail}`;
                 if (verificationLink) message += `\n\nTest linki:\n${verificationLink}`;
                 nsnsAlert(message);
@@ -10002,6 +10002,8 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+
+
 
 
 

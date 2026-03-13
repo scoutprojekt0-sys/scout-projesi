@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Veri Merkezi | NextScout</title>
-    <meta name="description" content="Veri Merkezi: lig, kulup, oyuncu, antrenor ve haftalik trend sayilarinin guncel ozeti.">
+    <meta name="description" content="Veri Merkezi: lig, kulüp, oyuncu, antrenör ve haftalık trend sayılarının güncel özeti.">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://nextscout.pro/data-center.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
     <meta property="og:title" content="Veri Merkezi | NextScout">
-    <meta property="og:description" content="Veri Merkezi: lig, kulup, oyuncu, antrenor ve haftalik trend sayilarinin guncel ozeti.">
+    <meta property="og:description" content="Veri Merkezi: lig, kulüp, oyuncu, antrenör ve haftalık trend sayılarının güncel özeti.">
     <meta property="og:url" content="https://nextscout.pro/data-center.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-data-center.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Veri Merkezi | NextScout">
-    <meta name="twitter:description" content="Futbol veri merkezi, lig ve oyuncu sayilari ile haftalik trend gorunumu.">
+    <meta name="twitter:description" content="Futbol veri merkezi, lig ve oyuncu sayıları ile haftalık trend görünümü.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-data-center.jpg">
     <meta name="theme-color" content="#0B3B8A">
     <style>
@@ -148,11 +148,11 @@
     <div class="top">
         <div>
             <h1>Veri Merkezi</h1>
-            <section class="seo-intro" aria-label="Veri merkezi aciklama">
-                <h2>Futbol veri merkezi ve haftalik trend gorunumu</h2>
-                <p>NextScout Veri Merkezi; lig, kulup, oyuncu ve antrenor sayilarini tek panelde toplar. Haftalik trendler, buyume sinyalleri ve genel platform ozetleri sayesinde sponsorlar, scout ekipleri ve futbol profesyonelleri mevcut hareketliligi hizli sekilde takip edebilir.</p>
+            <section class="seo-intro" aria-label="Veri merkezi açıklama">
+                <h2>Futbol veri merkezi ve haftalık trend görünümü</h2>
+                <p>NextScout Veri Merkezi; lig, kulüp, oyuncu ve antrenör sayılarını tek panelde toplar. Haftalık trendler, büyüme sinyalleri ve genel platform özetleri sayesinde sponsorlar, scout ekipleri ve futbol profesyonelleri mevcut hareketliliği hızlı şekilde takip edebilir.</p>
             </section>
-            <p class="sub">Scout Radar ve anasayfa kartlarinin veri saglik ozeti</p>
+            <p class="sub">Scout Radar ve ana sayfa kartlarının veri sağlık özeti</p>
         </div>
         <a class="home-btn-global" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a>
     </div>
@@ -160,32 +160,32 @@
     <div class="bottom-zone">
         <div class="grid">
             <article class="card">
-                <div class="label">Lig Sayisi</div>
+                <div class="label">Lig Sayısı</div>
                 <div class="value" id="leagueCount">-</div>
                 <div class="meta">Kaynak: sabit lig verisi</div>
             </article>
             <article class="card">
-                <div class="label">KULUP Sayisi</div>
+                <div class="label">KULÜP Sayısı</div>
                 <div class="value" id="clubCount">-</div>
                 <div class="meta">Kaynak: /api/club-needs</div>
             </article>
             <article class="card">
-                <div class="label">Oyuncu Sayisi</div>
+                <div class="label">Oyuncu Sayısı</div>
                 <div class="value" id="playerCount">-</div>
                 <div class="meta">Kaynak: /api/public/players</div>
             </article>
             <article class="card">
-                <div class="label">ANTRENOR Sayisi</div>
+                <div class="label">ANTRENÖR Sayısı</div>
                 <div class="value" id="coachCount">-</div>
                 <div class="meta">Kaynak: /api/users?role=coach</div>
             </article>
             <article class="card">
-                <div class="label">Trend Kayitlari</div>
+                <div class="label">Trend Kayıtları</div>
                 <div class="value" id="trendCount">-</div>
                 <div class="meta">Kaynak: /api/trending/week</div>
             </article>
         </div>
-        <div class="status-row" id="statusRow"><span class="dot"></span>Veri baglantisi kontrol ediliyor...</div>
+        <div class="status-row" id="statusRow"><span class="dot"></span>Veri bağlantısı kontrol ediliyor...</div>
     </div>
 </div>
 
@@ -244,9 +244,9 @@
 
         const statusRow = document.getElementById('statusRow');
         if (players.length || needs.length || trends.length) {
-            statusRow.innerHTML = `<span class="dot"></span>Güncel veri alindi • Son guncelleme: ${new Date().toLocaleString('tr-TR')}`;
+            statusRow.innerHTML = `<span class="dot"></span>Güncel veri alındı • Son güncelleme: ${new Date().toLocaleString('tr-TR')}`;
         } else {
-            statusRow.innerHTML = '<span class="dot" style="background:#f59e0b;box-shadow:0 0 8px rgba(245,158,11,.7)"></span>Canli veri yok, API kontrol edilmeli.';
+            statusRow.innerHTML = '<span class="dot" style="background:#f59e0b;box-shadow:0 0 8px rgba(245,158,11,.7)"></span>Canlı veri yok, API kontrol edilmeli.';
         }
     }
 
@@ -255,8 +255,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
 
 
 

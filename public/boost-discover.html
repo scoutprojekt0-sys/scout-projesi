@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NextScout - Beni Kesfedin</title>
-    <meta name="description" content="NextScout boost discover sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <title>Beni Keşfedin | Sponsorlu Oyuncu Vitrini | NextScout</title>
+    <meta name="description" content="Sponsorlu oyuncu vitrininde öne çıkan profilleri keşfedin. Kulüpler, scout ekipleri ve menajerler için görünürlüğü artırılmış oyuncu kartları tek ekranda.">
     <meta name="robots" content="index,follow">
-    <link rel="canonical" href="https://nextscout.app/boost-discover.html">
+    <link rel="canonical" href="https://nextscout.pro/boost-discover.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="NextScout - Beni Kesfedin">
-    <meta property="og:description" content="NextScout boost discover sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
-    <meta property="og:url" content="https://nextscout.app/boost-discover.html">
-    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta property="og:title" content="Beni Keşfedin | Sponsorlu Oyuncu Vitrini | NextScout">
+    <meta property="og:description" content="Öne çıkan oyuncu profillerini vitrin mantığıyla listeleyen sponsorlu keşif alanı. Scout ve kulüpler için hızlı görünürlük ekranı.">
+    <meta property="og:url" content="https://nextscout.pro/boost-discover.html">
+    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="NextScout - Beni Kesfedin">
-    <meta name="twitter:description" content="NextScout boost discover sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
-    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:title" content="Beni Keşfedin | Sponsorlu Oyuncu Vitrini | NextScout">
+    <meta name="twitter:description" content="Görünürlüğü artırılmış oyuncu kartları ve sponsorlu vitrin alanı.">
+    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -31,6 +31,9 @@
         .hero { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 18px; padding: 24px; margin-bottom: 18px; box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08); }
         .hero h1 { font-size: 30px; margin-bottom: 8px; }
         .hero p { color: #475569; }
+        .seo-intro { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 18px; padding: 18px 20px; margin-bottom: 18px; box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08); }
+        .seo-intro h2 { font-size: 18px; margin-bottom: 8px; }
+        .seo-intro p { color: #475569; line-height: 1.7; }
         .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
         .card { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 14px; padding: 16px; }
         .name { font-size: 19px; font-weight: 800; margin-bottom: 8px; color: #1E3A8A; }
@@ -47,14 +50,19 @@
     <a class="brand" href="./index.html">NextScout</a>
     <div style="display:flex; gap:10px;">
         <a class="home-btn-global" href="./index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a>
-        <a class="btn" href="./manager-needs.html">MENAJER Ilanlari</a>
+        <a class="btn" href="./manager-needs.html">MENAJER İlanları</a>
     </div>
 </header>
 
 <main class="page">
     <section class="hero">
-        <h1><i class="fa-solid fa-bolt"></i> Beni Kesfedin</h1>
-        <p>Bu sayfada sadece oyuncu ozellikleri gorunur. Fiyatlandirma gosterilmez.</p>
+        <h1><i class="fa-solid fa-bolt"></i> Beni Keşfedin</h1>
+        <p>Bu sayfada sadece oyuncu özellikleri görünür. Fiyatlandırma gösterilmez.</p>
+    </section>
+
+    <section class="seo-intro" aria-label="Sponsorlu oyuncu vitrini açıklaması">
+        <h2>Sponsorlu Oyuncu Keşif Alanı</h2>
+        <p>NextScout Beni Keşfedin sayfası; görünürlüğü artırılmış oyuncu kartlarını kulüpler, scout ekipleri ve menajerler için tek vitrin altında toplar. Bu alan, sponsorlu oyuncu profillerinin daha hızlı fark edilmesi ve öne çıkan adayların kısa listelere girmesi için tasarlandı.</p>
     </section>
 
     <section class="cards" id="boostCards"></section>
@@ -88,7 +96,7 @@
             rows = [];
         }
         if (!rows.length) {
-            root.innerHTML = '<div class="empty">Henuz boost kaydi yok.</div>';
+            root.innerHTML = '<div class="empty">Henüz boost kaydı yok.</div>';
             return;
         }
 
@@ -96,9 +104,9 @@
             <article class="card">
                 <div class="name">${p.name || 'Oyuncu'}</div>
                 <div class="line"><strong>Pozisyon:</strong> ${p.position || '-'}</div>
-                <div class="line"><strong>Sehir:</strong> ${p.city || '-'}</div>
-                <div class="line"><strong>Tanitim:</strong> ${p.summary || '-'}</div>
-                <div class="line"><strong>Gecerlilik:</strong> ${p.expires_at ? new Date(p.expires_at).toLocaleString('tr-TR') : '-'}</div>
+                <div class="line"><strong>Şehir:</strong> ${p.city || '-'}</div>
+                <div class="line"><strong>Tanıtım:</strong> ${p.summary || '-'}</div>
+                <div class="line"><strong>Geçerlilik:</strong> ${p.expires_at ? new Date(p.expires_at).toLocaleString('tr-TR') : '-'}</div>
                 <div class="tags">
                     <span class="tag">${p.package_label || 'Boost'}</span>
                     <span class="tag">Sponsorlu Yetenek</span>

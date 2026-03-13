@@ -4,19 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profesyonel Futbolcular ve Scout Oyuncu Havuzu | NextScout</title>
-  <meta name="description" content="Pozisyon, yas, form ve performans filtreleri ile profesyonel oyuncu arama deneyimi.">
+    <meta name="description" content="Pozisyon, yaş, form ve performans filtreleri ile profesyonel oyuncu arama deneyimi.">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://nextscout.pro/professional-players.html">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="tr_TR">
   <meta property="og:site_name" content="NextScout">
   <meta property="og:title" content="Profesyonel Futbolcular ve Scout Oyuncu Havuzu | NextScout">
-  <meta property="og:description" content="Pozisyon, yas, form ve performans filtreleri ile profesyonel oyuncu arama deneyimi.">
+    <meta property="og:description" content="Pozisyon, yaş, form ve performans filtreleri ile profesyonel oyuncu arama deneyimi.">
   <meta property="og:url" content="https://nextscout.pro/professional-players.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-players.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Profesyonel Futbolcular ve Scout Oyuncu Havuzu | NextScout">
-  <meta name="twitter:description" content="Pozisyon, yas, form ve performans filtreleri ile profesyonel oyuncu arama deneyimi.">
+    <meta name="twitter:description" content="Pozisyon, yaş, form ve performans filtreleri ile profesyonel oyuncu arama deneyimi.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-players.jpg">
   <meta name="theme-color" content="#0B3B8A">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -515,14 +515,187 @@
         display: none;
       }
     }
+
+    /* Web homepage visual language override */
+    :root {
+      --ns-bg: #050816;
+      --ns-bg-2: #0b1533;
+      --ns-panel: rgba(15, 23, 49, 0.9);
+      --ns-panel-2: rgba(24, 34, 70, 0.88);
+      --ns-line: rgba(96, 165, 250, 0.24);
+      --ns-line-strong: rgba(96, 165, 250, 0.52);
+      --ns-text: #e5eefc;
+      --ns-muted: #9fb3d9;
+      --ns-primary: #3b82f6;
+      --ns-primary-2: #0ea5e9;
+      --ns-glow: 0 20px 52px rgba(7, 12, 30, 0.46);
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top left, rgba(59, 130, 246, 0.24), transparent 28%),
+        radial-gradient(circle at top right, rgba(14, 165, 233, 0.18), transparent 24%),
+        linear-gradient(180deg, #060914 0%, var(--ns-bg-2) 46%, var(--ns-bg) 100%);
+      color: var(--ns-text);
+    }
+
+    .seo-market-intro,
+    .market-ad-panel,
+    .sponsored-section,
+    .player-card,
+    .compare-bar,
+    .compare-card {
+      background: linear-gradient(180deg, var(--ns-panel-2), var(--ns-panel));
+      border-color: var(--ns-line);
+      box-shadow: var(--ns-glow);
+    }
+
+    .seo-market-intro,
+    .market-ad-panel,
+    .sponsored-section,
+    .player-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .seo-market-intro::before,
+    .sponsored-section::before,
+    .player-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.95), transparent);
+      opacity: 0.95;
+    }
+
+    .seo-market-intro {
+      border-radius: 22px;
+    }
+
+    .seo-market-intro h2,
+    .header h1,
+    .sponsored-title,
+    .player-name,
+    .compare-card strong {
+      color: #f8fbff;
+    }
+
+    .seo-market-intro p,
+    .market-ad-panel,
+    .sponsored-sub,
+    .sponsored-card-line,
+    .info-label,
+    .results-meta,
+    .compare-list {
+      color: var(--ns-muted);
+    }
+
+    .market-ad-panel,
+    .sponsored-section,
+    .player-card,
+    .compare-card {
+      border-radius: 22px;
+    }
+
+    .sponsored-card,
+    .compare-chip {
+      background: linear-gradient(180deg, rgba(22, 31, 66, 0.95), rgba(10, 15, 33, 0.98));
+      border-color: rgba(96, 165, 250, 0.18);
+      color: var(--ns-text);
+    }
+
+    .sponsored-tag {
+      border-color: rgba(96, 165, 250, 0.34);
+      background: rgba(59, 130, 246, 0.14);
+      color: #dbeafe;
+    }
+
+    .filter label {
+      color: #dbeafe;
+    }
+
+    .filter input,
+    .filter select {
+      background: rgba(9, 14, 30, 0.9);
+      color: #f8fbff;
+      border-color: rgba(96, 165, 250, 0.18);
+      border-radius: 12px;
+    }
+
+    .filter-tools button,
+    .player-actions button,
+    .pagination button {
+      background: rgba(59, 130, 246, 0.12);
+      color: #dbeafe;
+      border-color: rgba(96, 165, 250, 0.24);
+      border-radius: 12px;
+    }
+
+    .btn {
+      border-color: rgba(96, 165, 250, 0.35);
+      background: rgba(59, 130, 246, 0.12);
+      color: #cbe4ff;
+      border-radius: 12px;
+    }
+
+    .btn.primary,
+    .pagination button.active {
+      background: linear-gradient(135deg, var(--ns-primary), var(--ns-primary-2));
+      border-color: rgba(96, 165, 250, 0.85);
+      color: #fff;
+    }
+
+    .player-card:hover {
+      border-color: var(--ns-line-strong);
+      box-shadow: 0 26px 56px rgba(4, 9, 26, 0.62);
+    }
+
+    .player-avatar {
+      background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 100%);
+      border-bottom-color: rgba(96, 165, 250, 0.22);
+    }
+
+    .player-position,
+    .rating-value {
+      color: #9ec5ff;
+    }
+
+    .info-value {
+      color: #f8fbff;
+    }
+
+    .player-rating {
+      background: rgba(59, 130, 246, 0.12);
+      border-radius: 14px;
+    }
+
+    .player-actions .compare-btn {
+      background: linear-gradient(135deg, #1e40af, #2563eb);
+      border-color: rgba(96, 165, 250, 0.34);
+      color: #eff6ff;
+    }
+
+    .compare-modal {
+      background: rgba(2, 6, 20, 0.78);
+    }
+
+    .compare-card {
+      color: var(--ns-text);
+    }
+
+    .compare-table th,
+    .compare-table td {
+      border-color: rgba(96, 165, 250, 0.14);
+    }
   </style>
     <link rel="stylesheet" href="assets/css/mobile-unified.css">
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
 <body>
-<section class="seo-market-intro" aria-label="Oyuncu havuzu aciklama">
+<section class="seo-market-intro" aria-label="Oyuncu havuzu açıklama">
   <h2>Profesyonel futbolcu havuzu ve scout filtreleri</h2>
-  <p>NextScout oyuncu havuzu; pozisyon, yas, form, lig seviyesi ve performans odakli filtrelerle profesyonel futbolculari daha hizli kesfetmek icin hazirlandi. Scout ekipleri, kulup yoneticileri ve menajerler aradiklari oyuncu profiline gore listeleme yapabilir, transfer odakli oyuncu takibini tek merkezden yurutabilir.</p>
+        <p>NextScout oyuncu havuzu; pozisyon, yaş, form, lig seviyesi ve performans odaklı filtrelerle profesyonel futbolcuları daha hızlı keşfetmek için hazırlandı. Scout ekipleri, kulüp yöneticileri ve menajerler aradıkları oyuncu profiline göre listeleme yapabilir, transfer odaklı oyuncu takibini tek merkezden yürütebilir.</p>
 </section>
 <div class="market-wrapper">
     <aside class="market-ad-panel">
@@ -543,13 +716,13 @@
 
     <section class="sponsored-section">
       <div class="sponsored-head">
-        <div class="sponsored-title">⚡ Ucretli Kendini Tanitan Oyuncular</div>
+        <div class="sponsored-title">⚡ Ücretli Kendini Tanıtan Oyuncular</div>
         <div class="sponsored-sub">Sponsorlu vitrin profilleri</div>
       </div>
       <div class="sponsored-list" id="sponsoredList">
         <article class="sponsored-card">
-          <div class="sponsored-card-name">Vitrin yukleniyor...</div>
-          <div class="sponsored-card-line">Ucretli tanitim kartlari getiriliyor.</div>
+                <div class="sponsored-card-name">Vitrin yükleniyor...</div>
+                <div class="sponsored-card-line">Ücretli tanıtım kartları getiriliyor.</div>
           <span class="sponsored-tag">Sponsorlu</span>
         </article>
       </div>
@@ -598,30 +771,30 @@
         <input type="number" id="ratingFilter" placeholder="7.0" min="0" max="10" step="0.1">
       </div>
       <div class="filter">
-        <label>Piyasa Degeri Min (€)</label>
+                <label>Piyasa Değeri Min (€)</label>
         <input type="number" id="marketMinFilter" placeholder="500000" min="0" step="1000">
       </div>
       <div class="filter">
-        <label>Sozlesme</label>
+                <label>Sözleşme</label>
         <select id="contractFilter">
           <option value="">Tum Durumlar</option>
-          <option value="active">Sozlesmeli</option>
+                    <option value="active">Sözleşmeli</option>
           <option value="free">Bosta</option>
         </select>
       </div>
       <div class="filter">
-        <label>Guven Skoru (Min)</label>
+                <label>Güven Skoru (Min)</label>
         <input type="number" id="qualityMinFilter" placeholder="60" min="0" max="100" step="5">
       </div>
       <div class="filter">
         <label>Sıralama</label>
         <select id="sortFilter">
-          <option value="rating_desc">Rating (Yuksekten)</option>
+                    <option value="rating_desc">Rating (Yüksekten)</option>
           <option value="rating_asc">Rating (Dusukten)</option>
-          <option value="value_desc">Piyasa Degeri (Yuksekten)</option>
-          <option value="updated_desc">Son Guncelleme</option>
-          <option value="age_asc">Yas (Gencten)</option>
-          <option value="age_desc">Yas (Buyukten)</option>
+                    <option value="value_desc">Piyasa Değeri (Yüksekten)</option>
+                    <option value="updated_desc">Son Güncelleme</option>
+                    <option value="age_asc">Yaş (Gençten)</option>
+                    <option value="age_desc">Yaş (Büyükten)</option>
           <option value="name_asc">Isim (A-Z)</option>
         </select>
       </div>
@@ -629,7 +802,7 @@
         <label>Filtre Araçları</label>
         <div class="filter-tools">
           <button id="savePresetBtn" type="button">Preset Kaydet</button>
-          <button id="loadPresetBtn" type="button">Preset Yukle</button>
+                <button id="loadPresetBtn" type="button">Preset Yükle</button>
           <button id="resetFilterBtn" type="button">Sıfırla</button>
         </div>
       </div>
@@ -641,7 +814,7 @@
       <!-- Dinamik oyuncular yüklenecek -->
     </div>
     <div class="compare-bar">
-      <div class="compare-list" id="compareList">Karsilastirma secimi yok</div>
+            <div class="compare-list" id="compareList">Karşılaştırma seçimi yok</div>
       <button class="btn" id="openCompareBtn" type="button">Karşılaştır</button>
     </div>
 
@@ -665,7 +838,7 @@
   <div class="compare-modal" id="compareModal" onclick="if(event.target===this) closeCompareModal()">
     <div class="compare-card">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
-        <strong style="font-size:16px;color:#1e3a8a;">Oyuncu Karsilastirma</strong>
+                    <strong style="font-size:16px;color:#1e3a8a;">Oyuncu Karşılaştırma</strong>
         <button class="btn" type="button" onclick="closeCompareModal()">Kapat</button>
       </div>
       <div id="compareContent">Oyuncu seciniz.</div>
@@ -719,7 +892,7 @@
         sponsoredList.innerHTML = `
           <article class="sponsored-card">
             <div class="sponsored-card-name">Sponsorlu profil yok</div>
-            <div class="sponsored-card-line">Henuz ucretli vitrin kaydi bulunmuyor.</div>
+                    <div class="sponsored-card-line">Henüz ücretli vitrin kaydı bulunmuyor.</div>
             <span class="sponsored-tag">Bos</span>
           </article>
         `;
@@ -955,7 +1128,7 @@
                 <span class="info-value" style="font-size: 12px;">${player.league}</span>
               </div>
               <div class="info-item">
-                <span class="info-label">KULUP</span>
+                    <span class="info-label">KULÜP</span>
                 <span class="info-value" style="font-size: 12px;">${player.club}</span>
               </div>
             </div>
@@ -965,7 +1138,7 @@
               <span class="rating-value">${player.rating}/10</span>
             </div>
             <div style="font-size:11px;opacity:.65;margin-top:6px;">
-              Kaynak: ${player.data_source || 'Sistem'} • Guven: ${player.quality_score || 0}
+                Kaynak: ${player.data_source || 'Sistem'} • Güven: ${player.quality_score || 0}
               ${player.updated_at ? ` • ${new Date(player.updated_at).toLocaleDateString('tr-TR')}` : ""}
             </div>
 
@@ -1157,7 +1330,7 @@
 
       if (resultsMeta) {
         const localCount = filtered.length;
-        resultsMeta.textContent = `Toplam ${serverTotal || localCount} oyuncu • Sayfa: ${serverPage}/${serverLastPage} • Son guncelleme: ${new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}`;
+            resultsMeta.textContent = `Toplam ${serverTotal || localCount} oyuncu • Sayfa: ${serverPage}/${serverLastPage} • Son güncelleme: ${new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}`;
       }
       renderPlayers(filtered);
     }
@@ -1247,7 +1420,7 @@
         .map((id) => allPlayers.find((p) => Number(p.id) === Number(id)))
         .filter(Boolean);
       if (!selected.length) {
-        compareList.textContent = "Karsilastirma secimi yok";
+    compareList.textContent = "Karşılaştırma seçimi yok";
         return;
       }
       compareList.innerHTML = selected.map((p) => `<span class="compare-chip">${p.name}</span>`).join("");
@@ -1258,10 +1431,10 @@
         .map((id) => allPlayers.find((p) => Number(p.id) === Number(id)))
         .filter(Boolean);
       if (selected.length < 2) {
-        nsAlert("Karsilastirma icin en az 2 oyuncu sec.");
+    nsAlert("Karşılaştırma için en az 2 oyuncu seç.");
         return;
       }
-      compareContent.innerHTML = "Karsilastirma verisi yukleniyor...";
+    compareContent.innerHTML = "Karşılaştırma verisi yükleniyor...";
       let rows = buildComparisonFromSelected(selected);
       try {
         const apiRows = await fetchComparisonFromApi(selected.map((p) => Number(p.id)));
@@ -1321,11 +1494,11 @@
           <thead><tr><th>Alan</th><th>${esc(a.name)}</th><th>${esc(b.name)}</th></tr></thead>
           <tbody>
             <tr><td>Pozisyon</td><td>${esc(a.position || "-")}</td><td>${esc(b.position || "-")}</td></tr>
-            <tr><td>Yas</td><td>${esc(a.age || "-")}</td><td>${esc(b.age || "-")}</td></tr>
+                    <tr><td>Yaş</td><td>${esc(a.age || "-")}</td><td>${esc(b.age || "-")}</td></tr>
             <tr><td>Boy</td><td>${esc(a.height || "-")} cm</td><td>${esc(b.height || "-")} cm</td></tr>
-            <tr><td>KULUP</td><td>${esc(a.club || "-")}</td><td>${esc(b.club || "-")}</td></tr>
+                    <tr><td>KULÜP</td><td>${esc(a.club || "-")}</td><td>${esc(b.club || "-")}</td></tr>
             <tr><td>Rating</td><td>${esc(a.rating || "-")}</td><td>${esc(b.rating || "-")}</td></tr>
-            <tr><td>Piyasa Degeri</td><td>${esc(a.market || "-")}</td><td>${esc(b.market || "-")}</td></tr>
+                    <tr><td>Piyasa Değeri</td><td>${esc(a.market || "-")}</td><td>${esc(b.market || "-")}</td></tr>
           </tbody>
         </table>
       `;
@@ -1352,7 +1525,7 @@
         body: JSON.stringify({ player_ids: ids }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data?.ok) throw new Error(data?.message || "Karsilastirma verisi alinamadi");
+    if (!res.ok || !data?.ok) throw new Error(data?.message || "Karşılaştırma verisi alınamadı");
       const players = Array.isArray(data?.data?.players) ? data.data.players : [];
       return players.map(normalizeComparePlayer).filter((p) => p.id);
     }
@@ -1408,9 +1581,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
 
 
 
