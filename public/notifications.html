@@ -1,21 +1,21 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mesajlarım - NextScout</title>
+  <title>MesajlarÄ±m - NextScout</title>
   <meta name="description" content="Mesaj ve bildirim merkezi: teklifler, duyurular ve sistem bildirimlerini tek ekranda gorun.">
   <meta name="robots" content="noindex,follow">
-  <link rel="canonical" href="https://nextscout.app/notifications.html">
+  <link rel="canonical" href="https://nextscout.pro/notifications.html">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="tr_TR">
   <meta property="og:site_name" content="NextScout">
   <meta property="og:title" content="Mesajlar ve Bildirimler | NextScout">
   <meta property="og:description" content="Mesaj ve bildirim merkezi: teklifler, duyurular ve sistem bildirimlerini tek ekranda gorun.">
-  <meta property="og:url" content="https://nextscout.app/notifications.html">
-    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+  <meta property="og:url" content="https://nextscout.pro/notifications.html">
+    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
   <meta name="theme-color" content="#2563eb">
   <style>
     :root {
@@ -346,8 +346,8 @@
   <div class="wrap">
     <div class="header">
       <div>
-        <h1 class="title">Mesajlarım</h1>
-        <div class="title-sub">Gelen, giden, okundu ve okunmadı mesajları buradan yönetebilirsin.</div>
+        <h1 class="title">MesajlarÄ±m</h1>
+        <div class="title-sub">Gelen, giden, okundu ve okunmadÄ± mesajlarÄ± buradan yÃ¶netebilirsin.</div>
       </div>
       <a class="btn home-btn" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
     </div>
@@ -357,10 +357,10 @@
         <div class="panel-head">
           <div class="tabs" id="tabs"></div>
           <div class="search-row">
-            <input id="searchInput" type="text" placeholder="Mesaj ara (konu, içerik, kişi)">
+            <input id="searchInput" type="text" placeholder="Mesaj ara (konu, iÃ§erik, kiÅŸi)">
             <select id="statusFilter">
-              <option value="all">Tümü</option>
-              <option value="unread">Okunmadı</option>
+              <option value="all">TÃ¼mÃ¼</option>
+              <option value="unread">OkunmadÄ±</option>
               <option value="read">Okundu</option>
             </select>
           </div>
@@ -369,7 +369,7 @@
       </section>
 
       <section class="panel detail" id="detailPanel">
-        <div class="detail-empty">Soldan bir mesaj seç.</div>
+        <div class="detail-empty">Soldan bir mesaj seÃ§.</div>
       </section>
     </div>
   </div>
@@ -468,7 +468,7 @@
     async function loadMessagesFromApi() {
       const token = authToken();
       if (!token || token === 'local-session-token') {
-        throw new Error('Mesajlar icin giriş gerekli.');
+        throw new Error('Mesajlar icin giriÅŸ gerekli.');
       }
 
       const [inboxRowsRaw, sentRowsRaw, notifRowsRaw] = await Promise.all([
@@ -555,10 +555,10 @@
     function renderTabs() {
       const counts = getTabCounts(state.messages);
       const tabs = [
-        { id: 'all', label: 'Tümü', count: counts.all },
+        { id: 'all', label: 'TÃ¼mÃ¼', count: counts.all },
         { id: 'inbox', label: 'Gelen', count: counts.inbox },
         { id: 'sent', label: 'Giden', count: counts.sent },
-        { id: 'unread', label: 'Okunmadı', count: counts.unread }
+        { id: 'unread', label: 'OkunmadÄ±', count: counts.unread }
       ];
 
       tabsEl.innerHTML = tabs.map(t => `
@@ -579,7 +579,7 @@
     function renderList() {
       const rows = filteredMessages();
       if (!rows.length) {
-        listEl.innerHTML = '<div class="empty-list">Bu filtrede mesaj bulunamadı.</div>';
+        listEl.innerHTML = '<div class="empty-list">Bu filtrede mesaj bulunamadÄ±.</div>';
         return;
       }
 
@@ -612,7 +612,7 @@
     function renderDetail() {
       const msg = state.messages.find(x => x.id === state.selectedId);
       if (!msg) {
-        detailEl.innerHTML = '<div class="detail-empty">Soldan bir mesaj seç.</div>';
+        detailEl.innerHTML = '<div class="detail-empty">Soldan bir mesaj seÃ§.</div>';
         return;
       }
 
@@ -620,7 +620,7 @@
         <div class="detail-head">
           <h2 class="detail-title">${msg.subject}</h2>
           <div class="meta">
-            <span class="badge ${msg.box === 'inbox' ? 'inbox' : 'sent'}">${msg.box === 'inbox' ? 'GELEN' : 'GİDEN'}</span>
+            <span class="badge ${msg.box === 'inbox' ? 'inbox' : 'sent'}">${msg.box === 'inbox' ? 'GELEN' : 'GÄ°DEN'}</span>
             <span class="badge ${msg.read ? 'read' : 'unread'}">${msg.read ? 'OKUNDU' : 'OKUNMADI'}</span>
             <span><strong>Kimden:</strong> ${msg.from}</span>
             <span><strong>Kime:</strong> ${msg.to}</span>
@@ -629,8 +629,8 @@
         </div>
         <div class="detail-body">${msg.body}</div>
         <div class="detail-actions">
-          <button class="btn ${msg.read ? '' : 'btn-primary'}" id="toggleReadBtn">${msg.read ? 'Okunmadı Yap' : 'Okundu Yap'}</button>
-          <button class="btn btn-danger" id="deleteBtn">Mesajı Sil</button>
+          <button class="btn ${msg.read ? '' : 'btn-primary'}" id="toggleReadBtn">${msg.read ? 'OkunmadÄ± Yap' : 'Okundu Yap'}</button>
+          <button class="btn btn-danger" id="deleteBtn">MesajÄ± Sil</button>
         </div>
       `;
 
@@ -677,8 +677,8 @@
         }
         render();
       } catch (error) {
-        listEl.innerHTML = `<div class="empty-list">API mesajları yüklenemedi: ${String(error.message || 'Bilinmeyen hata')}</div>`;
-        detailEl.innerHTML = '<div class="detail-empty">Mesajları görüntülemek için giriş yap.</div>';
+        listEl.innerHTML = `<div class="empty-list">API mesajlarÄ± yÃ¼klenemedi: ${String(error.message || 'Bilinmeyen hata')}</div>`;
+        detailEl.innerHTML = '<div class="detail-empty">MesajlarÄ± gÃ¶rÃ¼ntÃ¼lemek iÃ§in giriÅŸ yap.</div>';
       }
     }
 
@@ -688,6 +688,7 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+
 
 
 

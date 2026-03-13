@@ -1,21 +1,21 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Takım Dashboard | NextScout</title>
-    <meta name="description" content="Takım dashboard: KULÜP ihtiyaçlari, tanitim akisi, deneme ilanlari ve oyuncu tarama paneli.">
+    <title>TakÄ±m Dashboard | NextScout</title>
+    <meta name="description" content="TakÄ±m dashboard: KULÃœP ihtiyaÃ§lari, tanitim akisi, deneme ilanlari ve oyuncu tarama paneli.">
     <meta name="robots" content="noindex,follow">
-    <link rel="canonical" href="https://nextscout.app/team-dashboard.html">
+    <link rel="canonical" href="https://nextscout.pro/team-dashboard.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="Takım Dashboard | NextScout">
-    <meta property="og:description" content="Takım dashboard: KULÜP ihtiyaçlari, tanitim akisi, deneme ilanlari ve oyuncu tarama paneli.">
-    <meta property="og:url" content="https://nextscout.app/team-dashboard.html">
-    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta property="og:title" content="TakÄ±m Dashboard | NextScout">
+    <meta property="og:description" content="TakÄ±m dashboard: KULÃœP ihtiyaÃ§lari, tanitim akisi, deneme ilanlari ve oyuncu tarama paneli.">
+    <meta property="og:url" content="https://nextscout.pro/team-dashboard.html">
+    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#4f46e5">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/mobile-unified.css">
@@ -398,11 +398,11 @@
             <div class="logo">NextScout Club</div>
         </div>
         <div class="navbar-right">
-            <button class="btn-small light" onclick="toggleClubNeedsPanel()">KULÜP Ihtiyaclari</button>
-            <button class="btn-small light" onclick="toggleClubPromoPanel()">Kulübünü Tanit</button>
+            <button class="btn-small light" onclick="toggleClubNeedsPanel()">KULÃœP Ihtiyaclari</button>
+            <button class="btn-small light" onclick="toggleClubPromoPanel()">KulÃ¼bÃ¼nÃ¼ Tanit</button>
             <button class="btn-small light" onclick="toggleTrialPublishPanel()">Deneme/Idman Ilani</button>
             <button class="btn-small home-btn-global" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;" onclick="window.location.href='index.html'">Ana Sayfa</button>
-            <button class="btn-small secondary" onclick="logout()">Çıkış</button>
+            <button class="btn-small secondary" onclick="logout()">Ã‡Ä±kÄ±ÅŸ</button>
         </div>
     </div>
 
@@ -413,7 +413,7 @@
                 <ul class="sidebar-menu">
                     <li class="sidebar-item active" onclick="location.reload()"><i class="fas fa-magnifying-glass"></i><span>Oyuncu Ara</span></li>
                     <li class="sidebar-item" onclick="openScoutReports()"><i class="fas fa-chart-line"></i><span>Scout Raporlari</span></li>
-                    <li class="sidebar-item" onclick="openTeamProfile()"><i class="fas fa-trophy"></i><span>KULÜP Profili</span></li>
+                    <li class="sidebar-item" onclick="openTeamProfile()"><i class="fas fa-trophy"></i><span>KULÃœP Profili</span></li>
                     <li class="sidebar-item" onclick="openTrialCenter()"><i class="fas fa-calendar-check"></i><span>Deneme & Idmanlar</span></li>
                     <li class="sidebar-item" onclick="openMessages()"><i class="fas fa-comments"></i><span>Mesajlarim</span></li>
                     <li class="sidebar-item" onclick="openSettings()"><i class="fas fa-gear"></i><span>Ayarlar</span></li>
@@ -424,8 +424,8 @@
 
         <div class="content">
             <div class="welcome-card">
-                <h1>KULÜP Dashboard</h1>
-                <p>Oyuncu ara, profilleri incele ve transfer teklifi gönder.</p>
+                <h1>KULÃœP Dashboard</h1>
+                <p>Oyuncu ara, profilleri incele ve transfer teklifi gÃ¶nder.</p>
             </div>
 
             <div class="quick-stats">
@@ -507,11 +507,11 @@
     </div>
 
     <div id="clubNeedsPanel" class="needs-panel">
-        <h3>KULÜP İhtiyaç Notu</h3>
-        <textarea id="clubNeedsText" placeholder="İhtiyaç notunu yaz..."></textarea>
+        <h3>KULÃœP Ä°htiyaÃ§ Notu</h3>
+        <textarea id="clubNeedsText" placeholder="Ä°htiyaÃ§ notunu yaz..."></textarea>
         <div class="needs-actions">
             <button class="btn-small secondary" onclick="toggleClubNeedsPanel(false)">Kapat</button>
-            <button class="btn-small primary" onclick="sendClubNeedsNote()">Gönder</button>
+            <button class="btn-small primary" onclick="sendClubNeedsNote()">GÃ¶nder</button>
         </div>
         <div id="clubNeedsMsg" class="needs-msg"></div>
     </div>
@@ -538,9 +538,9 @@
     </div>
 
     <div id="clubPromoPanel" class="needs-panel" style="right: 644px; width: 360px;">
-        <h3>Kulübünü Tanit</h3>
-        <label class="promo-label" for="clubPromoName">KULÜP Ismi</label>
-        <input id="clubPromoName" class="promo-input" type="text" placeholder="KULÜP adini gir">
+        <h3>KulÃ¼bÃ¼nÃ¼ Tanit</h3>
+        <label class="promo-label" for="clubPromoName">KULÃœP Ismi</label>
+        <input id="clubPromoName" class="promo-input" type="text" placeholder="KULÃœP adini gir">
 
         <div class="promo-grid">
             <div>
@@ -556,12 +556,12 @@
         <label class="promo-label" for="clubPromoVideoUrl">Video Linki (YouTube/Instagram)</label>
         <input id="clubPromoVideoUrl" class="promo-input" type="url" placeholder="https://...">
 
-        <label class="promo-label" for="clubPromoNotes">KULÜP Notlari</label>
-        <textarea id="clubPromoNotes" placeholder="KULÜP, tesis, hedef, altyapi bilgisi..."></textarea>
+        <label class="promo-label" for="clubPromoNotes">KULÃœP Notlari</label>
+        <textarea id="clubPromoNotes" placeholder="KULÃœP, tesis, hedef, altyapi bilgisi..."></textarea>
 
         <label class="promo-check">
             <input id="clubPromoPaid" type="checkbox">
-            Odemeyi tamamladim (yalnizca ödemesi tamamlanan tanitimlar anasayfada yayınlanir)
+            Odemeyi tamamladim (yalnizca Ã¶demesi tamamlanan tanitimlar anasayfada yayÄ±nlanir)
         </label>
 
         <div class="needs-actions">
@@ -640,14 +640,14 @@
             const el = document.getElementById(elementId);
             if (!el) return;
             if (!Array.isArray(rows) || rows.length === 0) {
-                el.innerHTML = '<li class="transfer-empty">Kayıt bulunamadi.</li>';
+                el.innerHTML = '<li class="transfer-empty">KayÄ±t bulunamadi.</li>';
                 return;
             }
             el.innerHTML = rows.map((row) => {
                 const player = escapeHtml(row?.player_name || '-');
                 const fee = formatMoney(row?.fee, row?.currency);
                 const date = row?.transfer_date ? new Date(row.transfer_date).toLocaleDateString('tr-TR') : '-';
-                return `<li><strong>${player}</strong><br><span>${fee} • ${date}</span></li>`;
+                return `<li><strong>${player}</strong><br><span>${fee} â€¢ ${date}</span></li>`;
             }).join('');
         }
 
@@ -766,12 +766,12 @@
             grid.innerHTML = players.map((player) => {
                 const rating = Number(player.rating) || 0;
                 const starCount = Math.max(1, Math.min(5, Math.round(rating / 2)));
-                const stars = '★'.repeat(starCount) + '☆'.repeat(5 - starCount);
+                const stars = 'â˜…'.repeat(starCount) + 'â˜†'.repeat(5 - starCount);
                 const selected = selectedCompareIds.includes(Number(player.id));
 
                 return `
                 <div class="player-card">
-                    <div class="player-card-image">⚽</div>
+                    <div class="player-card-image">âš½</div>
                     <div class="player-card-content">
                         <div class="player-name">${escapeHtml(player.name || '-')}</div>
                         <div class="player-position">${escapeHtml(player.position || '-')}</div>
@@ -783,7 +783,7 @@
                         <div class="card-actions">
                             <button class="action-btn primary" onclick="openPlayerProfile(${Number(player.id) || 0})">Profil</button>
                             <button class="action-btn" onclick="sendOffer(${Number(player.id) || 0})">Teklif</button>
-                            <button class="action-btn" style="grid-column: span 2; ${selected ? 'background:#4f46e5;color:#fff;border-color:#4f46e5;' : ''}" onclick="toggleComparePlayer(${Number(player.id) || 0})">${selected ? 'Kiyastan Cikar' : 'Kıyas Icin Ekle'}</button>
+                            <button class="action-btn" style="grid-column: span 2; ${selected ? 'background:#4f46e5;color:#fff;border-color:#4f46e5;' : ''}" onclick="toggleComparePlayer(${Number(player.id) || 0})">${selected ? 'Kiyastan Cikar' : 'KÄ±yas Icin Ekle'}</button>
                         </div>
                     </div>
                 </div>`;
@@ -876,9 +876,9 @@
 
         function renderValueTrendArrow(valueTrend) {
             const trend = String(valueTrend || '').toLowerCase();
-            if (trend === 'increasing') return '<span class="compare-trend up">↑</span>';
-            if (trend === 'decreasing') return '<span class="compare-trend down">↓</span>';
-            return '<span class="compare-trend flat">→</span>';
+            if (trend === 'increasing') return '<span class="compare-trend up">â†‘</span>';
+            if (trend === 'decreasing') return '<span class="compare-trend down">â†“</span>';
+            return '<span class="compare-trend flat">â†’</span>';
         }
 
         function renderComparisonResult(payload) {
@@ -891,7 +891,7 @@
 
             if (!Array.isArray(players) || players.length === 0) {
                 root.style.display = 'grid';
-                root.innerHTML = '<div class="compare-result-card">Kıyas sonucu bulunamadi.</div>';
+                root.innerHTML = '<div class="compare-result-card">KÄ±yas sonucu bulunamadi.</div>';
                 return;
             }
 
@@ -901,10 +901,10 @@
                 const rankIndex = sortedByValue.findIndex((p) => Number(p.player_id) === currentId);
                 const tier = getValueTier(rankIndex);
                 const valueBadge = currentId && currentId === bestValueId
-                    ? `<div class="compare-badge value ${tier}">🏆 En Yuksek Piyasa Degeri</div>`
+                    ? `<div class="compare-badge value ${tier}">ğŸ† En Yuksek Piyasa Degeri</div>`
                     : '';
                 const formBadge = currentId && currentId === bestFormId
-                    ? '<div class="compare-badge form">⚡ En Yuksek Gol Katkisi</div>'
+                    ? '<div class="compare-badge form">âš¡ En Yuksek Gol Katkisi</div>'
                     : '';
                 const value = Number(item.market_value || 0).toLocaleString('tr-TR');
                 const stats = item.stats || {};
@@ -915,7 +915,7 @@
                     ${valueBadge}
                     ${formBadge}
                     <h4>${escapeHtml(item.player_name || '-')}</h4>
-                    <div class="compare-result-meta">${escapeHtml(item.position || '-')} • Yas: ${escapeHtml(item.age || '-')}</div>
+                    <div class="compare-result-meta">${escapeHtml(item.position || '-')} â€¢ Yas: ${escapeHtml(item.age || '-')}</div>
                     <div class="compare-metric"><strong>Piyasa Degeri:</strong> ${value} ${escapeHtml(item.currency || 'EUR')} ${trendArrow}</div>
                     <div class="compare-metric"><strong>Mac:</strong> ${escapeHtml(stats.appearances || 0)}</div>
                     <div class="compare-metric"><strong>Gol + Asist:</strong> ${escapeHtml(stats.goal_contribution || 0)}</div>
@@ -948,7 +948,7 @@
         function exportCompareReport(format) {
             const players = Array.isArray(lastComparePayload?.players) ? lastComparePayload.players : [];
             if (!players.length) {
-                window.nsNotify?.info ? window.nsNotify.info('Once kıyastirma calistir, sonra raporu indir.') : nsnsAlert('Once kıyastirma calistir, sonra raporu indir.');
+                window.nsNotify?.info ? window.nsNotify.info('Once kÄ±yastirma calistir, sonra raporu indir.') : nsnsAlert('Once kÄ±yastirma calistir, sonra raporu indir.');
                 return;
             }
 
@@ -1108,7 +1108,7 @@
             });
             saveOffers(offers.slice(0, 500));
             updateStats();
-            window.nsNotify?.success ? window.nsNotify.success(`Teklif gönderildi: ${player.name}`) : nsnsAlert(`Teklif gönderildi: ${player.name}`);
+            window.nsNotify?.success ? window.nsNotify.success(`Teklif gÃ¶nderildi: ${player.name}`) : nsnsAlert(`Teklif gÃ¶nderildi: ${player.name}`);
         }
 
         function openScoutReports() { window.location.href = 'scout-reports.html'; }
@@ -1157,9 +1157,9 @@
                 club_name: (function() {
                     try {
                         const user = JSON.parse(localStorage.getItem('nextscout_user') || '{}');
-                        return (user?.club_name || user?.name || 'KULÜP').toString().trim() || 'KULÜP';
+                        return (user?.club_name || user?.name || 'KULÃœP').toString().trim() || 'KULÃœP';
                     } catch (error) {
-                        return 'KULÜP';
+                        return 'KULÃœP';
                     }
                 })(),
                 note,
@@ -1187,7 +1187,7 @@
             } catch (error) {}
 
             if (textarea) textarea.value = '';
-            if (msg) msg.textContent = 'Not gönderildi (API + yerel).';
+            if (msg) msg.textContent = 'Not gÃ¶nderildi (API + yerel).';
             setTimeout(() => {
                 if (msg) msg.textContent = '';
                 toggleClubNeedsPanel(false);
@@ -1236,15 +1236,15 @@
             const image2File = document.getElementById('clubPromoImage2')?.files?.[0] || null;
 
             if (!name) {
-                if (msg) msg.textContent = 'KULÜP ismi zorunlu.';
+                if (msg) msg.textContent = 'KULÃœP ismi zorunlu.';
                 return;
             }
             if (!paid) {
-                if (msg) msg.textContent = 'Yayinlamak icin ödeme onayi gerekli.';
+                if (msg) msg.textContent = 'Yayinlamak icin Ã¶deme onayi gerekli.';
                 return;
             }
             const checklist = window.NextScoutData?.editorialChecklist
-                ? window.NextScoutData.editorialChecklist({ title: name, body: notes || 'KULÜP tanitim metni' })
+                ? window.NextScoutData.editorialChecklist({ title: name, body: notes || 'KULÃœP tanitim metni' })
                 : { ok: true, warnings: [] };
             if (!checklist.ok) {
                 if (msg) msg.textContent = `Icerik kontrolu: ${checklist.warnings.join(', ')}`;
@@ -1278,7 +1278,7 @@
 
             localStorage.setItem(CLUB_PROMOS_KEY, JSON.stringify(filtered.slice(0, 100)));
             window.NextScoutGrowth?.track('club_promo_publish', { club: name.slice(0, 40) });
-            if (msg) msg.textContent = 'KULÜP tanitimi ödeme onayi ile anasayfada yayına alindi.';
+            if (msg) msg.textContent = 'KULÃœP tanitimi Ã¶deme onayi ile anasayfada yayÄ±na alindi.';
             setTimeout(() => toggleClubPromoPanel(false), 700);
         }
 
@@ -1295,9 +1295,9 @@
                     time: payload.event_date.slice(11, 16),
                     city: payload.city,
                     venue: payload.venue,
-                    owner: 'KULÜP Yetkilisi',
+                    owner: 'KULÃœP Yetkilisi',
                     owner_role: 'club',
-                    club_name: 'KULÜP',
+                    club_name: 'KULÃœP',
                     status: 'registration_open',
                 });
                 localStorage.setItem('nextscout_trial_events', JSON.stringify(rows));
@@ -1371,7 +1371,7 @@
 
             const payload = {
                 title,
-                description: 'KULÜP dashboard ilani',
+                description: 'KULÃœP dashboard ilani',
                 event_type: typeMap[type] || 'trial_day',
                 city,
                 district: null,
@@ -1386,12 +1386,12 @@
 
             publishTrialEventApi(payload)
                 .then(() => {
-                    pushLocalNotification('Yeni Deneme/Idman Ilani', `${title} yayına alindi.`);
-                    if (msg) msg.textContent = 'İlan yayına alindi.';
+                    pushLocalNotification('Yeni Deneme/Idman Ilani', `${title} yayÄ±na alindi.`);
+                    if (msg) msg.textContent = 'Ä°lan yayÄ±na alindi.';
                     setTimeout(() => toggleTrialPublishPanel(false), 500);
                 })
                 .catch((error) => {
-                    if (msg) msg.textContent = `İlan yayınlanamadi: ${error.message}`;
+                    if (msg) msg.textContent = `Ä°lan yayÄ±nlanamadi: ${error.message}`;
                 });
         }
 
@@ -1435,6 +1435,7 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+
 
 
 

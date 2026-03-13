@@ -1,23 +1,23 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Canlı Maclar - NextScout</title>
-    <meta name="description" content="NextScout scout live matches sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+  <title>CanlÄ± Maclar - NextScout</title>
+    <meta name="description" content="NextScout scout live matches sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
     <meta name="robots" content="index,follow">
-    <link rel="canonical" href="https://nextscout.app/scout-live-matches.html">
+    <link rel="canonical" href="https://nextscout.pro/scout-live-matches.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="Canlı Maclar - NextScout">
-    <meta property="og:description" content="NextScout scout live matches sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
-    <meta property="og:url" content="https://nextscout.app/scout-live-matches.html">
-    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta property="og:title" content="CanlÄ± Maclar - NextScout">
+    <meta property="og:description" content="NextScout scout live matches sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.pro/scout-live-matches.html">
+    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Canlı Maclar - NextScout">
-    <meta name="twitter:description" content="NextScout scout live matches sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
-    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:title" content="CanlÄ± Maclar - NextScout">
+    <meta name="twitter:description" content="NextScout scout live matches sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
   <style>
     body{font-family:Inter,Arial,sans-serif;background:#f8fafc;color:#1f2937;margin:0}
@@ -33,7 +33,7 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="top"><h1>Canlı Maclar</h1><a class="home-btn-global" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a></div>
+    <div class="top"><h1>CanlÄ± Maclar</h1><a class="home-btn-global" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a></div>
     <div id="list"></div>
   </div>
   <script>
@@ -134,11 +134,11 @@
       .join('');
     const fallbackStream = match.stream_url
       ? (isDemoStreamUrl(match.stream_url)
-          ? `<div>Yayın linki test adresi. Gercek yayın linki bekleniyor.</div>`
-          : `<div>Yayın linki platforma uygun degilse acilmaz.</div>`)
+          ? `<div>YayÄ±n linki test adresi. Gercek yayÄ±n linki bekleniyor.</div>`
+          : `<div>YayÄ±n linki platforma uygun degilse acilmaz.</div>`)
       : '';
     const stream = platformButtons ? `<div style="margin-top:6px;">${platformButtons}</div>` : fallbackStream;
-    const startBroadcastHtml = `<div style="margin-top:8px;"><a href="#" onclick="return startBroadcast(event)">Yayın Baslat</a></div>`;
+    const startBroadcastHtml = `<div style="margin-top:8px;"><a href="#" onclick="return startBroadcast(event)">YayÄ±n Baslat</a></div>`;
 
     return `
       <div class="card">
@@ -167,7 +167,7 @@
       const matches = Array.isArray(data.matches) ? data.matches : [];
 
       if (!matches.length) {
-        el.innerHTML = '<div class="card">Su an canlı mac yok.</div>';
+        el.innerHTML = '<div class="card">Su an canlÄ± mac yok.</div>';
         return;
       }
 
@@ -181,6 +181,7 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+
 
 
 

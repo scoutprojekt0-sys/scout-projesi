@@ -1,23 +1,23 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>En Son Ligler - NextScout</title>
-    <meta name="description" content="NextScout en son ligler sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="description" content="NextScout en son ligler sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
     <meta name="robots" content="index,follow">
-    <link rel="canonical" href="https://nextscout.app/en-son-ligler.html">
+    <link rel="canonical" href="https://nextscout.pro/en-son-ligler.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
     <meta property="og:title" content="En Son Ligler - NextScout">
-    <meta property="og:description" content="NextScout en son ligler sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
-    <meta property="og:url" content="https://nextscout.app/en-son-ligler.html">
-    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta property="og:description" content="NextScout en son ligler sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.pro/en-son-ligler.html">
+    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="En Son Ligler - NextScout">
-    <meta name="twitter:description" content="NextScout en son ligler sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
-    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:description" content="NextScout en son ligler sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
     
     <!-- Google Fonts -->
@@ -716,7 +716,7 @@
             </nav>
             <button class="back-btn" onclick="history.back()">
                 <i class="fas fa-arrow-left"></i>
-                Geri DÃ¶n
+                Geri DÃƒÂ¶n
             </button>
         </div>
     </header>
@@ -729,7 +729,7 @@
                 <i class="fas fa-fire"></i>
                 En Son Ligler
             </h1>
-            <p>DÃ¼nya futbolunun en heyecan verici liglerini takip edin</p>
+            <p>DÃƒÂ¼nya futbolunun en heyecan verici liglerini takip edin</p>
         </div>
 
         <!-- League Tabs -->
@@ -747,17 +747,17 @@
             <div class="stat-card">
                 <i class="fas fa-futbol"></i>
                 <div class="value" id="totalMatches">156</div>
-                <div class="label">Toplam MaÃ§</div>
+                <div class="label">Toplam MaÃƒÂ§</div>
             </div>
             <div class="stat-card">
                 <i class="fas fa-users"></i>
                 <div class="value" id="totalTeams">92</div>
-                <div class="label">Toplam TakÄ±m</div>
+                <div class="label">Toplam TakÃ„Â±m</div>
             </div>
             <div class="stat-card">
                 <i class="fas fa-globe"></i>
                 <div class="value" id="totalCountries">6</div>
-                <div class="label">Ãœlke</div>
+                <div class="label">ÃƒÅ“lke</div>
             </div>
         </div>
 
@@ -769,42 +769,42 @@
 
     <!-- ========== JAVASCRIPT ========== -->
     <script>
-        // Ligler Veri TabanÄ±
+        // Ligler Veri TabanÃ„Â±
         const LEAGUES_DATABASE = {
-            'TÃ¼rkiye': {
-                name: 'TÃ¼rkiye - Super Lig',
-                flag: 'ğŸ‡¹ğŸ‡·',
-                country: 'Türkiye',
+            'TÃƒÂ¼rkiye': {
+                name: 'TÃƒÂ¼rkiye - Super Lig',
+                flag: 'ÄŸÅ¸â€¡Â¹ÄŸÅ¸â€¡Â·',
+                country: 'TÃ¼rkiye',
                 division: 'Super Lig',
                 teams: [
-                    { id: 1, name: 'FenerbahÃ§e', played: 26, wins: 20, draws: 4, losses: 2, gf: 58, ga: 18, points: 64 },
+                    { id: 1, name: 'FenerbahÃƒÂ§e', played: 26, wins: 20, draws: 4, losses: 2, gf: 58, ga: 18, points: 64 },
                     { id: 2, name: 'Galatasaray', played: 26, wins: 19, draws: 3, losses: 4, gf: 55, ga: 22, points: 60 },
-                    { id: 3, name: 'BeÅŸiktaÅŸ', played: 26, wins: 17, draws: 5, losses: 4, gf: 52, ga: 28, points: 56 },
+                    { id: 3, name: 'BeÃ…Å¸iktaÃ…Å¸', played: 26, wins: 17, draws: 5, losses: 4, gf: 52, ga: 28, points: 56 },
                     { id: 4, name: 'Trabzonspor', played: 26, wins: 15, draws: 6, losses: 5, gf: 48, ga: 30, points: 51 },
                     { id: 5, name: 'Gaziantep FK', played: 26, wins: 12, draws: 7, losses: 7, gf: 40, ga: 35, points: 43 },
-                    { id: 6, name: 'BaÅŸakÅŸehir', played: 26, wins: 11, draws: 6, losses: 9, gf: 38, ga: 38, points: 39 }
+                    { id: 6, name: 'BaÃ…Å¸akÃ…Å¸ehir', played: 26, wins: 11, draws: 6, losses: 9, gf: 38, ga: 38, points: 39 }
                 ],
                 matches: [
-                    { id: 1, date: '2026-03-05', home: 'FenerbahÃ§e', away: 'Galatasaray', score: '2-1', status: 'finished' },
-                    { id: 2, date: '2026-03-06', home: 'BeÅŸiktaÅŸ', away: 'Trabzonspor', score: '1-1', status: 'finished' },
-                    { id: 3, date: '2026-03-07', home: 'Gaziantep FK', away: 'BaÅŸakÅŸehir', score: 'vs', status: 'upcoming' }
+                    { id: 1, date: '2026-03-05', home: 'FenerbahÃƒÂ§e', away: 'Galatasaray', score: '2-1', status: 'finished' },
+                    { id: 2, date: '2026-03-06', home: 'BeÃ…Å¸iktaÃ…Å¸', away: 'Trabzonspor', score: '1-1', status: 'finished' },
+                    { id: 3, date: '2026-03-07', home: 'Gaziantep FK', away: 'BaÃ…Å¸akÃ…Å¸ehir', score: 'vs', status: 'upcoming' }
                 ],
                 fixtures: [
                     { week: '27. Hafta', matches: [
-                        { home: 'FenerbahÃ§e', away: 'BaÅŸakÅŸehir', date: '08 Mar' },
+                        { home: 'FenerbahÃƒÂ§e', away: 'BaÃ…Å¸akÃ…Å¸ehir', date: '08 Mar' },
                         { home: 'Galatasaray', away: 'Gaziantep', date: '08 Mar' },
-                        { home: 'BeÅŸiktaÅŸ', away: 'Trabzonspor', date: '09 Mar' }
+                        { home: 'BeÃ…Å¸iktaÃ…Å¸', away: 'Trabzonspor', date: '09 Mar' }
                     ]},
                     { week: '28. Hafta', matches: [
-                        { home: 'Gaziantep', away: 'FenerbahÃ§e', date: '15 Mar' },
-                        { home: 'BaÅŸakÅŸehir', away: 'Galatasaray', date: '15 Mar' },
-                        { home: 'Trabzonspor', away: 'BeÅŸiktaÅŸ', date: '16 Mar' }
+                        { home: 'Gaziantep', away: 'FenerbahÃƒÂ§e', date: '15 Mar' },
+                        { home: 'BaÃ…Å¸akÃ…Å¸ehir', away: 'Galatasaray', date: '15 Mar' },
+                        { home: 'Trabzonspor', away: 'BeÃ…Å¸iktaÃ…Å¸', date: '16 Mar' }
                     ]}
                 ]
             },
-            'Ä°ngiltere': {
-                name: 'Ä°ngiltere - Premier League',
-                flag: 'ğŸ‡¬ğŸ‡§',
+            'Ã„Â°ngiltere': {
+                name: 'Ã„Â°ngiltere - Premier League',
+                flag: 'ÄŸÅ¸â€¡Â¬ÄŸÅ¸â€¡Â§',
                 country: 'Ingiltere',
                 division: 'Premier League',
                 teams: [
@@ -833,44 +833,44 @@
                     ]}
                 ]
             },
-            'Ä°spanya': {
-                name: 'Ä°spanya - La Liga',
-                flag: 'ğŸ‡ªğŸ‡¸',
+            'Ã„Â°spanya': {
+                name: 'Ã„Â°spanya - La Liga',
+                flag: 'ÄŸÅ¸â€¡ÂªÄŸÅ¸â€¡Â¸',
                 country: 'Ispanya',
                 division: 'La Liga',
                 teams: [
                     { id: 1, name: 'Real Madrid', played: 27, wins: 22, draws: 3, losses: 2, gf: 68, ga: 16, points: 69 },
                     { id: 2, name: 'Barcelona', played: 27, wins: 20, draws: 5, losses: 2, gf: 64, ga: 20, points: 65 },
-                    { id: 3, name: 'AtlÃ©tico Madrid', played: 27, wins: 18, draws: 6, losses: 3, gf: 54, ga: 22, points: 60 },
+                    { id: 3, name: 'AtlÃƒÂ©tico Madrid', played: 27, wins: 18, draws: 6, losses: 3, gf: 54, ga: 22, points: 60 },
                     { id: 4, name: 'Valencia', played: 27, wins: 14, draws: 7, losses: 6, gf: 42, ga: 28, points: 49 },
                     { id: 5, name: 'Villarreal', played: 27, wins: 12, draws: 8, losses: 7, gf: 38, ga: 32, points: 44 },
                     { id: 6, name: 'Real Sociedad', played: 27, wins: 11, draws: 6, losses: 10, gf: 35, ga: 36, points: 39 }
                 ],
                 matches: [
                     { id: 1, date: '2026-03-04', home: 'Real Madrid', away: 'Barcelona', score: '2-2', status: 'finished' },
-                    { id: 2, date: '2026-03-06', home: 'AtlÃ©tico Madrid', away: 'Valencia', score: '3-0', status: 'finished' },
+                    { id: 2, date: '2026-03-06', home: 'AtlÃƒÂ©tico Madrid', away: 'Valencia', score: '3-0', status: 'finished' },
                     { id: 3, date: '2026-03-07', home: 'Villarreal', away: 'Real Sociedad', score: 'vs', status: 'upcoming' }
                 ],
                 fixtures: [
                     { week: '26. Hafta', matches: [
                         { home: 'Real Madrid', away: 'Villarreal', date: '08 Mar' },
                         { home: 'Barcelona', away: 'Valencia', date: '08 Mar' },
-                        { home: 'AtlÃ©tico Madrid', away: 'Real Sociedad', date: '09 Mar' }
+                        { home: 'AtlÃƒÂ©tico Madrid', away: 'Real Sociedad', date: '09 Mar' }
                     ]},
                     { week: '27. Hafta', matches: [
                         { home: 'Valencia', away: 'Real Madrid', date: '15 Mar' },
                         { home: 'Real Sociedad', away: 'Barcelona', date: '15 Mar' },
-                        { home: 'Villarreal', away: 'AtlÃ©tico Madrid', date: '16 Mar' }
+                        { home: 'Villarreal', away: 'AtlÃƒÂ©tico Madrid', date: '16 Mar' }
                     ]}
                 ]
             },
             'Almanya': {
                 name: 'Almanya - Bundesliga',
-                flag: 'ğŸ‡©ğŸ‡ª',
+                flag: 'ÄŸÅ¸â€¡Â©ÄŸÅ¸â€¡Âª',
                 country: 'Almanya',
                 division: 'Bundesliga',
                 teams: [
-                    { id: 1, name: 'Bayern MÃ¼nih', played: 26, wins: 21, draws: 3, losses: 2, gf: 62, ga: 16, points: 66 },
+                    { id: 1, name: 'Bayern MÃƒÂ¼nih', played: 26, wins: 21, draws: 3, losses: 2, gf: 62, ga: 16, points: 66 },
                     { id: 2, name: 'Borussia Dortmund', played: 26, wins: 19, draws: 4, losses: 3, gf: 58, ga: 24, points: 61 },
                     { id: 3, name: 'RB Leipzig', played: 26, wins: 17, draws: 5, losses: 4, gf: 54, ga: 26, points: 56 },
                     { id: 4, name: 'Bayer Leverkusen', played: 26, wins: 15, draws: 6, losses: 5, gf: 48, ga: 30, points: 51 },
@@ -878,26 +878,26 @@
                     { id: 6, name: 'Freiburg', played: 26, wins: 10, draws: 8, losses: 8, gf: 36, ga: 38, points: 38 }
                 ],
                 matches: [
-                    { id: 1, date: '2026-03-05', home: 'Bayern MÃ¼nih', away: 'Borussia Dortmund', score: '2-0', status: 'finished' },
+                    { id: 1, date: '2026-03-05', home: 'Bayern MÃƒÂ¼nih', away: 'Borussia Dortmund', score: '2-0', status: 'finished' },
                     { id: 2, date: '2026-03-06', home: 'RB Leipzig', away: 'Bayer Leverkusen', score: '1-2', status: 'finished' },
                     { id: 3, date: '2026-03-07', home: 'Eintracht Frankfurt', away: 'Freiburg', score: 'vs', status: 'upcoming' }
                 ],
                 fixtures: [
                     { week: '25. Hafta', matches: [
-                        { home: 'Bayern MÃ¼nih', away: 'Eintracht Frankfurt', date: '08 Mar' },
+                        { home: 'Bayern MÃƒÂ¼nih', away: 'Eintracht Frankfurt', date: '08 Mar' },
                         { home: 'Borussia Dortmund', away: 'Freiburg', date: '08 Mar' },
                         { home: 'RB Leipzig', away: 'Bayer Leverkusen', date: '09 Mar' }
                     ]},
                     { week: '26. Hafta', matches: [
-                        { home: 'Bayer Leverkusen', away: 'Bayern MÃ¼nih', date: '15 Mar' },
+                        { home: 'Bayer Leverkusen', away: 'Bayern MÃƒÂ¼nih', date: '15 Mar' },
                         { home: 'Freiburg', away: 'Borussia Dortmund', date: '15 Mar' },
                         { home: 'Eintracht Frankfurt', away: 'RB Leipzig', date: '16 Mar' }
                     ]}
                 ]
             },
-            'Ä°talya': {
-                name: 'Ä°talya - Serie A',
-                flag: 'ğŸ‡®ğŸ‡¹',
+            'Ã„Â°talya': {
+                name: 'Ã„Â°talya - Serie A',
+                flag: 'ÄŸÅ¸â€¡Â®ÄŸÅ¸â€¡Â¹',
                 country: 'Italya',
                 division: 'Serie A',
                 teams: [
@@ -928,7 +928,7 @@
             },
             'Fransa': {
                 name: 'Fransa - Ligue 1',
-                flag: 'ğŸ‡«ğŸ‡·',
+                flag: 'ÄŸÅ¸â€¡Â«ÄŸÅ¸â€¡Â·',
                 country: 'Fransa',
                 division: 'Ligue 1',
                 teams: [
@@ -959,7 +959,7 @@
             },
             'Portekiz': {
                 name: 'Portekiz - Primeira Liga',
-                flag: 'ğŸ‡µğŸ‡¹',
+                flag: 'ÄŸÅ¸â€¡ÂµÄŸÅ¸â€¡Â¹',
                 country: 'Portekiz',
                 division: 'Primeira Liga',
                 teams: [
@@ -967,30 +967,30 @@
                     { id: 2, name: 'Porto', played: 26, wins: 20, draws: 4, losses: 2, gf: 62, ga: 18, points: 64 },
                     { id: 3, name: 'Sporting CP', played: 26, wins: 18, draws: 5, losses: 3, gf: 58, ga: 24, points: 59 },
                     { id: 4, name: 'Braga', played: 26, wins: 14, draws: 6, losses: 6, gf: 44, ga: 30, points: 48 },
-                    { id: 5, name: 'VitÃ³ria SetÃºbal', played: 26, wins: 11, draws: 8, losses: 7, gf: 36, ga: 34, points: 41 },
-                    { id: 6, name: 'FamalicÃ£o', played: 26, wins: 9, draws: 7, losses: 10, gf: 32, ga: 38, points: 34 }
+                    { id: 5, name: 'VitÃƒÂ³ria SetÃƒÂºbal', played: 26, wins: 11, draws: 8, losses: 7, gf: 36, ga: 34, points: 41 },
+                    { id: 6, name: 'FamalicÃƒÂ£o', played: 26, wins: 9, draws: 7, losses: 10, gf: 32, ga: 38, points: 34 }
                 ],
                 matches: [
                     { id: 1, date: '2026-03-05', home: 'Benfica', away: 'Porto', score: '2-1', status: 'finished' },
                     { id: 2, date: '2026-03-06', home: 'Sporting CP', away: 'Braga', score: '1-0', status: 'finished' },
-                    { id: 3, date: '2026-03-07', home: 'VitÃ³ria SetÃºbal', away: 'FamalicÃ£o', score: 'vs', status: 'upcoming' }
+                    { id: 3, date: '2026-03-07', home: 'VitÃƒÂ³ria SetÃƒÂºbal', away: 'FamalicÃƒÂ£o', score: 'vs', status: 'upcoming' }
                 ],
                 fixtures: [
                     { week: '24. Hafta', matches: [
-                        { home: 'Benfica', away: 'VitÃ³ria SetÃºbal', date: '08 Mar' },
-                        { home: 'Porto', away: 'FamalicÃ£o', date: '08 Mar' },
+                        { home: 'Benfica', away: 'VitÃƒÂ³ria SetÃƒÂºbal', date: '08 Mar' },
+                        { home: 'Porto', away: 'FamalicÃƒÂ£o', date: '08 Mar' },
                         { home: 'Sporting CP', away: 'Braga', date: '09 Mar' }
                     ]},
                     { week: '25. Hafta', matches: [
                         { home: 'Braga', away: 'Benfica', date: '15 Mar' },
-                        { home: 'FamalicÃ£o', away: 'Sporting CP', date: '15 Mar' },
-                        { home: 'VitÃ³ria SetÃºbal', away: 'Porto', date: '16 Mar' }
+                        { home: 'FamalicÃƒÂ£o', away: 'Sporting CP', date: '15 Mar' },
+                        { home: 'VitÃƒÂ³ria SetÃƒÂºbal', away: 'Porto', date: '16 Mar' }
                     ]}
                 ]
             },
             'Hollanda': {
                 name: 'Hollanda - Eredivisie',
-                flag: 'ğŸ‡³ğŸ‡±',
+                flag: 'ÄŸÅ¸â€¡Â³ÄŸÅ¸â€¡Â±',
                 country: 'Hollanda',
                 division: 'Eredivisie',
                 teams: [
@@ -1098,7 +1098,7 @@
                     <thead>
                         <tr>
                             <th style="text-align: center; width: 40px;">S</th>
-                            <th style="text-align: left;">TakÄ±m</th>
+                            <th style="text-align: left;">TakÃ„Â±m</th>
                             <th style="text-align: center;">O</th>
                             <th style="text-align: center;">G</th>
                             <th style="text-align: center;">B</th>
@@ -1150,13 +1150,13 @@
             let html = `
                 <h2>
                     <i class="fas fa-futbol"></i>
-                    ${league.flag} ${league.name} - Son MaÃ§lar
+                    ${league.flag} ${league.name} - Son MaÃƒÂ§lar
                 </h2>
             `;
 
             league.matches.forEach(match => {
                 const statusClass = match.status === 'finished' ? 'finished' : match.status === 'live' ? 'live' : 'upcoming';
-                const statusText = match.status === 'finished' ? 'Bitti' : match.status === 'live' ? 'ğŸ”´ CANLI' : 'YaklaÅŸan';
+                const statusText = match.status === 'finished' ? 'Bitti' : match.status === 'live' ? 'ÄŸÅ¸â€Â´ CANLI' : 'YaklaÃ…Å¸an';
 
                 html += `
                     <div class="match-item ${statusClass}">
@@ -1197,7 +1197,7 @@
             let html = `
                 <h2>
                     <i class="fas fa-calendar-alt"></i>
-                    ${league.flag} ${league.name} - FikstÃ¼r
+                    ${league.flag} ${league.name} - FikstÃƒÂ¼r
                 </h2>
                 <div class="fixtures-grid">
             `;
@@ -1246,6 +1246,7 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+
 
 
 
