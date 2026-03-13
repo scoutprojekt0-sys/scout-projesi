@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Canli Mac Sonuclari ve Lig Takibi | NextScout</title>
-  <meta name="description" content="Canli mac takibi, lig bazli skor guncellemeleri, haftalik fikstur ve futbol mac sonucu akisi NextScout canli mac merkezinde.">
+  <title>Canlı Maç Sonuçları ve Lig Takibi | NextScout</title>
+  <meta name="description" content="Canlı maç takibi, lig bazlı skor güncellemeleri, haftalık fikstür ve futbol maç sonucu akışı NextScout canlı maç merkezinde.">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://nextscout.pro/live-matches.html">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="tr_TR">
   <meta property="og:site_name" content="NextScout">
-  <meta property="og:title" content="Canli Mac Sonuclari ve Lig Takibi | NextScout">
-  <meta property="og:description" content="Canli mac takibi, lig bazli skor guncellemeleri, haftalik fikstur ve futbol mac sonucu akisi NextScout canli mac merkezinde.">
+  <meta property="og:title" content="Canlı Maç Sonuçları ve Lig Takibi | NextScout">
+  <meta property="og:description" content="Canlı maç takibi, lig bazlı skor güncellemeleri, haftalık fikstür ve futbol maç sonucu akışı NextScout canlı maç merkezinde.">
   <meta property="og:url" content="https://nextscout.pro/live-matches.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-matches.jpg">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Canli Mac Sonuclari ve Lig Takibi | NextScout">
-  <meta name="twitter:description" content="Canli mac takibi, lig bazli skor guncellemeleri, haftalik fikstur ve futbol mac sonucu akisi NextScout canli mac merkezinde.">
+  <meta name="twitter:title" content="Canlı Maç Sonuçları ve Lig Takibi | NextScout">
+  <meta name="twitter:description" content="Canlı maç takibi, lig bazlı skor güncellemeleri, haftalık fikstür ve futbol maç sonucu akışı NextScout canlı maç merkezinde.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-matches.jpg">
   <meta name="theme-color" content="#0B3B8A">
   <style>
@@ -220,15 +220,15 @@
   <div class="wrap">
     <div class="hero">
       <div>
-        <h1>Canli Mac Merkezi</h1>
-        <p>Canli skor, lig bazli mac takibi ve haftalik futbol sonucu akisi.</p>
+        <h1>Canlı Maç Merkezi</h1>
+        <p>Canlı skor, lig bazlı maç takibi ve haftalık futbol sonucu akışı.</p>
       </div>
       <a class="home-btn-global" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a>
     </div>
 
-    <section class="seo-intro" aria-label="Canli mac aciklama">
-      <h2>Futbol canli skor ve lig sonucu takibi</h2>
-      <p>Bu sayfa canli futbol mac sonuclari, lig bazli skor hareketleri, haftalik mac akisi ve dikkat ceken karsilasmalari tek ekranda sunar. Scoutlar, oyuncular, kulup ekipleri ve futbol takipcileri icin hizli bir mac ozeti ve guncel sonuc merkezi olarak kullanilabilir.</p>
+    <section class="seo-intro" aria-label="Canlı maç açıklama">
+      <h2>Futbol canlı skor ve lig sonucu takibi</h2>
+      <p>Bu sayfa canlı futbol maç sonuçları, lig bazlı skor hareketleri, haftalık maç akışı ve dikkat çeken karşılaşmaları tek ekranda sunar. Scoutlar, oyuncular, kulüp ekipleri ve futbol takipçileri için hızlı bir maç özeti ve güncel sonuç merkezi olarak kullanılabilir.</p>
     </section>
 
     <div class="stats">
@@ -237,19 +237,19 @@
         <div class="v" id="statRecent">0</div>
       </div>
       <div class="stat">
-        <div class="k">Yaklasan Mac</div>
+        <div class="k">Yaklaşan Maç</div>
         <div class="v" id="statUpcoming">0</div>
       </div>
       <div class="stat">
-        <div class="k">Guncellenme</div>
+        <div class="k">Güncellenme</div>
         <div class="v" id="statUpdated" style="font-size:15px;color:#334155;">-</div>
       </div>
     </div>
 
     <div class="headline-shell">
       <aside class="news-square">
-        <h3>Canli Spor Gündemi</h3>
-        <div class="sub">Backend: News API / BBC kaynakli akış</div>
+        <h3>Canlı Spor Gündemi</h3>
+        <div class="sub">Backend: News API / BBC kaynaklı akış</div>
         <div class="news-list" id="newsList">
           <div class="news-item">
             <div class="t">Haberler yükleniyor...</div>
@@ -260,11 +260,11 @@
 
     <div class="grid">
       <div class="section">
-        <h2>Son Mac Sonuclari</h2>
+      <h2>Son Maç Sonuçları</h2>
         <div class="list" id="recentList"></div>
       </div>
       <div class="section">
-        <h2>Yaklasan Maclar</h2>
+      <h2>Yaklaşan Maçlar</h2>
         <div class="list" id="upcomingList"></div>
       </div>
     </div>
@@ -364,7 +364,7 @@
 
         newsEl.innerHTML = list.length
           ? list.map(renderNewsItem).join('')
-          : '<div class="news-item"><div class="t">Haber bulunamadi.</div><div class="m">Kaynak bekleniyor.</div></div>';
+      : '<div class="news-item"><div class="t">Haber bulunamadı.</div><div class="m">Kaynak bekleniyor.</div></div>';
       } catch (error) {
         newsEl.innerHTML = '<div class="news-item"><div class="t">Haber servisine baglanilamadi.</div><div class="m">Backend kontrol et.</div></div>';
       }
@@ -392,7 +392,7 @@
         document.getElementById('statUpdated').textContent = new Date().toLocaleTimeString('tr-TR');
 
         recentEl.innerHTML = recent.length ? recent.map(renderRecent).join('') : '<div class="card">Sonuc bulunamadi.</div>';
-        upcomingEl.innerHTML = upcoming.length ? upcoming.map(renderUpcoming).join('') : '<div class="card">Yaklasan mac bulunamadi.</div>';
+    upcomingEl.innerHTML = upcoming.length ? upcoming.map(renderUpcoming).join('') : '<div class="card">Yaklaşan maç bulunamadı.</div>';
       } catch (error) {
         recentEl.innerHTML = '<div class="card">Veri alinamadi.</div>';
         upcomingEl.innerHTML = '<div class="card">Veri alinamadi.</div>';
@@ -407,8 +407,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
 
 
 
