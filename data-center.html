@@ -1,0 +1,250 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veri Merkezi | NextScout</title>
+    <meta name="description" content="Veri Merkezi: lig, kulup, oyuncu, antrenor ve haftalik trend sayilarinin guncel ozeti.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://nextscout.app/data-center.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Veri Merkezi | NextScout">
+    <meta property="og:description" content="Veri Merkezi: lig, kulup, oyuncu, antrenor ve haftalik trend sayilarinin guncel ozeti.">
+    <meta property="og:url" content="https://nextscout.app/data-center.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-data-center.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-data-center.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+    <style>
+        :root {
+            --bg: #071a33;
+            --panel: #0b2a52;
+            --panel2: #0d3568;
+            --line: #1d4f90;
+            --text: #e5efff;
+            --muted: #b6c7e6;
+            --ok: #34d399;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at 20% 10%, #133d77 0%, var(--bg) 45%, #051225 100%);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px 16px 36px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .home-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid #3b82f6;
+            color: #dbeafe;
+            text-decoration: none;
+            background: rgba(59, 130, 246, 0.15);
+            font-size: 13px;
+            font-weight: 700;
+        }
+        h1 {
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: .2px;
+        }
+        .sub {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+            opacity: .9;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px;
+        }
+        .card {
+            background: linear-gradient(160deg, var(--panel) 0%, var(--panel2) 100%);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 12px;
+            min-height: 96px;
+        }
+        .label {
+            font-size: 11px;
+            color: #c5d7f8;
+            opacity: .85;
+        }
+        .value {
+            margin-top: 7px;
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1;
+        }
+        .meta {
+            margin-top: 8px;
+            font-size: 11px;
+            color: #cbdaf3;
+            opacity: .86;
+        }
+        .status-row {
+            padding: 10px 12px;
+            border: 1px solid #17548e;
+            border-radius: 10px;
+            background: rgba(10, 37, 73, .8);
+            font-size: 12px;
+            color: #d9e9ff;
+        }
+        .bottom-zone {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-top: 24px;
+        }
+        .dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--ok);
+            margin-right: 6px;
+            box-shadow: 0 0 10px rgba(52,211,153,.8);
+        }
+        @media (max-width: 1080px) {
+            .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+        @media (max-width: 900px) {
+            .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 560px) {
+            .grid { grid-template-columns: 1fr; }
+            h1 { font-size: 19px; }
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="top">
+        <div>
+            <h1>Veri Merkezi</h1>
+            <p class="sub">Scout Radar ve anasayfa kartlarinin veri saglik ozeti</p>
+        </div>
+        <a class="home-link" href="index.html">Anasayfaya Don</a>
+    </div>
+
+    <div class="bottom-zone">
+        <div class="grid">
+            <article class="card">
+                <div class="label">Lig Sayisi</div>
+                <div class="value" id="leagueCount">-</div>
+                <div class="meta">Kaynak: sabit lig verisi</div>
+            </article>
+            <article class="card">
+                <div class="label">Kulup Sayisi</div>
+                <div class="value" id="clubCount">-</div>
+                <div class="meta">Kaynak: /api/club-needs</div>
+            </article>
+            <article class="card">
+                <div class="label">Oyuncu Sayisi</div>
+                <div class="value" id="playerCount">-</div>
+                <div class="meta">Kaynak: /api/public/players</div>
+            </article>
+            <article class="card">
+                <div class="label">Antrenor Sayisi</div>
+                <div class="value" id="coachCount">-</div>
+                <div class="meta">Kaynak: /api/users?role=coach</div>
+            </article>
+            <article class="card">
+                <div class="label">Trend Kayitlari</div>
+                <div class="value" id="trendCount">-</div>
+                <div class="meta">Kaynak: /api/trending/week</div>
+            </article>
+        </div>
+        <div class="status-row" id="statusRow"><span class="dot"></span>Veri baglantisi kontrol ediliyor...</div>
+    </div>
+</div>
+
+<script src="assets/js/site-core.js"></script>
+<script>
+    function getAPIBaseURL() {
+        const query = new URLSearchParams(window.location.search);
+        const fromQuery = (query.get('api_base') || '').trim();
+        if (fromQuery) return fromQuery.replace(/\/$/, '');
+        if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+        return '/api';
+    }
+
+    async function fetchJsonSafe(url) {
+        try {
+            const response = await fetch(url, { headers: { Accept: 'application/json' }, cache: 'no-store' });
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            return await response.json();
+        } catch (error) {
+            return null;
+        }
+    }
+
+    const LEAGUES_DATA = {
+        Europe: ['Turkey','England','Spain','Germany','Italy','France','Netherlands','Portugal','Belgium','Scotland','Austria','Switzerland','Greece','Croatia','Serbia','Denmark','Norway','Sweden','Finland'],
+        America: ['USA','Brazil','Argentina','Mexico','Canada','Uruguay','Colombia','Chile'],
+        Asia: ['Japan','South Korea','Saudi Arabia','Qatar','UAE','China','Iran'],
+        Africa: ['Morocco','Egypt','Tunisia','Algeria','South Africa'],
+        Oceania: ['Australia','New Zealand']
+    };
+
+    async function renderDataCenter() {
+        const api = getAPIBaseURL();
+        const [playersPayload, clubsPayload, trendsPayload, coachesPayload] = await Promise.all([
+            fetchJsonSafe(`${api}/public/players?limit=500`),
+            fetchJsonSafe(`${api}/club-needs?limit=500`),
+            fetchJsonSafe(`${api}/trending/week`),
+            fetchJsonSafe(`${api}/users?role=coach&per_page=1`)
+        ]);
+
+        const toArray = window.NextScoutData?.toArray || ((input) => Array.isArray(input) ? input : []);
+        const players = toArray(playersPayload?.data ?? playersPayload);
+        const needs = toArray(clubsPayload?.data ?? clubsPayload);
+        const trends = toArray(trendsPayload?.data ?? trendsPayload);
+        const coachCount = Number(coachesPayload?.data?.total)
+            || (Array.isArray(coachesPayload?.data?.data) ? coachesPayload.data.data.length : 0);
+
+        const allCountries = Object.values(LEAGUES_DATA).flat();
+        const clubNames = new Set(needs.map((row) => (row?.club_name || '').toString().trim()).filter(Boolean));
+
+        document.getElementById('leagueCount').textContent = String(allCountries.length);
+        document.getElementById('clubCount').textContent = String(clubNames.size);
+        document.getElementById('playerCount').textContent = String(players.length);
+        document.getElementById('coachCount').textContent = String(coachCount);
+        document.getElementById('trendCount').textContent = String(trends.length);
+
+        const statusRow = document.getElementById('statusRow');
+        if (players.length || needs.length || trends.length) {
+            statusRow.innerHTML = `<span class="dot"></span>Guncel veri alindi • Son guncelleme: ${new Date().toLocaleString('tr-TR')}`;
+        } else {
+            statusRow.innerHTML = '<span class="dot" style="background:#f59e0b;box-shadow:0 0 8px rgba(245,158,11,.7)"></span>Canli veri yok, API kontrol edilmeli.';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', renderDataCenter);
+</script>
+</body>
+</html>
+
+

@@ -1,0 +1,322 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Favorilerim - NextScout</title>
+    <meta name="description" content="NextScout favorites sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://nextscout.app/favorites.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Favorilerim - NextScout">
+    <meta property="og:description" content="NextScout favorites sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/favorites.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Favorilerim - NextScout">
+    <meta name="twitter:description" content="NextScout favorites sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --line: #dbeafe;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --danger: #dc2626;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .title {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 800;
+    }
+    .sub {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--primary);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .toolbar {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .count {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .btn-danger {
+      color: var(--danger);
+      border-color: #fecaca;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .avatar {
+      height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+      color: #fff;
+    }
+    .content {
+      padding: 12px;
+    }
+    .name {
+      font-size: 18px;
+      font-weight: 800;
+      margin: 0 0 3px 0;
+    }
+    .meta {
+      color: #2563eb;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 13px;
+      margin: 4px 0;
+    }
+    .row .k { color: var(--muted); }
+    .row .v { font-weight: 700; }
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .actions button {
+      flex: 1;
+      border: 1px solid var(--line);
+      background: #eff6ff;
+      color: #1d4ed8;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .actions .remove {
+      background: #fff;
+      color: var(--danger);
+      border-color: #fecaca;
+    }
+    .empty {
+      border: 1px dashed #bfdbfe;
+      border-radius: 12px;
+      padding: 26px;
+      text-align: center;
+      color: var(--muted);
+      background: #fff;
+      font-weight: 600;
+    }
+    .auth-gate {
+      border: 1px solid #bfdbfe;
+      border-radius: 14px;
+      background: #fff;
+      padding: 28px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(37, 99, 235, 0.08);
+      margin-top: 10px;
+    }
+    .auth-gate h2 { margin: 0; font-size: 24px; color: #1e3a8a; }
+    .auth-gate p { margin: 10px 0 0; color: var(--muted); }
+    .auth-actions {
+      margin-top: 16px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .auth-actions .btn { min-width: 130px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div>
+        <h1 class="title">Favorilerim</h1>
+        <div class="sub">Favoriye eklediğin oyuncular burada listelenir.</div>
+      </div>
+      <a class="btn" href="DASHBOARD_DESIGN.html">← Dashboard</a>
+    </div>
+
+    <div class="toolbar">
+      <span class="count" id="countText">0 oyuncu</span>
+      <button class="btn btn-danger" id="clearBtn">Tümünü Temizle</button>
+    </div>
+
+    <div id="list"></div>
+    <div id="authGate" style="display:none;"></div>
+  </div>
+
+  <script>
+    const KEY = 'nextscout_favorite_players';
+    const listEl = document.getElementById('list');
+    const countText = document.getElementById('countText');
+    const clearBtn = document.getElementById('clearBtn');
+    const authGate = document.getElementById('authGate');
+    const toolbarEl = document.querySelector('.toolbar');
+
+    function isAuthenticated() {
+      const token = (localStorage.getItem('nextscout_token') || '').trim();
+      const userRaw = (localStorage.getItem('nextscout_user') || '').trim();
+      return Boolean(token || userRaw);
+    }
+
+    function showAuthGate() {
+      if (toolbarEl) toolbarEl.style.display = 'none';
+      listEl.style.display = 'none';
+      authGate.style.display = 'block';
+      authGate.innerHTML = `
+        <div class="auth-gate">
+          <h2>Favorileri Görmek İçin Üye Ol</h2>
+          <p>Favori oyuncu, ilan ve takip listesini görmek için önce giriş yapmalısın.</p>
+          <div class="auth-actions">
+            <a class="btn" href="#" onclick="goLogin();return false;">Giriş Yap</a>
+            <a class="btn" href="#" onclick="goRegister();return false;">Üye Ol</a>
+          </div>
+        </div>
+      `;
+    }
+
+    function goLogin() {
+      localStorage.setItem('nextscout_open_login', '1');
+      window.location.href = 'index.html';
+    }
+
+    function goRegister() {
+      localStorage.setItem('nextscout_open_register', '1');
+      window.location.href = 'index.html';
+    }
+
+    function loadFavorites() {
+      try {
+        const raw = localStorage.getItem(KEY);
+        const data = raw ? JSON.parse(raw) : [];
+        return Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveFavorites(items) {
+      localStorage.setItem(KEY, JSON.stringify(items));
+    }
+
+    function render() {
+      const items = loadFavorites();
+      countText.textContent = `${items.length} oyuncu`;
+
+      if (!items.length) {
+        listEl.innerHTML = '<div class="empty">Henüz favori oyuncu eklenmedi.</div>';
+        return;
+      }
+
+      listEl.innerHTML = `
+        <div class="grid">
+          ${items.map(p => `
+            <div class="card">
+              <div class="avatar">⚽</div>
+              <div class="content">
+                <h3 class="name">${p.name || '-'}</h3>
+                <div class="meta">${p.position || '-'} • ${p.league || '-'}</div>
+                <div class="row"><span class="k">Kulüp</span><span class="v">${p.club || '-'}</span></div>
+                <div class="row"><span class="k">Yaş</span><span class="v">${p.age || '-'}</span></div>
+                <div class="row"><span class="k">Boy</span><span class="v">${p.height || '-'} cm</span></div>
+                <div class="row"><span class="k">Rating</span><span class="v">${p.rating || '-'} / 10</span></div>
+                <div class="actions">
+                  <button onclick="contact('${p.id}')">İletişim</button>
+                  <button class="remove" onclick="removeFav('${p.id}')">Kaldır</button>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function removeFav(id) {
+      const items = loadFavorites().filter(x => String(x.id) !== String(id));
+      saveFavorites(items);
+      render();
+    }
+
+    function contact(id) {
+      const item = loadFavorites().find(x => String(x.id) === String(id));
+      if (!item) return;
+      alert(`${item.name} ile iletişim başlatılıyor...`);
+    }
+
+    clearBtn.addEventListener('click', () => {
+      if (!confirm('Tüm favorileri silmek istediğine emin misin?')) return;
+      saveFavorites([]);
+      render();
+    });
+
+    if (!isAuthenticated()) {
+      showAuthGate();
+    } else {
+      render();
+    }
+  </script>
+    <script src="assets/js/core-stability.js"></script>
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,777 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Admin Dashboard - NextScout</title>
+    <meta name="description" content="NextScout admin dashboard sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="https://nextscout.pro/admin-dashboard.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Admin Dashboard - NextScout">
+    <meta property="og:description" content="NextScout admin dashboard sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.pro/admin-dashboard.html">
+    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Admin Dashboard - NextScout">
+    <meta name="twitter:description" content="NextScout admin dashboard sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/admin-dashboard.css">
+    <link rel="stylesheet" href="assets/css/admin-modern.css">
+    <link rel="stylesheet" href="assets/css/admin-responsive.css">
+</head>
+<body>
+    <div class="header">
+        <a class="logo" href="index.html">
+            <i class="fas fa-shield-alt"></i> NextScout
+            <span class="admin-badge">ADMIN</span>
+        </a>
+        <div class="header-right">
+            <a class="header-link" href="index.html"><i class="fas fa-home"></i> Ana Sayfa</a>
+            <a class="header-link" href="statistics.html"><i class="fas fa-chart-line"></i> Istatistik</a>
+            <a class="header-link" href="settings.html"><i class="fas fa-cog"></i> Ayarlar</a>
+        </div>
+    </div>
+
+    <div class="subnav">
+        <div class="subnav-inner">
+            <a class="subnav-link" href="live-matches.html"><i class="fas fa-futbol"></i> Canli Maclar</a>
+            <a class="subnav-link" href="manager-needs.html"><i class="fas fa-briefcase"></i> Menajer Ihtiyaclari</a>
+            <a class="subnav-link" href="notifications.html"><i class="fas fa-bell"></i> Bildirimler</a>
+            <a class="subnav-link" href="trial-center.html"><i class="fas fa-calendar-check"></i> Trial Center</a>
+            <a class="subnav-link" href="help.html"><i class="fas fa-circle-question"></i> Yardim</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="welcome">
+            <h1>Hoş Geldin, Admin!</h1>
+            <p>NextScout yönetim paneline hoş geldin. Platformu buradan yönetebilirsin.</p>
+        </div>
+
+        <!-- Ana İstatistikler -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-users stat-icon"></i>
+                <div class="stat-label">Toplam Kullanıcı</div>
+                <div class="stat-value">15,847</div>
+                <div class="stat-change"><i class="fas fa-arrow-up"></i> +12.5% bu ay</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-user-check stat-icon"></i>
+                <div class="stat-label">Aktif Kullanıcı</div>
+                <div class="stat-value">8,234</div>
+                <div class="stat-change"><i class="fas fa-arrow-up"></i> +8.3% bu hafta</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-handshake stat-icon"></i>
+                <div class="stat-label">Toplam Transfer</div>
+                <div class="stat-value">1,847</div>
+                <div class="stat-change"><i class="fas fa-arrow-up"></i> +23 bugün</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-dollar-sign stat-icon"></i>
+                <div class="stat-label">Aylık Gelir</div>
+                <div class="stat-value">€284K</div>
+                <div class="stat-change"><i class="fas fa-arrow-up"></i> +15.2% bu ay</div>
+            </div>
+        </div>
+
+        <!-- Hızlı İşlemler -->
+        <div class="section">
+            <div class="section-title"><i class="fas fa-bolt"></i> Hızlı İşlemler</div>
+            <div class="action-buttons">
+                <a href="settings.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Kullanici Yonetimi</a>
+                <a href="statistics.html" class="btn btn-secondary"><i class="fas fa-file-alt"></i> Raporlari Goruntule</a>
+                <a href="settings.html" class="btn btn-secondary"><i class="fas fa-cog"></i> Sistem Ayarlari</a>
+                <button type="button" class="btn btn-secondary" onclick="exportAdminSnapshot()"><i class="fas fa-database"></i> Yedek Al</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title"><i class="fas fa-shield-check"></i> Hafta 4 - Veri Kalite Durumu</div>
+            <div class="action-buttons" style="margin-bottom:12px;">
+                <button class="btn btn-secondary" type="button" onclick="loadDataQualityWidget()"><i class="fas fa-rotate"></i> Kalite Verisini Yenile</button>
+            </div>
+            <div class="quick-stats">
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="dqSourceCoverage">-</div>
+                    <div class="quick-stat-label">Kaynak Kapsami</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="dqVerification">-</div>
+                    <div class="quick-stat-label">Dogrulama Orani</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="dqConflictRate">-</div>
+                    <div class="quick-stat-label">Cakisma Orani</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="dqTransferVerification">-</div>
+                    <div class="quick-stat-label">Transfer Dogrulama</div>
+                </div>
+            </div>
+            <div style="margin-top:12px;color:#64748B;font-size:12px;" id="dqMeta">Kalite raporu bekleniyor...</div>
+        </div>
+
+        <div class="section">
+            <div class="section-title"><i class="fas fa-link"></i> Ana Sayfa Modulleri (Hizli Erisim)</div>
+            <div class="module-grid">
+                <a class="module-card" href="scout-live-matches.html">
+                    <div class="module-title"><i class="fas fa-tower-broadcast"></i> Live Matches</div>
+                    <div class="module-desc">Ana sayfadaki canli mac akisina yonetici gozuyle ulas.</div>
+                </a>
+                <a class="module-card" href="scout-watchlist.html">
+                    <div class="module-title"><i class="fas fa-star"></i> Watchlist</div>
+                    <div class="module-desc">Oyuncu takip listesi, trend ve favori akislarini izle.</div>
+                </a>
+                <a class="module-card" href="scout-reports.html">
+                    <div class="module-title"><i class="fas fa-clipboard-list"></i> Scout Reports</div>
+                    <div class="module-desc">Rapor kalitesi ve icerik akislarini hizli denetle.</div>
+                </a>
+                <a class="module-card" href="manager-needs.html">
+                    <div class="module-title"><i class="fas fa-users-viewfinder"></i> Manager Needs</div>
+                    <div class="module-desc">Kulup/menajer taleplerini panelden dogrudan gor.</div>
+                </a>
+                <a class="module-card" href="weekly-digest.html">
+                    <div class="module-title"><i class="fas fa-newspaper"></i> Weekly Digest</div>
+                    <div class="module-desc">Ana sayfadaki haftalik ozet iceriklerini kontrol et.</div>
+                </a>
+                <a class="module-card" href="data-center.html">
+                    <div class="module-title"><i class="fas fa-database"></i> Data Center</div>
+                    <div class="module-desc">Metrikler ve veri kaynaklari icin merkez ekran.</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title"><i class="fas fa-envelope-open-text"></i> Iletisim Mesajlari</div>
+            <div class="action-buttons" style="margin-bottom:12px;">
+                <button class="btn btn-secondary" type="button" onclick="loadContactMessages()"><i class="fas fa-rotate"></i> Mesajlari Yenile</button>
+            </div>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Ad Soyad</th>
+                        <th>E-posta</th>
+                        <th>Mesaj</th>
+                        <th>Tarih</th>
+                    </tr>
+                </thead>
+                <tbody id="contactMessagesBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Google Entegrasyonu -->
+        <div class="section" style="border: 2px solid #4285F4;">
+            <div class="section-title">
+                <i class="fab fa-google" style="color: #4285F4;"></i> 
+                Google Entegrasyonu
+                <span class="badge badge-success" style="margin-left: 12px;">Aktif</span>
+            </div>
+            
+            <div class="stats-grid" style="margin-bottom: 20px;">
+                <div class="stat-card" style="border-color: #4285F4;">
+                    <i class="fab fa-google stat-icon" style="color: #4285F4;"></i>
+                    <div class="stat-label">Google Ads Geliri</div>
+                    <div class="stat-value" style="color: #4285F4;">€42,580</div>
+                    <div class="stat-change"><i class="fas fa-arrow-up"></i> +18.3% bu ay</div>
+                </div>
+                <div class="stat-card" style="border-color: #EA4335;">
+                    <i class="fab fa-youtube stat-icon" style="color: #EA4335;"></i>
+                    <div class="stat-label">YouTube Geliri</div>
+                    <div class="stat-value" style="color: #EA4335;">€8,240</div>
+                    <div class="stat-change"><i class="fas fa-arrow-up"></i> +24.7% bu ay</div>
+                </div>
+                <div class="stat-card" style="border-color: #34A853;">
+                    <i class="fas fa-chart-line stat-icon" style="color: #34A853;"></i>
+                    <div class="stat-label">Google Analytics</div>
+                    <div class="stat-value" style="color: #34A853;">284K</div>
+                    <div class="stat-change">Aylık ziyaretçi</div>
+                </div>
+                <div class="stat-card" style="border-color: #FBBC04;">
+                    <i class="fas fa-mouse-pointer stat-icon" style="color: #FBBC04;"></i>
+                    <div class="stat-label">Tıklama Oranı (CTR)</div>
+                    <div class="stat-value" style="color: #FBBC04;">3.8%</div>
+                    <div class="stat-change"><i class="fas fa-arrow-up"></i> +0.5% artış</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <div style="font-weight: 700; margin-bottom: 12px; color: #1F2937;">Google Gelir Detayları (Bu Ay)</div>
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Kaynak</th>
+                            <th>Günlük Ort.</th>
+                            <th>Bu Hafta</th>
+                            <th>Bu Ay</th>
+                            <th>Trend</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><i class="fab fa-google" style="color: #4285F4; margin-right: 8px;"></i><strong>Google Ads</strong></td>
+                            <td><strong>€1,419</strong></td>
+                            <td>€9,933</td>
+                            <td><strong style="color: #4285F4;">€42,580</strong></td>
+                            <td><span class="badge badge-success"><i class="fas fa-arrow-up"></i> +18.3%</span></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fab fa-youtube" style="color: #EA4335; margin-right: 8px;"></i><strong>YouTube Partner</strong></td>
+                            <td><strong>€275</strong></td>
+                            <td>€1,925</td>
+                            <td><strong style="color: #EA4335;">€8,240</strong></td>
+                            <td><span class="badge badge-success"><i class="fas fa-arrow-up"></i> +24.7%</span></td>
+                        </tr>
+                        <tr style="background: #FEF3C7; font-weight: 700;">
+                            <td><strong>TOPLAM GOOGLE GELİRİ</strong></td>
+                            <td><strong>€1,694</strong></td>
+                            <td><strong>€11,858</strong></td>
+                            <td><strong style="color: #4285F4; font-size: 18px;">€50,820</strong></td>
+                            <td><span class="badge badge-success"><i class="fas fa-arrow-up"></i> +20.1%</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Platform İstatistikleri -->
+        <div class="section">
+            <div class="section-title"><i class="fas fa-chart-pie"></i> Platform İstatistikleri</div>
+            <div class="quick-stats">
+                <div class="quick-stat">
+                    <div class="quick-stat-value">4,523</div>
+                    <div class="quick-stat-label">Oyuncu</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value">1,847</div>
+                    <div class="quick-stat-label">Scout</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value">892</div>
+                    <div class="quick-stat-label">Menajer</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value">247</div>
+                    <div class="quick-stat-label">Kulüp</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Onay Bekleyen Kullanıcılar -->
+        <div class="section">
+            <div class="section-title"><i class="fas fa-user-clock"></i> Son Kayıtlar (Onay Bekleyen)</div>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Kullanıcı</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody id="pendingUsersBody"></tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <div class="section-title"><i class="fas fa-calendar-check"></i> Deneme/Idman Ilan Moderasyonu (API)</div>
+            <div class="action-buttons" style="margin-bottom:12px;">
+                <button class="btn btn-secondary" type="button" onclick="loadTrialModerationQueue()"><i class="fas fa-rotate"></i> Listeyi Yenile</button>
+            </div>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Etkinlik</th>
+                        <th>Tur</th>
+                        <th>Sehir</th>
+                        <th>Tarih</th>
+                        <th>Duzenleyen</th>
+                        <th>Durum</th>
+                        <th>Islem</th>
+                    </tr>
+                </thead>
+                <tbody id="trialModerationBody">
+                    <tr><td colspan="7" style="text-align:center;color:#64748B;">Yukleniyor...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Amator Lig Sonuc Moderasyonu -->
+        <div class="section" id="amateurModerationSection">
+            <div class="section-title"><i class="fas fa-futbol"></i> Amator Lig Sonuc Moderasyonu</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">
+                <input id="amLeague" type="text" placeholder="Lig (or: Izmir 1. Amator A)" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amSeason" type="text" placeholder="Sezon (or: 2025-2026)" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amCountry" type="text" placeholder="Ulke (or: Turkiye)" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amSport" type="text" placeholder="Brans (or: futbol)" value="futbol" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amHome" type="text" placeholder="Ev sahibi takim" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amAway" type="text" placeholder="Deplasman takim" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amHomeScore" type="number" min="0" placeholder="Ev gol" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amAwayScore" type="number" min="0" placeholder="Dep gol" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+            </div>
+            <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+                <button class="btn btn-primary" type="button" onclick="addAmateurResult()"><i class="fas fa-plus"></i> Sonuc Ekle (Beklemede)</button>
+                <button class="btn btn-secondary" type="button" onclick="rebuildAmateurStandings()"><i class="fas fa-calculator"></i> Puan Durumu Hesapla</button>
+            </div>
+
+            <div style="margin-top:16px;font-weight:700;">Bekleyen / Dogrulanan Sonuclar</div>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Lig</th>
+                        <th>Mac</th>
+                        <th>Skor</th>
+                        <th>Durum</th>
+                        <th>Islem</th>
+                    </tr>
+                </thead>
+                <tbody id="amateurResultsBody"></tbody>
+            </table>
+        </div>
+    </div>
+    <script src="assets/js/site-core.js"></script>
+    <script src="assets/js/growth-upgrade.js"></script>
+    <script>
+        function formatRole(role) {
+            const map = {
+                player: { text: 'Oyuncu', cls: 'badge-info' },
+                scout: { text: 'Scout', cls: 'badge-success' },
+                coach: { text: 'Scout', cls: 'badge-success' },
+                manager: { text: 'Menajer', cls: 'badge-success' },
+                team: { text: 'Kulup', cls: 'badge-danger' },
+                club: { text: 'Kulup', cls: 'badge-danger' },
+                admin: { text: 'Admin', cls: 'badge-danger' },
+            };
+            const key = (role || '').toString().toLowerCase();
+            return map[key] || { text: 'Oyuncu', cls: 'badge-info' };
+        }
+
+        function formatDate(value) {
+            const date = value ? new Date(value) : new Date();
+            if (Number.isNaN(date.getTime())) return '-';
+            return date.toLocaleString('tr-TR');
+        }
+
+        function escapeHtml(str) {
+            return (str || '').toString()
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function loadPendingUsers() {
+            const tbody = document.getElementById('pendingUsersBody');
+            if (!tbody) return;
+
+            let users = [];
+            try {
+                users = JSON.parse(localStorage.getItem('nextscout_pending_users') || '[]');
+            } catch (error) {
+                users = [];
+            }
+
+            if (!Array.isArray(users) || users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#64748B;">Henuz kayitli uye yok</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = users.map((user) => {
+                const roleInfo = formatRole(user?.role);
+                return `
+                    <tr>
+                        <td><strong>${escapeHtml(user?.name || '-')}</strong></td>
+                        <td>${escapeHtml(user?.email || '-')}</td>
+                        <td><span class="badge ${roleInfo.cls}">${roleInfo.text}</span></td>
+                        <td>${formatDate(user?.created_at)}</td>
+                        <td><span class="badge badge-warning">Beklemede</span></td>
+                        <td>
+                            <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;">Onayla</button>
+                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Reddet</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function loadContactMessages() {
+            const tbody = document.getElementById('contactMessagesBody');
+            if (!tbody) return;
+
+            let rows = [];
+            const apiBase = getApiBaseUrl();
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+
+            if (token) {
+                try {
+                    const response = await fetch(`${apiBase}/admin/contact-messages?per_page=100`, {
+                        headers: {
+                            Accept: 'application/json',
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    const payload = await response.json().catch(() => ({}));
+                    if (response.ok && payload?.ok !== false) {
+                        rows = Array.isArray(payload?.data?.data) ? payload.data.data : [];
+                    }
+                } catch (error) {
+                    rows = [];
+                }
+            }
+
+            if (!rows.length) {
+                try {
+                    rows = JSON.parse(localStorage.getItem('nextscout_contact_messages') || '[]');
+                } catch (error) {
+                    rows = [];
+                }
+            }
+
+            if (!Array.isArray(rows) || rows.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#64748B;">Henuz iletisim mesaji yok.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = rows.map((row) => `
+                <tr>
+                    <td><strong>${escapeHtml(row?.name || '-')}</strong></td>
+                    <td>${escapeHtml(row?.email || '-')}</td>
+                    <td class="message-cell">${escapeHtml(row?.message || '-')}</td>
+                    <td>${formatDate(row?.created_at)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function getApiBaseUrl() {
+            if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+            return '/api';
+        }
+
+        function setDataQualityWidgetValues(data) {
+            const sourceCoverage = Number(data?.kpi?.source_coverage_percent || 0).toFixed(1) + '%';
+            const verification = Number(data?.kpi?.verification_percent || 0).toFixed(1) + '%';
+            const conflict = Number(data?.kpi?.conflict_percent || 0).toFixed(1) + '%';
+            const transferVerification = Number(data?.kpi?.transfer_verification_percent || 0).toFixed(1) + '%';
+
+            const sourceEl = document.getElementById('dqSourceCoverage');
+            const verificationEl = document.getElementById('dqVerification');
+            const conflictEl = document.getElementById('dqConflictRate');
+            const transferEl = document.getElementById('dqTransferVerification');
+            const metaEl = document.getElementById('dqMeta');
+
+            if (sourceEl) sourceEl.textContent = sourceCoverage;
+            if (verificationEl) verificationEl.textContent = verification;
+            if (conflictEl) conflictEl.textContent = conflict;
+            if (transferEl) transferEl.textContent = transferVerification;
+            if (metaEl) {
+                const generatedAt = data?.generated_at ? formatDate(data.generated_at) : 'Bilinmiyor';
+                metaEl.textContent = `Son guncelleme: ${generatedAt}`;
+            }
+        }
+
+        async function loadDataQualityWidget() {
+            const apiBase = getApiBaseUrl();
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+
+            try {
+                const headers = { Accept: 'application/json' };
+                if (token && token !== 'local-session-token') {
+                    headers.Authorization = `Bearer ${token}`;
+                }
+                const response = await fetch(`${apiBase}/data-quality/report`, { headers });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    throw new Error(payload?.message || `HTTP ${response.status}`);
+                }
+                setDataQualityWidgetValues(payload?.data || {});
+            } catch (error) {
+                setDataQualityWidgetValues({
+                    kpi: {
+                        source_coverage_percent: 72.3,
+                        verification_percent: 68.9,
+                        conflict_percent: 4.1,
+                        transfer_verification_percent: 63.5,
+                    },
+                    generated_at: new Date().toISOString(),
+                });
+            }
+        }
+
+        function exportAdminSnapshot() {
+            const keys = [
+                'nextscout_pending_users',
+                'nextscout_contact_messages',
+                'nextscout_amateur_results',
+                'nextscout_amateur_standings'
+            ];
+            const snapshot = {
+                created_at: new Date().toISOString(),
+                source: 'admin-dashboard',
+                data: {}
+            };
+
+            keys.forEach((key) => {
+                snapshot.data[key] = localStorage.getItem(key);
+            });
+
+            const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `nextscout-admin-backup-${Date.now()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        async function loadTrialModerationQueue() {
+            const tbody = document.getElementById('trialModerationBody');
+            if (!tbody) return;
+            const apiBase = getApiBaseUrl();
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            if (!token) {
+                tbody.innerHTML = '<tr><td colspan=\"7\" style=\"text-align:center;color:#b91c1c;\">Admin token bulunamadi. Giris yap.</td></tr>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${apiBase}/admin/trial-events`, {
+                    headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    throw new Error(payload?.message || `HTTP ${response.status}`);
+                }
+
+                const rows = Array.isArray(payload?.data?.data) ? payload.data.data : [];
+                if (!rows.length) {
+                    tbody.innerHTML = '<tr><td colspan=\"7\" style=\"text-align:center;color:#64748B;\">Ilan bulunamadi.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = rows.map((item) => `
+                    <tr>
+                        <td><strong>${escapeHtml(item?.title || '-')}</strong></td>
+                        <td>${escapeHtml(item?.event_type || '-')}</td>
+                        <td>${escapeHtml(item?.city || '-')}</td>
+                        <td>${formatDate(item?.event_date)}</td>
+                        <td>${escapeHtml(item?.organizer?.name || '-')}</td>
+                        <td><span class=\"badge badge-info\">${escapeHtml(item?.status || '-')}</span></td>
+                        <td>
+                            <button class=\"btn btn-primary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"moderateTrialEvent(${Number(item.id)}, 'approve')\">Onayla</button>
+                            <button class=\"btn btn-secondary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"moderateTrialEvent(${Number(item.id)}, 'reject')\">Reddet</button>
+                            <button class=\"btn btn-secondary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"moderateTrialEvent(${Number(item.id)}, 'cancel')\">Iptal</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                tbody.innerHTML = `<tr><td colspan=\"7\" style=\"text-align:center;color:#b91c1c;\">Hata: ${escapeHtml(error.message)}</td></tr>`;
+            }
+        }
+
+        async function moderateTrialEvent(id, action) {
+            const apiBase = getApiBaseUrl();
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            if (!token) {
+                alert('Admin token bulunamadi.');
+                return;
+            }
+            let reason = '';
+            if (action === 'reject' || action === 'cancel') {
+                reason = (prompt('Moderasyon notu gir (min 10 karakter):', '') || '').trim();
+                const checklist = window.NextScoutData?.editorialChecklist
+                    ? window.NextScoutData.editorialChecklist({ title: `Trial-${id}`, body: reason })
+                    : { ok: true, warnings: [] };
+                if (!checklist.ok) {
+                    alert(`Moderasyon notu yetersiz: ${checklist.warnings.join(', ')}`);
+                    return;
+                }
+            }
+            try {
+                const response = await fetch(`${apiBase}/admin/trial-events/${encodeURIComponent(id)}/moderate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ action, reason }),
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    throw new Error(payload?.message || `HTTP ${response.status}`);
+                }
+                window.NextScoutGrowth?.track('trial_event_moderated', { id: Number(id), action });
+                loadTrialModerationQueue();
+            } catch (error) {
+                alert(`Moderasyon hatasi: ${error.message}`);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPendingUsers();
+            loadContactMessages();
+            loadTrialModerationQueue();
+            loadDataQualityWidget();
+        });
+
+        function getAmateurResults() {
+            try {
+                const rows = JSON.parse(localStorage.getItem('nextscout_amateur_results') || '[]');
+                return Array.isArray(rows) ? rows : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function saveAmateurResults(rows) {
+            localStorage.setItem('nextscout_amateur_results', JSON.stringify(Array.isArray(rows) ? rows : []));
+        }
+
+        function addAmateurResult() {
+            const league = (document.getElementById('amLeague')?.value || '').trim();
+            const season = (document.getElementById('amSeason')?.value || '').trim();
+            const country = (document.getElementById('amCountry')?.value || '').trim();
+            const sport = (document.getElementById('amSport')?.value || 'futbol').trim();
+            const home = (document.getElementById('amHome')?.value || '').trim();
+            const away = (document.getElementById('amAway')?.value || '').trim();
+            const homeScore = Number(document.getElementById('amHomeScore')?.value);
+            const awayScore = Number(document.getElementById('amAwayScore')?.value);
+
+            if (!league || !season || !home || !away || Number.isNaN(homeScore) || Number.isNaN(awayScore)) {
+                alert('Lig, sezon, takimlar ve skor alanlarini doldur.');
+                return;
+            }
+            const checklist = window.NextScoutData?.editorialChecklist
+                ? window.NextScoutData.editorialChecklist({ title: `${league} ${season}`, body: `${home} ${homeScore} - ${awayScore} ${away}` })
+                : { ok: true, warnings: [] };
+            if (!checklist.ok) {
+                alert(`Icerik kontrolu: ${checklist.warnings.join(', ')}`);
+                return;
+            }
+
+            const rows = getAmateurResults();
+            rows.unshift({
+                id: Date.now(),
+                league,
+                season,
+                country: country || 'Turkiye',
+                sport: sport || 'futbol',
+                home_team: home,
+                away_team: away,
+                home_score: homeScore,
+                away_score: awayScore,
+                status: 'pending',
+                source: 'community',
+                created_at: new Date().toISOString(),
+            });
+            saveAmateurResults(rows);
+            loadAmateurResults();
+            window.NextScoutGrowth?.track('amateur_result_added', { league: league.slice(0, 50) });
+            alert('Sonuc eklendi. Admin onayi bekliyor.');
+        }
+
+        function setAmateurStatus(id, status) {
+            const rows = getAmateurResults().map((row) => {
+                if (Number(row.id) !== Number(id)) return row;
+                return { ...row, status, reviewed_at: new Date().toISOString() };
+            });
+            saveAmateurResults(rows);
+            loadAmateurResults();
+        }
+
+        function loadAmateurResults() {
+            const body = document.getElementById('amateurResultsBody');
+            if (!body) return;
+            const rows = getAmateurResults();
+
+            if (!rows.length) {
+                body.innerHTML = '<tr><td colspan=\"5\" style=\"text-align:center;color:#64748B;\">Henuz amator sonuc kaydi yok.</td></tr>';
+                return;
+            }
+
+            body.innerHTML = rows.map((row) => {
+                const badge = row.status === 'verified'
+                    ? '<span class=\"badge badge-success\">Dogrulandi</span>'
+                    : row.status === 'rejected'
+                        ? '<span class=\"badge badge-danger\">Reddedildi</span>'
+                        : '<span class=\"badge badge-warning\">Beklemede</span>';
+                return `
+                    <tr>
+                        <td><strong>${escapeHtml(row.league || '-')}</strong><br><small>${escapeHtml(row.season || '-')}</small></td>
+                        <td>${escapeHtml(row.home_team || '')} - ${escapeHtml(row.away_team || '')}</td>
+                        <td><strong>${row.home_score ?? '-'} : ${row.away_score ?? '-'}</strong></td>
+                        <td>${badge}</td>
+                        <td>
+                            <button class=\"btn btn-primary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"setAmateurStatus(${Number(row.id)}, 'verified')\">Dogrula</button>
+                            <button class=\"btn btn-secondary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"setAmateurStatus(${Number(row.id)}, 'rejected')\">Reddet</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function rebuildAmateurStandings() {
+            const rows = getAmateurResults().filter((x) => x.status === 'verified');
+            const buckets = {};
+
+            rows.forEach((row) => {
+                const key = `${row.country || 'Turkiye'}__${row.sport || 'futbol'}__${row.league || '-'}__${row.season || '-'}`;
+                if (!buckets[key]) buckets[key] = {};
+                const table = buckets[key];
+                const teams = [row.home_team, row.away_team];
+                teams.forEach((team) => {
+                    if (!table[team]) {
+                        table[team] = { team, played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, gd: 0, points: 0 };
+                    }
+                });
+
+                const home = table[row.home_team];
+                const away = table[row.away_team];
+
+                home.played += 1; away.played += 1;
+                home.gf += Number(row.home_score); home.ga += Number(row.away_score);
+                away.gf += Number(row.away_score); away.ga += Number(row.home_score);
+
+                if (Number(row.home_score) > Number(row.away_score)) {
+                    home.won += 1; away.lost += 1; home.points += 3;
+                } else if (Number(row.home_score) < Number(row.away_score)) {
+                    away.won += 1; home.lost += 1; away.points += 3;
+                } else {
+                    home.drawn += 1; away.drawn += 1; home.points += 1; away.points += 1;
+                }
+            });
+
+            const out = Object.entries(buckets).map(([group, teams]) => {
+                const standings = Object.values(teams)
+                    .map((t) => ({ ...t, gd: t.gf - t.ga }))
+                    .sort((a, b) => (b.points - a.points) || (b.gd - a.gd) || (b.gf - a.gf) || a.team.localeCompare(b.team));
+                return { group, standings, updated_at: new Date().toISOString() };
+            });
+
+            localStorage.setItem('nextscout_amateur_standings', JSON.stringify(out));
+            alert(`Puan durumu hesaplandi. Grup sayisi: ${out.length}`);
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAmateurResults);
+    </script>
+    <script src="assets/js/core-stability.js"></script>
+</body>
+</html>
+
+
+
+
+
+

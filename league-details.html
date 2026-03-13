@@ -1,0 +1,987 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lig DetaylarÄ± - NextScout</title>
+    <meta name="description" content="NextScout league details sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://nextscout.app/league-details.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Lig DetaylarÄ± - NextScout">
+    <meta property="og:description" content="NextScout league details sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/league-details.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Lig DetaylarÄ± - NextScout">
+    <meta name="twitter:description" content="NextScout league details sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F8FAFC;
+            color: #1F2937;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #FFFFFF;
+            border-bottom: 2px solid #3B82F6;
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+        }
+
+        .header-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 40px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #3B82F6;
+            text-decoration: none;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: #3B82F6;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #EFF6FF;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .league-header {
+            background: linear-gradient(135deg, #3B82F6 0%, #1F2937 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .league-header-flag {
+            font-size: 80px;
+        }
+
+        .league-header-info h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .league-header-info p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 15px 25px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #6B7280;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            color: #3B82F6;
+            border-bottom-color: #3B82F6;
+        }
+
+        .tab-button:hover {
+            color: #3B82F6;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* STANDINGS TABLE */
+        .standings-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .standings-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .standings-table thead {
+            background: #F3F4F6;
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        .standings-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #6B7280;
+            font-size: 14px;
+        }
+
+        .standings-table tbody tr {
+            border-bottom: 1px solid #E5E7EB;
+            transition: background 0.3s ease;
+        }
+
+        .standings-table tbody tr:hover {
+            background: #F9FAFB;
+        }
+
+        .standings-table td {
+            padding: 15px;
+            font-size: 14px;
+        }
+
+        .team-name {
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .team-rank {
+            color: #6B7280;
+            font-weight: 600;
+        }
+
+        .matches-schedule {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .match-week {
+            padding: 20px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .match-week:last-child {
+            border-bottom: none;
+        }
+
+        .match-week-title {
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .match-item {
+            background: #F9FAFB;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .match-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .match-teams {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .match-team {
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .match-score {
+            background: #3B82F6;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .match-date {
+            color: #6B7280;
+            font-size: 14px;
+            margin-left: auto;
+            min-width: 100px;
+            text-align: right;
+        }
+
+        .fixtures-grid {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .fixture-week {
+            margin-bottom: 30px;
+        }
+
+        .fixture-week:last-child {
+            margin-bottom: 0;
+        }
+
+        .fixture-week-title {
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .fixture-match {
+            background: #F9FAFB;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #3B82F6;
+        }
+
+        .fixture-match:last-child {
+            margin-bottom: 0;
+        }
+
+        .fixture-matchup {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 8px;
+        }
+
+        .fixture-team {
+            font-weight: 600;
+            color: #1F2937;
+            flex: 1;
+        }
+
+        .fixture-vs {
+            color: #9CA3AF;
+            font-size: 12px;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .fixture-time {
+            color: #6B7280;
+            font-size: 14px;
+            text-align: right;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-finished {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .status-live {
+            background: #DCFCE7;
+            color: #166534;
+        }
+
+        .status-upcoming {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6B7280;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">NextScout</a>
+            <button class="back-button" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i> Geri
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <div class="container">
+        <!-- LEAGUE HEADER -->
+        <div class="league-header" id="leagueHeader">
+            <div class="league-header-flag" id="leagueFlagPlaceholder">ğŸ†</div>
+            <div class="league-header-info">
+                <h1 id="leagueName">Lig AdÄ±</h1>
+                <p id="leagueInfo">Ãœlke - Lig BÃ¶lÃ¼mÃ¼</p>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab(this, 'standings')">
+                <i class="fas fa-table"></i> Puan Durumu
+            </button>
+            <button class="tab-button" onclick="switchTab(this, 'matches')">
+                <i class="fas fa-calendar"></i> MaÃ§ Takvimi
+            </button>
+            <button class="tab-button" onclick="switchTab(this, 'fixtures')">
+                <i class="fas fa-calendar-alt"></i> FixtÃ¼r
+            </button>
+        </div>
+
+        <!-- TAB: STANDINGS -->
+        <div class="tab-content active" id="standings">
+            <div class="standings-table">
+                <table id="standingsTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">SÄ±ra</th>
+                            <th>TakÄ±m</th>
+                            <th style="width: 60px;">OY</th>
+                            <th style="width: 60px;">G</th>
+                            <th style="width: 60px;">B</th>
+                            <th style="width: 60px;">M</th>
+                            <th style="width: 60px;">A</th>
+                            <th style="width: 60px;">Y</th>
+                            <th style="width: 80px;">Puan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standingsBody">
+                        <!-- Dinamik olarak doldurulacak -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB: MATCHES -->
+        <div class="tab-content" id="matches">
+            <div class="matches-schedule" id="matchesContainer">
+                <!-- Dinamik olarak doldurulacak -->
+            </div>
+        </div>
+
+        <!-- TAB: FIXTURES -->
+        <div class="tab-content" id="fixtures">
+            <div class="fixtures-grid" id="fixturesContainer">
+                <!-- Dinamik olarak doldurulacak -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lig Verileri
+        const LEAGUES_DATABASE = {
+            'Turkiye': {
+                'Bay': {
+                    'Futbol': {
+                        name: 'TÃ¼rkiye - Super Lig',
+                        flag: 'ğŸ‡¹ğŸ‡·',
+                        teams: [
+                            { id: 1, name: 'FenerbahÃ§e', played: 26, wins: 20, draws: 4, losses: 2, gf: 58, ga: 18, points: 64 },
+                            { id: 2, name: 'Galatasaray', played: 26, wins: 19, draws: 3, losses: 4, gf: 55, ga: 22, points: 60 },
+                            { id: 3, name: 'BeÅŸiktaÅŸ', played: 26, wins: 17, draws: 5, losses: 4, gf: 52, ga: 28, points: 56 },
+                            { id: 4, name: 'Trabzonspor', played: 26, wins: 15, draws: 6, losses: 5, gf: 48, ga: 30, points: 51 },
+                            { id: 5, name: 'Gaziantep FK', played: 26, wins: 12, draws: 7, losses: 7, gf: 40, ga: 35, points: 43 },
+                            { id: 6, name: 'BaÅŸakÅŸehir', played: 26, wins: 11, draws: 6, losses: 9, gf: 38, ga: 38, points: 39 }
+                        ],
+                        matches: [
+                            { date: '2026-03-05', home: 'FenerbahÃ§e', away: 'Galatasaray', score: '2-1', status: 'finished' },
+                            { date: '2026-03-06', home: 'BeÅŸiktaÅŸ', away: 'Trabzonspor', score: '1-1', status: 'finished' },
+                            { date: '2026-03-07', home: 'Gaziantep FK', away: 'BaÅŸakÅŸehir', score: 'vs', status: 'upcoming' }
+                        ],
+                        fixtures: [
+                            { week: '27. Hafta', matches: [
+                                { home: 'FenerbahÃ§e', away: 'BaÅŸakÅŸehir', date: '08 Mar' },
+                                { home: 'Galatasaray', away: 'Gaziantep', date: '08 Mar' },
+                                { home: 'BeÅŸiktaÅŸ', away: 'Trabzonspor', date: '09 Mar' }
+                            ]},
+                            { week: '28. Hafta', matches: [
+                                { home: 'Gaziantep', away: 'FenerbahÃ§e', date: '15 Mar' },
+                                { home: 'BaÅŸakÅŸehir', away: 'Galatasaray', date: '15 Mar' },
+                                { home: 'Trabzonspor', away: 'BeÅŸiktaÅŸ', date: '16 Mar' }
+                            ]}
+                        ]
+                    }
+                }
+            },
+            'Ingiltere': {
+                'Bay': {
+                    'Futbol': {
+                        name: 'Ä°ngiltere - Premier League',
+                        flag: 'ğŸ‡¬ğŸ‡§',
+                        teams: [
+                            { id: 1, name: 'Manchester City', played: 28, wins: 23, draws: 3, losses: 2, gf: 72, ga: 18, points: 72 },
+                            { id: 2, name: 'Arsenal', played: 28, wins: 21, draws: 4, losses: 3, gf: 68, ga: 24, points: 67 },
+                            { id: 3, name: 'Liverpool', played: 28, wins: 20, draws: 5, losses: 3, gf: 65, ga: 22, points: 65 },
+                            { id: 4, name: 'Chelsea', played: 28, wins: 17, draws: 6, losses: 5, gf: 52, ga: 30, points: 57 },
+                            { id: 5, name: 'Man United', played: 28, wins: 15, draws: 7, losses: 6, gf: 48, ga: 32, points: 52 },
+                            { id: 6, name: 'Tottenham', played: 28, wins: 14, draws: 5, losses: 9, gf: 45, ga: 35, points: 47 }
+                        ],
+                        matches: [
+                            { date: '2026-03-05', home: 'Manchester City', away: 'Arsenal', score: '3-1', status: 'finished' },
+                            { date: '2026-03-06', home: 'Liverpool', away: 'Chelsea', score: '2-2', status: 'finished' },
+                            { date: '2026-03-07', home: 'Man United', away: 'Tottenham', score: 'vs', status: 'upcoming' }
+                        ],
+                        fixtures: [
+                            { week: '29. Hafta', matches: [
+                                { home: 'Manchester City', away: 'Man United', date: '09 Mar' },
+                                { home: 'Arsenal', away: 'Liverpool', date: '09 Mar' },
+                                { home: 'Chelsea', away: 'Tottenham', date: '10 Mar' }
+                            ]},
+                            { week: '30. Hafta', matches: [
+                                { home: 'Liverpool', away: 'Manchester City', date: '16 Mar' },
+                                { home: 'Chelsea', away: 'Arsenal', date: '16 Mar' },
+                                { home: 'Tottenham', away: 'Man United', date: '17 Mar' }
+                            ]}
+                        ]
+                    }
+                }
+            },
+            'Ispanya': {
+                'Bay': {
+                    'Futbol': {
+                        name: 'Ä°spanya - La Liga',
+                        flag: 'ğŸ‡ªğŸ‡¸',
+                        teams: [
+                            { id: 1, name: 'Real Madrid', played: 27, wins: 22, draws: 3, losses: 2, gf: 68, ga: 16, points: 69 },
+                            { id: 2, name: 'Barcelona', played: 27, wins: 20, draws: 5, losses: 2, gf: 64, ga: 20, points: 65 },
+                            { id: 3, name: 'AtlÃ©tico Madrid', played: 27, wins: 18, draws: 6, losses: 3, gf: 54, ga: 22, points: 60 },
+                            { id: 4, name: 'Valencia', played: 27, wins: 14, draws: 7, losses: 6, gf: 42, ga: 28, points: 49 },
+                            { id: 5, name: 'Villarreal', played: 27, wins: 12, draws: 8, losses: 7, gf: 38, ga: 32, points: 44 },
+                            { id: 6, name: 'Real Sociedad', played: 27, wins: 11, draws: 6, losses: 10, gf: 35, ga: 36, points: 39 }
+                        ],
+                        matches: [
+                            { date: '2026-03-04', home: 'Real Madrid', away: 'Barcelona', score: '2-2', status: 'finished' },
+                            { date: '2026-03-06', home: 'AtlÃ©tico Madrid', away: 'Valencia', score: '3-0', status: 'finished' },
+                            { date: '2026-03-07', home: 'Villarreal', away: 'Real Sociedad', score: 'vs', status: 'upcoming' }
+                        ],
+                        fixtures: [
+                            { week: '26. Hafta', matches: [
+                                { home: 'Real Madrid', away: 'Villarreal', date: '08 Mar' },
+                                { home: 'Barcelona', away: 'Valencia', date: '08 Mar' },
+                                { home: 'AtlÃ©tico Madrid', away: 'Real Sociedad', date: '09 Mar' }
+                            ]},
+                            { week: '27. Hafta', matches: [
+                                { home: 'Valencia', away: 'Real Madrid', date: '15 Mar' },
+                                { home: 'Real Sociedad', away: 'Barcelona', date: '15 Mar' },
+                                { home: 'Villarreal', away: 'AtlÃ©tico Madrid', date: '16 Mar' }
+                            ]}
+                        ]
+                    }
+                }
+            },
+            'Almanya': {
+                'Bay': {
+                    'Futbol': {
+                        name: 'Almanya - Bundesliga',
+                        flag: 'ğŸ‡©ğŸ‡ª',
+                        teams: [
+                            { id: 1, name: 'Bayern MÃ¼nih', played: 28, wins: 23, draws: 2, losses: 3, gf: 71, ga: 19, points: 71 },
+                            { id: 2, name: 'Borussia Dortmund', played: 28, wins: 21, draws: 4, losses: 3, gf: 65, ga: 25, points: 67 },
+                            { id: 3, name: 'Bayer Leverkusen', played: 28, wins: 18, draws: 7, losses: 3, gf: 58, ga: 28, points: 61 },
+                            { id: 4, name: 'RB Leipzig', played: 28, wins: 15, draws: 6, losses: 7, gf: 48, ga: 32, points: 51 },
+                            { id: 5, name: 'VfB Stuttgart', played: 28, wins: 12, draws: 8, losses: 8, gf: 42, ga: 36, points: 44 },
+                            { id: 6, name: 'Eintracht Frankfurt', played: 28, wins: 10, draws: 6, losses: 12, gf: 38, ga: 42, points: 36 }
+                        ],
+                        matches: [
+                            { date: '2026-03-05', home: 'Bayern MÃ¼nih', away: 'Borussia Dortmund', score: '2-1', status: 'finished' },
+                            { date: '2026-03-06', home: 'Bayer Leverkusen', away: 'RB Leipzig', score: '1-0', status: 'finished' },
+                            { date: '2026-03-07', home: 'VfB Stuttgart', away: 'Eintracht Frankfurt', score: 'vs', status: 'upcoming' }
+                        ],
+                        fixtures: [
+                            { week: '26. Hafta', matches: [
+                                { home: 'Bayern MÃ¼nih', away: 'Eintracht Frankfurt', date: '08 Mar' },
+                                { home: 'Borussia Dortmund', away: 'VfB Stuttgart', date: '08 Mar' },
+                                { home: 'Bayer Leverkusen', away: 'RB Leipzig', date: '09 Mar' }
+                            ]},
+                            { week: '27. Hafta', matches: [
+                                { home: 'RB Leipzig', away: 'Bayern MÃ¼nih', date: '15 Mar' },
+                                { home: 'Eintracht Frankfurt', away: 'Borussia Dortmund', date: '15 Mar' },
+                                { home: 'VfB Stuttgart', away: 'Bayer Leverkusen', date: '16 Mar' }
+                            ]}
+                        ]
+                    }
+                }
+            },
+            'Italya': {
+                'Bay': {
+                    'Futbol': {
+                        name: 'Ä°talya - Serie A',
+                        flag: 'ğŸ‡®ğŸ‡¹',
+                        teams: [
+                            { id: 1, name: 'AC Milan', played: 27, wins: 21, draws: 4, losses: 2, gf: 62, ga: 20, points: 67 },
+                            { id: 2, name: 'Inter', played: 27, wins: 20, draws: 5, losses: 2, gf: 60, ga: 19, points: 65 },
+                            { id: 3, name: 'Napoli', played: 27, wins: 18, draws: 4, losses: 5, gf: 56, ga: 24, points: 58 },
+                            { id: 4, name: 'Juventus', played: 27, wins: 15, draws: 7, losses: 5, gf: 48, ga: 26, points: 52 },
+                            { id: 5, name: 'Roma', played: 27, wins: 13, draws: 6, losses: 8, gf: 42, ga: 32, points: 45 },
+                            { id: 6, name: 'Lazio', played: 27, wins: 11, draws: 5, losses: 11, gf: 38, ga: 38, points: 38 }
+                        ],
+                        matches: [
+                            { date: '2026-03-05', home: 'AC Milan', away: 'Inter', score: '1-1', status: 'finished' },
+                            { date: '2026-03-06', home: 'Napoli', away: 'Juventus', score: '3-1', status: 'finished' },
+                            { date: '2026-03-07', home: 'Roma', away: 'Lazio', score: 'vs', status: 'upcoming' }
+                        ],
+                        fixtures: [
+                            { week: '26. Hafta', matches: [
+                                { home: 'AC Milan', away: 'Roma', date: '08 Mar' },
+                                { home: 'Inter', away: 'Napoli', date: '08 Mar' },
+                                { home: 'Juventus', away: 'Lazio', date: '09 Mar' }
+                            ]},
+                            { week: '27. Hafta', matches: [
+                                { home: 'Napoli', away: 'AC Milan', date: '15 Mar' },
+                                { home: 'Lazio', away: 'Inter', date: '15 Mar' },
+                                { home: 'Roma', away: 'Juventus', date: '16 Mar' }
+                            ]}
+                        ]
+                    }
+                }
+            },
+            'Brezilya': {
+                'Bay': {
+                    'Futbol': {
+                        name: 'Brezilya - SÃ©rie A',
+                        flag: 'ğŸ‡§ğŸ‡·',
+                        teams: [
+                            { id: 1, name: 'Flamengo', played: 25, wins: 20, draws: 3, losses: 2, gf: 58, ga: 18, points: 63 },
+                            { id: 2, name: 'Palmeiras', played: 25, wins: 18, draws: 5, losses: 2, gf: 54, ga: 20, points: 59 },
+                            { id: 3, name: 'Santos', played: 25, wins: 15, draws: 6, losses: 4, gf: 48, ga: 28, points: 51 },
+                            { id: 4, name: 'Corinthians', played: 25, wins: 12, draws: 8, losses: 5, gf: 42, ga: 32, points: 44 },
+                            { id: 5, name: 'SÃ£o Paulo', played: 25, wins: 10, draws: 7, losses: 8, gf: 38, ga: 36, points: 37 },
+                            { id: 6, name: 'Cruzeiro', played: 25, wins: 8, draws: 6, losses: 11, gf: 32, ga: 42, points: 30 }
+                        ],
+                        matches: [
+                            { date: '2026-03-05', home: 'Flamengo', away: 'Palmeiras', score: '1-1', status: 'finished' },
+                            { date: '2026-03-06', home: 'Santos', away: 'Corinthians', score: '2-1', status: 'finished' },
+                            { date: '2026-03-07', home: 'SÃ£o Paulo', away: 'Cruzeiro', score: 'vs', status: 'upcoming' }
+                        ],
+                        fixtures: [
+                            { week: '23. Rodada', matches: [
+                                { home: 'Flamengo', away: 'Cruzeiro', date: '08 Mar' },
+                                { home: 'Palmeiras', away: 'SÃ£o Paulo', date: '08 Mar' },
+                                { home: 'Santos', away: 'Corinthians', date: '09 Mar' }
+                            ]},
+                            { week: '24. Rodada', matches: [
+                                { home: 'Corinthians', away: 'Flamengo', date: '15 Mar' },
+                                { home: 'Cruzeiro', away: 'Palmeiras', date: '15 Mar' },
+                                { home: 'SÃ£o Paulo', away: 'Santos', date: '16 Mar' }
+                            ]}
+                        ]
+                    }
+                }
+            },
+            'Arjantin': {
+                'Bay': {
+                    'Futbol': {
+                        name: 'Arjantin - Primera DivisiÃ³n',
+                        flag: 'ğŸ‡¦ğŸ‡·',
+                        teams: [
+                            { id: 1, name: 'River Plate', played: 24, wins: 19, draws: 4, losses: 1, gf: 56, ga: 15, points: 61 },
+                            { id: 2, name: 'Boca Juniors', played: 24, wins: 17, draws: 5, losses: 2, gf: 52, ga: 18, points: 56 },
+                            { id: 3, name: 'Independiente', played: 24, wins: 14, draws: 7, losses: 3, gf: 46, ga: 24, points: 49 },
+                            { id: 4, name: 'Racing Club', played: 24, wins: 12, draws: 8, losses: 4, gf: 40, ga: 28, points: 44 },
+                            { id: 5, name: 'Quilmes', played: 24, wins: 9, draws: 6, losses: 9, gf: 34, ga: 36, points: 33 },
+                            { id: 6, name: 'Belgrano', played: 24, wins: 7, draws: 5, losses: 12, gf: 28, ga: 42, points: 26 }
+                        ],
+                        matches: [
+                            { date: '2026-03-05', home: 'River Plate', away: 'Boca Juniors', score: '2-1', status: 'finished' },
+                            { date: '2026-03-06', home: 'Independiente', away: 'Racing Club', score: '1-1', status: 'finished' },
+                            { date: '2026-03-07', home: 'Quilmes', away: 'Belgrano', score: 'vs', status: 'upcoming' }
+                        ],
+                        fixtures: [
+                            { week: '22. Fecha', matches: [
+                                { home: 'River Plate', away: 'Belgrano', date: '08 Mar' },
+                                { home: 'Boca Juniors', away: 'Quilmes', date: '08 Mar' },
+                                { home: 'Independiente', away: 'Racing Club', date: '09 Mar' }
+                            ]},
+                            { week: '23. Fecha', matches: [
+                                { home: 'Racing Club', away: 'River Plate', date: '15 Mar' },
+                                { home: 'Belgrano', away: 'Boca Juniors', date: '15 Mar' },
+                                { home: 'Quilmes', away: 'Independiente', date: '16 Mar' }
+                            ]}
+                        ]
+                    }
+                }
+            },
+            'ABD': {
+                'Bay': {
+                    'Futbol': {
+                        name: 'ABD - MLS',
+                        flag: 'ğŸ‡ºğŸ‡¸',
+                        teams: [
+                            { id: 1, name: 'LA Galaxy', played: 26, wins: 19, draws: 5, losses: 2, gf: 56, ga: 20, points: 62 },
+                            { id: 2, name: 'New York City FC', played: 26, wins: 17, draws: 7, losses: 2, gf: 52, ga: 22, points: 58 },
+                            { id: 3, name: 'Seattle Sounders', played: 26, wins: 15, draws: 6, losses: 5, gf: 48, ga: 28, points: 51 },
+                            { id: 4, name: 'LAFC', played: 26, wins: 13, draws: 8, losses: 5, gf: 44, ga: 30, points: 47 },
+                            { id: 5, name: 'Toronto FC', played: 26, wins: 10, draws: 7, losses: 9, gf: 36, ga: 36, points: 37 },
+                            { id: 6, name: 'Houston Dynamo', played: 26, wins: 8, draws: 6, losses: 12, gf: 32, ga: 42, points: 30 }
+                        ],
+                        matches: [
+                            { date: '2026-03-05', home: 'LA Galaxy', away: 'New York City FC', score: '2-1', status: 'finished' },
+                            { date: '2026-03-06', home: 'Seattle Sounders', away: 'LAFC', score: '1-0', status: 'finished' },
+                            { date: '2026-03-07', home: 'Toronto FC', away: 'Houston Dynamo', score: 'vs', status: 'upcoming' }
+                        ],
+                        fixtures: [
+                            { week: '11. Hafta', matches: [
+                                { home: 'LA Galaxy', away: 'Houston Dynamo', date: '08 Mar' },
+                                { home: 'New York City FC', away: 'Toronto FC', date: '08 Mar' },
+                                { home: 'Seattle Sounders', away: 'LAFC', date: '09 Mar' }
+                            ]},
+                            { week: '12. Hafta', matches: [
+                                { home: 'LAFC', away: 'LA Galaxy', date: '15 Mar' },
+                                { home: 'Houston Dynamo', away: 'New York City FC', date: '15 Mar' },
+                                { home: 'Toronto FC', away: 'Seattle Sounders', date: '16 Mar' }
+                            ]}
+                        ]
+                    }
+                }
+            },
+            'Japonya': {
+                'Bay': {
+                    'Futbol': {
+                        name: 'Japonya - J1 League',
+                        flag: 'ğŸ‡¯ğŸ‡µ',
+                        teams: [
+                            { id: 1, name: 'Vissel Kobe', played: 22, wins: 18, draws: 3, losses: 1, gf: 54, ga: 14, points: 57 },
+                            { id: 2, name: 'Tokyo FC', played: 22, wins: 16, draws: 4, losses: 2, gf: 50, ga: 18, points: 52 },
+                            { id: 3, name: 'Nagoya Grampus', played: 22, wins: 13, draws: 6, losses: 3, gf: 42, ga: 22, points: 45 },
+                            { id: 4, name: 'Osaka', played: 22, wins: 11, draws: 7, losses: 4, gf: 38, ga: 26, points: 40 },
+                            { id: 5, name: 'Hiroshima', played: 22, wins: 8, draws: 5, losses: 9, gf: 30, ga: 34, points: 29 },
+                            { id: 6, name: 'Yokohama FM', played: 22, wins: 6, draws: 4, losses: 12, gf: 24, ga: 40, points: 22 }
+                        ],
+                        matches: [
+                            { date: '2026-03-05', home: 'Vissel Kobe', away: 'Tokyo FC', score: '2-1', status: 'finished' },
+                            { date: '2026-03-06', home: 'Nagoya Grampus', away: 'Osaka', score: '1-1', status: 'finished' },
+                            { date: '2026-03-07', home: 'Hiroshima', away: 'Yokohama FM', score: 'vs', status: 'upcoming' }
+                        ],
+                        fixtures: [
+                            { week: '7. Matchday', matches: [
+                                { home: 'Vissel Kobe', away: 'Yokohama FM', date: '08 Mar' },
+                                { home: 'Tokyo FC', away: 'Hiroshima', date: '08 Mar' },
+                                { home: 'Nagoya Grampus', away: 'Osaka', date: '09 Mar' }
+                            ]},
+                            { week: '8. Matchday', matches: [
+                                { home: 'Osaka', away: 'Vissel Kobe', date: '15 Mar' },
+                                { home: 'Yokohama FM', away: 'Tokyo FC', date: '15 Mar' },
+                                { home: 'Hiroshima', away: 'Nagoya Grampus', date: '16 Mar' }
+                            ]}
+                        ]
+                    }
+                }
+            }
+        };
+
+        // Get URL Parameters
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                country: params.get('country') || 'Turkiye',
+                sport: params.get('sport') || 'Futbol',
+                gender: params.get('gender') || 'Bay',
+                league: params.get('league') || '',
+                amateur: params.get('amateur') === '1'
+            };
+        }
+
+        function getApiBaseUrl() {
+            if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+            return '/api';
+        }
+
+        async function fetchAmateurStandingsFromApi(params) {
+            const apiBase = getApiBaseUrl();
+            const query = new URLSearchParams();
+            if (params.country) query.set('city', params.country);
+
+            const response = await fetch(`${apiBase}/amateur/standings?${query.toString()}`, {
+                headers: { Accept: 'application/json' },
+            });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const body = await response.json();
+            const rows = Array.isArray(body?.data) ? body.data : [];
+            if (!rows.length) return null;
+
+            return {
+                flag: 'ğŸŸï¸',
+                name: `${params.league || 'Amator Lig'} (API)` ,
+                teams: rows.map((r) => ({
+                    name: r.team_name,
+                    played: Number(r.played || 0),
+                    wins: Number(r.won || 0),
+                    draws: Number(r.drawn || 0),
+                    losses: Number(r.lost || 0),
+                    gf: Number(r.gf || 0),
+                    ga: Number(r.ga || 0),
+                    points: Number(r.points || 0),
+                })),
+                matches: [],
+                fixtures: [],
+            };
+        }
+
+        function getCommunityLeagueData(params) {
+            let rows = [];
+            try {
+                rows = JSON.parse(localStorage.getItem('nextscout_amateur_standings') || '[]');
+            } catch (error) {
+                rows = [];
+            }
+            if (!Array.isArray(rows) || rows.length === 0) return null;
+
+            const countryKey = (params.country || 'Turkiye').toLowerCase();
+            const sportKey = (params.sport || 'futbol').toLowerCase();
+            const leagueKey = (params.league || '').toLowerCase();
+
+            const picked = rows.find((row) => {
+                const group = (row?.group || '').toLowerCase(); // country__sport__league__season
+                if (!group) return false;
+                if (!group.includes(`${countryKey}__`)) return false;
+                if (!group.includes(`__${sportKey}__`)) return false;
+                if (leagueKey && !group.includes(`__${leagueKey}__`)) return false;
+                return true;
+            });
+
+            if (!picked || !Array.isArray(picked.standings)) return null;
+            const segments = (picked.group || '').split('__');
+            const leagueName = segments[2] || params.league || 'Amator Lig';
+            const season = segments[3] || '-';
+
+            return {
+                flag: 'ğŸŸï¸',
+                name: `${leagueName} (Topluluk/Dogrulanmis)`,
+                teams: picked.standings.map((t) => ({
+                    name: t.team,
+                    played: Number(t.played || 0),
+                    wins: Number(t.won || 0),
+                    draws: Number(t.drawn || 0),
+                    losses: Number(t.lost || 0),
+                    gf: Number(t.gf || 0),
+                    ga: Number(t.ga || 0),
+                    points: Number(t.points || 0),
+                })),
+                matches: [],
+                fixtures: [],
+                season
+            };
+        }
+
+        // Initialize Page
+        async function initializePage() {
+            const params = getUrlParams();
+            let leagueData = LEAGUES_DATABASE[params.country]?.[params.gender]?.[params.sport] || getCommunityLeagueData(params);
+            if (params.amateur) {
+                try {
+                    const apiData = await fetchAmateurStandingsFromApi(params);
+                    if (apiData) leagueData = apiData;
+                } catch (error) {}
+            }
+
+            if (!leagueData) {
+                document.querySelector('.container').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h2>Lig BulunamadÄ±</h2>
+                        <p>Ä°stenilen lig iÃ§in veri yok.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Set Header
+            document.getElementById('leagueFlagPlaceholder').textContent = leagueData.flag;
+            document.getElementById('leagueName').textContent = leagueData.name;
+            document.getElementById('leagueInfo').textContent = `${params.sport} - ${params.gender}${params.league ? ` - ${params.league}` : ''}`;
+
+            // Render Standings
+            renderStandings(leagueData.teams);
+
+            // Render Matches
+            renderMatches(leagueData.matches);
+
+            // Render Fixtures
+            renderFixtures(leagueData.fixtures);
+        }
+
+        // Render Standings
+        function renderStandings(teams) {
+            const tbody = document.getElementById('standingsBody');
+            tbody.innerHTML = teams.map((team, index) => `
+                <tr>
+                    <td class="team-rank">${index + 1}</td>
+                    <td class="team-name">${team.name}</td>
+                    <td>${team.played}</td>
+                    <td>${team.wins}</td>
+                    <td>${team.draws}</td>
+                    <td>${team.losses}</td>
+                    <td>${team.gf} - ${team.ga}</td>
+                    <td>${team.gf - team.ga > 0 ? '+' : ''}${team.gf - team.ga}</td>
+                    <td><strong>${team.points}</strong></td>
+                </tr>
+            `).join('');
+        }
+
+        // Render Matches
+        function renderMatches(matches) {
+            const container = document.getElementById('matchesContainer');
+            if (!matches || matches.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar"></i>
+                        <p>MaÃ§ bulunmamaktadÄ±r.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = matches.map(match => {
+                let statusBadge = '';
+                let statusClass = '';
+                
+                if (match.status === 'finished') {
+                    statusBadge = 'âœ“ Bitti';
+                    statusClass = 'status-finished';
+                } else if (match.status === 'live') {
+                    statusBadge = 'ğŸ”´ CANLI';
+                    statusClass = 'status-live';
+                } else {
+                    statusBadge = 'â° YaklaÅŸan';
+                    statusClass = 'status-upcoming';
+                }
+
+                return `
+                    <div class="match-week">
+                        <div class="match-item">
+                            <div class="match-teams">
+                                <span class="match-team">${match.home}</span>
+                                <span class="match-score">${match.score}</span>
+                                <span class="match-team">${match.away}</span>
+                            </div>
+                            <div style="display: flex; gap: 15px; align-items: center;">
+                                <span class="match-date">${match.date}</span>
+                                <span class="status-badge ${statusClass}">${statusBadge}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render Fixtures
+        function renderFixtures(fixtures) {
+            const container = document.getElementById('fixturesContainer');
+            if (!fixtures || fixtures.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-alt"></i>
+                        <p>FixtÃ¼r bulunmamaktadÄ±r.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = fixtures.map(week => `
+                <div class="fixture-week">
+                    <div class="fixture-week-title">${week.week}</div>
+                    ${week.matches.map(match => `
+                        <div class="fixture-match">
+                            <div class="fixture-matchup">
+                                <span class="fixture-team">${match.home}</span>
+                                <span class="fixture-vs">vs</span>
+                                <span class="fixture-team">${match.away}</span>
+                            </div>
+                            <div class="fixture-time">${match.date}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+        }
+
+        // Switch Tabs
+        function switchTab(button, tabName) {
+            // Remove active from all buttons and contents
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            // Add active to clicked button and corresponding content
+            button.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+    <script src="assets/js/core-stability.js"></script>
+</body>
+</html>
+
+
+
+

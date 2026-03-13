@@ -1,0 +1,955 @@
+﻿<!-- ğŸ  ANASAYFA (DASHBOARD) - ÅIK TASARIM -->
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scout Platform - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+        /* TOP NAVIGATION BAR */
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+        .top-navbar {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0 20px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex: 1;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            min-width: 150px;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-bar::before {
+            content: "ğŸ”";
+            position: absolute;
+            left: 12px;
+            top: 10px;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .nav-icon:hover {
+            background: #e5e7eb;
+            transform: scale(1.05);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+        /* MAIN LAYOUT */
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 20px;
+            padding: 20px;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            height: fit-content;
+            position: sticky;
+            top: 90px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-section {
+            margin-bottom: 25px;
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #9ca3af;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-item {
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .sidebar-item:hover {
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .sidebar-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 500;
+        }
+
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+        /* USER MENU BUTTONS */
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+        .user-menu-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .user-menu-section .sidebar-title {
+            color: #667eea;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .user-action-btn {
+            width: 100%;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border: 2px solid #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .user-action-btn:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .user-action-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+            color: white;
+        }
+
+        .user-action-btn.primary:hover {
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .sidebar-item-icon {
+            font-size: 18px;
+            min-width: 20px;
+        }
+
+        /* CONTENT AREA */
+        .content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+        /* WELCOME CARD */
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+        .welcome-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .welcome-left h1 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .welcome-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .welcome-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .welcome-right {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+        /* QUICK STATS */
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-top: 3px solid #667eea;
+        }
+
+        .stat-card-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .stat-card-label {
+            font-size: 13px;
+            color: #9ca3af;
+            text-transform: uppercase;
+        }
+
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+        /* DASHBOARD GRID */
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1f2937;
+        }
+
+        /* Activity List */
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            font-size: 20px;
+            min-width: 30px;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            font-size: 13px;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .activity-time {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+        /* RECOMMENDED CARDS */
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+        .recommended-section {
+            grid-column: 1 / -1;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .player-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .player-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .player-card-image {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        .player-card-info {
+            padding: 12px;
+        }
+
+        .player-card-name {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #1f2937;
+        }
+
+        .player-card-position {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-bottom: 8px;
+        }
+
+        .player-card-rating {
+            color: #fbbf24;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+        /* RESPONSIVE */
+        /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-card {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                padding: 15px;
+            }
+
+            .search-bar {
+                display: none;
+            }
+
+            .quick-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .cards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-left {
+                gap: 15px;
+            }
+
+            .quick-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-card {
+                padding: 20px;
+            }
+
+            .welcome-right {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- TOP NAVBAR -->
+    <div class="top-navbar">
+        <div class="navbar-left">
+            <div class="logo">âš½ Scout Platform</div>
+            <div class="search-bar">
+                <input type="text" placeholder="Oyuncu, TakÄ±m veya Makale Ara...">
+            </div>
+        </div>
+        <div class="navbar-right">
+            <div class="nav-icon">
+                ğŸ’¬
+                <span class="notification-badge">5</span>
+            </div>
+            <div class="nav-icon">
+                ğŸ””
+                <span class="notification-badge">3</span>
+            </div>
+            <button style="padding: 8px 14px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; margin: 0 8px;" onclick="window.location.href='index.html'">â† Ana Sayfa</button>
+            <button style="padding: 8px 14px; background: #f3f4f6; color: #667eea; border: 1px solid #e5e7eb; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer;" onclick="logout()">Ã‡Ä±kÄ±ÅŸ</button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="main-container">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">ğŸ“‹ Navigasyon</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item active" onclick="window.location.href='index.html'">
+                        <span class="sidebar-item-icon">ğŸ </span>
+                        <span>Ana Sayfa</span>
+                    </li>
+                    <li class="sidebar-item">
+                        <span class="sidebar-item-icon">ğŸ”</span>
+                        <span><a href="professional-players.html" style="color: inherit; text-decoration: none;">Oyuncu Ara</a></span>
+                    </li>
+                    <li class="sidebar-item" onclick="window.location.href='notifications.html'">
+                        <span class="sidebar-item-icon">📱</span>
+                        <span>Mesajlarım</span>
+                    </li>
+                    <li class="sidebar-item">
+                        <span class="sidebar-item-icon">â­</span>
+                        <span>Favorilerim</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">ğŸ“Š Verilerim</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item">
+                        <span class="sidebar-item-icon">ğŸ“ˆ</span>
+                        <span>Ä°statistikler</span>
+                    </li>
+                    <li class="sidebar-item">
+                        <span class="sidebar-item-icon">ğŸ†</span>
+                        <span>BaÅŸarÄ±larÄ±m</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">âš™ï¸ Ayarlar</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item">
+                        <span class="sidebar-item-icon">âš™ï¸</span>
+                        <span>Ayarlar</span>
+                    </li>
+                    <li class="sidebar-item">
+                        <span class="sidebar-item-icon">â“</span>
+                        <span>YardÄ±m</span>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- CONTENT -->
+        <div class="content">
+            <!-- WELCOME CARD -->
+            <div class="welcome-card">
+                <div class="welcome-left">
+                    <h1>Merhaba, Ahmet Demir! ğŸ‘‹</h1>
+                    <div class="welcome-info">
+                        <div class="info-item">âš½ Spor: <strong>Futbol</strong></div>
+                        <div class="info-item">ğŸ“ Pozisyon: <strong>Forvet</strong></div>
+                        <div class="info-item">ğŸ‘¤ YaÅŸ: <strong>24</strong> | ğŸ“ Boy: <strong>180cm</strong></div>
+                    </div>
+                    <div class="welcome-buttons">
+                        <button class="btn btn-primary" onclick="window.location.href='profile-edit.html'">Profili DÃ¼zenle</button>
+                        <button class="btn btn-secondary" onclick="alert('BaÄŸlantÄ± kopyalandÄ±!')">BaÄŸlantÄ±yÄ± Kopyala</button>
+                    </div>
+                </div>
+                <div class="welcome-right">
+                    <div class="stat-box">
+                        <div class="stat-value">4.8</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">15</div>
+                        <div class="stat-label">Gol</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">Asist</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">28</div>
+                        <div class="stat-label">MaÃ§</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OYUNCU KENDÄ° PROFÄ°L KARTINI GÃ–RÃœYOR -->
+            <div style="margin-top: 20px; background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);">
+                <h2 style="margin: 0 0 20px; font-size: 16px; font-weight: 600; color: #1f2937;">ğŸ‘ï¸ Profil KartÄ± Ã–nizlemesi</h2>
+                <p style="font-size: 12px; color: #9ca3af; margin-bottom: 15px;">Bu, menejerler ve antrenÃ¶rlerin gÃ¶receÄŸi senin profil kartÄ±:</p>
+                
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);">
+                    <!-- FOTO -->
+                    <div style="padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; position: relative; overflow: hidden;">
+                        <div style="width: 150px; height: 150px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); border: 4px solid white; display: flex; align-items: center; justify-content: center; font-size: 60px; margin-bottom: 15px;">âš½</div>
+                        <span style="display: inline-block; background: #52e0c1; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;">âœ“ AKTÄ°F</span>
+                    </div>
+                    
+                    <!-- BÄ°LGÄ°LER -->
+                    <div style="padding: 40px; display: flex; flex-direction: column; justify-content: center; background: white;">
+                        <h3 style="margin: 0 0 5px; font-size: 24px; font-weight: 800; color: #1f2937;">Ahmet YÄ±lmaz</h3>
+                        <p style="margin: 0 0 15px; font-size: 14px; color: #667eea; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Forvet</p>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 15px;">
+                            <div style="background: #f9fafb; padding: 12px; border-radius: 10px; border-left: 3px solid #667eea;">
+                                <p style="margin: 0 0 4px; font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 600;">YaÅŸ</p>
+                                <p style="margin: 0; font-size: 18px; font-weight: 800; color: #1f2937;">24</p>
+                            </div>
+                            <div style="background: #f9fafb; padding: 12px; border-radius: 10px; border-left: 3px solid #667eea;">
+                                <p style="margin: 0 0 4px; font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 600;">Boy</p>
+                                <p style="margin: 0; font-size: 18px; font-weight: 800; color: #1f2937;">180cm</p>
+                            </div>
+                            <div style="background: #f9fafb; padding: 12px; border-radius: 10px; border-left: 3px solid #667eea;">
+                                <p style="margin: 0 0 4px; font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 600;">MaÃ§lar</p>
+                                <p style="margin: 0; font-size: 18px; font-weight: 800; color: #1f2937;">28</p>
+                            </div>
+                            <div style="background: #f9fafb; padding: 12px; border-radius: 10px; border-left: 3px solid #667eea;">
+                                <p style="margin: 0 0 4px; font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 600;">Goller</p>
+                                <p style="margin: 0; font-size: 18px; font-weight: 800; color: #1f2937;">15</p>
+                            </div>
+                        </div>
+
+                        <div style="background: #fff9e6; padding: 12px; border-radius: 10px; border: 2px solid #fbbf24; text-align: center;">
+                            <p style="margin: 0 0 5px; font-size: 16px; color: #fbbf24;">â˜…â˜…â˜…â˜…â˜…</p>
+                            <p style="margin: 0; font-size: 12px; font-weight: 600; color: #1f2937;">4.8/5 Rating</p>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+                            <button style="padding: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; transition: all 0.2s;">ğŸ’¬ Mesaj</button>
+                            <button style="padding: 10px; background: #f3f4f6; color: #667eea; border: 2px solid #667eea; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; transition: all 0.2s;">â­ Favori</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 15px; padding: 12px; background: #f0f9ff; border-left: 4px solid #3b82f6; border-radius: 8px;">
+                    <p style="margin: 0; font-size: 12px; color: #1f2937;">
+                        ğŸ’¡ <strong>Ä°pucu:</strong> "Profili DÃ¼zenle" butonuna tÄ±klayarak resim, bilgi ve istatistiklerini gÃ¼ncelleyebilirsin.
+                    </p>
+                </div>
+            </div>
+
+            <!-- QUICK STATS -->
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-card-value">4.2K</div>
+                    <div class="stat-card-label">ğŸ‘ï¸ GÃ¶rÃ¼nÃ¼m</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-value">156</div>
+                    <div class="stat-card-label">ğŸ“Œ Favori</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-value">2.4K</div>
+                    <div class="stat-card-label">â¤ï¸ BeÄŸeni</div>
+                </div>
+            </div>
+
+            <!-- MAIN GRID -->
+            <div class="dashboard-grid">
+                <!-- RECENT ACTIVITY -->
+                <div class="card">
+                    <div class="card-title">ğŸ“° Son Aktiviteler</div>
+                    <div class="activity-item">
+                        <div class="activity-icon">ğŸ‘¥</div>
+                        <div class="activity-content">
+                            <div class="activity-text">Halit YÄ±lmaz seni aÃ§tÄ±</div>
+                            <div class="activity-time">2 saat Ã¶nce</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">ğŸ’¬</div>
+                        <div class="activity-content">
+                            <div class="activity-text">Yeni mesajÄ±n var</div>
+                            <div class="activity-time">5 saat Ã¶nce</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">âš½</div>
+                        <div class="activity-content">
+                            <div class="activity-text">MaÃ§ sonuÃ§: 3-1 KazandÄ±k</div>
+                            <div class="activity-time">1 gÃ¼n Ã¶nce</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">ğŸ¤</div>
+                        <div class="activity-content">
+                            <div class="activity-text">Menajerin seni favori etti</div>
+                            <div class="activity-time">1 gÃ¼n Ã¶nce</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QUICK ACTIONS -->
+                <div class="card">
+                    <div class="card-title">âš¡ HÄ±zlÄ± Ä°ÅŸlemler</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <button class="btn btn-primary" style="width: 100%;">ğŸ“± Mesaj GÃ¶nder</button>
+                        <button class="btn btn-primary" style="width: 100%;">ğŸ” Oyuncu Ara</button>
+                        <button class="btn btn-primary" style="width: 100%;">â­ Favori Ekle</button>
+                        <button class="btn btn-primary" style="width: 100%;">ğŸ“Š Ä°stat GÃ¶r</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RECOMMENDED -->
+            <div class="card recommended-section">
+                <div class="card-title">ğŸŒŸ Ã–nerilen Oyuncular</div>
+                <div class="cards-grid">
+                    <div class="player-card">
+                        <div class="player-card-image">ğŸ“·</div>
+                        <div class="player-card-info">
+                            <div class="player-card-name">Ali YÄ±ldÄ±z</div>
+                            <div class="player-card-position">Forvet</div>
+                            <div class="player-card-rating">â­ 4.7/5</div>
+                        </div>
+                    </div>
+                    <div class="player-card">
+                        <div class="player-card-image">ğŸ“·</div>
+                        <div class="player-card-info">
+                            <div class="player-card-name">Mehmet Kaya</div>
+                            <div class="player-card-position">Orta Saha</div>
+                            <div class="player-card-rating">â­ 4.9/5</div>
+                        </div>
+                    </div>
+                    <div class="player-card">
+                        <div class="player-card-image">ğŸ“·</div>
+                        <div class="player-card-info">
+                            <div class="player-card-name">Zeynep Ã‡Ã¶l</div>
+                            <div class="player-card-position">Hitter</div>
+                            <div class="player-card-rating">â­ 4.6/5</div>
+                        </div>
+                    </div>
+                    <div class="player-card">
+                        <div class="player-card-image">ğŸ“·</div>
+                        <div class="player-card-info">
+                            <div class="player-card-name">Cem AteÅŸ</div>
+                            <div class="player-card-position">Defans</div>
+                            <div class="player-card-rating">â­ 4.5/5</div>
+                        </div>
+                    </div>
+                    <div class="player-card">
+                        <div class="player-card-image">ğŸ“·</div>
+                        <div class="player-card-info">
+                            <div class="player-card-name">GÃ¶zde Ak</div>
+                            <div class="player-card-position">Kaleci</div>
+                            <div class="player-card-rating">â­ 4.8/5</div>
+                        </div>
+                    </div>
+                    <div class="player-card">
+                        <div class="player-card-image">ğŸ“·</div>
+                        <div class="player-card-info">
+                            <div class="player-card-name">TarÄ±k Mert</div>
+                            <div class="player-card-position">Forvet</div>
+                            <div class="player-card-rating">â­ 4.4/5</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROFIL DÃœZENLEME MODAL KALDIRÄ±LDÄ± - profile-edit.html'e taÅŸÄ±ndÄ± -->
+
+    <script>
+        function logout() {
+            localStorage.removeItem('nextscout_token');
+            localStorage.removeItem('nextscout_user_email');
+            localStorage.removeItem('nextscout_user_name');
+            localStorage.removeItem('nextscout_user_role');
+            localStorage.removeItem('nextscout_user_id');
+            window.location.href = 'index.html';
+        }
+        
+        // ...existing code...
+        function openProfileEdit() {
+            document.getElementById('profileEditModal').style.display = 'flex';
+        }
+
+        function closeProfileEditModal() {
+            document.getElementById('profileEditModal').style.display = 'none';
+        }
+
+        // DÄ±ÅŸa tÄ±klanÄ±nca kapat
+        document.getElementById('profileEditModal').addEventListener('click', (e) => {
+            if (e.target.id === 'profileEditModal') {
+                closeProfileEditModal();
+            }
+        });
+
+        // Sayfa yÃ¼klenirken profil verilerini dashboard'ta gÃ¶ster
+        window.addEventListener('load', () => {
+            const savedProfile = localStorage.getItem('playerProfile');
+            const savedPhoto = localStorage.getItem('playerPhoto');
+
+            if (savedProfile) {
+                const data = JSON.parse(savedProfile);
+
+                // KartÄ±n pozisyon bilgisini gÃ¼ncelle
+                const positionElement = document.querySelector('.player-position');
+                if (positionElement) {
+                    positionElement.textContent = data.position.toUpperCase();
+                }
+
+                // Ä°statistikleri gÃ¼ncelle (KartÄ±n iÃ§inde)
+                const stats = document.querySelectorAll('.stat-item');
+                if (stats[0]) stats[0].querySelector('.stat-value').textContent = data.age;
+                if (stats[1]) stats[1].querySelector('.stat-value').textContent = data.height + 'cm';
+                if (stats[2]) stats[2].querySelector('.stat-value').textContent = data.matches;
+                if (stats[3]) stats[3].querySelector('.stat-value').textContent = data.goals;
+                if (stats[4]) stats[4].querySelector('.stat-value').textContent = data.assists;
+                if (stats[5]) stats[5].querySelector('.stat-value').textContent = data.rating;
+
+                // Rating gÃ¼ncelle
+                const ratingText = document.querySelector('.rating-text');
+                if (ratingText) {
+                    ratingText.textContent = data.rating + '/10 Rating';
+                }
+            }
+
+            // FotoÄŸrafÄ± gÃ¼ncelle
+            if (savedPhoto) {
+                const profileImage = document.querySelector('.profile-image');
+                if (profileImage) {
+                    profileImage.textContent = '';
+                    const img = document.createElement('img');
+                    img.src = savedPhoto;
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.borderRadius = '50%';
+                    img.style.objectFit = 'cover';
+                    profileImage.appendChild(img);
+                }
+            }
+
+            // Modal form verilerini yÃ¼kle
+            const savedProfileData = localStorage.getItem('playerProfile');
+            if (savedProfileData) {
+                const data = JSON.parse(savedProfileData);
+                document.getElementById('positionSelect').value = data.position;
+                document.getElementById('ageInput').value = data.age;
+                document.getElementById('heightInput').value = data.height;
+                document.getElementById('matchesInput').value = data.matches;
+                document.getElementById('goalsInput').value = data.goals;
+                document.getElementById('assistsInput').value = data.assists;
+                document.getElementById('ratingInput').value = data.rating;
+                document.getElementById('bioInput').value = data.bio;
+                document.getElementById('videoUrl').value = data.videoUrl;
+            }
+
+            const savedPhotoData = localStorage.getItem('playerPhoto');
+            if (savedPhotoData) {
+                const img = document.getElementById('photoImg');
+                if (img) {
+                    img.src = savedPhotoData;
+                    img.style.display = 'block';
+                }
+            }
+        });
+        // ...existing code...
+    </script>
+</body>
+</html>
+

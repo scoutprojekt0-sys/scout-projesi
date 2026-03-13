@@ -1,0 +1,238 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NextScout - Benzerini Bul</title>
+    <meta name="description" content="NextScout look alike sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://nextscout.app/look-alike.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="NextScout - Benzerini Bul">
+    <meta property="og:description" content="NextScout look alike sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/look-alike.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="NextScout - Benzerini Bul">
+    <meta name="twitter:description" content="NextScout look alike sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(180deg, #F8FAFC 0%, #EAF2FF 100%); color: #0F172A; min-height: 100vh; }
+        .topbar { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; background: #FFFFFF; border-bottom: 1px solid #DBEAFE; }
+        .brand { font-family: 'Poppins', sans-serif; font-size: 24px; color: #1D4ED8; text-decoration: none; }
+        .top-actions { display: flex; gap: 10px; }
+        .btn { border: 1px solid #BFDBFE; background: #EFF6FF; color: #1E3A8A; padding: 9px 14px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 13px; }
+        .btn.primary { background: #1D4ED8; border-color: #1D4ED8; color: #FFFFFF; }
+        .page { max-width: 1200px; margin: 26px auto; padding: 0 20px; }
+        .hero { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 18px; padding: 24px; margin-bottom: 18px; box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08); }
+        .hero h1 { font-size: 30px; margin-bottom: 8px; }
+        .hero p { color: #475569; }
+        .filters { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 16px; }
+        .control { width: 100%; padding: 10px 12px; border: 1px solid #CBD5E1; border-radius: 10px; background: #F8FAFC; font-size: 14px; }
+        .results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+        .card { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 14px; padding: 16px; }
+        .name { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .name strong { font-size: 18px; }
+        .badge { background: #DCFCE7; color: #166534; border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 800; }
+        .meta { color: #475569; font-size: 13px; display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .stat { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 8px; text-align: center; }
+        .stat span { display: block; font-size: 11px; color: #64748B; }
+        .stat strong { font-size: 16px; }
+        @media (max-width: 900px) {
+            .filters { grid-template-columns: 1fr 1fr; }
+            .results { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="./index.html">NextScout</a>
+        <div class="top-actions">
+            <a class="btn" href="./index.html"><i class="fa-solid fa-arrow-left"></i> Anasayfa</a>
+            <a class="btn primary" href="./manager-needs.html">Menajer Ilanlari</a>
+        </div>
+    </header>
+
+    <main class="page">
+        <section class="hero">
+            <h1><i class="fa-solid fa-clone"></i> Benzerini Bul (Look-alike)</h1>
+            <p>Referans havuzu: Futbol 50 + Basketbol 50 + Voleybol 50 profesyonel oyuncu.</p>
+            <div class="filters">
+                <select class="control" id="sportInput"></select>
+                <select class="control" id="referenceInput"></select>
+                <select class="control" id="positionInput"></select>
+                <select class="control" id="footInput">
+                    <option value="">Dominant Taraf (Tumu)</option>
+                    <option value="Sol">Sol</option>
+                    <option value="Sag">Sag</option>
+                </select>
+                <button class="btn primary" id="runSearch"><i class="fa-solid fa-magnifying-glass"></i> Analizi Calistir</button>
+            </div>
+        </section>
+
+        <section class="results" id="results"></section>
+    </main>
+
+    <script>
+        const SPORTS = {
+            Futbol: {
+                positions: ['GK', 'CB', 'LB', 'RB', 'DM', 'CM', 'AM', 'LW', 'RW', 'ST'],
+                names: ['Arda Guler', 'Hakan Calhanoglu', 'Kenan Yildiz', 'Irfan Can Kahveci', 'Cengiz Under', 'Orkun Kokcu', 'Ferdi Kadioglu', 'Merih Demiral', 'Caglar Soyuncu', 'Zeki Celik', 'Baris Alper Yilmaz', 'Kerem Akturkoglu', 'Yunus Akgun', 'Can Uzun', 'Semih Kilicsoy', 'Ronaldo', 'Messi', 'Mbappe', 'Haaland', 'Vinicius Jr', 'Bellingham', 'De Bruyne', 'Pedri', 'Musiala', 'Saka']
+            },
+            Basketbol: {
+                positions: ['PG', 'SG', 'SF', 'PF', 'C'],
+                names: ['Alperen Sengun', 'Cedi Osman', 'Furkan Korkmaz', 'Shane Larkin', 'Scottie Wilbekin', 'LeBron James', 'Stephen Curry', 'Kevin Durant', 'Nikola Jokic', 'Luka Doncic', 'Giannis Antetokounmpo', 'Jayson Tatum', 'Devin Booker', 'Ja Morant', 'Kawhi Leonard', 'Damian Lillard', 'Joel Embiid', 'Anthony Davis', 'Jimmy Butler', 'Kyrie Irving', 'Jaylen Brown', 'Tyrese Haliburton', 'Donovan Mitchell', 'Trae Young', 'Brunson']
+            },
+            Voleybol: {
+                positions: ['Pasor', 'Smaçor', 'Orta Oyuncu', 'Libero', 'Capraz'],
+                names: ['Ebrar Karakurt', 'Melissa Vargas', 'Zehra Gunes', 'Hande Baladin', 'Simge Akoz', 'Meliha Diken', 'Cansu Ozbay', 'Eda Erdem', 'Ayca Aykac', 'Naz Aydemir', 'Gabi Guimaraes', 'Paola Egonu', 'Zhu Ting', 'Kelsey Robinson', 'Jordan Larson', 'Brankica Mihajlovic', 'Tijana Boskovic', 'Kim Yeon-koung', 'Alessia Orro', 'Monica De Gennaro', 'Ana Cristina', 'Isabelle Haak', 'Maja Ognjenovic', 'Myrtha', 'Nika Daalderop']
+            }
+        };
+
+        const CITIES = ['Istanbul', 'Ankara', 'Izmir', 'Bursa', 'Antalya', 'Trabzon', 'Konya', 'Adana', 'Samsun', 'Kayseri'];
+
+        function buildProPlayers(sportName) {
+            const { names, positions } = SPORTS[sportName];
+            const rows = [];
+            for (let i = 0; i < 50; i++) {
+                const baseName = names[i % names.length];
+                const suffix = i >= names.length ? ` ${Math.floor(i / names.length) + 1}` : '';
+                rows.push({
+                    id: `${sportName}-pro-${i + 1}`,
+                    sport: sportName,
+                    name: `${baseName}${suffix}`,
+                    position: positions[i % positions.length],
+                    foot: i % 3 === 0 ? 'Sol' : 'Sag',
+                    speed: 70 + ((i * 7) % 28),
+                    technique: 72 + ((i * 5) % 26),
+                    physical: 68 + ((i * 9) % 30)
+                });
+            }
+            return rows;
+        }
+
+        function buildCandidates(sportName) {
+            const { positions } = SPORTS[sportName];
+            const rows = [];
+            for (let i = 0; i < 50; i++) {
+                rows.push({
+                    id: `${sportName}-cand-${i + 1}`,
+                    sport: sportName,
+                    name: `${sportName} Aday ${i + 1}`,
+                    city: CITIES[i % CITIES.length],
+                    position: positions[i % positions.length],
+                    foot: i % 2 === 0 ? 'Sag' : 'Sol',
+                    speed: 65 + ((i * 6) % 30),
+                    technique: 66 + ((i * 8) % 28),
+                    physical: 64 + ((i * 10) % 30)
+                });
+            }
+            return rows;
+        }
+
+        const PRO_PLAYERS = [...buildProPlayers('Futbol'), ...buildProPlayers('Basketbol'), ...buildProPlayers('Voleybol')];
+        const CANDIDATES = [...buildCandidates('Futbol'), ...buildCandidates('Basketbol'), ...buildCandidates('Voleybol')];
+
+        function setSportOptions() {
+            const sportInput = document.getElementById('sportInput');
+            sportInput.innerHTML = Object.keys(SPORTS).map((s) => `<option value="${s}">${s}</option>`).join('');
+            sportInput.value = 'Futbol';
+        }
+
+        function setReferenceOptions() {
+            const sport = document.getElementById('sportInput').value;
+            const select = document.getElementById('referenceInput');
+            const refs = PRO_PLAYERS.filter((p) => p.sport === sport);
+            select.innerHTML = refs.map((p) => `<option value="${p.id}">${p.name}</option>`).join('');
+        }
+
+        function setPositionOptions() {
+            const sport = document.getElementById('sportInput').value;
+            const positionInput = document.getElementById('positionInput');
+            const opts = SPORTS[sport].positions;
+            positionInput.innerHTML = `<option value="">Pozisyon (Tumu)</option>${opts.map((p) => `<option value="${p}">${p}</option>`).join('')}`;
+        }
+
+        function getSelectedReference() {
+            const refId = document.getElementById('referenceInput').value;
+            return PRO_PLAYERS.find((p) => p.id === refId) || PRO_PLAYERS[0];
+        }
+
+        function computeSimilarity(candidate, ref) {
+            const speedDiff = Math.abs(candidate.speed - ref.speed);
+            const techDiff = Math.abs(candidate.technique - ref.technique);
+            const physDiff = Math.abs(candidate.physical - ref.physical);
+            const weightedDiff = (speedDiff * 0.35) + (techDiff * 0.45) + (physDiff * 0.20);
+            return Math.max(50, Math.round(100 - weightedDiff));
+        }
+
+        function render(data, refName) {
+            const root = document.getElementById('results');
+            if (!data.length) {
+                root.innerHTML = '<article class="card"><strong>Sonuc bulunamadi.</strong><div class="meta">Filtreleri gevsetip tekrar dene.</div></article>';
+                return;
+            }
+
+            root.innerHTML = data.map((p) => `
+                <article class="card">
+                    <div class="name"><strong>${p.name}</strong><span class="badge">%${p.similarity} benzer</span></div>
+                    <div class="meta">
+                        <span><i class="fa-solid fa-basketball"></i> ${p.sport}</span>
+                        <span><i class="fa-solid fa-location-dot"></i> ${p.city}</span>
+                        <span><i class="fa-solid fa-shield"></i> ${p.position}</span>
+                        <span><i class="fa-solid fa-hand"></i> ${p.foot}</span>
+                    </div>
+                    <div class="meta"><span><i class="fa-solid fa-user"></i> Referans: ${refName}</span></div>
+                    <div class="stats">
+                        <div class="stat"><span>Hiz</span><strong>${p.speed}</strong></div>
+                        <div class="stat"><span>Teknik</span><strong>${p.technique}</strong></div>
+                        <div class="stat"><span>Fizik</span><strong>${p.physical}</strong></div>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        function runAnalysis() {
+            const sport = document.getElementById('sportInput').value;
+            const ref = getSelectedReference();
+            const position = document.getElementById('positionInput').value;
+            const foot = document.getElementById('footInput').value;
+
+            const filtered = CANDIDATES
+                .filter((p) => p.sport === sport)
+                .filter((p) => (position ? p.position === position : true))
+                .filter((p) => (foot ? p.foot === foot : true))
+                .map((p) => ({ ...p, similarity: computeSimilarity(p, ref) }))
+                .sort((a, b) => b.similarity - a.similarity);
+
+            render(filtered, ref.name);
+        }
+
+        setSportOptions();
+        setPositionOptions();
+        setReferenceOptions();
+
+        document.getElementById('sportInput')?.addEventListener('change', () => {
+            setPositionOptions();
+            setReferenceOptions();
+            runAnalysis();
+        });
+
+        document.getElementById('runSearch')?.addEventListener('click', runAnalysis);
+        runAnalysis();
+    </script>
+    <script src="assets/js/core-stability.js"></script>
+</body>
+</html>
+
+
+
+
+

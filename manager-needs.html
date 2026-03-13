@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NextScout - Menajerlerin Aradigi Oyuncular</title>
+    <meta name="description" content="NextScout manager needs sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://nextscout.app/manager-needs.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="NextScout - Menajerlerin Aradigi Oyuncular">
+    <meta property="og:description" content="NextScout manager needs sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/manager-needs.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="NextScout - Menajerlerin Aradigi Oyuncular">
+    <meta name="twitter:description" content="NextScout manager needs sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(180deg, #F8FAFC 0%, #ECFEFF 100%); color: #0F172A; min-height: 100vh; }
+        .topbar { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; background: #FFFFFF; border-bottom: 1px solid #DBEAFE; }
+        .brand { font-family: 'Poppins', sans-serif; font-size: 24px; color: #1D4ED8; text-decoration: none; }
+        .btn { border: 1px solid #BFDBFE; background: #EFF6FF; color: #1E3A8A; padding: 9px 14px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 13px; cursor: pointer; }
+        .btn.primary { background: #059669; border-color: #059669; color: #FFFFFF; }
+        .page { max-width: 1200px; margin: 26px auto; padding: 0 20px; }
+        .hero { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 18px; padding: 24px; margin-bottom: 18px; box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08); }
+        .hero h1 { font-size: 30px; margin-bottom: 8px; }
+        .hero p { color: #475569; margin-bottom: 14px; }
+        .filters { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .control { width: 100%; padding: 10px 12px; border: 1px solid #CBD5E1; border-radius: 10px; background: #F8FAFC; font-size: 14px; }
+        .list { display: grid; gap: 12px; margin-top: 14px; }
+        .job { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 14px; padding: 16px; }
+        .job-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .job-head h3 { font-size: 19px; }
+        .reward { background: #DCFCE7; color: #166534; border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 800; }
+        .meta { display: flex; flex-wrap: wrap; gap: 8px; color: #475569; font-size: 13px; margin-bottom: 10px; }
+        .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+        .tag { background: #F1F5F9; border: 1px solid #CBD5E1; color: #334155; border-radius: 999px; padding: 5px 9px; font-size: 12px; font-weight: 700; }
+        .empty { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 12px; padding: 16px; color: #64748B; }
+        @media (max-width: 1000px) { .filters { grid-template-columns: 1fr 1fr; } }
+    </style>
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" href="./index.html">NextScout</a>
+    <div style="display:flex; gap:10px;">
+        <a class="btn" href="./index.html"><i class="fa-solid fa-arrow-left"></i> Anasayfa</a>
+        <a class="btn primary" href="./manager-dashboard.html">Dashboard</a>
+    </div>
+</header>
+
+<main class="page">
+    <section class="hero">
+        <h1><i class="fa-solid fa-filter"></i> Menajerlerin Aradigi Oyuncular</h1>
+        <p>Dashboard'da kaydedilen ilanlar burada yayinlanir. Oyuncular filtreleyip kendine uygun ilani bulur.</p>
+        <div class="filters">
+            <select class="control" id="positionFilter">
+                <option value="">Pozisyon (Tumu)</option>
+                <option value="CB">Stoper</option>
+                <option value="LB">Sol Bek</option>
+                <option value="RB">Sag Bek</option>
+                <option value="AM">10 Numara</option>
+                <option value="RW">Sag Kanat</option>
+                <option value="LW">Sol Kanat</option>
+                <option value="ST">Santrfor</option>
+            </select>
+            <input class="control" id="heightFilter" type="number" placeholder="Min boy (cm)">
+            <input class="control" id="budgetMinFilter" type="number" placeholder="Butce min (TL)">
+            <input class="control" id="budgetMaxFilter" type="number" placeholder="Butce max (TL)">
+            <button class="btn primary" id="applyFilter"><i class="fa-solid fa-magnifying-glass"></i> Filtrele</button>
+        </div>
+    </section>
+
+    <section class="list" id="jobList"></section>
+</main>
+
+<script>
+    let allJobs = [];
+
+    function getApiBaseUrl() {
+        const query = new URLSearchParams(window.location.search);
+        const fromQuery = (query.get('api_base') || '').trim();
+        if (fromQuery) return fromQuery.replace(/\/$/, '');
+        if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+        return '/api';
+    }
+
+    async function loadJobs() {
+        const apiBase = getApiBaseUrl();
+        const response = await fetch(`${apiBase}/discovery/manager-needs`, {
+            headers: { Accept: 'application/json' },
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const payload = await response.json();
+        return Array.isArray(payload?.data) ? payload.data : [];
+    }
+
+    function money(v) {
+        return `${(Number(v) || 0).toLocaleString('tr-TR')} TL`;
+    }
+
+    function render(data) {
+        const root = document.getElementById('jobList');
+        if (!data.length) {
+            root.innerHTML = '<div class="empty">Kriterlere uygun ilan bulunamadi.</div>';
+            return;
+        }
+
+        root.innerHTML = data.map((job) => {
+            const title = job.title || `${job.position || '-'} pozisyonu icin oyuncu araniyor`;
+            const freeLabel = job.free_only === 'true' ? 'Bonservisi elinde' : (job.free_only === 'false' ? 'Kulubunde olabilir' : 'Bonservis farketmez');
+            const ageLabel = `${job.age_min || '-'}-${job.age_max || '-'} yas`;
+            return `
+                <article class="job">
+                    <div class="job-head">
+                        <h3>${title}</h3>
+                        <span class="reward">${money(job.budget_min)} - ${money(job.budget_max)}</span>
+                    </div>
+                    <div class="meta">
+                        <span><i class="fa-solid fa-user-tie"></i> Menajer: ${job.author_name || '-'}</span>
+                        <span><i class="fa-solid fa-location-dot"></i> ${job.city || 'Sehir belirtilmedi'}</span>
+                        <span><i class="fa-solid fa-ruler-vertical"></i> Min ${job.min_height || '-'} cm</span>
+                        <span><i class="fa-solid fa-user"></i> ${ageLabel}</span>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">${job.dominant_side || 'Ayak farketmez'}</span>
+                        <span class="tag">${freeLabel}</span>
+                        <span class="tag">${job.description || 'Ek aciklama yok'}</span>
+                    </div>
+                    <button class="btn primary" onclick="alert('Basvuru iletildi: ${title}')"><i class="fa-solid fa-paper-plane"></i> Bu Goreve Basvur</button>
+                </article>
+            `;
+        }).join('');
+    }
+
+    document.getElementById('applyFilter')?.addEventListener('click', () => {
+        const position = document.getElementById('positionFilter').value;
+        const minHeight = Number(document.getElementById('heightFilter').value || 0);
+        const budgetMin = Number(document.getElementById('budgetMinFilter').value || 0);
+        const budgetMax = Number(document.getElementById('budgetMaxFilter').value || 0);
+
+        const filtered = allJobs
+            .filter((j) => (position ? j.position === position : true))
+            .filter((j) => (minHeight ? Number(j.min_height || 0) >= minHeight : true))
+            .filter((j) => (budgetMin ? Number(j.budget_min || 0) >= budgetMin : true))
+            .filter((j) => (budgetMax ? Number(j.budget_max || 0) <= budgetMax : true))
+            .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+
+        render(filtered);
+    });
+
+    async function init() {
+        try {
+            allJobs = await loadJobs();
+        } catch (error) {
+            allJobs = [];
+        }
+        render(allJobs.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)));
+    }
+
+    init();
+</script>
+    <script src="assets/js/core-stability.js"></script>
+</body>
+</html>
+
+
+
+
+

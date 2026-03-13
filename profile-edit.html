@@ -1,0 +1,797 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profili DÃ¼zenle | NextScout</title>
+    <meta name="description" content="NextScout profile edit sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="https://nextscout.app/profile-edit.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="NextScout">
+    <meta property="og:title" content="Profili DÃ¼zenle | NextScout">
+    <meta property="og:description" content="NextScout profile edit sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/profile-edit.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Profili DÃ¼zenle | NextScout">
+    <meta name="twitter:description" content="NextScout profile edit sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="theme-color" content="#0B3B8A">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-cancel {
+            background: #f3f4f6;
+            color: #667eea;
+            border: 1px solid #e5e7eb;
+        }
+
+        .btn-cancel:hover {
+            background: #e5e7eb;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .edit-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        /* PROFIL RESMÄ° */
+        .profile-photo-section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: #1f2937;
+        }
+
+        .photo-preview {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .photo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-zone {
+            border: 2px dashed #667eea;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 15px;
+        }
+
+        .upload-zone:hover {
+            background: #f0f4ff;
+            border-color: #764ba2;
+        }
+
+        .upload-zone.dragover {
+            background: #f0f4ff;
+            border-color: #764ba2;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            color: #667eea;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .upload-subtext {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        /* FORMUlAR */
+        .form-section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* GALERÄ° */
+        .gallery-section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .gallery-item {
+            aspect-ratio: 1;
+            border: 2px dashed #e5e7eb;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: #f9fafb;
+            transition: all 0.2s;
+            font-size: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-item:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-upload-btn {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e5e7eb;
+            background: #f9fafb;
+            color: #667eea;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .gallery-upload-btn:hover {
+            background: #f0f4ff;
+            border-color: #667eea;
+        }
+
+        /* VÄ°DEOLAR */
+        .videos-section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .video-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            justify-content: space-between;
+        }
+
+        .video-info {
+            flex: 1;
+        }
+
+        .video-title {
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .video-url {
+            font-size: 12px;
+            color: #667eea;
+            word-break: break-all;
+        }
+
+        .remove-btn {
+            padding: 6px 12px;
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .remove-btn:hover {
+            background: #fca5a5;
+        }
+
+        .add-video-form {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .add-video-form input {
+            padding: 10px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+
+        .add-video-btn {
+            padding: 10px;
+            background: #dbeafe;
+            color: #667eea;
+            border: 1px solid #667eea;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .add-video-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Ä°STATÄ°STÄ°KLER */
+        .stats-section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .stat-input {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        @media (max-width: 1024px) {
+            .edit-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .header-buttons {
+                width: 100%;
+            }
+
+            .header-buttons .btn {
+                flex: 1;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-content">
+            <h1>âœï¸ Profili DÃ¼zenle</h1>
+            <div class="header-buttons">
+                <a href="DASHBOARD_DESIGN.html" class="btn btn-cancel">â† Geri DÃ¶n</a>
+                <button class="btn btn-save" onclick="saveProfile()">âœ… Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="container">
+        <div class="edit-grid">
+            <!-- SOL: PROFIL RESMÄ° -->
+            <div class="profile-photo-section">
+                <h2 class="section-title">ğŸ“¸ Profil Resmi</h2>
+                <div class="photo-preview" id="photoPreview">âš½</div>
+                <div class="upload-zone" id="uploadZone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                    <div class="upload-icon">ğŸ“¤</div>
+                    <div class="upload-text">Resmi SÃ¼rÃ¼kle veya TÄ±kla</div>
+                    <div class="upload-subtext">JPG, PNG (Maks 5MB)</div>
+                    <input type="file" id="photoInput" class="file-input" accept="image/*">
+                </div>
+                <button class="btn btn-cancel" style="width: 100%; margin-bottom: 10px;" onclick="document.getElementById('photoInput').click()">Dosya SeÃ§</button>
+                <button class="btn btn-cancel" style="width: 100%;" onclick="removePhoto()">KaldÄ±r</button>
+            </div>
+
+            <!-- SAÄ: TEMEL BÄ°LGÄ°LER -->
+            <div class="form-section">
+                <h2 class="section-title">ğŸ‘¤ Temel Bilgiler</h2>
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label>Ad Soyad</label>
+                        <input type="text" id="nameInput" value="" placeholder="Ad Soyad">
+                    </div>
+
+                    <div class="form-group">
+                        <label>âš½ Pozisyon</label>
+                        <select id="positionSelect">
+                            <option>Kaleci</option>
+                            <option selected>Forvet</option>
+                            <option>Defans</option>
+                            <option>Orta Saha</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Cinsiyet</label>
+                            <select id="genderSelect">
+                                <option value="bay">Bay</option>
+                                <option value="bayan">Bayan</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>BranÅŸ</label>
+                            <select id="sportSelect">
+                                <option value="futbol">Futbol</option>
+                                <option value="basketbol">Basketbol</option>
+                                <option value="voleybol">Voleybol</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>ğŸ‘¤ YaÅŸ</label>
+                            <input type="number" id="ageInput" value="24" min="15" max="50">
+                        </div>
+                        <div class="form-group">
+                            <label>ğŸ“ Boy (cm)</label>
+                            <input type="number" id="heightInput" value="180" min="150" max="210">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Sozlesme Durumu</label>
+                            <select id="contractStatusSelect">
+                                <option value="active">Sozlesmeli</option>
+                                <option value="free">Bosta</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Kulup Ariyor mu?</label>
+                            <select id="seekingClubSelect">
+                                <option value="false">Hayir</option>
+                                <option value="true">Evet</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mevcut Kulup</label>
+                        <input type="text" id="currentClubInput" value="" placeholder="Kulup adi (bostaysan bos birakabilirsin)">
+                    </div>
+
+                    <div class="form-group">
+                        <label>ğŸ“ HakkÄ±nda</label>
+                        <textarea id="bioInput">TÃ¼rkiye'nin en yetenekli forvet oyuncularÄ±ndan biri. GÃ¼Ã§lÃ¼ fizik yapÄ±sÄ±, hÄ±zÄ± ve gol yeteneÄŸi ile biliniyor.</textarea>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Ä°STATÄ°STÄ°KLER -->
+        <div class="stats-section" style="margin-top: 30px;">
+            <h2 class="section-title">ğŸ“Š Ä°statistikler</h2>
+            <div class="stats-grid">
+                <div class="stat-input">
+                    <label>Oynan MaÃ§lar</label>
+                    <input type="number" id="matchesInput" value="28" min="0">
+                </div>
+                <div class="stat-input">
+                    <label>Goller</label>
+                    <input type="number" id="goalsInput" value="15" min="0">
+                </div>
+                <div class="stat-input">
+                    <label>Asistler</label>
+                    <input type="number" id="assistsInput" value="6" min="0">
+                </div>
+                <div class="stat-input">
+                    <label>Rating (0-10)</label>
+                    <input type="number" id="ratingInput" value="4.8" min="0" max="10" step="0.1">
+                </div>
+            </div>
+        </div>
+
+        <!-- GALERÄ° -->
+        <div class="gallery-section" style="margin-top: 30px;">
+            <h2 class="section-title">ğŸ“¸ Foto Galerisi</h2>
+            <div class="gallery-grid" id="galleryGrid">
+                <div class="gallery-item" onclick="uploadGalleryPhoto(0)">â•</div>
+                <div class="gallery-item" onclick="uploadGalleryPhoto(1)">â•</div>
+                <div class="gallery-item" onclick="uploadGalleryPhoto(2)">â•</div>
+                <div class="gallery-item" onclick="uploadGalleryPhoto(3)">â•</div>
+                <div class="gallery-item" onclick="uploadGalleryPhoto(4)">â•</div>
+                <div class="gallery-item" onclick="uploadGalleryPhoto(5)">â•</div>
+            </div>
+            <input type="file" id="galleryInput" class="file-input" accept="image/*">
+        </div>
+
+        <!-- VÄ°DEOLAR -->
+        <div class="videos-section" style="margin-top: 30px;">
+            <h2 class="section-title">ğŸ¬ Video Portfolio</h2>
+            <div class="add-video-form">
+                <input type="text" id="videoTitleInput" placeholder="Video BaÅŸlÄ±ÄŸÄ± (Ã¶r: Sezon Ã–zetleri)">
+                <input type="url" id="videoUrlInput" placeholder="Video Linki (YouTube, Vimeo vb)">
+                <button type="button" class="add-video-btn" onclick="addVideo()">+ Video Ekle</button>
+            </div>
+            <div id="videosList"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentGalleryIndex = 0;
+        const galleryImages = new Array(6);
+
+        // Profil resmini yÃ¼kle
+        const uploadZone = document.getElementById('uploadZone');
+        const photoInput = document.getElementById('photoInput');
+
+        uploadZone.addEventListener('click', () => photoInput.click());
+
+        photoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const preview = document.getElementById('photoPreview');
+                    preview.innerHTML = `<img src="${event.target.result}" style="width: 100%; height: 100%; object-fit: cover;">`;
+                    localStorage.setItem('playerPhoto', event.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            document.getElementById('uploadZone').classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            document.getElementById('uploadZone').classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            document.getElementById('uploadZone').classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                photoInput.files = files;
+                photoInput.dispatchEvent(new Event('change'));
+            }
+        }
+
+        function removePhoto() {
+            document.getElementById('photoPreview').innerHTML = 'âš½';
+            photoInput.value = '';
+            localStorage.removeItem('playerPhoto');
+        }
+
+        // Galeri fotoÄŸrafÄ± yÃ¼kle
+        const galleryInput = document.getElementById('galleryInput');
+
+        function uploadGalleryPhoto(index) {
+            currentGalleryIndex = index;
+            galleryInput.click();
+        }
+
+        galleryInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    galleryImages[currentGalleryIndex] = event.target.result;
+                    const items = document.querySelectorAll('.gallery-item');
+                    items[currentGalleryIndex].innerHTML = `<img src="${event.target.result}" style="width: 100%; height: 100%; object-fit: cover;">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Video yÃ¶netimi
+        let videos = [];
+
+        function addVideo() {
+            const title = document.getElementById('videoTitleInput').value;
+            const url = document.getElementById('videoUrlInput').value;
+
+            if (title && url) {
+                videos.push({ title, url });
+                document.getElementById('videoTitleInput').value = '';
+                document.getElementById('videoUrlInput').value = '';
+                renderVideos();
+            }
+        }
+
+        function removeVideo(index) {
+            videos.splice(index, 1);
+            renderVideos();
+        }
+
+        function renderVideos() {
+            const videosList = document.getElementById('videosList');
+            videosList.innerHTML = videos.map((video, index) => `
+                <div class="video-item">
+                    <div class="video-info">
+                        <div class="video-title">ğŸ¬ ${video.title}</div>
+                        <div class="video-url">${video.url}</div>
+                    </div>
+                    <button type="button" class="remove-btn" onclick="removeVideo(${index})">Sil</button>
+                </div>
+            `).join('');
+        }
+
+        // Profil Kaydet
+        function saveProfile() {
+            const profileData = {
+                name: document.getElementById('nameInput').value,
+                position: document.getElementById('positionSelect').value,
+                gender: document.getElementById('genderSelect').value,
+                sport: document.getElementById('sportSelect').value,
+                age: document.getElementById('ageInput').value,
+                height: document.getElementById('heightInput').value,
+                contract_status: document.getElementById('contractStatusSelect').value,
+                seeking_club: document.getElementById('seekingClubSelect').value === 'true',
+                current_club: document.getElementById('currentClubInput').value,
+                bio: document.getElementById('bioInput').value,
+                matches: document.getElementById('matchesInput').value,
+                goals: document.getElementById('goalsInput').value,
+                assists: document.getElementById('assistsInput').value,
+                rating: document.getElementById('ratingInput').value,
+                galleryImages: galleryImages,
+                videos: videos
+            };
+
+            localStorage.setItem('playerProfile', JSON.stringify(profileData));
+            localStorage.setItem('playerGallery', JSON.stringify(galleryImages));
+            localStorage.setItem('playerVideos', JSON.stringify(videos));
+
+            // Dashboard ve profilde aynÄ± isim gÃ¶rÃ¼nsÃ¼n
+            try {
+                const currentUserRaw = localStorage.getItem('nextscout_user');
+                const currentUser = currentUserRaw ? JSON.parse(currentUserRaw) : {};
+                const mergedUser = {
+                    ...currentUser,
+                    name: profileData.name || currentUser.name || 'Oyuncu',
+                    role: currentUser.role || 'player',
+                    email: currentUser.email || '',
+                };
+                localStorage.setItem('nextscout_user', JSON.stringify(mergedUser));
+            } catch (e) {
+                // ignore parse errors
+            }
+
+            alert('âœ… Profil baÅŸarÄ±yla kaydedildi!');
+            window.location.href = 'DASHBOARD_DESIGN.html';
+        }
+
+        // Sayfa yÃ¼klenirken verileri geri yÃ¼kle
+        window.addEventListener('load', () => {
+            const savedProfile = localStorage.getItem('playerProfile');
+            let sessionUser = null;
+            try {
+                const rawUser = localStorage.getItem('nextscout_user');
+                sessionUser = rawUser ? JSON.parse(rawUser) : null;
+            } catch (e) {
+                sessionUser = null;
+            }
+
+            if (sessionUser?.name) {
+                document.getElementById('nameInput').value = sessionUser.name;
+            }
+
+            if (savedProfile) {
+                const data = JSON.parse(savedProfile);
+                document.getElementById('nameInput').value = data.name || sessionUser?.name || '';
+                document.getElementById('positionSelect').value = data.position || 'Forvet';
+                document.getElementById('genderSelect').value = data.gender || 'bay';
+                document.getElementById('sportSelect').value = data.sport || 'futbol';
+                document.getElementById('ageInput').value = data.age || '24';
+                document.getElementById('heightInput').value = data.height || '180';
+                document.getElementById('contractStatusSelect').value = data.contract_status || 'active';
+                document.getElementById('seekingClubSelect').value = data.seeking_club ? 'true' : 'false';
+                document.getElementById('currentClubInput').value = data.current_club || '';
+                document.getElementById('bioInput').value = data.bio || '';
+                document.getElementById('matchesInput').value = data.matches || '0';
+                document.getElementById('goalsInput').value = data.goals || '0';
+                document.getElementById('assistsInput').value = data.assists || '0';
+                document.getElementById('ratingInput').value = data.rating || '0';
+            }
+
+            const savedGallery = localStorage.getItem('playerGallery');
+            if (savedGallery) {
+                const images = JSON.parse(savedGallery);
+                const items = document.querySelectorAll('.gallery-item');
+                images.forEach((img, index) => {
+                    if (img) {
+                        galleryImages[index] = img;
+                        items[index].innerHTML = `<img src="${img}" style="width: 100%; height: 100%; object-fit: cover;">`;
+                    }
+                });
+            }
+
+            const savedVideos = localStorage.getItem('playerVideos');
+            if (savedVideos) {
+                videos = JSON.parse(savedVideos);
+                renderVideos();
+            }
+
+            const savedPhoto = localStorage.getItem('playerPhoto');
+            if (savedPhoto) {
+                const preview = document.getElementById('photoPreview');
+                preview.innerHTML = `<img src="${savedPhoto}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            }
+        });
+    </script>
+    <script src="assets/js/core-stability.js"></script>
+</body>
+</html>
+
+
+
+

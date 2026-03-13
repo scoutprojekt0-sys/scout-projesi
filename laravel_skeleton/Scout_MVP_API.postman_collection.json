@@ -1,0 +1,243 @@
+{
+  "info": {
+    "name": "Scout MVP API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "MVP endpoints for auth, profiles, opportunities, applications and contacts"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000/api" },
+    { "key": "token", "value": "" },
+    { "key": "player_id", "value": "1" },
+    { "key": "team_id", "value": "2" },
+    { "key": "opportunity_id", "value": "1" },
+    { "key": "application_id", "value": "1" },
+    { "key": "contact_id", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Player One\",\n  \"email\": \"player.one@example.com\",\n  \"password\": \"secret123\",\n  \"role\": \"player\",\n  \"city\": \"Ankara\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [{
+            "listen": "test",
+            "script": {
+              "type": "text/javascript",
+              "exec": [
+                "let jsonData = pm.response.json();",
+                "if (jsonData?.data?.token) { pm.collectionVariables.set('token', jsonData.data.token); }"
+              ]
+            }
+          }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"player.one@example.com\",\n  \"password\": \"secret123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/auth/me"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/auth/logout"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Players",
+      "item": [
+        {
+          "name": "List Players",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/players?position=ST&city=Ankara&age_min=16&age_max=22"
+          }
+        },
+        {
+          "name": "Update Player",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{base_url}}/players/{{player_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"position\": \"ST\",\n  \"birth_year\": 2006,\n  \"dominant_foot\": \"right\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Teams",
+      "item": [
+        {
+          "name": "List Teams",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/teams?city=Istanbul&league_level=Regional"
+          }
+        },
+        {
+          "name": "Update Team",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{base_url}}/teams/{{team_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"team_name\": \"Team Alpha U19\",\n  \"league_level\": \"Regional\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Opportunities",
+      "item": [
+        {
+          "name": "Create Opportunity",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{base_url}}/opportunities",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"U19 Forvet Araniyor\",\n  \"position\": \"ST\",\n  \"age_min\": 16,\n  \"age_max\": 20,\n  \"city\": \"Istanbul\",\n  \"status\": \"open\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Opportunities",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/opportunities?status=open&position=ST"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Applications",
+      "item": [
+        {
+          "name": "Apply",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{base_url}}/opportunities/{{opportunity_id}}/apply",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"Profil ve videolarimi paylastim.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Incoming Applications",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/applications/incoming?status=pending"
+          }
+        },
+        {
+          "name": "Change Application Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{base_url}}/applications/{{application_id}}/status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"accepted\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Contacts",
+      "item": [
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{base_url}}/contacts",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"to_user_id\": 2,\n  \"subject\": \"Gorusme\",\n  \"message\": \"Yarin saat 20:00 uygun musunuz?\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Inbox",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/contacts/inbox"
+          }
+        },
+        {
+          "name": "Change Message Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{base_url}}/contacts/{{contact_id}}/status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"read\"\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
