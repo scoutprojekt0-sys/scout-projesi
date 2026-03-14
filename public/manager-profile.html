@@ -1,22 +1,22 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manager Profili - NextScout</title>
-    <meta name="description" content="NextScout manager profile sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
+    <meta name="description" content="NextScout manager profile sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
     <meta name="robots" content="noindex,follow">
     <link rel="canonical" href="https://nextscout.pro/manager-profile.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
     <meta property="og:title" content="Manager Profili - NextScout">
-    <meta property="og:description" content="NextScout manager profile sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
+    <meta property="og:description" content="NextScout manager profile sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
     <meta property="og:url" content="https://nextscout.pro/manager-profile.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Manager Profili - NextScout">
-    <meta name="twitter:description" content="NextScout manager profile sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:description" content="NextScout manager profile sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -159,7 +159,7 @@
     <div class="head">
       <div>
         <h1 class="title">Manager Profili</h1>
-                        <div class="sub">Ä°sim ve foto dÃ¢hil profil bilgilerini dÃ¼zenle.</div>
+                        <div class="sub">Isim ve foto d�hil profil bilgilerini d�zenle.</div>
       </div>
       <div class="head-actions">
         <button type="button" class="btn" id="openPublicPreviewBtn"><i class="fas fa-user-check"></i><span>Public Gorunum</span></button>
@@ -184,8 +184,8 @@
             <input class="input" id="city" placeholder="Istanbul">
           </div>
           <div class="field">
-            <label class="label" for="country">Ãœlke</label>
-            <input class="input" id="country" placeholder="TÃ¼rkiye">
+            <label class="label" for="country">�lke</label>
+            <input class="input" id="country" placeholder="T�rkiye">
           </div>
           <div class="field">
             <label class="label" for="phone">Telefon</label>
@@ -207,7 +207,7 @@
           </div>
           <div class="act full">
             <button class="btn btn-primary" type="submit"><i class="fas fa-floppy-disk"></i><span>Kaydet</span></button>
-            <button class="btn" type="button" id="resetBtn"><i class="fas fa-rotate-left"></i><span>SÄ±fÄ±rla</span></button>
+            <button class="btn" type="button" id="resetBtn"><i class="fas fa-rotate-left"></i><span>Sifirla</span></button>
           </div>
         </form>
         <div id="saveMsg" class="ok"></div>
@@ -226,7 +226,7 @@
         <div class="row"><span class="muted">Brans</span><strong id="sumBranch">-</strong></div>
         <div class="row"><span class="muted">Ajans</span><strong id="sumAgency">-</strong></div>
         <div class="row"><span class="muted">Sehir</span><strong id="sumCity">-</strong></div>
-        <div class="row"><span class="muted">Ãœlke</span><strong id="sumCountry">-</strong></div>
+        <div class="row"><span class="muted">�lke</span><strong id="sumCountry">-</strong></div>
       </div>
     </div>
   </div>
@@ -249,7 +249,7 @@
         <div class="preview-grid">
           <div class="preview-item"><div class="preview-k">Ajans</div><div class="preview-v" id="previewAgency">-</div></div>
           <div class="preview-item"><div class="preview-k">Sehir</div><div class="preview-v" id="previewCity">-</div></div>
-          <div class="preview-item"><div class="preview-k">Ãœlke</div><div class="preview-v" id="previewCountry">-</div></div>
+          <div class="preview-item"><div class="preview-k">�lke</div><div class="preview-v" id="previewCountry">-</div></div>
           <div class="preview-item"><div class="preview-k">Telefon</div><div class="preview-v" id="previewPhone">-</div></div>
         </div>
       </div>
@@ -282,7 +282,7 @@
     }
 
     function defaults(){
-      return { name:'Manager', agency:'', city:'', country:'TÃ¼rkiye', phone:'', branch:'Futbol', bio:'', photo:'' };
+      return { name:'Manager', agency:'', city:'', country:'T�rkiye', phone:'', branch:'Futbol', bio:'', photo:'' };
     }
 
     function loadProfile(){
@@ -437,7 +437,7 @@
       setForm(profile);
       renderSummary(profile);
       renderPublicPreviewModal(profile);
-      document.getElementById('saveMsg').textContent = 'Profil sÄ±fÄ±rlandi.';
+      document.getElementById('saveMsg').textContent = 'Profil sifirlandi.';
       setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 1500);
     });
 

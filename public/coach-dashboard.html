@@ -1,17 +1,17 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Scout DASHBOARD | NextScout</title>
-  <meta name="description" content="Scout paneli: kesif listeleri, canlÄ± akis ve teknik degerlendirme sureclerini takip edin.">
+  <meta name="description" content="Scout paneli: kesif listeleri, canlı akis ve teknik degerlendirme sureclerini takip edin.">
   <meta name="robots" content="noindex,follow">
   <link rel="canonical" href="https://nextscout.pro/coach-dashboard.html">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="tr_TR">
   <meta property="og:site_name" content="NextScout">
   <meta property="og:title" content="Scout DASHBOARD | NextScout">
-  <meta property="og:description" content="Scout paneli: kesif listeleri, canlÄ± akis ve teknik degerlendirme sureclerini takip edin.">
+  <meta property="og:description" content="Scout paneli: kesif listeleri, canlı akis ve teknik degerlendirme sureclerini takip edin.">
   <meta property="og:url" content="https://nextscout.pro/coach-dashboard.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
@@ -148,11 +148,11 @@
     <div class="top-navbar">
       <div class="navbar-left"><div class="logo">NextScout Scout</div></div>
       <div class="navbar-right">
-      <button class="btn-small success" onclick="openCoachNeedModal()"><i class="fas fa-plus-circle"></i><span>Ä°lan Ver</span></button>
+      <button class="btn-small success" onclick="openCoachNeedModal()"><i class="fas fa-plus-circle"></i><span>İlan Ver</span></button>
       <button class="btn-small success" onclick="openTrialPublishModal()"><i class="fas fa-calendar-check"></i><span>Deneme/Idman Ilani</span></button>
-      <button class="btn-small primary" onclick="openLiveScoutModal()"><i class="fas fa-tower-broadcast"></i><span>CanlÄ± Scout Baslat</span></button>
+      <button class="btn-small primary" onclick="openLiveScoutModal()"><i class="fas fa-tower-broadcast"></i><span>Canlı Scout Baslat</span></button>
       <button class="btn-small home-btn-global" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;" onclick="window.location.href='index.html'"><i class="fas fa-house"></i><span>Ana Sayfa</span></button>
-      <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Ã‡Ä±kÄ±ÅŸ</span></button>
+      <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Çıkış</span></button>
       </div>
     </div>
 
@@ -167,7 +167,7 @@
           <li class="sidebar-item" onclick="openTrialCenter()"><i class="fas fa-calendar-check"></i><span>Deneme & Idmanlar</span></li>
           <li class="sidebar-item" onclick="openPerformance()"><i class="fas fa-chart-line"></i><span>Performans Analizi</span></li>
           <li class="sidebar-item" onclick="openVideoAnalysis()"><i class="fas fa-video"></i><span>Video Analiz</span></li>
-          <li class="sidebar-item" onclick="openLiveScoutModal()"><i class="fas fa-tower-broadcast"></i><span>CanlÄ± Scout</span></li>
+          <li class="sidebar-item" onclick="openLiveScoutModal()"><i class="fas fa-tower-broadcast"></i><span>Canlı Scout</span></li>
           <li class="sidebar-item" onclick="openMessages()"><i class="fas fa-comments"></i><span>Mesajlarim</span></li>
           <li class="sidebar-item" onclick="openSettings()"><i class="fas fa-gear"></i><span>Ayarlar</span></li>
           <li class="sidebar-item" onclick="openHelp()"><i class="fas fa-circle-question"></i><span>Yardim</span></li>
@@ -235,7 +235,7 @@
   <div class="need-modal-overlay" id="coachNeedModal" onclick="if(event.target.id==='coachNeedModal'){closeCoachNeedModal();}">
     <div class="need-modal" onclick="event.stopPropagation()">
       <div class="need-modal-head">
-        <h3>ANTRENÃ–R Ilani Ver</h3>
+        <h3>ANTRENÖR Ilani Ver</h3>
         <button class="btn-small secondary" type="button" onclick="closeCoachNeedModal()">Kapat</button>
       </div>
       <form id="coachNeedForm">
@@ -266,7 +266,7 @@
         </div>
         <div style="display:flex;gap:10px;align-items:center;">
           <button class="search-btn" type="button" onclick="searchPlayersModal()">Ara</button>
-          <button class="btn-small secondary" type="button" onclick="resetPlayersModal()">SÄ±fÄ±rla</button>
+          <button class="btn-small secondary" type="button" onclick="resetPlayersModal()">Sıfırla</button>
         </div>
         <div class="players-grid player-search-results" id="playersGridModal"></div>
       </div>
@@ -276,7 +276,7 @@
   <div class="need-modal-overlay" id="liveScoutModal" onclick="if(event.target.id==='liveScoutModal'){closeLiveScoutModal();}">
     <div class="need-modal live-modal" onclick="event.stopPropagation()">
       <div class="need-modal-head">
-        <h3>CanlÄ± Scout Baslat</h3>
+        <h3>Canlı Scout Baslat</h3>
         <button class="btn-small secondary" type="button" onclick="closeLiveScoutModal()">Kapat</button>
       </div>
       <form id="liveScoutForm">
@@ -293,7 +293,7 @@
             </select>
             <input type="text" id="liveFocusPlayer" placeholder="Odak oyuncu / pozisyon (or: Sol Bek #3)">
           </div>
-          <input type="url" id="liveStreamUrl" placeholder="Ana yayÄ±n linki (opsiyonel)">
+          <input type="url" id="liveStreamUrl" placeholder="Ana yayın linki (opsiyonel)">
           <div class="live-grid">
             <input type="url" id="liveStreamYoutube" placeholder="YouTube linki">
             <input type="url" id="liveStreamInstagram" placeholder="Instagram linki">
@@ -417,10 +417,10 @@
       grid.innerHTML = players.map((player) => {
         const rating = Number(player.rating) || 0;
         const starCount = Math.max(1, Math.min(5, Math.round(rating / 2)));
-        const stars = 'â˜…'.repeat(starCount) + 'â˜†'.repeat(5 - starCount);
+        const stars = '★'.repeat(starCount) + '☆'.repeat(5 - starCount);
         return `
           <div class="player-card">
-            <div class="player-card-image">âš½</div>
+            <div class="player-card-image">⚽</div>
             <div class="player-card-content">
               <div class="player-name">${escapeHtml(player.name || '-')}</div>
               <div class="player-position">${escapeHtml(player.position || '-')}</div>
@@ -703,7 +703,7 @@
         const rows = JSON.parse(localStorage.getItem('nextscout_coach_needs') || '[]');
         const row = {
           id: Date.now(),
-          author_name: payload?.author_name || 'ANTRENÃ–R',
+          author_name: payload?.author_name || 'ANTRENÖR',
           title: payload?.title || '',
           description: payload?.description || '',
           created_at: new Date().toISOString(),
@@ -740,7 +740,7 @@
         const rows = JSON.parse(localStorage.getItem('nextscout_live_matches') || '[]');
         const row = {
           id: Date.now(),
-          match_name: payload?.match_name || 'CanlÄ± Mac',
+          match_name: payload?.match_name || 'Canlı Mac',
           location: payload?.location || '',
           sport: payload?.sport || 'futbol',
           stream_url: payload?.stream_url || '',
@@ -848,8 +848,8 @@
 
       if (root) {
         root.textContent = sentToApi
-          ? `Rapor kaydedildi ve APIye gÃ¶nderildi. (${title})`
-          : `Rapor local kaydedildi. API gÃ¶nderimi icin Oyuncu ID + giriÅŸ gerekli.`;
+          ? `Rapor kaydedildi ve APIye gönderildi. (${title})`
+          : `Rapor local kaydedildi. API gönderimi icin Oyuncu ID + giriş gerekli.`;
       }
     }
 
@@ -861,7 +861,7 @@
         root.textContent = 'Henuz rapor kaydi yok.';
         return;
       }
-      root.textContent = `Son rapor: ${first.title} â€¢ ${first.overall_rating}/100`;
+      root.textContent = `Son rapor: ${first.title} • ${first.overall_rating}/100`;
     }
 
     function logout() {
@@ -871,7 +871,6 @@
       localStorage.removeItem('nextscout_user_name');
       localStorage.removeItem('nextscout_user_role');
       localStorage.removeItem('nextscout_user_id');
-      localStorage.removeItem('nextscout_demo_login');
       window.location.href = 'index.html';
     }
 
@@ -892,7 +891,7 @@
       } catch (error) {}
 
       const row = {
-        author_name: coachName || 'ANTRENÃ–R',
+        author_name: coachName || 'ANTRENÖR',
         title,
         description: text,
       };
@@ -901,9 +900,9 @@
         await saveCoachNeed(row);
         this.reset();
         closeCoachNeedModal();
-        window.nsNotify?.success ? window.nsNotify.success('Ä°lan APIye kaydedildi. Anasayfa 4. ikonda gorunecek.') : nsnsAlert('Ä°lan APIye kaydedildi. Anasayfa 4. ikonda gorunecek.');
+        window.nsNotify?.success ? window.nsNotify.success('İlan APIye kaydedildi. Anasayfa 4. ikonda gorunecek.') : nsnsAlert('İlan APIye kaydedildi. Anasayfa 4. ikonda gorunecek.');
       } catch (error) {
-        window.nsNotify?.error ? window.nsNotify.error(`Ä°lan APIye kaydedilemedi: ${error.message}`) : nsnsAlert(`Ä°lan APIye kaydedilemedi: ${error.message}`);
+        window.nsNotify?.error ? window.nsNotify.error(`İlan APIye kaydedilemedi: ${error.message}`) : nsnsAlert(`İlan APIye kaydedilemedi: ${error.message}`);
       }
     });
 
@@ -952,7 +951,7 @@
         return;
       }
       if (stream && /(^|:\/\/)(www\.)?example\.com(\/|$)/i.test(stream)) {
-        window.nsNotify?.error ? window.nsNotify.error('LÃ¼tfen gercek bir yayÄ±n linki girin. example.com test alanidir.') : nsnsAlert('LÃ¼tfen gercek bir yayÄ±n linki girin. example.com test alanidir.');
+        window.nsNotify?.error ? window.nsNotify.error('Lütfen gercek bir yayın linki girin. example.com test alanidir.') : nsnsAlert('Lütfen gercek bir yayın linki girin. example.com test alanidir.');
         return;
       }
       const allStreams = [streamYoutube, streamInstagram, streamFacebook, streamX];
@@ -961,7 +960,7 @@
         return;
       }
       if (stream && !isValidHttpUrl(stream)) {
-        window.nsNotify?.error ? window.nsNotify.error('Ana yayÄ±n linki http/https formatinda olmali.') : nsnsAlert('Ana yayÄ±n linki http/https formatinda olmali.');
+        window.nsNotify?.error ? window.nsNotify.error('Ana yayın linki http/https formatinda olmali.') : nsnsAlert('Ana yayın linki http/https formatinda olmali.');
         return;
       }
       if (streamYoutube && (!isValidHttpUrl(streamYoutube) || !isAllowedPlatformUrl(streamYoutube, 'youtube'))) {
@@ -1014,7 +1013,7 @@
         closeLiveScoutModal();
         window.location.href = 'scout-live-matches.html';
       } catch (error) {
-        window.nsNotify?.error ? window.nsNotify.error(`CanlÄ± mac kaydedilemedi: ${error.message}`) : nsnsAlert(`CanlÄ± mac kaydedilemedi: ${error.message}`);
+        window.nsNotify?.error ? window.nsNotify.error(`Canlı mac kaydedilemedi: ${error.message}`) : nsnsAlert(`Canlı mac kaydedilemedi: ${error.message}`);
       }
     });
 
@@ -1054,11 +1053,11 @@
         .then(() => {
           this.reset();
           closeTrialPublishModal();
-          pushLocalNotification('Yeni Deneme/Idman Ilani', `${title} yayÄ±na alindi.`);
-          window.nsNotify?.success ? window.nsNotify.success('Deneme/Idman ilani yayÄ±na alindi.') : nsnsAlert('Deneme/Idman ilani yayÄ±na alindi.');
+          pushLocalNotification('Yeni Deneme/Idman Ilani', `${title} yayına alindi.`);
+          window.nsNotify?.success ? window.nsNotify.success('Deneme/Idman ilani yayına alindi.') : nsnsAlert('Deneme/Idman ilani yayına alindi.');
         })
         .catch((error) => {
-          window.nsNotify?.error ? window.nsNotify.error(`Ä°lan yayÄ±nlanamadi: ${error.message}`) : nsnsAlert(`Ä°lan yayÄ±nlanamadi: ${error.message}`);
+          window.nsNotify?.error ? window.nsNotify.error(`İlan yayınlanamadi: ${error.message}`) : nsnsAlert(`İlan yayınlanamadi: ${error.message}`);
         });
     });
 
@@ -1089,6 +1088,7 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+
 
 
 

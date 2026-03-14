@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Admin Dashboard - NextScout</title>
-    <meta name="description" content="NextScout admin dashboard sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="description" content="NextScout admin dashboard sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
     <meta name="robots" content="noindex,follow">
     <link rel="canonical" href="https://nextscout.pro/admin-dashboard.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
     <meta property="og:title" content="Admin Dashboard - NextScout">
-    <meta property="og:description" content="NextScout admin dashboard sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta property="og:description" content="NextScout admin dashboard sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
     <meta property="og:url" content="https://nextscout.pro/admin-dashboard.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Admin Dashboard - NextScout">
-    <meta name="twitter:description" content="NextScout admin dashboard sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:description" content="NextScout admin dashboard sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -35,14 +35,14 @@
         </a>
         <div class="header-right">
             <a class="home-btn-global header-link" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a>
-            <a class="header-link" href="statistics.html"><i class="fas fa-chart-line"></i> İstatistik</a>
+            <a class="header-link" href="statistics.html"><i class="fas fa-chart-line"></i> Istatistik</a>
             <a class="header-link" href="settings.html"><i class="fas fa-cog"></i> Ayarlar</a>
         </div>
     </div>
 
     <div class="subnav">
         <div class="subnav-inner">
-            <a class="subnav-link" href="live-matches.html"><i class="fas fa-futbol"></i> Canlı Maclar</a>
+            <a class="subnav-link" href="live-matches.html"><i class="fas fa-futbol"></i> Canli Maclar</a>
             <a class="subnav-link" href="manager-needs.html"><i class="fas fa-briefcase"></i> MENAJER Ihtiyaclari</a>
             <a class="subnav-link" href="notifications.html"><i class="fas fa-bell"></i> Bildirimler</a>
             <a class="subnav-link" href="trial-center.html"><i class="fas fa-calendar-check"></i> Trial Center</a>
@@ -56,25 +56,24 @@
             <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
                 <a href="index.html" class="btn btn-secondary" style="padding:6px 10px;font-size:12px;text-decoration:none;">Ana sayfadan giris yap</a>
                 <a href="menejer-giris.html" class="btn btn-secondary" style="padding:6px 10px;font-size:12px;text-decoration:none;">Menajer girisi</a>
-                <button type="button" class="btn btn-primary" style="padding:6px 10px;font-size:12px;" onclick="bootstrapLocalAdminSession()">Local oturum olustur</button>
             </div>
         </div>
         <div class="welcome">
-            <h1>Hoş Geldin, Admin!</h1>
-            <p>NextScout yönetim paneline hoş geldin. Platformu buradan yönetebilirsin.</p>
+            <h1>Hos Geldin, Admin!</h1>
+            <p>NextScout y�netim paneline hos geldin. Platformu buradan y�netebilirsin.</p>
         </div>
 
-        <!-- Ana İstatistikler -->
+        <!-- Ana Istatistikler -->
         <div class="stats-grid">
             <div class="stat-card">
                 <i class="fas fa-users stat-icon"></i>
-                <div class="stat-label">Toplam Kullanıcı</div>
+                <div class="stat-label">Toplam Kullanici</div>
                 <div class="stat-value" id="statTotalUsers">-</div>
                 <div class="stat-change" id="statTotalUsersMeta">API baglantisi bekleniyor</div>
             </div>
             <div class="stat-card">
                 <i class="fas fa-user-check stat-icon"></i>
-                <div class="stat-label">Aktif Kullanıcı</div>
+                <div class="stat-label">Aktif Kullanici</div>
                 <div class="stat-value" id="statActiveUsers">-</div>
                 <div class="stat-change" id="statActiveUsersMeta">API baglantisi bekleniyor</div>
             </div>
@@ -86,17 +85,17 @@
             </div>
             <div class="stat-card">
                 <i class="fas fa-dollar-sign stat-icon"></i>
-                <div class="stat-label">Aylık Gelir</div>
+                <div class="stat-label">Aylik Gelir</div>
                 <div class="stat-value" id="statMonthlyRevenue">-</div>
                 <div class="stat-change" id="statMonthlyRevenueMeta">API baglantisi bekleniyor</div>
             </div>
         </div>
 
-        <!-- Hızlı İşlemler -->
+        <!-- Hizli Islemler -->
         <div class="section">
-            <div class="section-title"><i class="fas fa-bolt"></i> Hızlı İşlemler</div>
+            <div class="section-title"><i class="fas fa-bolt"></i> Hizli Islemler</div>
             <div class="action-buttons">
-                <a href="settings.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Kullanici Yönetimi</a>
+                <a href="settings.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Kullanici Y�netimi</a>
                 <a href="statistics.html" class="btn btn-secondary"><i class="fas fa-file-alt"></i> Raporlari Goruntule</a>
                 <a href="settings.html" class="btn btn-secondary"><i class="fas fa-cog"></i> Sistem Ayarlari</a>
                 <button type="button" class="btn btn-secondary" onclick="exportAdminSnapshot()"><i class="fas fa-database"></i> Yedek Al</button>
@@ -115,7 +114,7 @@
                 </div>
                 <div class="quick-stat" id="dqCardVerification" style="cursor:pointer;">
                     <div class="quick-stat-value" id="dqVerification">-</div>
-                    <div class="quick-stat-label">Doğrulama Orani</div>
+                    <div class="quick-stat-label">Dogrulama Orani</div>
                 </div>
                 <div class="quick-stat" id="dqCardConflict" style="cursor:pointer;">
                     <div class="quick-stat-value" id="dqConflictRate">-</div>
@@ -123,7 +122,7 @@
                 </div>
                 <div class="quick-stat" id="dqCardTransfer" style="cursor:pointer;">
                     <div class="quick-stat-value" id="dqTransferVerification">-</div>
-                    <div class="quick-stat-label">Transfer Doğrulama</div>
+                    <div class="quick-stat-label">Transfer Dogrulama</div>
                 </div>
             </div>
             <div style="margin-top:12px;color:#64748B;font-size:12px;" id="dqMeta">Kalite raporu bekleniyor...</div>
@@ -181,7 +180,7 @@
                     </tr>
                 </thead>
                 <tbody id="clientErrorsBody">
-                    <tr><td colspan="4" style="text-align:center;color:#64748B;">Henüz istemci hata logu yok.</td></tr>
+                    <tr><td colspan="4" style="text-align:center;color:#64748B;">Hen�z istemci hata logu yok.</td></tr>
                 </tbody>
             </table>
         </div>
@@ -191,7 +190,7 @@
             <div class="module-grid">
                 <a class="module-card" href="scout-live-matches.html">
                     <div class="module-title"><i class="fas fa-tower-broadcast"></i> Live Matches</div>
-                    <div class="module-desc">Ana sayfadaki canlı mac akisina yonetici gozuyle ulas.</div>
+                    <div class="module-desc">Ana sayfadaki canli mac akisina yonetici gozuyle ulas.</div>
                 </a>
                 <a class="module-card" href="scout-watchlist.html">
                     <div class="module-title"><i class="fas fa-star"></i> Watchlist</div>
@@ -203,7 +202,7 @@
                 </a>
                 <a class="module-card" href="manager-needs.html">
                     <div class="module-title"><i class="fas fa-users-viewfinder"></i> Manager Needs</div>
-                    <div class="module-desc">KULÜP/MENAJER taleplerini panelden dogrudan gor.</div>
+                    <div class="module-desc">KUL�P/MENAJER taleplerini panelden dogrudan gor.</div>
                 </a>
                 <a class="module-card" href="weekly-digest.html">
                     <div class="module-title"><i class="fas fa-newspaper"></i> Weekly Digest</div>
@@ -217,7 +216,7 @@
         </div>
 
         <div class="section">
-            <div class="section-title"><i class="fas fa-envelope-open-text"></i> İletişim Mesajlari</div>
+            <div class="section-title"><i class="fas fa-envelope-open-text"></i> Iletisim Mesajlari</div>
             <div class="action-buttons" style="margin-bottom:12px;">
                 <button class="btn btn-secondary" type="button" onclick="loadContactMessages()"><i class="fas fa-rotate"></i> Mesajlari Yenile</button>
             </div>
@@ -234,6 +233,28 @@
             </table>
         </div>
 
+        <div class="section">
+            <div class="section-title"><i class="fas fa-bolt"></i> Kesfet Boost Paketleri</div>
+            <div class="action-buttons" style="margin-bottom:12px;">
+                <button class="btn btn-secondary" type="button" onclick="loadBoostPackagesAdmin()"><i class="fas fa-rotate"></i> Paketleri Yenile</button>
+            </div>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Paket</th>
+                        <th>Sure</th>
+                        <th>Fiyat</th>
+                        <th>Kesfet Skoru</th>
+                        <th>Durum</th>
+                        <th>Islem</th>
+                    </tr>
+                </thead>
+                <tbody id="boostPackagesBody">
+                    <tr><td colspan="6" style="text-align:center;color:#64748B;">Yukleniyor...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
         <!-- Google Entegrasyonu -->
         <div class="section" style="border: 2px solid #4285F4;">
             <div class="section-title">
@@ -246,36 +267,36 @@
                 <div class="stat-card" style="border-color: #4285F4;">
                     <i class="fab fa-google stat-icon" style="color: #4285F4;"></i>
                     <div class="stat-label">Google Ads Geliri</div>
-                    <div class="stat-value" style="color: #4285F4;">€42,580</div>
+                    <div class="stat-value" style="color: #4285F4;">�42,580</div>
                     <div class="stat-change"><i class="fas fa-arrow-up"></i> +18.3% bu ay</div>
                 </div>
                 <div class="stat-card" style="border-color: #EA4335;">
                     <i class="fab fa-youtube stat-icon" style="color: #EA4335;"></i>
                     <div class="stat-label">YouTube Geliri</div>
-                    <div class="stat-value" style="color: #EA4335;">€8,240</div>
+                    <div class="stat-value" style="color: #EA4335;">�8,240</div>
                     <div class="stat-change"><i class="fas fa-arrow-up"></i> +24.7% bu ay</div>
                 </div>
                 <div class="stat-card" style="border-color: #34A853;">
                     <i class="fas fa-chart-line stat-icon" style="color: #34A853;"></i>
                     <div class="stat-label">Google Analytics</div>
                     <div class="stat-value" style="color: #34A853;">284K</div>
-                    <div class="stat-change">Aylık ziyaretçi</div>
+                    <div class="stat-change">Aylik ziyaret�i</div>
                 </div>
                 <div class="stat-card" style="border-color: #FBBC04;">
                     <i class="fas fa-mouse-pointer stat-icon" style="color: #FBBC04;"></i>
-                    <div class="stat-label">Tıklama Oranı (CTR)</div>
+                    <div class="stat-label">Tiklama Orani (CTR)</div>
                     <div class="stat-value" style="color: #FBBC04;">3.8%</div>
-                    <div class="stat-change"><i class="fas fa-arrow-up"></i> +0.5% artış</div>
+                    <div class="stat-change"><i class="fas fa-arrow-up"></i> +0.5% artis</div>
                 </div>
             </div>
 
             <div style="margin-top: 20px;">
-                <div style="font-weight: 700; margin-bottom: 12px; color: #1F2937;">Google Gelir Detayları (Bu Ay)</div>
+                <div style="font-weight: 700; margin-bottom: 12px; color: #1F2937;">Google Gelir Detaylari (Bu Ay)</div>
                 <table class="users-table">
                     <thead>
                         <tr>
                             <th>Kaynak</th>
-                            <th>Günlük Ort.</th>
+                            <th>G�nl�k Ort.</th>
                             <th>Bu Hafta</th>
                             <th>Bu Ay</th>
                             <th>Trend</th>
@@ -284,23 +305,23 @@
                     <tbody>
                         <tr>
                             <td><i class="fab fa-google" style="color: #4285F4; margin-right: 8px;"></i><strong>Google Ads</strong></td>
-                            <td><strong>€1,419</strong></td>
-                            <td>€9,933</td>
-                            <td><strong style="color: #4285F4;">€42,580</strong></td>
+                            <td><strong>�1,419</strong></td>
+                            <td>�9,933</td>
+                            <td><strong style="color: #4285F4;">�42,580</strong></td>
                             <td><span class="badge badge-success"><i class="fas fa-arrow-up"></i> +18.3%</span></td>
                         </tr>
                         <tr>
                             <td><i class="fab fa-youtube" style="color: #EA4335; margin-right: 8px;"></i><strong>YouTube Partner</strong></td>
-                            <td><strong>€275</strong></td>
-                            <td>€1,925</td>
-                            <td><strong style="color: #EA4335;">€8,240</strong></td>
+                            <td><strong>�275</strong></td>
+                            <td>�1,925</td>
+                            <td><strong style="color: #EA4335;">�8,240</strong></td>
                             <td><span class="badge badge-success"><i class="fas fa-arrow-up"></i> +24.7%</span></td>
                         </tr>
                         <tr style="background: #FEF3C7; font-weight: 700;">
-                            <td><strong>TOPLAM GOOGLE GELİRİ</strong></td>
-                            <td><strong>€1,694</strong></td>
-                            <td><strong>€11,858</strong></td>
-                            <td><strong style="color: #4285F4; font-size: 18px;">€50,820</strong></td>
+                            <td><strong>TOPLAM GOOGLE GELIRI</strong></td>
+                            <td><strong>�1,694</strong></td>
+                            <td><strong>�11,858</strong></td>
+                            <td><strong style="color: #4285F4; font-size: 18px;">�50,820</strong></td>
                             <td><span class="badge badge-success"><i class="fas fa-arrow-up"></i> +20.1%</span></td>
                         </tr>
                     </tbody>
@@ -308,9 +329,9 @@
             </div>
         </div>
 
-        <!-- Platform İstatistikleri -->
+        <!-- Platform Istatistikleri -->
         <div class="section">
-            <div class="section-title"><i class="fas fa-chart-pie"></i> Platform İstatistikleri</div>
+            <div class="section-title"><i class="fas fa-chart-pie"></i> Platform Istatistikleri</div>
             <div class="quick-stats">
                 <div class="quick-stat">
                     <div class="quick-stat-value">4,523</div>
@@ -326,27 +347,9 @@
                 </div>
                 <div class="quick-stat">
                     <div class="quick-stat-value">247</div>
-                    <div class="quick-stat-label">KULÜP</div>
+                    <div class="quick-stat-label">KUL�P</div>
                 </div>
             </div>
-        </div>
-
-        <!-- Onay Bekleyen Kullanıcılar -->
-        <div class="section">
-            <div class="section-title"><i class="fas fa-user-clock"></i> Son Kayıtlar (Onay Bekleyen)</div>
-            <table class="users-table">
-                <thead>
-                    <tr>
-                        <th>Kullanıcı</th>
-                        <th>Email</th>
-                        <th>Rol</th>
-                        <th>Kayıt Tarihi</th>
-                        <th>Durum</th>
-                        <th>İşlemler</th>
-                    </tr>
-                </thead>
-                <tbody id="pendingUsersBody"></tbody>
-            </table>
         </div>
 
         <div class="section">
@@ -383,7 +386,7 @@
                         <th>Kullanici</th>
                         <th>E-posta</th>
                         <th>Rol</th>
-                        <th>Kayıt Tarihi</th>
+                        <th>Kayit Tarihi</th>
                         <th>Detay</th>
                     </tr>
                 </thead>
@@ -395,14 +398,14 @@
             <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap;">
                 <div id="registeredUsersPageInfo" style="font-size:13px;color:#64748B;">Sayfa: -</div>
                 <div style="display:flex;gap:8px;">
-                    <button id="registeredUsersPrevBtn" class="btn btn-secondary" type="button" style="padding:6px 10px;font-size:12px;" onclick="changeRegisteredUsersPage(-1)">← Onceki</button>
-                    <button id="registeredUsersNextBtn" class="btn btn-secondary" type="button" style="padding:6px 10px;font-size:12px;" onclick="changeRegisteredUsersPage(1)">Sonraki →</button>
+                    <button id="registeredUsersPrevBtn" class="btn btn-secondary" type="button" style="padding:6px 10px;font-size:12px;" onclick="changeRegisteredUsersPage(-1)">? Onceki</button>
+                    <button id="registeredUsersNextBtn" class="btn btn-secondary" type="button" style="padding:6px 10px;font-size:12px;" onclick="changeRegisteredUsersPage(1)">Sonraki ?</button>
                 </div>
             </div>
         </div>
 
         <div class="section">
-            <div class="section-title"><i class="fas fa-calendar-check"></i> Deneme/Idman İlan Moderasyonu (API)</div>
+            <div class="section-title"><i class="fas fa-calendar-check"></i> Deneme/Idman Ilan Moderasyonu (API)</div>
             <div class="action-buttons" style="margin-bottom:12px;">
                 <button class="btn btn-secondary" type="button" onclick="loadTrialModerationQueue()"><i class="fas fa-rotate"></i> Listeyi Yenile</button>
             </div>
@@ -430,10 +433,10 @@
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">
                 <input id="amLeague" type="text" placeholder="Lig (or: Izmir 1. Amator A)" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
                 <input id="amSeason" type="text" placeholder="Sezon (or: 2025-2026)" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
-                <input id="amCountry" type="text" placeholder="Ülke (or: Türkiye)" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amCountry" type="text" placeholder="�lke (or: T�rkiye)" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
                 <input id="amSport" type="text" placeholder="Brans (or: futbol)" value="futbol" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
-                <input id="amHome" type="text" placeholder="Ev sahibi takım" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
-                <input id="amAway" type="text" placeholder="Deplasman takım" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amHome" type="text" placeholder="Ev sahibi takim" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
+                <input id="amAway" type="text" placeholder="Deplasman takim" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
                 <input id="amHomeScore" type="number" min="0" placeholder="Ev gol" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
                 <input id="amAwayScore" type="number" min="0" placeholder="Dep gol" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
             </div>
@@ -506,8 +509,8 @@
                 scout: { text: 'Scout', cls: 'badge-success' },
                 coach: { text: 'Scout', cls: 'badge-success' },
                 manager: { text: 'MENAJER', cls: 'badge-success' },
-                team: { text: 'KULÜP', cls: 'badge-danger' },
-                club: { text: 'KULÜP', cls: 'badge-danger' },
+                team: { text: 'KUL�P', cls: 'badge-danger' },
+                club: { text: 'KUL�P', cls: 'badge-danger' },
                 admin: { text: 'Admin', cls: 'badge-danger' },
             };
             const key = (role || '').toString().toLowerCase();
@@ -527,40 +530,6 @@
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#39;');
-        }
-
-        function loadPendingUsers() {
-            const tbody = document.getElementById('pendingUsersBody');
-            if (!tbody) return;
-
-            let users = [];
-            try {
-                users = JSON.parse(localStorage.getItem('nextscout_pending_users') || '[]');
-            } catch (error) {
-                users = [];
-            }
-
-            if (!Array.isArray(users) || users.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#64748B;">Henuz kayıtli uye yok</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = users.map((user) => {
-                const roleInfo = formatRole(user?.role);
-                return `
-                    <tr>
-                        <td><strong>${escapeHtml(user?.name || '-')}</strong></td>
-                        <td>${escapeHtml(user?.email || '-')}</td>
-                        <td><span class="badge ${roleInfo.cls}">${roleInfo.text}</span></td>
-                        <td>${formatDate(user?.created_at)}</td>
-                        <td><span class="badge badge-warning">Beklemede</span></td>
-                        <td>
-                            <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;">Onayla</button>
-                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Reddet</button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
         }
 
         function roleLabel(role) {
@@ -1000,7 +969,7 @@
         function ellipsize(text, maxLen = 120) {
             const value = (text || '').toString();
             if (value.length <= maxLen) return value;
-            return `${value.slice(0, Math.max(1, maxLen - 1))}…`;
+            return `${value.slice(0, Math.max(1, maxLen - 1))}�`;
         }
 
         function loadClientErrorLogs() {
@@ -1012,7 +981,7 @@
             const rows = typeof source === 'function' ? source() : [];
 
             if (!Array.isArray(rows) || rows.length === 0) {
-                body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#64748B;">Henüz istemci hata logu yok.</td></tr>';
+            body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#64748B;">Hen�z istemci hata logu yok.</td></tr>';
                 meta.textContent = 'Toplam 0 istemci hata kaydi.';
                 return;
             }
@@ -1060,7 +1029,7 @@
 
         function kvRow(label, value, isPrivate = false) {
             const badge = isPrivate
-                ? '<span style="margin-left:6px;padding:2px 6px;background:#fef9c3;border:1px solid #fde047;border-radius:4px;font-size:11px;color:#854d0e;">🔒 Gizli</span>'
+                    ? '<span style="margin-left:6px;padding:2px 6px;background:#fef9c3;border:1px solid #fde047;border-radius:4px;font-size:11px;color:#854d0e;">?? Gizli</span>'
                 : '';
             return `
                 <div style="display:grid;grid-template-columns:170px 1fr;gap:8px;padding:8px 10px;border-bottom:1px solid #f1f5f9;">
@@ -1232,7 +1201,7 @@
             }
 
             if (!Array.isArray(rows) || rows.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#64748B;">Henüz iletişim mesajı yok.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#64748B;">Hen�z iletisim mesaji yok.</td></tr>';
                 return;
             }
 
@@ -1244,6 +1213,120 @@
                     <td>${formatDate(row?.created_at)}</td>
                 </tr>
             `).join('');
+        }
+
+        async function loadBoostPackagesAdmin() {
+            const tbody = document.getElementById('boostPackagesBody');
+            if (!tbody) return;
+
+            const apiBase = getApiBaseUrl();
+            const token = getAuthToken();
+            if (!isBackendAdminSession(token)) {
+                renderBoostPackagesTable(readLocalBoostPackages(), true);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${apiBase}/admin/billing/boost-packages`, {
+                    headers: {
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    throw new Error(payload?.message || `HTTP ${response.status}`);
+                }
+
+                const rows = Array.isArray(payload?.data) ? payload.data : [];
+                if (!rows.length) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#64748B;">Boost paketi yok.</td></tr>';
+                    return;
+                }
+
+                renderBoostPackagesTable(rows, false);
+            } catch (error) {
+                renderBoostPackagesTable(readLocalBoostPackages(), true, error.message);
+            }
+        }
+
+        function renderBoostPackagesTable(rows, isLocalMode, errorMessage = '') {
+            const tbody = document.getElementById('boostPackagesBody');
+            if (!tbody) return;
+
+            const metaRow = `
+                <tr>
+                    <td colspan="6" style="text-align:left;font-size:12px;color:${isLocalMode ? '#92400e' : '#64748B'};">
+                        ${errorMessage ? `API hatasi: ${escapeHtml(errorMessage)}<br>` : ''}
+                        ${isLocalMode ? 'Local mod aktif. Degisiklikler tarayicida saklanir.' : 'Gercek admin API modu aktif.'}
+                    </td>
+                </tr>
+            `;
+
+            tbody.innerHTML = metaRow + rows.map((pkg) => `
+                    <tr>
+                        <td>
+                            <input id="boost_name_${Number(pkg.id)}" value="${escapeHtml(pkg.name || '')}" style="width:100%;padding:8px;border:1px solid #E5E7EB;border-radius:8px;margin-bottom:6px;">
+                            <input id="boost_desc_${Number(pkg.id)}" value="${escapeHtml(pkg.description || '')}" style="width:100%;padding:8px;border:1px solid #E5E7EB;border-radius:8px;" placeholder="Aciklama">
+                        </td>
+                        <td><input id="boost_days_${Number(pkg.id)}" type="number" min="1" value="${Number(pkg.duration_days || 1)}" style="width:90px;padding:8px;border:1px solid #E5E7EB;border-radius:8px;"></td>
+                        <td><input id="boost_price_${Number(pkg.id)}" type="number" min="0" step="0.01" value="${Number(pkg.price || 0)}" style="width:110px;padding:8px;border:1px solid #E5E7EB;border-radius:8px;"> <div style="font-size:12px;color:#64748B;margin-top:6px;">${escapeHtml(pkg.currency || 'TRY')}</div></td>
+                        <td><input id="boost_score_${Number(pkg.id)}" type="number" min="1" value="${Number(pkg.discover_score || 1)}" style="width:90px;padding:8px;border:1px solid #E5E7EB;border-radius:8px;"></td>
+                        <td>
+                            <label style="display:flex;align-items:center;gap:8px;">
+                                <input id="boost_active_${Number(pkg.id)}" type="checkbox" ${pkg.active ? 'checked' : ''}>
+                                <span>${pkg.active ? 'Aktif' : 'Pasif'}</span>
+                            </label>
+                        </td>
+                        <td><button class="btn btn-primary" type="button" style="padding:8px 12px;font-size:12px;" onclick="saveBoostPackage(${Number(pkg.id)})">Kaydet</button></td>
+                    </tr>
+                `).join('');
+        }
+
+        async function saveBoostPackage(packageId) {
+            const apiBase = getApiBaseUrl();
+            const token = getAuthToken();
+            const payload = {
+                name: (document.getElementById(`boost_name_${packageId}`)?.value || '').trim(),
+                description: (document.getElementById(`boost_desc_${packageId}`)?.value || '').trim(),
+                price: Number(document.getElementById(`boost_price_${packageId}`)?.value || 0),
+                currency: 'TRY',
+                duration_days: Number(document.getElementById(`boost_days_${packageId}`)?.value || 1),
+                discover_score: Number(document.getElementById(`boost_score_${packageId}`)?.value || 1),
+                active: Boolean(document.getElementById(`boost_active_${packageId}`)?.checked),
+            };
+
+            if (!isBackendAdminSession(token)) {
+                const rows = readLocalBoostPackages().map((row) => (
+                    Number(row.id) === Number(packageId)
+                        ? { ...row, ...payload }
+                        : row
+                ));
+                writeLocalBoostPackages(rows);
+                alert('Boost paketi local olarak guncellendi.');
+                loadBoostPackagesAdmin();
+                return;
+            }
+
+            try {
+                const response = await fetch(`${apiBase}/admin/billing/boost-packages/${packageId}`, {
+                    method: 'PUT',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(payload),
+                });
+                const body = await response.json().catch(() => ({}));
+                if (!response.ok || body?.ok === false) {
+                    throw new Error(body?.message || `HTTP ${response.status}`);
+                }
+                alert('Boost paketi guncellendi.');
+                loadBoostPackagesAdmin();
+            } catch (error) {
+                alert(`Kayit hatasi: ${error.message}`);
+            }
         }
 
         function getApiBaseUrl() {
@@ -1261,23 +1344,37 @@
             ).trim();
         }
 
-        function bootstrapLocalAdminSession() {
-            localStorage.setItem('nextscout_token', 'local-session-token');
-            if (!localStorage.getItem('nextscout_user')) {
-                localStorage.setItem('nextscout_user', JSON.stringify({
-                    name: 'Local Admin',
-                    email: 'admin@local.test',
-                    role: 'admin'
-                }));
-            }
-            window.location.reload();
+        function isBackendAdminSession(token) {
+            return Boolean(token && token !== 'local-session-token');
+        }
+
+        function getDefaultBoostPackages() {
+            return [
+                { id: 1, name: 'Gunluk Vitrin', description: '24 saat kesfet alaninda one cik.', price: 149, currency: 'TRY', duration_days: 1, discover_score: 10, active: true, slug: 'daily-boost' },
+                { id: 2, name: 'Haftalik Vitrin', description: '7 gun kesfet alaninda daha gorunur ol.', price: 499, currency: 'TRY', duration_days: 7, discover_score: 25, active: true, slug: 'weekly-boost' },
+                { id: 3, name: 'Aylik Vitrin', description: '30 gun kesfet alaninda kalici gorunurluk kazan.', price: 1499, currency: 'TRY', duration_days: 30, discover_score: 60, active: true, slug: 'monthly-boost' },
+            ];
+        }
+
+        function readLocalBoostPackages() {
+            try {
+                const raw = JSON.parse(localStorage.getItem('nextscout_boost_packages') || 'null');
+                if (Array.isArray(raw) && raw.length) return raw;
+            } catch (error) {}
+            const defaults = getDefaultBoostPackages();
+            localStorage.setItem('nextscout_boost_packages', JSON.stringify(defaults));
+            return defaults;
+        }
+
+        function writeLocalBoostPackages(rows) {
+            localStorage.setItem('nextscout_boost_packages', JSON.stringify(Array.isArray(rows) ? rows : []));
         }
 
         function updateAuthNotice() {
             const notice = document.getElementById('adminAuthNotice');
             if (!notice) return;
             const token = getAuthToken();
-            notice.style.display = token ? 'none' : 'block';
+            notice.style.display = isBackendAdminSession(token) ? 'none' : 'block';
         }
 
         function setDataQualityWidgetValues(data) {
@@ -1298,7 +1395,7 @@
             if (transferEl) transferEl.textContent = transferVerification;
             if (metaEl) {
                 const generatedAt = data?.generated_at ? formatDate(data.generated_at) : 'Bilinmiyor';
-                metaEl.textContent = `Son güncelleme: ${generatedAt}`;
+                metaEl.textContent = `Son g�ncelleme: ${generatedAt}`;
             }
         }
 
@@ -1353,7 +1450,7 @@
                     status: badgeByTarget(Number(kpi.source_coverage_percent || 0), 90, false),
                 },
                 {
-                    metric: 'Doğrulama Orani',
+                metric: 'Dogrulama Orani',
                     value: `${Number(kpi.verification_percent || 0).toFixed(1)}%`,
                     target: '>= 80%',
                     status: badgeByTarget(Number(kpi.verification_percent || 0), 80, false),
@@ -1365,7 +1462,7 @@
                     status: badgeByTarget(Number(kpi.conflict_percent || 0), 3, true),
                 },
                 {
-                    metric: 'Transfer Doğrulama',
+                metric: 'Transfer Dogrulama',
                     value: `${Number(kpi.transfer_verification_percent || 0).toFixed(1)}%`,
                     target: '>= 70%',
                     status: badgeByTarget(Number(kpi.transfer_verification_percent || 0), 70, false),
@@ -1409,9 +1506,9 @@
 
             const titleMap = {
                 source: 'Veri Kalite Detayi - Kaynak Kapsami',
-                verification: 'Veri Kalite Detayi - Doğrulama',
+                verification: 'Veri Kalite Detayi - Dogrulama',
                 conflict: 'Veri Kalite Detayi - Cakisma',
-                transfer: 'Veri Kalite Detayi - Transfer Doğrulama',
+                transfer: 'Veri Kalite Detayi - Transfer Dogrulama',
             };
             title.textContent = titleMap[sourceKey] || 'Veri Kalite Detayi';
             modal.style.display = 'flex';
@@ -1426,7 +1523,6 @@
 
         function exportAdminSnapshot() {
             const keys = [
-                'nextscout_pending_users',
                 'nextscout_contact_messages',
                 'nextscout_amateur_results',
                 'nextscout_amateur_standings'
@@ -1458,7 +1554,7 @@
             const apiBase = getApiBaseUrl();
             const token = getAuthToken();
             if (!token) {
-                tbody.innerHTML = '<tr><td colspan=\"7\" style=\"text-align:center;color:#b91c1c;\">Admin token bulunamadi. Giriş yap.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan=\"7\" style=\"text-align:center;color:#b91c1c;\">Admin token bulunamadi. Giris yap.</td></tr>';
                 return;
             }
 
@@ -1473,7 +1569,7 @@
 
                 const rows = Array.isArray(payload?.data?.data) ? payload.data.data : [];
                 if (!rows.length) {
-                    tbody.innerHTML = '<tr><td colspan=\"7\" style=\"text-align:center;color:#64748B;\">İlan bulunamadi.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan=\"7\" style=\"text-align:center;color:#64748B;\">Ilan bulunamadi.</td></tr>';
                     return;
                 }
 
@@ -1538,8 +1634,8 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             updateAuthNotice();
-            loadPendingUsers();
             loadContactMessages();
+            loadBoostPackagesAdmin();
             loadTrialModerationQueue();
             loadDataQualityWidget();
             loadOpsSummary();
@@ -1625,7 +1721,7 @@
             const awayScore = Number(document.getElementById('amAwayScore')?.value);
 
             if (!league || !season || !home || !away || Number.isNaN(homeScore) || Number.isNaN(awayScore)) {
-                nsAlert('Lig, sezon, takımlar ve skor alanlarini doldur.');
+                nsAlert('Lig, sezon, takimlar ve skor alanlarini doldur.');
                 return;
             }
             const checklist = window.NextScoutData?.editorialChecklist
@@ -1641,7 +1737,7 @@
                 id: Date.now(),
                 league,
                 season,
-                country: country || 'Türkiye',
+                country: country || 'T�rkiye',
                 sport: sport || 'futbol',
                 home_team: home,
                 away_team: away,
@@ -1678,7 +1774,7 @@
 
             body.innerHTML = rows.map((row) => {
                 const badge = row.status === 'verified'
-                    ? '<span class=\"badge badge-success\">Doğrulandı</span>'
+                    ? '<span class=\"badge badge-success\">Dogrulandi</span>'
                     : row.status === 'rejected'
                         ? '<span class=\"badge badge-danger\">Reddedildi</span>'
                         : '<span class=\"badge badge-warning\">Beklemede</span>';
@@ -1689,7 +1785,7 @@
                         <td><strong>${row.home_score ?? '-'} : ${row.away_score ?? '-'}</strong></td>
                         <td>${badge}</td>
                         <td>
-                            <button class=\"btn btn-primary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"setAmateurStatus(${Number(row.id)}, 'verified')\">Doğrula</button>
+                            <button class=\"btn btn-primary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"setAmateurStatus(${Number(row.id)}, 'verified')\">Dogrula</button>
                             <button class=\"btn btn-secondary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"setAmateurStatus(${Number(row.id)}, 'rejected')\">Reddet</button>
                         </td>
                     </tr>
@@ -1702,7 +1798,7 @@
             const buckets = {};
 
             rows.forEach((row) => {
-                const key = `${row.country || 'Türkiye'}__${row.sport || 'futbol'}__${row.league || '-'}__${row.season || '-'}`;
+                const key = `${row.country || 'T�rkiye'}__${row.sport || 'futbol'}__${row.league || '-'}__${row.season || '-'}`;
                 if (!buckets[key]) buckets[key] = {};
                 const table = buckets[key];
                 const teams = [row.home_team, row.away_team];
@@ -1745,11 +1841,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
-
 
 
 

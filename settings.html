@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
@@ -44,37 +44,37 @@
     <div class="head">
       <div>
         <h1 class="title">Ayarlar</h1>
-        <div class="sub">Hesap ve görünüm tercihlerini buradan yönetebilirsin.</div>
+        <div class="sub">Hesap ve g�r�n�m tercihlerini buradan y�netebilirsin.</div>
       </div>
-      <a href="DASHBOARD_DESIGN.html" class="btn">← Dashboard</a>
+      <a href="DASHBOARD_DESIGN.html" class="btn">? Dashboard</a>
     </div>
 
     <div class="card">
-      <h3>Hesap Ayarları</h3>
-      <div class="row"><label>Görünen İsim</label><input id="displayName" type="text" placeholder="Görünen isim"></div>
+      <h3>Hesap Ayarlari</h3>
+      <div class="row"><label>G�r�nen Isim</label><input id="displayName" type="text" placeholder="G�r�nen isim"></div>
       <div class="row"><label>E-posta</label><input id="email" type="email" placeholder="mail@example.com"></div>
       <div class="row"><label>Dil</label>
-        <select id="lang"><option value="tr">Türkçe</option><option value="en">English</option></select>
+        <select id="lang"><option value="tr">T�rk�e</option><option value="en">English</option></select>
       </div>
     </div>
 
     <div class="card">
       <h3>Uygulama Tercihleri</h3>
-      <div class="row"><label>Bildirimler</label><select id="notify"><option value="on">Açık</option><option value="off">Kapalı</option></select></div>
-      <div class="row"><label>Profil Görünürlüğü</label><select id="visibility"><option value="public">Herkese Açık</option><option value="private">Sadece Bağlantılar</option></select></div>
+      <div class="row"><label>Bildirimler</label><select id="notify"><option value="on">A�ik</option><option value="off">Kapali</option></select></div>
+      <div class="row"><label>Profil G�r�n�rl�g�</label><select id="visibility"><option value="public">Herkese A�ik</option><option value="private">Sadece Baglantilar</option></select></div>
       <div class="actions">
-        <button class="btn" id="resetBtn">Sıfırla</button>
+        <button class="btn" id="resetBtn">Sifirla</button>
         <button class="btn btn-primary" id="saveBtn">Kaydet</button>
       </div>
     </div>
 
     <div class="card">
-      <h3>Şifre Değiştir</h3>
-      <div class="row"><label>Mevcut Şifre</label><input id="currentPassword" type="password" placeholder="Mevcut şifren"></div>
-      <div class="row"><label>Yeni Şifre</label><input id="newPassword" type="password" placeholder="En az 6 karakter"></div>
-      <div class="row"><label>Yeni Şifre (Tekrar)</label><input id="confirmPassword" type="password" placeholder="Yeni şifreyi tekrar yaz"></div>
+      <h3>Sifre Degistir</h3>
+      <div class="row"><label>Mevcut Sifre</label><input id="currentPassword" type="password" placeholder="Mevcut sifren"></div>
+      <div class="row"><label>Yeni Sifre</label><input id="newPassword" type="password" placeholder="En az 6 karakter"></div>
+      <div class="row"><label>Yeni Sifre (Tekrar)</label><input id="confirmPassword" type="password" placeholder="Yeni sifreyi tekrar yaz"></div>
       <div class="actions">
-        <button class="btn btn-primary" id="changePasswordBtn">Şifreyi Güncelle</button>
+        <button class="btn btn-primary" id="changePasswordBtn">Sifreyi G�ncelle</button>
       </div>
     </div>
   </div>
@@ -117,15 +117,15 @@
       const confirm = document.getElementById('confirmPassword').value;
 
       if(!current || !next || !confirm){
-        alert('Lütfen tüm şifre alanlarını doldur.');
+        alert('L�tfen t�m sifre alanlarini doldur.');
         return;
       }
       if(next.length < 6){
-        alert('Yeni şifre en az 6 karakter olmalı.');
+        alert('Yeni sifre en az 6 karakter olmali.');
         return;
       }
       if(next !== confirm){
-        alert('Yeni şifreler eşleşmiyor.');
+        alert('Yeni sifreler eslesmiyor.');
         return;
       }
 
@@ -133,7 +133,7 @@
       const user = userRaw ? JSON.parse(userRaw) : {};
       const email = (user.email || document.getElementById('email').value || '').trim().toLowerCase();
       if(!email){
-        alert('Hesap e-postası bulunamadı.');
+        alert('Hesap e-postasi bulunamadi.');
         return;
       }
 
@@ -143,11 +143,11 @@
       const idx = list.findIndex(x => (x.email || '').toLowerCase() === email);
 
       if(idx === -1){
-        alert('Bu hesap için yerel kayıt bulunamadı. (Sadece local kayıtlar güncellenir)');
+        alert('Bu hesap i�in yerel kayit bulunamadi. (Sadece local kayitlar g�ncellenir)');
         return;
       }
       if((list[idx].password || '') !== current){
-        alert('Mevcut şifre yanlış.');
+        alert('Mevcut sifre yanlis.');
         return;
       }
 
@@ -156,7 +156,7 @@
       document.getElementById('currentPassword').value = '';
       document.getElementById('newPassword').value = '';
       document.getElementById('confirmPassword').value = '';
-      alert('Şifre başarıyla güncellendi.');
+      alert('Sifre basariyla g�ncellendi.');
     }
     document.getElementById('saveBtn')?.addEventListener('click',save);
     document.getElementById('resetBtn')?.addEventListener('click',reset);

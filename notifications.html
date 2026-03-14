@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mesajlarım - NextScout</title>
+  <title>Mesajlarim - NextScout</title>
   <meta name="description" content="Mesaj ve bildirim merkezi: teklifler, duyurular ve sistem bildirimlerini tek ekranda gorun.">
   <meta name="robots" content="noindex,follow">
   <link rel="canonical" href="https://nextscout.app/notifications.html">
@@ -303,10 +303,10 @@
   <div class="wrap">
     <div class="header">
       <div>
-        <h1 class="title">Mesajlarım</h1>
-        <div class="title-sub">Gelen, giden, okundu ve okunmadı mesajları buradan yönetebilirsin.</div>
+        <h1 class="title">Mesajlarim</h1>
+        <div class="title-sub">Gelen, giden, okundu ve okunmadi mesajlari buradan y�netebilirsin.</div>
       </div>
-      <a class="btn" href="DASHBOARD_DESIGN.html">← Dashboard</a>
+      <a class="btn" href="DASHBOARD_DESIGN.html">? Dashboard</a>
     </div>
 
     <div class="layout">
@@ -314,10 +314,10 @@
         <div class="panel-head">
           <div class="tabs" id="tabs"></div>
           <div class="search-row">
-            <input id="searchInput" type="text" placeholder="Mesaj ara (konu, içerik, kişi)">
+            <input id="searchInput" type="text" placeholder="Mesaj ara (konu, i�erik, kisi)">
             <select id="statusFilter">
-              <option value="all">Tümü</option>
-              <option value="unread">Okunmadı</option>
+              <option value="all">T�m�</option>
+              <option value="unread">Okunmadi</option>
               <option value="read">Okundu</option>
             </select>
           </div>
@@ -326,7 +326,7 @@
       </section>
 
       <section class="panel detail" id="detailPanel">
-        <div class="detail-empty">Soldan bir mesaj seç.</div>
+        <div class="detail-empty">Soldan bir mesaj se�.</div>
       </section>
     </div>
   </div>
@@ -344,8 +344,8 @@
         read: false,
         from: 'Galatasaray Scout Ekibi',
         to: USER.name,
-        subject: 'Canlı maç performansın hakkında',
-        body: 'Merhaba ' + USER.name + ',\n\nSon 3 maç performansını inceledik. Özellikle geçiş oyunundaki hızın dikkat çekti. Önümüzdeki hafta bir online görüşme planlamak istiyoruz.\n\nUygun olduğun saatleri iletir misin?',
+        subject: 'Canli ma� performansin hakkinda',
+        body: 'Merhaba ' + USER.name + ',\n\nSon 3 ma� performansini inceledik. �zellikle ge�is oyunundaki hizin dikkat �ekti. �n�m�zdeki hafta bir online g�r�sme planlamak istiyoruz.\n\nUygun oldugun saatleri iletir misin?',
         time: '2026-03-04T17:15:00'
       },
       {
@@ -353,29 +353,29 @@
         box: 'sent',
         read: true,
         from: USER.name,
-        to: 'Fenerbahçe U23 Analiz',
-        subject: 'Video portföy paylaşımı',
-        body: 'Merhaba,\n\nProfilimdeki yeni sezon videolarını güncelledim. Uygun olduğunuzda değerlendirmenizi rica ederim.\n\nİyi çalışmalar.',
+        to: 'Fenerbah�e U23 Analiz',
+        subject: 'Video portf�y paylasimi',
+        body: 'Merhaba,\n\nProfilimdeki yeni sezon videolarini g�ncelledim. Uygun oldugunuzda degerlendirmenizi rica ederim.\n\nIyi �alismalar.',
         time: '2026-03-04T14:40:00'
       },
       {
         id: 'm3',
         box: 'inbox',
         read: true,
-        from: 'Trabzonspor Gözlemci Birimi',
+        from: 'Trabzonspor G�zlemci Birimi',
         to: USER.name,
-        subject: 'Profil değerlendirme sonucu',
-        body: 'Merhaba,\n\nFiziksel ve teknik parametrelerin olumlu. Takip listemize eklendin.\n\nGüncel maç takvimini paylaşabilirsen seviniriz.',
+        subject: 'Profil degerlendirme sonucu',
+        body: 'Merhaba,\n\nFiziksel ve teknik parametrelerin olumlu. Takip listemize eklendin.\n\nG�ncel ma� takvimini paylasabilirsen seviniriz.',
         time: '2026-03-03T10:05:00'
       },
       {
         id: 'm4',
         box: 'inbox',
         read: false,
-        from: 'Menajer Ağı Destek',
+        from: 'Menajer Agi Destek',
         to: USER.name,
-        subject: 'Yeni bağlantı isteği',
-        body: 'Bir menajer seni izleme listesine ekledi. Profilini güncel tutman önerilir.',
+        subject: 'Yeni baglanti istegi',
+        body: 'Bir menajer seni izleme listesine ekledi. Profilini g�ncel tutman �nerilir.',
         time: '2026-03-02T19:22:00'
       }
     ];
@@ -479,10 +479,10 @@
     function renderTabs() {
       const counts = getTabCounts(state.messages);
       const tabs = [
-        { id: 'all', label: 'Tümü', count: counts.all },
+        { id: 'all', label: 'T�m�', count: counts.all },
         { id: 'inbox', label: 'Gelen', count: counts.inbox },
         { id: 'sent', label: 'Giden', count: counts.sent },
-        { id: 'unread', label: 'Okunmadı', count: counts.unread }
+        { id: 'unread', label: 'Okunmadi', count: counts.unread }
       ];
 
       tabsEl.innerHTML = tabs.map(t => `
@@ -503,7 +503,7 @@
     function renderList() {
       const rows = filteredMessages();
       if (!rows.length) {
-        listEl.innerHTML = '<div class="empty-list">Bu filtrede mesaj bulunamadı.</div>';
+        listEl.innerHTML = '<div class="empty-list">Bu filtrede mesaj bulunamadi.</div>';
         return;
       }
 
@@ -536,7 +536,7 @@
     function renderDetail() {
       const msg = state.messages.find(x => x.id === state.selectedId);
       if (!msg) {
-        detailEl.innerHTML = '<div class="detail-empty">Soldan bir mesaj seç.</div>';
+        detailEl.innerHTML = '<div class="detail-empty">Soldan bir mesaj se�.</div>';
         return;
       }
 
@@ -544,7 +544,7 @@
         <div class="detail-head">
           <h2 class="detail-title">${msg.subject}</h2>
           <div class="meta">
-            <span class="badge ${msg.box === 'inbox' ? 'inbox' : 'sent'}">${msg.box === 'inbox' ? 'GELEN' : 'GİDEN'}</span>
+            <span class="badge ${msg.box === 'inbox' ? 'inbox' : 'sent'}">${msg.box === 'inbox' ? 'GELEN' : 'GIDEN'}</span>
             <span class="badge ${msg.read ? 'read' : 'unread'}">${msg.read ? 'OKUNDU' : 'OKUNMADI'}</span>
             <span><strong>Kimden:</strong> ${msg.from}</span>
             <span><strong>Kime:</strong> ${msg.to}</span>
@@ -553,8 +553,8 @@
         </div>
         <div class="detail-body">${msg.body}</div>
         <div class="detail-actions">
-          <button class="btn ${msg.read ? '' : 'btn-primary'}" id="toggleReadBtn">${msg.read ? 'Okunmadı Yap' : 'Okundu Yap'}</button>
-          <button class="btn btn-danger" id="deleteBtn">Mesajı Sil</button>
+          <button class="btn ${msg.read ? '' : 'btn-primary'}" id="toggleReadBtn">${msg.read ? 'Okunmadi Yap' : 'Okundu Yap'}</button>
+          <button class="btn btn-danger" id="deleteBtn">Mesaji Sil</button>
         </div>
       `;
 

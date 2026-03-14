@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -220,7 +220,7 @@
             font-weight: 600;
         }
 
-        /* GALERİ B-LoMo */
+        /* GALERI B-LoMo */
         .section-title {
             font-size: 28px;
             font-weight: 800;
@@ -270,7 +270,7 @@
             color: white;
         }
 
-        /* VİDEO B-LoMo */
+        /* VIDEO B-LoMo */
         .videos-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -506,9 +506,9 @@
     <!-- HEADER NAV -->
     <div class="header-nav">
         <div class="nav-content">
-            <a href="DASHBOARD_DESIGN.html" class="back-btn">← DASHBOARD</a>
+            <a href="DASHBOARD_DESIGN.html" class="back-btn">? DASHBOARD</a>
             <div class="logo">Scout Platform</div>
-            <button class="back-btn" onclick="logoutFromProfile()">Çıkış</button>
+            <button class="back-btn" onclick="logoutFromProfile()">�ikis</button>
         </div>
     </div>
 
@@ -516,10 +516,10 @@
     <div class="container">
         <!-- HERO SECTION -->
         <div class="hero-section">
-            <div class="hero-image" id="heroImage">⚽</div>
+            <div class="hero-image" id="heroImage">?</div>
             
             <div class="hero-info">
-                <h1 id="playerName">Ahmet Yılmaz</h1>
+                <h1 id="playerName">Ahmet Yilmaz</h1>
                 <div class="hero-position" id="playerPosition">Forvet</div>
                 <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
                     <span id="contractStatusBadge" style="background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.3); padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700;">Sozlesmeli</span>
@@ -530,7 +530,7 @@
                 <div class="hero-stats">
                     <div class="stat-item">
                         <span class="stat-value" id="playerAge">24</span>
-                        <span class="stat-label">Yaş</span>
+                        <span class="stat-label">Yas</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-value" id="playerHeight">180cm</span>
@@ -543,93 +543,93 @@
                 </div>
 
                 <div class="rating-box">
-                    <div class="rating-stars">★★★★★</div>
-                    <div class="rating-text" id="ratingText">4.8/10 - Scoutlar Tarafından Değerlendirildi</div>
+                    <div class="rating-stars">?????</div>
+                    <div class="rating-text" id="ratingText">4.8/10 - Scoutlar Tarafindan Degerlendirildi</div>
                 </div>
 
                 <div class="hero-actions" style="margin-top: 20px;">
-                    <button class="btn btn-primary">Mesaj Gönder</button>
-                    <button class="btn btn-secondary">⭐ Favori Ekle</button>
+                    <button class="btn btn-primary">Mesaj G�nder</button>
+                    <button class="btn btn-secondary">? Favori Ekle</button>
                 </div>
             </div>
         </div>
 
-        <div class="data-meta" id="playerDataMeta">Kaynak: Sistem • Son guncelleme: -</div>
+        <div class="data-meta" id="playerDataMeta">Kaynak: Sistem � Son guncelleme: -</div>
         <div class="data-meta" id="playerQualityMeta" style="opacity:.75;">Veri Kalitesi: -</div>
         <div class="profile-tabs" id="profileTabs">
             <button class="profile-tab active" data-tab="overview" type="button">Genel</button>
             <button class="profile-tab" data-tab="media" type="button">Medya</button>
-            <button class="profile-tab" data-tab="transfer" type="button">Transfer Geçmişi</button>
-            <button class="profile-tab" data-tab="contract" type="button">Sözleşme</button>
-            <button class="profile-tab" data-tab="notes" type="button">Scout Notları</button>
+            <button class="profile-tab" data-tab="transfer" type="button">Transfer Ge�misi</button>
+            <button class="profile-tab" data-tab="contract" type="button">S�zlesme</button>
+            <button class="profile-tab" data-tab="notes" type="button">Scout Notlari</button>
         </div>
 
         <section class="tab-panel active" data-tab-panel="overview">
             <div class="details-grid">
                 <div class="card">
-                    <h3 class="card-title">📝 Hakkında</h3>
+                    <h3 class="card-title">?? Hakkinda</h3>
                     <p class="bio-text" id="bioText">
-                        Türkiye'nin en yetenekli forvet oyuncularından biri. Güçlü fizik yapısı, hızı ve gol yeteneği ile biliniyor.
+                        T�rkiye'nin en yetenekli forvet oyuncularindan biri. G��l� fizik yapisi, hizi ve gol yetenegi ile biliniyor.
                     </p>
                 </div>
                 <div class="card" id="stats">
-                    <h3 class="card-title">📊 İstatistikler</h3>
+                    <h3 class="card-title">?? Istatistikler</h3>
                     <div class="stats-list">
-                        <div class="stats-item"><span class="stats-label">Oynanan Maçlar</span><span class="stats-value" id="statMatches">28</span></div>
+                        <div class="stats-item"><span class="stats-label">Oynanan Ma�lar</span><span class="stats-value" id="statMatches">28</span></div>
                         <div class="stats-item"><span class="stats-label">Goller</span><span class="stats-value" id="statGoals">15</span></div>
                         <div class="stats-item"><span class="stats-label">Asistler</span><span class="stats-value" id="statAssists">6</span></div>
                     </div>
                 </div>
                 <div class="card" id="achievements">
-                    <h3 class="card-title">🏆 Başarılar</h3>
+                    <h3 class="card-title">?? Basarilar</h3>
                     <div id="achievementList" style="display:grid;gap:10px;"></div>
                 </div>
                 <div class="card">
-                    <h3 class="card-title">📧 İletişim</h3>
+                    <h3 class="card-title">?? Iletisim</h3>
                     <div class="stats-list">
-                        <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;">Mesaj Gönder</button>
-                        <button class="btn btn-secondary" style="width: 100%;">☎️ Menajer ile Görüş</button>
+                        <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;">Mesaj G�nder</button>
+                        <button class="btn btn-secondary" style="width: 100%;">?? Menajer ile G�r�s</button>
                     </div>
                 </div>
             </div>
         </section>
 
         <section class="tab-panel" data-tab-panel="media">
-            <h2 class="section-title">📸 Foto Galerisi</h2>
+            <h2 class="section-title">?? Foto Galerisi</h2>
             <div class="gallery-grid" id="galleryGrid"></div>
-            <h2 class="section-title">🎬 Video Portfolyo</h2>
+            <h2 class="section-title">?? Video Portfolyo</h2>
             <div class="videos-grid" id="videosGrid"></div>
         </section>
 
         <section class="tab-panel" data-tab-panel="transfer">
-            <h2 class="section-title">🔁 Transfer Geçmişi</h2>
+            <h2 class="section-title">?? Transfer Ge�misi</h2>
             <table class="transfer-table">
-                <thead><tr><th>Sezon</th><th>Kulüp</th><th>Yeni Kulüp</th><th>Bedel</th></tr></thead>
+                <thead><tr><th>Sezon</th><th>Kul�p</th><th>Yeni Kul�p</th><th>Bedel</th></tr></thead>
                 <tbody id="transferHistoryBody"></tbody>
             </table>
-            <h2 class="section-title" style="margin-top:18px;">💶 Piyasa Degeri Tarihcesi</h2>
+            <h2 class="section-title" style="margin-top:18px;">?? Piyasa Degeri Tarihcesi</h2>
             <div class="card">
                 <div id="marketHistoryList" style="display:grid;gap:8px;"></div>
             </div>
-            <h2 class="section-title" style="margin-top:18px;">🕒 Kariyer Akisi</h2>
+            <h2 class="section-title" style="margin-top:18px;">?? Kariyer Akisi</h2>
             <div class="card">
                 <div id="timelineList" style="display:grid;gap:8px;"></div>
             </div>
         </section>
 
         <section class="tab-panel" data-tab-panel="contract">
-            <h2 class="section-title">📄 Sözleşme</h2>
+            <h2 class="section-title">?? S�zlesme</h2>
             <div class="card">
                 <div class="stats-list">
                     <div class="stats-item"><span class="stats-label">Durum</span><span class="stats-value" id="contractStatusValue">Sozlesmeli</span></div>
-                    <div class="stats-item"><span class="stats-label">Bitiş</span><span class="stats-value" id="contractEndValue">2027-06-30</span></div>
+                    <div class="stats-item"><span class="stats-label">Bitis</span><span class="stats-value" id="contractEndValue">2027-06-30</span></div>
                     <div class="stats-item"><span class="stats-label">Opsiyon</span><span class="stats-value" id="contractOptionValue">1 yil</span></div>
                 </div>
             </div>
         </section>
 
         <section class="tab-panel" data-tab-panel="notes">
-            <h2 class="section-title">🧠 Scout Notları</h2>
+            <h2 class="section-title">?? Scout Notlari</h2>
             <div class="card">
                 <div id="scoutNotesList" style="display:grid;gap:10px;"></div>
             </div>
@@ -691,7 +691,7 @@
             const meta = document.getElementById('playerDataMeta');
             const stamp = window.NextScoutData?.sourceStamp
                 ? window.NextScoutData.sourceStamp(sourceLabel || 'Sistem', new Date())
-                : `Kaynak: ${sourceLabel || 'Sistem'} • Son guncelleme: ${new Date().toLocaleString('tr-TR')}`;
+                : `Kaynak: ${sourceLabel || 'Sistem'} � Son guncelleme: ${new Date().toLocaleString('tr-TR')}`;
             if (meta) meta.textContent = stamp;
             const qualityMeta = document.getElementById('playerQualityMeta');
             if (qualityMeta) {
@@ -702,14 +702,14 @@
             const galleryGrid = document.getElementById('galleryGrid');
             const galleryItems = Array.isArray(data?.gallery) && data.gallery.length
                 ? data.gallery
-                : ['📷','📷','📷','📷'];
+                : ['??','??','??','??'];
             if (galleryGrid) {
                 galleryGrid.innerHTML = galleryItems.map((item) => {
                     const url = typeof item === 'string' ? item : (item?.url || '');
                     if (/^https?:/i.test(url) || /^data:image\//i.test(url)) {
                         return `<div class="gallery-item"><img src="${esc(url)}" alt="Oyuncu"></div>`;
                     }
-                    return `<div class="gallery-item"><div class="gallery-item-empty">${esc(url || '📷')}</div></div>`;
+                    return `<div class="gallery-item"><div class="gallery-item-empty">${esc(url || '??')}</div></div>`;
                 }).join('');
             }
 
@@ -720,10 +720,10 @@
             if (videosGrid) {
                 videosGrid.innerHTML = videos.map((v) => `
                     <div class="video-card">
-                        <div class="video-thumbnail"><div class="play-btn">▶</div></div>
+                        <div class="video-thumbnail"><div class="play-btn">?</div></div>
                         <div class="video-info">
                             <div class="video-title">${esc(v?.title || 'Video')}</div>
-                            <a href="${esc(v?.url || '#')}" class="video-link" target="_blank" rel="noopener">Videoyu izle →</a>
+                            <a href="${esc(v?.url || '#')}" class="video-link" target="_blank" rel="noopener">Videoyu izle ?</a>
                         </div>
                     </div>
                 `).join('');
@@ -733,7 +733,7 @@
             const transfers = Array.isArray(data?.transfers) && data.transfers.length
                 ? data.transfers
                 : [
-                    { season: '2025/26', from: 'Bakirkoy SK', to: 'Yeni Kulup', fee: '€250K' },
+                    { season: '2025/26', from: 'Bakirkoy SK', to: 'Yeni Kulup', fee: '�250K' },
                     { season: '2024/25', from: 'Altyapi', to: 'Bakirkoy SK', fee: 'Bedelsiz' },
                 ];
             if (transferBody) {
@@ -785,17 +785,17 @@
 
             try { sessionUser = sessionUserRaw ? JSON.parse(sessionUserRaw) : null; } catch (e) { sessionUser = null; }
 
-            setText('playerName', sessionUser?.name || 'Ahmet Yılmaz');
+            setText('playerName', sessionUser?.name || 'Ahmet Yilmaz');
 
             if (savedProfile) {
                 try {
                     const data = JSON.parse(savedProfile);
                     setText('playerPosition', (data.position || 'Forvet').toUpperCase());
-                    setText('playerName', sessionUser?.name || data.name || 'Ahmet Yılmaz');
+                    setText('playerName', sessionUser?.name || data.name || 'Ahmet Yilmaz');
                     setText('playerAge', data.age || '24');
                     setText('playerHeight', (data.height || '180') + 'cm');
                     setText('playerRating', data.rating || '4.8');
-                    setText('ratingText', (data.rating || '4.8') + '/10 - Scoutlar Tarafından Değerlendirildi');
+                    setText('ratingText', (data.rating || '4.8') + '/10 - Scoutlar Tarafindan Degerlendirildi');
                     setText('bioText', data.bio || '');
                     setText('statMatches', data.matches || '28');
                     setText('statGoals', data.goals || '15');
@@ -805,7 +805,7 @@
                     setText('currentClubBadge', `Kulup: ${data.current_club || '-'}`);
                     renderAdvancedPanels(data, 'Local Profil');
                 } catch (e) {
-                    console.error('Profile parse hatası:', e);
+                    console.error('Profile parse hatasi:', e);
                 }
             }
 
@@ -843,7 +843,7 @@
                 season: row?.season?.name || row?.season || (row?.transfer_date ? String(row.transfer_date).slice(0, 4) : '-'),
                 from: row?.from_club?.name || row?.fromClub?.name || '-',
                 to: row?.to_club?.name || row?.toClub?.name || '-',
-                fee: row?.transfer_fee ? `€${row.transfer_fee}` : (row?.transfer_type === 'free' ? 'Bedelsiz' : '-'),
+                fee: row?.transfer_fee ? `�${row.transfer_fee}` : (row?.transfer_type === 'free' ? 'Bedelsiz' : '-'),
             }));
         }
 
@@ -867,15 +867,15 @@
             const notes = [];
             const marketHistory = history.slice(0, 8).map((row) => ({
                 date: row?.valuation_date ? new Date(row.valuation_date).toLocaleDateString('tr-TR') : '-',
-                value: row?.market_value ? `€${row.market_value}` : '-',
+                value: row?.market_value ? `�${row.market_value}` : '-',
             }));
             const timelineEvents = history.slice(0, 6).map((row) => ({
-                title: `Piyasa Guncellemesi • ${row?.valuation_date ? new Date(row.valuation_date).toLocaleDateString('tr-TR') : '-'}`,
-                text: `Deger ${row?.market_value ? `€${row.market_value}` : '-'}`,
+                title: `Piyasa Guncellemesi � ${row?.valuation_date ? new Date(row.valuation_date).toLocaleDateString('tr-TR') : '-'}`,
+                text: `Deger ${row?.market_value ? `�${row.market_value}` : '-'}`,
             }));
 
-            if (summary.current_value) achievements.push({ title: 'Guncel Piyasa Degeri', text: `€${summary.current_value}` });
-            if (summary.highest_value) achievements.push({ title: 'Zirve Deger', text: `€${summary.highest_value}` });
+            if (summary.current_value) achievements.push({ title: 'Guncel Piyasa Degeri', text: `�${summary.current_value}` });
+            if (summary.highest_value) achievements.push({ title: 'Zirve Deger', text: `�${summary.highest_value}` });
             if (history.length) {
                 notes.push({
                     text: `Deger degisimi: ${Number(summary.change_percentage || 0).toFixed(1)}%`,
@@ -898,8 +898,8 @@
 
             const marketInsights = mapMarketInsights(marketRes || {});
             const transferTimeline = mapTransfers(transferRes || {}).slice(0, 6).map((row) => ({
-                title: `Transfer • ${row.season || '-'}`,
-                text: `${row.from || '-'} → ${row.to || '-'} (${row.fee || '-'})`,
+                title: `Transfer � ${row.season || '-'}`,
+                text: `${row.from || '-'} ? ${row.to || '-'} (${row.fee || '-'})`,
             }));
             const combinedTimeline = [...transferTimeline, ...(marketInsights.timelineEvents || [])].slice(0, 10);
             return {
@@ -927,7 +927,7 @@
             const position = card.position || profile.position || 'Oyuncu';
             const age = card.age || profile.age || '-';
             const height = card.height || (profile.height_cm ? profile.height_cm + 'cm' : '-');
-            const bio = profile.bio || 'Bu oyuncu henüz hakkımda bilgisi eklemedi.';
+            const bio = profile.bio || 'Bu oyuncu hen�z hakkimda bilgisi eklemedi.';
             const contractStatus = profile.contract_status === 'free' ? 'Bosta' : 'Sozlesmeli';
             const seekingClub = profile.seeking_club ? 'Kulup Ariyor' : 'Kulup Aramiyor';
             const currentClub = profile.current_club || profile.club_name || '-';
@@ -937,7 +937,7 @@
             setText('playerAge', age);
             setText('playerHeight', height);
             setText('playerRating', rating);
-            setText('ratingText', String(rating) + '/10 - Scoutlar Tarafından Değerlendirildi');
+            setText('ratingText', String(rating) + '/10 - Scoutlar Tarafindan Degerlendirildi');
             setText('bioText', bio);
             setText('statMatches', matches);
             setText('statGoals', goals);
@@ -976,11 +976,11 @@
                     headers: { 'Accept': 'application/json' },
                 });
                 const data = await res.json();
-                if (!res.ok || !data.ok) throw new Error(data?.message || 'Profil alınamadı');
+                if (!res.ok || !data.ok) throw new Error(data?.message || 'Profil alinamadi');
                 const extras = await fetchSupplementaryData(userId);
                 renderPublicProfile(data.data, extras);
             } catch (e) {
-                console.error('Public profil yüklenemedi:', e);
+                console.error('Public profil y�klenemedi:', e);
                 renderLocalProfile();
             }
         }
@@ -988,7 +988,6 @@
         function logoutFromProfile() {
             localStorage.removeItem('nextscout_token');
             localStorage.removeItem('nextscout_user');
-            localStorage.removeItem('nextscout_demo_login');
             window.location.href = 'index.html';
         }
 
@@ -1005,6 +1004,7 @@
     <script src="assets/js/core-stability.js"></script>
 </body>
 </html>
+
 
 
 

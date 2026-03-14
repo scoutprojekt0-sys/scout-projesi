@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
@@ -189,14 +189,14 @@
     <div class="header">
       <div>
         <h1 class="title">Favorilerim</h1>
-        <div class="sub">Favoriye eklediğin oyuncular burada listelenir.</div>
+        <div class="sub">Favoriye ekledigin oyuncular burada listelenir.</div>
       </div>
-      <a class="btn" href="DASHBOARD_DESIGN.html">← Dashboard</a>
+      <a class="btn" href="DASHBOARD_DESIGN.html">? Dashboard</a>
     </div>
 
     <div class="toolbar">
       <span class="count" id="countText">0 oyuncu</span>
-      <button class="btn btn-danger" id="clearBtn">Tümünü Temizle</button>
+      <button class="btn btn-danger" id="clearBtn">T�m�n� Temizle</button>
     </div>
 
     <div id="list"></div>
@@ -223,11 +223,11 @@
       authGate.style.display = 'block';
       authGate.innerHTML = `
         <div class="auth-gate">
-          <h2>Favorileri Görmek İçin Üye Ol</h2>
-          <p>Favori oyuncu, ilan ve takip listesini görmek için önce giriş yapmalısın.</p>
+          <h2>Favorileri G�rmek I�in �ye Ol</h2>
+          <p>Favori oyuncu, ilan ve takip listesini g�rmek i�in �nce giris yapmalisin.</p>
           <div class="auth-actions">
-            <a class="btn" href="#" onclick="goLogin();return false;">Giriş Yap</a>
-            <a class="btn" href="#" onclick="goRegister();return false;">Üye Ol</a>
+            <a class="btn" href="#" onclick="goLogin();return false;">Giris Yap</a>
+            <a class="btn" href="#" onclick="goRegister();return false;">�ye Ol</a>
           </div>
         </div>
       `;
@@ -262,7 +262,7 @@
       countText.textContent = `${items.length} oyuncu`;
 
       if (!items.length) {
-        listEl.innerHTML = '<div class="empty">Henüz favori oyuncu eklenmedi.</div>';
+        listEl.innerHTML = '<div class="empty">Hen�z favori oyuncu eklenmedi.</div>';
         return;
       }
 
@@ -270,17 +270,17 @@
         <div class="grid">
           ${items.map(p => `
             <div class="card">
-              <div class="avatar">⚽</div>
+              <div class="avatar">?</div>
               <div class="content">
                 <h3 class="name">${p.name || '-'}</h3>
-                <div class="meta">${p.position || '-'} • ${p.league || '-'}</div>
-                <div class="row"><span class="k">Kulüp</span><span class="v">${p.club || '-'}</span></div>
-                <div class="row"><span class="k">Yaş</span><span class="v">${p.age || '-'}</span></div>
+                <div class="meta">${p.position || '-'} � ${p.league || '-'}</div>
+                <div class="row"><span class="k">Kul�p</span><span class="v">${p.club || '-'}</span></div>
+                <div class="row"><span class="k">Yas</span><span class="v">${p.age || '-'}</span></div>
                 <div class="row"><span class="k">Boy</span><span class="v">${p.height || '-'} cm</span></div>
                 <div class="row"><span class="k">Rating</span><span class="v">${p.rating || '-'} / 10</span></div>
                 <div class="actions">
-                  <button onclick="contact('${p.id}')">İletişim</button>
-                  <button class="remove" onclick="removeFav('${p.id}')">Kaldır</button>
+                  <button onclick="contact('${p.id}')">Iletisim</button>
+                  <button class="remove" onclick="removeFav('${p.id}')">Kaldir</button>
                 </div>
               </div>
             </div>
@@ -298,11 +298,11 @@
     function contact(id) {
       const item = loadFavorites().find(x => String(x.id) === String(id));
       if (!item) return;
-      alert(`${item.name} ile iletişim başlatılıyor...`);
+      alert(`${item.name} ile iletisim baslatiliyor...`);
     }
 
     clearBtn.addEventListener('click', () => {
-      if (!confirm('Tüm favorileri silmek istediğine emin misin?')) return;
+      if (!confirm('T�m favorileri silmek istedigine emin misin?')) return;
       saveFavorites([]);
       render();
     });

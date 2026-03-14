@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ANTRENÃ–R GiriÅŸ | nextscout.pro</title>
-    <meta name="description" content="NextScout ANTRENÃ–R giriÅŸ sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
+  <title>Antrenor Giris | nextscout.pro</title>
+    <meta name="description" content="NextScout antranor giris sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
     <meta name="robots" content="noindex,follow">
-    <link rel="canonical" href="https://nextscout.pro/antranor-giris.html">
+    <link rel="canonical" href="https://nextscout.app/antranor-giris.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="ANTRENÃ–R GiriÅŸ | nextscout.pro">
-    <meta property="og:description" content="NextScout ANTRENÃ–R giriÅŸ sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
-    <meta property="og:url" content="https://nextscout.pro/antranor-giris.html">
-    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
+    <meta property="og:title" content="Antrenor Giris | nextscout.pro">
+    <meta property="og:description" content="NextScout antranor giris sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.app/antranor-giris.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="ANTRENÃ–R GiriÅŸ | nextscout.pro">
-    <meta name="twitter:description" content="NextScout ANTRENÃ–R giriÅŸ sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
-    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
+    <meta name="twitter:title" content="Antrenor Giris | nextscout.pro">
+    <meta name="twitter:description" content="NextScout antranor giris sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,35 +53,34 @@
     .msg.success { background:rgba(82,224,193,.2); border:1px solid var(--ok); color:var(--ok); }
     @media (max-width:820px) { .login-modal-grid { grid-template-columns: 1fr; } }
   </style>
-    <link rel="stylesheet" href="assets/css/mobile-unified.css">
-    <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
 <body>
   <iframe class="home-bg" src="index.html" title="Anasayfa arka plan"></iframe>
   <div class="bg-dim" aria-hidden="true"></div>
   <main class="page">
     <div class="head">
-      <h1>AntrenÃƒÂ¶r GiriÃ…Å¸i</h1>
-      <a class="home-btn-global" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a>
+      <h1>Antrenör Girişi</h1>
+      <a class="back-link" href="index.html">← Anasayfa</a>
     </div>
     <div class="login-modal-grid">
-      <section class="login-mini-card" aria-label="ANTRENÃ–R yeni hesap alani">
-        <h4>Yeni AntrenÃƒÂ¶r HesabÃ„Â± OluÃ…Å¸tur</h4>
+      <section class="login-mini-card" aria-label="Antrenor yeni hesap alani">
+        <h4>Yeni Antrenör Hesabı Oluştur</h4>
         <form class="login-mini-form" id="registerForm">
-          <label>Ad Soyad<input type="text" name="name" placeholder="AntrenÃƒÂ¶r ad soyad" required></label>
+          <label>Ad Soyad<input type="text" name="name" placeholder="Antrenör ad soyad" required></label>
           <label>E-posta<input type="email" name="email" placeholder="ornek@mail.com" required></label>
-          <label>Ã…Âifre<input type="password" name="password" placeholder="Ã…Âifre oluÃ…Å¸turun" required minlength="6"></label>
-          <button class="btn" type="submit">KayÃ„Â±t Ol</button>
+          <label>Şifre<input type="password" name="password" placeholder="Şifre oluşturun" required minlength="8"></label>
+          <label>Şifre Tekrar<input type="password" name="password_confirmation" placeholder="Şifreyi tekrar girin" required minlength="8"></label>
+          <button class="btn" type="submit">Kayıt Ol</button>
           <div id="registerMsg"></div>
         </form>
       </section>
-      <section class="login-mini-card" aria-label="ANTRENÃ–R giriÅŸ alani">
-        <h4>AntrenÃƒÂ¶r GiriÃ…Å¸i</h4>
+      <section class="login-mini-card" aria-label="Antrenor giris alani">
+        <h4>Antrenör Girişi</h4>
         <form class="login-mini-form" id="loginForm">
           <label>E-posta<input type="email" name="email" placeholder="ornek@mail.com" required></label>
-          <label>Ã…Âifre<input type="password" name="password" placeholder="Ã…Âifrenizi girin" required></label>
-          <label class="remember-row"><input type="checkbox">Beni HatÃ„Â±rla</label>
-          <button class="btn" type="submit">GiriÃ…Å¸ Yap</button>
+          <label>Şifre<input type="password" name="password" placeholder="Şifrenizi girin" required></label>
+          <label class="remember-row"><input type="checkbox">Beni Hatırla</label>
+          <button class="btn" type="submit">Giriş Yap</button>
           <div id="loginMsg"></div>
         </form>
       </section>
@@ -90,7 +89,7 @@
 
   <script>
     (function () {
-      const API_BASE = `${window.location.origin}/api`;
+      const API_BASE = "http://127.0.0.1:8000/api";
       const ROLE = "coach";
 
       const registerForm = document.getElementById("registerForm");
@@ -114,6 +113,7 @@
           name: formData.get("name"),
           email: formData.get("email"),
           password: formData.get("password"),
+          password_confirmation: formData.get("password_confirmation"),
           role: ROLE,
         };
 
@@ -127,14 +127,22 @@
           const payload = await response.json();
 
           if (!response.ok || !payload.ok) {
-            throw new Error(payload.message || "KayÃ„Â±t baÃ…Å¸arÃ„Â±sÃ„Â±z");
+            throw new Error(payload.message || "Kayıt başarısız");
           }
 
-          showMessage(registerMsg, "Ã¢Å“â€¦ KayÃ„Â±t baÃ…Å¸arÃ„Â±lÃ„Â±! YÃƒÂ¶nlendiriliyorsunuz...");
-          localStorage.setItem("nextscout_token", payload.data.token);
-          setTimeout(() => { window.location.href = "index.html"; }, 1500);
+          const verificationRequired = Boolean(payload?.data?.verification_required);
+          const verificationLink = (payload?.data?.verification_preview_link || "").toString().trim();
+          let message = verificationRequired
+            ? "Kayit alindi. E-postadaki dogrulama linkine tikladiktan sonra giris yapabilirsin."
+            : "Kayit alindi. Artik giris yapabilirsin.";
+          if (verificationRequired && verificationLink) {
+            message += `<br><br><a href="${verificationLink}" style="color:#93C5FD;word-break:break-all;">Dogrulama linkini ac</a>`;
+          }
+          showMessage(registerMsg, message);
+          registerForm.reset();
+          btn.disabled = false;
         } catch (error) {
-          showMessage(registerMsg, `Ã¢ÂÅ’ ${error.message}`, true);
+          showMessage(registerMsg, `❌ ${error.message}`, true);
           btn.disabled = false;
         }
       });
@@ -161,29 +169,25 @@
           const payload = await response.json();
 
           if (!response.ok || !payload.ok) {
-            throw new Error(payload.message || "GiriÃ…Å¸ baÃ…Å¸arÃ„Â±sÃ„Â±z");
+            throw new Error(payload.message || "Giriş başarısız");
           }
 
-          showMessage(loginMsg, "Ã¢Å“â€¦ GiriÃ…Å¸ baÃ…Å¸arÃ„Â±lÃ„Â±! YÃƒÂ¶nlendiriliyorsunuz...");
+          showMessage(loginMsg, "Giris basarili. Yonlendiriliyorsun...");
           localStorage.setItem("nextscout_token", payload.data.token);
+          if (payload?.data?.user) {
+            localStorage.setItem("nextscout_user", JSON.stringify(payload.data.user));
+          }
           setTimeout(() => { window.location.href = "index.html"; }, 1500);
         } catch (error) {
-          showMessage(loginMsg, `Ã¢ÂÅ’ ${error.message}`, true);
+          showMessage(loginMsg, `❌ ${error.message}`, true);
           btn.disabled = false;
         }
       });
     })();
   </script>
     <script src="assets/js/core-stability.js"></script>
-    <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
-
-
 
 
 

@@ -1,17 +1,17 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manager Dashboard | NextScout</title>
-    <meta name="description" content="MENAJER paneli: oyuncu portfoyu, teklif yÃ¶netimi ve ihtiyaÃ§ eslesme akislarini yonetin.">
+    <meta name="description" content="MENAJER paneli: oyuncu portfoyu, teklif yönetimi ve ihtiyaç eslesme akislarini yonetin.">
     <meta name="robots" content="noindex,follow">
     <link rel="canonical" href="https://nextscout.pro/manager-dashboard.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
     <meta property="og:title" content="Manager Dashboard | NextScout">
-    <meta property="og:description" content="MENAJER paneli: oyuncu portfoyu, teklif yÃ¶netimi ve ihtiyaÃ§ eslesme akislarini yonetin.">
+    <meta property="og:description" content="MENAJER paneli: oyuncu portfoyu, teklif yönetimi ve ihtiyaç eslesme akislarini yonetin.">
     <meta property="og:url" content="https://nextscout.pro/manager-dashboard.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
@@ -594,10 +594,10 @@
             <div class="logo">NextScout Manager</div>
         </div>
         <div class="navbar-right">
-            <button class="btn-small success" onclick="openNeedModal()"><i class="fas fa-plus-circle"></i><span>Ä°lan Gir</span></button>
-            <button class="btn-small primary" onclick="window.location.href='manager-needs.html'"><i class="fas fa-list-check"></i><span>Ä°lan Listesi</span></button>
+            <button class="btn-small success" onclick="openNeedModal()"><i class="fas fa-plus-circle"></i><span>İlan Gir</span></button>
+            <button class="btn-small primary" onclick="window.location.href='manager-needs.html'"><i class="fas fa-list-check"></i><span>İlan Listesi</span></button>
             <button class="btn-small home-btn" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;" onclick="window.location.href='index.html'"><i class="fas fa-house"></i><span>Ana Sayfa</span></button>
-            <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Ã‡Ä±kÄ±ÅŸ</span></button>
+            <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Çıkış</span></button>
         </div>
     </div>
 
@@ -623,13 +623,13 @@
         <div class="content">
             <div class="welcome-card">
                 <h1>Manager Dashboard</h1>
-                <p>Oyuncu ara, profil incele, baÅŸvuru gÃ¶nder ve favori listeni yonet.</p>
+                <p>Oyuncu ara, profil incele, başvuru gönder ve favori listeni yonet.</p>
             </div>
 
             <div class="need-section">
                 <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
                     <h2 style="font-size:18px;font-weight:800;color:#e5e7eb;">Aradigim Oyuncu Ilanlari</h2>
-                    <button class="btn-small success" onclick="openNeedModal()">+ Yeni Ä°lan</button>
+                    <button class="btn-small success" onclick="openNeedModal()">+ Yeni İlan</button>
                 </div>
                 <div class="need-list" id="managerNeedRecent"></div>
             </div>
@@ -646,7 +646,7 @@
                         <input type="number" id="offerContractClarity" min="0" max="100" value="70">
                     </div>
                     <div class="form-group">
-                        <label>Ã–deme Hizi (0-100)</label>
+                        <label>Ödeme Hizi (0-100)</label>
                         <input type="number" id="offerPaymentSpeed" min="0" max="100" value="70">
                     </div>
                     <div class="form-group">
@@ -664,7 +664,7 @@
                 <div class="stat-card"><div class="stat-card-value" id="statPool">0</div><div class="stat-card-label">Oyuncu Havuzu</div></div>
                 <div class="stat-card"><div class="stat-card-value" id="statFiltered">0</div><div class="stat-card-label">Filtre Sonucu</div></div>
                 <div class="stat-card"><div class="stat-card-value" id="statFavorites">0</div><div class="stat-card-label">Favori Oyuncu</div></div>
-                <div class="stat-card"><div class="stat-card-value" id="statApplications">0</div><div class="stat-card-label">Gonderilen BaÅŸvuru</div></div>
+                <div class="stat-card"><div class="stat-card-value" id="statApplications">0</div><div class="stat-card-label">Gonderilen Başvuru</div></div>
             </div>
 
             <div class="search-section">
@@ -977,7 +977,7 @@
                 }
             }
             if (!items.length) {
-                root.innerHTML = '<div class="need-item">Henuz ilan yok. "Yeni Ä°lan" ile ilk ilani olustur.</div>';
+                root.innerHTML = '<div class="need-item">Henuz ilan yok. "Yeni İlan" ile ilk ilani olustur.</div>';
                 return;
             }
             root.innerHTML = items.map((item) => {
@@ -1047,10 +1047,10 @@
             grid.innerHTML = players.map((player) => {
                 const rating = Number(player.rating) || 0;
                 const starCount = Math.max(1, Math.min(5, Math.round(rating / 2)));
-                const stars = 'â˜…'.repeat(starCount) + 'â˜†'.repeat(5 - starCount);
+                const stars = '★'.repeat(starCount) + '☆'.repeat(5 - starCount);
                 return `
                 <div class="player-card">
-                    <div class="player-card-image">âš½</div>
+                    <div class="player-card-image">⚽</div>
                     <div class="player-card-content">
                         <div class="player-name">${escapeHtml(player.name || '-')}</div>
                         <div class="player-position">${escapeHtml(player.position || '-')}</div>
@@ -1131,7 +1131,7 @@
         async function sendApplication(playerId) {
             const player = allPlayers.find((p) => Number(p.id) === Number(playerId));
             if (!player) { window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.'); return; }
-            const message = prompt(`${player.name} icin kisa baÅŸvuru notu:`, 'Ilgileniyoruz, gorusmek isteriz.');
+            const message = prompt(`${player.name} icin kisa başvuru notu:`, 'Ilgileniyoruz, gorusmek isteriz.');
             if (message === null) return;
 
             const items = getApplications();
@@ -1154,7 +1154,7 @@
                         headers,
                         body: JSON.stringify({
                             to_user_id: Number(player.id),
-                            subject: 'BaÅŸvuru',
+                            subject: 'Başvuru',
                             message: draft.message,
                         }),
                     });
@@ -1180,7 +1180,7 @@
             if (!persisted) items.unshift(draft);
             saveApplications(items.slice(0, 500));
             updateStats();
-            window.nsNotify?.success ? window.nsNotify.success(`BaÅŸvuru gÃ¶nderildi: ${player.name}`) : nsnsAlert(`BaÅŸvuru gÃ¶nderildi: ${player.name}`);
+            window.nsNotify?.success ? window.nsNotify.success(`Başvuru gönderildi: ${player.name}`) : nsnsAlert(`Başvuru gönderildi: ${player.name}`);
         }
 
         function toggleFavorite(playerId) {
@@ -1224,7 +1224,7 @@
             titleEl.textContent = title;
 
             if (!Array.isArray(items) || !items.length) {
-                bodyEl.innerHTML = '<div class="application-empty">Bu listede baÅŸvuru bulunamadi.</div>';
+                bodyEl.innerHTML = '<div class="application-empty">Bu listede başvuru bulunamadi.</div>';
             } else {
                 bodyEl.innerHTML = items.map((item) => {
                     const statusRaw = String(item?.status || 'sent').toLowerCase();
@@ -1320,7 +1320,7 @@
             else if (score >= 55) verdict = 'Orta Seviye';
 
             const root = document.getElementById('offerScoreResult');
-            if (root) root.textContent = `Teklif Skoru: ${score}/100 â€¢ ${verdict}`;
+            if (root) root.textContent = `Teklif Skoru: ${score}/100 • ${verdict}`;
 
             localStorage.setItem('nextscout_offer_score_snapshot', JSON.stringify({
                 budgetTrust,
@@ -1358,7 +1358,6 @@
             localStorage.removeItem('nextscout_user_name');
             localStorage.removeItem('nextscout_user_role');
             localStorage.removeItem('nextscout_user_id');
-            localStorage.removeItem('nextscout_demo_login');
             window.location.href = 'index.html';
         }
 
@@ -1416,9 +1415,9 @@
                 this.reset();
                 closeNeedModal();
                 await renderRecentNeeds();
-                window.nsNotify?.success ? window.nsNotify.success('Ä°lan kaydedildi. Anasayfa ve MENAJER ilan listesinde gorunecek.') : nsnsAlert('Ä°lan kaydedildi. Anasayfa ve MENAJER ilan listesinde gorunecek.');
+                window.nsNotify?.success ? window.nsNotify.success('İlan kaydedildi. Anasayfa ve MENAJER ilan listesinde gorunecek.') : nsnsAlert('İlan kaydedildi. Anasayfa ve MENAJER ilan listesinde gorunecek.');
             } catch (error) {
-                window.nsNotify?.error ? window.nsNotify.error(`Ä°lan kaydedilemedi: ${error.message}`) : nsnsAlert(`Ä°lan kaydedilemedi: ${error.message}`);
+                window.nsNotify?.error ? window.nsNotify.error(`İlan kaydedilemedi: ${error.message}`) : nsnsAlert(`İlan kaydedilemedi: ${error.message}`);
             }
         });
 
@@ -1429,6 +1428,7 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+
 
 
 

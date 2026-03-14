@@ -59,27 +59,28 @@
   <div class="bg-dim" aria-hidden="true"></div>
   <main class="page">
     <div class="head">
-      <h1>AntrenÃ¶r GiriÅŸi</h1>
-      <a class="back-link" href="index.html">â† Anasayfa</a>
+      <h1>Antrenör Girişi</h1>
+      <a class="back-link" href="index.html">← Anasayfa</a>
     </div>
     <div class="login-modal-grid">
       <section class="login-mini-card" aria-label="Antrenor yeni hesap alani">
-        <h4>Yeni AntrenÃ¶r HesabÄ± OluÅŸtur</h4>
+        <h4>Yeni Antrenör Hesabı Oluştur</h4>
         <form class="login-mini-form" id="registerForm">
-          <label>Ad Soyad<input type="text" name="name" placeholder="AntrenÃ¶r ad soyad" required></label>
+          <label>Ad Soyad<input type="text" name="name" placeholder="Antrenör ad soyad" required></label>
           <label>E-posta<input type="email" name="email" placeholder="ornek@mail.com" required></label>
-          <label>Åifre<input type="password" name="password" placeholder="Åifre oluÅŸturun" required minlength="6"></label>
-          <button class="btn" type="submit">KayÄ±t Ol</button>
+          <label>Şifre<input type="password" name="password" placeholder="Şifre oluşturun" required minlength="8"></label>
+          <label>Şifre Tekrar<input type="password" name="password_confirmation" placeholder="Şifreyi tekrar girin" required minlength="8"></label>
+          <button class="btn" type="submit">Kayıt Ol</button>
           <div id="registerMsg"></div>
         </form>
       </section>
       <section class="login-mini-card" aria-label="Antrenor giris alani">
-        <h4>AntrenÃ¶r GiriÅŸi</h4>
+        <h4>Antrenör Girişi</h4>
         <form class="login-mini-form" id="loginForm">
           <label>E-posta<input type="email" name="email" placeholder="ornek@mail.com" required></label>
-          <label>Åifre<input type="password" name="password" placeholder="Åifrenizi girin" required></label>
-          <label class="remember-row"><input type="checkbox">Beni HatÄ±rla</label>
-          <button class="btn" type="submit">GiriÅŸ Yap</button>
+          <label>Şifre<input type="password" name="password" placeholder="Şifrenizi girin" required></label>
+          <label class="remember-row"><input type="checkbox">Beni Hatırla</label>
+          <button class="btn" type="submit">Giriş Yap</button>
           <div id="loginMsg"></div>
         </form>
       </section>
@@ -112,6 +113,7 @@
           name: formData.get("name"),
           email: formData.get("email"),
           password: formData.get("password"),
+          password_confirmation: formData.get("password_confirmation"),
           role: ROLE,
         };
 
@@ -125,14 +127,22 @@
           const payload = await response.json();
 
           if (!response.ok || !payload.ok) {
-            throw new Error(payload.message || "KayÄ±t baÅŸarÄ±sÄ±z");
+            throw new Error(payload.message || "Kayıt başarısız");
           }
 
-          showMessage(registerMsg, "âœ… KayÄ±t baÅŸarÄ±lÄ±! YÃ¶nlendiriliyorsunuz...");
-          localStorage.setItem("nextscout_token", payload.data.token);
-          setTimeout(() => { window.location.href = "index.html"; }, 1500);
+          const verificationRequired = Boolean(payload?.data?.verification_required);
+          const verificationLink = (payload?.data?.verification_preview_link || "").toString().trim();
+          let message = verificationRequired
+            ? "Kayit alindi. E-postadaki dogrulama linkine tikladiktan sonra giris yapabilirsin."
+            : "Kayit alindi. Artik giris yapabilirsin.";
+          if (verificationRequired && verificationLink) {
+            message += `<br><br><a href="${verificationLink}" style="color:#93C5FD;word-break:break-all;">Dogrulama linkini ac</a>`;
+          }
+          showMessage(registerMsg, message);
+          registerForm.reset();
+          btn.disabled = false;
         } catch (error) {
-          showMessage(registerMsg, `âŒ ${error.message}`, true);
+          showMessage(registerMsg, `❌ ${error.message}`, true);
           btn.disabled = false;
         }
       });
@@ -159,14 +169,17 @@
           const payload = await response.json();
 
           if (!response.ok || !payload.ok) {
-            throw new Error(payload.message || "GiriÅŸ baÅŸarÄ±sÄ±z");
+            throw new Error(payload.message || "Giriş başarısız");
           }
 
-          showMessage(loginMsg, "âœ… GiriÅŸ baÅŸarÄ±lÄ±! YÃ¶nlendiriliyorsunuz...");
+          showMessage(loginMsg, "Giris basarili. Yonlendiriliyorsun...");
           localStorage.setItem("nextscout_token", payload.data.token);
+          if (payload?.data?.user) {
+            localStorage.setItem("nextscout_user", JSON.stringify(payload.data.user));
+          }
           setTimeout(() => { window.location.href = "index.html"; }, 1500);
         } catch (error) {
-          showMessage(loginMsg, `âŒ ${error.message}`, true);
+          showMessage(loginMsg, `❌ ${error.message}`, true);
           btn.disabled = false;
         }
       });
@@ -175,6 +188,8 @@
     <script src="assets/js/core-stability.js"></script>
 </body>
 </html>
+
+
 
 
 

@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oyuncu DASHBOARD - NextScout</title>
-    <meta name="description" content="NextScout player DASHBOARD sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
+    <meta name="description" content="NextScout player DASHBOARD sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
     <meta name="robots" content="noindex,follow">
     <link rel="canonical" href="https://nextscout.pro/player-dashboard.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
     <meta property="og:title" content="Oyuncu DASHBOARD - NextScout">
-    <meta property="og:description" content="NextScout player DASHBOARD sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
+    <meta property="og:description" content="NextScout player DASHBOARD sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
     <meta property="og:url" content="https://nextscout.pro/player-dashboard.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Oyuncu DASHBOARD - NextScout">
-    <meta name="twitter:description" content="NextScout player DASHBOARD sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:description" content="NextScout player DASHBOARD sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -625,7 +625,7 @@
         <section class="panel">
             <div class="section-title">Hizli Islemler</div>
             <div class="btn-row">
-                <a href="profile-edit.html" class="btn btn-primary"><i class="fas fa-edit"></i> Profili DÃ¼zenle</a>
+                    <a href="profile-edit.html" class="btn btn-primary"><i class="fas fa-edit"></i> Profili Düzenle</a>
                 <a href="player-profile.html#stats" class="btn btn-secondary"><i class="fas fa-chart-line"></i> Istatistikler</a>
                 <a href="player-profile.html#videos" class="btn btn-primary"><i class="fas fa-upload"></i> Video Yukle</a>
                 <a href="look-alike.html" class="btn btn-secondary"><i class="fas fa-clone"></i> Look-alike</a>
@@ -639,7 +639,7 @@
                 <div class="mini-item is-clickable" onclick="openLatestItemModal('new-match')">
                     <div class="left">
                         <div class="t" id="latestNewTitle">Scout Radarinda yeni eslesme</div>
-                        <div class="d" id="latestNewDesc">2 saat once â€¢ Super Lig B takÄ±mi izlemeye aldi</div>
+                        <div class="d" id="latestNewDesc">2 saat once • Super Lig B takimi izlemeye aldi</div>
                     </div>
                     <span class="tag" id="latestNewTag">Yeni</span>
                 </div>
@@ -666,14 +666,14 @@
                 <div class="mini-item is-clickable" onclick="openScheduleModal('join')">
                     <div class="left">
                         <div class="t">Deneme Maci - Istanbul</div>
-                        <div class="d">16 Mart 2026 â€¢ Saat 18:30</div>
+                    <div class="d">16 Mart 2026 • Saat 18:30</div>
                     </div>
                     <span class="tag">Katil</span>
                 </div>
                 <div class="mini-item is-clickable" onclick="openScheduleModal('planned')">
                     <div class="left">
                         <div class="t">Scout Gozlem Seansi</div>
-                        <div class="d">19 Mart 2026 â€¢ Saat 14:00</div>
+                    <div class="d">19 Mart 2026 • Saat 14:00</div>
                     </div>
                     <span class="tag">Planli</span>
                 </div>
@@ -697,7 +697,7 @@
         <div class="metric-modal-card" onclick="event.stopPropagation()">
             <div class="metric-modal-head">
                 <div class="metric-modal-title" id="metricModalTitle">Detay</div>
-                <button class="metric-modal-close" type="button" onclick="closeMetricModal()">Ã—</button>
+            <button class="metric-modal-close" type="button" onclick="closeMetricModal()">×</button>
             </div>
             <div class="metric-modal-body">
                 <div class="metric-summary" id="metricModalSummary">-</div>
@@ -708,8 +708,8 @@
     <div class="boost-modal" id="boostModal" onclick="if(event.target===this) closeBoostModal()">
         <div class="boost-card" onclick="event.stopPropagation()">
             <div class="boost-head">
-                <div class="boost-title">âš¡ Beni Kesfedin - Ucretli Tanitim</div>
-                <button type="button" class="boost-close" onclick="closeBoostModal()">Ã—</button>
+                <div class="boost-title">⚡ Beni Kesfedin - Ucretli Tanitim</div>
+                <button type="button" class="boost-close" onclick="closeBoostModal()">×</button>
             </div>
             <form class="boost-form" id="boostForm">
                 <div class="boost-grid">
@@ -717,13 +717,12 @@
                     <input class="boost-input" id="boostPosition" placeholder="Pozisyon (Orn: Forvet)">
                     <input class="boost-input" id="boostCity" placeholder="Sehir">
                     <select class="boost-input" id="boostPackage" required>
-                        <option value="24h">24 Saat Vitrin (149 TL)</option>
-                        <option value="72h">72 Saat Vitrin (349 TL)</option>
+                        <option value="">Paketler yukleniyor...</option>
                     </select>
                 </div>
                 <textarea class="boost-input" id="boostSummary" placeholder="Kisa tanitim metni" rows="4"></textarea>
                 <div class="boost-grid">
-                    <input class="boost-input" id="boostCardLast4" maxlength="4" placeholder="Kart son 4 hane" required>
+                    <div class="boost-input" id="boostPackageSummary" style="display:flex;align-items:center;min-height:46px;">Paket secip iyzico odeme ekranina gececeksin.</div>
                     <label style="display:flex;align-items:center;gap:8px;color:#fcd34d;font-size:12px;font-weight:700;">
                         <input type="checkbox" id="boostApprove" required>
                         Odemeyi onayliyorum
@@ -751,6 +750,7 @@
             weeklyDigest: null,
             communityEvents: [],
             selectedSchedule: null,
+            boostPackages: [],
         };
 
         function normalizeText(value) {
@@ -829,6 +829,15 @@
                 const raw = JSON.parse(localStorage.getItem(key) || '[]');
                 return Array.isArray(raw) ? raw : [];
             } catch (e) {
+                return [];
+            }
+        }
+
+        function readLocalBoostPackages() {
+            try {
+                const raw = JSON.parse(localStorage.getItem('nextscout_boost_packages') || '[]');
+                return Array.isArray(raw) ? raw : [];
+            } catch (error) {
                 return [];
             }
         }
@@ -960,8 +969,8 @@
                 newTitleEl.textContent = need.title || need.position || 'Scout Radarinda yeni eslesme';
             }
             if (need && newDescEl) {
-                const city = need.city ? ` â€¢ ${need.city}` : '';
-                newDescEl.textContent = `${need.club_name || need.club || 'KULÃœP ihtiyaÃ§i'}${city}`;
+        const city = need.city ? ` • ${need.city}` : '';
+        newDescEl.textContent = `${need.club_name || need.club || 'KULÜP ihtiyaci'}${city}`;
             }
             if (need && newTagEl) {
                 newTagEl.textContent = 'Yeni';
@@ -972,11 +981,61 @@
             }
             if (trend && trendDescEl) {
                 const change = trend.change_percentage ?? trend.change ?? trend.score ?? null;
-                trendDescEl.textContent = change !== null ? `Haftalik degisim: ${change}` : (trend.description || 'Haftalik trend gÃ¼ncellendi');
+        trendDescEl.textContent = change !== null ? `Haftalik degisim: ${change}` : (trend.description || 'Haftalik trend guncellendi');
             }
             if (trend && trendTagEl) {
                 trendTagEl.textContent = 'Trend';
             }
+        }
+
+        function formatTryAmount(value) {
+            const amount = Number(value || 0);
+            return Number.isFinite(amount)
+                ? amount.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY', minimumFractionDigits: 2 })
+                : '0,00 TL';
+        }
+
+        function renderBoostPackageOptions() {
+            const select = document.getElementById('boostPackage');
+            const summaryEl = document.getElementById('boostPackageSummary');
+            if (!select) return;
+
+            const packages = Array.isArray(dashboardApiState.boostPackages) ? dashboardApiState.boostPackages : [];
+            if (!packages.length) {
+                select.innerHTML = '<option value="">Paket bulunamadi</option>';
+                if (summaryEl) summaryEl.textContent = 'Admin tarafinda aktif boost paketi tanimlanmamis.';
+                return;
+            }
+
+            select.innerHTML = packages.map((pkg, index) => `
+                <option value="${Number(pkg.id)}" ${index === 0 ? 'selected' : ''}>
+                    ${esc(pkg.name)} (${formatTryAmount(pkg.price)} • ${Number(pkg.duration_days)} gun)
+                </option>
+            `).join('');
+
+            updateBoostPackageSummary();
+        }
+
+        function updateBoostPackageSummary() {
+            const select = document.getElementById('boostPackage');
+            const summaryEl = document.getElementById('boostPackageSummary');
+            if (!select || !summaryEl) return;
+
+            const pkg = dashboardApiState.boostPackages.find((item) => String(item.id) === String(select.value));
+            if (!pkg) {
+                summaryEl.textContent = 'Paket secip iyzico odeme ekranina gececeksin.';
+                return;
+            }
+
+            summaryEl.textContent = `${pkg.name}: ${formatTryAmount(pkg.price)} • ${Number(pkg.duration_days)} gun • Kesfet skoru +${Number(pkg.discover_score || 0)}`;
+        }
+
+        async function loadBoostPackages() {
+            const payload = await fetchJsonSafe(`${getApiBaseUrl()}/billing/boost-packages`);
+            const packages = Array.isArray(payload?.data) ? payload.data : [];
+            const sourceRows = packages.length ? packages : readLocalBoostPackages();
+            dashboardApiState.boostPackages = sourceRows.filter((item) => item && item.active !== false);
+            renderBoostPackageOptions();
         }
 
         function openBoostModal() {
@@ -992,6 +1051,7 @@
                 }
             } catch (e) {}
 
+            loadBoostPackages();
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -1003,28 +1063,6 @@
             document.body.style.overflow = 'auto';
         }
 
-        function getBoostPackageMeta(code) {
-            if (code === '72h') {
-                return { label: '72 Saat Vitrin', price: 349, hours: 72 };
-            }
-            return { label: '24 Saat Vitrin', price: 149, hours: 24 };
-        }
-
-        function persistLocalBoost(payload) {
-            try {
-                const rows = readArrayStorage('nextscout_discovery_boosts');
-                rows.unshift({
-                    ...payload,
-                    created_at: new Date().toISOString(),
-                    source: 'local',
-                });
-                localStorage.setItem('nextscout_discovery_boosts', JSON.stringify(rows.slice(0, 50)));
-                return true;
-            } catch (e) {
-                return false;
-            }
-        }
-
         async function submitBoostForm(event) {
             event.preventDefault();
 
@@ -1032,72 +1070,65 @@
             const position = (document.getElementById('boostPosition')?.value || '').trim();
             const city = (document.getElementById('boostCity')?.value || '').trim();
             const summary = (document.getElementById('boostSummary')?.value || '').trim();
-            const packageCode = (document.getElementById('boostPackage')?.value || '24h').trim();
-            const cardLast4 = (document.getElementById('boostCardLast4')?.value || '').replace(/\D/g, '').slice(0, 4);
+            const packageId = (document.getElementById('boostPackage')?.value || '').trim();
             const approved = Boolean(document.getElementById('boostApprove')?.checked);
 
-            if (!name || !approved || cardLast4.length !== 4) {
-                window.nsNotify?.error ? window.nsNotify.error('LÃ¼tfen ad-soyad, kart son 4 hane ve Ã¶deme onayi alanlarini tamamlayin.') : nsnsAlert('LÃ¼tfen ad-soyad, kart son 4 hane ve Ã¶deme onayi alanlarini tamamlayin.');
+            if (!name || !approved || !packageId) {
+                window.nsNotify?.error ? window.nsNotify.error('Lutfen ad-soyad, paket secimi ve odeme onayini tamamlayin.') : nsnsAlert('Lutfen ad-soyad, paket secimi ve odeme onayini tamamlayin.');
                 return;
             }
 
             const token = (localStorage.getItem('nextscout_token') || '').trim();
             if (!token) {
-                window.nsNotify?.error ? window.nsNotify.error('Ucretli tanitim icin once giriÅŸ yapman gerekiyor.') : nsnsAlert('Ucretli tanitim icin once giriÅŸ yapman gerekiyor.');
+                window.nsNotify?.error ? window.nsNotify.error('Ucretli tanitim icin once giris yapman gerekiyor.') : nsnsAlert('Ucretli tanitim icin once giris yapman gerekiyor.');
                 return;
             }
 
-            const pkg = getBoostPackageMeta(packageCode);
-            const expiresAt = new Date(Date.now() + (pkg.hours * 60 * 60 * 1000)).toISOString();
-            const payload = {
-                name,
-                position,
-                city,
-                summary,
-                package_code: packageCode,
-                package_label: pkg.label,
-                price_tl: pkg.price,
-                paid: true,
-                expires_at: expiresAt,
-                card_last4: cardLast4,
-            };
+            const packageMeta = dashboardApiState.boostPackages.find((item) => String(item.id) === String(packageId));
+            const submitButton = event.submitter || document.querySelector('#boostForm button[type="submit"]');
+            if (submitButton) submitButton.disabled = true;
 
             try {
-                const res = await fetch(`${getApiBaseUrl()}/discovery/boosts`, {
+                const res = await fetch(`${getApiBaseUrl()}/billing/boost-purchase`, {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${token}`,
                     },
-                    body: JSON.stringify(payload),
+                    body: JSON.stringify({
+                        boost_package_id: Number(packageId),
+                        payment_method: 'iyzico',
+                    }),
                 });
 
                 const body = await res.json().catch(() => ({}));
                 if (!res.ok) {
-                    persistLocalBoost(payload);
-                    window.nsNotify?.info ? window.nsNotify.info('API su an ulasilamaz. Ã–deme kaydi yerel olarak alindi ve Kesfet listesine eklendi.') : nsnsAlert('API su an ulasilamaz. Ã–deme kaydi yerel olarak alindi ve Kesfet listesine eklendi.');
-                    const form = document.getElementById('boostForm');
-                    if (form) form.reset();
-                    closeBoostModal();
-                    window.location.href = 'professional-players.html';
+                    throw new Error(body?.message || `HTTP ${res.status}`);
+                }
+
+                try {
+                    localStorage.setItem('nextscout_last_boost_request', JSON.stringify({
+                        name,
+                        position,
+                        city,
+                        summary,
+                        package_id: Number(packageId),
+                        package_name: packageMeta?.name || '',
+                        created_at: new Date().toISOString(),
+                    }));
+                } catch (storageError) {}
+
+                if (body?.data?.payment_page_url) {
+                    window.location.href = body.data.payment_page_url;
                     return;
                 }
 
-                persistLocalBoost(payload);
-
-                window.nsNotify?.success ? window.nsNotify.success('Ã–deme alindi. Profilin Kesfet sponsorlu listesine eklendi.') : nsnsAlert('Ã–deme alindi. Profilin Kesfet sponsorlu listesine eklendi.');
-                const form = document.getElementById('boostForm');
-                if (form) form.reset();
-                closeBoostModal();
-                window.location.href = 'professional-players.html';
+                window.nsNotify?.info ? window.nsNotify.info('Boost talebi olusturuldu. Odeme sayfasi hazir oldugunda yonlendirileceksin.') : nsnsAlert('Boost talebi olusturuldu. Odeme sayfasi hazir oldugunda yonlendirileceksin.');
             } catch (e) {
-                persistLocalBoost(payload);
-                window.nsNotify?.info ? window.nsNotify.info('Sunucuya baglanilamadi. Ã–deme kaydi yerel olarak alindi ve Kesfet listesine eklendi.') : nsnsAlert('Sunucuya baglanilamadi. Ã–deme kaydi yerel olarak alindi ve Kesfet listesine eklendi.');
-                const form = document.getElementById('boostForm');
-                if (form) form.reset();
-                closeBoostModal();
-                window.location.href = 'professional-players.html';
+                window.nsNotify?.error ? window.nsNotify.error(`Odeme baslatilamadi: ${e.message}`) : nsnsAlert(`Odeme baslatilamadi: ${e.message}`);
+            } finally {
+                if (submitButton) submitButton.disabled = false;
             }
         }
 
@@ -1122,7 +1153,7 @@
             const config = {
                 views: {
                     title: 'Profil Goruntulenme Detayi',
-                    summary: `Toplam ${views} goruntulenme â€¢ Son 7 gunde +94`,
+                summary: `Toplam ${views} goruntulenme • Son 7 gunde +94`,
                     items: dashboardApiState.loaded && dashboardApiState.notifications.length
                         ? dashboardApiState.notifications.slice(0, 3).map((n) => ({
                             title: n.title || 'Profil etkilesimi',
@@ -1130,13 +1161,13 @@
                         }))
                         : [
                             { title: 'Scout izlemeleri', meta: `${Math.max(0, Math.round(views * 0.42))} goruntulenme` },
-                            { title: 'KULÃœP profilleri', meta: `${Math.max(0, Math.round(views * 0.31))} goruntulenme` },
+                    { title: 'KULÜP profilleri', meta: `${Math.max(0, Math.round(views * 0.31))} goruntulenme` },
                             { title: 'MENAJER incelemeleri', meta: `${Math.max(0, Math.round(views * 0.27))} goruntulenme` },
                         ],
                 },
                 videos: {
                     title: 'Video Arsivi',
-                    summary: `Toplam ${videoCount} video â€¢ Son ekleme bu hafta`,
+                summary: `Toplam ${videoCount} video • Son ekleme bu hafta`,
                     items: dashboardApiState.loaded && dashboardApiState.videos.length
                         ? dashboardApiState.videos.slice(0, 3).map((v) => ({
                             title: v.title || 'Video',
@@ -1150,7 +1181,7 @@
                 },
                 interest: {
                     title: 'Scout Ilgisi',
-                    summary: `Toplam ilgi puani ${23 + likes} â€¢ ${likes} yeni begeni`,
+                summary: `Toplam ilgi puani ${23 + likes} • ${likes} yeni begeni`,
                     items: dashboardApiState.loaded && dashboardApiState.notifications.length
                         ? dashboardApiState.notifications
                             .filter((n) => /interest|like|begen|takip|favori/.test(normalizeText(n.type || '') + ' ' + normalizeText(n.title || '') + ' ' + normalizeText(n.message || '')))
@@ -1164,7 +1195,7 @@
                 },
                 offers: {
                     title: 'Transfer Teklifleri',
-                    summary: `Toplam ${offerCount} teklif kaydi â€¢ ${offerCount > 0 ? Math.max(1, offerCount - 1) : 0} teklif acik`,
+                summary: `Toplam ${offerCount} teklif kaydi • ${offerCount > 0 ? Math.max(1, offerCount - 1) : 0} teklif acik`,
                     items: dashboardApiState.loaded && dashboardApiState.offers.length
                         ? dashboardApiState.offers.slice(0, 3).map((row) => ({
                             title: row.subject || row.title || 'Transfer teklifi',
@@ -1207,23 +1238,23 @@
                 'new-match': {
                     title: 'Yeni Eslesme Detayi',
                     summary: firstNeed
-                        ? `${firstNeed.title || firstNeed.position || 'Yeni ihtiyaÃ§'} kaydi sisteme dustu.`
-                        : 'Scout radarinda yeni KULÃœP eslesmesi bulundu.',
+                ? `${firstNeed.title || firstNeed.position || 'Yeni ihtiyac'} kaydi sisteme dustu.`
+                : 'Scout radarinda yeni KULÜP eslesmesi bulundu.',
                     items: dashboardApiState.latestNeeds.length
                         ? dashboardApiState.latestNeeds.slice(0, 3).map((row) => ({
-                            title: row.title || row.position || row.club_name || 'KULÃœP ihtiyaÃ§i',
-                            meta: [row.club_name || row.club, row.city, row.created_at].filter(Boolean).join(' â€¢ ') || 'Yeni kayÄ±t',
+                    title: row.title || row.position || row.club_name || 'KULÜP ihtiyaci',
+                    meta: [row.club_name || row.club, row.city, row.created_at].filter(Boolean).join(' • ') || 'Yeni kayit',
                         }))
                         : [
-                            { title: 'KULÃœP', meta: 'Super Lig B Takimi' },
-                            { title: 'Tarih', meta: 'BugÃ¼n â€¢ Son 2 saat' },
-                            { title: 'Aksiyon', meta: 'Profilini gÃ¼ncel tut ve video ekle' },
+                    { title: 'KULÜP', meta: 'Super Lig B Takimi' },
+                    { title: 'Tarih', meta: 'Bugun • Son 2 saat' },
+                    { title: 'Aksiyon', meta: 'Profilini guncel tut ve video ekle' },
                         ],
                 },
                 trend: {
                     title: 'Video Trend Detayi',
                     summary: firstTrend
-                        ? `${firstTrend.title || firstTrend.name || 'Haftalik trend'} gÃ¼ncel API trendlerinden alindi.`
+                ? `${firstTrend.title || firstTrend.name || 'Haftalik trend'} guncel API trendlerinden alindi.`
                         : 'Video goruntulenme trendin yukseliyor.',
                     items: dashboardApiState.weeklyTrends.length
                         ? dashboardApiState.weeklyTrends.slice(0, 3).map((row) => ({
@@ -1232,7 +1263,7 @@
                                 row.change_percentage !== undefined ? `Degisim: ${row.change_percentage}` : null,
                                 row.score !== undefined ? `Skor: ${row.score}` : null,
                                 row.description || null,
-                            ].filter(Boolean).join(' â€¢ ') || 'Haftalik trend',
+                ].filter(Boolean).join(' • ') || 'Haftalik trend',
                         }))
                         : [
                             { title: 'Son video performansi', meta: '+38% izlenme artisi' },
@@ -1268,14 +1299,14 @@
             const defaults = type === 'join'
                 ? {
                     title: 'Deneme Maci - Istanbul',
-                    desc: '16 Mart 2026 â€¢ Saat 18:30',
+                    desc: '16 Mart 2026 • Saat 18:30',
                     location: 'Istanbul',
                     capacity: 'Kontenjan: 22',
                     actionLabel: 'Katilim Onayi Ver',
                 }
                 : {
                     title: 'Scout Gozlem Seansi',
-                    desc: '19 Mart 2026 â€¢ Saat 14:00',
+                    desc: '19 Mart 2026 • Saat 14:00',
                     location: 'Istanbul',
                     capacity: 'Kontenjan: 15',
                     actionLabel: 'Hatirlatici Kur',
@@ -1300,7 +1331,7 @@
             if (!titleEl || !summaryEl || !listEl || !modal) return;
 
             titleEl.textContent = schedule.title;
-            summaryEl.textContent = `${schedule.desc} â€¢ ${schedule.location}`;
+            summaryEl.textContent = `${schedule.desc} • ${schedule.location}`;
             listEl.innerHTML = `
                 <article class="metric-item">
                     <div class="metric-item-title">Organizasyon</div>
@@ -1317,7 +1348,7 @@
                 <div class="schedule-actions">
                     <button type="button" class="schedule-btn primary" onclick="confirmScheduleAction()">${type === 'join' ? 'Katilim Onayi Ver' : 'Hatirlatici Kur'}</button>
                     <button type="button" class="schedule-btn" onclick="saveScheduleToCalendar()">Takvime Ekle</button>
-                    <button type="button" class="schedule-btn" onclick="openScheduleMessage()">Mesaj GÃ¶nder</button>
+                    <button type="button" class="schedule-btn" onclick="openScheduleMessage()">Mesaj Gonder</button>
                 </div>
             `;
 
@@ -1402,7 +1433,7 @@
                 <div class="mini-item">
                     <div class="left">
                         <div class="t">${item.title || 'Etkinlik'}</div>
-                        <div class="d">${item.time || '-'} â€¢ ${item.location || 'Konum yok'}</div>
+                    <div class="d">${item.time || '-'} • ${item.location || 'Konum yok'}</div>
                     </div>
                     <span class="tag">Planli</span>
                 </div>
@@ -1461,6 +1492,10 @@
             if (boostForm) {
                 boostForm.addEventListener('submit', submitBoostForm);
             }
+            const boostPackage = document.getElementById('boostPackage');
+            if (boostPackage) {
+                boostPackage.addEventListener('change', updateBoostPackageSummary);
+            }
             document.addEventListener('keydown', (event) => {
                 if (event.key === 'Escape') {
                     closeMetricModal();
@@ -1472,10 +1507,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
 
 
 

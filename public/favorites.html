@@ -1,22 +1,22 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Favorilerim - NextScout</title>
-    <meta name="description" content="NextScout favorites sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="description" content="NextScout favorites sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://nextscout.pro/favorites.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
     <meta property="og:title" content="Favorilerim - NextScout">
-    <meta property="og:description" content="NextScout favorites sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta property="og:description" content="NextScout favorites sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
     <meta property="og:url" content="https://nextscout.pro/favorites.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Favorilerim - NextScout">
-    <meta name="twitter:description" content="NextScout favorites sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:description" content="NextScout favorites sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -259,14 +259,14 @@
     <div class="header">
       <div>
         <h1 class="title">Favorilerim</h1>
-        <div class="sub">Favoriye eklediğin oyuncular burada listelenir.</div>
+        <div class="sub">Favoriye ekledigin oyuncular burada listelenir.</div>
       </div>
       <a class="btn" href="manager-dashboard.html"><i class="fas fa-arrow-left"></i><span>Dashboard</span></a>
     </div>
 
     <div class="toolbar">
       <span class="count" id="countText">0 oyuncu</span>
-      <button class="btn btn-danger" id="clearBtn"><i class="fas fa-trash"></i><span>Tümünü Temizle</span></button>
+      <button class="btn btn-danger" id="clearBtn"><i class="fas fa-trash"></i><span>T�m�n� Temizle</span></button>
     </div>
 
     <div id="list"></div>
@@ -293,11 +293,11 @@
       authGate.style.display = 'block';
       authGate.innerHTML = `
         <div class="auth-gate">
-          <h2>Favorileri Görmek İçin Üye Ol</h2>
-          <p>Favori oyuncu, ilan ve takip listesini görmek için önce giriş yapmalısın.</p>
+          <h2>Favorileri G�rmek I�in �ye Ol</h2>
+          <p>Favori oyuncu, ilan ve takip listesini g�rmek i�in �nce giris yapmalisin.</p>
           <div class="auth-actions">
-            <a class="btn" href="#" onclick="goLogin();return false;">Giriş Yap</a>
-            <a class="btn" href="#" onclick="goRegister();return false;">Üye Ol</a>
+            <a class="btn" href="#" onclick="goLogin();return false;">Giris Yap</a>
+            <a class="btn" href="#" onclick="goRegister();return false;">�ye Ol</a>
           </div>
         </div>
       `;
@@ -332,7 +332,7 @@
       countText.textContent = `${items.length} oyuncu`;
 
       if (!items.length) {
-        listEl.innerHTML = '<div class="empty">Henüz favori oyuncu eklenmedi.</div>';
+        listEl.innerHTML = '<div class="empty">Hen�z favori oyuncu eklenmedi.</div>';
         return;
       }
 
@@ -346,15 +346,15 @@
                   <h3 class="name">${p.name || '-'}</h3>
                   <span class="pos-tag">${p.position || '-'}</span>
                 </div>
-                <div class="meta">${p.club || '-'} • ${p.league || '-'}</div>
+                <div class="meta">${p.club || '-'} � ${p.league || '-'}</div>
                 <div class="stats">
                   <span class="chip">Yas ${p.age || '-'}</span>
                   <span class="chip">Boy ${p.height || '-'} cm</span>
                   <span class="chip">Rating ${p.rating || '-'} / 10</span>
                 </div>
                 <div class="actions">
-                  <button onclick="contact('${p.id}')"><i class="fas fa-comments"></i> İletişim</button>
-                  <button class="remove" onclick="removeFav('${p.id}')"><i class="fas fa-xmark"></i> Kaldır</button>
+                  <button onclick="contact('${p.id}')"><i class="fas fa-comments"></i> Iletisim</button>
+                  <button class="remove" onclick="removeFav('${p.id}')"><i class="fas fa-xmark"></i> Kaldir</button>
                 </div>
               </div>
             </div>
@@ -372,11 +372,11 @@
     function contact(id) {
       const item = loadFavorites().find(x => String(x.id) === String(id));
       if (!item) return;
-      nsAlert(`${item.name} ile iletişim başlatılıyor...`);
+      nsAlert(`${item.name} ile iletisim baslatiliyor...`);
     }
 
     clearBtn.addEventListener('click', () => {
-      if (!confirm('Tüm favorileri silmek istediğine emin misin?')) return;
+      if (!confirm('T�m favorileri silmek istedigine emin misin?')) return;
       saveFavorites([]);
       render();
     });

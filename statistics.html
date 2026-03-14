@@ -1,21 +1,21 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>İstatistikler - NextScout</title>
+  <title>Istatistikler - NextScout</title>
     <meta name="description" content="NextScout statistics sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://nextscout.app/statistics.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="İstatistikler - NextScout">
+    <meta property="og:title" content="Istatistikler - NextScout">
     <meta property="og:description" content="NextScout statistics sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
     <meta property="og:url" content="https://nextscout.app/statistics.html">
     <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="İstatistikler - NextScout">
+    <meta name="twitter:title" content="Istatistikler - NextScout">
     <meta name="twitter:description" content="NextScout statistics sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
     <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
@@ -138,22 +138,22 @@
   <div class="wrap">
     <div class="header">
       <div>
-        <h1 class="title">İstatistikler</h1>
-        <div class="subtitle">Sezon performansın ve son form durumun.</div>
+        <h1 class="title">Istatistikler</h1>
+        <div class="subtitle">Sezon performansin ve son form durumun.</div>
       </div>
-      <a class="btn" href="DASHBOARD_DESIGN.html">← Dashboard</a>
+      <a class="btn" href="DASHBOARD_DESIGN.html">? Dashboard</a>
     </div>
 
     <div class="grid" id="statsCards"></div>
 
     <div class="panel">
       <div class="chart-wrap">
-        <h2 class="panel-title">Son 6 Maç Form Grafiği</h2>
+        <h2 class="panel-title">Son 6 Ma� Form Grafigi</h2>
         <canvas id="formChart" width="760" height="260"></canvas>
       </div>
 
       <div class="chart-wrap">
-        <h2 class="panel-title">Detay Dağılım</h2>
+        <h2 class="panel-title">Detay Dagilim</h2>
         <div class="list" id="detailList"></div>
       </div>
     </div>
@@ -174,7 +174,7 @@
     };
 
     const cards = [
-      { k: 'Maç', v: stats.matches, d: '+3 bu ay', c: 'up' },
+      { k: 'Ma�', v: stats.matches, d: '+3 bu ay', c: 'up' },
       { k: 'Gol', v: stats.goals, d: '+2 son hafta', c: 'up' },
       { k: 'Asist', v: stats.assists, d: '+1 son hafta', c: 'up' },
       { k: 'Rating', v: stats.rating.toFixed(1), d: 'stabil', c: 'mid' }
@@ -191,11 +191,11 @@
 
     const detailList = document.getElementById('detailList');
     detailList.innerHTML = `
-      <div class="row"><span class="rk">Toplam Maç</span><span class="rv">${stats.matches}</span></div>
+      <div class="row"><span class="rk">Toplam Ma�</span><span class="rv">${stats.matches}</span></div>
       <div class="row"><span class="rk">Toplam Gol</span><span class="rv">${stats.goals}</span></div>
       <div class="row"><span class="rk">Toplam Asist</span><span class="rv">${stats.assists}</span></div>
       <div class="row"><span class="rk">Kilit Pas</span><span class="rv">${stats.keyPasses}</span></div>
-      <div class="row"><span class="rk">Kazanılan İkili Mücadele</span><span class="rv">${stats.duelsWon}</span></div>
+      <div class="row"><span class="rk">Kazanilan Ikili M�cadele</span><span class="rv">${stats.duelsWon}</span></div>
       <div class="row"><span class="rk">Ortalama Rating</span><span class="rv">${stats.rating.toFixed(1)}</span></div>
     `;
 

@@ -1,21 +1,21 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profili DÃ¼zenle | NextScout</title>
+    <title>Profili D�zenle | NextScout</title>
     <meta name="description" content="NextScout profile edit sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
     <meta name="robots" content="noindex,follow">
     <link rel="canonical" href="https://nextscout.app/profile-edit.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="Profili DÃ¼zenle | NextScout">
+    <meta property="og:title" content="Profili D�zenle | NextScout">
     <meta property="og:description" content="NextScout profile edit sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
     <meta property="og:url" content="https://nextscout.app/profile-edit.html">
     <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Profili DÃ¼zenle | NextScout">
+    <meta name="twitter:title" content="Profili D�zenle | NextScout">
     <meta name="twitter:description" content="NextScout profile edit sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
     <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
@@ -105,7 +105,7 @@
             gap: 30px;
         }
 
-        /* PROFIL RESMÄ° */
+        /* PROFIL RESMI */
         .profile-photo-section {
             background: white;
             border-radius: 16px;
@@ -232,7 +232,7 @@
             gap: 15px;
         }
 
-        /* GALERÄ° */
+        /* GALERI */
         .gallery-section {
             background: white;
             border-radius: 16px;
@@ -290,7 +290,7 @@
             border-color: #667eea;
         }
 
-        /* VÄ°DEOLAR */
+        /* VIDEOLAR */
         .videos-section {
             background: white;
             border-radius: 16px;
@@ -369,7 +369,7 @@
             color: white;
         }
 
-        /* Ä°STATÄ°STÄ°KLER */
+        /* ISTATISTIKLER */
         .stats-section {
             background: white;
             border-radius: 16px;
@@ -432,10 +432,10 @@
     <!-- HEADER -->
     <div class="header">
         <div class="header-content">
-            <h1>âœï¸ Profili DÃ¼zenle</h1>
+            <h1>?? Profili D�zenle</h1>
             <div class="header-buttons">
-                <a href="DASHBOARD_DESIGN.html" class="btn btn-cancel">â† Geri DÃ¶n</a>
-                <button class="btn btn-save" onclick="saveProfile()">âœ… Kaydet</button>
+                <a href="DASHBOARD_DESIGN.html" class="btn btn-cancel">? Geri D�n</a>
+                <button class="btn btn-save" onclick="saveProfile()">? Kaydet</button>
             </div>
         </div>
     </div>
@@ -443,23 +443,23 @@
     <!-- CONTENT -->
     <div class="container">
         <div class="edit-grid">
-            <!-- SOL: PROFIL RESMÄ° -->
+            <!-- SOL: PROFIL RESMI -->
             <div class="profile-photo-section">
-                <h2 class="section-title">ğŸ“¸ Profil Resmi</h2>
-                <div class="photo-preview" id="photoPreview">âš½</div>
+                <h2 class="section-title">?? Profil Resmi</h2>
+                <div class="photo-preview" id="photoPreview">?</div>
                 <div class="upload-zone" id="uploadZone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
-                    <div class="upload-icon">ğŸ“¤</div>
-                    <div class="upload-text">Resmi SÃ¼rÃ¼kle veya TÄ±kla</div>
+                    <div class="upload-icon">??</div>
+                    <div class="upload-text">Resmi S�r�kle veya Tikla</div>
                     <div class="upload-subtext">JPG, PNG (Maks 5MB)</div>
                     <input type="file" id="photoInput" class="file-input" accept="image/*">
                 </div>
-                <button class="btn btn-cancel" style="width: 100%; margin-bottom: 10px;" onclick="document.getElementById('photoInput').click()">Dosya SeÃ§</button>
-                <button class="btn btn-cancel" style="width: 100%;" onclick="removePhoto()">KaldÄ±r</button>
+                <button class="btn btn-cancel" style="width: 100%; margin-bottom: 10px;" onclick="document.getElementById('photoInput').click()">Dosya Se�</button>
+                <button class="btn btn-cancel" style="width: 100%;" onclick="removePhoto()">Kaldir</button>
             </div>
 
-            <!-- SAÄ: TEMEL BÄ°LGÄ°LER -->
+            <!-- SAG: TEMEL BILGILER -->
             <div class="form-section">
-                <h2 class="section-title">ğŸ‘¤ Temel Bilgiler</h2>
+                <h2 class="section-title">?? Temel Bilgiler</h2>
                 <form id="profileForm">
                     <div class="form-group">
                         <label>Ad Soyad</label>
@@ -467,7 +467,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>âš½ Pozisyon</label>
+                        <label>? Pozisyon</label>
                         <select id="positionSelect">
                             <option>Kaleci</option>
                             <option selected>Forvet</option>
@@ -485,7 +485,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>BranÅŸ</label>
+                            <label>Brans</label>
                             <select id="sportSelect">
                                 <option value="futbol">Futbol</option>
                                 <option value="basketbol">Basketbol</option>
@@ -496,11 +496,11 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label>ğŸ‘¤ YaÅŸ</label>
+                            <label>?? Yas</label>
                             <input type="number" id="ageInput" value="24" min="15" max="50">
                         </div>
                         <div class="form-group">
-                            <label>ğŸ“ Boy (cm)</label>
+                            <label>?? Boy (cm)</label>
                             <input type="number" id="heightInput" value="180" min="150" max="210">
                         </div>
                     </div>
@@ -528,19 +528,19 @@
                     </div>
 
                     <div class="form-group">
-                        <label>ğŸ“ HakkÄ±nda</label>
-                        <textarea id="bioInput">TÃ¼rkiye'nin en yetenekli forvet oyuncularÄ±ndan biri. GÃ¼Ã§lÃ¼ fizik yapÄ±sÄ±, hÄ±zÄ± ve gol yeteneÄŸi ile biliniyor.</textarea>
+                        <label>?? Hakkinda</label>
+                        <textarea id="bioInput">T�rkiye'nin en yetenekli forvet oyuncularindan biri. G��l� fizik yapisi, hizi ve gol yetenegi ile biliniyor.</textarea>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- Ä°STATÄ°STÄ°KLER -->
+        <!-- ISTATISTIKLER -->
         <div class="stats-section" style="margin-top: 30px;">
-            <h2 class="section-title">ğŸ“Š Ä°statistikler</h2>
+            <h2 class="section-title">?? Istatistikler</h2>
             <div class="stats-grid">
                 <div class="stat-input">
-                    <label>Oynan MaÃ§lar</label>
+                    <label>Oynanan Ma�lar</label>
                     <input type="number" id="matchesInput" value="28" min="0">
                 </div>
                 <div class="stat-input">
@@ -558,25 +558,25 @@
             </div>
         </div>
 
-        <!-- GALERÄ° -->
+        <!-- GALERI -->
         <div class="gallery-section" style="margin-top: 30px;">
-            <h2 class="section-title">ğŸ“¸ Foto Galerisi</h2>
+            <h2 class="section-title">?? Foto Galerisi</h2>
             <div class="gallery-grid" id="galleryGrid">
-                <div class="gallery-item" onclick="uploadGalleryPhoto(0)">â•</div>
-                <div class="gallery-item" onclick="uploadGalleryPhoto(1)">â•</div>
-                <div class="gallery-item" onclick="uploadGalleryPhoto(2)">â•</div>
-                <div class="gallery-item" onclick="uploadGalleryPhoto(3)">â•</div>
-                <div class="gallery-item" onclick="uploadGalleryPhoto(4)">â•</div>
-                <div class="gallery-item" onclick="uploadGalleryPhoto(5)">â•</div>
+                <div class="gallery-item" onclick="uploadGalleryPhoto(0)">?</div>
+                <div class="gallery-item" onclick="uploadGalleryPhoto(1)">?</div>
+                <div class="gallery-item" onclick="uploadGalleryPhoto(2)">?</div>
+                <div class="gallery-item" onclick="uploadGalleryPhoto(3)">?</div>
+                <div class="gallery-item" onclick="uploadGalleryPhoto(4)">?</div>
+                <div class="gallery-item" onclick="uploadGalleryPhoto(5)">?</div>
             </div>
             <input type="file" id="galleryInput" class="file-input" accept="image/*">
         </div>
 
-        <!-- VÄ°DEOLAR -->
+        <!-- VIDEOLAR -->
         <div class="videos-section" style="margin-top: 30px;">
-            <h2 class="section-title">ğŸ¬ Video Portfolio</h2>
+            <h2 class="section-title">?? Video Portfolio</h2>
             <div class="add-video-form">
-                <input type="text" id="videoTitleInput" placeholder="Video BaÅŸlÄ±ÄŸÄ± (Ã¶r: Sezon Ã–zetleri)">
+                <input type="text" id="videoTitleInput" placeholder="Video Basligi (�r: Sezon �zetleri)">
                 <input type="url" id="videoUrlInput" placeholder="Video Linki (YouTube, Vimeo vb)">
                 <button type="button" class="add-video-btn" onclick="addVideo()">+ Video Ekle</button>
             </div>
@@ -588,7 +588,7 @@
         let currentGalleryIndex = 0;
         const galleryImages = new Array(6);
 
-        // Profil resmini yÃ¼kle
+        // Profil resmini y�kle
         const uploadZone = document.getElementById('uploadZone');
         const photoInput = document.getElementById('photoInput');
 
@@ -627,12 +627,12 @@
         }
 
         function removePhoto() {
-            document.getElementById('photoPreview').innerHTML = 'âš½';
+            document.getElementById('photoPreview').innerHTML = '?';
             photoInput.value = '';
             localStorage.removeItem('playerPhoto');
         }
 
-        // Galeri fotoÄŸrafÄ± yÃ¼kle
+        // Galeri fotografi y�kle
         const galleryInput = document.getElementById('galleryInput');
 
         function uploadGalleryPhoto(index) {
@@ -653,7 +653,7 @@
             }
         });
 
-        // Video yÃ¶netimi
+        // Video y�netimi
         let videos = [];
 
         function addVideo() {
@@ -678,7 +678,7 @@
             videosList.innerHTML = videos.map((video, index) => `
                 <div class="video-item">
                     <div class="video-info">
-                        <div class="video-title">ğŸ¬ ${video.title}</div>
+                        <div class="video-title">?? ${video.title}</div>
                         <div class="video-url">${video.url}</div>
                     </div>
                     <button type="button" class="remove-btn" onclick="removeVideo(${index})">Sil</button>
@@ -711,7 +711,7 @@
             localStorage.setItem('playerGallery', JSON.stringify(galleryImages));
             localStorage.setItem('playerVideos', JSON.stringify(videos));
 
-            // Dashboard ve profilde aynÄ± isim gÃ¶rÃ¼nsÃ¼n
+            // Dashboard ve profilde ayni isim g�r�ns�n
             try {
                 const currentUserRaw = localStorage.getItem('nextscout_user');
                 const currentUser = currentUserRaw ? JSON.parse(currentUserRaw) : {};
@@ -726,11 +726,11 @@
                 // ignore parse errors
             }
 
-            alert('âœ… Profil baÅŸarÄ±yla kaydedildi!');
+            alert('? Profil basariyla kaydedildi!');
             window.location.href = 'DASHBOARD_DESIGN.html';
         }
 
-        // Sayfa yÃ¼klenirken verileri geri yÃ¼kle
+            // Sayfa y�klenirken verileri geri y�kle
         window.addEventListener('load', () => {
             const savedProfile = localStorage.getItem('playerProfile');
             let sessionUser = null;
@@ -791,7 +791,4 @@
     <script src="assets/js/core-stability.js"></script>
 </body>
 </html>
-
-
-
 

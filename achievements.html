@@ -1,21 +1,21 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Başarılarım - NextScout</title>
+  <title>Basarilarim - NextScout</title>
     <meta name="description" content="NextScout achievements sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://nextscout.app/achievements.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="Başarılarım - NextScout">
+    <meta property="og:title" content="Basarilarim - NextScout">
     <meta property="og:description" content="NextScout achievements sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
     <meta property="og:url" content="https://nextscout.app/achievements.html">
     <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Başarılarım - NextScout">
+    <meta name="twitter:title" content="Basarilarim - NextScout">
     <meta name="twitter:description" content="NextScout achievements sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
     <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
@@ -129,10 +129,10 @@
   <div class="wrap">
     <div class="header">
       <div>
-        <h1 class="title">Başarılarım</h1>
-        <div class="sub">Sezon boyunca kazandığın bireysel ve takım başarıları.</div>
+        <h1 class="title">Basarilarim</h1>
+        <div class="sub">Sezon boyunca kazandigin bireysel ve takim basarilari.</div>
       </div>
-      <a href="DASHBOARD_DESIGN.html" class="btn">← Dashboard</a>
+      <a href="DASHBOARD_DESIGN.html" class="btn">? Dashboard</a>
     </div>
 
     <div class="summary" id="summary"></div>
@@ -151,42 +151,42 @@
 
     const baseAchievements = [
       {
-        icon: '🏆',
-        title: 'Lig Şampiyonu',
-        desc: 'Sezon sonunda takımınla birlikte ligi şampiyon tamamladın.',
+        icon: '??',
+        title: 'Lig Sampiyonu',
+        desc: 'Sezon sonunda takiminla birlikte ligi sampiyon tamamladin.',
         date: '2026 Sezonu'
       },
       {
-        icon: '⚽',
-        title: 'Gol Katkısı Lideri',
-        desc: `Toplam ${goals} gol ve ${assists} asist ile hücum katkısında öne çıktın.`,
+        icon: '?',
+        title: 'Gol Katkisi Lideri',
+        desc: `Toplam ${goals} gol ve ${assists} asist ile h�cum katkisinda �ne �iktin.`,
         date: 'Son 12 Ay'
       },
       {
-        icon: '⭐',
-        title: 'Haftanın 11\'i',
-        desc: `Ortalama ${rating.toFixed(1)} rating ile haftanın 11\'ine seçildin.`,
+        icon: '?',
+        title: 'Haftanin 11\'i',
+        desc: `Ortalama ${rating.toFixed(1)} rating ile haftanin 11\'ine se�ildin.`,
         date: '3 Kez'
       },
       {
-        icon: '📈',
-        title: 'Form İstikrarı',
-        desc: `${matches} maçta düzenli forma giyerek performans istikrarı sağladın.`,
+        icon: '??',
+        title: 'Form Istikrari',
+        desc: `${matches} ma�ta d�zenli forma giyerek performans istikrari sagladin.`,
         date: 'Sezon Geneli'
       }
     ];
 
     const summaryEl = document.getElementById('summary');
     summaryEl.innerHTML = `
-      <div class="sum-card"><div class="sum-k">Toplam Başarı</div><div class="sum-v">${baseAchievements.length}</div></div>
-      <div class="sum-card"><div class="sum-k">Öne Çıkan Gol</div><div class="sum-v">${goals}</div></div>
-      <div class="sum-card"><div class="sum-k">Öne Çıkan Asist</div><div class="sum-v">${assists}</div></div>
+      <div class="sum-card"><div class="sum-k">Toplam Basari</div><div class="sum-v">${baseAchievements.length}</div></div>
+      <div class="sum-card"><div class="sum-k">�ne �ikan Gol</div><div class="sum-v">${goals}</div></div>
+      <div class="sum-card"><div class="sum-k">�ne �ikan Asist</div><div class="sum-v">${assists}</div></div>
       <div class="sum-card"><div class="sum-k">Ortalama Rating</div><div class="sum-v">${rating.toFixed(1)}</div></div>
     `;
 
     const listEl = document.getElementById('list');
     if (!baseAchievements.length) {
-      listEl.innerHTML = '<div class="empty">Henüz başarı eklenmedi.</div>';
+      listEl.innerHTML = '<div class="empty">Hen�z basari eklenmedi.</div>';
     } else {
       listEl.innerHTML = `
         <div class="grid">

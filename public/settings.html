@@ -1,22 +1,22 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ayarlar - NextScout</title>
-    <meta name="description" content="NextScout settings sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
+    <meta name="description" content="NextScout settings sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
     <meta name="robots" content="noindex,follow">
     <link rel="canonical" href="https://nextscout.pro/settings.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
     <meta property="og:title" content="Ayarlar - NextScout">
-    <meta property="og:description" content="NextScout settings sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
+    <meta property="og:description" content="NextScout settings sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
     <meta property="og:url" content="https://nextscout.pro/settings.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Ayarlar - NextScout">
-    <meta name="twitter:description" content="NextScout settings sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:description" content="NextScout settings sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -83,37 +83,37 @@
     <div class="head">
       <div>
         <h1 class="title">Ayarlar</h1>
-        <div class="sub">Hesap ve gÃ¶rÃ¼nÃ¼m tercihlerini buradan yÃ¶netebilirsin.</div>
+        <div class="sub">Hesap ve g�r�n�m tercihlerini buradan y�netebilirsin.</div>
       </div>
       <a href="index.html" class="btn home-btn"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
     </div>
 
     <div class="card">
-      <h3>Hesap AyarlarÄ±</h3>
-      <div class="row"><label>GÃ¶rÃ¼nen Ä°sim</label><input id="displayName" type="text" placeholder="GÃ¶rÃ¼nen isim"></div>
+      <h3>Hesap Ayarlari</h3>
+      <div class="row"><label>G�r�nen Isim</label><input id="displayName" type="text" placeholder="G�r�nen isim"></div>
       <div class="row"><label>E-posta</label><input id="email" type="email" placeholder="mail@example.com"></div>
       <div class="row"><label>Dil</label>
-        <select id="lang"><option value="tr">TÃ¼rkÃ§e</option><option value="en">English</option></select>
+        <select id="lang"><option value="tr">T�rk�e</option><option value="en">English</option></select>
       </div>
     </div>
 
     <div class="card">
       <h3>Uygulama Tercihleri</h3>
-      <div class="row"><label>Bildirimler</label><select id="notify"><option value="on">AÃ§Ä±k</option><option value="off">KapalÄ±</option></select></div>
-      <div class="row"><label>Profil GÃ¶rÃ¼nÃ¼rlÃ¼ÄŸÃ¼</label><select id="visibility"><option value="public">Herkese AÃ§Ä±k</option><option value="private">Sadece BaÄŸlantÄ±lar</option></select></div>
+      <div class="row"><label>Bildirimler</label><select id="notify"><option value="on">A�ik</option><option value="off">Kapali</option></select></div>
+      <div class="row"><label>Profil G�r�n�rl�g�</label><select id="visibility"><option value="public">Herkese A�ik</option><option value="private">Sadece Baglantilar</option></select></div>
       <div class="actions">
-        <button class="btn" id="resetBtn">SÄ±fÄ±rla</button>
+        <button class="btn" id="resetBtn">Sifirla</button>
         <button class="btn btn-primary" id="saveBtn">Kaydet</button>
       </div>
     </div>
 
     <div class="card">
-      <h3>Åifre DeÄŸiÅŸtir</h3>
-      <div class="row"><label>Mevcut Åifre</label><input id="currentPassword" type="password" placeholder="Mevcut ÅŸifren"></div>
-      <div class="row"><label>Yeni Åifre</label><input id="newPassword" type="password" placeholder="En az 6 karakter"></div>
-      <div class="row"><label>Yeni Åifre (Tekrar)</label><input id="confirmPassword" type="password" placeholder="Yeni ÅŸifreyi tekrar yaz"></div>
+      <h3>??ifre Degistir</h3>
+      <div class="row"><label>Mevcut ??ifre</label><input id="currentPassword" type="password" placeholder="Mevcut sifren"></div>
+      <div class="row"><label>Yeni ??ifre</label><input id="newPassword" type="password" placeholder="En az 6 karakter"></div>
+      <div class="row"><label>Yeni ??ifre (Tekrar)</label><input id="confirmPassword" type="password" placeholder="Yeni sifreyi tekrar yaz"></div>
       <div class="actions">
-        <button class="btn btn-primary" id="changePasswordBtn">Åifreyi GÃ¼ncelle</button>
+        <button class="btn btn-primary" id="changePasswordBtn">??ifreyi G�ncelle</button>
       </div>
     </div>
   </div>
@@ -144,7 +144,7 @@
     async function load(){
       const token=getToken();
       if(!token || token==='local-session-token'){
-        nsAlert('Ayarlar icin giriÅŸ gerekli.');
+        nsAlert('Ayarlar icin giris gerekli.');
         window.location.href='index.html';
         return;
       }
@@ -187,7 +187,7 @@
 
     async function reset(){
       await load();
-      nsAlert('Ayarlar APIden yeniden yÃ¼klendi.');
+      nsAlert('Ayarlar APIden yeniden y�klendi.');
     }
 
     async function changePassword(){
@@ -196,15 +196,15 @@
       const confirm = document.getElementById('confirmPassword').value;
 
       if(!current || !next || !confirm){
-        nsAlert('LÃ¼tfen tÃ¼m ÅŸifre alanlarÄ±nÄ± doldur.');
+        nsAlert('L�tfen t�m sifre alanlarini doldur.');
         return;
       }
       if(next.length < 6){
-        nsAlert('Yeni ÅŸifre en az 6 karakter olmalÄ±.');
+        nsAlert('Yeni sifre en az 6 karakter olmali.');
         return;
       }
       if(next !== confirm){
-        nsAlert('Yeni ÅŸifreler eÅŸleÅŸmiyor.');
+        nsAlert('Yeni sifreler eslesmiyor.');
         return;
       }
 
@@ -220,11 +220,11 @@
       document.getElementById('currentPassword').value='';
       document.getElementById('newPassword').value='';
       document.getElementById('confirmPassword').value='';
-      nsAlert('Åifre APIde gÃ¼ncellendi.');
+      nsAlert('??ifre APIde g�ncellendi.');
     }
     document.getElementById('saveBtn')?.addEventListener('click',()=>save().catch(e=>nsAlert(`Ayarlar kaydedilemedi: ${e.message}`)));
     document.getElementById('resetBtn')?.addEventListener('click',()=>reset().catch(e=>nsAlert(`Yukleme hatasi: ${e.message}`)));
-    document.getElementById('changePasswordBtn')?.addEventListener('click',()=>changePassword().catch(e=>nsAlert(`Åifre gÃ¼ncellenemedi: ${e.message}`)));
+    document.getElementById('changePasswordBtn')?.addEventListener('click',()=>changePassword().catch(e=>nsAlert(`??ifre g�ncellenemedi: ${e.message}`)));
     load().catch(e=>nsAlert(`Ayarlar alinamadi: ${e.message}`));
   </script>
     <script src="assets/js/core-stability.js"></script>
