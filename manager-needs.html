@@ -3,76 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NextScout - Menajerlerin Aradigi Oyuncular</title>
-    <meta name="description" content="NextScout manager needs sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <title>NextScout - Menajerlerin Aradığı Oyuncular</title>
+    <meta name="description" content="NextScout manager needs sayfası: futbol scout, kulüp ve oyuncu odaklı platform içeriği.">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://nextscout.app/manager-needs.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="NextScout - Menajerlerin Aradigi Oyuncular">
-    <meta property="og:description" content="NextScout manager needs sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta property="og:title" content="NextScout - Menajerlerin Aradığı Oyuncular">
+    <meta property="og:description" content="NextScout manager needs sayfası: futbol scout, kulüp ve oyuncu odaklı platform içeriği.">
     <meta property="og:url" content="https://nextscout.app/manager-needs.html">
     <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="NextScout - Menajerlerin Aradigi Oyuncular">
-    <meta name="twitter:description" content="NextScout manager needs sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:title" content="NextScout - Menajerlerin Aradığı Oyuncular">
+    <meta name="twitter:description" content="NextScout manager needs sayfası: futbol scout, kulüp ve oyuncu odaklı platform içeriği.">
     <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+          --bg: #08131d;
+          --panel: #0f1f2e;
+          --panel-2: #12293d;
+          --line: #2b4660;
+          --text: #f5fbff;
+          --muted: #9bb5cb;
+          --cta: #ff5a1f;
+          --cta-2: #ff7e22;
+          --good: #2fd4b0;
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: linear-gradient(180deg, #F8FAFC 0%, #ECFEFF 100%); color: #0F172A; min-height: 100vh; }
-        .topbar { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; background: #FFFFFF; border-bottom: 1px solid #DBEAFE; }
-        .brand { font-family: 'Poppins', sans-serif; font-size: 24px; color: #1D4ED8; text-decoration: none; }
-        .btn { border: 1px solid #BFDBFE; background: #EFF6FF; color: #1E3A8A; padding: 9px 14px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 13px; cursor: pointer; }
-        .btn.primary { background: #059669; border-color: #059669; color: #FFFFFF; }
-        .page { max-width: 1200px; margin: 26px auto; padding: 0 20px; }
-        .hero { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 18px; padding: 24px; margin-bottom: 18px; box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08); }
+        body {
+          margin: 0;
+          color: var(--text);
+          font-family: "Space Grotesk", sans-serif;
+          background:
+            radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+            radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+            var(--bg);
+          min-height: 100vh;
+        }
+        .topbar { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; background: rgba(7, 18, 36, 0.78); border-bottom: 1px solid rgba(148, 163, 184, 0.24); color: #f5fbff; backdrop-filter: blur(18px); }
+        .brand { font-family: 'Poppins', sans-serif; font-size: 24px; color: #BFDBFE; text-decoration: none; }
+        .top-actions { display: flex; gap: 10px; }
+        .btn, a.btn, button.btn { display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; border: 1px solid rgba(255, 126, 34, 0.45) !important; background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%) !important; color: #16325c !important; padding: 10px 16px !important; border-radius: 12px !important; text-decoration: none !important; font-weight: 800 !important; font-size: 13px !important; cursor: pointer !important; box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24) !important; transition: transform .18s ease, box-shadow .18s ease, filter .18s ease !important; }
+        .btn:hover, a.btn:hover, button.btn:hover { transform: translateY(-1px); box-shadow: 0 16px 28px rgba(8, 19, 29, 0.3) !important; filter: saturate(1.05); }
+        .btn.primary, a.btn.primary, button.btn.primary { background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%) !important; border-color: #ff7e22 !important; color: #ffffff !important; box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28) !important; }
+        .btn.primary:hover, a.btn.primary:hover, button.btn.primary:hover { box-shadow: 0 18px 30px rgba(255, 90, 31, 0.34) !important; }
+        .page { max-width: 1180px; margin: 26px auto; padding: 0 20px; }
+        .hero { background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 22px; padding: 24px; box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34); margin-bottom: 14px; color: var(--text); }
         .hero h1 { font-size: 30px; margin-bottom: 8px; }
-        .hero p { color: #475569; margin-bottom: 14px; }
+        .hero p { color: var(--muted); margin-bottom: 14px; }
         .filters { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-        .control { width: 100%; padding: 10px 12px; border: 1px solid #CBD5E1; border-radius: 10px; background: #F8FAFC; font-size: 14px; }
+        .control { width: 100%; padding: 10px 12px; border: 1px solid #2b4660; border-radius: 10px; background: var(--panel-2); color: var(--text); font-size: 14px; }
         .list { display: grid; gap: 12px; margin-top: 14px; }
-        .job { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 14px; padding: 16px; }
-        .job-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
-        .job-head h3 { font-size: 19px; }
-        .reward { background: #DCFCE7; color: #166534; border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 800; }
-        .meta { display: flex; flex-wrap: wrap; gap: 8px; color: #475569; font-size: 13px; margin-bottom: 10px; }
+        .job { position: relative; overflow: hidden; background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 18px; padding: 18px; color: var(--text); box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28); cursor: pointer; transition: all .2s ease; }
+        .job::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%); }
+        .job:hover { border-color: #ff7e22; box-shadow: 0 18px 34px rgba(8, 19, 29, 0.34); transform: translateY(-2px); }
+        .job-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .job-head h3 { font-size: 19px; color: #f8fbff; }
+        .reward { background: linear-gradient(135deg, rgba(47, 212, 176, 0.2) 0%, rgba(47, 212, 176, 0.08) 100%); color: #8ff0d8; border: 1px solid rgba(47, 212, 176, 0.3); border-radius: 999px; padding: 5px 11px; font-size: 12px; font-weight: 800; }
+        .meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 13px; margin-bottom: 12px; }
         .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
-        .tag { background: #F1F5F9; border: 1px solid #CBD5E1; color: #334155; border-radius: 999px; padding: 5px 9px; font-size: 12px; font-weight: 700; }
-        .empty { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 12px; padding: 16px; color: #64748B; }
+        .tag { background: rgba(255, 255, 255, 0.04); border: 1px solid #2b4660; color: #d6e8f7; border-radius: 999px; padding: 6px 10px; font-size: 12px; font-weight: 700; }
+        .empty { background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 16px; padding: 16px; color: var(--muted); box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28); }
         @media (max-width: 1000px) { .filters { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 768px) {
+            .topbar { padding: 10px 12px; }
+            .brand { font-size: 18px; }
+            .top-actions { gap: 6px; }
+            .page { margin: 12px auto 18px; padding: 0 12px; }
+            .hero { padding: 14px; border-radius: 12px; }
+            .hero h1 { font-size: 22px; }
+        }
     </style>
 </head>
 <body>
 <header class="topbar">
     <a class="brand" href="./index.html">NextScout</a>
-    <div style="display:flex; gap:10px;">
-        <a class="btn" href="./index.html"><i class="fa-solid fa-arrow-left"></i> Anasayfa</a>
-        <a class="btn primary" href="./manager-dashboard.html">Dashboard</a>
+    <div class="top-actions">
+        <a class="home-btn-global" href="./index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #ff7e22;background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;box-shadow:0 16px 28px rgba(255,90,31,0.28);">Ana Sayfa</a>
     </div>
 </header>
 
 <main class="page">
     <section class="hero">
-        <h1><i class="fa-solid fa-filter"></i> Menajerlerin Aradigi Oyuncular</h1>
-        <p>Dashboard'da kaydedilen ilanlar burada yayinlanir. Oyuncular filtreleyip kendine uygun ilani bulur.</p>
+        <h1><i class="fa-solid fa-filter"></i> Menajerlerin Aradığı Oyuncular</h1>
+        <p>Dashboard'da kaydedilen ilanlar burada yayınlanır. Oyuncular filtreleyip kendine uygun ilanı bulur.</p>
         <div class="filters">
             <select class="control" id="positionFilter">
-                <option value="">Pozisyon (Tumu)</option>
+                <option value="">Pozisyon (Tümü)</option>
                 <option value="CB">Stoper</option>
                 <option value="LB">Sol Bek</option>
-                <option value="RB">Sag Bek</option>
+                <option value="RB">Sağ Bek</option>
                 <option value="AM">10 Numara</option>
-                <option value="RW">Sag Kanat</option>
+                <option value="RW">Sağ Kanat</option>
                 <option value="LW">Sol Kanat</option>
                 <option value="ST">Santrfor</option>
             </select>
             <input class="control" id="heightFilter" type="number" placeholder="Min boy (cm)">
-            <input class="control" id="budgetMinFilter" type="number" placeholder="Butce min (TL)">
-            <input class="control" id="budgetMaxFilter" type="number" placeholder="Butce max (TL)">
+            <input class="control" id="budgetMinFilter" type="number" placeholder="Bütçe min (TL)">
+            <input class="control" id="budgetMaxFilter" type="number" placeholder="Bütçe max (TL)">
             <button class="btn primary" id="applyFilter"><i class="fa-solid fa-magnifying-glass"></i> Filtrele</button>
         </div>
     </section>
@@ -108,14 +140,14 @@
     function render(data) {
         const root = document.getElementById('jobList');
         if (!data.length) {
-            root.innerHTML = '<div class="empty">Kriterlere uygun ilan bulunamadi.</div>';
+            root.innerHTML = '<div class="empty">Kriterlere uygun ilan bulunamadı.</div>';
             return;
         }
 
         root.innerHTML = data.map((job) => {
-            const title = job.title || `${job.position || '-'} pozisyonu icin oyuncu araniyor`;
-            const freeLabel = job.free_only === 'true' ? 'Bonservisi elinde' : (job.free_only === 'false' ? 'Kulubunde olabilir' : 'Bonservis farketmez');
-            const ageLabel = `${job.age_min || '-'}-${job.age_max || '-'} yas`;
+            const title = job.title || `${job.position || '-'} pozisyonu için oyuncu aranıyor`;
+            const freeLabel = job.free_only === 'true' ? 'Bonservisi elinde' : (job.free_only === 'false' ? 'Kulübünde olabilir' : 'Bonservis fark etmez');
+            const ageLabel = `${job.age_min || '-'}-${job.age_max || '-'} yaş`;
             return `
                 <article class="job">
                     <div class="job-head">
@@ -124,16 +156,16 @@
                     </div>
                     <div class="meta">
                         <span><i class="fa-solid fa-user-tie"></i> Menajer: ${job.author_name || '-'}</span>
-                        <span><i class="fa-solid fa-location-dot"></i> ${job.city || 'Sehir belirtilmedi'}</span>
+                        <span><i class="fa-solid fa-location-dot"></i> ${job.city || 'Şehir belirtilmedi'}</span>
                         <span><i class="fa-solid fa-ruler-vertical"></i> Min ${job.min_height || '-'} cm</span>
                         <span><i class="fa-solid fa-user"></i> ${ageLabel}</span>
                     </div>
                     <div class="tags">
-                        <span class="tag">${job.dominant_side || 'Ayak farketmez'}</span>
+                        <span class="tag">${job.dominant_side || 'Ayak fark etmez'}</span>
                         <span class="tag">${freeLabel}</span>
-                        <span class="tag">${job.description || 'Ek aciklama yok'}</span>
+                        <span class="tag">${job.description || 'Ek açıklama yok'}</span>
                     </div>
-                    <button class="btn primary" onclick="alert('Basvuru iletildi: ${title}')"><i class="fa-solid fa-paper-plane"></i> Bu Goreve Basvur</button>
+                    <button class="btn primary" onclick="alert('Başvuru iletildi: ${title}')"><i class="fa-solid fa-paper-plane"></i> Bu Göreve Başvur</button>
                 </article>
             `;
         }).join('');
@@ -169,8 +201,3 @@
     <script src="assets/js/core-stability.js"></script>
 </body>
 </html>
-
-
-
-
-

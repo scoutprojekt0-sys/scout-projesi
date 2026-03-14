@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -11,36 +11,61 @@
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
     <meta property="og:title" content="Beni Keşfedin | Sponsorlu Oyuncu Vitrini | NextScout">
-    <meta property="og:description" content="Öne çıkan oyuncu profillerini vitrin mantığıyla listeleyen sponsorlu keşif alanı. Scout ve kulüpler için hızlı görünürlük ekranı.">
+    <meta property="og:description" content="�ne �ikan oyuncu profillerini vitrin mantigiyla listeleyen sponsorlu kesif alani. Scout ve kul�pler i�in hizli g�r�n�rl�k ekrani.">
     <meta property="og:url" content="https://nextscout.pro/boost-discover.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Beni Keşfedin | Sponsorlu Oyuncu Vitrini | NextScout">
-    <meta name="twitter:description" content="Görünürlüğü artırılmış oyuncu kartları ve sponsorlu vitrin alanı.">
+    <meta name="twitter:description" content="G�r�n�rl�g� artirilmis oyuncu kartlari ve sponsorlu vitrin alani.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --page-bg: radial-gradient(circle at top left, rgba(251, 191, 36, 0.18), transparent 30%), radial-gradient(circle at 82% 18%, rgba(56, 189, 248, 0.14), transparent 30%), linear-gradient(180deg, #14110b 0%, #1f2433 36%, #183b63 100%);
+            --panel-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(254, 249, 195, 0.92) 100%);
+            --panel-border: rgba(253, 224, 71, 0.34);
+            --text-main: #f8fafc;
+            --text-dark: #0f172a;
+            --text-soft: #475569;
+            --shadow-lg: 0 18px 44px rgba(15, 23, 42, 0.3);
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: linear-gradient(180deg, #FFFDF5 0%, #EFF6FF 100%); color: #0F172A; min-height: 100vh; }
-        .topbar { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; background: #FFFFFF; border-bottom: 1px solid #DBEAFE; }
-        .brand { font-family: 'Poppins', sans-serif; font-size: 24px; color: #1D4ED8; text-decoration: none; }
-        .btn { border: 1px solid #BFDBFE; background: #EFF6FF; color: #1E3A8A; padding: 9px 14px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 13px; }
-        .page { max-width: 1160px; margin: 26px auto; padding: 0 20px; }
-        .hero { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 18px; padding: 24px; margin-bottom: 18px; box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08); }
+        body { font-family: 'Inter', sans-serif; background: var(--page-bg); color: var(--text-main); min-height: 100vh; position: relative; overflow-x: hidden; }
+        body::before, body::after { content: ""; position: fixed; width: 340px; height: 340px; border-radius: 999px; filter: blur(22px); opacity: 0.46; pointer-events: none; z-index: 0; }
+        body::before { top: 84px; left: -98px; background: rgba(251, 191, 36, 0.22); }
+        body::after { right: -116px; bottom: 54px; background: rgba(59, 130, 246, 0.2); }
+        .topbar { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; background: rgba(7, 18, 36, 0.78); border-bottom: 1px solid rgba(148, 163, 184, 0.24); color: #f5fbff; backdrop-filter: blur(18px); }
+        .brand { font-family: 'Poppins', sans-serif; font-size: 24px; color: #BFDBFE; text-decoration: none; }
+        .top-actions { display: flex; gap: 10px; }
+        .btn, a.btn, button.btn { display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; border: 1px solid rgba(255, 126, 34, 0.45) !important; background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%) !important; color: #16325c !important; padding: 10px 16px !important; border-radius: 12px !important; text-decoration: none !important; font-weight: 800 !important; font-size: 13px !important; box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24) !important; transition: transform .18s ease, box-shadow .18s ease, filter .18s ease !important; }
+        .btn:hover, a.btn:hover, button.btn:hover { transform: translateY(-1px); box-shadow: 0 16px 28px rgba(8, 19, 29, 0.3) !important; filter: saturate(1.05); }
+        .page { position: relative; z-index: 1; max-width: 1180px; margin: 26px auto; padding: 0 20px 34px; }
+        .hero { background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 22px; padding: 24px; margin-bottom: 18px; box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34); backdrop-filter: none; color: #f5fbff; }
         .hero h1 { font-size: 30px; margin-bottom: 8px; }
-        .hero p { color: #475569; }
-        .seo-intro { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 18px; padding: 18px 20px; margin-bottom: 18px; box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08); }
+        .hero p { color: #9bb5cb; }
+        .seo-intro { background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 18px; padding: 18px 20px; margin-bottom: 18px; box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28); backdrop-filter: none; color: #f5fbff; }
         .seo-intro h2 { font-size: 18px; margin-bottom: 8px; }
-        .seo-intro p { color: #475569; line-height: 1.7; }
+        .seo-intro p { color: #9bb5cb; line-height: 1.7; }
         .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
-        .card { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 14px; padding: 16px; }
-        .name { font-size: 19px; font-weight: 800; margin-bottom: 8px; color: #1E3A8A; }
-        .line { color: #475569; font-size: 14px; margin-bottom: 8px; }
+        .card { position: relative; overflow: hidden; background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 18px; padding: 18px; color: #f5fbff; box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28); }
+        .card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%); }
+        .card:hover { border-color: #ff7e22; box-shadow: 0 18px 34px rgba(8, 19, 29, 0.34); transform: translateY(-2px); }
+        .name { font-size: 19px; font-weight: 800; margin-bottom: 8px; color: #f8fbff; }
+        .line { color: #9bb5cb; font-size: 14px; margin-bottom: 8px; }
         .tags { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 8px; }
-        .tag { background: #F1F5F9; border: 1px solid #CBD5E1; color: #334155; border-radius: 999px; padding: 5px 9px; font-size: 12px; font-weight: 700; }
-        .empty { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 12px; padding: 16px; color: #64748B; }
+        .tag { background: rgba(255, 255, 255, 0.04); border: 1px solid #2b4660; color: #d6e8f7; border-radius: 999px; padding: 5px 9px; font-size: 12px; font-weight: 700; }
+        .empty { background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 18px; padding: 16px; color: #9bb5cb; box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28); }
+        @media (max-width: 768px) {
+            .topbar { padding: 10px 12px; }
+            .brand { font-size: 18px; }
+            .top-actions { gap: 6px; }
+            .page { margin: 12px auto 18px; padding: 0 12px; }
+            .hero { padding: 14px; border-radius: 12px; }
+            .hero h1 { font-size: 22px; }
+            .card { padding: 12px; border-radius: 12px; }
+        }
     </style>
     <link rel="stylesheet" href="assets/css/mobile-unified.css">
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
@@ -48,9 +73,8 @@
 <body>
 <header class="topbar">
     <a class="brand" href="./index.html">NextScout</a>
-    <div style="display:flex; gap:10px;">
-        <a class="home-btn-global" href="./index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a>
-        <a class="btn" href="./manager-needs.html">MENAJER İlanları</a>
+    <div class="top-actions">
+        <a class="home-btn-global" href="./index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #ff7e22;background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;box-shadow:0 16px 28px rgba(255,90,31,0.28);">Ana Sayfa</a>
     </div>
 </header>
 
@@ -60,8 +84,8 @@
         <p>Bu sayfada sadece oyuncu özellikleri görünür. Fiyatlandırma gösterilmez.</p>
     </section>
 
-    <section class="seo-intro" aria-label="Sponsorlu oyuncu vitrini açıklaması">
-        <h2>Sponsorlu Oyuncu Keşif Alanı</h2>
+    <section class="seo-intro" aria-label="Sponsorlu oyuncu vitrini a�iklamasi">
+        <h2>Sponsorlu Oyuncu Kesif Alani</h2>
         <p>NextScout Beni Keşfedin sayfası; görünürlüğü artırılmış oyuncu kartlarını kulüpler, scout ekipleri ve menajerler için tek vitrin altında toplar. Bu alan, sponsorlu oyuncu profillerinin daha hızlı fark edilmesi ve öne çıkan adayların kısa listelere girmesi için tasarlandı.</p>
     </section>
 
@@ -106,7 +130,7 @@
                 <div class="line"><strong>Pozisyon:</strong> ${p.position || '-'}</div>
                 <div class="line"><strong>Şehir:</strong> ${p.city || '-'}</div>
                 <div class="line"><strong>Tanıtım:</strong> ${p.summary || '-'}</div>
-                <div class="line"><strong>Geçerlilik:</strong> ${p.expires_at ? new Date(p.expires_at).toLocaleString('tr-TR') : '-'}</div>
+                <div class="line"><strong>Ge�erlilik:</strong> ${p.expires_at ? new Date(p.expires_at).toLocaleString('tr-TR') : '-'}</div>
                 <div class="tags">
                     <span class="tag">${p.package_label || 'Boost'}</span>
                     <span class="tag">Sponsorlu Yetenek</span>
@@ -121,12 +145,3 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-

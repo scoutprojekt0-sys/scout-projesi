@@ -1,91 +1,111 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haftalık Bülten | Scout Trendleri ve Yeni Oyuncular | NextScout</title>
-    <meta name="description" content="Haftalık scout bülteni ile son 7 günde eklenen oyuncuları, en çok izlenen profilleri, menajer ilanlarını ve antrenör ihtiyaçlarını tek ekranda takip edin.">
+    <title>NextScout - Haftalık Bülten</title>
+    <meta name="description" content="NextScout weekly digest sayfası: futbol scout, kulüp ve oyuncu odaklı platform içeriği.">
     <meta name="robots" content="index,follow">
-    <link rel="canonical" href="https://nextscout.pro/weekly-digest.html">
+    <link rel="canonical" href="https://nextscout.app/weekly-digest.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="Haftalık Bülten | Scout Trendleri ve Yeni Oyuncular | NextScout">
-    <meta property="og:description" content="Yeni oyuncular, en çok izlenen profiller ve haftalık scout hareketliliği için özet ekran. Kulüpler ve scout ekipleri için hızlı takip alanı.">
-    <meta property="og:url" content="https://nextscout.pro/weekly-digest.html">
-    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
+    <meta property="og:title" content="NextScout - Haftalık Bülten">
+    <meta property="og:description" content="NextScout weekly digest sayfası: futbol scout, kulüp ve oyuncu odaklı platform içeriği.">
+    <meta property="og:url" content="https://nextscout.app/weekly-digest.html">
+    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Haftalık Bülten | Scout Trendleri ve Yeni Oyuncular | NextScout">
-    <meta name="twitter:description" content="Son 7 günde eklenen oyuncular, en çok izlenen profiller ve haftalık ilan hareketleri tek ekranda.">
-    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
+    <meta name="twitter:title" content="NextScout - Haftalık Bülten">
+    <meta name="twitter:description" content="NextScout weekly digest sayfası: futbol scout, kulüp ve oyuncu odaklı platform içeriği.">
+    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+          --bg: #08131d;
+          --panel: #0f1f2e;
+          --panel-2: #12293d;
+          --line: #2b4660;
+          --text: #f5fbff;
+          --muted: #9bb5cb;
+          --cta: #ff5a1f;
+          --cta-2: #ff7e22;
+          --good: #2fd4b0;
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: linear-gradient(180deg, #F8FAFC 0%, #EEF2FF 100%); color: #0F172A; min-height: 100vh; }
-        .topbar { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; background: #FFFFFF; border-bottom: 1px solid #DBEAFE; }
-        .brand { font-family: 'Poppins', sans-serif; font-size: 24px; color: #1D4ED8; text-decoration: none; }
-        .btn { border: 1px solid #BFDBFE; background: #EFF6FF; color: #1E3A8A; padding: 9px 14px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 13px; }
+        body {
+          margin: 0;
+          color: var(--text);
+          font-family: "Space Grotesk", sans-serif;
+          background:
+            radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+            radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+            var(--bg);
+          min-height: 100vh;
+        }
+        .topbar { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; background: rgba(7, 18, 36, 0.78); border-bottom: 1px solid rgba(148, 163, 184, 0.24); color: #f5fbff; backdrop-filter: blur(18px); }
+        .brand { font-family: 'Poppins', sans-serif; font-size: 24px; color: #BFDBFE; text-decoration: none; }
+        .top-actions { display: flex; gap: 10px; }
+        .btn, a.btn, button.btn { display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; border: 1px solid rgba(255, 126, 34, 0.45) !important; background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%) !important; color: #16325c !important; padding: 10px 16px !important; border-radius: 12px !important; text-decoration: none !important; font-weight: 800 !important; font-size: 13px !important; box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24) !important; transition: transform .18s ease, box-shadow .18s ease, filter .18s ease !important; }
+        .btn:hover, a.btn:hover, button.btn:hover { transform: translateY(-1px); box-shadow: 0 16px 28px rgba(8, 19, 29, 0.3) !important; filter: saturate(1.05); }
         .page { max-width: 1180px; margin: 26px auto; padding: 0 20px; }
-        .hero { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 18px; padding: 24px; box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08); margin-bottom: 14px; }
+        .hero { background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 22px; padding: 24px; box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34); margin-bottom: 14px; color: var(--text); }
         .hero h1 { font-size: 30px; margin-bottom: 8px; }
-        .hero p { color: #475569; }
-        .seo-intro { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 18px; padding: 18px 20px; box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08); margin-bottom: 14px; }
-        .seo-intro h2 { font-size: 18px; margin-bottom: 8px; }
-        .seo-intro p { color: #475569; line-height: 1.7; }
+        .hero p { color: var(--muted); }
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-        .card { background: #FFFFFF; border: 1px solid #DBEAFE; border-radius: 14px; padding: 16px; }
+        .card { position: relative; overflow: hidden; background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 18px; padding: 18px; color: var(--text); box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28); }
+        .card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%); }
         .card h3 { margin-bottom: 10px; font-size: 18px; }
         .card.clickable { cursor: pointer; transition: all .2s ease; }
-        .card.clickable:hover { border-color: #93C5FD; box-shadow: 0 8px 18px rgba(37, 99, 235, 0.12); transform: translateY(-1px); }
-        .kpi-value { font-size: 34px; font-weight: 800; color: #1D4ED8; }
-        .kpi-sub { margin-top: 6px; color: #64748B; font-size: 13px; }
+        .card.clickable:hover { border-color: #ff7e22; box-shadow: 0 18px 34px rgba(8, 19, 29, 0.34); transform: translateY(-2px); }
+        .kpi-value { font-size: 34px; font-weight: 800; color: #f8fbff; }
+        .kpi-sub { margin-top: 6px; color: var(--muted); font-size: 13px; }
         .list { list-style: none; display: grid; gap: 8px; }
-        .item { padding: 10px 12px; border: 1px solid #E2E8F0; border-radius: 10px; background: #F8FAFC; font-size: 14px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: inherit; }
-        .item:hover { border-color: #BFDBFE; background: #EFF6FF; }
-        .badge { font-weight: 800; color: #1D4ED8; }
+        .item { padding: 11px 13px; border: 1px solid #2b4660; border-radius: 12px; background: rgba(255, 255, 255, 0.04); font-size: 14px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: #d6e8f7; }
+        .item:hover { border-color: #ff5a1f; background: rgba(255, 90, 31, 0.08); color: var(--text); }
+        .badge { font-weight: 800; color: #8fd3ff; }
         @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            .topbar { padding: 10px 12px; }
+            .brand { font-size: 18px; }
+            .top-actions { gap: 6px; }
+            .page { margin: 12px auto 18px; padding: 0 12px; }
+            .hero { padding: 14px; border-radius: 12px; }
+            .hero h1 { font-size: 22px; }
+            .card { padding: 12px; border-radius: 12px; }
+        }
     </style>
-    <link rel="stylesheet" href="assets/css/mobile-unified.css">
-    <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
 <body>
 <header class="topbar">
     <a class="brand" href="./index.html">NextScout</a>
-    <div style="display:flex; gap:10px;">
-        <a class="home-btn-global" href="./index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a>
-        <a class="btn" href="./manager-needs.html">MENAJER İlanları</a>
-        <a class="btn" href="./coach-needs.html">ANTRENÖR İlanları</a>
+    <div class="top-actions">
+        <a class="home-btn-global" href="./index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #ff7e22;background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;box-shadow:0 16px 28px rgba(255,90,31,0.28);">Ana Sayfa</a>
     </div>
 </header>
 
 <main class="page">
     <section class="hero">
         <h1><i class="fa-solid fa-newspaper"></i> Haftalık Bülten</h1>
-        <p>Sadece 4 veri: bu hafta eklenen oyuncular, en çok izlenen oyuncular, MENAJER ilanları, ANTRENÖR ilanları.</p>
-    </section>
-
-    <section class="seo-intro" aria-label="Haftalık scout bülteni açıklaması">
-        <h2>Haftalık Scout Özeti</h2>
-        <p>NextScout Haftalık Bülten ekranı; son 7 günde sisteme eklenen oyuncuları, en çok görüntülenen profilleri ve aktif ilan hareketlerini tek merkezde toplar. Kulüpler, scout ekipleri ve menajerler için hızlı durum takibi ve kısa liste hazırlığı sağlar.</p>
+        <p>Sadece 4 veri: bu hafta eklenen oyuncular, en çok izlenen oyuncular, menajer ilanları, antrenör ilanları.</p>
     </section>
 
     <section class="grid">
         <article class="card clickable" onclick="openWeeklyPlayers()">
-            <h3>Bu Hafta Eklenen Oyuncular</h3>
+            <h3>Bu Hafta Eklenen Oyuncu</h3>
             <div class="kpi-value" id="weeklyPlayerCount">0</div>
             <div class="kpi-sub">Son 7 günlük kayıt (tıkla)</div>
         </article>
 
         <article class="card clickable" onclick="openManagerNeeds()">
-            <h3>MENAJER İlanları (Haftalık)</h3>
+            <h3>Menajer İlanları (Haftalık)</h3>
             <div class="kpi-value" id="weeklyManagerNeeds">0</div>
             <div class="kpi-sub">Son 7 günde açılan ilan (tıkla)</div>
         </article>
 
         <article class="card clickable" onclick="openCoachNeeds()">
-            <h3>ANTRENÖR İlanları (Haftalık)</h3>
+            <h3>Antrenör İlanları (Haftalık)</h3>
             <div class="kpi-value" id="weeklyCoachNeeds">0</div>
             <div class="kpi-sub">Son 7 günde açılan ilan (tıkla)</div>
         </article>
@@ -134,7 +154,7 @@
     }
 
     function openWeeklyPlayers() {
-        window.location.href = './professional-players.html';
+        window.location.href = './weekly-new-players.html';
     }
 
     function openManagerNeeds() {
@@ -170,7 +190,6 @@
 
     initDigest();
 </script>
-<script src="assets/js/core-stability.js"></script>
-<script src="assets/js/mobile-professional.js" defer></script>
+    <script src="assets/js/core-stability.js"></script>
 </body>
 </html>

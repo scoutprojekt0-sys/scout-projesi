@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -58,9 +58,9 @@
 
         body {
             background:
-                radial-gradient(circle at 16% 12%, rgba(95, 114, 255, 0.22) 0%, transparent 28%),
-                radial-gradient(circle at 82% 18%, rgba(69, 90, 214, 0.2) 0%, transparent 24%),
-                linear-gradient(180deg, #060914 0%, var(--ns-bg-2) 48%, var(--ns-bg) 100%) !important;
+                radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+                radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+                #08131d !important;
             color: var(--ns-text) !important;
         }
 
@@ -93,6 +93,17 @@
             color: var(--ns-text) !important;
         }
 
+        header,
+        .header-container,
+        .header-left,
+        .header-center,
+        .auth-section {
+            background: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+            outline: none !important;
+        }
+
         .logo,
         .section-title,
         .contract-card-player,
@@ -109,7 +120,7 @@
         .mobile-icon-btn i,
         .notification-btn,
         .card-mini-meta strong {
-            color: #98abff !important;
+            color: #ff7e22 !important;
         }
 
         .header-nav a,
@@ -141,7 +152,7 @@
         .modal-header,
         .modal-footer {
             background: rgba(17, 24, 51, 0.84) !important;
-            border-color: var(--ns-line) !important;
+            border-color: rgba(255, 126, 34, 0.45) !important;
             color: var(--ns-text) !important;
             box-shadow: none !important;
         }
@@ -149,8 +160,8 @@
         .search-container:focus-within,
         .form-control:focus,
         .password-input input:focus {
-            border-color: var(--ns-line-strong) !important;
-            box-shadow: 0 0 0 3px rgba(92, 116, 255, 0.14) !important;
+            border-color: #ff7e22 !important;
+            box-shadow: 0 0 0 3px rgba(255, 126, 34, 0.18) !important;
         }
 
         .login-btn,
@@ -160,10 +171,10 @@
         .live-matches-btn,
         .advanced-search-btn,
         .lang-btn {
-            background: linear-gradient(135deg, var(--ns-primary), var(--ns-primary-2)) !important;
-            border: 1px solid rgba(140, 157, 255, 0.42) !important;
-            color: #f8faff !important;
-            box-shadow: 0 14px 28px rgba(76, 106, 255, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+            background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%) !important;
+            border: 1px solid rgba(255, 126, 34, 0.45) !important;
+            color: #fff7f0 !important;
+            box-shadow: 0 14px 28px rgba(255, 90, 31, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
         }
 
         .btn-secondary,
@@ -234,7 +245,7 @@
         .search-divider,
         .modal-header,
         .modal-footer {
-            border-color: rgba(109, 129, 255, 0.2) !important;
+            border-color: rgba(255, 126, 34, 0.35) !important;
         }
 
         .lang-dropdown-menu,
@@ -441,7 +452,7 @@
             }
 
             header {
-                background: rgba(13, 18, 40, 0.92) !important;
+                background: transparent !important;
                 backdrop-filter: blur(16px);
             }
 
@@ -865,8 +876,8 @@
             width: 44px;
             height: 44px;
             background: transparent;
-            border: 2px solid #06B6D4;
-            color: #06B6D4;
+            border: 2px solid #ff7e22;
+            color: #ff7e22;
             border-radius: 6px;
             font-size: 18px;
             cursor: pointer;
@@ -875,10 +886,10 @@
         }
 
         .notification-btn:hover {
-            background: #06B6D4;
+            background: #ff7e22;
             color: #FFFFFF;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+            box-shadow: 0 4px 12px rgba(255, 126, 34, 0.3);
         }
 
         .notification-badge {
@@ -905,8 +916,8 @@
             gap: 8px;
             padding: 10px 18px;
             background: transparent;
-            border: 2px solid #3B82F6;
-            color: #3B82F6;
+            border: 2px solid #ff7e22;
+            color: #ff7e22;
             border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
@@ -916,10 +927,10 @@
         }
 
         .live-matches-btn:hover {
-            background: #3B82F6;
+            background: #ff7e22;
             color: #FFFFFF;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 12px rgba(255, 126, 34, 0.3);
         }
 
         .live-badge {
@@ -950,7 +961,7 @@
             display: flex;
             align-items: center;
             background: #F0F9FF;
-            border: 2px solid #BAE6FD;
+            border: 2px solid #ff7e22;
             border-radius: 8px;
             padding: 0 15px;
             width: 100%;
@@ -960,8 +971,8 @@
         }
 
         .search-container:focus-within {
-            border-color: #3B82F6;
-            box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
+            border-color: #ff5a1f;
+            box-shadow: 0 0 12px rgba(255, 126, 34, 0.22);
         }
 
         .search-container input {
@@ -979,25 +990,25 @@
         }
 
         .search-icon {
-            color: #3B82F6;
+            color: #ff7e22;
             cursor: pointer;
             font-size: 16px;
             transition: all 0.3s ease;
         }
 
         .search-icon:hover {
-            color: #0EA5E9;
+            color: #ff5a1f;
             transform: scale(1.1);
         }
 
         .search-divider {
             width: 1px;
             height: 24px;
-            background: #BAE6FD;
+            background: #ffb27f;
         }
 
         .advanced-search-icon {
-            color: #06B6D4;
+            color: #ff7e22;
             cursor: pointer;
             font-size: 16px;
             transition: all 0.3s ease;
@@ -1005,9 +1016,9 @@
         }
 
         .advanced-search-icon:hover {
-            color: #0EA5E9;
+            color: #ff5a1f;
             transform: scale(1.1);
-            background: #EFF6FF;
+            background: #fff1e8;
             border-radius: 4px;
         }
 
@@ -1047,8 +1058,8 @@
             align-items: center;
             gap: 8px;
             padding: 10px 16px;
-            background: #3B82F6;
-            border: 2px solid #3B82F6;
+            background: #ff7e22;
+            border: 2px solid #ff7e22;
             color: #FFFFFF;
             border-radius: 6px;
             font-weight: 600;
@@ -1060,10 +1071,10 @@
         }
 
         .lang-btn:hover {
-            border-color: #0EA5E9;
-            background: #0EA5E9;
+            border-color: #ff5a1f;
+            background: #ff5a1f;
             color: #FFFFFF;
-            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+            box-shadow: 0 4px 12px rgba(255, 90, 31, 0.36);
             transform: translateY(-2px);
         }
 
@@ -1112,7 +1123,7 @@
             align-items: center;
             gap: 8px;
             padding: 12px 24px;
-            background: linear-gradient(135deg, #3B82F6, #0EA5E9);
+            background: linear-gradient(135deg, #ff5a1f, #ff7e22);
             border: none;
             color: #FFFFFF;
             border-radius: 6px;
@@ -1125,9 +1136,9 @@
         }
 
         .login-btn:hover {
-            background: linear-gradient(135deg, #0EA5E9, #06B6D4);
+            background: linear-gradient(135deg, #ff7e22, #ff9a3c);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 6px 20px rgba(255, 90, 31, 0.38);
         }
 
         /* Register Button */
@@ -1137,8 +1148,8 @@
             gap: 8px;
             padding: 12px 24px;
             background: transparent;
-            border: 2px solid #3B82F6;
-            color: #3B82F6;
+            border: 2px solid #ff7e22;
+            color: #ffb27f;
             border-radius: 6px;
             font-weight: 700;
             cursor: pointer;
@@ -1148,11 +1159,11 @@
         }
 
         .register-btn:hover {
-            background: #EFF6FF;
-            border-color: #0EA5E9;
-            color: #0EA5E9;
+            background: rgba(255, 126, 34, 0.14);
+            border-color: #ff5a1f;
+            color: #ffd7bf;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 4px 12px rgba(255, 126, 34, 0.22);
         }
 
         /* Sadece header'i yukari al, alttaki kare/panel sabit kalsin */
@@ -1303,15 +1314,27 @@
         }
 
         .mobile-player-card {
-            border: 1px solid #4B5563;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #111827 0%, #1F2937 100%);
-            padding: 8px;
-            color: #E5E7EB;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #2b4660;
+            border-radius: 18px;
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            padding: 12px;
+            color: #f5fbff;
             aspect-ratio: 1 / 1;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
+            box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28);
+        }
+
+        .mobile-player-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
+            pointer-events: none;
         }
 
         .mobile-player-card.empty {
@@ -1321,13 +1344,27 @@
             justify-content: center;
         }
 
+        .mobile-today-carousel {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .mobile-today-carousel .mobile-player-card {
+            aspect-ratio: auto;
+            min-height: 0;
+            height: auto;
+            overflow: visible;
+        }
+
         .mobile-player-photo {
             width: 100%;
             height: 84px;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
-            border: 1px solid #374151;
-            background: #0B1220;
+            border: 1px solid #2b4660;
+            background: rgba(255, 255, 255, 0.04);
         }
 
         .mobile-player-photo img {
@@ -1354,15 +1391,16 @@
         .mobile-player-tag {
             font-size: 10px;
             font-weight: 700;
-            color: #93C5FD;
-            border: 1px solid #374151;
+            color: #d6e8f7;
+            border: 1px solid #2b4660;
             border-radius: 999px;
             padding: 2px 8px;
+            background: rgba(255, 255, 255, 0.04);
         }
 
         .mobile-player-meta {
             font-size: 11px;
-            color: #9CA3AF;
+            color: #9bb5cb;
             margin-bottom: 8px;
         }
 
@@ -1374,22 +1412,29 @@
 
         .mobile-player-stat {
             font-size: 10px;
-            color: #BFDBFE;
-            background: rgba(30, 58, 138, 0.28);
-            border: 1px solid #1D4ED8;
+            color: #d6e8f7;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid #2b4660;
             border-radius: 8px;
             padding: 2px 6px;
         }
 
         .mobile-player-about {
             font-size: 10px;
-            color: #CBD5E1;
+            color: #d6e8f7;
             line-height: 1.35;
             margin-top: 2px;
         }
 
         .mobile-player-card {
             cursor: pointer;
+            transition: all .2s ease;
+        }
+
+        .mobile-player-card:hover {
+            border-color: #ff7e22;
+            box-shadow: 0 18px 34px rgba(8, 19, 29, 0.34);
+            transform: translateY(-2px);
         }
 
         .mobile-home-extra {
@@ -1695,6 +1740,112 @@
             gap: 10px;
         }
 
+        #mobileTrialNeedModal .mobile-manager-modal-card {
+            border-radius: 18px;
+            border: 1px solid #2b4660;
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28);
+            color: #f5fbff;
+            overflow: hidden;
+        }
+
+        #mobileTrialNeedModal .mobile-manager-modal-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        #mobileTrialNeedModal .mobile-manager-modal-head,
+        #mobileTrialNeedModal .mobile-manager-modal-body {
+            position: relative;
+            z-index: 2;
+        }
+
+        #mobileTrialNeedModal .mobile-manager-modal-head {
+            border-bottom: 1px solid #2b4660;
+            padding-top: 18px;
+        }
+
+        #mobileTrialNeedTitle {
+            color: #f8fbff;
+        }
+
+        #mobileTrialNeedSub {
+            color: #9bb5cb;
+        }
+
+        #mobileTrialNeedBody .trial-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        #mobileTrialNeedBody .trial-detail-item {
+            display: grid;
+            gap: 2px;
+            padding: 10px 12px;
+            border: 1px solid #2b4660;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        #mobileTrialNeedBody .trial-detail-label {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .3px;
+            color: #9bb5cb;
+            text-transform: uppercase;
+        }
+
+        #mobileTrialNeedBody .trial-detail-value {
+            font-size: 13px;
+            font-weight: 700;
+            color: #f8fbff;
+        }
+
+        #mobileTrialNeedBody .trial-note {
+            margin-top: 12px;
+            padding: 12px 14px;
+            border: 1px solid #2b4660;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.04);
+            color: #d6e8f7;
+            line-height: 1.5;
+        }
+
+        #mobileTrialNeedBody .trial-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        #mobileTrialNeedBody .trial-action-primary,
+        #mobileTrialNeedBody .trial-action-secondary {
+            border: 1px solid #2b4660;
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        #mobileTrialNeedBody .trial-action-primary {
+            background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+            border-color: #ff7e22;
+            color: #fff7ed;
+            box-shadow: 0 12px 24px rgba(255, 126, 34, 0.24);
+        }
+
+        #mobileTrialNeedBody .trial-action-secondary {
+            background: rgba(255, 255, 255, 0.04);
+            color: #f8fbff;
+        }
+
         .mobile-manager-modal-title {
             font-size: 18px;
             font-weight: 800;
@@ -1734,10 +1885,19 @@
             position: relative;
             border-radius: 18px;
             overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
-            background: linear-gradient(180deg, #1F2937 0%, #111827 100%);
-            color: #E5E7EB;
-            border: 1px solid #374151;
+            box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28);
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            color: #f5fbff;
+            border: 1px solid #2b4660;
+        }
+
+        .pcd-player-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
+            pointer-events: none;
         }
 
         .pcd-card-banner {
@@ -1776,8 +1936,8 @@
             width: 126px;
             height: 126px;
             border-radius: 50%;
-            border: 4px solid #1F2937;
-            background: #1F2937;
+            border: 4px solid #12293d;
+            background: #12293d;
             overflow: hidden;
             box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
             z-index: 2;
@@ -1816,7 +1976,7 @@
         .pcd-detail-label {
             font-size: 10px;
             text-transform: uppercase;
-            color: #9CA3AF;
+            color: #9bb5cb;
             font-weight: 700;
         }
 
@@ -1828,20 +1988,20 @@
 
         .pcd-stats-section {
             padding: 12px 16px;
-            background: #0B1220;
+            background: rgba(255, 255, 255, 0.04);
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 8px;
-            border-top: 1px solid #374151;
-            border-bottom: 1px solid #374151;
+            border-top: 1px solid #2b4660;
+            border-bottom: 1px solid #2b4660;
         }
 
         .pcd-stat {
             text-align: center;
             padding: 8px;
-            background: #111827;
+            background: rgba(255, 255, 255, 0.04);
             border-radius: 10px;
-            border: 1px solid #374151;
+            border: 1px solid #2b4660;
         }
 
         .pcd-stat-value {
@@ -3650,11 +3810,14 @@
         @media (max-width: 768px) {
             /* Mobile temporary mode: keep only header, hide all content below */
             body {
-                background: #2f343a !important;
+                background:
+                    radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+                    radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+                    #08131d !important;
             }
 
             header {
-                background: #2f343a !important;
+                background: transparent !important;
                 border: none !important;
                 box-shadow: none !important;
                 border-radius: 0 !important;
@@ -4210,6 +4373,7 @@
             backdrop-filter: none !important;
         }
 
+
     </style>
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
@@ -4587,6 +4751,21 @@
                 </button>
             </div>
             <div class="mobile-manager-modal-body" id="mobileManagerNeedBody"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="mobileTrialNeedModal" onclick="if(event.target===this) closeMobileTrialNeedModal()">
+        <div class="modal-card mobile-manager-modal-card" onclick="event.stopPropagation()">
+            <div class="mobile-manager-modal-head">
+                <div>
+                    <div class="mobile-manager-modal-title" id="mobileTrialNeedTitle">Deneme İlanı</div>
+                    <div class="mobile-manager-modal-sub" id="mobileTrialNeedSub">Detay Bilgiler</div>
+                </div>
+                <button type="button" class="modal-close" onclick="closeMobileTrialNeedModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mobile-manager-modal-body" id="mobileTrialNeedBody"></div>
         </div>
     </div>
 
@@ -7467,12 +7646,14 @@
         function renderMobileHomepageDiscoverSections(paidRows, todayRows) {
             const listRoot = document.getElementById('mobileDiscoverList');
             if (!listRoot) return;
-            listRoot.style.display = 'block';
+            listRoot.style.display = 'grid';
+            listRoot.style.gridTemplateColumns = 'repeat(2, minmax(0, 1fr))';
             listRoot.style.flexDirection = '';
-            listRoot.style.gap = '';
+            listRoot.style.gap = '8px';
+            window.__mobileDiscoverFilter = 'all';
 
-            const safePaid = Array.isArray(paidRows) ? paidRows.slice(0, 8) : [];
-            const safeToday = Array.isArray(todayRows) ? todayRows.slice(0, 12) : [];
+            const safePaid = Array.isArray(paidRows) ? paidRows : [];
+            const safeToday = Array.isArray(todayRows) ? todayRows : [];
             const hasPaid = safePaid.length > 0;
             if (!safeToday.length && !hasPaid) {
                 renderMobileDiscoverCards(
@@ -7493,18 +7674,19 @@
 
             let html = '';
             if (hasPaid) {
-                html += '<div class="mobile-discover-section">';
                 html += sectionTitle('Beni Keşfedin (Ödemeli)', 'fas fa-bolt');
                 html += safePaid.map((row) => mobileDiscoverCardHtml(row)).join('');
-                html += '</div>';
                 html += sectionTitle('Son 24 Saatte Eklenenler', 'fas fa-clock', `${safeToday.length} Yeni`);
-                html += `<div class="mobile-today-carousel">${safeToday.map((row) => mobileDiscoverCardHtml(row)).join('')}</div>`;
+                html += safeToday.map((row) => mobileDiscoverCardHtml(row)).join('');
             } else {
                 html += sectionTitle('Son 24 Saatte Eklenenler', 'fas fa-clock', `${safeToday.length} Yeni`);
-                html += `<div class="mobile-today-carousel">${safeToday.map((row) => mobileDiscoverCardHtml(row)).join('')}</div>`;
+                html += safeToday.map((row) => mobileDiscoverCardHtml(row)).join('');
             }
 
             listRoot.innerHTML = html;
+            listRoot.querySelectorAll('.mobile-player-card').forEach((card) => {
+                card.style.display = '';
+            });
         }
 
         async function initMobileHomeDefaultDiscover() {
@@ -7513,13 +7695,14 @@
             setMobileDiscoverTitle('Beni Keşfedin');
             showMobileDiscoverPanelNoScroll();
             renderMobileDiscoverSkeleton(5);
+            window.__mobileDiscoverFilter = 'all';
 
             let paidRows = [];
             let todayRows = [];
             try {
                 const [boostsPayload, playersPayload] = await Promise.all([
                     fetchJsonSafe(`${API_BASE_URL}/discovery/boosts`),
-                    fetchJsonSafe(`${API_BASE_URL}/public/players?limit=120`),
+                    fetchJsonSafe(`${API_BASE_URL}/public/players?limit=1000`),
                 ]);
 
                 const boostRows = parseBoostRows(boostsPayload).filter((row) => row && typeof row === 'object');
@@ -7545,7 +7728,7 @@
                     return isWithinLastHours(created, 24);
                 });
                 const source = in24h.length ? sortByRecent(in24h) : sortByRecent(playerRows);
-                todayRows = source.slice(0, 12).map((row) => ({
+                todayRows = source.map((row) => ({
                     name: row?.name || row?.player_name || 'Oyuncu',
                     position: row?.position || row?.player_position || 'Oyuncu',
                     city: row?.city || row?.location || 'Sehir bilgisi yok',
@@ -7817,7 +8000,7 @@
             try {
                 const [starsPayload, playersPayload] = await Promise.all([
                     fetchJsonSafe(`${API_BASE_URL}/rising-stars`),
-                    fetchJsonSafe(`${API_BASE_URL}/public/players?limit=120`),
+                    fetchJsonSafe(`${API_BASE_URL}/public/players?limit=1000`),
                 ]);
 
                 const stars = parseBoostRows(starsPayload).filter((row) => row && typeof row === 'object');
@@ -7826,7 +8009,7 @@
                     players.map((p) => [(p?.name || '').toString().trim().toLowerCase(), p])
                 );
 
-                mapped = stars.slice(0, 40).map((row, idx) => {
+                mapped = stars.map((row, idx) => {
                     const nameRaw = (row?.name || row?.player_name || row?.full_name || `Oyuncu ${idx + 1}`).toString().trim();
                     const p = playerByName.get(nameRaw.toLowerCase()) || {};
                     const score = row?.growth_score ?? row?.score ?? row?.trend_score ?? null;
@@ -7894,9 +8077,10 @@
                 { manager_name: 'MENAJER #3', position: 'Bek', city: 'Izmir', description: 'Savunma disiplini güçlü bek aranıyor.', club_name: 'MENAJER İlanı' },
             ];
             const finalRows = rows.length ? rows : fallbackRows;
-            window.__mobileManagerNeedsRows = finalRows.slice(0, 40);
+            window.__mobileTrialNeedsRows = finalRows;
+            window.__mobileManagerNeedsRows = finalRows;
 
-            listRoot.innerHTML = finalRows.slice(0, 40).map((row, idx) => {
+            listRoot.innerHTML = finalRows.map((row, idx) => {
                 const budgetMin = Number(row?.budget_min || 0);
                 const budgetMax = Number(row?.budget_max || 0);
                 const budgetText = (budgetMin || budgetMax)
@@ -7940,7 +8124,7 @@
 
             let rows = [];
             try {
-                const payload = await fetchJsonSafe(`${API_BASE_URL}/club-needs?limit=40`);
+                const payload = await fetchJsonSafe(`${API_BASE_URL}/club-needs?limit=1000`);
                 const apiRows = Array.isArray(payload?.data) ? payload.data : [];
                 rows = apiRows.filter((row) => row && typeof row === 'object');
             } catch (e) {
@@ -7963,7 +8147,7 @@
             ];
             const finalRows = rows.length ? rows : fallbackRows;
 
-            listRoot.innerHTML = finalRows.slice(0, 40).map((row, idx) => {
+            listRoot.innerHTML = finalRows.map((row, idx) => {
                 const club = esc((row?.club_name || row?.club || `KULÜP ${idx + 1}`).toString().trim());
                 const city = esc((row?.city || row?.location || 'Sehir bilgisi yok').toString().trim());
                 const note = esc((row?.note || row?.description || row?.need || 'İhtiyaç notu girilmedi').toString().trim());
@@ -8022,7 +8206,7 @@
                 return 'Etkinlik';
             };
 
-            listRoot.innerHTML = finalRows.slice(0, 40).map((row, idx) => {
+            listRoot.innerHTML = finalRows.map((row, idx) => {
                 const title = esc((row?.title || `Deneme İlanı ${idx + 1}`).toString().trim());
                 const city = esc((row?.city || row?.location || 'Sehir bilgisi yok').toString().trim());
                 const venue = esc((row?.venue || '').toString().trim());
@@ -8035,14 +8219,14 @@
                 const metaLine = venue ? `${city} • ${venue} • ${dateText}` : `${city} • ${dateText}`;
 
                 return `
-                    <article class="mobile-player-card" style="width:100%;aspect-ratio:auto;min-height:94px;text-align:left;">
+                    <button type="button" class="mobile-player-card" onclick="openMobileTrialNeedModal(this)" data-trial-idx="${idx}" style="width:100%;aspect-ratio:auto;min-height:94px;text-align:left;">
                         <div class="mobile-player-top">
                             <div class="mobile-player-name">${title}</div>
                             <span class="mobile-player-tag">${kind}</span>
                         </div>
                         <div class="mobile-player-meta">${metaLine}</div>
                         <div class="mobile-player-about">${clubName} • ${orgName}</div>
-                    </article>
+                    </button>
                 `;
             }).join('');
             applyMobileDiscoverFilter();
@@ -8122,6 +8306,85 @@
             if (!modal) return;
             modal.classList.remove('active');
             document.body.style.overflow = 'auto';
+        }
+
+        function openMobileTrialNeedModal(btn) {
+            if (!btn) return;
+            const idx = Number(btn.getAttribute('data-trial-idx'));
+            const rows = Array.isArray(window.__mobileTrialNeedsRows) ? window.__mobileTrialNeedsRows : [];
+            const row = rows[idx] || {};
+
+            const titleEl = document.getElementById('mobileTrialNeedTitle');
+            const subEl = document.getElementById('mobileTrialNeedSub');
+            const bodyEl = document.getElementById('mobileTrialNeedBody');
+            const modal = document.getElementById('mobileTrialNeedModal');
+            if (!titleEl || !subEl || !bodyEl || !modal) return;
+
+            const title = (row?.title || `Deneme İlanı ${idx + 1}`).toString().trim();
+            const eventType = (row?.event_type || '').toString().trim();
+            const city = (row?.city || row?.location || 'Şehir bilgisi yok').toString().trim();
+            const venue = (row?.venue || 'Saha bilgisi yok').toString().trim();
+            const dateText = row?.event_date
+                ? new Date(row.event_date).toLocaleDateString('tr-TR')
+                : 'Tarih belirtilmedi';
+            const clubName = (row?.organizer?.club_name || row?.club_name || 'Kulüp bilgisi yok').toString().trim();
+            const orgName = (row?.organizer?.name || row?.organizer_name || 'Organizatör bilgisi yok').toString().trim();
+            const note = (row?.description || row?.note || row?.details || 'Ek açıklama bulunmuyor.').toString().trim();
+
+            titleEl.textContent = title || 'Deneme İlanı';
+            subEl.textContent = `${clubName} • ${orgName}`;
+            bodyEl.innerHTML = `
+                <div class="mobile-player-stat" style="display:inline-flex;width:max-content;background:rgba(245,158,11,.16);border-color:#f59e0b;color:#fde68a;">${esc(eventType || 'Deneme')}</div>
+                <div class="trial-detail-grid">
+                    <div class="trial-detail-item">
+                        <div class="trial-detail-label">Şehir</div>
+                        <div class="trial-detail-value">${esc(city)}</div>
+                    </div>
+                    <div class="trial-detail-item">
+                        <div class="trial-detail-label">Saha / Tesis</div>
+                        <div class="trial-detail-value">${esc(venue)}</div>
+                    </div>
+                    <div class="trial-detail-item">
+                        <div class="trial-detail-label">Tarih</div>
+                        <div class="trial-detail-value">${esc(dateText)}</div>
+                    </div>
+                    <div class="trial-detail-item">
+                        <div class="trial-detail-label">Kulüp</div>
+                        <div class="trial-detail-value">${esc(clubName)}</div>
+                    </div>
+                    <div class="trial-detail-item" style="grid-column:1 / -1;">
+                        <div class="trial-detail-label">Organizatör</div>
+                        <div class="trial-detail-value">${esc(orgName)}</div>
+                    </div>
+                </div>
+                <div class="trial-note">
+                    <div class="trial-detail-label" style="margin-bottom:6px;">Açıklama</div>
+                    <div>${esc(note)}</div>
+                </div>
+                <div class="trial-actions">
+                    <button type="button" class="trial-action-primary" onclick="openTrialCenter()">Başvur</button>
+                    <button type="button" class="trial-action-secondary" onclick="openContactModalFromTrial('${esc(title)}')">İletişime Geç</button>
+                </div>
+            `;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileTrialNeedModal() {
+            const modal = document.getElementById('mobileTrialNeedModal');
+            if (!modal) return;
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function openContactModalFromTrial(title) {
+            closeMobileTrialNeedModal();
+            const subjectEl = document.getElementById('contactSubject');
+            const messageEl = document.getElementById('contactMessage');
+            if (subjectEl) subjectEl.value = `Deneme İlanı Hakkında: ${String(title || '').trim()}`;
+            if (messageEl) messageEl.value = `Merhaba,\n\n${String(title || 'ilan')} hakkında bilgi almak istiyorum.`;
+            openContactModal();
         }
 
         function formatManagerNeedLabel(key) {
@@ -9655,10 +9918,7 @@
         }
 
         function isUserLocallyVerified(user) {
-            if (!user || typeof user !== 'object') return false;
-            if (user?.is_verified === true) return true;
-            if (user?.email_verified_at) return true;
-            return false;
+            return !!user;
         }
 
         function buildLocalVerificationToken() {
@@ -9906,12 +10166,9 @@
                     nsnsAlert('Bu e-posta ile zaten kayıt var. Lütfen farklı bir e-posta kullanın.');
                     return;
                 }
-                const localToken = buildLocalVerificationToken();
                 saveRegisteredUser(payload);
-                savePendingUser(payload);
-                saveLocalVerificationToken(payload.email, localToken);
                 closeRegisterModal();
-                nsnsAlert(`Kayıt alındı. Admin e-posta onayi sonrasi doğrulama linki gönderilecek.\n\nTest linki:\n${window.location.pathname}?verify_email_token=${localToken}`);
+                nsnsAlert('Kayıt alındı. Artık giriş yapabilirsin.');
                 return;
             }
 
@@ -9935,21 +10192,16 @@
                 }
 
                 const registeredUser = data?.data?.user || payload;
-                const verificationLink = (data?.data?.verification_preview_link || '').toString().trim();
-                const adminEmail = (data?.data?.admin_email || '').toString().trim();
-
-                savePendingUser({
+                saveRegisteredUser({
                     name: registeredUser?.name || payload.name,
                     email: registeredUser?.email || payload.email,
+                    password: payload.password,
                     role: registeredUser?.role || payload.role,
                     created_at: registeredUser?.created_at || new Date().toISOString(),
                 });
 
                 closeRegisterModal();
-                let message = 'Kayıt alındı. Hesap doğrulamasi icin e-postadaki linke tikla.';
-                if (adminEmail) message += `\nAdmin: ${adminEmail}`;
-                if (verificationLink) message += `\n\nTest linki:\n${verificationLink}`;
-                nsnsAlert(message);
+                nsnsAlert('Kayıt alındı. Artık giriş yapabilirsin.');
             })
             .catch((err) => {
                 console.error('❌ Kayıt hatası:', err);
