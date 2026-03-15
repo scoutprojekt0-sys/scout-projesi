@@ -4,30 +4,31 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mesajlarım - NextScout</title>
-  <meta name="description" content="Mesaj ve bildirim merkezi: teklifler, duyurular ve sistem bildirimlerini tek ekranda gorun.">
+  <meta name="description" content="Mesaj ve bildirim merkezi: teklifler, duyurular ve sistem bildirimlerini tek ekranda görün.">
   <meta name="robots" content="noindex,follow">
   <link rel="canonical" href="https://nextscout.pro/notifications.html">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="tr_TR">
   <meta property="og:site_name" content="NextScout">
   <meta property="og:title" content="Mesajlar ve Bildirimler | NextScout">
-  <meta property="og:description" content="Mesaj ve bildirim merkezi: teklifler, duyurular ve sistem bildirimlerini tek ekranda gorun.">
+  <meta property="og:description" content="Mesaj ve bildirim merkezi: teklifler, duyurular ve sistem bildirimlerini tek ekranda görün.">
   <meta property="og:url" content="https://nextscout.pro/notifications.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
   <meta name="theme-color" content="#2563eb">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #1f252d;
-      --card: #232a33;
-      --line: #334155;
-      --text: #e2e8f0;
-      --muted: #94a3b8;
-      --primary: #60a5fa;
-      --primary-soft: #1f2937;
-      --success: #34d399;
-      --warning: #f59e0b;
+      --bg: #08131d;
+      --card: #0f1f2e;
+      --line: #2b4660;
+      --text: #f5fbff;
+      --muted: #9bb5cb;
+      --primary: #8fd3ff;
+      --primary-soft: rgba(255, 255, 255, 0.04);
+      --success: #2fd4b0;
+      --warning: #ff7e22;
       --danger: #f87171;
       --shadow: 0 12px 28px rgba(2, 6, 23, 0.35);
     }
@@ -37,7 +38,10 @@
     body {
       margin: 0;
       font-family: Inter, Segoe UI, Arial, sans-serif;
-      background: radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.14), transparent 34%), radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.12), transparent 36%), var(--bg);
+      background:
+        radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+        radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+        var(--bg);
       color: var(--text);
     }
 
@@ -53,6 +57,21 @@
       align-items: center;
       gap: 12px;
       margin-bottom: 18px;
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
     }
 
     .title {
@@ -67,25 +86,41 @@
       font-size: 14px;
     }
 
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
     .btn {
-      border: 1px solid var(--line);
-      background: var(--card);
-      color: #dbeafe;
+      border: 1px solid rgba(255, 126, 34, 0.45);
+      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+      color: #16325c;
       padding: 10px 14px;
-      border-radius: 10px;
+      border-radius: 12px;
       text-decoration: none;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 13px;
       cursor: pointer;
+      box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24);
     }
     .home-btn {
-      background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
-      border: 1px solid #2563eb;
+      background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+      border: 1px solid rgba(255, 126, 34, 0.6);
       color: #ffffff;
-      border-radius: 10px;
+      border-radius: 12px;
       padding: 10px 14px;
       display: inline-flex;
       align-items: center;
+      gap: 7px;
+      box-shadow: 0 16px 28px rgba(255,90,31,0.28);
+    }
+
+    .dashboard-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       gap: 7px;
     }
 
@@ -97,11 +132,21 @@
     .layout > * { min-width: 0; }
 
     .panel {
-      background: var(--card);
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
       border: 1px solid var(--line);
-      border-radius: 14px;
+      border-radius: 18px;
       box-shadow: var(--shadow);
       min-width: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
     }
 
     .panel-head {
@@ -121,9 +166,9 @@
 
     .tab {
       border: 1px solid var(--line);
-      background: #2b3440;
+      background: rgba(255, 255, 255, 0.04);
       color: #dbeafe;
-      border-radius: 999px;
+      border-radius: 12px;
       padding: 8px 12px;
       font-size: 12px;
       font-weight: 700;
@@ -131,9 +176,9 @@
     }
 
     .tab.active {
-      background: var(--primary);
+      background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
       color: #fff;
-      border-color: var(--primary);
+      border-color: rgba(255, 126, 34, 0.6);
     }
 
     .search-row {
@@ -146,11 +191,11 @@
     input, select {
       width: 100%;
       border: 1px solid var(--line);
-      border-radius: 10px;
+      border-radius: 12px;
       padding: 9px 10px;
       font-size: 13px;
       color: var(--text);
-      background: #2b3440;
+      background: rgba(255, 255, 255, 0.04);
       outline: none;
     }
 
@@ -172,8 +217,8 @@
       position: relative;
     }
 
-    .msg-item:hover { background: #2b3440; }
-    .msg-item.active { background: #1f2937; }
+    .msg-item:hover { background: rgba(255, 255, 255, 0.04); }
+    .msg-item.active { background: rgba(255, 255, 255, 0.06); }
     .msg-item.unread::before {
       content: "";
       width: 8px;
@@ -233,10 +278,10 @@
       gap: 4px;
     }
 
-    .badge.read { color: #a7f3d0; background: #064e3b; border-color: #10b981; }
-    .badge.unread { color: #fde68a; background: #78350f; border-color: #f59e0b; }
-    .badge.inbox { color: #bfdbfe; background: #1e3a8a; border-color: #60a5fa; }
-    .badge.sent { color: #ddd6fe; background: #4c1d95; border-color: #8b5cf6; }
+    .badge.read { color: #a7f3d0; background: rgba(16, 185, 129, 0.16); border-color: #2fd4b0; }
+    .badge.unread { color: #fde68a; background: rgba(245, 158, 11, 0.16); border-color: #ff7e22; }
+    .badge.inbox { color: #bfdbfe; background: rgba(59, 130, 246, 0.14); border-color: #60a5fa; }
+    .badge.sent { color: #ddd6fe; background: rgba(139, 92, 246, 0.14); border-color: #8b5cf6; }
 
     .detail {
       min-height: 70vh;
@@ -261,7 +306,9 @@
       font-size: 20px;
       font-weight: 800;
       line-height: 1.3;
-      word-break: break-word;
+      word-break: normal;
+      overflow-wrap: anywhere;
+      hyphens: auto;
     }
 
     .meta {
@@ -280,7 +327,9 @@
       font-size: 14px;
       white-space: pre-line;
       flex: 1;
-      word-break: break-word;
+      word-break: normal;
+      overflow-wrap: anywhere;
+      hyphens: auto;
     }
 
     .detail-actions {
@@ -317,6 +366,7 @@
       .wrap { padding: 14px 12px; }
       .title { font-size: 24px; }
       .header { align-items: flex-start; flex-direction: column; }
+      .header-actions { width: 100%; }
     }
 
     @media (max-width: 560px) {
@@ -349,7 +399,10 @@
         <h1 class="title">Mesajlarım</h1>
         <div class="title-sub">Gelen, giden, okundu ve okunmadı mesajları buradan yönetebilirsin.</div>
       </div>
-      <a class="btn home-btn" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
+      <div class="header-actions">
+        <a class="btn home-btn" href="index.html"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
+        <a class="btn dashboard-btn" href="player-dashboard.html"><i class="fas fa-table-columns"></i><span>Dashboard</span></a>
+      </div>
     </div>
 
     <div class="layout">
@@ -418,8 +471,8 @@
     function normalizeContact(item, box) {
       const status = (item?.status || '').toLowerCase();
       const read = status === 'read' || status === 'resolved' || Boolean(item?.read_at) || Boolean(item?.read);
-      const fromName = item?.from_name || item?.sender_name || item?.name || item?.author_name || (box === 'sent' ? USER.name : 'Kullanici');
-      const toName = item?.to_name || item?.receiver_name || (box === 'sent' ? (item?.name || 'Alici') : USER.name);
+      const fromName = item?.from_name || item?.sender_name || item?.name || item?.author_name || (box === 'sent' ? USER.name : 'Kullanıcı');
+      const toName = item?.to_name || item?.receiver_name || (box === 'sent' ? (item?.name || 'Alıcı') : USER.name);
       return {
         id: `contact-${box}-${item?.id || Date.now()}`,
         rawId: Number(item?.id || 0),
@@ -468,7 +521,7 @@
     async function loadMessagesFromApi() {
       const token = authToken();
       if (!token || token === 'local-session-token') {
-        throw new Error('Mesajlar icin giriş gerekli.');
+        throw new Error('Mesajlar için giriş gerekli.');
       }
 
       const [inboxRowsRaw, sentRowsRaw, notifRowsRaw] = await Promise.all([
@@ -671,8 +724,8 @@
       try {
         state.messages = await loadMessagesFromApi();
         if (!Array.isArray(state.messages) || !state.messages.length) {
-          listEl.innerHTML = '<div class="empty-list">Mesaj bulunamadi.</div>';
-          detailEl.innerHTML = '<div class="detail-empty">Hesabinda henuz mesaj/bildirim yok.</div>';
+          listEl.innerHTML = '<div class="empty-list">Mesaj bulunamadı.</div>';
+          detailEl.innerHTML = '<div class="detail-empty">Hesabında henüz mesaj/bildirim yok.</div>';
           return;
         }
         render();
@@ -688,11 +741,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
-
 
 
 

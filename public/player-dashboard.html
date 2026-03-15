@@ -19,50 +19,55 @@
     <meta name="twitter:description" content="NextScout player DASHBOARD sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/mobile-unified.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --bg: #1f252d;
-            --ink: #e2e8f0;
-            --muted: #94a3b8;
-            --line: #334155;
-            --panel: #232a33;
-            --primary: #60a5fa;
-            --accent: #38bdf8;
-            --good: #10b981;
-            --warn: #f59e0b;
+            --bg: #08131d;
+            --ink: #f5fbff;
+            --muted: #9bb5cb;
+            --line: #2b4660;
+            --panel: #0f1f2e;
+            --panel-2: #12293d;
+            --primary: #8fd3ff;
+            --accent: #60a5fa;
+            --good: #2fd4b0;
+            --warn: #ff7e22;
+            --cta: #ff5a1f;
+            --cta-2: #ff7e22;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             color: var(--ink);
             background:
-                radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.16), transparent 34%),
-                radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.14), transparent 36%),
+                radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+                radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
                 var(--bg);
+            min-height: 100vh;
         }
 
         .header {
             position: sticky;
             top: 0;
             z-index: 20;
-            background: rgba(31, 37, 45, 0.92);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--line);
-            padding: 14px 22px;
+            background: rgba(7, 18, 36, 0.78);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.24);
+            padding: 14px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .logo {
+            font-family: 'Poppins', sans-serif;
             font-size: 22px;
-            font-weight: 800;
-            color: #bfdbfe;
+            font-weight: 700;
+            color: #BFDBFE;
             letter-spacing: 0.2px;
             display: inline-flex;
             align-items: center;
@@ -77,21 +82,24 @@
         }
 
         .nav a {
-            color: #e2e8f0;
+            color: #16325c;
             text-decoration: none;
-            font-weight: 700;
+            font-weight: 800;
             font-size: 13px;
-            border: 1px solid var(--line);
-            background: #2b3440;
-            border-radius: 999px;
-            padding: 8px 12px;
+            border: 1px solid rgba(255, 126, 34, 0.45);
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+            border-radius: 12px;
+            padding: 10px 14px;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            transition: 0.2s ease;
+            box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24);
+            transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
         }
 
-        .nav a:hover { color: #dbeafe; border-color: #60a5fa; background: #334155; }
+        .nav a:hover { transform: translateY(-1px); box-shadow: 0 16px 28px rgba(8, 19, 29, 0.3); filter: saturate(1.05); }
+        .nav a i { display: none; }
+        .nav-label { line-height: 1; }
 
         .container {
             max-width: 1200px;
@@ -102,15 +110,26 @@
         }
 
         .welcome {
-            background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 100%);
-            color: #ffffff;
-            padding: 18px;
-            border-radius: 14px;
-            box-shadow: 0 14px 32px rgba(30, 64, 175, 0.2);
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            color: var(--ink);
+            padding: 24px;
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
         }
 
         .welcome h1 { font-size: clamp(22px, 3vw, 34px); margin-bottom: 6px; }
-        .welcome p { font-size: 14px; opacity: 0.96; }
+        .welcome p { font-size: 14px; color: var(--muted); }
 
         .layout-grid {
             display: grid;
@@ -119,11 +138,21 @@
         }
 
         .panel {
-            background: var(--panel);
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
             border: 1px solid var(--line);
-            border-radius: 14px;
-            padding: 14px;
-            box-shadow: 0 12px 26px rgba(2, 6, 23, 0.26);
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
         }
 
         .section-title {
@@ -141,7 +170,7 @@
 
         .stat-card {
             border: 1px solid var(--line);
-            background: #2b3440;
+            background: rgba(255, 255, 255, 0.04);
             border-radius: 12px;
             padding: 12px;
             position: relative;
@@ -155,21 +184,21 @@
 
         .stat-card.is-clickable:hover {
             transform: translateY(-2px);
-            border-color: #60a5fa;
-            box-shadow: 0 12px 24px rgba(2, 6, 23, 0.35);
+            border-color: #ff7e22;
+            box-shadow: 0 18px 34px rgba(8, 19, 29, 0.34);
         }
 
         .stat-icon {
             position: absolute;
             right: 10px;
             top: 10px;
-            color: #bfdbfe;
+            color: #8fd3ff;
             font-size: 24px;
         }
 
         .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-        .stat-value { font-size: 28px; font-weight: 800; color: var(--primary); }
-        .stat-sub { font-size: 11px; color: #cbd5e1; margin-top: 4px; }
+        .stat-value { font-size: 28px; font-weight: 800; color: var(--ink); }
+        .stat-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
 
         .btn-row {
             display: grid;
@@ -192,14 +221,14 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+            background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
             color: #ffffff;
         }
 
         .btn-secondary {
-            background: #eef2ff;
-            color: #1e3a8a;
-            border: 1px solid #bfdbfe;
+            background: rgba(59, 130, 246, 0.12);
+            color: #dbeafe;
+            border: 1px solid rgba(96, 165, 250, 0.24);
         }
 
 
@@ -212,7 +241,7 @@
             border: 1px solid var(--line);
             border-radius: 10px;
             padding: 10px;
-            background: #2b3440;
+            background: rgba(255, 255, 255, 0.04);
         }
 
         .mini-item.is-clickable {
@@ -222,8 +251,8 @@
 
         .mini-item.is-clickable:hover {
             transform: translateY(-2px);
-            border-color: #60a5fa;
-            box-shadow: 0 10px 20px rgba(2, 6, 23, 0.3);
+            border-color: #ff7e22;
+            box-shadow: 0 18px 34px rgba(8, 19, 29, 0.34);
         }
 
         .mini-item .left { display: grid; gap: 2px; }
@@ -234,9 +263,9 @@
             font-weight: 700;
             border-radius: 999px;
             padding: 4px 8px;
-            border: 1px solid #475569;
-            background: #1f2937;
-            color: #bfdbfe;
+            border: 1px solid rgba(96, 165, 250, 0.34);
+            background: rgba(59, 130, 246, 0.14);
+            color: #dbeafe;
             white-space: nowrap;
         }
 
@@ -246,13 +275,13 @@
         .progress-bar {
             height: 8px;
             border-radius: 999px;
-            background: #475569;
+            background: rgba(255, 255, 255, 0.08);
             overflow: hidden;
         }
         .progress-fill {
             height: 100%;
             border-radius: inherit;
-            background: linear-gradient(90deg, #1e40af, #0ea5e9);
+            background: linear-gradient(90deg, var(--cta), var(--cta-2), #60a5fa);
         }
 
         .kpi-strip {
@@ -266,21 +295,21 @@
             border-radius: 10px;
             padding: 9px;
             text-align: center;
-            background: #2b3440;
+            background: rgba(255, 255, 255, 0.04);
         }
 
-        .kpi .v { font-size: 16px; font-weight: 800; color: #0b3b8a; }
-        .kpi .k { font-size: 11px; color: #cbd5e1; margin-top: 2px; }
+        .kpi .v { font-size: 16px; font-weight: 800; color: var(--ink); }
+        .kpi .k { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
         .metric-modal {
             position: fixed;
             inset: 0;
-            background: rgba(2, 6, 23, 0.62);
-            backdrop-filter: blur(4px);
+            background: rgba(2, 6, 23, 0.78);
+            backdrop-filter: blur(10px);
             display: none;
             align-items: center;
             justify-content: center;
-            padding: 16px;
+            padding: 18px;
             z-index: 90;
         }
 
@@ -292,10 +321,21 @@
             width: min(760px, 100%);
             max-height: 88vh;
             overflow: auto;
-            border: 1px solid #334155;
-            background: #232a33;
-            border-radius: 14px;
-            box-shadow: 0 18px 34px rgba(2, 6, 23, 0.42);
+            border: 1px solid var(--line);
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border-radius: 22px;
+            box-shadow: 0 24px 48px rgba(8, 19, 29, 0.46);
+            position: relative;
+        }
+
+        .metric-modal-card::before {
+            content: "";
+            position: sticky;
+            display: block;
+            top: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+            z-index: 2;
         }
 
         .metric-modal-head {
@@ -303,63 +343,80 @@
             align-items: center;
             justify-content: space-between;
             gap: 10px;
-            padding: 14px;
-            border-bottom: 1px solid #334155;
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
         }
 
         .metric-modal-title {
-            font-size: 17px;
+            font-size: 19px;
             font-weight: 800;
-            color: #dbeafe;
+            color: #f5fbff;
         }
 
         .metric-modal-close {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            border: 1px solid #475569;
-            background: #2b3440;
-            color: #cbd5e1;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            border: 1px solid rgba(96, 165, 250, 0.24);
+            background: rgba(59, 130, 246, 0.12);
+            color: #dbeafe;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 18px;
+            font-weight: 800;
+            transition: transform .18s ease, border-color .18s ease, background .18s ease;
+        }
+
+        .metric-modal-close:hover {
+            transform: translateY(-1px);
+            border-color: rgba(255, 126, 34, 0.45);
+            background: rgba(255, 126, 34, 0.14);
         }
 
         .metric-modal-body {
-            padding: 14px;
+            padding: 16px;
             display: grid;
-            gap: 10px;
+            gap: 12px;
         }
 
         .metric-summary {
-            border: 1px solid #334155;
-            border-radius: 10px;
-            background: #1f2937;
-            padding: 10px;
-            color: #bfdbfe;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 14px;
+            color: #f5fbff;
             font-size: 13px;
             font-weight: 700;
+            line-height: 1.6;
         }
 
         .metric-item {
-            border: 1px solid #334155;
-            border-radius: 10px;
-            background: #2b3440;
-            padding: 10px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 14px;
             display: grid;
-            gap: 4px;
+            gap: 6px;
+            transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+        }
+
+        .metric-item:hover {
+            transform: translateY(-1px);
+            border-color: rgba(255, 126, 34, 0.45);
+            box-shadow: 0 14px 28px rgba(8, 19, 29, 0.28);
         }
 
         .metric-item-title {
-            color: #e2e8f0;
+            color: #f5fbff;
             font-size: 14px;
-            font-weight: 700;
+            font-weight: 800;
         }
 
         .metric-item-meta {
-            color: #94a3b8;
+            color: #9bb5cb;
             font-size: 12px;
+            line-height: 1.55;
         }
+
 
         .schedule-actions {
             display: grid;
@@ -369,31 +426,31 @@
         }
 
         .schedule-btn {
-            border: 1px solid #475569;
-            background: #2b3440;
+            border: 1px solid rgba(96, 165, 250, 0.24);
+            background: rgba(59, 130, 246, 0.12);
             color: #dbeafe;
-            border-radius: 10px;
-            padding: 9px 10px;
+            border-radius: 12px;
+            padding: 10px 12px;
             font-size: 12px;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
         }
 
         .schedule-btn.primary {
-            background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
-            border-color: #1d4ed8;
+            background: linear-gradient(135deg, var(--cta), var(--cta-2));
+            border-color: rgba(255, 126, 34, 0.6);
             color: #fff;
         }
 
         .boost-modal {
             position: fixed;
             inset: 0;
-            background: rgba(2, 6, 23, 0.72);
-            backdrop-filter: blur(4px);
+            background: rgba(2, 6, 23, 0.78);
+            backdrop-filter: blur(10px);
             display: none;
             align-items: center;
             justify-content: center;
-            padding: 16px;
+            padding: 18px;
             z-index: 95;
         }
 
@@ -403,42 +460,53 @@
             width: min(760px, 100%);
             max-height: 92vh;
             overflow: auto;
-            border: 1px solid #334155;
-            background: #232a33;
-            border-radius: 14px;
-            box-shadow: 0 20px 40px rgba(2, 6, 23, 0.45);
+            border: 1px solid var(--line);
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border-radius: 22px;
+            box-shadow: 0 24px 48px rgba(8, 19, 29, 0.46);
+            position: relative;
+        }
+
+        .boost-card::before {
+            content: "";
+            position: sticky;
+            display: block;
+            top: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+            z-index: 2;
         }
 
         .boost-head {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 14px;
-            border-bottom: 1px solid #334155;
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
         }
 
         .boost-title {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 800;
-            color: #dbeafe;
+            color: #f5fbff;
         }
 
         .boost-close {
-            width: 32px;
-            height: 32px;
-            border: 1px solid #475569;
-            border-radius: 8px;
-            background: #2b3440;
-            color: #cbd5e1;
+            width: 38px;
+            height: 38px;
+            border: 1px solid rgba(96, 165, 250, 0.24);
+            border-radius: 12px;
+            background: rgba(59, 130, 246, 0.12);
+            color: #dbeafe;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 18px;
+            font-weight: 800;
         }
 
         .boost-form {
-            padding: 14px;
+            padding: 16px;
             display: grid;
-            gap: 10px;
+            gap: 12px;
         }
 
         .boost-grid {
@@ -449,10 +517,10 @@
 
         .boost-input {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #475569;
-            border-radius: 10px;
-            background: #2b3440;
+            padding: 12px 14px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
             color: #e2e8f0;
             font-size: 13px;
             outline: none;
@@ -492,6 +560,28 @@
             }
             .nav::-webkit-scrollbar { display: none; }
             .nav a { flex: 0 0 auto; font-size: 12px; padding: 7px 10px; }
+            .nav a:not(.home-btn-global) {
+                width: 36px;
+                height: 36px;
+                padding: 0;
+                font-size: 0;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .nav a:not(.home-btn-global) i {
+                font-size: 14px;
+                margin: 0;
+            }
+            .nav a.home-btn-global {
+                width: 36px !important;
+                height: 36px !important;
+                padding: 0 !important;
+                font-size: 0 !important;
+                gap: 0 !important;
+            }
+            .nav a .nav-label { display: none; }
+            .nav a i { display: inline-flex; }
 
             .container { padding: 12px; gap: 10px; }
             .welcome { padding: 14px; border-radius: 12px; }
@@ -525,6 +615,10 @@
                 justify-content: center;
             }
             .nav a i { font-size: 14px; margin: 0; }
+            .nav a.home-btn-global {
+                width: 34px !important;
+                height: 34px !important;
+            }
             .kpi-strip { grid-template-columns: 1fr; }
         }
     </style>
@@ -532,13 +626,13 @@
 </head>
 <body>
     <div class="header">
-        <div class="logo"><i class="fas fa-search"></i> NextScout</div>
+        <div class="logo">NextScout</div>
         <div class="nav">
-            <a class="home-btn-global" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a>
-            <a href="player-profile.html"><i class="fas fa-user"></i> Profil</a>
-            <a href="notifications.html"><i class="fas fa-bell"></i> Bildirim</a>
-            <a href="scout-watchlist.html"><i class="fas fa-list-check"></i> Takip Listem</a>
-            <a href="professional-players.html"><i class="fas fa-compass"></i> Kesfet</a>
+            <a class="home-btn-global" href="index.html" aria-label="Ana Sayfa" title="Ana Sayfa" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;"><i class="fas fa-house"></i><span class="nav-label">Ana Sayfa</span></a>
+            <a href="player-profile.html" aria-label="Profil" title="Profil"><i class="fas fa-user"></i><span class="nav-label">Profil</span></a>
+            <a href="notifications.html" aria-label="Bildirim" title="Bildirim"><i class="fas fa-bell"></i><span class="nav-label">Bildirim</span></a>
+            <a href="scout-watchlist.html" aria-label="Takip Listem" title="Takip Listem"><i class="fas fa-list-check"></i><span class="nav-label">Takip Listem</span></a>
+            <a href="professional-players.html?player_view=discover" aria-label="Kesfet" title="Kesfet"><i class="fas fa-compass"></i><span class="nav-label">Kesfet</span></a>
         </div>
     </div>
 
@@ -627,7 +721,7 @@
             <div class="btn-row">
                     <a href="profile-edit.html" class="btn btn-primary"><i class="fas fa-edit"></i> Profili Düzenle</a>
                 <a href="player-profile.html#stats" class="btn btn-secondary"><i class="fas fa-chart-line"></i> Istatistikler</a>
-                <a href="player-profile.html#videos" class="btn btn-primary"><i class="fas fa-upload"></i> Video Yukle</a>
+                <a href="notifications.html" class="btn btn-primary"><i class="fas fa-comments"></i> Iletisime Gec</a>
                 <a href="look-alike.html" class="btn btn-secondary"><i class="fas fa-clone"></i> Look-alike</a>
                 <button type="button" class="btn btn-primary" onclick="openBoostModal()"><i class="fas fa-bolt"></i> Beni Kesfedin</button>
             </div>
@@ -1220,7 +1314,7 @@
 
             titleEl.textContent = data.title;
             summaryEl.textContent = data.summary;
-            listEl.innerHTML = data.items.map((item) => `
+            listEl.innerHTML = data.items.map((item, index) => `
                 <article class="metric-item">
                     <div class="metric-item-title">${item.title}</div>
                     <div class="metric-item-meta">${item.meta}</div>
@@ -1507,11 +1601,3 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
-
-
-
-

@@ -25,6 +25,7 @@
       "url": "https://nextscout.pro/player-profile.html"
     }
     </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -33,7 +34,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f3f4f6;
             color: #1f2937;
         }
@@ -53,6 +54,33 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 16px;
+        }
+
+        .nav-copy {
+            display: grid;
+            gap: 6px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+            flex-wrap: wrap;
+        }
+
+        .nav-title {
+            margin: 0;
+            font-size: 30px;
+            font-weight: 800;
+            color: #f5fbff;
+        }
+
+        .nav-sub {
+            margin: 0;
+            color: #9bb5cb;
+            font-size: 14px;
         }
 
         .back-btn {
@@ -71,15 +99,6 @@
         .back-btn:hover {
             background: #667eea;
             color: white;
-        }
-
-        .logo {
-            font-size: 18px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
         .container {
@@ -491,39 +510,74 @@
         }
 
         .header-nav {
-            background: rgba(31, 37, 45, 0.92);
-            border-bottom: 1px solid #334155;
-            backdrop-filter: blur(8px);
+            max-width: 1200px;
+            margin: 22px auto 12px;
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border: 1px solid #2b4660;
+            border-radius: 22px;
+            box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+            position: relative;
+            overflow: hidden;
+            padding: 24px;
         }
 
-        .logo {
-            background: none;
-            -webkit-text-fill-color: initial;
-            color: #bfdbfe;
+        .header-nav::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
         }
 
         .back-btn {
-            background: #2b3440;
-            color: #dbeafe;
-            border: 1px solid #475569;
+            display: inline-block;
+            padding: 10px 14px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 13px;
+            line-height: 1;
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+            color: #16325c;
+            border: 1px solid rgba(255, 126, 34, 0.45);
+            border-radius: 12px;
+            box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24);
         }
 
         .back-btn:hover {
-            background: #334155;
-            color: #ffffff;
-            border-color: #60a5fa;
+            background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(219,234,254,0.95) 100%);
+            color: #16325c;
+            border-color: rgba(255, 126, 34, 0.75);
+            transform: translateY(-1px);
+        }
+
+        .home-btn {
+            background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+            border-color: rgba(255, 126, 34, 0.6);
+            color: #fff;
+            box-shadow: 0 16px 28px rgba(255,90,31,0.28);
         }
 
         .hero-section {
-            background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
-            box-shadow: 0 20px 50px rgba(2, 6, 23, 0.35);
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border: 1px solid #2b4660;
+            box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
         }
 
         .section-title,
         .card-title,
         .video-title,
         .achievement-title {
-            color: #e2e8f0;
+            color: #f5fbff;
         }
 
         .card,
@@ -531,48 +585,66 @@
         .gallery-item,
         .tab-panel,
         .transfer-table {
-            background: #232a33;
-            border: 1px solid #334155;
-            box-shadow: 0 10px 24px rgba(2, 6, 23, 0.26);
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border: 1px solid #2b4660;
+            box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28);
         }
 
         .achievement-item,
         .stats-item {
-            background: #2b3440;
-            border-color: #60a5fa;
+            background: rgba(255, 255, 255, 0.04);
+            border-color: #2b4660;
         }
 
         .achievement-text,
         .bio-text,
         .stats-label {
-            color: #94a3b8;
+            color: #9bb5cb;
         }
 
         .data-meta {
-            color: #cbd5e1;
-            background: #2b3440;
-            border: 1px solid #475569;
+            color: #dbeafe;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid #2b4660;
         }
 
         .profile-tab {
-            border: 1px solid #475569;
-            background: #2b3440;
-            color: #e2e8f0;
+            border: 1px solid rgba(255, 126, 34, 0.32);
+            background: rgba(255, 255, 255, 0.04);
+            color: #dbeafe;
         }
 
         .profile-tab.active {
-            background: #1d4ed8;
-            border-color: #1d4ed8;
+            background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+            border-color: rgba(255, 126, 34, 0.6);
             color: #fff;
         }
 
         .transfer-table th, .transfer-table td {
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid #2b4660;
             color: #e2e8f0;
         }
 
         .video-link {
-            color: #93c5fd;
+            color: #8fd3ff;
+        }
+
+        .gallery-item:hover,
+        .video-card:hover,
+        .stats-item:hover {
+            box-shadow: 0 18px 34px rgba(8, 19, 29, 0.34);
+        }
+
+        .btn-primary,
+        .play-btn {
+            background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: #f5fbff;
+            border-color: rgba(96, 165, 250, 0.3);
         }
 
         @media (max-width: 1024px) {
@@ -592,23 +664,32 @@
 
         @media (max-width: 768px) {
             .header-nav {
-                padding: 10px 12px;
+                margin: 10px 12px 12px;
+                padding: 16px 14px;
+                border-radius: 14px;
             }
 
             .nav-content {
                 display: grid;
-                grid-template-columns: 1fr auto auto;
+                grid-template-columns: 1fr;
                 gap: 8px;
-                align-items: center;
+                align-items: flex-start;
             }
 
-            .logo {
-                font-size: 16px;
+            .nav-title {
+                font-size: 24px;
+            }
+
+            .nav-actions {
+                width: 100%;
+                margin-left: 0;
             }
 
             .back-btn {
                 padding: 8px 10px;
                 font-size: 12px;
+                width: 100%;
+                text-align: center;
             }
 
             .container {
@@ -687,9 +768,14 @@
     <!-- HEADER NAV -->
     <div class="header-nav">
         <div class="nav-content">
-            <a href="player-dashboard.html" class="back-btn">? DASHBOARD</a>
-            <div class="logo">Scout Platform</div>
-            <button class="back-btn" onclick="logoutFromProfile()">�ikis</button>
+            <div class="nav-copy">
+                <h1 class="nav-title">Oyuncu Profili</h1>
+                <p class="nav-sub">Profil detaylarini incele, istatistikleri takip et ve oyuncu vitrinini yonet.</p>
+            </div>
+            <div class="nav-actions">
+                <a href="index.html" class="back-btn home-btn">Ana Sayfa</a>
+                <a href="player-dashboard.html" class="back-btn">DASHBOARD</a>
+            </div>
         </div>
     </div>
 
@@ -704,8 +790,8 @@
                 <div class="hero-position" id="playerPosition">Forvet</div>
                 <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
                     <span id="contractStatusBadge" style="background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.3); padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700;">Sozlesmeli</span>
-                    <span id="seekingClubBadge" style="background:rgba(16,185,129,.2); border:1px solid rgba(16,185,129,.45); padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700;">KUL�P Aramiyor</span>
-                    <span id="currentClubBadge" style="background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700;">KUL�P: -</span>
+                    <span id="seekingClubBadge" style="background:rgba(16,185,129,.2); border:1px solid rgba(16,185,129,.45); padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700;">KULUP Aramiyor</span>
+                    <span id="currentClubBadge" style="background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700;">KULUP: -</span>
                 </div>
 
                 <div class="hero-stats">
@@ -729,77 +815,77 @@
                 </div>
 
                 <div class="hero-actions" id="profileHeroActions" style="margin-top: 20px;">
-                    <button class="btn btn-primary" id="profileMessageBtn" onclick="sendMessageToProfile()">Mesaj G�nder</button>
-                    <button class="btn btn-secondary" id="profileFavoriteBtn" onclick="addProfileToFavorites()">? Favori Ekle</button>
+                    <button class="btn btn-primary" id="profileMessageBtn" onclick="sendMessageToProfile()">Mesaj Gonder</button>
+                    <button class="btn btn-secondary" id="profileFavoriteBtn" onclick="addProfileToFavorites()">Favori Ekle</button>
                 </div>
             </div>
         </div>
 
-        <div class="data-meta" id="playerDataMeta">Kaynak: Sistem � Son g�ncelleme: -</div>
+        <div class="data-meta" id="playerDataMeta">Kaynak: Sistem - Son guncelleme: -</div>
         <div class="data-meta" id="playerQualityMeta" style="opacity:.75;">Veri Kalitesi: -</div>
         <div class="profile-tabs" id="profileTabs">
             <button class="profile-tab active" data-tab="overview" type="button">Genel</button>
             <button class="profile-tab" data-tab="media" type="button">Medya</button>
-            <button class="profile-tab" data-tab="transfer" type="button">Transfer Ge�misi</button>
-            <button class="profile-tab" data-tab="contract" type="button">S�zlesme</button>
+            <button class="profile-tab" data-tab="transfer" type="button">Transfer Gecmisi</button>
+            <button class="profile-tab" data-tab="contract" type="button">Sozlesme</button>
             <button class="profile-tab" data-tab="notes" type="button">Scout Notlari</button>
         </div>
 
         <section class="tab-panel active" data-tab-panel="overview">
             <div class="details-grid">
                 <div class="card">
-                    <h3 class="card-title">g??? Hakkinda</h3>
+                    <h3 class="card-title">Hakkinda</h3>
                     <p class="bio-text" id="bioText">
-                        T�rkiye'nin en yetenekli forvet oyuncularindan biri. G��l� fizik yapisi, hizi ve gol yetenegi ile biliniyor.
+                        Turkiye'nin en yetenekli forvet oyuncularindan biri. Guclu fizik yapisi, hizi ve gol yetenegi ile biliniyor.
                     </p>
                 </div>
                 <div class="card" id="stats">
-                    <h3 class="card-title">g??? Istatistikler</h3>
+                    <h3 class="card-title">Istatistikler</h3>
                     <div class="stats-list">
-                        <div class="stats-item"><span class="stats-label">Oynanan Ma�lar</span><span class="stats-value" id="statMatches">28</span></div>
+                        <div class="stats-item"><span class="stats-label">Oynanan Maclar</span><span class="stats-value" id="statMatches">28</span></div>
                         <div class="stats-item"><span class="stats-label">Goller</span><span class="stats-value" id="statGoals">15</span></div>
                         <div class="stats-item"><span class="stats-label">Asistler</span><span class="stats-value" id="statAssists">6</span></div>
                     </div>
                 </div>
                 <div class="card" id="achievements">
-                    <h3 class="card-title">g??? Basarilar</h3>
+                    <h3 class="card-title">Basarilar</h3>
                     <div id="achievementList" style="display:grid;gap:10px;"></div>
                 </div>
                 <div class="card" id="profileContactCard">
-                    <h3 class="card-title">g??? Iletisim</h3>
+                    <h3 class="card-title">Iletisim</h3>
                     <div class="stats-list">
-                        <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;" onclick="sendMessageToProfile()">Mesaj G�nder</button>
-                        <button class="btn btn-secondary" style="width: 100%;" onclick="contactManagerFromProfile()">??? MENAJER ile G�r�s</button>
+                        <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;" onclick="sendMessageToProfile()">Mesaj Gonder</button>
+                        <button class="btn btn-secondary" style="width: 100%;" onclick="contactManagerFromProfile()">MENAJER ile Gorus</button>
                     </div>
                 </div>
             </div>
         </section>
 
         <section class="tab-panel" data-tab-panel="media">
-            <h2 class="section-title">g??? Foto Galerisi</h2>
+            <h2 class="section-title">Foto Galerisi</h2>
             <div class="gallery-grid" id="galleryGrid"></div>
-            <h2 class="section-title">g??? Video Portfolyo</h2>
+            <h2 class="section-title">Video Portfolyo</h2>
             <div class="videos-grid" id="videosGrid"></div>
         </section>
 
         <section class="tab-panel" data-tab-panel="transfer">
-            <h2 class="section-title">g??? Transfer Ge�misi</h2>
+            <h2 class="section-title">Transfer Gecmisi</h2>
             <table class="transfer-table">
-                <thead><tr><th>Sezon</th><th>KUL�P</th><th>Yeni KUL�P</th><th>Bedel</th></tr></thead>
+                <thead><tr><th>Sezon</th><th>KULUP</th><th>Yeni KULUP</th><th>Bedel</th></tr></thead>
                 <tbody id="transferHistoryBody"></tbody>
             </table>
-            <h2 class="section-title" style="margin-top:18px;">g??? Piyasa Degeri Tarihcesi</h2>
+            <h2 class="section-title" style="margin-top:18px;">Piyasa Degeri Tarihcesi</h2>
             <div class="card">
                 <div id="marketHistoryList" style="display:grid;gap:8px;"></div>
             </div>
-            <h2 class="section-title" style="margin-top:18px;">g??? Kariyer Akisi</h2>
+            <h2 class="section-title" style="margin-top:18px;">Kariyer Akisi</h2>
             <div class="card">
                 <div id="timelineList" style="display:grid;gap:8px;"></div>
             </div>
         </section>
 
         <section class="tab-panel" data-tab-panel="contract">
-            <h2 class="section-title">g??? S�zlesme</h2>
+            <h2 class="section-title">Sozlesme</h2>
             <div class="card">
                 <div class="stats-list">
                     <div class="stats-item"><span class="stats-label">Durum</span><span class="stats-value" id="contractStatusValue">Sozlesmeli</span></div>
@@ -810,7 +896,7 @@
         </section>
 
         <section class="tab-panel" data-tab-panel="notes">
-            <h2 class="section-title">g??? Scout Notlari</h2>
+            <h2 class="section-title">Scout Notlari</h2>
             <div class="card">
                 <div id="scoutNotesList" style="display:grid;gap:10px;"></div>
             </div>
@@ -957,7 +1043,7 @@
                 } catch (e) {}
             }
 
-            nsAlert(`Mesaj g�nderildi: ${target.name}`);
+            nsAlert(`Mesaj gonderildi: ${target.name}`);
         }
 
         function addProfileToFavorites() {
@@ -987,7 +1073,7 @@
             localStorage.setItem('nextscout_favorite_players', JSON.stringify(favorites.slice(0, 500)));
 
             const btn = document.getElementById('profileFavoriteBtn');
-            if (btn) btn.textContent = '? Favorilere Eklendi';
+            if (btn) btn.textContent = 'Favorilere Eklendi';
             nsAlert('Favorilere eklendi.');
         }
 
@@ -1118,7 +1204,7 @@
             const meta = document.getElementById('playerDataMeta');
             const stamp = window.NextScoutData?.sourceStamp
                 ? window.NextScoutData.sourceStamp(sourceLabel || 'Sistem', new Date())
-                : `Kaynak: ${sourceLabel || 'Sistem'} � Son g�ncelleme: ${new Date().toLocaleString('tr-TR')}`;
+                : `Kaynak: ${sourceLabel || 'Sistem'} - Son guncelleme: ${new Date().toLocaleString('tr-TR')}`;
             if (meta) meta.textContent = stamp;
             const qualityMeta = document.getElementById('playerQualityMeta');
             if (qualityMeta) {
@@ -1129,14 +1215,14 @@
             const galleryGrid = document.getElementById('galleryGrid');
             const galleryItems = Array.isArray(data?.gallery) && data.gallery.length
                 ? data.gallery
-                : ['g???','g???','g???','g???'];
+                : ['Gorsel 1','Gorsel 2','Gorsel 3','Gorsel 4'];
             if (galleryGrid) {
                 galleryGrid.innerHTML = galleryItems.map((item) => {
                     const url = typeof item === 'string' ? item : (item?.url || '');
                     if (/^https?:/i.test(url) || /^data:image\//i.test(url)) {
                         return `<div class="gallery-item"><img src="${esc(url)}" alt="Oyuncu"></div>`;
                     }
-                    return `<div class="gallery-item"><div class="gallery-item-empty">${esc(url || 'g???')}</div></div>`;
+                    return `<div class="gallery-item"><div class="gallery-item-empty">${esc(url || 'Gorsel')}</div></div>`;
                 }).join('');
             }
 
@@ -1150,7 +1236,7 @@
                         <div class="video-thumbnail"><div class="play-btn">?</div></div>
                         <div class="video-info">
                             <div class="video-title">${esc(v?.title || 'Video')}</div>
-                            <a href="${esc(v?.url || '#')}" class="video-link" target="_blank" rel="noopener">Videoyu izle ?</a>
+                            <a href="${esc(v?.url || '#')}" class="video-link" target="_blank" rel="noopener">Videoyu izle</a>
                         </div>
                     </div>
                 `).join('');
@@ -1160,7 +1246,7 @@
             const transfers = Array.isArray(data?.transfers) && data.transfers.length
                 ? data.transfers
                 : [
-                    { season: '2025/26', from: 'Bakirkoy SK', to: 'Yeni KUL�P', fee: '�250K' },
+                    { season: '2025/26', from: 'Bakirkoy SK', to: 'Yeni KULUP', fee: 'EUR 250K' },
                     { season: '2024/25', from: 'Altyapi', to: 'Bakirkoy SK', fee: 'Bedelsiz' },
                 ];
             if (transferBody) {
@@ -1228,8 +1314,8 @@
                     setText('statGoals', data.goals || '15');
                     setText('statAssists', data.assists || '6');
                     setText('contractStatusBadge', data.contract_status === 'free' ? 'Bosta' : 'Sozlesmeli');
-                    setText('seekingClubBadge', data.seeking_club ? 'KUL�P Ariyor' : 'KUL�P Aramiyor');
-                    setText('currentClubBadge', `KUL�P: ${data.current_club || '-'}`);
+                    setText('seekingClubBadge', data.seeking_club ? 'KULUP Ariyor' : 'KULUP Aramiyor');
+                    setText('currentClubBadge', `KULUP: ${data.current_club || '-'}`);
                     renderAdvancedPanels(data, 'Local Profil');
                 } catch (e) {
                     console.error('Profile parse hatasi:', e);
@@ -1354,9 +1440,9 @@
             const position = card.position || profile.position || 'Oyuncu';
             const age = card.age || profile.age || '-';
             const height = card.height || (profile.height_cm ? profile.height_cm + 'cm' : '-');
-            const bio = profile.bio || 'Bu oyuncu hen�z hakkimda bilgisi eklemedi.';
+            const bio = profile.bio || 'Bu oyuncu henuz hakkimda bilgisi eklemedi.';
             const contractStatus = profile.contract_status === 'free' ? 'Bosta' : 'Sozlesmeli';
-            const seekingClub = profile.seeking_club ? 'KUL�P Ariyor' : 'KUL�P Aramiyor';
+            const seekingClub = profile.seeking_club ? 'KULUP Ariyor' : 'KULUP Aramiyor';
             const currentClub = profile.current_club || profile.club_name || '-';
 
             setText('playerName', user.name || 'Oyuncu');
@@ -1371,7 +1457,7 @@
             setText('statAssists', assists);
             setText('contractStatusBadge', contractStatus);
             setText('seekingClubBadge', seekingClub);
-            setText('currentClubBadge', `KUL�P: ${currentClub}`);
+            setText('currentClubBadge', `KULUP: ${currentClub}`);
 
             if (card.profile_photo_url) setHeroImage(card.profile_photo_url);
             renderAdvancedPanels({
@@ -1408,7 +1494,7 @@
                 const extras = await fetchSupplementaryData(userId);
                 renderPublicProfile(data.data, extras);
             } catch (e) {
-                console.error('Public profil y�klenemedi:', e);
+                console.error('Public profil yuklenemedi:', e);
                 renderLocalProfile();
             }
         }

@@ -19,54 +19,61 @@
     <meta name="twitter:description" content="NextScout scout watchlist sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
   <style>
-    :root { --bg:#1f252d; --card:#232a33; --line:#334155; --text:#e2e8f0; --muted:#94a3b8; --primary:#1d4ed8; --shadow:0 12px 28px rgba(2,6,23,.24); }
+    :root { --bg:#08131d; --card:#0f1f2e; --line:#2b4660; --text:#f5fbff; --muted:#9bb5cb; --primary:#ff7e22; --shadow:0 18px 36px rgba(8,19,29,.34); }
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family:Segoe UI,Arial,sans-serif;
+      font-family:Inter,Segoe UI,Arial,sans-serif;
       background:
-        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.12), transparent 34%),
-        radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.10), transparent 36%),
+        radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+        radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
         var(--bg);
       color:var(--text)
     }
     .wrap{max-width:1100px;margin:0 auto;padding:22px 16px}
-    .head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+    .head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:24px;position:relative;overflow:hidden}
+    .head::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,#ff5a1f 0%,#ff7e22 55%,#60a5fa 100%)}
     .title{margin:0;font-size:30px;font-weight:800}
     .sub{margin-top:6px;color:var(--muted);font-size:14px}
+    .header-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
     .btn{
-      border:1px solid #2563eb;
-      background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);
-      color:#fff;
+      border:1px solid rgba(255, 126, 34, 0.45);
+      background:linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+      color:#16325c;
       padding:10px 14px;
-      border-radius:10px;
+      border-radius:12px;
       text-decoration:none;
-      font-weight:700;
+      font-weight:800;
       font-size:13px;
-      cursor:pointer
+      cursor:pointer;
+      box-shadow:0 12px 24px rgba(8,19,29,.24)
     }
-    .table-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+    .home-btn{background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);border-color:rgba(255,126,34,.6);color:#fff;box-shadow:0 16px 28px rgba(255,90,31,.28)}
+    .table-wrap{background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;position:relative}
+    .table-wrap::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,#ff5a1f 0%,#ff7e22 55%,#60a5fa 100%)}
     table{width:100%;border-collapse:collapse}
     th,td{padding:12px;text-align:left;font-size:13px;border-bottom:1px solid #2f3a48}
-    th{background:#1f2937;color:#cbd5e1;font-size:12px;text-transform:uppercase;letter-spacing:.3px}
+    th{background:rgba(255,255,255,.04);color:#cbd5e1;font-size:12px;text-transform:uppercase;letter-spacing:.3px}
     td{color:#e2e8f0}
     .inline-btn{
-      border:1px solid #475569;
-      background:#1f2937;
+      border:1px solid rgba(96,165,250,.24);
+      background:rgba(255,255,255,.04);
       color:#dbeafe;
-      border-radius:8px;
+      border-radius:12px;
       padding:6px 10px;
       font-size:12px;
       font-weight:700;
       cursor:pointer
     }
-    .inline-btn:hover{border-color:#60a5fa;background:#334155;color:#fff}
+    .inline-btn:hover{border-color:#ff7e22;background:rgba(255,255,255,.06);color:#fff}
     .empty{padding:18px;color:var(--muted)}
     @media (max-width:840px){
       .wrap{padding:14px 10px}
-      .head{flex-direction:column;align-items:flex-start;gap:8px}
+      .head{flex-direction:column;align-items:flex-start;gap:8px;padding:16px 14px;border-radius:14px}
       .title{font-size:24px}
+      .header-actions{width:100%}
       .btn{width:100%;text-align:center}
       .table-wrap{padding:8px}
       table, thead, tbody, tr, td { display:block; width:100%; }
@@ -104,10 +111,13 @@
   <div class="wrap">
     <div class="head">
       <div>
-        <h1 class="title">Takip Listem</h1>
-        <div class="sub">Scout olarak izlemek istedigin oyuncular.</div>
+        <h1 class="title">Scout Watchlist</h1>
+        <div class="sub">Takip ettigin oyunculari tek panelde izle, profillerini ac ve listeni hizlica yonet.</div>
       </div>
-      <a class="btn" href="index.html">Ana Sayfa</a>
+      <div class="header-actions">
+        <a class="btn home-btn" href="index.html">Ana Sayfa</a>
+        <a class="btn" href="player-dashboard.html">Dashboard</a>
+      </div>
     </div>
 
     <div class="table-wrap">
@@ -248,8 +258,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
 
 
 

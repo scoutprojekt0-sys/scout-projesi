@@ -17,7 +17,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
   <meta name="theme-color" content="#4f46e5">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="assets/css/mobile-unified.css">
   <style>
@@ -140,6 +140,299 @@
     @media (max-width: 480px) {
       .navbar-right { grid-template-columns: repeat(2,minmax(0,1fr)); }
       .btn-small { font-size:11px; min-height:40px; }
+    }
+
+    :root {
+      --bg: #08131d;
+      --card: #0f1f2e;
+      --line: #2b4660;
+      --text: #f5fbff;
+      --muted: #9bb5cb;
+      --shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+      --cta: #ff5a1f;
+      --cta-2: #ff7e22;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+        radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    .top-navbar {
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+      box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+      backdrop-filter: blur(18px);
+      padding: 0 24px;
+    }
+
+    .logo {
+      font-family: 'Poppins', sans-serif;
+      font-size: 22px;
+      color: #bfdbfe;
+      letter-spacing: 0.2px;
+    }
+
+    .btn-small {
+      border-radius: 12px;
+      border: 1px solid rgba(255, 126, 34, 0.45);
+      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+      color: #16325c;
+      box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24);
+      font-weight: 800;
+    }
+
+    .btn-small.primary,
+    .btn-small.success,
+    .btn-small.home-btn-global {
+      background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
+      border-color: rgba(255, 126, 34, 0.6);
+      color: #fff;
+      box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28);
+    }
+
+    .btn-small.secondary {
+      background: rgba(59, 130, 246, 0.12);
+      color: #dbeafe;
+      border-color: rgba(96, 165, 250, 0.24);
+      box-shadow: none;
+    }
+
+    .main-container {
+      gap: 18px;
+      padding: 18px;
+      min-height: calc(100vh - 70px);
+    }
+
+    .sidebar,
+    .search-section,
+    .results-section,
+    .quick-report-section,
+    .stat-card,
+    .need-modal,
+    .quick-report-result {
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      color: var(--text);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sidebar,
+    .search-section,
+    .results-section,
+    .quick-report-section,
+    .need-modal {
+      border-radius: 18px;
+    }
+
+    .sidebar::before,
+    .search-section::before,
+    .results-section::before,
+    .quick-report-section::before,
+    .need-modal::before,
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+    }
+
+    .sidebar {
+      top: 88px;
+    }
+
+    .sidebar-title,
+    .stat-card-label,
+    .player-info-label,
+    .quick-report-result {
+      color: var(--muted);
+    }
+
+    .sidebar-item {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      color: #dbeafe;
+      border-radius: 12px;
+    }
+
+    .sidebar-item:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 126, 34, 0.42);
+    }
+
+    .sidebar-item.active {
+      background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
+      border-color: rgba(255, 126, 34, 0.6);
+      color: #fff;
+    }
+
+    .welcome-card {
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .welcome-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+    }
+
+    .welcome-card h1 {
+      font-size: clamp(24px, 3vw, 34px);
+      margin-bottom: 6px;
+    }
+
+    .welcome-card p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .stat-card {
+      border-radius: 16px;
+      padding: 18px;
+      border-top: 0;
+    }
+
+    .stat-card-value {
+      color: var(--text);
+    }
+
+    .form-group label,
+    .search-section h2,
+    .results-section h2,
+    .quick-report-section h2,
+    .need-modal-head h3,
+    .player-name,
+    .player-info-value {
+      color: var(--text) !important;
+    }
+
+    .form-group input,
+    .form-group select,
+    .need-modal-body input,
+    .need-modal-body textarea,
+    .need-modal-body select,
+    textarea,
+    #quickReportNote {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--line);
+      color: var(--text);
+      border-radius: 12px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .need-modal-body input:focus,
+    .need-modal-body textarea:focus,
+    .need-modal-body select:focus,
+    textarea:focus,
+    #quickReportNote:focus {
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.18);
+    }
+
+    .search-btn,
+    .action-btn.primary {
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
+      color: #fff;
+      border: 1px solid rgba(255, 126, 34, 0.45);
+      box-shadow: 0 16px 28px rgba(255, 90, 31, 0.22);
+    }
+
+    .action-btn,
+    .quick-report-result,
+    .player-rating {
+      border-radius: 12px;
+    }
+
+    .action-btn {
+      border: 1px solid rgba(96, 165, 250, 0.24);
+      background: rgba(59, 130, 246, 0.12);
+      color: #dbeafe;
+    }
+
+    .player-card {
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .player-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+    }
+
+    .player-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 126, 34, 0.42);
+      box-shadow: 0 18px 34px rgba(8, 19, 29, 0.34);
+    }
+
+    .player-card-image {
+      background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 100%);
+    }
+
+    .player-position,
+    .rating-value {
+      color: #9ec5ff;
+    }
+
+    .player-rating {
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(96, 165, 250, 0.24);
+    }
+
+    .need-modal-overlay {
+      background: rgba(2, 6, 23, 0.78);
+      backdrop-filter: blur(10px);
+    }
+
+    .need-modal-head {
+      border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+      padding: 16px 18px 12px;
+    }
+
+    @media (max-width: 768px) {
+      .top-navbar {
+        padding: 10px 12px;
+      }
+
+      .main-container {
+        padding: 12px;
+        gap: 12px;
+      }
+
+      .sidebar,
+      .search-section,
+      .results-section,
+      .quick-report-section,
+      .welcome-card {
+        border-radius: 14px;
+      }
+
+      .need-modal {
+        border-radius: 14px 14px 0 0;
+      }
     }
   </style>
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
@@ -793,11 +1086,11 @@
       const root = document.getElementById('quickReportResult');
 
       if (!title) {
-        if (root) root.textContent = 'Baslik zorunlu.';
+        if (root) root.textContent = 'Başlık zorunlu.';
         return;
       }
       if (!rating || rating < 1 || rating > 100) {
-        if (root) root.textContent = 'Puan 1-100 arasi olmali.';
+        if (root) root.textContent = 'Puan 1-100 arası olmalı.';
         return;
       }
 
@@ -858,7 +1151,7 @@
       if (!root) return;
       const first = getQuickScoutReports()[0];
       if (!first) {
-        root.textContent = 'Henuz rapor kaydi yok.';
+        root.textContent = 'Henüz rapor kaydı yok.';
         return;
       }
       root.textContent = `Son rapor: ${first.title} • ${first.overall_rating}/100`;
@@ -1061,7 +1354,64 @@
         });
     });
 
+    function applyTurkishTextFixes() {
+      const replacements = new Map([
+        ['Ä°lan Ver', 'İlan Ver'],
+        ['Deneme/Idman Ilani', 'Deneme/İdman İlanı'],
+        ['CanlÄ± Scout Baslat', 'Canlı Scout Başlat'],
+        ['Ã‡Ä±kÄ±ÅŸ', 'Çıkış'],
+        ['Deneme & Idmanlar', 'Deneme & İdmanlar'],
+        ['CanlÄ± Scout', 'Canlı Scout'],
+        ['Mesajlarim', 'Mesajlarım'],
+        ['Yardim', 'Yardım'],
+        ['Henuz rapor kaydi yok.', 'Henüz rapor kaydı yok.'],
+        ['Mac Sonu Anlik Rapor', 'Maç Sonu Anlık Rapor'],
+        ['Mac Basligi', 'Maç Başlığı'],
+        ['Tumu', 'Tümü'],
+        ['Yas Araligi', 'Yaş Aralığı'],
+        ['ANTRENÃ–R Ilani Ver', 'Antrenör İlanı Ver'],
+        ['Baslik (or: U19 icin hizli sol kanat araniyor)', 'Başlık (ör: U19 için hızlı sol kanat aranıyor)'],
+        ['Ne aradigini yaz... (pozisyon, yas, fizik, oyun tarzi vb.)', 'Ne aradığını yaz... (pozisyon, yaş, fizik, oyun tarzı vb.)'],
+        ['Iptal', 'İptal'],
+        ['Oyuncu Adi', 'Oyuncu Adı'],
+        ['Oyuncu adi gir', 'Oyuncu adı gir'],
+        ['SÄ±fÄ±rla', 'Sıfırla'],
+        ['Mac adi (or: U19 Hazirlik Maci)', 'Maç adı (ör: U19 Hazırlık Maçı)'],
+        ['Ana yayÄ±n linki (opsiyonel)', 'Ana yayın linki (opsiyonel)'],
+        ['Kisa not (opsiyonel): Bu oyuncu hizli gecislerde etkili.', 'Kısa not (opsiyonel): Bu oyuncu hızlı geçişlerde etkili.'],
+        ['Yayini Baslat', 'Yayını Başlat'],
+        ['Deneme / Idman Ilani', 'Deneme / İdman İlanı'],
+        ['Idman', 'İdman'],
+        ['Deneme Maci', 'Deneme Maçı'],
+        ['Baslik (or: U19 Acik Deneme)', 'Başlık (ör: U19 Açık Deneme)'],
+        ['Sehir', 'Şehir'],
+        ['Yayina Al', 'Yayına Al'],
+        ['Yas', 'Yaş']
+      ]);
+
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      const textNodes = [];
+      while (walker.nextNode()) textNodes.push(walker.currentNode);
+      textNodes.forEach((node) => {
+        let value = node.nodeValue;
+        if (!value || !value.trim()) return;
+        replacements.forEach((next, prev) => {
+          if (value.includes(prev)) value = value.split(prev).join(next);
+        });
+        node.nodeValue = value;
+      });
+
+      document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach((el) => {
+        let value = el.getAttribute('placeholder') || '';
+        replacements.forEach((next, prev) => {
+          if (value.includes(prev)) value = value.split(prev).join(next);
+        });
+        el.setAttribute('placeholder', value);
+      });
+    }
+
     async function init() {
+      applyTurkishTextFixes();
       const grid = document.getElementById('playersGrid');
       grid.innerHTML = '<div style="padding:18px;border:1px solid #475569;border-radius:10px;background:#1f2937;color:#cbd5e1;">Oyuncular yukleniyor...</div>';
 

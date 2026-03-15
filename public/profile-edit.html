@@ -19,6 +19,7 @@
     <meta name="twitter:description" content="NextScout profile edit sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -569,6 +570,214 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        :root {
+            --bg: #08131d;
+            --card: #0f1f2e;
+            --line: #2b4660;
+            --text: #f5fbff;
+            --muted: #9bb5cb;
+            --shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            background:
+                radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+                radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+                var(--bg);
+            color: var(--text);
+        }
+
+        .header {
+            background: transparent;
+            border-bottom: 0;
+            box-shadow: none;
+            padding: 22px 16px 0;
+            position: static;
+        }
+
+        .header-content {
+            max-width: 1100px;
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            box-shadow: var(--shadow);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-content::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
+        }
+
+        .header-copy h1 {
+            margin: 0;
+            font-size: 30px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .header-subtitle {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .btn {
+            border: 1px solid rgba(255, 126, 34, 0.45);
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+            color: #16325c;
+            padding: 10px 14px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 13px;
+            box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24);
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+            border-color: rgba(255, 126, 34, 0.6);
+            color: #fff;
+            box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28);
+        }
+
+        .btn-cancel {
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+            color: #16325c;
+            border: 1px solid rgba(255, 126, 34, 0.45);
+        }
+
+        .container {
+            max-width: 1100px;
+            padding: 18px 16px 28px;
+        }
+
+        .profile-photo-section,
+        .form-section,
+        .gallery-section,
+        .videos-section,
+        .stats-section {
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            color: var(--text);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-photo-section::before,
+        .form-section::before,
+        .gallery-section::before,
+        .videos-section::before,
+        .stats-section::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
+        }
+
+        .section-title,
+        .form-group label,
+        .stat-input label,
+        .video-title {
+            color: var(--text);
+        }
+
+        .upload-zone,
+        .gallery-item,
+        .video-item,
+        .stat-input {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: var(--line);
+            color: var(--text);
+        }
+
+        .upload-text,
+        .upload-subtext,
+        .video-url {
+            color: var(--muted);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea,
+        .add-video-form input,
+        .stat-input input {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--line);
+            color: var(--text);
+            border-radius: 12px;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder,
+        .add-video-form input::placeholder {
+            color: var(--muted);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus,
+        .add-video-form input:focus,
+        .stat-input input:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.18);
+        }
+
+        .photo-preview {
+            background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 100%);
+        }
+
+        .add-video-btn,
+        .remove-btn {
+            border: 1px solid rgba(255, 126, 34, 0.45);
+            background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+            color: #fff;
+            border-radius: 12px;
+            font-weight: 800;
+            box-shadow: 0 16px 28px rgba(255, 90, 31, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 14px 10px 0;
+            }
+
+            .header-content {
+                padding: 16px 14px;
+                border-radius: 14px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .header-copy h1 {
+                font-size: 24px;
+            }
+
+            .header-buttons {
+                width: 100%;
+                grid-template-columns: 1fr;
+            }
+
+            .header-buttons .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .container {
+                padding: 14px 10px 24px;
+            }
+        }
     </style>
     <link rel="stylesheet" href="assets/css/mobile-unified.css">
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
@@ -577,9 +786,12 @@
     <!-- HEADER -->
     <div class="header">
         <div class="header-content">
-            <h1>Profili Düzenle</h1>
+            <div class="header-copy">
+                <h1>Profili Düzenle</h1>
+                <div class="header-subtitle">Profil bilgilerini, vitrin gorsellerini ve video portfolyonu tek panelden guncelle.</div>
+            </div>
             <div class="header-buttons">
-                <a href="player-dashboard.html" class="btn btn-cancel">Geri Don</a>
+                <a href="player-dashboard.html" class="btn btn-cancel">Dashboard</a>
                 <button class="btn btn-save" onclick="saveProfile()">Kaydet</button>
             </div>
         </div>
@@ -1008,8 +1220,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
 
 
 
