@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Açık Fırsatlar | NextScout</title>
+  <meta name="description" content="Açık fırsatlar için uygun oyuncu havuzu.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{
+      --bg:#050816;
+      --bg-2:#0b1533;
+      --panel:rgba(15,23,49,.9);
+      --panel-2:rgba(24,34,70,.88);
+      --line:rgba(96,165,250,.24);
+      --line-strong:rgba(96,165,250,.52);
+      --text:#e5eefc;
+      --muted:#9fb3d9;
+      --accent:#ff5a1f;
+      --accent-2:#ff7e22;
+      --glow:0 20px 52px rgba(7,12,30,.46);
+    }
+    *{box-sizing:border-box}
+    html{
+      min-height:100%;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,.24), transparent 28%),
+        radial-gradient(circle at top right, rgba(14,165,233,.18), transparent 24%),
+        linear-gradient(180deg, #060914 0%, var(--bg-2) 46%, var(--bg) 100%);
+    }
+    body{
+      min-height:100vh;
+      margin:0;
+      color:var(--text);
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      background:transparent;
+    }
+    .page{max-width:1240px;margin:0 auto;padding:28px 18px 42px}
+    .hero,
+    .stat,
+    .toolbar,
+    .card,
+    .empty{
+      background:linear-gradient(180deg, var(--panel-2), var(--panel));
+      border:1px solid var(--line);
+      box-shadow:var(--glow);
+    }
+    .hero,
+    .card{
+      position:relative;
+      overflow:hidden;
+    }
+    .hero::before,
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:0 0 auto 0;
+      height:4px;
+      background:linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 55%, #60a5fa 100%);
+    }
+    .hero{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      padding:24px;
+      border-radius:22px;
+      margin-top:16px;
+      margin-bottom:18px;
+    }
+    .eyebrow{
+      margin:0 0 8px;
+      font-size:12px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color:#ffb58f;
+      font-weight:800;
+    }
+    h1{
+      margin:0;
+      color:#f8fbff;
+      font:800 30px/1.12 Poppins,Inter,Segoe UI,sans-serif;
+    }
+    .sub{
+      margin-top:6px;
+      color:#9bb5cb;
+      font-size:14px;
+      line-height:1.6;
+      max-width:760px;
+    }
+    .hero-actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      border:1px solid rgba(255,126,34,.45);
+      background:linear-gradient(180deg, rgba(255,255,255,.95) 0%, rgba(219,234,254,.92) 100%);
+      color:#16325c;
+      padding:10px 16px;
+      border-radius:12px;
+      text-decoration:none;
+      font-weight:800;
+      font-size:13px;
+      box-shadow:0 12px 24px rgba(8,19,29,.24);
+      transition:transform .18s ease, box-shadow .18s ease, filter .18s ease;
+    }
+    .btn:hover{transform:translateY(-1px);box-shadow:0 16px 28px rgba(8,19,29,.3);filter:saturate(1.05)}
+    .btn.primary{
+      background:linear-gradient(135deg,var(--accent) 0%,var(--accent-2) 100%);
+      border-color:rgba(255,126,34,.6);
+      color:#fff;
+      box-shadow:0 16px 28px rgba(255,90,31,.28);
+    }
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:16px;
+      margin-top:16px;
+    }
+    .stat{
+      border-radius:22px;
+      padding:16px;
+    }
+    .stat .k{
+      font-size:11px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+    .stat .v{
+      margin-top:8px;
+      font-size:24px;
+      font-weight:800;
+      color:#f8fbff;
+    }
+    .toolbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      margin-top:18px;
+      padding:16px 18px;
+      border-radius:22px;
+    }
+    .toolbar strong{font-size:15px;color:#f8fbff}
+    .toolbar span{color:var(--muted);font-size:13px}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:18px;
+      margin-top:18px;
+    }
+    .card{
+      border-radius:22px;
+      padding:18px;
+    }
+    .card-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    .name{font-size:22px;font-weight:800;color:#f8fbff}
+    .meta{margin-top:4px;color:var(--muted);font-size:13px}
+    .badge{
+      display:inline-flex;align-items:center;justify-content:center;
+      min-width:54px;padding:7px 10px;border-radius:999px;
+      background:rgba(59,130,246,.12);
+      color:#dbeafe;
+      border:1px solid rgba(96,165,250,.24);
+      font-size:12px;font-weight:800;
+    }
+    .about{
+      margin-top:14px;
+      color:#d6e3f6;
+      font-size:14px;
+      line-height:1.6;
+      min-height:68px;
+    }
+    .row{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+      margin-top:14px;
+    }
+    .cell{
+      border:1px solid rgba(96,165,250,.18);
+      background:rgba(9,14,30,.9);
+      border-radius:14px;
+      padding:10px;
+    }
+    .cell .k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+    .cell .v{margin-top:6px;font-size:15px;font-weight:700;color:#f8fbff}
+    .card-actions{display:flex;gap:10px;margin-top:16px}
+    .card-actions .btn{flex:1}
+    .empty{
+      margin-top:18px;
+      padding:28px;
+      border-radius:22px;
+      text-align:center;
+      color:var(--muted);
+    }
+    @media (max-width:1024px){
+      .stats,.grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width:840px){
+      .hero{flex-direction:column;align-items:flex-start;padding:16px 14px;border-radius:14px}
+      h1{font-size:24px}
+      .hero-actions{width:100%}
+      .hero-actions .btn{width:100%}
+      .stats,.grid,.row{grid-template-columns:1fr}
+      .toolbar{flex-direction:column;align-items:flex-start;border-radius:16px}
+      .card,.stat,.empty{border-radius:16px}
+      .card-actions{flex-direction:column}
+    }
+
+    .hero,
+    .stat,
+    .toolbar,
+    .card,
+    .empty,
+    .btn,
+    .badge,
+    .cell,
+    .card-actions .btn {
+      border-radius: 0 !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <div>
+        <p class="eyebrow" id="pageEyebrow">Açık Fırsatlar</p>
+        <h1 id="pageTitle">Uygun Oyuncu Fırsatları</h1>
+        <div class="sub" id="pageSub">Bugün en çok aranan pozisyona göre uygun oyuncu havuzunu inceleyin.</div>
+      </div>
+      <div class="hero-actions">
+        <a href="index.html" class="btn primary"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
+        <a href="player-dashboard.html" class="btn" id="dashboardBtn"><i class="fas fa-table-columns"></i><span>Dashboard</span></a>
+      </div>
+    </section>
+
+    <section class="stats">
+      <article class="stat"><div class="k">Pozisyon</div><div class="v" id="statPosition">-</div></article>
+      <article class="stat"><div class="k">Bulunan Profil</div><div class="v" id="statCount">0</div></article>
+      <article class="stat"><div class="k">Boşta Oyuncu</div><div class="v" id="statFree">0</div></article>
+      <article class="stat"><div class="k">Yeni Eşleşme</div><div class="v" id="statNew">0</div></article>
+    </section>
+
+    <section class="toolbar">
+      <div>
+        <strong id="toolbarTitle">Fırsat Listesi</strong>
+        <div><span id="toolbarSub">Bugün için uygun oyuncu listesi hazırlanıyor.</span></div>
+      </div>
+    </section>
+
+    <section class="grid" id="playerGrid"></section>
+    <div class="empty" id="emptyState" style="display:none;">Bu filtre için gösterilecek oyuncu bulunamadı.</div>
+  </div>
+
+  <script>
+    function getApiBaseUrl() {
+      if (window.location.protocol !== 'file:') return window.location.origin + '/api';
+      const params = new URLSearchParams(window.location.search);
+      return params.get('api_base') || 'http://127.0.0.1:8000/api';
+    }
+
+    const API_BASE_URL = getApiBaseUrl();
+
+    function resolveDashboardByRole() {
+      try {
+        const raw = localStorage.getItem('nextscout_user');
+        const user = raw ? JSON.parse(raw) : null;
+        const role = String(user?.role || localStorage.getItem('nextscout_user_role') || '').toLowerCase();
+        if (role === 'manager') return 'manager-dashboard.html';
+        if (role === 'team' || role === 'club') return 'team-dashboard.html';
+        if (role === 'scout' || role === 'coach') return 'coach-dashboard.html';
+      } catch (error) {}
+      return 'player-dashboard.html';
+    }
+
+    function normalizeTransferCategory(value) {
+      const raw = (value || '').toString().trim().toLowerCase();
+      if (['free', 'bosta', 'boşta', 'free-agent'].includes(raw)) return 'free';
+      if (['contracted', 'sozlesmeli', 'sözleşmeli'].includes(raw)) return 'contracted';
+      if (['seeking-club', 'kulup-ariyor', 'kulüp-arıyor', 'kulup ariyor'].includes(raw)) return 'seeking-club';
+      return raw;
+    }
+
+    function normalizePosition(value) {
+      const raw = (value || '').toString().trim();
+      if (!raw) return '';
+      const compact = raw.toLocaleLowerCase('tr-TR').replace(/\s+/g, ' ').replace(/[._-]+/g, ' ').trim();
+      if (/stoper|center back|centre back|cb/.test(compact)) return 'Stoper';
+      if (/kaleci|goalkeeper|gk/.test(compact)) return 'Kaleci';
+      if (/bek|right back|left back|full back|wing back/.test(compact)) return 'Bek';
+      if (/orta saha|midfield|cm|dm|am|10 numara|6 numara|8 numara/.test(compact)) return 'Orta Saha';
+      if (/kanat|winger|wing/.test(compact)) return 'Kanat';
+      if (/forvet|santrafor|forward|striker|fw|cf/.test(compact)) return 'Forvet';
+      return raw.charAt(0).toUpperCase() + raw.slice(1);
+    }
+
+    async function fetchJsonSafe(url) {
+      try {
+        const res = await fetch(url, { headers: { Accept: 'application/json' } });
+        if (!res.ok) return null;
+        return await res.json();
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function toArray(input) {
+      return Array.isArray(input) ? input : [];
+    }
+
+    function escapeHtml(value) {
+      return (value || '').toString()
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function renderCards(players, selectedPosition) {
+      const grid = document.getElementById('playerGrid');
+      const empty = document.getElementById('emptyState');
+      if (!grid || !empty) return;
+
+      if (!players.length) {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+      grid.innerHTML = players.map((row) => {
+        const id = row?.id || '';
+        const name = escapeHtml(row?.name || 'Oyuncu');
+        const position = escapeHtml(normalizePosition(row?.position || row?.primary_position || row?.role) || selectedPosition || '-');
+        const city = escapeHtml(row?.city || 'Konum yok');
+        const age = escapeHtml(row?.age || '-');
+        const status = normalizeTransferCategory(row?.transfer_category || row?.contract_status || row?.status) === 'free' ? 'Boşta' : 'Hazır';
+        const summary = escapeHtml(row?.bio || row?.summary || 'Bugün için öne çıkan uygun oyuncu profili.');
+        const profileHref = id ? `player-profile.html?user_id=${encodeURIComponent(id)}` : `professional-players.html?q=${encodeURIComponent(row?.name || '')}`;
+        return `<article class="card">
+          <div class="card-top">
+            <div>
+              <div class="name">${name}</div>
+              <div class="meta">${position} • ${city}</div>
+            </div>
+            <div class="badge">${status}</div>
+          </div>
+          <div class="about">${summary}</div>
+          <div class="row">
+            <div class="cell"><div class="k">Yaş</div><div class="v">${age}</div></div>
+            <div class="cell"><div class="k">Pozisyon</div><div class="v">${position}</div></div>
+            <div class="cell"><div class="k">Durum</div><div class="v">${status}</div></div>
+          </div>
+          <div class="card-actions">
+            <a class="btn primary" href="${profileHref}"><i class="fas fa-user"></i><span>Profili Aç</span></a>
+            <a class="btn" href="professional-players.html?q=${encodeURIComponent(row?.name || '')}"><i class="fas fa-magnifying-glass"></i><span>Listede Gör</span></a>
+          </div>
+        </article>`;
+      }).join('');
+    }
+
+    async function initPage() {
+      document.getElementById('dashboardBtn').href = resolveDashboardByRole();
+
+      const params = new URLSearchParams(window.location.search);
+      const selectedPosition = normalizePosition(params.get('position') || '');
+      const eyebrow = document.getElementById('pageEyebrow');
+      const title = document.getElementById('pageTitle');
+      const sub = document.getElementById('pageSub');
+      const toolbarTitle = document.getElementById('toolbarTitle');
+      const toolbarSub = document.getElementById('toolbarSub');
+      const statPosition = document.getElementById('statPosition');
+      const statCount = document.getElementById('statCount');
+      const statFree = document.getElementById('statFree');
+      const statNew = document.getElementById('statNew');
+
+      if (selectedPosition) {
+        if (eyebrow) eyebrow.textContent = `${selectedPosition} Havuzu`;
+        title.textContent = `${selectedPosition} İçin Uygun Oyuncular`;
+        sub.textContent = `Bugün en çok aranan ${selectedPosition.toLocaleLowerCase('tr-TR')} profillerini tek ekranda inceleyin.`;
+        toolbarTitle.textContent = `${selectedPosition} Oyuncu Havuzu`;
+      }
+
+      const payload = await fetchJsonSafe(`${API_BASE_URL}/public/players?limit=1000`);
+      const rows = toArray(payload?.data ?? payload).filter((row) => row && typeof row === 'object');
+
+      let filtered = rows;
+      if (selectedPosition) {
+        filtered = rows.filter((row) => normalizePosition(row?.position || row?.primary_position || row?.role) === selectedPosition);
+      }
+
+      const freeCount = filtered.filter((row) => normalizeTransferCategory(row?.transfer_category || row?.contract_status || row?.status) === 'free').length;
+      const newCount = filtered.filter((row) => row?.radar_new === true || row?.radar_new === 1 || String(row?.scout_radar || '').toLowerCase() === 'new').length;
+      const finalRows = filtered.slice(0, 12);
+
+      statPosition.textContent = selectedPosition || 'Tümü';
+      statCount.textContent = String(filtered.length || finalRows.length || 0);
+      statFree.textContent = String(freeCount || 0);
+      statNew.textContent = String(newCount || 0);
+      toolbarSub.textContent = filtered.length
+        ? `Bugün uygun görülen ${filtered.length} oyuncu içinden öne çıkan profiller listeleniyor.`
+        : 'Bu filtre için uygun oyuncu bulunamadı.';
+
+      renderCards(finalRows, selectedPosition);
+    }
+
+    initPage();
+  </script>
+</body>
+</html>

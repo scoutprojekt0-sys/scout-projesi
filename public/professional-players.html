@@ -19,17 +19,52 @@
     <meta name="twitter:description" content="Pozisyon, yaş, form ve performans filtreleri ile profesyonel oyuncu arama deneyimi.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-players.jpg">
   <meta name="theme-color" content="#0B3B8A">
+  <script>
+    (function () {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const normalize = (value) => (value || '').toString().trim().toLowerCase();
+        const rawTransfer = normalize(params.get('transfer_category'));
+        const rawRadar = normalize(params.get('scout_radar'));
+        const rawView = normalize(params.get('player_view'));
+
+        let transfer = '';
+        if (['contracted', 'sozlesmeli', 'sözleşmeli'].includes(rawTransfer)) transfer = 'contracted';
+        else if (['free', 'bosta', 'boşta'].includes(rawTransfer)) transfer = 'free';
+        else if (['seeking-club', 'kulup-ariyor', 'kulüp-arıyor', 'seeking'].includes(rawTransfer)) transfer = 'seeking';
+
+        let radar = '';
+        if (['new', 'yeni-eslesenler', 'yeni-eşleşenler'].includes(rawRadar)) radar = 'new';
+        else if (['rising', 'yukselenler', 'yükselenler'].includes(rawRadar)) radar = 'rising';
+        else if (['hidden', 'gizli-yetenek', 'gizli-yetenekler'].includes(rawRadar)) radar = 'hidden';
+
+        const playerView = ['discover', 'kesfet', 'for-you'].includes(rawView) ? 'discover' : '';
+
+        document.documentElement.dataset.transferCategory = transfer;
+        document.documentElement.dataset.scoutRadar = radar;
+        document.documentElement.dataset.playerView = playerView;
+        document.documentElement.classList.toggle('pre-hide-topbar', transfer === 'free' || radar === 'new');
+      } catch (error) {}
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html.pre-hide-topbar .topbar {
+      display: none !important;
+    }
     
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #F8FAFC;
-      color: #1F2937;
+      background:
+        radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+        radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+        #08131d;
+      color: #f5fbff;
       min-height: 100vh;
       padding: 24px;
     }
@@ -41,14 +76,14 @@
     .seo-market-intro {
       margin: 0 auto 22px;
       max-width: 1460px;
-      border: 1px solid #dbeafe;
-      background: #ffffff;
+      border: 1px solid #2b4660;
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
       border-radius: 16px;
       padding: 16px 18px;
-      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+      box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
     }
-    .seo-market-intro h2 { margin: 0 0 8px; font-size: 18px; color: #0f172a; }
-    .seo-market-intro p { margin: 0; color: #475569; line-height: 1.75; }
+    .seo-market-intro h2 { margin: 0 0 8px; font-size: 18px; color: #f8fbff; }
+    .seo-market-intro p { margin: 0; color: #9bb5cb; line-height: 1.75; }
 
     .market-wrapper {
       display: grid;
@@ -60,8 +95,8 @@
     }
 
     .market-ad-panel {
-      background: #ffffff;
-      border: 2px solid #dbeafe;
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid #2b4660;
       border-radius: 14px;
       min-height: 760px;
       padding: 16px;
@@ -69,13 +104,14 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      color: #64748b;
+      color: #9bb5cb;
+      box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
     }
 
     .market-ad-content strong {
       display: block;
       font-size: 14px;
-      color: #1e3a8a;
+      color: #f8fbff;
       margin-bottom: 8px;
     }
 
@@ -104,9 +140,9 @@
 
     .btn {
       padding: 10px 18px;
-      border: 1px solid rgba(59, 130, 246, 0.5);
-      background: rgba(59, 130, 246, 0.1);
-      color: #6cc6ff;
+      border: 1px solid rgba(255, 126, 34, 0.45);
+      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+      color: #16325c;
       border-radius: 10px;
       font-weight: 700;
       font-size: 13px;
@@ -116,14 +152,14 @@
     }
 
     .btn:hover {
-      background: rgba(59, 130, 246, 0.2);
-      border-color: rgba(59, 130, 246, 0.8);
+      background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(219,234,254,0.96) 100%);
+      border-color: rgba(255, 126, 34, 0.7);
       color: #ffffff;
     }
 
     .btn.primary {
-      background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
-      border-color: #3b82f6;
+      background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+      border-color: rgba(255,126,34,.6);
       color: white;
     }
 
@@ -136,10 +172,11 @@
 
     .sponsored-section {
       margin-bottom: 22px;
-      border: 1px solid #bfdbfe;
-      background: #eff6ff;
+      border: 1px solid #2b4660;
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
       border-radius: 14px;
       padding: 12px;
+      box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
     }
 
     .sponsored-head {
@@ -150,15 +187,11 @@
       margin-bottom: 10px;
     }
 
-    .sponsored-title {
-      font-size: 14px;
-      font-weight: 800;
-      color: #1e3a8a;
-    }
+    .sponsored-title { font-size: 14px; font-weight: 800; color: #f8fbff; }
 
     .sponsored-sub {
       font-size: 12px;
-      color: #475569;
+      color: #9bb5cb;
     }
 
     .sponsored-list {
@@ -168,8 +201,8 @@
     }
 
     .sponsored-card {
-      border: 1px solid #dbeafe;
-      background: #ffffff;
+      border: 1px solid rgba(96,165,250,.24);
+      background: rgba(255,255,255,.04);
       border-radius: 10px;
       padding: 10px;
       display: grid;
@@ -179,12 +212,12 @@
     .sponsored-card-name {
       font-size: 13px;
       font-weight: 800;
-      color: #1f2937;
+      color: #f8fbff;
     }
 
     .sponsored-card-line {
       font-size: 12px;
-      color: #475569;
+      color: #9bb5cb;
     }
 
     .sponsored-tag {
@@ -209,24 +242,26 @@
     .filter label {
       font-size: 12px;
       font-weight: 700;
-      color: #1e3a8a;
+      color: #dbeafe;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
     .filter input, .filter select {
       padding: 8px 12px;
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      background: #ffffff;
-      color: #1f2937;
+      border: 1px solid rgba(96,165,250,.24);
+      background: rgba(255,255,255,.05);
+      color: #f5fbff;
       border-radius: 8px;
       font-size: 13px;
       outline: none;
     }
+    .filter input::placeholder { color: #9bb5cb; }
+    .filter select option { background: #0f1f2e; color: #f5fbff; }
 
     .filter input:focus, .filter select:focus {
-      border-color: rgba(59, 130, 246, 0.8);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      border-color: rgba(255, 126, 34, 0.7);
+      box-shadow: 0 0 0 3px rgba(255, 126, 34, 0.16);
     }
 
     .filter-tools {
@@ -238,9 +273,9 @@
 
     .filter-tools button {
       padding: 8px 10px;
-      border: 1px solid rgba(59, 130, 246, 0.4);
-      background: #eff6ff;
-      color: #1e3a8a;
+      border: 1px solid rgba(96,165,250,.24);
+      background: rgba(255,255,255,.05);
+      color: #dbeafe;
       border-radius: 8px;
       font-size: 12px;
       font-weight: 700;
@@ -250,7 +285,7 @@
     .results-meta {
       margin-bottom: 12px;
       font-size: 12px;
-      color: #1e3a8a;
+      color: #9bb5cb;
       opacity: 0.9;
     }
 
@@ -261,28 +296,29 @@
     }
 
     .player-card {
-      background: #ffffff;
-      border: 1px solid #dbeafe;
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid #2b4660;
       border-radius: 16px;
       overflow: hidden;
       transition: all 0.3s ease;
+      box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
     }
 
     .player-card:hover {
-      border-color: rgba(59, 130, 246, 0.6);
+      border-color: #ff7e22;
       transform: translateY(-8px);
-      box-shadow: 0 16px 40px rgba(59, 130, 246, 0.2);
+      box-shadow: 0 18px 34px rgba(8, 19, 29, 0.34);
     }
 
     .player-avatar {
       width: 100%;
       height: 200px;
-      background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+      background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 60px;
-      border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+      border-bottom: 1px solid rgba(96, 165, 250, 0.22);
     }
 
     .player-content {
@@ -293,12 +329,12 @@
       font-size: 18px;
       font-weight: 800;
       margin-bottom: 4px;
-      color: #111827;
+      color: #f8fbff;
     }
 
     .player-position {
       font-size: 12px;
-      color: #2563eb;
+      color: #8ac6ff;
       font-weight: 700;
       margin-bottom: 12px;
       text-transform: uppercase;
@@ -320,7 +356,7 @@
 
     .info-label {
       font-size: 11px;
-      color: #64748b;
+      color: #9bb5cb;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
@@ -328,7 +364,7 @@
     .info-value {
       font-size: 14px;
       font-weight: 700;
-      color: #1f2937;
+      color: #f5fbff;
     }
 
     .player-rating {
@@ -336,7 +372,8 @@
       align-items: center;
       gap: 8px;
       padding: 10px;
-      background: rgba(59, 130, 246, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(96,165,250,.18);
       border-radius: 8px;
       margin-bottom: 16px;
     }
@@ -360,9 +397,9 @@
     .player-actions button {
       flex: 1;
       padding: 8px 12px;
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      background: rgba(59, 130, 246, 0.1);
-      color: #1d4ed8;
+      border: 1px solid rgba(96,165,250,.24);
+      background: rgba(255,255,255,.05);
+      color: #dbeafe;
       border-radius: 8px;
       font-weight: 700;
       font-size: 12px;
@@ -371,9 +408,9 @@
     }
 
     .player-actions button:hover {
-      background: rgba(59, 130, 246, 0.2);
-      border-color: rgba(59, 130, 246, 0.6);
-      color: #1e40af;
+      background: rgba(255,255,255,.08);
+      border-color: rgba(255, 126, 34, 0.45);
+      color: #fff;
     }
 
     .player-actions .compare-btn {
@@ -406,9 +443,9 @@
     .pagination button {
       width: 36px;
       height: 36px;
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      background: transparent;
-      color: #6cc6ff;
+      border: 1px solid rgba(96,165,250,.24);
+      background: rgba(255,255,255,.04);
+      color: #dbeafe;
       border-radius: 8px;
       font-weight: 700;
       cursor: pointer;
@@ -416,13 +453,13 @@
     }
 
     .pagination button:hover {
-      background: rgba(59, 130, 246, 0.1);
-      border-color: rgba(59, 130, 246, 0.6);
+      background: rgba(255,255,255,.08);
+      border-color: rgba(255, 126, 34, 0.45);
     }
 
     .pagination button.active {
-      background: #3b82f6;
-      border-color: #3b82f6;
+      background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+      border-color: rgba(255,126,34,.6);
     }
 
     .compare-bar {
@@ -430,8 +467,8 @@
       bottom: 8px;
       z-index: 40;
       margin-top: 14px;
-      border: 1px solid #bfdbfe;
-      background: #eff6ff;
+      border: 1px solid #2b4660;
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
       border-radius: 10px;
       padding: 10px;
       display: flex;
@@ -445,13 +482,13 @@
       gap: 8px;
       flex-wrap: wrap;
       font-size: 12px;
-      color: #1e3a8a;
+      color: #dbeafe;
       font-weight: 700;
     }
 
     .compare-chip {
-      border: 1px solid #93c5fd;
-      background: #ffffff;
+      border: 1px solid rgba(96,165,250,.24);
+      background: rgba(255,255,255,.05);
       border-radius: 999px;
       padding: 4px 8px;
     }
@@ -471,10 +508,11 @@
 
     .compare-card {
       width: min(860px, 100%);
-      background: #fff;
-      border: 1px solid #dbeafe;
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid #2b4660;
       border-radius: 12px;
       padding: 14px;
+      color: #f5fbff;
     }
 
     .compare-table {
@@ -485,7 +523,7 @@
     }
 
     .compare-table th, .compare-table td {
-      border: 1px solid #e2e8f0;
+      border: 1px solid rgba(96,165,250,.18);
       padding: 8px;
       text-align: left;
     }
@@ -593,6 +631,68 @@
     body.weekly-digest-mode .hero {
       margin-top: 16px;
       margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid #2b4660;
+      box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body.weekly-digest-mode .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
+    }
+
+    body.weekly-digest-mode .hero h1 {
+      margin: 0;
+      color: #f8fbff;
+      font-size: 30px;
+      font-weight: 800;
+    }
+
+    body.weekly-digest-mode .hero p {
+      margin-top: 6px;
+      color: #9bb5cb;
+      font-size: 14px;
+    }
+
+    body.weekly-digest-mode .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    body.weekly-digest-mode .hero-actions .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid rgba(255, 126, 34, 0.45) !important;
+      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%) !important;
+      color: #16325c !important;
+      padding: 10px 16px !important;
+      border-radius: 12px !important;
+      text-decoration: none !important;
+      font-weight: 800 !important;
+      font-size: 13px !important;
+      box-shadow: 0 12px 24px rgba(8,19,29,.24) !important;
+    }
+
+    body.weekly-digest-mode .hero-actions .home-btn {
+      background: linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%) !important;
+      border-color: rgba(255,126,34,.6) !important;
+      color: #fff !important;
+      box-shadow: 0 16px 28px rgba(255,90,31,.28) !important;
     }
 
     body.contracted-cards-only .hero {
@@ -691,6 +791,10 @@
 
     body.player-discovery-mode .topbar {
       display: none;
+    }
+
+    body.headerless-mode .topbar {
+      display: none !important;
     }
 
     body.player-discovery-mode .container {
@@ -983,6 +1087,103 @@
         .hero h1 { font-size: 22px; }
       }
     </style>
+    <style>
+      body,
+      body.weekly-digest-mode,
+      body.player-discovery-mode {
+        background:
+          radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+          radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+          #08131d !important;
+        color: #f5fbff !important;
+      }
+      .seo-market-intro,
+      .market-ad-panel,
+      .sponsored-section,
+      .filters,
+      .compare-bar,
+      .compare-card,
+      .player-card,
+      .hero {
+        background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%) !important;
+        border-color: #2b4660 !important;
+        box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34) !important;
+        color: #f5fbff !important;
+      }
+      .hero {
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::before,
+      .player-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 4px;
+        background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
+      }
+      .hero h1,
+      .player-name,
+      .seo-market-intro h2,
+      .sponsored-title,
+      .market-ad-content strong {
+        color: #f8fbff !important;
+      }
+      .hero p,
+      .seo-market-intro p,
+      .results-meta,
+      .sponsored-sub,
+      .sponsored-card-line,
+      .info-label,
+      .compare-list,
+      .market-ad-panel,
+      .filter label {
+        color: #9bb5cb !important;
+      }
+      .player-position {
+        color: #8ac6ff !important;
+      }
+      .filter input,
+      .filter select,
+      .player-rating,
+      .sponsored-card,
+      .compare-chip,
+      .player-actions button,
+      .pagination button {
+        background: rgba(255,255,255,.05) !important;
+        border-color: rgba(96,165,250,.24) !important;
+        color: #f5fbff !important;
+      }
+      .filter input::placeholder {
+        color: #9bb5cb !important;
+      }
+      .player-actions .compare-btn,
+      .pagination button.active,
+      .home-btn-global {
+        background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%) !important;
+        border-color: rgba(255,126,34,.6) !important;
+        color: #fff !important;
+      }
+      .hero-actions {
+        display: flex !important;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .hero-actions .home-btn {
+        background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%) !important;
+        border-color: rgba(255,126,34,.6) !important;
+        color: #fff !important;
+      }
+      .sponsored-tag {
+        background: rgba(251,191,36,.12) !important;
+        border-color: rgba(251,191,36,.28) !important;
+        color: #fde68a !important;
+      }
+      .compare-modal {
+        background: rgba(2, 6, 20, 0.78) !important;
+      }
+    </style>
 </head>
 <body>
 <header class="topbar">
@@ -1014,6 +1215,58 @@
         <a class="btn" href="player-dashboard.html">Dashboard</a>
       </div>
     </section>
+    <script>
+      (function () {
+        const transfer = document.documentElement.dataset.transferCategory || '';
+        const radar = document.documentElement.dataset.scoutRadar || '';
+        const playerView = document.documentElement.dataset.playerView || '';
+        const pageTitle = document.getElementById('pageTitle');
+        const pageDescription = document.getElementById('pageDescription');
+        if (!pageTitle || !pageDescription) return;
+
+        if (playerView === 'discover') {
+          pageTitle.innerHTML = '<i class="fa-solid fa-compass"></i> Keşfet İçin Öne Çıkanlar';
+          pageDescription.textContent = 'Senin için öne çıkan oyuncuları filtre kalabalığı olmadan tek akışta incele.';
+          document.title = 'Keşfet İçin Öne Çıkanlar | NextScout';
+          return;
+        }
+        if (transfer === 'contracted') {
+          pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Sözleşmeli Sporcular';
+          pageDescription.textContent = 'Sözleşmesi devam eden sporcuları pozisyon, yaş, form, performans ve transfer kategorisine göre filtreleyerek tek ekranda inceleyin.';
+          document.title = 'Sözleşmeli Futbolcular | NextScout';
+          return;
+        }
+        if (transfer === 'free') {
+          pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Boştaki Sporcular';
+          pageDescription.textContent = 'Kulübü olmayan ve transfer için uygun durumdaki sporcuları pozisyon, yaş, form ve performans filtreleriyle hızlıca görüntüleyin.';
+          document.title = 'Boştaki Futbolcular | NextScout';
+          return;
+        }
+        if (transfer === 'seeking') {
+          pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Kulüp Arayan Sporcular';
+          pageDescription.textContent = 'Yeni kulüp arayan sporcuları performans, yaş, pozisyon ve transfer durumu kriterlerine göre listeleyin.';
+          document.title = 'Kulüp Arayan Futbolcular | NextScout';
+          return;
+        }
+        if (radar === 'new') {
+          pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Yeni Eşleşenler';
+          pageDescription.textContent = 'Scout radarında yeni eşleşen oyuncuları güncel performans, pozisyon ve kulüp uyum sinyalleriyle inceleyin.';
+          document.title = 'Yeni Eşleşenler | NextScout';
+          return;
+        }
+        if (radar === 'rising') {
+          pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Yükselenler';
+          pageDescription.textContent = 'Yükseliş trendine giren oyuncuları form, görünürlük ve performans ivmesine göre takip edin.';
+          document.title = 'Yükselenler | NextScout';
+          return;
+        }
+        if (radar === 'hidden') {
+          pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Gizli Yetenekler';
+          pageDescription.textContent = 'Henüz yeterince öne çıkmamış ama radar sinyali veren gizli yetenekleri keşfedin.';
+          document.title = 'Gizli Yetenekler | NextScout';
+        }
+      })();
+    </script>
 
     <section class="sponsored-section">
       <div class="sponsored-head">
@@ -1652,9 +1905,12 @@
       const hasTransferCategory = Boolean(getTransferCategoryFromQuery());
       const hasScoutRadarCategory = Boolean(getScoutRadarCategoryFromQuery());
       const hasPlayerDiscoveryView = Boolean(getPlayerViewFromQuery());
+      const transferCategory = getTransferCategoryFromQuery();
+      const scoutRadar = getScoutRadarCategoryFromQuery();
       document.body.classList.toggle("weekly-digest-mode", hasTransferCategory || hasScoutRadarCategory || hasPlayerDiscoveryView);
       document.body.classList.toggle("scout-radar-mode", hasScoutRadarCategory);
       document.body.classList.toggle("player-discovery-mode", hasPlayerDiscoveryView);
+      document.body.classList.toggle("headerless-mode", transferCategory === "free" || scoutRadar === "new");
     }
 
     function parseAgeRange(value) {
@@ -2021,12 +2277,68 @@
       }
     }
 
+    function applyTurkishTextFixes() {
+      const intro = document.querySelector('.seo-market-intro');
+      if (intro) {
+        const heading = intro.querySelector('h2');
+        const text = intro.querySelector('p');
+        if (heading) heading.textContent = 'Profesyonel futbolcu havuzu ve scout filtreleri';
+        if (text) {
+          text.textContent = 'NextScout oyuncu havuzu; pozisyon, yaş, form, lig seviyesi ve performans odaklı filtrelerle profesyonel futbolcuları daha hızlı keşfetmek için hazırlandı. Scout ekipleri, kulüp yöneticileri ve menajerler aradıkları oyuncu profiline göre listeleme yapabilir, transfer odaklı oyuncu takibini tek merkezden yürütebilir.';
+        }
+      }
+
+      document.querySelectorAll('.market-ad-content strong').forEach((node) => {
+        node.textContent = 'Reklam Alanı';
+      });
+
+      const compareContent = document.getElementById('compareContent');
+      if (compareContent && /seciniz/i.test(compareContent.textContent || '')) {
+        compareContent.textContent = 'Oyuncu seçiniz.';
+      }
+
+      const heroTitle = document.getElementById('pageTitle');
+      const heroDescription = document.getElementById('pageDescription');
+      const transferCategory = getTransferCategoryFromQuery();
+      const scoutCategory = getScoutRadarCategoryFromQuery();
+      const playerView = getPlayerViewFromQuery();
+      if (heroTitle && heroDescription && !playerView) {
+        if (transferCategory === 'contracted') {
+          heroTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Sözleşmeli Sporcular';
+          heroDescription.textContent = 'Sözleşmesi devam eden sporcuları pozisyon, yaş, form, performans ve transfer kategorisine göre filtreleyerek tek ekranda inceleyin.';
+        } else if (transferCategory === 'free') {
+          heroTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Boştaki Sporcular';
+          heroDescription.textContent = 'Kulübü olmayan ve transfer için uygun durumdaki sporcuları pozisyon, yaş, form ve performans filtreleriyle hızlıca görüntüleyin.';
+        } else if (transferCategory === 'seeking') {
+          heroTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Kulüp Arayan Sporcular';
+          heroDescription.textContent = 'Yeni kulüp arayan sporcuları performans, yaş, pozisyon ve transfer durumu kriterlerine göre listeleyin.';
+        } else if (scoutCategory === 'new') {
+          heroTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Yeni Eşleşenler';
+          heroDescription.textContent = 'Scout radarında yeni eşleşen oyuncuları güncel performans, pozisyon ve kulüp uyum sinyalleriyle inceleyin.';
+        } else if (scoutCategory === 'rising') {
+          heroTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Yükselenler';
+          heroDescription.textContent = 'Yükseliş trendine giren oyuncuları form, görünürlük ve performans ivmesine göre takip edin.';
+        } else if (scoutCategory === 'hidden') {
+          heroTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Gizli Yetenekler';
+          heroDescription.textContent = 'Henüz yeterince öne çıkmamış ama radar sinyali veren gizli yetenekleri keşfedin.';
+        }
+      }
+
+      if (compareContent && compareContent.querySelector('.compare-table')) {
+        compareContent.innerHTML = compareContent.innerHTML
+          .replaceAll('YaÅŸ', 'Yaş')
+          .replaceAll('KULÃœP', 'Kulüp')
+          .replaceAll('Piyasa DeÄŸeri', 'Piyasa Değeri');
+      }
+    }
+
     // Initial render
     (async function init() {
       standardizeTransferCategoryQuery();
       standardizeScoutRadarQuery();
       applyWeeklyDigestMode();
       syncLockedTransferFilters();
+      applyTurkishTextFixes();
       await loadSponsoredProfiles();
       await loadPlayersFromApi();
       filterPlayers();

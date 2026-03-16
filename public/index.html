@@ -143,7 +143,6 @@
             color: var(--ns-muted) !important;
         }
 
-        .search-container,
         .mobile-bottom-search-panel,
         .mobile-bottom-search-input,
         .form-control,
@@ -592,7 +591,7 @@
             height: 40px;
             border-radius: 8px;
             border: none;
-            background: #F0F9FF;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
             color: #3B82F6;
             font-size: 20px;
             cursor: pointer;
@@ -3449,6 +3448,227 @@
             line-height: 1.35;
         }
 
+        .home-insight-grid {
+            margin-top: 16px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .insight-card {
+            position: relative;
+            overflow: hidden;
+            padding: 18px;
+            border: 1px solid var(--ns-line);
+            background: linear-gradient(180deg, rgba(24, 31, 67, 0.94), rgba(13, 18, 40, 0.97));
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 36px rgba(2, 5, 18, 0.28);
+            border-radius: 0 !important;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .insight-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, #f97316 0%, #fb923c 30%, #60a5fa 100%);
+        }
+
+        .insight-card .eyebrow {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: #ffb787;
+            margin-bottom: 8px;
+        }
+
+        .insight-title {
+            margin: 0;
+            font-size: 20px;
+            line-height: 1.2;
+            color: var(--ns-text);
+        }
+
+        .insight-summary {
+            margin-top: 8px;
+            color: var(--ns-muted);
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .insight-actions,
+        .insight-list {
+            margin-top: 16px;
+            display: grid;
+            gap: 8px;
+        }
+
+        .insight-link,
+        .insight-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            width: 100%;
+            padding: 12px 14px;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(110, 138, 255, 0.24) !important;
+            color: var(--ns-text) !important;
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 0 !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.03), 0 12px 24px rgba(2,5,18,.16);
+        }
+
+        .insight-link:hover,
+        .insight-item:hover {
+            border-color: rgba(255, 126, 34, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .insight-item-main {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            text-align: left;
+        }
+
+        .insight-item-label {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--ns-text);
+        }
+
+        .insight-item-meta {
+            font-size: 12px;
+            color: var(--ns-muted);
+        }
+
+        .insight-footer {
+            margin-top: auto;
+            padding-top: 14px;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .insight-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 800;
+            color: #fff7f0;
+            background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+            border: 1px solid rgba(255, 126, 34, 0.45);
+            border-radius: 0 !important;
+            box-shadow: 0 14px 28px rgba(255, 90, 31, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+        }
+
+        .insight-law-tags {
+            margin-top: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .insight-law-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 11px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--ns-text);
+            background: rgba(255,255,255,.05);
+            border: 1px solid rgba(110, 138, 255, 0.24);
+            border-radius: 0 !important;
+        }
+
+        .role-action-card {
+            margin-top: 16px;
+            position: relative;
+            overflow: hidden;
+            padding: 22px 20px;
+            border: 1px solid var(--ns-line);
+            background: linear-gradient(180deg, rgba(24, 31, 67, 0.94), rgba(13, 18, 40, 0.97));
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 36px rgba(2, 5, 18, 0.28);
+            border-radius: 0 !important;
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+            gap: 18px;
+            align-items: center;
+        }
+
+        .role-action-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, #f97316 0%, #fb923c 30%, #60a5fa 100%);
+        }
+
+        .role-action-copy .eyebrow {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: #ffb787;
+            margin-bottom: 8px;
+        }
+
+        .role-action-title {
+            margin: 0;
+            font-size: 24px;
+            line-height: 1.15;
+            color: var(--ns-text);
+        }
+
+        .role-action-summary {
+            margin-top: 10px;
+            color: var(--ns-muted);
+            font-size: 14px;
+            line-height: 1.6;
+            max-width: 560px;
+        }
+
+        .role-action-buttons {
+            display: grid;
+            gap: 10px;
+        }
+
+        .role-action-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 14px 16px;
+            text-decoration: none;
+            background: rgba(255,255,255,.05);
+            border: 1px solid rgba(110, 138, 255, 0.24);
+            color: var(--ns-text);
+            font-size: 13px;
+            font-weight: 800;
+            border-radius: 0 !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.03), 0 12px 24px rgba(2,5,18,.16);
+        }
+
+        .role-action-link:hover {
+            border-color: rgba(255, 126, 34, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .role-action-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .success-stories-panel {
             margin-top: 16px;
             border-radius: 14px;
@@ -3887,6 +4107,14 @@
             }
 
             .below-cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .home-insight-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .role-action-card {
                 grid-template-columns: 1fr;
             }
 
@@ -4718,6 +4946,10 @@
         .btn,
         button {
             border-radius: 0 !important;
+        }
+
+        .search-container {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%) !important;
         }
     </style>
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
@@ -6000,6 +6232,73 @@
                 </aside>
             </div>
 
+            <section class="home-insight-grid">
+                <article class="insight-card">
+                    <div class="eyebrow">Keşif Merkezi</div>
+                    <h3 class="insight-title">Scout Radar</h3>
+                    <div class="insight-summary">Scout ekibinin radarına giren yeni eşleşmeleri, yükselen profilleri ve gizli yetenekleri tek alandan filtreleyin.</div>
+                    <div class="insight-actions">
+                        <a class="insight-link" href="./professional-players.html?scout_radar=new"><span>Yeni Eşleşenler</span><i class="fas fa-arrow-right"></i></a>
+                        <a class="insight-link" href="./professional-players.html?scout_radar=rising"><span>Yükselenler</span><i class="fas fa-arrow-right"></i></a>
+                        <a class="insight-link" href="./professional-players.html?scout_radar=hidden"><span>Gizli Yetenekler</span><i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <article class="insight-card">
+                    <div class="eyebrow">Kulüp Talepleri</div>
+                    <h3 class="insight-title">Kulüplerin Bugünkü İhtiyaçları</h3>
+                    <div class="insight-summary">Bugün kulüplerin en çok aradığı pozisyonları ve açık kadro ihtiyaçlarını pozisyon bazlı inceleyin.</div>
+                    <div class="insight-list" id="homeNeedsInsightList">
+                        <button type="button" class="insight-item">
+                            <span class="insight-item-main">
+                                <span class="insight-item-label">Pozisyonlar yükleniyor...</span>
+                                <span class="insight-item-meta">Güncel veri hazırlanıyor</span>
+                            </span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    <div class="insight-footer">
+                        <a class="insight-cta" href="./manager-needs.html"><i class="fas fa-list"></i><span>Tümünü Gör</span></a>
+                    </div>
+                </article>
+
+                <article class="insight-card">
+                    <div class="eyebrow">Profesyonel Destek</div>
+                    <h3 class="insight-title">Hukuk ve Sözleşme Desteği</h3>
+                    <div class="insight-summary">Sözleşme süreçleri, profesyonel danışmanlık ve hukuki destek için uzman avukat profillerine ulaşın.</div>
+                    <div class="insight-law-tags">
+                        <span class="insight-law-tag"><i class="fas fa-scale-balanced"></i><span>Spor Hukuku</span></span>
+                        <span class="insight-law-tag"><i class="fas fa-file-signature"></i><span>Sözleşme Danışmanlığı</span></span>
+                        <span class="insight-law-tag"><i class="fas fa-handshake-angle"></i><span>Uyuşmazlık Desteği</span></span>
+                    </div>
+                    <div class="insight-footer">
+                        <a class="insight-cta" href="./lawyers-directory.html"><i class="fas fa-arrow-right"></i><span>Avukatları İncele</span></a>
+                    </div>
+                </article>
+            </section>
+
+            <section class="role-action-card" id="todayForYouCard">
+                <div class="role-action-copy">
+                    <div class="eyebrow">Senin İçin</div>
+                    <h3 class="role-action-title" id="todayForYouTitle">Bugün Sana Uygun</h3>
+                    <div class="role-action-summary" id="todayForYouSummary">Platformdaki öne çıkan akışları keşfedin ve size uygun rol yolculuğunu başlatın.</div>
+                </div>
+                <div class="role-action-buttons" id="todayForYouActions">
+                    <a class="role-action-link" href="./professional-players.html">
+                        <span class="role-action-label"><i class="fas fa-compass"></i><span>Oyuncuları Keşfet</span></span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <a class="role-action-link" href="./discover-opportunities.html">
+                        <span class="role-action-label"><i class="fas fa-bolt"></i><span>Açık Fırsatları Gör</span></span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <a class="role-action-link" href="./lawyers-directory.html">
+                        <span class="role-action-label"><i class="fas fa-scale-balanced"></i><span>Avukatları İncele</span></span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </section>
+
             <div class="promo-ad-grid">
                 <div class="promo-ad-card">
                     <i class="fas fa-ad"></i>
@@ -7207,6 +7506,187 @@
             freePlayersCount: 28,
         };
 
+        async function renderHomeNeedsInsightCard() {
+            const root = document.getElementById('homeNeedsInsightList');
+            if (!root) return;
+
+            const toArray = window.NextScoutData?.toArray || ((input) => Array.isArray(input) ? input : []);
+
+            try {
+                const [clubNeedsPayload, managerNeedsPayload, coachNeedsPayload] = await Promise.all([
+                    fetchJsonSafe(`${API_BASE_URL}/club-needs?limit=300`),
+                    fetchJsonSafe(`${API_BASE_URL}/discovery/manager-needs`),
+                    fetchJsonSafe(`${API_BASE_URL}/discovery/coach-needs`),
+                ]);
+
+                const rows = [
+                    ...toArray(clubNeedsPayload?.data ?? clubNeedsPayload),
+                    ...toArray(managerNeedsPayload?.data ?? managerNeedsPayload),
+                    ...toArray(coachNeedsPayload?.data ?? coachNeedsPayload),
+                ].filter((row) => row && typeof row === 'object');
+
+                const positionCounts = new Map();
+                rows.forEach((row) => {
+                    const label = normalizePositionLabel(row?.position || row?.player_position || row?.need_position || row?.role);
+                    if (!label) return;
+                    positionCounts.set(label, (positionCounts.get(label) || 0) + 1);
+                });
+
+                const topNeeds = Array.from(positionCounts.entries())
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 3);
+
+                if (!topNeeds.length) {
+                    root.innerHTML = `
+                        <button type="button" class="insight-item" onclick="window.location.href='${resolveLocalPage('manager-needs.html')}'">
+                            <span class="insight-item-main">
+                                <span class="insight-item-label">Henüz açık ilan yok</span>
+                                <span class="insight-item-meta">Yeni ihtiyaçlar geldiğinde burada görünecek</span>
+                            </span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    `;
+                    return;
+                }
+
+                root.innerHTML = topNeeds.map(([position, count]) => `
+                    <button type="button" class="insight-item" data-position="${esc(position)}">
+                        <span class="insight-item-main">
+                            <span class="insight-item-label">${esc(position)}</span>
+                            <span class="insight-item-meta">${count} aktif ihtiyaç</span>
+                        </span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                `).join('');
+
+                root.querySelectorAll('.insight-item[data-position]').forEach((item) => {
+                    item.addEventListener('click', () => {
+                        const position = item.getAttribute('data-position') || '';
+                        window.location.href = resolveLocalPage(`discover-opportunities.html?position=${encodeURIComponent(position)}`);
+                    });
+                });
+                return;
+            } catch (error) {}
+
+            root.innerHTML = `
+                <button type="button" class="insight-item" data-position="Stoper">
+                    <span class="insight-item-main">
+                        <span class="insight-item-label">Stoper</span>
+                        <span class="insight-item-meta">Demo veri</span>
+                    </span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <button type="button" class="insight-item" data-position="6 Numara">
+                    <span class="insight-item-main">
+                        <span class="insight-item-label">6 Numara</span>
+                        <span class="insight-item-meta">Demo veri</span>
+                    </span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <button type="button" class="insight-item" data-position="Kanat">
+                    <span class="insight-item-main">
+                        <span class="insight-item-label">Kanat</span>
+                        <span class="insight-item-meta">Demo veri</span>
+                    </span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            `;
+
+            root.querySelectorAll('.insight-item[data-position]').forEach((item) => {
+                item.addEventListener('click', () => {
+                    const position = item.getAttribute('data-position') || '';
+                    window.location.href = resolveLocalPage(`discover-opportunities.html?position=${encodeURIComponent(position)}`);
+                });
+            });
+        }
+
+        function getHomeRoleConfig() {
+            let role = '';
+            try {
+                const raw = localStorage.getItem('nextscout_user') || '{}';
+                role = (JSON.parse(raw)?.role || localStorage.getItem('nextscout_role') || localStorage.getItem('userRole') || '').toString().trim().toLowerCase();
+            } catch (_) {
+                role = (localStorage.getItem('nextscout_role') || localStorage.getItem('userRole') || '').toString().trim().toLowerCase();
+            }
+
+            const fallback = {
+                title: 'Bugün Sana Uygun',
+                summary: 'Platformdaki öne çıkan akışları keşfedin ve size uygun rol yolculuğunu başlatın.',
+                actions: [
+                    { href: 'professional-players.html', icon: 'fa-compass', label: 'Oyuncuları Keşfet' },
+                    { href: 'discover-opportunities.html', icon: 'fa-bolt', label: 'Açık Fırsatları Gör' },
+                    { href: 'lawyers-directory.html', icon: 'fa-scale-balanced', label: 'Avukatları İncele' },
+                ],
+            };
+
+            if (role === 'player') {
+                return {
+                    title: 'Bugün Sana Uygun',
+                    summary: 'Profilini güçlendir, vitrine çık ve seni arayan fırsatları keşfet.',
+                    actions: [
+                        { href: 'profile-edit.html', icon: 'fa-user-pen', label: 'Profili Tamamla' },
+                        { href: 'boost-discover.html', icon: 'fa-star', label: "Beni Keşfet'e Çık" },
+                        { href: 'professional-players.html?transfer_category=free', icon: 'fa-bullseye', label: 'Boştaki Fırsatları Gör' },
+                    ],
+                };
+            }
+
+            if (role === 'manager') {
+                return {
+                    title: 'Bugün Sana Uygun',
+                    summary: 'Oyuncu havuzunu tarayın, açık fırsatları görün ve doğru profillere hızlı erişin.',
+                    actions: [
+                        { href: 'professional-players.html', icon: 'fa-magnifying-glass', label: 'Oyuncu Ara' },
+                        { href: 'discover-opportunities.html', icon: 'fa-bolt', label: 'Açık Fırsatları Gör' },
+                        { href: 'manager-needs.html', icon: 'fa-list-check', label: 'İhtiyaç İlanlarını Aç' },
+                    ],
+                };
+            }
+
+            if (role === 'team' || role === 'club') {
+                return {
+                    title: 'Bugün Sana Uygun',
+                    summary: 'Kadro ihtiyaçlarını yönet, deneme süreçlerini aç ve scout raporlarını incele.',
+                    actions: [
+                        { href: 'team-dashboard.html', icon: 'fa-users-viewfinder', label: 'Kadro İhtiyacı Oluştur' },
+                        { href: 'trial-center.html?view=coach', icon: 'fa-clipboard-list', label: 'Deneme / İdman Aç' },
+                        { href: 'scout-reports.html', icon: 'fa-file-lines', label: 'Scout Raporlarını Gör' },
+                    ],
+                };
+            }
+
+            if (role === 'coach' || role === 'scout') {
+                return {
+                    title: 'Bugün Sana Uygun',
+                    summary: 'Yeni eşleşmeleri incele, radar oyuncularını filtrele ve rapor akışını yönet.',
+                    actions: [
+                        { href: 'professional-players.html?scout_radar=new', icon: 'fa-sparkles', label: 'Yeni Eşleşenler' },
+                        { href: 'professional-players.html?scout_radar=rising', icon: 'fa-arrow-trend-up', label: 'Yükselenleri İncele' },
+                        { href: 'scout-reports.html', icon: 'fa-file-lines', label: 'Scout Raporlarına Git' },
+                    ],
+                };
+            }
+
+            return fallback;
+        }
+
+        function renderTodayForYouCard() {
+            const titleEl = document.getElementById('todayForYouTitle');
+            const summaryEl = document.getElementById('todayForYouSummary');
+            const actionsEl = document.getElementById('todayForYouActions');
+            if (!titleEl || !summaryEl || !actionsEl) return;
+
+            const config = getHomeRoleConfig();
+            titleEl.textContent = config.title;
+            summaryEl.textContent = config.summary;
+            actionsEl.innerHTML = (config.actions || []).map((action) => `
+                <a class="role-action-link" href="${resolveLocalPage(action.href)}">
+                    <span class="role-action-label"><i class="fas ${action.icon}"></i><span>${esc(action.label)}</span></span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            `).join('');
+        }
+
         async function renderFeatureTransferCard() {
             const openNeedsEl = document.getElementById('featureOpenNeedsValue');
             const topPositionEl = document.getElementById('featureTopPositionValue');
@@ -7465,6 +7945,8 @@
             // İlk yükleme
             renderBreakingNewsStrip();
             renderFeatureTransferCard();
+            renderHomeNeedsInsightCard();
+            renderTodayForYouCard();
             renderClubNeedsInlineList();
             renderPaidClubPromoNamesInline();
             renderDataStatusStrip();
@@ -7496,6 +7978,10 @@
 
             setInterval(() => {
                 renderClubNeedsInlineList();
+            }, 120000); // 120 seconds
+
+            setInterval(() => {
+                renderHomeNeedsInsightCard();
             }, 120000); // 120 seconds
 
             setInterval(() => {
@@ -7549,6 +8035,8 @@
             renderManagerNeedsButtonPanel();
             renderContractStatusTicker();
             window.NextScoutGrowth?.idle(() => renderFeatureTransferCard(), 800);
+            window.NextScoutGrowth?.idle(() => renderHomeNeedsInsightCard(), 850);
+            window.NextScoutGrowth?.idle(() => renderTodayForYouCard(), 880);
             window.NextScoutGrowth?.idle(() => renderIdeaNewsSquare(), 900);
             window.NextScoutGrowth?.idle(() => renderSiteNewsSquare(), 1100);
             window.NextScoutGrowth?.idle(() => renderHomepageInfoCards(), 1300);

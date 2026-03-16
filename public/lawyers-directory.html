@@ -19,35 +19,151 @@
     <meta name="twitter:description" content="NextScout lawyers directory sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    :root { --bg:#f6f8fc; --card:#fff; --line:#dbe3f0; --text:#0f172a; --muted:#64748b; --primary:#2563eb; --shadow:0 10px 28px rgba(37,99,235,.08); }
+    :root { --bg:#08131d; --card:#0f1f2e; --line:#2b4660; --text:#f5fbff; --muted:#9bb5cb; --primary:#ff7e22; --shadow:0 18px 36px rgba(8,19,29,.34); }
     *{box-sizing:border-box}
-    body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    body{
+      margin:0;
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      background:
+        radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+        radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+        var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      background-repeat:no-repeat;
+      background-size:cover;
+      background-attachment:fixed;
+    }
     .wrap{max-width:1200px;margin:0 auto;padding:22px 16px}
-    .head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+    .head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      margin-bottom:16px;
+      padding:24px;
+      background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .head::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,#ff5a1f 0%,#ff7e22 55%,#60a5fa 100%)}
     .title{margin:0;font-size:30px;font-weight:800}
     .sub{margin-top:6px;color:var(--muted);font-size:14px}
-    .btn{border:1px solid var(--line);background:#fff;color:var(--primary);padding:10px 14px;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer}
+    .header-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .btn,
+    .home-btn-global{
+      border:1px solid rgba(255, 126, 34, 0.45);
+      background:linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+      color:#16325c;
+      padding:10px 14px;
+      text-decoration:none;
+      font-weight:800;
+      font-size:13px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      line-height:1;
+      box-shadow:0 12px 24px rgba(8,19,29,.24);
+    }
+    .home-btn-global{
+      background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%) !important;
+      color:#fff !important;
+      border-color:rgba(255,126,34,.6) !important;
+      box-shadow:0 16px 28px rgba(255,90,31,.28) !important;
+    }
+    .btn:hover,.home-btn-global:hover{transform:translateY(-1px)}
     .toolbar{display:grid;grid-template-columns:1.2fr 1fr 1fr auto;gap:10px;margin-bottom:12px}
-    .field{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;font-size:13px}
+    .field{
+      border:1px solid var(--line);
+      padding:11px 12px;
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      font-size:13px;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    .field::placeholder{color:#8fb0c9}
+    select.field option{background:#0f1f2e;color:#f5fbff}
     .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:14px}
+    .card{
+      background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      padding:16px;
+      position:relative;
+      overflow:hidden;
+    }
+    .card::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,#ff5a1f 0%,#ff7e22 55%,#60a5fa 100%)}
     .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px}
     .name{font-size:18px;font-weight:800}
-    .spec{font-size:13px;color:#1d4ed8;font-weight:700}
-    .badge{padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700}
-    .ok{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
-    .mid{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+    .spec{font-size:13px;color:#8ac6ff;font-weight:700}
+    .badge{padding:4px 8px;font-size:11px;font-weight:700}
+    .ok{background:rgba(34,197,94,.12);color:#bbf7d0;border:1px solid rgba(34,197,94,.28)}
+    .mid{background:rgba(251,191,36,.12);color:#fde68a;border:1px solid rgba(251,191,36,.28)}
     .row{display:flex;justify-content:space-between;gap:8px;font-size:13px;padding:6px 0}
     .k{color:var(--muted)}
-    .v{font-weight:700}
-    .bio{margin-top:8px;padding:10px;border:1px solid #edf2f7;border-radius:10px;background:#f8fbff;font-size:13px;line-height:1.45;color:#334155}
+    .v{font-weight:700;color:#e6f2ff}
+    .bio{
+      margin-top:8px;
+      padding:12px;
+      border:1px solid rgba(96,165,250,.18);
+      background:rgba(255,255,255,.04);
+      font-size:13px;
+      line-height:1.5;
+      color:#d8e7f5;
+    }
     .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-    .a-btn{padding:8px 10px;border:1px solid #dbe3f0;background:#fff;color:#334155;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}
-    .a-btn.primary{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border-color:transparent}
-    .empty{padding:20px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--muted)}
-    @media (max-width:900px){.toolbar{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr 1fr}}
-    @media (max-width:560px){.toolbar,.grid{grid-template-columns:1fr}.title{font-size:24px}}
+    .a-btn{
+      padding:10px 12px;
+      border:1px solid rgba(255, 126, 34, 0.28);
+      background:rgba(255,255,255,.05);
+      color:#e5f0ff;
+      font-size:12px;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:0 10px 20px rgba(8,19,29,.18);
+    }
+    .a-btn.primary{
+      background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);
+      color:#fff;
+      border-color:rgba(255,126,34,.6);
+    }
+    .empty{
+      padding:20px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      color:var(--muted);
+      box-shadow:var(--shadow);
+    }
+    @media (max-width:900px){
+      .toolbar{grid-template-columns:1fr 1fr}
+      .grid{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width:560px){
+      .toolbar,.grid{grid-template-columns:1fr}
+      .title{font-size:24px}
+      .head{padding:18px 14px;align-items:flex-start;flex-direction:column}
+      .header-actions{width:100%}
+      .btn,.home-btn-global{width:100%}
+    }
+    .head,
+    .toolbar,
+    .field,
+    .card,
+    .badge,
+    .bio,
+    .a-btn,
+    .btn,
+    .home-btn-global,
+    .empty {
+      border-radius:0 !important;
+    }
   </style>
     <link rel="stylesheet" href="assets/css/mobile-unified.css">
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
@@ -57,29 +173,40 @@
     <div class="head">
       <div>
         <h1 class="title">Avukatlar</h1>
-        <div class="sub">Uyelikli avukat profillerini inceleyip dogrudan iletisime gec.</div>
+        <div class="sub">Üyelikli avukat profillerini inceleyip doğrudan iletişime geç.</div>
       </div>
-      <a class="home-btn-global" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a>
+      <div class="header-actions">
+        <a class="home-btn-global" href="index.html"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
+        <a id="dashboardBtn" class="btn" href="manager-dashboard.html"><i class="fas fa-table-columns"></i><span>Dashboard</span></a>
+      </div>
     </div>
 
     <div class="toolbar">
-      <input id="qInput" class="field" type="text" placeholder="Isim, uzmanlik veya ofis ara">
-      <input id="specInput" class="field" type="text" placeholder="Uzmanlik (orn: Spor Hukuku)">
+      <input id="qInput" class="field" type="text" placeholder="İsim, uzmanlık veya ofis ara">
+      <input id="specInput" class="field" type="text" placeholder="Uzmanlık (örn: Spor Hukuku)">
       <select id="verifiedFilter" class="field">
-        <option value="">Tum Profiller</option>
-        <option value="verified">Dogrulanmis</option>
+        <option value="">Tüm Profiller</option>
+        <option value="verified">Doğrulanmış</option>
       </select>
       <button id="resetBtn" class="btn">Temizle</button>
     </div>
 
     <div id="grid" class="grid"></div>
-    <div id="empty" class="empty" style="display:none;">Avukat bulunamadi.</div>
+    <div id="empty" class="empty" style="display:none;">Avukat bulunamadı.</div>
   </div>
 
   <script>
     const LOCAL_KEY = 'nextscout_lawyer_profiles';
     let allItems = [];
     let visibleItems = [];
+
+    function getDashboardHref() {
+      const role = (localStorage.getItem('nextscout_role') || localStorage.getItem('userRole') || '').toLowerCase();
+      if (role.includes('team') || role.includes('club')) return 'team-dashboard.html';
+      if (role.includes('manager')) return 'manager-dashboard.html';
+      if (role.includes('player')) return 'player-dashboard.html';
+      return 'coach-dashboard.html';
+    }
 
     function getApiBaseUrl() {
       const params = new URLSearchParams(window.location.search);
@@ -172,19 +299,19 @@
               <div class="name">${esc(x.name)}</div>
               <div class="spec">${esc(x.specialization)}</div>
             </div>
-            <span class="badge ${x.is_verified ? 'ok' : 'mid'}">${x.is_verified ? 'Dogrulanmis' : 'Onay Bekliyor'}</span>
+            <span class="badge ${x.is_verified ? 'ok' : 'mid'}">${x.is_verified ? 'Doğrulanmış' : 'Onay Bekliyor'}</span>
           </div>
 
-          <div class="row"><span class="k">Deneyim</span><span class="v">${x.years_experience || 0} yil</span></div>
+          <div class="row"><span class="k">Deneyim</span><span class="v">${x.years_experience || 0} yıl</span></div>
           <div class="row"><span class="k">Ofis</span><span class="v">${esc(x.office_name || '-')}</span></div>
           <div class="row"><span class="k">E-posta</span><span class="v">${esc(x.office_email || '-')}</span></div>
           <div class="row"><span class="k">Telefon</span><span class="v">${esc(x.office_phone || '-')}</span></div>
 
-          <div class="bio">${esc(x.bio || 'Avukat biyografisi mevcut degil.')}</div>
+          <div class="bio">${esc(x.bio || 'Avukat biyografisi mevcut değil.')}</div>
 
           <div class="actions">
             <button class="a-btn" onclick="openLawyerProfile(${Number(x.id) || 0})">Profil</button>
-            <button class="a-btn primary" onclick="contactLawyer(${Number(x.id) || 0})">Iletisime Gec</button>
+            <button class="a-btn primary" onclick="contactLawyer(${Number(x.id) || 0})">İletişime Geç</button>
           </div>
         </div>
       `).join('');
@@ -214,8 +341,8 @@
       const x = allItems.find((i) => Number(i.id) === Number(id));
       if (!x) return;
       if (x.office_email) {
-        const subject = encodeURIComponent('NextScout Hukuki Danismanlik Talebi');
-        const body = encodeURIComponent(`Merhaba ${x.name},\n\nSizinle hukuki destek icin iletisime gecmek istiyorum.`);
+        const subject = encodeURIComponent('NextScout Hukuki Danışmanlık Talebi');
+        const body = encodeURIComponent(`Merhaba ${x.name},\n\nSizinle hukuki destek için iletişime geçmek istiyorum.`);
         window.location.href = `mailto:${x.office_email}?subject=${subject}&body=${body}`;
         return;
       }
@@ -223,7 +350,7 @@
         window.location.href = `tel:${x.office_phone}`;
         return;
       }
-                    nsAlert('Bu avukat için iletişim bilgisi bulunamadı.');
+      nsAlert('Bu avukat için iletişim bilgisi bulunamadı.');
     }
 
     function bind() {
@@ -240,6 +367,8 @@
     }
 
     async function init(){
+      const dashboardBtn = document.getElementById('dashboardBtn');
+      if (dashboardBtn) dashboardBtn.href = getDashboardHref();
       const local = normalizeLocal(loadLocal());
       allItems = local;
       try {
@@ -267,7 +396,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
 
 
 
