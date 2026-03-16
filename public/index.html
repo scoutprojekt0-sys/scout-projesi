@@ -262,7 +262,7 @@
         .desktop-support-card {
             background: linear-gradient(180deg, rgba(24, 31, 67, 0.94), rgba(13, 18, 40, 0.97));
             border: 1px solid var(--ns-line);
-            border-radius: 22px;
+            border-radius: 0 !important;
             padding: 18px 20px;
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 36px rgba(2, 5, 18, 0.28);
         }
@@ -271,24 +271,51 @@
         .top-adboard,
         .home-data-card,
         .contract-card,
-        .idea-news-square,
-        .idea-news-item,
-        .breaking-news-strip,
         .promo-ad-card,
         .success-stories-panel,
         .home-data-center-panel,
         .ad-panel {
             background: linear-gradient(180deg, rgba(24, 31, 67, 0.94), rgba(13, 18, 40, 0.97)) !important;
             border: 1px solid var(--ns-line) !important;
-            border-radius: 22px !important;
+            border-radius: 0 !important;
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 36px rgba(2, 5, 18, 0.28) !important;
+        }
+
+        .idea-news-square,
+        .breaking-news-strip {
+            background: linear-gradient(180deg, rgba(15, 28, 51, 0.96), rgba(10, 20, 38, 0.94)) !important;
+            border: 1px solid rgba(251, 146, 60, 0.38) !important;
+            border-radius: 0 !important;
+            box-shadow: 0 18px 36px rgba(2, 6, 23, 0.22) !important;
+        }
+
+        .idea-news-item,
+        .feature-news-stat,
+        .feature-news-pill,
+        .contract-live-highlight,
+        .contract-badge,
+        .top-adboard,
+        .home-data-card,
+        .promo-ad-card,
+        .below-card,
+        .success-story-item,
+        .desktop-chip,
+        .desktop-chip-btn,
+        .club-needs-inline-item,
+        .manager-needs-button-item,
+        .home-btn-global,
+        .btn,
+        button,
+        .mobile-icon-btn,
+        .notification-badge,
+        .live-count-badge {
+            border-radius: 0 !important;
         }
 
         .below-card,
         .top-adboard,
         .contract-card,
         .idea-news-square,
-        .idea-news-item,
         .promo-ad-card,
         .home-data-card,
         .ad-panel {
@@ -301,7 +328,6 @@
         .home-data-card::before,
         .contract-card::before,
         .idea-news-square::before,
-        .idea-news-item::before,
         .promo-ad-card::before,
         .ad-panel::before,
         .desktop-support-card::before {
@@ -2627,54 +2653,93 @@
         .contract-live-panel {
             width: 100%;
             min-width: 0;
-            border-radius: 14px;
-            border: 1px solid #bfdbfe;
-            background: linear-gradient(145deg, #082f66 0%, #1d4ed8 100%);
-            box-shadow: 0 14px 28px rgba(30, 58, 138, 0.18);
-            padding: 12px;
+            position: relative;
+            border-radius: 0 !important;
+            border: 1px solid rgba(251, 146, 60, 0.38);
+            background: linear-gradient(180deg, rgba(15, 28, 51, 0.96) 0%, rgba(10, 20, 38, 0.94) 100%);
+            box-shadow: 0 22px 44px rgba(2, 6, 23, 0.24);
+            padding: 18px;
             margin-bottom: 14px;
             color: #ffffff;
             overflow: hidden;
         }
 
+        .contract-live-panel::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, #f97316 0%, #fb923c 35%, #60a5fa 100%);
+        }
+
         .contract-live-head {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 14px;
         }
 
         .contract-live-title {
-            font-size: 14px;
+            font-size: 22px;
             font-weight: 800;
+            color: #f8fafc;
         }
 
         .contract-live-sub {
-            font-size: 11px;
-            opacity: 0.88;
+            margin-top: 6px;
+            font-size: 13px;
+            color: #9fb3d9;
+            opacity: 1;
+        }
+
+        .contract-live-copy {
+            min-width: 0;
+        }
+
+        .contract-live-highlight {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(251, 146, 60, 0.24);
+            background: rgba(249, 115, 22, 0.08);
+            color: #fde68a;
+            font-size: 12px;
+            font-weight: 800;
         }
 
         .breaking-news-strip {
+            position: relative;
             width: 100%;
             min-width: 0;
-            border-radius: 10px;
-            border: 1px solid #bfdbfe;
-            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
-            box-shadow: 0 8px 16px rgba(30, 58, 138, 0.18);
+            border-radius: 14px;
+            border: 1px solid rgba(251, 146, 60, 0.45);
+            background: linear-gradient(180deg, rgba(15, 28, 51, 0.96) 0%, rgba(10, 20, 38, 0.94) 100%);
+            box-shadow: 0 18px 36px rgba(2, 6, 23, 0.22);
             margin-bottom: 8px;
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 6px 10px;
+            padding: 8px 12px;
+            overflow: hidden;
+        }
+
+        .breaking-news-strip::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 3px;
+            background: linear-gradient(90deg, #f97316 0%, #fb923c 35%, #60a5fa 100%);
         }
 
         .breaking-news-badge {
             flex: 0 0 auto;
             font-size: 10px;
             font-weight: 800;
-            color: #0f172a;
-            background: #facc15;
+            color: #fff7ed;
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
             border-radius: 999px;
             padding: 3px 8px;
             white-space: nowrap;
@@ -2708,48 +2773,42 @@
 
         .breaking-news-name::before {
             content: "•";
-            color: #facc15;
+            color: #fb923c;
             margin-right: 8px;
         }
 
         .contract-ticker {
             width: 100%;
             min-width: 0;
-            overflow: hidden;
+            overflow: visible;
             position: relative;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.24);
-            background: rgba(255, 255, 255, 0.08);
+            border: 0;
+            background: transparent;
         }
 
         .contract-ticker-track {
-            display: flex;
-            align-items: stretch;
-            gap: 10px;
-            padding: 10px;
-            width: max-content;
-            animation: contractTickerMove 30s linear infinite;
-        }
-
-        .contract-ticker:hover .contract-ticker-track {
-            animation-play-state: paused;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            width: 100%;
         }
 
         .contract-card {
-            min-width: 290px;
-            max-width: 290px;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            background: rgba(15, 23, 42, 0.26);
-            border-radius: 10px;
-            padding: 10px;
+            min-width: 0;
+            max-width: none;
+            border: 1px solid rgba(251, 146, 60, 0.24);
+            background: linear-gradient(180deg, rgba(19, 35, 61, 0.92) 0%, rgba(15, 28, 51, 0.92) 100%);
+            border-radius: 0 !important;
+            padding: 14px;
             cursor: pointer;
             transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+            box-shadow: 0 12px 24px rgba(2, 6, 23, 0.16);
         }
 
         .contract-card:hover {
             transform: translateY(-2px);
-            border-color: rgba(255, 255, 255, 0.5);
-            background: rgba(15, 23, 42, 0.38);
+            border-color: rgba(251, 146, 60, 0.42);
+            background: linear-gradient(180deg, rgba(24, 43, 74, 0.96) 0%, rgba(17, 31, 54, 0.94) 100%);
         }
 
         .contract-card:focus-visible {
@@ -2766,7 +2825,7 @@
         }
 
         .contract-card-player {
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 800;
             white-space: nowrap;
             overflow: hidden;
@@ -2777,24 +2836,42 @@
             font-size: 10px;
             font-weight: 800;
             border-radius: 999px;
-            padding: 2px 8px;
-            color: #0f172a;
-            background: #fcd34d;
+            padding: 4px 8px;
+            color: #fff7ed;
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
         }
 
         .contract-badge.suspended {
-            background: #fca5a5;
+            background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
         }
 
         .contract-card-meta {
-            font-size: 11px;
-            opacity: 0.9;
-            margin-bottom: 4px;
+            font-size: 12px;
+            color: #bfdbfe;
+            opacity: 0.95;
+            margin-bottom: 6px;
         }
 
         .contract-card-note {
-            font-size: 11px;
-            line-height: 1.35;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #dbeafe;
+        }
+
+        .contract-live-footer {
+            margin-top: 14px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .contract-live-footer .btn {
+            min-width: 148px;
+        }
+
+        @media (max-width: 1024px) {
+            .contract-ticker-track {
+                grid-template-columns: 1fr;
+            }
         }
 
         .contract-preview-modal {
@@ -3004,17 +3081,26 @@
         }
 
         .idea-news-square {
+            position: relative;
             width: 100%;
             height: 350px;
-            border-radius: 14px;
-            border: 1px solid #bfdbfe;
-            background: linear-gradient(165deg, #0b3b8a 0%, #1d4ed8 100%);
-            box-shadow: 0 14px 28px rgba(30, 58, 138, 0.18);
-            padding: 14px;
+            border-radius: 6px;
+            border: 1px solid rgba(251, 146, 60, 0.4);
+            background: linear-gradient(180deg, rgba(15, 28, 51, 0.96) 0%, rgba(10, 20, 38, 0.94) 100%);
+            box-shadow: 0 22px 44px rgba(2, 6, 23, 0.24);
+            padding: 16px;
             color: #ffffff;
             overflow: hidden;
             display: flex;
             flex-direction: column;
+        }
+
+        .idea-news-square::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, #f97316 0%, #fb923c 30%, #60a5fa 100%);
         }
 
         .below-cards-grid {
@@ -3533,6 +3619,93 @@
             opacity: 0.85;
         }
 
+        .feature-news-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 12px;
+            height: 100%;
+            padding-top: 8px;
+        }
+
+        .feature-news-card .eyebrow {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #fb923c;
+        }
+
+        .feature-news-card .headline {
+            font-size: 22px;
+            line-height: 1.2;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+
+        .feature-news-card .summary {
+            font-size: 13px;
+            line-height: 1.55;
+            color: rgba(226, 232, 240, 0.88);
+            max-width: 100%;
+        }
+
+        .feature-news-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feature-news-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            border: 1px solid rgba(251, 146, 60, 0.24);
+            background: rgba(249, 115, 22, 0.08);
+            color: #fde68a;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .feature-news-stats {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px 12px;
+            margin-top: auto;
+        }
+
+        .feature-news-stat {
+            border-top: 1px solid rgba(251, 146, 60, 0.22);
+            padding-top: 8px;
+            min-width: 0;
+            cursor: pointer;
+            transition: transform .18s ease, border-color .18s ease, background .18s ease;
+        }
+
+        .feature-news-stat:hover {
+            transform: translateY(-1px);
+            border-color: rgba(251, 146, 60, 0.42);
+            background: rgba(249, 115, 22, 0.05);
+        }
+
+        .feature-news-stat .k {
+            font-size: 11px;
+            color: rgba(151, 171, 200, 0.92);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        .feature-news-stat .v {
+            margin-top: 4px;
+            font-size: 16px;
+            font-weight: 800;
+            color: #f8fafc;
+            line-height: 1.2;
+        }
+
         .idea-news-list {
             margin-top: 0;
             display: grid;
@@ -3547,24 +3720,27 @@
         }
 
         .idea-news-item {
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            background: rgba(255, 255, 255, 0.10);
-            border-radius: 10px;
+            border: 0;
+            border-bottom: 1px solid rgba(251, 146, 60, 0.22);
+            background: transparent;
+            border-radius: 6px;
             text-decoration: none;
             color: #ffffff;
             overflow: hidden;
             display: block;
             cursor: default;
+            box-shadow: none;
         }
 
         .idea-news-item:hover {
-            background: rgba(255, 255, 255, 0.16);
+            background: rgba(249, 115, 22, 0.06);
+            border-color: rgba(251, 146, 60, 0.34);
         }
 
         .idea-news-item .img {
             width: 100%;
             height: 120px;
-            background: linear-gradient(135deg, rgba(255,255,255,.25), rgba(255,255,255,.12));
+            background: linear-gradient(135deg, rgba(249,115,22,.28), rgba(96,165,250,.18));
             object-fit: cover;
             display: block;
         }
@@ -3575,9 +3751,19 @@
         }
 
         #ideaNewsList .idea-news-item {
-            border: 1px solid rgba(255, 255, 255, 0.24);
-            background: rgba(15, 23, 42, 0.45);
+            border: 0;
+            border-bottom: 1px solid rgba(251, 146, 60, 0.22);
+            background: transparent;
             min-height: 56px;
+        }
+
+        #siteNewsList .idea-news-item {
+            border: 0;
+            border-bottom: 1px solid rgba(251, 146, 60, 0.22);
+            background: transparent;
+            border-radius: 0;
+            min-height: 56px;
+            box-shadow: none;
         }
 
         #ideaNewsList .idea-news-item .body {
@@ -3587,12 +3773,61 @@
             background: none;
         }
 
+        #siteNewsList .idea-news-item .body {
+            position: static;
+            width: 100%;
+            padding: 8px 0;
+            background: none;
+        }
+
         #ideaNewsList .idea-news-item .m {
             color: rgba(226, 232, 240, .9);
         }
 
+        #siteNewsList .idea-news-item .m {
+            color: rgba(226, 232, 240, .9);
+        }
+
+        #siteNewsList {
+            display: block !important;
+            gap: 0;
+            height: auto !important;
+            min-height: 0 !important;
+            padding: 0 !important;
+            background: transparent !important;
+            border: 0 !important;
+            box-shadow: none !important;
+        }
+
+        .site-news-row {
+            display: block;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(251, 146, 60, 0.22);
+            background: transparent;
+            box-shadow: none;
+            min-height: 0 !important;
+            border-radius: 0 !important;
+        }
+
+        .site-news-row:last-child {
+            border-bottom: 0;
+        }
+
+        .site-news-row .t {
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.35;
+            color: #ffffff;
+        }
+
+        .site-news-row .m {
+            margin-top: 4px;
+            font-size: 11px;
+            color: rgba(226, 232, 240, .9);
+        }
+
         .idea-news-item .body {
-            padding: 8px 10px;
+            padding: 10px 2px 10px 0;
         }
 
         .idea-news-item .t {
@@ -4455,6 +4690,35 @@
             backdrop-filter: none !important;
         }
 
+        .news-card,
+        .news-item,
+        .news-meta,
+        .news-badge,
+        .news-date,
+        .top-adboard,
+        .ad-panel,
+        .promo-ad-card,
+        .below-card,
+        .desktop-support-card,
+        .home-data-card,
+        .success-stories-panel,
+        .success-story-item,
+        .home-data-center-panel,
+        .idea-news-square,
+        .breaking-news-strip,
+        .feature-news-card,
+        .feature-news-pill,
+        .feature-news-stat,
+        .contract-live-panel,
+        .contract-card,
+        .contract-badge,
+        .desktop-chip,
+        .desktop-chip-btn,
+        .mobile-icon-btn,
+        .btn,
+        button {
+            border-radius: 0 !important;
+        }
     </style>
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
@@ -5673,27 +5937,55 @@
             </section>
             <section class="contract-live-panel" id="homeStep2">
                 <div class="contract-live-head">
-                    <div class="contract-live-title">Sözleşme Durumu Canlı Akışı</div>
-                    <div class="contract-live-sub">Sadece sözleşmesi biten ve askıda oyuncular</div>
+                    <div class="contract-live-copy">
+                        <div class="contract-live-title">Beni Keşfet Vitrini</div>
+                        <div class="contract-live-sub">Ödeme yapan oyuncuların öne çıkan vitrin kartları burada döner.</div>
+                    </div>
+                    <div class="contract-live-highlight"><i class="fas fa-star"></i><span>Vitrin Oyuncuları</span></div>
                 </div>
                 <div class="contract-ticker">
                     <div class="contract-ticker-track" id="contractTickerTrack">
                         <article class="contract-card">
                             <div class="contract-card-top">
-                                <span class="contract-card-player">Veri yükleniyor...</span>
-                                <span class="contract-badge">Canlı</span>
+                                <span class="contract-card-player">Vitrin yükleniyor...</span>
+                                <span class="contract-badge">Öne Çıkan</span>
                             </div>
-                            <div class="contract-card-note">Akış hazırlanıyor...</div>
+                            <div class="contract-card-note">Ödeme yapan oyuncu kartları hazırlanıyor...</div>
                         </article>
                     </div>
+                </div>
+                <div class="contract-live-footer">
+                    <a href="./boost-discover.html" class="btn"><i class="fas fa-arrow-right"></i><span>Tümünü Gör</span></a>
                 </div>
             </section>
 
             <div class="idea-news-container">
                 <aside class="idea-news-square">
-                    <div class="idea-news-list" id="ideaNewsList">
-                        <div class="idea-news-item">
-                            <div class="t">Haberler yukleniyor...</div>
+                    <div class="feature-news-card">
+                        <div class="eyebrow">Günün Özeti</div>
+                        <div class="headline">Günün Transfer Özeti</div>
+                        <div class="summary" id="featureNewsSummary">Bugün platformda öne çıkan transfer hareketliliğini, yeni eşleşmeleri ve kulüp ihtiyaçlarını tek bakışta inceleyin.</div>
+                        <div class="feature-news-meta">
+                            <span class="feature-news-pill"><i class="fas fa-bolt"></i><span id="featureNewsPillPrimary">Transfer Pazarı</span></span>
+                            <span class="feature-news-pill"><i class="fas fa-calendar-day"></i><span id="featureNewsPillDate">16 Mart 2026</span></span>
+                        </div>
+                        <div class="feature-news-stats">
+                            <div class="feature-news-stat" data-feature-target="open-needs">
+                                <div class="k">Açık Fırsat</div>
+                                <div class="v" id="featureOpenNeedsValue">12 Oyuncu</div>
+                            </div>
+                            <div class="feature-news-stat" data-feature-target="top-position">
+                                <div class="k">En Çok Aranan Pozisyon</div>
+                                <div class="v" id="featureTopPositionValue">Stoper</div>
+                            </div>
+                            <div class="feature-news-stat" data-feature-target="new-matches">
+                                <div class="k">Yeni Eşleşme</div>
+                                <div class="v" id="featureNewMatchesValue">3 Oyuncu</div>
+                            </div>
+                            <div class="feature-news-stat" data-feature-target="free-players">
+                                <div class="k">Boşta Oyuncu</div>
+                                <div class="v" id="featureFreePlayersValue">28 Profil</div>
+                            </div>
                         </div>
                     </div>
                 </aside>
@@ -6369,6 +6661,70 @@
             ];
         }
 
+        const discoverBoostPanelState = {
+            rows: [],
+            startIndex: 0,
+            rotateTimer: null,
+        };
+
+        function getFallbackDiscoverBoostItems() {
+            return [
+                { player_id: '1', player_name: 'Arda K.', position: 'Forvet', club_name: 'İstanbul', package_label: 'Premium Vitrin', summary: 'Bitiriciliği ve topsuz koşuları ile öne çıkan vitrin profili.' },
+                { player_id: '2', player_name: 'Mert A.', position: 'Orta Saha', club_name: 'Ankara', package_label: 'Premium Vitrin', summary: 'Pas kalitesi ve oyun yönü yüksek yaratıcı orta saha.' },
+                { player_id: '3', player_name: 'Yusuf D.', position: 'Bek', club_name: 'İzmir', package_label: 'Premium Vitrin', summary: 'Savunma disiplini ve çizgi koşularıyla dikkat çekiyor.' },
+                { player_id: '4', player_name: 'Emirhan T.', position: 'Stoper', club_name: 'Bursa', package_label: 'Öne Çıkan', summary: 'Hava toplarında etkili ve liderlik özellikleri güçlü.' },
+                { player_id: '5', player_name: 'Kaan S.', position: 'Kanat', club_name: 'Antalya', package_label: 'Öne Çıkan', summary: 'Bire birde etkili, hızlı ve dikine oyun tehditi yüksek.' },
+            ];
+        }
+
+        function openDiscoverBoostProfile(cardElement) {
+            if (!cardElement) return;
+            const playerId = (cardElement.getAttribute('data-player-id') || '').trim();
+            const playerName = (cardElement.getAttribute('data-player-name') || '').trim();
+            if (playerId) {
+                window.location.href = resolveLocalPage(`player-profile.html?user_id=${encodeURIComponent(playerId)}&source=boost-showcase`);
+                return;
+            }
+            if (playerName) {
+                window.location.href = resolveLocalPage(`professional-players.html?q=${encodeURIComponent(playerName)}`);
+            }
+        }
+
+        function renderDiscoverBoostPanelRows() {
+            const tickerTrack = document.getElementById('contractTickerTrack');
+            if (!tickerTrack) return;
+
+            const rows = Array.isArray(discoverBoostPanelState.rows) ? discoverBoostPanelState.rows : [];
+            if (!rows.length) {
+                tickerTrack.innerHTML = '';
+                return;
+            }
+
+            const size = Math.min(3, rows.length);
+            const cards = [];
+            for (let i = 0; i < size; i += 1) {
+                const row = rows[(discoverBoostPanelState.startIndex + i) % rows.length];
+                const playerId = esc((row?.player_id || row?.id || '').toString().trim());
+                const playerName = esc((row?.player_name || row?.name || 'Oyuncu').toString().trim());
+                const position = esc((row?.position || 'Oyuncu').toString().trim());
+                const cityOrClub = esc((row?.club_name || row?.club || row?.city || 'Konum yok').toString().trim());
+                const badge = esc((row?.package_label || row?.badge || 'Öne Çıkan').toString().trim());
+                const note = esc((row?.summary || row?.note || 'Vitrin oyuncu profili.').toString().trim());
+                cards.push(`
+                    <article class="contract-card" role="button" tabindex="0" onclick="openDiscoverBoostProfile(this)" data-player-id="${playerId}" data-player-name="${playerName}">
+                        <div class="contract-card-top">
+                            <span class="contract-card-player">${playerName}</span>
+                            <span class="contract-badge">${badge}</span>
+                        </div>
+                        <div class="contract-card-meta">${position} • ${cityOrClub}</div>
+                        <div class="contract-card-note">${note}</div>
+                    </article>
+                `);
+            }
+
+            tickerTrack.innerHTML = cards.join('');
+        }
+
         function normalizeContractItem(item) {
             const statusRaw = (item?.status || item?.contract_status || '').toString().trim().toLowerCase();
             const status = statusRaw === 'suspended' ? 'suspended' : (statusRaw === 'expired' ? 'expired' : '');
@@ -6391,43 +6747,36 @@
             let items = [];
             if (!IS_FILE_MODE) {
                 try {
-                    const payload = await fetchJsonSafe(`${API_BASE_URL}/contracts/live?statuses=expired,suspended&limit=12`);
-                    const rawList = Array.isArray(payload?.data)
-                        ? payload.data
-                        : (Array.isArray(payload?.items) ? payload.items : []);
-                    items = rawList.map(normalizeContractItem).filter(Boolean);
+                    const payload = await fetchJsonSafe(`${API_BASE_URL}/discovery/boosts`);
+                    const rawList = parseBoostRows(payload).filter((row) => row && typeof row === 'object');
+                    items = rawList.map((row) => ({
+                        player_id: (row?.player_id || row?.id || '').toString().trim(),
+                        player_name: (row?.player_name || row?.name || 'Oyuncu').toString().trim(),
+                        position: (row?.position || 'Oyuncu').toString().trim(),
+                        club_name: (row?.city || row?.club_name || row?.club || 'Konum yok').toString().trim(),
+                        package_label: (row?.package_label || row?.badge || 'Öne Çıkan').toString().trim(),
+                        summary: (row?.summary || row?.note || 'Vitrin oyuncu profili.').toString().trim(),
+                    }));
                 } catch (error) {}
             }
 
             if (!items.length) {
-                items = getFallbackContractStreamItems().map(normalizeContractItem).filter(Boolean);
+                items = getFallbackDiscoverBoostItems();
             }
 
-            const filtered = items.filter((item) => item?.status === 'expired' || item?.status === 'suspended');
-            if (!filtered.length) {
-                tickerTrack.innerHTML = '';
-                return;
+            discoverBoostPanelState.rows = items.filter((item) => item && typeof item === 'object');
+            discoverBoostPanelState.startIndex = 0;
+            renderDiscoverBoostPanelRows();
+
+            if (discoverBoostPanelState.rotateTimer) {
+                clearInterval(discoverBoostPanelState.rotateTimer);
             }
-
-            const doubled = filtered.concat(filtered);
-            tickerTrack.innerHTML = doubled.map((item) => {
-                const badgeText = item.status === 'suspended' ? 'Sozlesmesi Askida' : 'Sozlesmesi Biten';
-                const badgeClass = item.status === 'suspended' ? 'contract-badge suspended' : 'contract-badge';
-                const note = item.note || (item.status === 'suspended'
-                    ? 'Lisansı askıda, görüşmelere açık.'
-                    : 'Sozlesmesi bitti, yeni teklifler degerlendiriliyor.');
-
-                return `
-                    <article class="contract-card" role="button" tabindex="0" data-player-id="${esc(item.player_id)}" data-player-name="${esc(item.player_name)}" data-player-position="${esc(item.position)}" data-player-club="${esc(item.club_name)}" data-player-status="${esc(item.status)}" data-player-note="${esc(note)}">
-                        <div class="contract-card-top">
-                            <span class="contract-card-player">${esc(item.player_name)}</span>
-                            <span class="${badgeClass}">${badgeText}</span>
-                        </div>
-                        <div class="contract-card-meta">${esc(item.position)} • ${esc(item.club_name)}</div>
-                        <div class="contract-card-note">${esc(note)}</div>
-                    </article>
-                `;
-            }).join('');
+            if (discoverBoostPanelState.rows.length > 3) {
+                discoverBoostPanelState.rotateTimer = setInterval(() => {
+                    discoverBoostPanelState.startIndex = (discoverBoostPanelState.startIndex + 3) % discoverBoostPanelState.rows.length;
+                    renderDiscoverBoostPanelRows();
+                }, 45000);
+            }
         }
 
         function openContractPlayerProfile(cardElement) {
@@ -6514,7 +6863,7 @@
             tickerTrack.addEventListener('click', function(event) {
                 const card = event.target.closest('.contract-card');
                 if (!card) return;
-                openContractQuickPreview(card);
+                openDiscoverBoostProfile(card);
             });
 
             tickerTrack.addEventListener('keydown', function(event) {
@@ -6522,7 +6871,7 @@
                 const card = event.target.closest('.contract-card');
                 if (!card) return;
                 event.preventDefault();
-                openContractQuickPreview(card);
+                openDiscoverBoostProfile(card);
             });
         }
 
@@ -6547,6 +6896,28 @@
                     <div class="t">${title}</div>
                     <div class="m">${metaEsc}</div>
                 </div>
+            </div>`;
+        }
+
+        function renderSiteNewsItem(item) {
+            const when = item.publishedAt ? new Date(item.publishedAt).toLocaleString('tr-TR') : 'Simdi';
+            const sourceLabel = /^fotoma[cç]$/i.test((item.source || '').trim()) ? '' : (item.source || '');
+            const meta = sourceLabel ? `${sourceLabel} • ${when}` : when;
+            const title = (item.title || '').toString()
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            const metaEsc = meta
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            return `<div class="site-news-row">
+                <div class="t">${title}</div>
+                <div class="m">${metaEsc}</div>
             </div>`;
         }
 
@@ -6589,13 +6960,13 @@
                 const normalized = items.map(normalizeIdeaNewsItem).filter(Boolean).slice(0, 2);
 
                 if (!normalized.length) {
-                    root.innerHTML = '<div class="idea-news-item"><div class="t">Sitede haber yok.</div><div class="m">Yeni içerik bekleniyor.</div></div>';
+                    root.innerHTML = '<div class="site-news-row"><div class="t">Sitede haber yok.</div><div class="m">Yeni içerik bekleniyor.</div></div>';
                     return;
                 }
 
-                root.innerHTML = normalized.map(renderIdeaNewsItem).join('');
+                root.innerHTML = normalized.map(renderSiteNewsItem).join('');
             } catch (error) {
-                root.innerHTML = '<div class="idea-news-item"><div class="t">Site haberleri alınamadı.</div><div class="m">API kontrol et.</div></div>';
+                root.innerHTML = '<div class="site-news-row"><div class="t">Site haberleri alınamadı.</div><div class="m">API kontrol et.</div></div>';
             }
         }
 
@@ -6802,6 +7173,153 @@
             root.textContent = `Veri Durumu: Güncel veri ${leaguesCount} lig / ${clubCount} KULÜP / ${playerCount} oyuncu / ${coachCount} ANTRENÖR / ${qualityHigh} yüksek kalite profil`;
         }
 
+        function normalizeTransferCategoryValue(value) {
+            const raw = (value || '').toString().trim().toLowerCase();
+            if (!raw) return '';
+            if (['free', 'bosta', 'boşta', 'free-agent'].includes(raw)) return 'free';
+            if (['contracted', 'sozlesmeli', 'sözleşmeli'].includes(raw)) return 'contracted';
+            if (['seeking-club', 'kulup-ariyor', 'kulüp-arıyor', 'kulup ariyor'].includes(raw)) return 'seeking-club';
+            return raw;
+        }
+
+        function normalizePositionLabel(value) {
+            const raw = (value || '').toString().trim();
+            if (!raw) return '';
+            const compact = raw
+                .toLocaleLowerCase('tr-TR')
+                .replace(/\s+/g, ' ')
+                .replace(/[._-]+/g, ' ')
+                .trim();
+
+            if (/stoper|center back|centre back|cb/.test(compact)) return 'Stoper';
+            if (/kaleci|goalkeeper|gk/.test(compact)) return 'Kaleci';
+            if (/bek|right back|left back|full back|wing back/.test(compact)) return 'Bek';
+            if (/orta saha|midfield|cm|dm|am|10 numara|6 numara|8 numara/.test(compact)) return 'Orta Saha';
+            if (/kanat|winger|wing/.test(compact)) return 'Kanat';
+            if (/forvet|santrafor|forward|striker|fw|cf/.test(compact)) return 'Forvet';
+            return raw.charAt(0).toUpperCase() + raw.slice(1);
+        }
+
+        const featureTransferCardState = {
+            openNeedsCount: 12,
+            topPosition: 'Stoper',
+            newMatchesCount: 3,
+            freePlayersCount: 28,
+        };
+
+        async function renderFeatureTransferCard() {
+            const openNeedsEl = document.getElementById('featureOpenNeedsValue');
+            const topPositionEl = document.getElementById('featureTopPositionValue');
+            const newMatchesEl = document.getElementById('featureNewMatchesValue');
+            const freePlayersEl = document.getElementById('featureFreePlayersValue');
+            const summaryEl = document.getElementById('featureNewsSummary');
+            const primaryPillEl = document.getElementById('featureNewsPillPrimary');
+            const datePillEl = document.getElementById('featureNewsPillDate');
+            if (!openNeedsEl || !topPositionEl || !newMatchesEl || !freePlayersEl) return;
+
+            const toArray = window.NextScoutData?.toArray || ((input) => Array.isArray(input) ? input : []);
+            const todayLabel = new Date().toLocaleDateString('tr-TR', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric',
+            });
+
+            try {
+                const [playersPayload, needsPayload, managerNeedsPayload, coachNeedsPayload, trendsPayload] = await Promise.all([
+                    fetchJsonSafe(`${API_BASE_URL}/public/players?limit=1000`),
+                    fetchJsonSafe(`${API_BASE_URL}/club-needs?limit=300`),
+                    fetchJsonSafe(`${API_BASE_URL}/discovery/manager-needs`),
+                    fetchJsonSafe(`${API_BASE_URL}/discovery/coach-needs`),
+                    fetchJsonSafe(`${API_BASE_URL}/trending/week`),
+                ]);
+
+                const players = toArray(playersPayload?.data ?? playersPayload).filter((row) => row && typeof row === 'object');
+                const clubNeeds = toArray(needsPayload?.data ?? needsPayload).filter((row) => row && typeof row === 'object');
+                const managerNeeds = toArray(managerNeedsPayload?.data ?? managerNeedsPayload).filter((row) => row && typeof row === 'object');
+                const coachNeeds = toArray(coachNeedsPayload?.data ?? coachNeedsPayload).filter((row) => row && typeof row === 'object');
+                const trends = toArray(trendsPayload?.data ?? trendsPayload).filter((row) => row && typeof row === 'object');
+                const combinedNeeds = [...clubNeeds, ...managerNeeds, ...coachNeeds];
+
+                const openNeedsCount = combinedNeeds.length || 12;
+                const freePlayersCount = players.filter((row) => normalizeTransferCategoryValue(row?.transfer_category || row?.contract_status || row?.status) === 'free').length || 28;
+                const newMatchesCount = trends.length || players.filter((row) => row?.radar_new === true || row?.radar_new === 1 || String(row?.scout_radar || '').toLowerCase() === 'new').length || 3;
+
+                const positionCounts = new Map();
+                combinedNeeds.forEach((row) => {
+                    const label = normalizePositionLabel(row?.position || row?.player_position || row?.need_position || row?.role);
+                    if (!label) return;
+                    positionCounts.set(label, (positionCounts.get(label) || 0) + 1);
+                });
+                if (!positionCounts.size) {
+                    players.forEach((row) => {
+                        const label = normalizePositionLabel(row?.position || row?.primary_position || row?.role);
+                        if (!label) return;
+                        positionCounts.set(label, (positionCounts.get(label) || 0) + 1);
+                    });
+                }
+
+                const topPosition = Array.from(positionCounts.entries()).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Stoper';
+                featureTransferCardState.openNeedsCount = openNeedsCount;
+                featureTransferCardState.topPosition = topPosition;
+                featureTransferCardState.newMatchesCount = newMatchesCount;
+                featureTransferCardState.freePlayersCount = freePlayersCount;
+
+                openNeedsEl.textContent = `${openNeedsCount} Oyuncu`;
+                topPositionEl.textContent = topPosition;
+                newMatchesEl.textContent = `${newMatchesCount} Oyuncu`;
+                freePlayersEl.textContent = `${freePlayersCount} Profil`;
+                if (primaryPillEl) primaryPillEl.textContent = openNeedsCount > 0 ? 'Bugünün Verisi' : 'Transfer Pazarı';
+                if (datePillEl) datePillEl.textContent = todayLabel;
+                if (summaryEl) {
+                    summaryEl.textContent = `Bugün ${openNeedsCount} açık fırsat, ${newMatchesCount} yeni eşleşme ve ${freePlayersCount} boşta oyuncu öne çıkıyor.`;
+                }
+                return;
+            } catch (error) {}
+
+            featureTransferCardState.openNeedsCount = 12;
+            featureTransferCardState.topPosition = 'Stoper';
+            featureTransferCardState.newMatchesCount = 3;
+            featureTransferCardState.freePlayersCount = 28;
+            openNeedsEl.textContent = '12 Oyuncu';
+            topPositionEl.textContent = 'Stoper';
+            newMatchesEl.textContent = '3 Oyuncu';
+            freePlayersEl.textContent = '28 Profil';
+            if (primaryPillEl) primaryPillEl.textContent = 'Demo Veri';
+            if (datePillEl) datePillEl.textContent = todayLabel;
+            if (summaryEl) {
+                summaryEl.textContent = 'API hazır değilse kart demo özetle çalışır; altyapı geldiğinde bugünün verileri burada otomatik güncellenir.';
+            }
+        }
+
+        function bindFeatureTransferCard() {
+            document.querySelectorAll('.feature-news-stat[data-feature-target]').forEach((card) => {
+                card.addEventListener('click', () => {
+                    const target = card.getAttribute('data-feature-target');
+                    if (target === 'open-needs') {
+                        const topPosition = (featureTransferCardState.topPosition || '').trim();
+                        if (topPosition) {
+                            window.location.href = resolveLocalPage(`discover-opportunities.html?position=${encodeURIComponent(topPosition)}`);
+                        } else {
+                            window.location.href = resolveLocalPage('discover-opportunities.html');
+                        }
+                        return;
+                    }
+                    if (target === 'top-position') {
+                        const label = (featureTransferCardState.topPosition || document.getElementById('featureTopPositionValue')?.textContent || '').trim();
+                        window.location.href = resolveLocalPage(`discover-opportunities.html?position=${encodeURIComponent(label)}`);
+                        return;
+                    }
+                    if (target === 'new-matches') {
+                        window.location.href = resolveLocalPage('professional-players.html?scout_radar=new');
+                        return;
+                    }
+                    if (target === 'free-players') {
+                        window.location.href = resolveLocalPage('professional-players.html?transfer_category=free');
+                    }
+                });
+            });
+        }
+
         async function renderSuccessStoriesPanel() {
             const root = document.getElementById('successStoriesList');
             const mobileRoot = document.getElementById('mobileSuccessStoriesList');
@@ -6946,6 +7464,7 @@
         function startAutoRefresh() {
             // İlk yükleme
             renderBreakingNewsStrip();
+            renderFeatureTransferCard();
             renderClubNeedsInlineList();
             renderPaidClubPromoNamesInline();
             renderDataStatusStrip();
@@ -7025,9 +7544,11 @@
                 testAPIConnection();
             }
             startAutoRefresh();
+            bindFeatureTransferCard();
             bindContractTickerEvents();
             renderManagerNeedsButtonPanel();
             renderContractStatusTicker();
+            window.NextScoutGrowth?.idle(() => renderFeatureTransferCard(), 800);
             window.NextScoutGrowth?.idle(() => renderIdeaNewsSquare(), 900);
             window.NextScoutGrowth?.idle(() => renderSiteNewsSquare(), 1100);
             window.NextScoutGrowth?.idle(() => renderHomepageInfoCards(), 1300);

@@ -104,9 +104,9 @@
     .action-btn { padding: 8px 10px; border: 1px solid #475569; background: #1f2937; color: #bfdbfe; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; transition: all .2s; }
     .action-btn:hover { background: #334155; color: white; border-color: #60a5fa; }
     .action-btn.primary { background: linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%); color: white; border-color: transparent; }
-    .quick-report-section { background: #232a33; border:1px solid #334155; border-radius: 12px; padding: 20px; box-shadow: 0 12px 24px rgba(2,6,23,.2); }
+.quick-report-section { background: #232a33; border:1px solid #334155; border-radius: 0 !important; padding: 20px; box-shadow: 0 12px 24px rgba(2,6,23,.2); }
     .quick-report-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
-    .quick-report-result { border: 1px solid #475569; border-radius: 10px; background: #1f2937; padding: 10px 12px; font-size: 12px; color: #dbeafe; }
+.quick-report-result { border: 1px solid #475569; border-radius: 0 !important; background: #1f2937; padding: 10px 12px; font-size: 12px; color: #dbeafe; }
 
     @media (max-width: 1024px) {
       .search-grid { grid-template-columns: repeat(2,1fr); }
@@ -434,6 +434,32 @@
         border-radius: 14px 14px 0 0;
       }
     }
+    .top-navbar,
+    .btn-small,
+    .need-modal,
+    .player-search-modal,
+    .need-modal-body input,
+    .need-modal-body textarea,
+    .need-modal-body select,
+    .sidebar,
+    .sidebar-item,
+    .welcome-card,
+    .stat-card,
+    .search-section,
+    .results-section,
+    .quick-report-section,
+    .quick-report-result,
+    .form-group input,
+    .form-group select,
+    .search-btn,
+    .player-card,
+    .player-rating,
+    .action-btn,
+    .player-card-image,
+    .card-actions,
+    .need-modal-actions button {
+      border-radius: 0 !important;
+    }
   </style>
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
@@ -458,9 +484,8 @@
           <li class="sidebar-item" onclick="openScoutProfile()"><i class="fas fa-user"></i><span>Profilim</span></li>
           <li class="sidebar-item" onclick="openWatchlist()"><i class="fas fa-list-check"></i><span>Takip Listem</span></li>
           <li class="sidebar-item" onclick="openTrialCenter()"><i class="fas fa-calendar-check"></i><span>Deneme & Idmanlar</span></li>
-          <li class="sidebar-item" onclick="openPerformance()"><i class="fas fa-chart-line"></i><span>Performans Analizi</span></li>
-          <li class="sidebar-item" onclick="openVideoAnalysis()"><i class="fas fa-video"></i><span>Video Analiz</span></li>
-          <li class="sidebar-item" onclick="openLiveScoutModal()"><i class="fas fa-tower-broadcast"></i><span>Canlı Scout</span></li>
+        <li class="sidebar-item" onclick="openPerformance()"><i class="fas fa-chart-line"></i><span>Istatistikler</span></li>
+        <li class="sidebar-item" onclick="openScoutReports()"><i class="fas fa-file-lines"></i><span>Scout Raporları</span></li>
           <li class="sidebar-item" onclick="openMessages()"><i class="fas fa-comments"></i><span>Mesajlarim</span></li>
           <li class="sidebar-item" onclick="openSettings()"><i class="fas fa-gear"></i><span>Ayarlar</span></li>
           <li class="sidebar-item" onclick="openHelp()"><i class="fas fa-circle-question"></i><span>Yardim</span></li>
@@ -867,7 +892,7 @@
     function openTrialCenter() { window.location.href = 'trial-center.html?view=coach'; }
     function openScoutProfile() { window.location.href = 'scout-profile.html'; }
     function openPerformance() { window.location.href = 'statistics.html'; }
-    function openVideoAnalysis() { window.location.href = 'scout-live-matches.html'; }
+    function openScoutReports() { window.location.href = 'scout-reports.html'; }
     function openMessages() { window.location.href = 'notifications.html'; }
     function openSettings() { window.location.href = 'settings.html'; }
     function openHelp() { window.location.href = 'help.html'; }
@@ -1410,8 +1435,59 @@
       });
     }
 
+    function applyTurkishTextFixesFinal() {
+      document.title = 'Scout Dashboard | NextScout';
+
+      const setText = (selector, text) => {
+        const el = document.querySelector(selector);
+        if (el) el.textContent = text;
+      };
+
+      setText('.navbar-left .logo', 'NextScout Scout');
+      setText('.sidebar-item:nth-of-type(4) span', 'Deneme & \u0130dmanlar');
+      setText('.sidebar-item:nth-of-type(5) span', '\u0130statistikler');
+      setText('.sidebar-item:nth-of-type(6) span', 'Scout Raporlar\u0131');
+      setText('.sidebar-item:nth-of-type(7) span', 'Mesajlar\u0131m');
+      setText('.sidebar-item:nth-of-type(9) span', 'Yard\u0131m');
+      setText('.content h1', 'Scout Dashboard');
+      setText('.quick-report-result', 'Hen\u00fcz rapor kayd\u0131 yok.');
+
+      document.querySelectorAll('label').forEach((label) => {
+        const value = (label.textContent || '').trim();
+        if (value === 'Yas Araligi') label.textContent = 'Ya\u015f Aral\u0131\u011f\u0131';
+        if (value === 'Yas') label.textContent = 'Ya\u015f';
+      });
+
+      document.querySelectorAll('button, span, h2, h3, option').forEach((el) => {
+        const value = (el.textContent || '').trim();
+        if (value === 'Deneme/Idman Ilani') el.textContent = 'Deneme/\u0130dman \u0130lan\u0131';
+        if (value === 'Canlı Scout Baslat' || value === 'Canl\u0131 Scout Baslat') el.textContent = 'Canl\u0131 Scout Ba\u015flat';
+        if (value === 'Mesajlarim') el.textContent = 'Mesajlar\u0131m';
+        if (value === 'Yardim') el.textContent = 'Yard\u0131m';
+        if (value === 'Scout Sonuclari') el.textContent = 'Scout Sonu\u00e7lar\u0131';
+        if (value === 'Canlı Scout Baslat' || value === 'Canli Scout Baslat') el.textContent = 'Canl\u0131 Scout Ba\u015flat';
+        if (value === 'Iptal') el.textContent = '\u0130ptal';
+        if (value === 'Yayini Baslat') el.textContent = 'Yay\u0131n\u0131 Ba\u015flat';
+        if (value === 'Deneme / Idman Ilani') el.textContent = 'Deneme / \u0130dman \u0130lan\u0131';
+        if (value === 'Idman') el.textContent = '\u0130dman';
+        if (value === 'Deneme Maci') el.textContent = 'Deneme Ma\u00e7\u0131';
+        if (value === 'Yayina Al') el.textContent = 'Yay\u0131na Al';
+      });
+
+      document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach((el) => {
+        const value = el.getAttribute('placeholder') || '';
+        if (value === 'Oyuncu adi gir') el.setAttribute('placeholder', 'Oyuncu ad\u0131 gir');
+        if (value === 'Baslik (or: U19 icin hizli sol kanat araniyor)') el.setAttribute('placeholder', 'Ba\u015fl\u0131k (\u00f6r: U19 i\u00e7in h\u0131zl\u0131 sol kanat aran\u0131yor)');
+        if (value === 'Ne aradigini yaz... (pozisyon, yas, fizik, oyun tarzi vb.)') el.setAttribute('placeholder', 'Ne arad\u0131\u011f\u0131n\u0131 yaz... (pozisyon, ya\u015f, fizik, oyun tarz\u0131 vb.)');
+        if (value === 'Mac adi (or: U19 Hazirlik Maci)') el.setAttribute('placeholder', 'Ma\u00e7 ad\u0131 (\u00f6r: U19 Haz\u0131rl\u0131k Ma\u00e7\u0131)');
+        if (value === 'Ana yayin linki (opsiyonel)') el.setAttribute('placeholder', 'Ana yay\u0131n linki (opsiyonel)');
+        if (value === 'Baslik (or: U19 Acik Deneme)') el.setAttribute('placeholder', 'Ba\u015fl\u0131k (\u00f6r: U19 A\u00e7\u0131k Deneme)');
+      });
+    }
+
     async function init() {
       applyTurkishTextFixes();
+      applyTurkishTextFixesFinal();
       const grid = document.getElementById('playersGrid');
       grid.innerHTML = '<div style="padding:18px;border:1px solid #475569;border-radius:10px;background:#1f2937;color:#cbd5e1;">Oyuncular yukleniyor...</div>';
 

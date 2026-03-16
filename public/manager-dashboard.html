@@ -17,7 +17,9 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#4f46e5">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/mobile-unified.css">
     <style>
@@ -34,13 +36,29 @@
             --accent: #0ea5e9;
             --success: #14b8a6;
         }
+        html {
+            min-height: 100%;
+            background:
+                radial-gradient(circle at 12% 18%, rgba(56, 189, 248, 0.18), transparent 0 30%),
+                radial-gradient(circle at 88% 14%, rgba(249, 115, 22, 0.16), transparent 0 34%),
+                radial-gradient(circle at 50% 100%, rgba(14, 165, 233, 0.08), transparent 0 38%),
+                linear-gradient(180deg, #08111f 0%, #0b172a 52%, #09111d 100%);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+        }
         body {
             font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: var(--ink);
             background:
-                radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.16), transparent 34%),
-                radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.14), transparent 36%),
-                var(--bg);
+                radial-gradient(circle at 12% 18%, rgba(56, 189, 248, 0.18), transparent 0 30%),
+                radial-gradient(circle at 88% 14%, rgba(249, 115, 22, 0.16), transparent 0 34%),
+                radial-gradient(circle at 50% 100%, rgba(14, 165, 233, 0.08), transparent 0 38%),
+                linear-gradient(180deg, #08111f 0%, #0b172a 52%, #09111d 100%);
+            min-height: 100vh;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
         }
         .top-navbar {
             background: rgba(31, 37, 45, 0.92);
@@ -58,8 +76,9 @@
         }
         .navbar-left { display: flex; align-items: center; gap: 24px; flex: 1; }
         .logo {
-            font-size: 21px;
-            font-weight: 800;
+            font-size: 22px;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
             color: #bfdbfe;
             letter-spacing: 0.2px;
             min-width: 170px;
@@ -83,11 +102,12 @@
         .btn-small.success { background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%); color: #fff; }
         .btn-small:hover { transform: translateY(-1px); filter: brightness(1.06); }
         .home-btn {
-            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%) !important;
-            border: 1px solid #2563eb !important;
+            background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%) !important;
+            border: 1px solid rgba(255, 126, 34, 0.6) !important;
             color: #ffffff !important;
-            border-radius: 10px !important;
+            border-radius: 12px !important;
             padding: 10px 14px !important;
+            box-shadow: 0 16px 28px rgba(255,90,31,0.28);
         }
 
         .main-container {
@@ -584,6 +604,33 @@
                 flex-direction: column;
                 align-items: stretch !important;
             }
+        }
+        .top-navbar,
+        .btn-small,
+        .home-btn,
+        .sidebar,
+        .sidebar-item,
+        .welcome-card,
+        .stat-card,
+        .search-section,
+        .results-section,
+        .need-section,
+        .offer-score-section,
+        .form-group input,
+        .form-group select,
+        .search-btn,
+        .player-card,
+        .player-card-image,
+        .player-rating,
+        .action-btn,
+        .transfer-summary-card,
+        .transfer-list-box,
+        .transfer-list li,
+        .compare-chip,
+        .compare-result-card,
+        .compare-badge,
+        .compare-rank {
+            border-radius: 0 !important;
         }
     </style>
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
@@ -1421,6 +1468,35 @@
             }
         });
 
+        function applyTurkishTextFixes() {
+            document.title = 'Manager Dashboard | NextScout';
+            const welcomeTitle = document.querySelector('.welcome-card h1');
+            if (welcomeTitle) welcomeTitle.textContent = 'Manager Dashboard';
+            const welcomeSub = document.querySelector('.welcome-card p');
+            if (welcomeSub) welcomeSub.textContent = 'Oyuncu ara, profil incele, başvuru gönder ve favori listeni yönet.';
+            document.querySelectorAll('.sidebar-item span:last-child').forEach((el) => {
+                let text = el.textContent || '';
+                text = text
+                    .replace('Gonderilen Basvurular', 'Gönderilen Başvurular')
+                    .replace('Yanitlanan Basvurular', 'Yanıtlanan Başvurular')
+                    .replace('Aradigim Oyuncular', 'Aradığım Oyuncular')
+                    .replace('Mesajlarim', 'Mesajlarım')
+                    .replace('Yardim', 'Yardım');
+                el.textContent = text;
+            });
+            document.querySelectorAll('h2').forEach((el) => {
+                let text = el.textContent || '';
+                text = text
+                    .replace('Aradigim Oyuncu Ilanlari', 'Aradığım Oyuncu İlanları')
+                    .replace('Arama Sonuclari', 'Arama Sonuçları');
+                el.textContent = text;
+            });
+            document.querySelectorAll('.stat-card-label').forEach((el) => {
+                el.textContent = (el.textContent || '').replace('Gonderilen Başvuru', 'Gönderilen Başvuru');
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', applyTurkishTextFixes);
         window.addEventListener('DOMContentLoaded', init);
         window.addEventListener('DOMContentLoaded', loadOfferScoreSnapshot);
     </script>

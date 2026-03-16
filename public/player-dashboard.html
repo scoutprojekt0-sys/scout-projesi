@@ -621,6 +621,32 @@
             }
             .kpi-strip { grid-template-columns: 1fr; }
         }
+        .top-navbar,
+        .btn-small,
+        .sidebar,
+        .sidebar-item,
+        .welcome-card,
+        .stat-card,
+        .profile-summary-card,
+        .status-card,
+        .highlight-card,
+        .quick-action-card,
+        .activity-card,
+        .notifications-card,
+        .offer-card,
+        .mini-stat,
+        .progress-card,
+        .chart-card,
+        .modal-card,
+        .modal-body input,
+        .modal-body select,
+        .modal-body textarea,
+        .action-link,
+        .btn-action,
+        .summary-badge,
+        .nav a {
+            border-radius: 0 !important;
+        }
     </style>
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
@@ -633,6 +659,7 @@
             <a href="notifications.html" aria-label="Bildirim" title="Bildirim"><i class="fas fa-bell"></i><span class="nav-label">Bildirim</span></a>
             <a href="scout-watchlist.html" aria-label="Takip Listem" title="Takip Listem"><i class="fas fa-list-check"></i><span class="nav-label">Takip Listem</span></a>
             <a href="professional-players.html?player_view=discover" aria-label="Kesfet" title="Kesfet"><i class="fas fa-compass"></i><span class="nav-label">Kesfet</span></a>
+            <a href="help.html" aria-label="Yardim" title="Yardim"><i class="fas fa-circle-question"></i><span class="nav-label">Yardim</span></a>
         </div>
     </div>
 
@@ -1560,14 +1587,50 @@
             const offerSub = document.getElementById('transferOfferSub');
 
             if (interestValue) interestValue.textContent = String(23 + likes);
-            if (interestSub) interestSub.textContent = likes > 0 ? `${likes} yeni begeni` : 'Yeni begeni bekleniyor';
+            if (interestSub) interestSub.textContent = likes > 0 ? `${likes} yeni be\u011feni` : 'Yeni be\u011feni bekleniyor';
             if (incomingText) incomingText.textContent = `Gelen kutusunda ${incoming} yeni mesaj var`;
             if (incomingTag) incomingTag.textContent = incoming > 0 ? `${incoming} Mesaj` : 'Mesaj';
             if (viewsValue) viewsValue.textContent = new Intl.NumberFormat('tr-TR').format(views);
             if (videoValue) videoValue.textContent = String(videoCount);
-            if (videoSub) videoSub.textContent = videoCount > 1 ? `${Math.max(1, Math.round(videoCount / 4))} yeni video beklemede` : 'Video yuklemeye hazir';
+            if (videoSub) videoSub.textContent = videoCount > 1 ? `${Math.max(1, Math.round(videoCount / 4))} yeni video beklemede` : 'Video y\u00fcklemeye haz\u0131r';
             if (offerValue) offerValue.textContent = String(offers);
-            if (offerSub) offerSub.textContent = offers > 0 ? `${Math.max(1, offers - 1)} teklif acik` : 'Henuz teklif yok';
+            if (offerSub) offerSub.textContent = offers > 0 ? `${Math.max(1, offers - 1)} teklif a\u00e7\u0131k` : 'Hen\u00fcz teklif yok';
+        }
+
+        function applyTurkishTextFixes() {
+            document.title = 'Oyuncu Dashboard | NextScout';
+
+            const setText = (selector, text) => {
+                const el = document.querySelector(selector);
+                if (el) el.textContent = text;
+            };
+
+            setText('.welcome h1', 'Ho\u015f Geldin, Oyuncu!');
+            setText('.welcome p', 'Profilini g\u00fc\u00e7lendir, ma\u00e7 videolar\u0131n\u0131 y\u00fckle ve scout ilgisini art\u0131r.');
+            setText('#videoCountSub', '2 yeni video beklemede');
+            setText('#scoutInterestSub', '5 yeni takip\u00e7i');
+            setText('#transferOfferSub', '1 teklif a\u00e7\u0131k');
+            setText('#latestNewTitle', 'Scout Radar\u0131nda yeni e\u015fle\u015fme');
+            setText('#latestTrendTitle', 'Video performans\u0131 y\u00fckseldi');
+            setText('#latestTrendDesc', 'D\u00fcnk\u00fc videonun izlenmesi +38%');
+
+            document.querySelectorAll('.btn, .nav a, .t, .d, .stat-label, .k, .metric-item-title, .metric-item-meta').forEach((el) => {
+                const value = (el.textContent || '').trim();
+                if (value === 'Iletisime Gec') el.textContent = '\u0130leti\u015fime Ge\u00e7';
+                if (value === 'Mac Video Arsivi') el.textContent = 'Ma\u00e7 Video Ar\u015fivi';
+                if (value === 'Scout Karti') el.textContent = 'Scout Kart\u0131';
+                if (value === 'Scout Ilgisi') el.textContent = 'Scout \u0130lgisi';
+                if (value === 'Transfer Teklifi') el.textContent = 'Transfer Teklifi';
+                if (value === 'Scout Gozlem Seansi') el.textContent = 'Scout G\u00f6zlem Seans\u0131';
+                if (value === 'Kayitli takvim etkinligi yok') el.textContent = 'Kay\u0131tl\u0131 takvim etkinli\u011fi yok';
+                if (value === 'Firsat Takvimi kartlarindan etkinlik ekleyebilirsin.') el.textContent = 'F\u0131rsat Takvimi kartlar\u0131ndan etkinlik ekleyebilirsin.';
+                if (value === 'Bos') el.textContent = 'Bo\u015f';
+                if (value === 'Planli') el.textContent = 'Planl\u0131';
+                if (value === 'Katilim Onayi Ver') el.textContent = 'Kat\u0131l\u0131m Onay\u0131 Ver';
+                if (value === 'Hatirlatici Kur') el.textContent = 'Hat\u0131rlat\u0131c\u0131 Kur';
+                if (value === 'Takvime Ekle') el.textContent = 'Takvime Ekle';
+                if (value === 'Mesaj Gonder') el.textContent = 'Mesaj G\u00f6nder';
+            });
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -1575,9 +1638,10 @@
             try {
                 const u = raw ? JSON.parse(raw) : null;
                 const welcome = document.querySelector('.welcome h1');
-                if (welcome && u?.name) welcome.textContent = `Hos Geldin, ${u.name.split(' ')[0]}!`;
+                if (welcome && u?.name) welcome.textContent = `Ho\u015f Geldin, ${u.name.split(' ')[0]}!`;
             } catch (e) {}
 
+            applyTurkishTextFixes();
             refreshPlayerDashboardLiveStats();
             loadDashboardApiMetrics();
             loadLatestApiHighlights();

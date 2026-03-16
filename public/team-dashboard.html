@@ -17,14 +17,40 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#4f46e5">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/mobile-unified.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Inter, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f3f4f6; color: #1f2937; }
+        html {
+            min-height: 100%;
+            background:
+                radial-gradient(circle at 12% 18%, rgba(56, 189, 248, 0.18), transparent 0 30%),
+                radial-gradient(circle at 88% 14%, rgba(249, 115, 22, 0.16), transparent 0 34%),
+                radial-gradient(circle at 50% 100%, rgba(14, 165, 233, 0.08), transparent 0 38%),
+                linear-gradient(180deg, #08111f 0%, #0b172a 52%, #09111d 100%);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        body {
+            font-family: Inter, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 12% 18%, rgba(56, 189, 248, 0.18), transparent 0 30%),
+                radial-gradient(circle at 88% 14%, rgba(249, 115, 22, 0.16), transparent 0 34%),
+                radial-gradient(circle at 50% 100%, rgba(14, 165, 233, 0.08), transparent 0 38%),
+                linear-gradient(180deg, #08111f 0%, #0b172a 52%, #09111d 100%);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            color: #f5fbff;
+        }
         .top-navbar { background: white; border-bottom: 1px solid #e5e7eb; padding: 0 20px; height: 70px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .navbar-left { display: flex; align-items: center; gap: 30px; flex: 1; }
-        .logo { font-size: 20px; font-weight: bold; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; min-width: 150px; }
+        .logo { font-size: 22px; font-weight: 700; font-family: 'Poppins', sans-serif; color: #bfdbfe; min-width: 150px; background: none; -webkit-text-fill-color: initial; }
         .navbar-right { display: flex; align-items: center; gap: 15px; }
         .btn-small {
             padding: 8px 14px;
@@ -389,6 +415,32 @@
             .compare-toolbar > div:last-child { grid-template-columns: 1fr; }
             .btn-small { font-size: 11px; min-height: 40px; }
         }
+        .top-navbar,
+        .btn-small,
+        .needs-panel,
+        .needs-panel textarea,
+        .promo-input,
+        .sidebar,
+        .sidebar-item,
+        .welcome-card,
+        .stat-card,
+        .search-section,
+        .form-group input,
+        .form-group select,
+        .search-btn,
+        .compare-rank,
+        .transfer-summary-card,
+        .transfer-list-box,
+        .transfer-list li,
+        .compare-chip,
+        .compare-result-card,
+        .compare-badge,
+        .player-card,
+        .player-card-image,
+        .player-rating,
+        .action-btn {
+            border-radius: 0 !important;
+        }
     </style>
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
@@ -398,11 +450,11 @@
             <div class="logo">NextScout Club</div>
         </div>
         <div class="navbar-right">
-            <button class="btn-small light" onclick="toggleClubNeedsPanel()">KULÜP Ihtiyaclari</button>
-            <button class="btn-small light" onclick="toggleClubPromoPanel()">Kulübünü Tanit</button>
-            <button class="btn-small light" onclick="toggleTrialPublishPanel()">Deneme/Idman Ilani</button>
-            <button class="btn-small home-btn-global" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;" onclick="window.location.href='index.html'">Ana Sayfa</button>
-            <button class="btn-small secondary" onclick="logout()">Çıkış</button>
+            <button class="btn-small light" onclick="toggleClubNeedsPanel()"><i class="fas fa-thumbtack"></i><span>KULÜP İhtiyaçları</span></button>
+            <button class="btn-small light" onclick="toggleClubPromoPanel()"><i class="fas fa-bullhorn"></i><span>Kulübünü Tanıt</span></button>
+            <button class="btn-small light" onclick="toggleTrialPublishPanel()"><i class="fas fa-calendar-check"></i><span>Deneme/İdman İlanı</span></button>
+            <button class="btn-small home-btn-global" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255, 126, 34, 0.6);background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 16px 28px rgba(255,90,31,0.28);" onclick="window.location.href='index.html'"><i class="fas fa-house"></i><span>Ana Sayfa</span></button>
+            <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Çıkış</span></button>
         </div>
     </div>
 
@@ -1428,6 +1480,33 @@
             });
         }
 
+        function applyTurkishTextFixes() {
+            document.title = 'Takım Dashboard | NextScout';
+            const welcomeTitle = document.querySelector('.welcome-card h1');
+            if (welcomeTitle) welcomeTitle.textContent = 'Kulüp Dashboard';
+            document.querySelectorAll('.sidebar-item span:last-child').forEach((el) => {
+                let text = el.textContent || '';
+                text = text
+                    .replace('Scout Raporlari', 'Scout Raporları')
+                    .replace('Deneme & Idmanlar', 'Deneme & İdmanlar')
+                    .replace('Mesajlarim', 'Mesajlarım')
+                    .replace('Yardim', 'Yardım');
+                el.textContent = text;
+            });
+            document.querySelectorAll('h2').forEach((el) => {
+                let text = el.textContent || '';
+                text = text
+                    .replace('Scout Sonuclari', 'Scout Sonuçları')
+                    .replace('Oyuncu Kiyaslama', 'Oyuncu Kıyaslama')
+                    .replace('Kiyaslamayi Calistir', 'Kıyaslamayı Çalıştır');
+                el.textContent = text;
+            });
+            document.querySelectorAll('.stat-card-label').forEach((el) => {
+                el.textContent = (el.textContent || '').replace('Gonderilen Teklif', 'Gönderilen Teklif');
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', applyTurkishTextFixes);
         window.addEventListener('DOMContentLoaded', init);
     </script>
     <script src="assets/js/core-stability.js"></script>
