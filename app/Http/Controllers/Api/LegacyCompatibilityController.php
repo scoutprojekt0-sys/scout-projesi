@@ -41,21 +41,39 @@ class LegacyCompatibilityController extends Controller
 
     public function discoveryBoosts(): JsonResponse
     {
-        $rows = DB::table('users')
-            ->where('role', 'player')
-            ->orderByDesc('views_count')
-            ->orderByDesc('updated_at')
-            ->limit(40)
+        $rows = DB::table('player_boosts as pb')
+            ->join('users as u', 'u.id', '=', 'pb.user_id')
+            ->join('boost_packages as bp', 'bp.id', '=', 'pb.boost_package_id')
+            ->where('u.role', 'player')
+            ->where('pb.status', 'active')
+            ->where(function ($query) {
+                $query->whereNull('pb.ends_at')
+                    ->orWhere('pb.ends_at', '>=', now());
+            })
+            ->orderByDesc('bp.discover_score')
+            ->orderByDesc('pb.activated_at')
+            ->orderByDesc('pb.created_at')
+            ->limit(120)
             ->get([
-                'id',
-                'name',
-                'position',
-                'city',
-                DB::raw("COALESCE(source_url, 'Sponsorlu oyuncu profili') as summary"),
-                DB::raw("'Sponsorlu' as package_label"),
-                'created_at',
-                'updated_at',
-            ]);
+                'u.id',
+                'u.name',
+                'u.position',
+                'u.city',
+                DB::raw("COALESCE(NULLIF(u.source_url, ''), 'Sponsorlu oyuncu profili') as summary"),
+                DB::raw('bp.name as package_label'),
+                DB::raw('pb.ends_at as expires_at'),
+                DB::raw('pb.activated_at as created_at'),
+                DB::raw('pb.updated_at as updated_at'),
+                DB::raw('pb.user_id as boosted_user_id'),
+                DB::raw('bp.discover_score as discover_score'),
+            ])
+            ->unique('boosted_user_id')
+            ->values()
+            ->take(40)
+            ->map(function ($row) {
+                unset($row->boosted_user_id, $row->discover_score);
+                return $row;
+            });
 
         return response()->json(['ok' => true, 'data' => $rows]);
     }

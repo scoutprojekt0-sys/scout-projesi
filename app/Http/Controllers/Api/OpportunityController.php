@@ -132,10 +132,10 @@ class OpportunityController extends Controller
     public function store(Request $request): JsonResponse
     {
         $authUser = $request->user();
-        if ($authUser->role !== 'team') {
+        if (! in_array($authUser->role, ['team', 'manager'], true)) {
             return response()->json([
                 'ok' => false,
-                'message' => 'Sadece takim rolu ilan olusturabilir.',
+                'message' => 'Sadece takim veya menajer rolu ilan olusturabilir.',
             ], Response::HTTP_FORBIDDEN);
         }
 

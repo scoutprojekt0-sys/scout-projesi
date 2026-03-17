@@ -29,6 +29,8 @@ class AuthController extends Controller
     public function register(RegisterRequest $request): JsonResponse
     {
         $data = $request->validated();
+        $verificationRequired = $this->emailVerificationRequired();
+        $verificationToken = $verificationRequired ? Str::random(64) : null;
 
         $user = User::create([
             'name' => $data['name'],
@@ -37,23 +39,26 @@ class AuthController extends Controller
             'role' => $data['role'],
             'city' => $data['city'] ?? null,
             'phone' => $data['phone'] ?? null,
-            'is_verified' => false,
-            'email_verification_token' => Str::random(64),
+            'is_verified' => ! $verificationRequired,
+            'email_verified_at' => $verificationRequired ? null : now(),
+            'email_verification_token' => $verificationToken,
         ]);
-        $verificationLink = $this->buildEmailVerificationLink((string) $user->email_verification_token);
-        $adminEmail = (string) config('mail.from.address', 'admin@nextscout.local');
+        $verificationLink = $verificationToken ? $this->buildEmailVerificationLink($verificationToken) : null;
 
         // Hoşgeldin emailini kuyruğa gönder
-        SendWelcomeEmail::dispatch($user, $verificationLink);
+        if ($verificationRequired && $verificationLink) {
+            SendWelcomeEmail::dispatch($user, $verificationLink);
+        }
 
         return response()->json([
             'ok' => true,
             'code' => 'auth_registered',
-            'message' => 'Kayit alindi. E-posta dogrulamasi bekleniyor.',
+            'message' => $verificationRequired
+                ? 'Kayit alindi. E-posta dogrulamasi bekleniyor.'
+                : 'Kayit alindi. Artik giris yapabilirsiniz.',
             'data' => [
                 'user' => $user,
-                'verification_required' => true,
-                'admin_email' => $adminEmail,
+                'verification_required' => $verificationRequired,
                 'verification_preview_link' => $verificationLink,
             ],
         ], 201);
@@ -109,7 +114,7 @@ class AuthController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        if (! $this->isUserVerified($user)) {
+        if ($this->emailVerificationRequired() && ! $this->isUserVerified($user)) {
             return response()->json([
                 'ok' => false,
                 'code' => 'email_not_verified',
@@ -179,7 +184,7 @@ class AuthController extends Controller
         return response()->json([
             'ok' => true,
             'code' => 'email_verified',
-            'message' => 'E-posta dogrulandi. Hesap otomatik onaylandi.',
+            'message' => 'E-posta dogrulandi. Artik giris yapabilirsiniz.',
             'data' => [
                 'token' => $token,
                 'expires_at' => $expiresAt,
@@ -224,7 +229,6 @@ class AuthController extends Controller
             'message' => 'Dogrulama linki hazirlandi.',
             'data' => [
                 'verification_preview_link' => $this->buildEmailVerificationLink((string) $user->email_verification_token),
-                'admin_email' => (string) config('mail.from.address', 'admin@nextscout.local'),
             ],
         ]);
     }
@@ -534,5 +538,10 @@ class AuthController extends Controller
         }
 
         return $frontendBase . '/index.html?verify_email_token=' . urlencode($token);
+    }
+
+    private function emailVerificationRequired(): bool
+    {
+        return (bool) config('app.auth_require_email_verification', false);
     }
 }

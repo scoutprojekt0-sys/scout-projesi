@@ -40,16 +40,6 @@ class SystemController extends Controller
         return $this->successResponse(['count' => $count], 'Bildirim sayisi hazir.');
     }
 
-    public function liveMatchesCount(): JsonResponse
-    {
-        $count = Cache::remember('live_matches_count', 60, function () {
-            // Mock data for now - integrate with sports API later
-            return rand(5, 15);
-        });
-
-        return $this->successResponse(['count' => $count], 'Canli mac sayisi hazir.');
-    }
-
     public function adminRateLimitSummary(): JsonResponse
     {
         $dayKey = now()->format('Ymd');

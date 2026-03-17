@@ -166,6 +166,7 @@ Route::get('/rising-stars', [DiscoveryController::class, 'risingStars']);
 Route::get('/club-needs', [DiscoveryController::class, 'clubNeeds']);
 Route::get('/public/favorites/leaderboard', [FavoriteController::class, 'publicLeaderboard']);
 Route::get('/public/new-professionals', [DiscoveryController::class, 'newProfessionals']);
+Route::get('/public/turkiye-heatmap', [DiscoveryController::class, 'publicTurkeyHeatmap']);
 Route::get('/public/live-watch-heatmap', [WatchDemandController::class, 'publicHeatmap']);
 Route::get('/public/players/quality-summary', [LegacyCompatibilityController::class, 'publicPlayersQualitySummary']);
 Route::get('/community-events', [LegacyCompatibilityController::class, 'communityEventsIndex']);

@@ -39,12 +39,22 @@ return [
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+        'webhook_tolerance_seconds' => env('STRIPE_WEBHOOK_TOLERANCE_SECONDS', 300),
+    ],
+
+    'iyzico' => [
+        'api_key' => env('IYZICO_API_KEY'),
+        'secret_key' => env('IYZICO_SECRET_KEY'),
+        'base_url' => env('IYZICO_BASE_URL', 'https://sandbox-api.iyzipay.com'),
+        'callback_url' => env('IYZICO_CALLBACK_URL'),
+        'default_identity_number' => env('IYZICO_DEFAULT_IDENTITY_NUMBER', ''),
     ],
 
     'paypal' => [
         'client_id' => env('PAYPAL_CLIENT_ID'),
         'secret' => env('PAYPAL_SECRET'),
         'mode' => env('PAYPAL_MODE', 'sandbox'),
+        'webhook_secret' => env('PAYPAL_WEBHOOK_SECRET'),
     ],
 
 ];

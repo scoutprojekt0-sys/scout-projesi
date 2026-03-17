@@ -55,6 +55,44 @@ class AuthSecurityHardeningTest extends TestCase
             ->assertJsonPath('code', 'auth_invalid_credentials');
     }
 
+    public function test_unverified_user_can_login_when_email_verification_is_disabled(): void
+    {
+        Config::set('app.auth_require_email_verification', false);
+
+        User::factory()->create([
+            'email' => 'novalidation@test.com',
+            'password' => Hash::make('Password123'),
+            'is_verified' => false,
+            'email_verified_at' => null,
+        ]);
+
+        $this->postJson('/api/auth/login', [
+            'email' => 'novalidation@test.com',
+            'password' => 'Password123',
+        ])->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('code', 'auth_logged_in');
+    }
+
+    public function test_unverified_user_is_blocked_when_email_verification_is_enabled(): void
+    {
+        Config::set('app.auth_require_email_verification', true);
+
+        User::factory()->create([
+            'email' => 'needsvalidation@test.com',
+            'password' => Hash::make('Password123'),
+            'is_verified' => false,
+            'email_verified_at' => null,
+        ]);
+
+        $this->postJson('/api/auth/login', [
+            'email' => 'needsvalidation@test.com',
+            'password' => 'Password123',
+        ])->assertStatus(422)
+            ->assertJsonPath('ok', false)
+            ->assertJsonPath('code', 'email_not_verified');
+    }
+
     public function test_role_change_revokes_existing_tokens(): void
     {
         $user = User::factory()->create(['role' => 'team']);

@@ -14,7 +14,7 @@ class ApplicationPolicy
 
     public function viewIncoming(User $user): bool
     {
-        return $user->role === 'team';
+        return in_array($user->role, ['team', 'manager'], true);
     }
 
     public function viewOutgoing(User $user): bool
@@ -24,7 +24,7 @@ class ApplicationPolicy
 
     public function changeStatus(User $user, Application $application): bool
     {
-        return $user->role === 'team'
+        return in_array($user->role, ['team', 'manager'], true)
             && (int) $application->opportunity->team_user_id === (int) $user->id;
     }
 }

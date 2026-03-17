@@ -11,7 +11,7 @@ class StoreOpportunityRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()?->role === 'club' || $this->user()?->role === 'manager';
+        return in_array($this->user()?->role, ['team', 'manager'], true);
     }
 
     /**

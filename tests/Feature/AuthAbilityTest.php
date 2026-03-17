@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -23,14 +24,62 @@ class AuthAbilityTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function test_team_can_access_opportunity_create_route_with_team_ability(): void
+    public function test_team_can_access_opportunity_create_route_with_opportunity_write_ability(): void
     {
         $user = User::factory()->create(['role' => 'team']);
-        Sanctum::actingAs($user, ['team']);
+        Sanctum::actingAs($user, ['opportunity:write']);
 
         $response = $this->postJson('/api/opportunities', []);
 
         $response->assertStatus(422);
+    }
+
+    public function test_manager_can_create_opportunity_with_opportunity_write_ability(): void
+    {
+        $user = User::factory()->create(['role' => 'manager']);
+        Sanctum::actingAs($user, ['opportunity:write']);
+
+        $response = $this->postJson('/api/opportunities', [
+            'title' => 'Scout gereken oyuncu',
+            'position' => 'Forward',
+            'city' => 'Istanbul',
+        ]);
+
+        $response->assertCreated()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.team_user_id', $user->id);
+    }
+
+    public function test_manager_can_view_incoming_applications_with_application_incoming_ability(): void
+    {
+        $manager = User::factory()->create(['role' => 'manager']);
+        $player = User::factory()->create(['role' => 'player']);
+
+        $opportunityId = DB::table('opportunities')->insertGetId([
+            'team_user_id' => $manager->id,
+            'title' => 'Menajer ihtiyaci',
+            'position' => 'Midfielder',
+            'status' => 'open',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('applications')->insert([
+            'opportunity_id' => $opportunityId,
+            'player_user_id' => $player->id,
+            'message' => 'Ilgileniyorum',
+            'status' => 'pending',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        Sanctum::actingAs($manager, ['application:incoming']);
+
+        $this->getJson('/api/applications/incoming')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.data.0.player_id', $player->id)
+            ->assertJsonPath('data.data.0.opportunity_id', $opportunityId);
     }
 
     public function test_user_without_contact_write_ability_cannot_send_contact(): void

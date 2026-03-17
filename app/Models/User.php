@@ -108,6 +108,11 @@ class User extends Authenticatable
         return $this->hasMany(Payment::class);
     }
 
+    public function boosts()
+    {
+        return $this->hasMany(PlayerBoost::class);
+    }
+
     public function opportunities()
     {
         return $this->hasMany(Opportunity::class, 'team_user_id');
@@ -196,7 +201,8 @@ class User extends Authenticatable
         return match ($this->role) {
             'player' => array_merge($abilities, ['player', 'application:apply', 'application:outgoing']),
             'team' => array_merge($abilities, ['team', 'opportunity:write', 'application:incoming']),
-            'manager', 'coach', 'scout' => array_merge($abilities, ['staff']),
+            'manager' => array_merge($abilities, ['staff', 'opportunity:write', 'application:incoming']),
+            'coach', 'scout' => array_merge($abilities, ['staff']),
             default => $abilities,
         };
     }

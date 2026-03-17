@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 class Week7AnalyticsController extends Controller
 {
     use ApiResponds;
+
     public function adminOverview(): JsonResponse
     {
         $usersByRole = DB::table('users')
@@ -59,6 +60,14 @@ class Week7AnalyticsController extends Controller
 
     public function teamScoutingFunnel(int $teamId): JsonResponse
     {
+        $authUser = auth()->user();
+        $isAdmin = $authUser && strtolower((string) $authUser->role) === 'admin';
+        $isOwner = $authUser && (int) $authUser->id === $teamId && strtolower((string) $authUser->role) === 'team';
+
+        if (! $isAdmin && ! $isOwner) {
+            return $this->errorResponse('Bu takim analizine erisemezsiniz.', 403, 'forbidden_team_analytics');
+        }
+
         $team = DB::table('users')
             ->where('id', $teamId)
             ->where('role', 'team')

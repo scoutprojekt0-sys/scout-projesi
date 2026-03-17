@@ -60,7 +60,7 @@ class UserFactory extends Factory
     public function club(): static
     {
         return $this->state(fn (array $attributes) => [
-            'role' => 'club',
+            'role' => 'team',
             'position' => null,
             'age' => null,
         ]);

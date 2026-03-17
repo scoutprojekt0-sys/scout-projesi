@@ -8,13 +8,17 @@ use App\Models\ModerationQueue;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class Week10AnomalyController extends Controller
 {
     use ApiResponds;
-    public function scoreQueue(int $queueId): JsonResponse
+
+    public function scoreQueue(Request $request, int $queueId): JsonResponse
     {
+        if ($denied = $this->ensureModerationAccess($request)) {
+            return $denied;
+        }
+
         $item = ModerationQueue::findOrFail($queueId);
 
         $anomalyScore = $this->calculateAnomalyScore($item);
@@ -35,8 +39,12 @@ class Week10AnomalyController extends Controller
         ], 'Anomali skoru hesaplandi.');
     }
 
-    public function highRiskQueue(): JsonResponse
+    public function highRiskQueue(Request $request): JsonResponse
     {
+        if ($denied = $this->ensureModerationAccess($request)) {
+            return $denied;
+        }
+
         $riskThreshold = 0.70;
 
         $items = ModerationQueue::query()
@@ -157,5 +165,22 @@ class Week10AnomalyController extends Controller
             $overallScore >= 0.40 => 'FLAG_FOR_ATTENTION',
             default => 'STANDARD_REVIEW',
         };
+    }
+
+    private function ensureModerationAccess(Request $request): ?JsonResponse
+    {
+        $user = $request->user();
+        if (! $user) {
+            return $this->errorResponse('Bu islem icin giris yapmaniz gerekiyor.', 401, 'unauthenticated');
+        }
+
+        $editorRole = strtolower((string) ($user->editor_role ?? 'none'));
+        $legacyStaffRole = in_array(strtolower((string) $user->role), ['manager', 'coach', 'scout'], true);
+
+        if (in_array($editorRole, ['reviewer', 'senior_reviewer', 'admin'], true) || $legacyStaffRole) {
+            return null;
+        }
+
+        return $this->errorResponse('Moderasyon yetkiniz yok.', 403, 'forbidden_moderation_only');
     }
 }

@@ -343,6 +343,158 @@ class DiscoveryController extends Controller
         ]);
     }
 
+    public function publicTurkeyHeatmap(): JsonResponse
+    {
+        $schema = DB::getSchemaBuilder();
+        $from = now()->startOfDay();
+        $to = now()->copy()->addDays(7)->endOfDay();
+
+        $playerRows = DB::table('users')
+            ->where('role', 'player')
+            ->select([
+                'city',
+                DB::raw('COUNT(*) as total_players'),
+                DB::raw('SUM(CASE WHEN COALESCE(rating, 0) >= 80 THEN 1 ELSE 0 END) as high_rated_players'),
+            ])
+            ->groupBy('city')
+            ->get();
+
+        $scheduleRows = collect();
+        if ($schema->hasTable('player_match_schedules')) {
+            $scheduleRows = DB::table('player_match_schedules')
+                ->where('is_public', true)
+                ->whereBetween('match_date', [$from, $to])
+                ->select([
+                    'city',
+                    DB::raw('COUNT(*) as live_matches'),
+                    DB::raw('COUNT(DISTINCT COALESCE(venue, match_title)) as active_fields'),
+                    DB::raw('COUNT(DISTINCT player_user_id) as tracked_talents'),
+                    DB::raw('MAX(position) as top_position'),
+                ])
+                ->groupBy('city')
+                ->get();
+        }
+
+        $cityMap = [];
+        foreach ($playerRows as $row) {
+            $key = $this->normalizeText((string) ($row->city ?? ''));
+            if ($key === '') {
+                continue;
+            }
+            $cityMap[$key] = [
+                'city' => (string) $row->city,
+                'total_players' => (int) ($row->total_players ?? 0),
+                'high_rated_players' => (int) ($row->high_rated_players ?? 0),
+                'live_matches' => 0,
+                'active_fields' => 0,
+                'tracked_talents' => 0,
+                'top_position' => 'Veri bekleniyor',
+            ];
+        }
+
+        foreach ($scheduleRows as $row) {
+            $key = $this->normalizeText((string) ($row->city ?? ''));
+            if ($key === '') {
+                continue;
+            }
+            if (! isset($cityMap[$key])) {
+                $cityMap[$key] = [
+                    'city' => (string) $row->city,
+                    'total_players' => 0,
+                    'high_rated_players' => 0,
+                    'live_matches' => 0,
+                    'active_fields' => 0,
+                    'tracked_talents' => 0,
+                    'top_position' => 'Veri bekleniyor',
+                ];
+            }
+
+            $cityMap[$key]['live_matches'] = (int) ($row->live_matches ?? 0);
+            $cityMap[$key]['active_fields'] = (int) ($row->active_fields ?? 0);
+            $cityMap[$key]['tracked_talents'] = (int) ($row->tracked_talents ?? 0);
+            $cityMap[$key]['top_position'] = (string) ($row->top_position ?: $cityMap[$key]['top_position']);
+        }
+
+        $cities = collect($cityMap)
+            ->map(function (array $item, string $key) {
+                $intensity = min(100, max(
+                    16,
+                    ($item['high_rated_players'] * 14)
+                    + ($item['live_matches'] * 10)
+                    + ($item['tracked_talents'] * 8)
+                ));
+
+                return [
+                    'key' => $key,
+                    'city' => $item['city'],
+                    'total_players' => $item['total_players'],
+                    'high_rated_players' => $item['high_rated_players'],
+                    'live_matches' => $item['live_matches'],
+                    'active_fields' => $item['active_fields'],
+                    'tracked_talents' => $item['tracked_talents'],
+                    'top_position' => $item['top_position'],
+                    'intensity' => $intensity,
+                    'hover_text' => sprintf(
+                        'Su an %d farkli sahada mac var ve %d yetenek takibimizde.',
+                        $item['active_fields'],
+                        $item['tracked_talents']
+                    ),
+                    'fixtures' => $this->buildCityFixturePreview($item['city'], $schema, $from, $to),
+                ];
+            })
+            ->sortByDesc('intensity')
+            ->values();
+
+        $summary = [
+            'city_count' => $cities->count(),
+            'high_rated_players' => $cities->sum('high_rated_players'),
+            'live_matches' => $cities->sum('live_matches'),
+            'tracked_talents' => $cities->sum('tracked_talents'),
+            'top_city' => $cities->first()['city'] ?? 'Istanbul',
+        ];
+
+        return $this->successResponse([
+            'summary' => $summary,
+            'cities' => $cities,
+            'window_days' => 7,
+        ], 'Turkiye isi haritasi hazir.');
+    }
+
+    private function buildCityFixturePreview(string $city, $schema, $from, $to): array
+    {
+        if (! $schema->hasTable('player_match_schedules')) {
+            return [];
+        }
+
+        return DB::table('player_match_schedules')
+            ->leftJoin('users', 'users.id', '=', 'player_match_schedules.player_user_id')
+            ->where('is_public', true)
+            ->whereBetween('match_date', [$from, $to])
+            ->where('city', $city)
+            ->orderBy('match_date')
+            ->limit(4)
+            ->get([
+                'users.name as player_name',
+                'match_title',
+                'venue',
+                'district',
+                'position',
+                'match_date',
+            ])
+            ->map(function ($row) {
+                return [
+                    'player_name' => (string) ($row->player_name ?? 'Oyuncu'),
+                    'match_title' => (string) ($row->match_title ?? 'Açık maç'),
+                    'venue' => (string) ($row->venue ?? 'Saha belirtilmedi'),
+                    'district' => (string) ($row->district ?? ''),
+                    'position' => (string) ($row->position ?? 'Pozisyon belirtilmedi'),
+                    'match_date' => $row->match_date,
+                ];
+            })
+            ->values()
+            ->all();
+    }
+
     private function buildOpportunityMatch(object $row, string $playerPosition, int $playerAge, string $playerCity, bool $hasTeam): ?array
     {
         $score = 46;

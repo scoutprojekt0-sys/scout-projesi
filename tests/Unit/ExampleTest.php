@@ -13,4 +13,12 @@ class ExampleTest extends TestCase
     {
         $this->assertTrue(true);
     }
+    /**
+     * User model için örnek test.
+     */
+    public function test_user_model_can_be_instantiated(): void
+    {
+        $user = new \App\Models\User();
+        $this->assertInstanceOf(\App\Models\User::class, $user);
+    }
 }

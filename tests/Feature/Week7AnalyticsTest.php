@@ -21,7 +21,7 @@ class Week7AnalyticsTest extends TestCase
 
     public function test_admin_overview_returns_aggregated_metrics(): void
     {
-        $admin = User::factory()->create(['role' => 'manager']);
+        $admin = User::factory()->create(['role' => 'admin']);
         $team = User::factory()->create(['role' => 'team']);
         $player = User::factory()->create(['role' => 'player', 'rating' => 8.2]);
 
@@ -63,7 +63,6 @@ class Week7AnalyticsTest extends TestCase
 
     public function test_team_scouting_funnel_returns_funnel_stats(): void
     {
-        $authUser = User::factory()->create(['role' => 'manager']);
         $team = User::factory()->create(['role' => 'team', 'name' => 'Demo Team']);
         $playerA = User::factory()->create(['role' => 'player', 'rating' => 7.8]);
         $playerB = User::factory()->create(['role' => 'player', 'rating' => 8.4]);
@@ -89,7 +88,7 @@ class Week7AnalyticsTest extends TestCase
             'status' => 'accepted',
         ]);
 
-        Sanctum::actingAs($authUser, ['profile:read']);
+        Sanctum::actingAs($team, ['profile:read']);
 
         $response = $this->getJson('/api/analytics/team/'.$team->id);
 
@@ -105,7 +104,7 @@ class Week7AnalyticsTest extends TestCase
 
     public function test_team_scouting_funnel_returns_404_for_non_team_user(): void
     {
-        $authUser = User::factory()->create(['role' => 'manager']);
+        $authUser = User::factory()->create(['role' => 'admin']);
         $notTeam = User::factory()->create(['role' => 'player']);
 
         Sanctum::actingAs($authUser, ['profile:read']);
@@ -113,5 +112,28 @@ class Week7AnalyticsTest extends TestCase
         $this->getJson('/api/analytics/team/'.$notTeam->id)
             ->assertStatus(404)
             ->assertJsonPath('ok', false);
+    }
+
+    public function test_non_admin_cannot_access_admin_overview(): void
+    {
+        $manager = User::factory()->create(['role' => 'manager']);
+
+        Sanctum::actingAs($manager, ['profile:read']);
+
+        $this->getJson('/api/analytics/admin-overview')
+            ->assertStatus(403)
+            ->assertJsonPath('code', 'forbidden_admin_only');
+    }
+
+    public function test_non_owner_cannot_access_other_team_funnel(): void
+    {
+        $manager = User::factory()->create(['role' => 'manager']);
+        $team = User::factory()->create(['role' => 'team']);
+
+        Sanctum::actingAs($manager, ['profile:read']);
+
+        $this->getJson('/api/analytics/team/'.$team->id)
+            ->assertStatus(403)
+            ->assertJsonPath('code', 'forbidden_team_analytics');
     }
 }

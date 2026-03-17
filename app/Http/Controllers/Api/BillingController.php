@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Concerns\ApiResponds;
 use App\Http\Controllers\Controller;
-use App\Services\StripeService;
-use App\Services\PayPalService;
+use App\Models\BoostPackage;
+use App\Models\Payment;
+use App\Models\PlayerBoost;
+use App\Services\IyzicoService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
@@ -13,90 +15,146 @@ class BillingController extends Controller
 {
     use ApiResponds;
 
-    public function __construct(
-        private StripeService $stripeService,
-        private PayPalService $paypalService
-    ) {}
+    public function __construct(private IyzicoService $iyzicoService) {}
 
-    public function plans(): JsonResponse
+    public function boostPackages(): JsonResponse
     {
-        $plans = DB::table('subscription_plans')
+        $packages = BoostPackage::query()
             ->where('active', true)
-            ->orderBy('price')
+            ->orderBy('duration_days')
             ->get();
 
-        return $this->successResponse($plans, 'Abonelik planlari hazir.');
+        return $this->successResponse($packages, 'Boost paketleri hazir.');
     }
 
-    public function currentSubscription(): JsonResponse
-    {
-        $user = auth()->user();
-
-        $subscription = DB::table('subscriptions')
-            ->where('user_id', $user->id)
-            ->where('status', 'active')
-            ->first();
-
-        return $this->successResponse(
-            $subscription ?: ['status' => 'none'],
-            'Abonelik durumu hazir.'
-        );
-    }
-
-    public function subscribe(): JsonResponse
+    public function boostPurchase(): JsonResponse
     {
         $validated = request()->validate([
-            'plan_id'        => 'required|exists:subscription_plans,id',
-            'payment_method' => 'required|in:stripe,paypal',
+            'boost_package_id' => 'required|integer|exists:boost_packages,id',
+            'payment_method' => 'nullable|in:iyzico,stripe',
         ]);
 
         $user = auth()->user();
-        $plan = DB::table('subscription_plans')->find($validated['plan_id']);
+        $package = BoostPackage::query()
+            ->where('active', true)
+            ->find($validated['boost_package_id']);
 
-        try {
-            $result = $validated['payment_method'] === 'stripe'
-                ? $this->stripeService->createSubscription($user, $plan)
-                : $this->paypalService->createSubscription($user, $plan);
-
-            return $this->successResponse($result, 'Abonelik olusturuldu.');
-        } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), 500, 'subscription_failed');
+        if (! $package) {
+            return $this->errorResponse('Boost paketi aktif degil.', 422, 'boost_package_inactive');
         }
+
+        $paymentMethod = (string) ($validated['payment_method'] ?? 'iyzico');
+
+        $result = DB::transaction(function () use ($user, $package, $paymentMethod): array {
+            $payment = Payment::create([
+                'user_id' => $user->id,
+                'subscription_id' => null,
+                'boost_package_id' => $package->id,
+                'amount' => $package->price,
+                'currency' => $package->currency,
+                'payment_method' => $paymentMethod,
+                'payment_context' => 'boost',
+                'transaction_id' => null,
+                'status' => 'pending',
+                'metadata' => [
+                    'purpose' => 'discover_boost',
+                    'package_slug' => $package->slug,
+                    'provider' => $paymentMethod,
+                ],
+            ]);
+
+            $boost = PlayerBoost::create([
+                'user_id' => $user->id,
+                'boost_package_id' => $package->id,
+                'payment_id' => $payment->id,
+                'status' => 'pending',
+                'metadata' => [
+                    'package_name' => $package->name,
+                    'discover_score' => $package->discover_score,
+                ],
+            ]);
+
+            return [$payment, $boost];
+        });
+
+        [$payment, $boost] = $result;
+
+        if ($paymentMethod === 'iyzico' && $this->iyzicoService->isConfigured()) {
+            try {
+                $checkout = $this->iyzicoService->initializeBoostCheckout($user, $package, $payment);
+
+                $payment->update([
+                    'metadata' => array_merge($payment->metadata ?? [], [
+                        'conversation_id' => $checkout['conversation_id'],
+                        'checkout_token' => $checkout['token'],
+                        'payment_page_url' => $checkout['payment_page_url'],
+                    ]),
+                ]);
+
+                $payment->refresh();
+
+                return $this->successResponse([
+                    'payment' => $payment,
+                    'boost' => $boost,
+                    'next_action' => 'redirect_to_checkout',
+                    'provider' => 'iyzico',
+                    'provider_status' => 'checkout_ready',
+                    'payment_page_url' => $checkout['payment_page_url'],
+                    'checkout_token' => $checkout['token'],
+                    'checkout_form_content' => $checkout['checkout_form_content'],
+                ], 'Boost odemesi baslatildi.', 201);
+            } catch (\Throwable $exception) {
+                $payment->update([
+                    'status' => 'failed',
+                    'metadata' => array_merge($payment->metadata ?? [], [
+                        'provider_error' => $exception->getMessage(),
+                    ]),
+                ]);
+
+                $boost->update(['status' => 'failed']);
+
+                return $this->errorResponse($exception->getMessage(), 502, 'boost_checkout_initialize_failed');
+            }
+        }
+
+        return $this->successResponse([
+            'payment' => $payment,
+            'boost' => $boost,
+            'next_action' => 'provider_checkout_required',
+            'provider' => $paymentMethod,
+            'provider_status' => 'integration_pending',
+        ], 'Boost odemesi baslatildi.', 201);
     }
 
-    public function cancel(): JsonResponse
+    public function boostStatus(): JsonResponse
     {
         $user = auth()->user();
 
-        DB::table('subscriptions')
+        $activeBoost = PlayerBoost::query()
+            ->with('package')
             ->where('user_id', $user->id)
-            ->where('status', 'active')
-            ->update(['status' => 'cancelled', 'cancelled_at' => now()]);
+            ->whereIn('status', ['active', 'pending'])
+            ->orderByRaw("CASE WHEN status = 'active' THEN 0 ELSE 1 END")
+            ->latest('created_at')
+            ->first();
 
-        return $this->successResponse(null, 'Abonelik iptal edildi.');
+        return $this->successResponse(
+            $activeBoost ?: ['status' => 'none'],
+            'Boost durumu hazir.'
+        );
     }
 
-    public function payments(): JsonResponse
+    public function boostHistory(): JsonResponse
     {
         $user = auth()->user();
 
-        $payments = DB::table('payments')
+        $history = PlayerBoost::query()
+            ->with(['package', 'payment'])
             ->where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
+            ->latest('created_at')
             ->paginate(20);
 
-        return $this->paginatedListResponse($payments, 'Odeme gecmisi hazir.');
+        return $this->paginatedListResponse($history, 'Boost gecmisi hazir.');
     }
 
-    public function invoices(): JsonResponse
-    {
-        $user = auth()->user();
-
-        $invoices = DB::table('invoices')
-            ->where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
-
-        return $this->paginatedListResponse($invoices, 'Fatura gecmisi hazir.');
-    }
 }

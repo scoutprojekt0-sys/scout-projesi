@@ -89,7 +89,7 @@ class DataQualityController extends Controller
     public function auditLog(Request $request): JsonResponse
     {
         $query = DataAuditLog::query()
-            ->with('user:id,name,email')
+            ->with('user:id,name')
             ->orderBy('created_at', 'desc');
 
         if ($request->has('model_type')) {
@@ -119,7 +119,7 @@ class DataQualityController extends Controller
     {
         $conflicts = User::where('role', 'player')
             ->where('has_conflicts', true)
-            ->select(['id', 'name', 'email', 'position', 'city', 'confidence_score', 'verification_status', 'updated_at'])
+            ->select(['id', 'name', 'position', 'city', 'confidence_score', 'verification_status', 'updated_at'])
             ->paginate($request->per_page ?? 20);
 
         return $this->paginatedListResponse($conflicts, 'Catismalı veriler hazir.');
@@ -130,7 +130,7 @@ class DataQualityController extends Controller
         $missing = User::where('role', 'player')
             ->where('has_source', false)
             ->where('verification_status', '!=', 'rejected')
-            ->select(['id', 'name', 'email', 'position', 'city', 'verification_status', 'updated_at'])
+            ->select(['id', 'name', 'position', 'city', 'verification_status', 'updated_at'])
             ->paginate($request->per_page ?? 20);
 
         return $this->paginatedListResponse($missing, 'Kaynak eksik oyuncular hazir.');

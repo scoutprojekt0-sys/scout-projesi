@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Concerns\ApiResponds;
 use App\Http\Controllers\Controller;
+use App\Models\BoostPackage;
 use App\Models\Payment;
 use App\Models\Subscription;
-use App\Models\SubscriptionPlan;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,59 +15,45 @@ class AdminBillingController extends Controller
 {
     use ApiResponds;
 
-    // Test için fake ödeme oluştur
-    public function createTestPayment(Request $request): JsonResponse
+    public function getBoostPackages(): JsonResponse
+    {
+        $packages = BoostPackage::query()
+            ->orderBy('duration_days')
+            ->get();
+
+        return $this->successResponse($packages, 'Boost paketleri hazir.');
+    }
+
+    public function updateBoostPackage(Request $request, int $packageId): JsonResponse
     {
         $validated = $request->validate([
-            'user_id' => 'required|integer|exists:users,id',
-            'plan_id' => 'required|integer|exists:subscription_plans,id',
-            'amount' => 'required|numeric|min:0',
-            'payment_method' => 'required|in:stripe,paypal',
+            'name' => 'required|string|max:120',
+            'description' => 'nullable|string|max:500',
+            'price' => 'required|numeric|min:0',
+            'currency' => 'nullable|string|size:3',
+            'duration_days' => 'required|integer|min:1|max:365',
+            'discover_score' => 'required|integer|min:1|max:1000',
+            'active' => 'required|boolean',
         ]);
 
-        $payment = Payment::create([
-            'user_id'        => $validated['user_id'],
-            'subscription_id' => null,
-            'amount'         => $validated['amount'],
-            'currency'       => 'USD',
-            'payment_method' => $validated['payment_method'],
-            'transaction_id' => 'test_' . uniqid(),
-            'status'         => 'pending',
+        $package = BoostPackage::query()->find($packageId);
+        if (! $package) {
+            return $this->errorResponse('Boost paketi bulunamadi', 404, 'boost_package_not_found');
+        }
+
+        $package->update([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+            'price' => $validated['price'],
+            'currency' => strtoupper((string) ($validated['currency'] ?? 'TRY')),
+            'duration_days' => $validated['duration_days'],
+            'discover_score' => $validated['discover_score'],
+            'active' => (bool) $validated['active'],
         ]);
 
-        return $this->successResponse($payment, 'Test odemesi olusturuldu.', 201);
+        return $this->successResponse($package->fresh(), 'Boost paketi guncellendi.');
     }
 
-    // Ödemeyi tamamlandı yap (test için)
-    public function completeTestPayment(int $paymentId): JsonResponse
-    {
-        $payment = Payment::find($paymentId);
-
-        if (! $payment) {
-            return $this->errorResponse('Odeme bulunamadi', 404, 'payment_not_found');
-        }
-
-        $payment->update(['status' => 'completed']);
-
-        // Abonelik oluştur
-        if (! $payment->subscription_id) {
-            $plan = SubscriptionPlan::first();
-            if ($plan) {
-                $subscription = Subscription::create([
-                    'user_id'              => $payment->user_id,
-                    'subscription_plan_id' => $plan->id,
-                    'status'               => 'active',
-                    'started_at'           => now(),
-                    'expires_at'           => now()->addMonth(),
-                ]);
-                $payment->update(['subscription_id' => $subscription->id]);
-            }
-        }
-
-        return $this->successResponse($payment->fresh(), 'Odeme tamamlandi');
-    }
-
-    // Ödeme listesi (admin)
     public function getPayments(Request $request): JsonResponse
     {
         $payments = Payment::with('user')
@@ -77,7 +63,6 @@ class AdminBillingController extends Controller
         return $this->successResponse($payments, 'Odeme listesi hazir.');
     }
 
-    // Abonelik listesi (admin)
     public function getSubscriptions(Request $request): JsonResponse
     {
         $subscriptions = Subscription::with(['user', 'plan'])
@@ -87,7 +72,6 @@ class AdminBillingController extends Controller
         return $this->successResponse($subscriptions, 'Abonelik listesi hazir.');
     }
 
-    // Ödeme istatistikleri
     public function getPaymentStats(): JsonResponse
     {
         $totalRevenue = DB::table('payments')
@@ -98,7 +82,7 @@ class AdminBillingController extends Controller
             ->where('status', 'completed')
             ->count();
 
-        $subscriptionCount = DB::table('subscriptions')
+        $activeBoostCount = DB::table('player_boosts')
             ->where('status', 'active')
             ->count();
 
@@ -108,35 +92,11 @@ class AdminBillingController extends Controller
             ->sum('amount');
 
         return $this->successResponse([
-                'total_revenue'      => $totalRevenue,
-                'completed_payments' => $paymentCount,
-                'active_subscriptions' => $subscriptionCount,
-                'monthly_revenue'    => $monthlyRevenue,
-            ], 'Odeme istatistikleri hazir.');
-    }
-
-    // Refund işlemi
-    public function refundPayment(int $paymentId): JsonResponse
-    {
-        $payment = Payment::find($paymentId);
-
-        if (! $payment) {
-            return $this->errorResponse('Odeme bulunamadi', 404, 'payment_not_found');
-        }
-
-        if ($payment->status !== 'completed') {
-            return $this->errorResponse('Sadece tamamlanan odemeler iade edilebilir', 400, 'payment_refund_invalid_state');
-        }
-
-        // Real payment provider'a gönder (şu an test)
-        $payment->update(['status' => 'refunded']);
-
-        // Subscription'ı iptal et
-        if ($payment->subscription_id) {
-            Subscription::where('id', $payment->subscription_id)
-                ->update(['status' => 'cancelled', 'cancelled_at' => now()]);
-        }
-
-        return $this->successResponse($payment->fresh(), 'Odeme iade edildi');
+            'total_revenue' => $totalRevenue,
+            'completed_payments' => $paymentCount,
+            'active_subscriptions' => DB::table('subscriptions')->where('status', 'active')->count(),
+            'active_boosts' => $activeBoostCount,
+            'monthly_revenue' => $monthlyRevenue,
+        ], 'Odeme istatistikleri hazir.');
     }
 }

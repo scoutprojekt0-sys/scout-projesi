@@ -2,8 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\BoostPackage;
 use App\Models\Application;
 use App\Models\Opportunity;
+use App\Models\PlayerBoost;
+use App\Models\Payment;
 use App\Models\SuccessStory;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -37,10 +40,42 @@ class LegacyCompatibilityEndpointsTest extends TestCase
             'status' => 'open',
         ]);
 
-        User::factory()->create([
+        $boostedPlayer = User::factory()->create([
             'role' => 'player',
             'confidence_score' => 0.95,
             'views_count' => 120,
+        ]);
+
+        $package = BoostPackage::query()->create([
+            'name' => 'Sponsorlu',
+            'slug' => 'sponsorlu',
+            'price' => 199.00,
+            'currency' => 'TRY',
+            'duration_days' => 7,
+            'discover_score' => 10,
+            'active' => true,
+        ]);
+
+        $payment = Payment::query()->create([
+            'user_id' => $boostedPlayer->id,
+            'subscription_id' => null,
+            'boost_package_id' => $package->id,
+            'amount' => 199.00,
+            'currency' => 'TRY',
+            'payment_method' => 'iyzico',
+            'payment_context' => 'boost',
+            'transaction_id' => 'legacy-boost-1',
+            'status' => 'completed',
+        ]);
+
+        PlayerBoost::query()->create([
+            'user_id' => $boostedPlayer->id,
+            'boost_package_id' => $package->id,
+            'payment_id' => $payment->id,
+            'status' => 'active',
+            'starts_at' => now()->subHour(),
+            'ends_at' => now()->addDays(6),
+            'activated_at' => now()->subHour(),
         ]);
 
         $this->getJson('/api/discovery/coach-needs')
