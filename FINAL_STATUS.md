@@ -1,6 +1,8 @@
 # Scout Project - Final Status Report
 **Date:** 11 Mart 2026
 
+> Arsiv notu (13 Mart 2026): Bu dosya tarihsel durum raporudur. Guncel canliya cikis karari icin `docs/RELEASE_DECISION_2026_03_13.md` ve `docs/GO_NO_GO_RELEASE_CHECKLIST.md` esas alinmalidir.
+
 ---
 
 ## 🎯 PROJECT COMPLETION STATUS

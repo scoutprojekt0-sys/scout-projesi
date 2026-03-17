@@ -17,6 +17,29 @@ body {
     line-height: 1.6;
 }
 
+/* Prevent awkward mid-word wraps while still containing long tokens. */
+.home-data-card,
+.below-card,
+.idea-news-item,
+.section-title,
+.section-description,
+.card,
+.mobile-player-card,
+.mobile-extra-card,
+.mobile-profile-section-text,
+.pcd-player-name,
+.pcd-detail-value,
+.pcd-about p,
+.nav-button,
+p,
+h2,
+h3,
+h4 {
+    word-break: normal;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+}
+
 /* ========== HEADER ========== */
 header {
     background: #FFFFFF;

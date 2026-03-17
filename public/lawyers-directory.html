@@ -367,6 +367,17 @@
     }
 
     async function init(){
+      const params = new URLSearchParams(window.location.search);
+      const initialSpec = (params.get('spec') || '').trim();
+      const initialQuery = (params.get('q') || '').trim();
+      if (initialSpec) {
+        const specInput = document.getElementById('specInput');
+        if (specInput) specInput.value = initialSpec;
+      }
+      if (initialQuery) {
+        const qInput = document.getElementById('qInput');
+        if (qInput) qInput.value = initialQuery;
+      }
       const dashboardBtn = document.getElementById('dashboardBtn');
       if (dashboardBtn) dashboardBtn.href = getDashboardHref();
       const local = normalizeLocal(loadLocal());
@@ -387,7 +398,11 @@
       }
       visibleItems = allItems.slice();
       bind();
-      render();
+      if (initialSpec || initialQuery) {
+        applyFilters();
+      } else {
+        render();
+      }
     }
 
     init();
@@ -396,7 +411,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
 
 
 

@@ -3,33 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mesajlarim - NextScout</title>
-  <meta name="description" content="Mesaj ve bildirim merkezi: teklifler, duyurular ve sistem bildirimlerini tek ekranda gorun.">
+  <title>Mesajlarım - NextScout</title>
+  <meta name="description" content="Mesaj ve bildirim merkezi: teklifler, duyurular ve sistem bildirimlerini tek ekranda görün.">
   <meta name="robots" content="noindex,follow">
-  <link rel="canonical" href="https://nextscout.app/notifications.html">
+  <link rel="canonical" href="https://nextscout.pro/notifications.html">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="tr_TR">
   <meta property="og:site_name" content="NextScout">
   <meta property="og:title" content="Mesajlar ve Bildirimler | NextScout">
-  <meta property="og:description" content="Mesaj ve bildirim merkezi: teklifler, duyurular ve sistem bildirimlerini tek ekranda gorun.">
-  <meta property="og:url" content="https://nextscout.app/notifications.html">
-    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+  <meta property="og:description" content="Mesaj ve bildirim merkezi: teklifler, duyurular ve sistem bildirimlerini tek ekranda görün.">
+  <meta property="og:url" content="https://nextscout.pro/notifications.html">
+    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
   <meta name="theme-color" content="#2563eb">
   <style>
     :root {
-      --bg: #f8fafc;
-      --card: #ffffff;
-      --line: #dbeafe;
-      --text: #0f172a;
-      --muted: #64748b;
-      --primary: #2563eb;
-      --primary-soft: #eff6ff;
-      --success: #059669;
-      --warning: #d97706;
-      --danger: #dc2626;
-      --shadow: 0 10px 30px rgba(37, 99, 235, 0.08);
+      --bg: #1f252d;
+      --card: #232a33;
+      --line: #334155;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --primary: #60a5fa;
+      --primary-soft: #1f2937;
+      --success: #34d399;
+      --warning: #f59e0b;
+      --danger: #f87171;
+      --shadow: 0 12px 28px rgba(2, 6, 23, 0.35);
     }
 
     * { box-sizing: border-box; }
@@ -37,7 +37,7 @@
     body {
       margin: 0;
       font-family: Inter, Segoe UI, Arial, sans-serif;
-      background: var(--bg);
+      background: radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.14), transparent 34%), radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.12), transparent 36%), var(--bg);
       color: var(--text);
     }
 
@@ -70,7 +70,7 @@
     .btn {
       border: 1px solid var(--line);
       background: var(--card);
-      color: var(--primary);
+      color: #dbeafe;
       padding: 10px 14px;
       border-radius: 10px;
       text-decoration: none;
@@ -78,23 +78,35 @@
       font-size: 13px;
       cursor: pointer;
     }
+    .home-btn {
+      background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+      border: 1px solid #2563eb;
+      color: #ffffff;
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
 
     .layout {
       display: grid;
       grid-template-columns: 350px 1fr;
       gap: 14px;
     }
+    .layout > * { min-width: 0; }
 
     .panel {
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: 14px;
       box-shadow: var(--shadow);
+      min-width: 0;
     }
 
     .panel-head {
       padding: 14px;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid var(--line);
       display: flex;
       align-items: center;
       gap: 8px;
@@ -109,8 +121,8 @@
 
     .tab {
       border: 1px solid var(--line);
-      background: #fff;
-      color: #1e3a8a;
+      background: #2b3440;
+      color: #dbeafe;
       border-radius: 999px;
       padding: 8px 12px;
       font-size: 12px;
@@ -138,7 +150,7 @@
       padding: 9px 10px;
       font-size: 13px;
       color: var(--text);
-      background: #fff;
+      background: #2b3440;
       outline: none;
     }
 
@@ -153,15 +165,15 @@
     }
 
     .msg-item {
-      border-bottom: 1px solid #eef2ff;
+      border-bottom: 1px solid #334155;
       padding: 12px 14px;
       cursor: pointer;
       transition: background 0.2s ease;
       position: relative;
     }
 
-    .msg-item:hover { background: #f8fbff; }
-    .msg-item.active { background: #eff6ff; }
+    .msg-item:hover { background: #2b3440; }
+    .msg-item.active { background: #1f2937; }
     .msg-item.unread::before {
       content: "";
       width: 8px;
@@ -184,6 +196,10 @@
     .msg-name {
       font-size: 13px;
       font-weight: 700;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .msg-time {
@@ -217,10 +233,10 @@
       gap: 4px;
     }
 
-    .badge.read { color: var(--success); background: #ecfdf5; border-color: #a7f3d0; }
-    .badge.unread { color: var(--warning); background: #fffbeb; border-color: #fde68a; }
-    .badge.inbox { color: #1e40af; background: #eff6ff; border-color: #bfdbfe; }
-    .badge.sent { color: #7c3aed; background: #f5f3ff; border-color: #ddd6fe; }
+    .badge.read { color: #a7f3d0; background: #064e3b; border-color: #10b981; }
+    .badge.unread { color: #fde68a; background: #78350f; border-color: #f59e0b; }
+    .badge.inbox { color: #bfdbfe; background: #1e3a8a; border-color: #60a5fa; }
+    .badge.sent { color: #ddd6fe; background: #4c1d95; border-color: #8b5cf6; }
 
     .detail {
       min-height: 70vh;
@@ -237,7 +253,7 @@
 
     .detail-head {
       padding: 16px;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid var(--line);
     }
 
     .detail-title {
@@ -245,6 +261,9 @@
       font-size: 20px;
       font-weight: 800;
       line-height: 1.3;
+      word-break: normal;
+      overflow-wrap: anywhere;
+      hyphens: auto;
     }
 
     .meta {
@@ -258,18 +277,21 @@
 
     .detail-body {
       padding: 16px;
-      color: #1f2937;
+      color: #e2e8f0;
       line-height: 1.65;
       font-size: 14px;
       white-space: pre-line;
       flex: 1;
+      word-break: normal;
+      overflow-wrap: anywhere;
+      hyphens: auto;
     }
 
     .detail-actions {
       display: flex;
       gap: 8px;
       padding: 14px 16px;
-      border-top: 1px solid #e2e8f0;
+      border-top: 1px solid var(--line);
       flex-wrap: wrap;
     }
 
@@ -280,9 +302,9 @@
     }
 
     .btn-danger {
-      background: #fff;
+      background: #2b3440;
       color: var(--danger);
-      border-color: #fecaca;
+      border-color: #7f1d1d;
     }
 
     .empty-list {
@@ -296,17 +318,42 @@
       .layout { grid-template-columns: 1fr; }
       .detail { min-height: 45vh; }
       .list { max-height: 45vh; }
+      .wrap { padding: 14px 12px; }
+      .title { font-size: 24px; }
+      .header { align-items: flex-start; flex-direction: column; }
+    }
+
+    @media (max-width: 560px) {
+      .title { font-size: 22px; }
+      .title-sub { font-size: 13px; }
+      .btn { padding: 8px 10px; font-size: 12px; }
+      .panel-head { padding: 12px; }
+      .search-row { grid-template-columns: 1fr; }
+      .wrap { padding: 12px 10px 18px; overflow-x: hidden; }
+      .layout { gap: 10px; }
+      .panel, .detail { width: 100%; min-width: 0; overflow-x: hidden; }
+      .msg-item { padding-right: 10px; }
+      .msg-item.unread::before { right: 10px; }
+      .msg-top { align-items: flex-start; }
+      .msg-time { max-width: 42%; text-align: right; }
+      .detail-head { padding: 12px; }
+      .detail-title { font-size: 18px; }
+      .detail-body { padding: 12px; font-size: 13px; }
+      .detail-actions { padding: 12px; }
+      .detail-actions .btn { width: 100%; }
     }
   </style>
+    <link rel="stylesheet" href="assets/css/mobile-unified.css">
+    <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
 <body>
   <div class="wrap">
     <div class="header">
       <div>
-        <h1 class="title">Mesajlarim</h1>
-        <div class="title-sub">Gelen, giden, okundu ve okunmadi mesajlari buradan y�netebilirsin.</div>
+        <h1 class="title">Mesajlarım</h1>
+        <div class="title-sub">Gelen, giden, okundu ve okunmadı mesajları buradan yönetebilirsin.</div>
       </div>
-      <a class="btn" href="DASHBOARD_DESIGN.html">? Dashboard</a>
+      <a class="btn home-btn" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
     </div>
 
     <div class="layout">
@@ -314,10 +361,10 @@
         <div class="panel-head">
           <div class="tabs" id="tabs"></div>
           <div class="search-row">
-            <input id="searchInput" type="text" placeholder="Mesaj ara (konu, i�erik, kisi)">
+            <input id="searchInput" type="text" placeholder="Mesaj ara (konu, içerik, kişi)">
             <select id="statusFilter">
-              <option value="all">T�m�</option>
-              <option value="unread">Okunmadi</option>
+              <option value="all">Tümü</option>
+              <option value="unread">Okunmadı</option>
               <option value="read">Okundu</option>
             </select>
           </div>
@@ -326,59 +373,25 @@
       </section>
 
       <section class="panel detail" id="detailPanel">
-        <div class="detail-empty">Soldan bir mesaj se�.</div>
+        <div class="detail-empty">Soldan bir mesaj seç.</div>
       </section>
     </div>
   </div>
 
   <script>
-    const STORAGE_KEY = 'nextscout_messages';
-    const LOCAL_NOTIF_KEY = 'nextscout_local_notifications';
     const USER_RAW = localStorage.getItem('nextscout_user');
     const USER = USER_RAW ? JSON.parse(USER_RAW) : { name: 'Oyuncu', email: 'oyuncu@nextscout.com' };
+    const API_BASE = (function() {
+      const p = new URLSearchParams(window.location.search);
+      const fromQuery = (p.get('api_base') || '').trim();
+      if (fromQuery) return fromQuery.replace(/\/$/, '');
+      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      return '/api';
+    })();
 
-    const seedMessages = [
-      {
-        id: 'm1',
-        box: 'inbox',
-        read: false,
-        from: 'Galatasaray Scout Ekibi',
-        to: USER.name,
-        subject: 'Canli ma� performansin hakkinda',
-        body: 'Merhaba ' + USER.name + ',\n\nSon 3 ma� performansini inceledik. �zellikle ge�is oyunundaki hizin dikkat �ekti. �n�m�zdeki hafta bir online g�r�sme planlamak istiyoruz.\n\nUygun oldugun saatleri iletir misin?',
-        time: '2026-03-04T17:15:00'
-      },
-      {
-        id: 'm2',
-        box: 'sent',
-        read: true,
-        from: USER.name,
-        to: 'Fenerbah�e U23 Analiz',
-        subject: 'Video portf�y paylasimi',
-        body: 'Merhaba,\n\nProfilimdeki yeni sezon videolarini g�ncelledim. Uygun oldugunuzda degerlendirmenizi rica ederim.\n\nIyi �alismalar.',
-        time: '2026-03-04T14:40:00'
-      },
-      {
-        id: 'm3',
-        box: 'inbox',
-        read: true,
-        from: 'Trabzonspor G�zlemci Birimi',
-        to: USER.name,
-        subject: 'Profil degerlendirme sonucu',
-        body: 'Merhaba,\n\nFiziksel ve teknik parametrelerin olumlu. Takip listemize eklendin.\n\nG�ncel ma� takvimini paylasabilirsen seviniriz.',
-        time: '2026-03-03T10:05:00'
-      },
-      {
-        id: 'm4',
-        box: 'inbox',
-        read: false,
-        from: 'Menajer Agi Destek',
-        to: USER.name,
-        subject: 'Yeni baglanti istegi',
-        body: 'Bir menajer seni izleme listesine ekledi. Profilini g�ncel tutman �nerilir.',
-        time: '2026-03-02T19:22:00'
-      }
-    ];
+    function authToken() {
+      return (localStorage.getItem('nextscout_token') || '').trim();
+    }
 
     function parseDate(value) {
       const d = new Date(value);
@@ -391,48 +404,115 @@
       });
     }
 
-    function loadMessages() {
-      try {
-        const localNotifs = (() => {
-          try {
-            const rows = JSON.parse(localStorage.getItem(LOCAL_NOTIF_KEY) || '[]');
-            if (!Array.isArray(rows)) return [];
-            return rows.map((n) => ({
-              id: `trial-${n.id}`,
-              box: 'inbox',
-              from: 'Sistem',
-              to: USER.name,
-              subject: n.title || 'Bildirim',
-              body: n.message || '',
-              read: !!n.read,
-              createdAt: n.created_at || new Date().toISOString(),
-            }));
-          } catch (error) {
-            return [];
-          }
-        })();
+    async function fetchJson(url, options = {}) {
+      const token = authToken();
+      const headers = {
+        Accept: 'application/json',
+        ...(options.headers || {}),
+      };
+      if (token && token !== 'local-session-token') {
+        headers.Authorization = `Bearer ${token}`;
+      }
+      const response = await fetch(url, { ...options, headers });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload?.message || `HTTP ${response.status}`);
+      return payload;
+    }
 
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) {
-          const all = [...localNotifs, ...seedMessages];
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
-          return all;
-        }
-        const parsed = JSON.parse(raw);
-        if (!Array.isArray(parsed)) return [...localNotifs, ...seedMessages];
-        const existingIds = new Set(parsed.map((x) => String(x.id)));
-        const merged = [...parsed];
-        localNotifs.forEach((n) => {
-          if (!existingIds.has(String(n.id))) merged.unshift(n);
-        });
-        return merged;
-      } catch {
-        return [...seedMessages];
+    function normalizeContact(item, box) {
+      const status = (item?.status || '').toLowerCase();
+      const read = status === 'read' || status === 'resolved' || Boolean(item?.read_at) || Boolean(item?.read);
+      const fromName = item?.from_name || item?.sender_name || item?.name || item?.author_name || (box === 'sent' ? USER.name : 'Kullanıcı');
+      const toName = item?.to_name || item?.receiver_name || (box === 'sent' ? (item?.name || 'Alıcı') : USER.name);
+      return {
+        id: `contact-${box}-${item?.id || Date.now()}`,
+        rawId: Number(item?.id || 0),
+        apiType: 'contact',
+        box,
+        read,
+        from: String(fromName || '-'),
+        to: String(toName || '-'),
+        subject: String(item?.subject || 'Mesaj'),
+        body: String(item?.body || item?.message || ''),
+        time: item?.created_at || item?.time || new Date().toISOString(),
+      };
+    }
+
+    function normalizeNotification(item) {
+      return {
+        id: `notification-${item?.id || Date.now()}`,
+        rawId: Number(item?.id || 0),
+        apiType: 'notification',
+        box: 'inbox',
+        read: Boolean(item?.is_read) || Boolean(item?.read_at) || Boolean(item?.read),
+        from: 'Sistem',
+        to: USER.name,
+        subject: String(item?.title || item?.type || 'Bildirim'),
+        body: String(item?.body || item?.message || ''),
+        time: item?.created_at || item?.time || new Date().toISOString(),
+      };
+    }
+
+    function toRows(payload) {
+      if (Array.isArray(payload?.data?.data)) return payload.data.data;
+      if (Array.isArray(payload?.data)) return payload.data;
+      if (Array.isArray(payload)) return payload;
+      return [];
+    }
+
+    async function safeFetchRows(url) {
+      try {
+        const payload = await fetchJson(url);
+        return toRows(payload);
+      } catch (error) {
+        return [];
       }
     }
 
-    function saveMessages(messages) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+    async function loadMessagesFromApi() {
+      const token = authToken();
+      if (!token || token === 'local-session-token') {
+        throw new Error('Mesajlar için giriş gerekli.');
+      }
+
+      const [inboxRowsRaw, sentRowsRaw, notifRowsRaw] = await Promise.all([
+        safeFetchRows(`${API_BASE}/contacts/inbox?per_page=100`),
+        safeFetchRows(`${API_BASE}/contacts/sent?per_page=100`),
+        safeFetchRows(`${API_BASE}/notifications?limit=100`),
+      ]);
+
+      const inboxRows = inboxRowsRaw.map((x) => normalizeContact(x, 'inbox'));
+      const sentRows = sentRowsRaw.map((x) => normalizeContact(x, 'sent'));
+      const notifRows = notifRowsRaw.map(normalizeNotification);
+      return [...inboxRows, ...sentRows, ...notifRows].sort((a, b) => parseDate(b.time) - parseDate(a.time));
+    }
+
+    async function updateReadState(msg, makeRead) {
+      if (!msg?.rawId) return;
+      if (msg.apiType === 'notification') {
+        if (!makeRead) return;
+        await fetchJson(`${API_BASE}/notifications/${encodeURIComponent(msg.rawId)}/read`, { method: 'PATCH' });
+        return;
+      }
+      const status = makeRead ? 'read' : 'unread';
+      await fetchJson(`${API_BASE}/contacts/${encodeURIComponent(msg.rawId)}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+    }
+
+    async function deleteMessageApi(msg) {
+      if (!msg?.rawId) return;
+      if (msg.apiType === 'notification') {
+        await fetchJson(`${API_BASE}/notifications/${encodeURIComponent(msg.rawId)}`, { method: 'DELETE' });
+        return;
+      }
+      await fetchJson(`${API_BASE}/contacts/${encodeURIComponent(msg.rawId)}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'archived' }),
+      });
     }
 
     let state = {
@@ -440,7 +520,7 @@
       status: 'all',
       query: '',
       selectedId: null,
-      messages: loadMessages()
+      messages: []
     };
 
     const tabsEl = document.getElementById('tabs');
@@ -479,10 +559,10 @@
     function renderTabs() {
       const counts = getTabCounts(state.messages);
       const tabs = [
-        { id: 'all', label: 'T�m�', count: counts.all },
+        { id: 'all', label: 'Tümü', count: counts.all },
         { id: 'inbox', label: 'Gelen', count: counts.inbox },
         { id: 'sent', label: 'Giden', count: counts.sent },
-        { id: 'unread', label: 'Okunmadi', count: counts.unread }
+        { id: 'unread', label: 'Okunmadı', count: counts.unread }
       ];
 
       tabsEl.innerHTML = tabs.map(t => `
@@ -503,7 +583,7 @@
     function renderList() {
       const rows = filteredMessages();
       if (!rows.length) {
-        listEl.innerHTML = '<div class="empty-list">Bu filtrede mesaj bulunamadi.</div>';
+        listEl.innerHTML = '<div class="empty-list">Bu filtrede mesaj bulunamadı.</div>';
         return;
       }
 
@@ -521,12 +601,12 @@
       `).join('');
 
       listEl.querySelectorAll('[data-id]').forEach(row => {
-        row.addEventListener('click', () => {
+        row.addEventListener('click', async () => {
           state.selectedId = row.dataset.id;
           const msg = state.messages.find(x => x.id === state.selectedId);
           if (msg && msg.box === 'inbox' && !msg.read) {
+            try { await updateReadState(msg, true); } catch (error) {}
             msg.read = true;
-            saveMessages(state.messages);
           }
           render();
         });
@@ -536,7 +616,7 @@
     function renderDetail() {
       const msg = state.messages.find(x => x.id === state.selectedId);
       if (!msg) {
-        detailEl.innerHTML = '<div class="detail-empty">Soldan bir mesaj se�.</div>';
+        detailEl.innerHTML = '<div class="detail-empty">Soldan bir mesaj seç.</div>';
         return;
       }
 
@@ -544,7 +624,7 @@
         <div class="detail-head">
           <h2 class="detail-title">${msg.subject}</h2>
           <div class="meta">
-            <span class="badge ${msg.box === 'inbox' ? 'inbox' : 'sent'}">${msg.box === 'inbox' ? 'GELEN' : 'GIDEN'}</span>
+            <span class="badge ${msg.box === 'inbox' ? 'inbox' : 'sent'}">${msg.box === 'inbox' ? 'GELEN' : 'GİDEN'}</span>
             <span class="badge ${msg.read ? 'read' : 'unread'}">${msg.read ? 'OKUNDU' : 'OKUNMADI'}</span>
             <span><strong>Kimden:</strong> ${msg.from}</span>
             <span><strong>Kime:</strong> ${msg.to}</span>
@@ -553,20 +633,21 @@
         </div>
         <div class="detail-body">${msg.body}</div>
         <div class="detail-actions">
-          <button class="btn ${msg.read ? '' : 'btn-primary'}" id="toggleReadBtn">${msg.read ? 'Okunmadi Yap' : 'Okundu Yap'}</button>
-          <button class="btn btn-danger" id="deleteBtn">Mesaji Sil</button>
+          <button class="btn ${msg.read ? '' : 'btn-primary'}" id="toggleReadBtn">${msg.read ? 'Okunmadı Yap' : 'Okundu Yap'}</button>
+          <button class="btn btn-danger" id="deleteBtn">Mesajı Sil</button>
         </div>
       `;
 
-      document.getElementById('toggleReadBtn')?.addEventListener('click', () => {
-        msg.read = !msg.read;
-        saveMessages(state.messages);
+      document.getElementById('toggleReadBtn')?.addEventListener('click', async () => {
+        const nextRead = !msg.read;
+        try { await updateReadState(msg, nextRead); } catch (error) {}
+        msg.read = nextRead;
         render();
       });
 
-      document.getElementById('deleteBtn')?.addEventListener('click', () => {
+      document.getElementById('deleteBtn')?.addEventListener('click', async () => {
+        try { await deleteMessageApi(msg); } catch (error) {}
         state.messages = state.messages.filter(x => x.id !== msg.id);
-        saveMessages(state.messages);
         state.selectedId = null;
         render();
       });
@@ -590,11 +671,29 @@
       render();
     });
 
-    render();
+    async function init() {
+      try {
+        state.messages = await loadMessagesFromApi();
+        if (!Array.isArray(state.messages) || !state.messages.length) {
+          listEl.innerHTML = '<div class="empty-list">Mesaj bulunamadı.</div>';
+          detailEl.innerHTML = '<div class="detail-empty">Hesabında henüz mesaj/bildirim yok.</div>';
+          return;
+        }
+        render();
+      } catch (error) {
+        listEl.innerHTML = `<div class="empty-list">API mesajları yüklenemedi: ${String(error.message || 'Bilinmeyen hata')}</div>`;
+        detailEl.innerHTML = '<div class="detail-empty">Mesajları görüntülemek için giriş yap.</div>';
+      }
+    }
+
+    init();
   </script>
     <script src="assets/js/core-stability.js"></script>
+    <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+
+
 
 
 

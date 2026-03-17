@@ -19,74 +19,161 @@
   <meta name="twitter:description" content="Oyuncular ve scoutlar için güncel trial ilanları, idmanlar ve deneme maçları.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-trials.jpg">
   <meta name="theme-color" content="#1d4ed8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <style>
     :root {
-      --bg: #1f252d;
-      --panel: #232a33;
-      --line: #334155;
-      --text: #e2e8f0;
-      --muted: #94a3b8;
-      --brand: #1d4ed8;
-      --brand2: #1e3a8a;
+      --bg: #07111f;
+      --panel: rgba(10, 19, 35, 0.88);
+      --panel-strong: rgba(8, 16, 30, 0.94);
+      --line: rgba(148, 163, 184, 0.2);
+      --text: #f8fafc;
+      --muted: #b8c4d9;
+      --brand: #f97316;
+      --brand2: #fb923c;
+      --accent: #38bdf8;
       --ok: #16a34a;
+      --shadow: 0 24px 60px rgba(2, 8, 23, 0.42);
     }
     * { box-sizing: border-box; }
+    html {
+      min-height: 100%;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(56, 189, 248, 0.18), transparent 0 30%),
+        radial-gradient(circle at 88% 14%, rgba(249, 115, 22, 0.16), transparent 0 34%),
+        radial-gradient(circle at 50% 100%, rgba(14, 165, 233, 0.08), transparent 0 38%),
+        linear-gradient(180deg, #08111f 0%, #0b172a 52%, #09111d 100%);
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-attachment: fixed;
+    }
     body {
       margin: 0;
-      font-family: Segoe UI, Arial, sans-serif;
+      min-height: 100vh;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.12), transparent 34%),
-        radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.10), transparent 36%),
-        var(--bg);
+        radial-gradient(circle at 12% 18%, rgba(56, 189, 248, 0.18), transparent 0 30%),
+        radial-gradient(circle at 88% 14%, rgba(249, 115, 22, 0.16), transparent 0 34%),
+        radial-gradient(circle at 50% 100%, rgba(14, 165, 233, 0.08), transparent 0 38%),
+        linear-gradient(180deg, #08111f 0%, #0b172a 52%, #09111d 100%);
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-attachment: fixed;
     }
-    .wrap { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    .wrap { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 24px 20px 40px; }
     .hero {
-      background: linear-gradient(135deg, var(--brand2), var(--brand));
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(10, 18, 32, 0.92));
       color: #fff;
-      border-radius: 14px;
-      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      padding: 28px 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      gap: 18px;
       flex-wrap: wrap;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
     }
-    .hero h1 { margin: 0; font-size: 28px; }
-    .hero p { margin: 6px 0 0; opacity: .95; }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--brand), var(--accent));
+    }
+    .hero h1 { margin: 0; font-size: 32px; font-family: Poppins, Inter, sans-serif; letter-spacing: -0.02em; }
+    .hero p { margin: 8px 0 0; max-width: 760px; color: var(--muted); line-height: 1.7; }
+    .hero-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .btn {
-      border: 1px solid #475569;
-      background: #1f2937;
-      color: #dbeafe;
-      padding: 9px 12px;
-      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(148, 163, 184, 0.12);
+      color: #e2e8f0;
+      padding: 11px 16px;
+      border-radius: 12px;
       font-weight: 700;
       text-decoration: none;
       cursor: pointer;
       font-size: 13px;
+      line-height: 1;
+      box-shadow: 0 16px 36px rgba(2, 8, 23, 0.25);
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+    }
+    .btn:hover { transform: translateY(-1px); border-color: rgba(56, 189, 248, 0.4); background: rgba(148, 163, 184, 0.2); color: #fff; }
+    .btn.home-btn {
+      border-color: rgba(249, 115, 22, 0.38);
+      background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+      color: #fff7ed;
+    }
+    .btn.home-btn:hover { border-color: rgba(251, 146, 60, 0.62); background: linear-gradient(135deg, #ea580c 0%, #f97316 100%); }
+    .btn-secondary {
+      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+      color: #16325c;
+      border: 1px solid rgba(255,126,34,.45);
+      box-shadow: 0 12px 24px rgba(8,19,29,.24);
+    }
+    .btn-secondary:hover {
+      color: #102746;
+      border-color: rgba(255,126,34,.6);
+      background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(219,234,254,0.96) 100%);
     }
     .btn.success { background: linear-gradient(135deg,#0f766e 0%,#059669 100%); color: #fff; border-color: transparent; }
     .grid { margin-top: 14px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; box-shadow: 0 12px 24px rgba(2,6,23,.20); }
-    .card h3 { margin: 0 0 8px; font-size: 17px; }
+    .card {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(12, 21, 38, 0.94), rgba(9, 16, 29, 0.9));
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, rgba(249, 115, 22, 0.95), rgba(56, 189, 248, 0.95));
+    }
+    .card h3 { margin: 0 0 8px; font-size: 18px; font-family: Poppins, Inter, sans-serif; }
     .muted { color: var(--muted); font-size: 13px; }
     .row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
-    .tag { font-size: 11px; font-weight: 700; background: #1e3a8a; color: #dbeafe; border-radius: 999px; padding: 4px 8px; border: 1px solid #3b82f6; }
+    .tag { font-size: 11px; font-weight: 700; background: rgba(56, 189, 248, 0.14); color: #c4edff; border-radius: 999px; padding: 5px 9px; border: 1px solid rgba(56, 189, 248, 0.34); }
     .list { margin-top: 10px; display: grid; gap: 10px; }
-    .empty { border: 1px dashed #475569; border-radius: 10px; background: #1f2937; color: var(--muted); padding: 20px; text-align: center; }
-    .notice { margin-top: 12px; background: #232a33; border: 1px solid #334155; border-radius: 12px; padding: 12px; }
-    .seo-copy { margin-top: 14px; background: #232a33; border: 1px solid #334155; border-radius: 14px; padding: 16px; box-shadow: 0 12px 24px rgba(2,6,23,.16); }
-    .seo-copy h2 { margin: 0 0 10px; font-size: 18px; }
+    .empty { border: 1px dashed rgba(148, 163, 184, 0.25); border-radius: 14px; background: rgba(15, 23, 42, 0.68); color: var(--muted); padding: 20px; text-align: center; }
+    .notice,
+    .seo-copy {
+      margin-top: 14px;
+      background: linear-gradient(180deg, rgba(12, 21, 38, 0.9), rgba(9, 16, 29, 0.86));
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 20px 44px rgba(2, 8, 23, 0.28);
+      backdrop-filter: blur(16px);
+    }
+    .seo-copy h2 { margin: 0 0 10px; font-size: 18px; font-family: Poppins, Inter, sans-serif; }
     .seo-copy p { margin: 0; color: var(--muted); line-height: 1.7; }
-    .event-item { padding: 10px; border-radius: 10px; background: #1f2937; border: 1px solid #475569; }
-    .btn:hover { border-color: #60a5fa; background: #334155; color: #fff; }
+    .event-item { padding: 14px; border-radius: 16px; background: rgba(15, 23, 42, 0.76); border: 1px solid rgba(148, 163, 184, 0.18); box-shadow: inset 0 1px 0 rgba(255,255,255,0.04); }
     @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
     @media (max-width: 768px) {
-      .wrap { padding: 12px 10px; }
-      .hero { border-radius: 12px; padding: 14px; }
-      .hero h1 { font-size: 22px; }
+      .wrap { padding: 12px 10px 28px; }
+      .hero { border-radius: 22px; padding: 20px 18px; }
+      .hero h1 { font-size: 24px; }
       .hero p { font-size: 13px; }
-      .hero .home-btn-global { width: 100%; justify-content: center; }
+      .hero-actions { width: 100%; }
+      .hero .btn { width: 100%; }
       .card { padding: 12px; }
       .row { align-items: flex-start; }
       .row .btn { width: 100%; justify-content: center; text-align: center; }
@@ -102,7 +189,16 @@
         <h1>Deneme & İdman Merkezi</h1>
         <p>Kulüp seçmeleri, deneme günleri, idman takvimi ve scout izlemeye açık trial maçları.</p>
       </div>
-      <a class="home-btn-global" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a>
+      <div class="hero-actions">
+        <a class="btn home-btn" href="index.html">
+          <i class="fas fa-house"></i>
+          <span>Ana Sayfa</span>
+        </a>
+        <a class="btn btn-secondary" href="coach-dashboard.html" id="coachDashboardBtn" style="display:none;">
+          <i class="fas fa-table-columns"></i>
+          <span>Dashboard</span>
+        </a>
+      </div>
     </div>
 
     <div class="notice" id="notice"></div>
@@ -175,6 +271,8 @@
     function setNotice() {
       const notice = document.getElementById('notice');
       const view = getView();
+      const dashboardBtn = document.getElementById('coachDashboardBtn');
+      if (dashboardBtn) dashboardBtn.style.display = view === 'coach' ? 'inline-flex' : 'none';
       if (view === 'player') {
         notice.innerHTML = isAuthed()
           ? 'Oyuncu olarak <strong>Başvur</strong> butonunu kullanabilirsin.'
@@ -298,13 +396,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
-
-
-
 
 
 

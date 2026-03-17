@@ -1,5 +1,7 @@
 # Implementation Tracker (12 Mart 2026)
 
+> Not (13 Mart 2026): Bu dosya ilerleme takibi icindir. Canliya cikis karari icin `docs/RELEASE_DECISION_2026_03_13.md` ve `docs/GO_NO_GO_RELEASE_CHECKLIST.md` kullanilir.
+
 Bu dosya, sirali iyilestirme planinin tek kaynak takip listesidir.
 
 ## Genel Durum

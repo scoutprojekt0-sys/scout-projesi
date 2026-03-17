@@ -4224,6 +4224,210 @@
             gap: 14px;
         }
 
+        .turkey-heatmap-card {
+            margin-top: 14px;
+            position: relative;
+            overflow: hidden;
+            padding: 16px;
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border: 1px solid #2b4660;
+            box-shadow: 0 18px 36px rgba(8, 19, 29, 0.28);
+        }
+
+        .turkey-heatmap-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--ns-accent) 0%, var(--ns-accent-2) 55%, #60a5fa 100%);
+        }
+
+        .turkey-heatmap-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        .turkey-heatmap-title {
+            margin: 0 0 8px;
+            font-size: 24px;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+
+        .turkey-heatmap-copy {
+            color: #cbd5e1;
+            font-size: 14px;
+            line-height: 1.7;
+            max-width: 780px;
+        }
+
+        .turkey-heatmap-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 12px;
+            border: 1px solid rgba(255, 126, 34, 0.32);
+            background: rgba(255, 126, 34, 0.12);
+            color: #fdba74;
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .turkey-heatmap-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            align-items: stretch;
+        }
+
+        .turkey-search-bar {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .turkey-search-input {
+            width: 100%;
+            min-height: 44px;
+            padding: 10px 14px;
+            border: 1px solid rgba(255, 126, 34, 0.18);
+            background: rgba(255, 255, 255, 0.05);
+            color: #f8fafc;
+            font-size: 14px;
+        }
+
+        .turkey-search-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            border: 1px solid rgba(47, 212, 176, 0.2);
+            background: rgba(47, 212, 176, 0.1);
+            color: #a7f3d0;
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .turkey-heatmap-side {
+            display: grid;
+            grid-template-columns: 1.15fr .85fr;
+            gap: 12px;
+        }
+
+        .turkey-side-card {
+            border: 1px solid rgba(255, 126, 34, 0.18);
+            background: rgba(255, 255, 255, 0.04);
+            padding: 14px;
+        }
+
+        .turkey-side-k {
+            font-size: 10px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .turkey-side-v {
+            font-size: 24px;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+
+        .turkey-focus-city {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .turkey-focus-copy {
+            color: #cbd5e1;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .turkey-focus-meta {
+            display: grid;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .turkey-focus-line {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 12px;
+            color: #d7e6f3;
+        }
+
+        .turkey-fixture-list {
+            display: grid;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .turkey-fixture-item {
+            border: 1px solid rgba(255, 126, 34, 0.14);
+            background: rgba(255, 255, 255, 0.04);
+            padding: 10px 12px;
+        }
+
+        .turkey-fixture-item.is-button {
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .turkey-fixture-item.is-button:hover {
+            border-color: rgba(255, 126, 34, 0.28);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .turkey-fixture-title {
+            color: #f8fafc;
+            font-size: 13px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .turkey-fixture-meta {
+            color: #b8cadb;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .turkey-detail-card {
+            border: 1px solid rgba(96, 165, 250, 0.16);
+            background: rgba(255, 255, 255, 0.04);
+            padding: 14px;
+        }
+
+        .turkey-detail-title {
+            color: #f8fafc;
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .turkey-detail-copy {
+            color: #cbd5e1;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 980px) {
+            .turkey-heatmap-side {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .watch-demand-card {
             position: relative;
             overflow: hidden;
@@ -7700,6 +7904,58 @@
                 </div>
             </section>
 
+            <section class="turkey-heatmap-card" id="turkeyHeatmapCard">
+                <div class="turkey-heatmap-head">
+                    <div>
+                        <div class="eyebrow">Canlı Talep Haritası</div>
+                        <h3 class="turkey-heatmap-title">Türkiye Yetenek Isı Haritası</h3>
+                        <div class="turkey-heatmap-copy" id="turkeyHeatmapCopy">Şehir bazlı arama ile yüksek puanlı oyuncu yoğunluğunu ve canlı maç trafiğini tek kartta gör. Bir il yazdığında o şehrin sıcak verisi anında açılır.</div>
+                        <div class="turkey-search-bar">
+                            <input class="turkey-search-input" id="turkeyHeatmapSearch" type="text" placeholder="Şehir yaz: İstanbul, Aydın, Ankara...">
+                            <div class="turkey-search-chip" id="turkeyHeatmapSearchState"><i class="fas fa-magnifying-glass"></i><span>Canlı şehir araması</span></div>
+                        </div>
+                    </div>
+                    <div class="turkey-heatmap-badge" id="turkeyHeatmapBadge">
+                        <i class="fas fa-wave-square"></i>
+                        <span>Canlı şehir yoğunluğu yükleniyor</span>
+                    </div>
+                </div>
+                <div class="turkey-heatmap-layout">
+                    <div class="turkey-heatmap-side">
+                        <article class="turkey-side-card">
+                            <div class="turkey-side-k">Odak Şehir</div>
+                            <div class="turkey-focus-city" id="turkeyHeatmapFocusCity">İstanbul</div>
+                            <div class="turkey-focus-copy" id="turkeyHeatmapFocusCopy">Şu an 12 farklı sahada maç var ve 4 yetenek takibimizde.</div>
+                            <div class="turkey-focus-meta">
+                                <div class="turkey-focus-line"><span>Yüksek Puanlı Oyuncu</span><strong id="turkeyHeatmapHighRated">0</strong></div>
+                                <div class="turkey-focus-line"><span>Canlı Maç</span><strong id="turkeyHeatmapMatches">0</strong></div>
+                                <div class="turkey-focus-line"><span>Takipteki Yetenek</span><strong id="turkeyHeatmapTracked">0</strong></div>
+                                <div class="turkey-focus-line"><span>Öne Çıkan Rol</span><strong id="turkeyHeatmapTopRole">-</strong></div>
+                            </div>
+                            <div class="turkey-fixture-list" id="turkeyHeatmapFixtureList">
+                                <div class="turkey-fixture-item">
+                                    <div class="turkey-fixture-title">Şehir sonucu bekleniyor</div>
+                                    <div class="turkey-fixture-meta">Şehir yazdığında o ile ait maç ve saha listesi burada açılacak.</div>
+                                </div>
+                            </div>
+                            <div class="turkey-detail-card" id="turkeyHeatmapDetailCard" style="margin-top:12px;">
+                                <div class="turkey-detail-title">Detay paneli hazır</div>
+                                <div class="turkey-detail-copy">Bir maç satırına bastığında oyuncu, saha, pozisyon ve saat bilgisi burada açılacak.</div>
+                            </div>
+                        </article>
+                        <article class="turkey-side-card">
+                            <div class="turkey-side-k">7 Günlük Snapshot</div>
+                            <div class="turkey-focus-meta">
+                                <div class="turkey-focus-line"><span>Aktif Şehir</span><strong id="turkeyHeatmapCityCount">0</strong></div>
+                                <div class="turkey-focus-line"><span>Yüksek Puanlı Toplam</span><strong id="turkeyHeatmapHighRatedTotal">0</strong></div>
+                                <div class="turkey-focus-line"><span>Canlı Maç Toplamı</span><strong id="turkeyHeatmapLiveMatchesTotal">0</strong></div>
+                                <div class="turkey-focus-line"><span>Takipteki Yetenek</span><strong id="turkeyHeatmapTrackedTotal">0</strong></div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
             <section class="home-data-center-panel">
                 <div class="home-data-center-grid">
                     <article class="home-data-card">
@@ -8628,6 +8884,257 @@
             } catch (error) {
                 return null;
             }
+        }
+
+        const TURKEY_HEATMAP_CITY_LABELS = {
+            adana: 'Adana',
+            adiyaman: 'Adıyaman',
+            afyonkarahisar: 'Afyonkarahisar',
+            agri: 'Ağrı',
+            aksaray: 'Aksaray',
+            amasya: 'Amasya',
+            ankara: 'Ankara',
+            antalya: 'Antalya',
+            ardahan: 'Ardahan',
+            artvin: 'Artvin',
+            aydin: 'Aydın',
+            balikesir: 'Balıkesir',
+            bartin: 'Bartın',
+            batman: 'Batman',
+            bayburt: 'Bayburt',
+            bilecik: 'Bilecik',
+            bingol: 'Bingöl',
+            bitlis: 'Bitlis',
+            bolu: 'Bolu',
+            burdur: 'Burdur',
+            bursa: 'Bursa',
+            canakkale: 'Çanakkale',
+            cankiri: 'Çankırı',
+            corum: 'Çorum',
+            denizli: 'Denizli',
+            diyarbakir: 'Diyarbakır',
+            duzce: 'Düzce',
+            edirne: 'Edirne',
+            elazig: 'Elazığ',
+            erzincan: 'Erzincan',
+            erzurum: 'Erzurum',
+            eskisehir: 'Eskişehir',
+            gaziantep: 'Gaziantep',
+            giresun: 'Giresun',
+            gumushane: 'Gümüşhane',
+            hakkari: 'Hakkari',
+            hatay: 'Hatay',
+            igdir: 'Iğdır',
+            isparta: 'Isparta',
+            istanbul: 'İstanbul',
+            izmir: 'İzmir',
+            kahramanmaras: 'Kahramanmaraş',
+            karabuk: 'Karabük',
+            karaman: 'Karaman',
+            kars: 'Kars',
+            kastamonu: 'Kastamonu',
+            kayseri: 'Kayseri',
+            kilis: 'Kilis',
+            kirikkale: 'Kırıkkale',
+            kirklareli: 'Kırklareli',
+            kirsehir: 'Kırşehir',
+            kocaeli: 'Kocaeli',
+            konya: 'Konya',
+            kutahya: 'Kütahya',
+            malatya: 'Malatya',
+            manisa: 'Manisa',
+            mardin: 'Mardin',
+            mersin: 'Mersin',
+            mugla: 'Muğla',
+            mus: 'Muş',
+            nevsehir: 'Nevşehir',
+            nigde: 'Niğde',
+            ordu: 'Ordu',
+            osmaniye: 'Osmaniye',
+            rize: 'Rize',
+            sakarya: 'Sakarya',
+            samsun: 'Samsun',
+            sanliurfa: 'Şanlıurfa',
+            siirt: 'Siirt',
+            sinop: 'Sinop',
+            sirnak: 'Şırnak',
+            sivas: 'Sivas',
+            tekirdag: 'Tekirdağ',
+            tokat: 'Tokat',
+            trabzon: 'Trabzon',
+            tunceli: 'Tunceli',
+            usak: 'Uşak',
+            van: 'Van',
+            yalova: 'Yalova',
+            yozgat: 'Yozgat',
+            zonguldak: 'Zonguldak',
+        };
+
+        let turkeyHeatmapState = {
+            cities: [],
+            activeKey: '',
+        };
+
+        function openTurkeyHeatmapFixtureDetail(fixture, cityName) {
+            const detailCard = document.getElementById('turkeyHeatmapDetailCard');
+            if (!detailCard || !fixture) return;
+            detailCard.innerHTML = `
+                <div class="turkey-detail-title">${esc(fixture.match_title || 'Açık maç')} • ${esc(cityName || 'Şehir')}</div>
+                <div class="turkey-detail-copy">
+                    <strong>Oyuncu:</strong> ${esc(fixture.player_name || 'Oyuncu')}<br>
+                    <strong>Pozisyon:</strong> ${esc(fixture.position || 'Pozisyon belirtilmedi')}<br>
+                    <strong>Saha:</strong> ${esc(fixture.venue || 'Saha belirtilmedi')}<br>
+                    <strong>İlçe:</strong> ${esc(fixture.district || 'Merkez')}<br>
+                    <strong>Saat:</strong> ${esc(fixture.match_date ? new Date(fixture.match_date).toLocaleString('tr-TR', { dateStyle: 'medium', timeStyle: 'short' }) : 'Tarih belirtilmedi')}
+                </div>
+            `;
+        }
+
+        function normalizeTurkeyHeatmapText(value) {
+            return String(value || '')
+                .toLowerCase()
+                .replaceAll('ı', 'i')
+                .replaceAll('İ', 'i')
+                .replaceAll('ş', 's')
+                .replaceAll('Ş', 's')
+                .replaceAll('ğ', 'g')
+                .replaceAll('Ğ', 'g')
+                .replaceAll('ü', 'u')
+                .replaceAll('Ü', 'u')
+                .replaceAll('ö', 'o')
+                .replaceAll('Ö', 'o')
+                .replaceAll('ç', 'c')
+                .replaceAll('Ç', 'c')
+                .trim();
+        }
+
+        function updateTurkeyHeatmapFocus(cityKey) {
+            const entries = Array.isArray(turkeyHeatmapState.cities) ? turkeyHeatmapState.cities : [];
+            const selected = entries.find((item) => item.key === cityKey) || {
+                key: cityKey,
+                city: TURKEY_HEATMAP_CITY_LABELS[cityKey] || 'Bilinmiyor',
+                high_rated_players: 0,
+                live_matches: 0,
+                tracked_talents: 0,
+                top_position: 'Veri bekleniyor',
+                hover_text: 'Bu şehir için henüz yeterli canlı veri oluşmadı.',
+            };
+            if (!selected) return;
+
+            turkeyHeatmapState.activeKey = selected.key;
+            document.querySelectorAll('.turkey-map-node').forEach((node) => {
+                node.classList.toggle('is-active', node.getAttribute('data-city-key') === selected.key);
+            });
+
+            const focusCityEl = document.getElementById('turkeyHeatmapFocusCity');
+            const focusCopyEl = document.getElementById('turkeyHeatmapFocusCopy');
+            const highRatedEl = document.getElementById('turkeyHeatmapHighRated');
+            const matchesEl = document.getElementById('turkeyHeatmapMatches');
+            const trackedEl = document.getElementById('turkeyHeatmapTracked');
+            const topRoleEl = document.getElementById('turkeyHeatmapTopRole');
+            const searchStateEl = document.getElementById('turkeyHeatmapSearchState');
+            const fixtureListEl = document.getElementById('turkeyHeatmapFixtureList');
+            const detailCard = document.getElementById('turkeyHeatmapDetailCard');
+
+            if (focusCityEl) focusCityEl.textContent = selected.city || 'Bilinmiyor';
+            if (focusCopyEl) focusCopyEl.textContent = selected.hover_text || 'Bu şehirde canlı takip verisi hazırlanıyor.';
+            if (highRatedEl) highRatedEl.textContent = String(selected.high_rated_players || 0);
+            if (matchesEl) matchesEl.textContent = String(selected.live_matches || 0);
+            if (trackedEl) trackedEl.textContent = String(selected.tracked_talents || 0);
+            if (topRoleEl) topRoleEl.textContent = selected.top_position || '-';
+            if (searchStateEl) searchStateEl.innerHTML = `<i class="fas fa-location-dot"></i><span>${esc(selected.city || 'Şehir')} odakta</span>`;
+            if (fixtureListEl) {
+                const fixtures = Array.isArray(selected.fixtures) ? selected.fixtures : [];
+                fixtureListEl.innerHTML = fixtures.length
+                    ? fixtures.map((fixture) => `
+                        <button type="button" class="turkey-fixture-item is-button">
+                            <div class="turkey-fixture-title">${esc(fixture.match_title || 'Açık maç')}</div>
+                            <div class="turkey-fixture-meta">
+                                ${(fixture.district ? `${esc(fixture.district)} • ` : '')}${esc(fixture.venue || 'Saha belirtilmedi')}<br>
+                                ${esc(fixture.position || 'Pozisyon belirtilmedi')} • ${esc(fixture.match_date ? new Date(fixture.match_date).toLocaleString('tr-TR', { dateStyle: 'medium', timeStyle: 'short' }) : 'Tarih belirtilmedi')}
+                            </div>
+                        </button>
+                    `).join('')
+                    : `
+                        <div class="turkey-fixture-item">
+                            <div class="turkey-fixture-title">Bu şehir için henüz açık maç görünmüyor</div>
+                            <div class="turkey-fixture-meta">Canlı maç ve saha listesi bu alanda açılacak.</div>
+                        </div>
+                    `;
+
+                if (fixtures.length) {
+                    Array.from(fixtureListEl.querySelectorAll('.turkey-fixture-item.is-button')).forEach((button, index) => {
+                        button.addEventListener('click', () => openTurkeyHeatmapFixtureDetail(fixtures[index], selected.city));
+                    });
+                    openTurkeyHeatmapFixtureDetail(fixtures[0], selected.city);
+                } else if (detailCard) {
+                    detailCard.innerHTML = `
+                        <div class="turkey-detail-title">Detay paneli hazır</div>
+                        <div class="turkey-detail-copy">Bu şehir için canlı maç verisi oluştuğunda oyuncu, saha, pozisyon ve saat bilgisi burada açılacak.</div>
+                    `;
+                }
+            }
+        }
+
+        async function renderTurkeyHeatmapCard() {
+            const badge = document.getElementById('turkeyHeatmapBadge');
+            const cityCountEl = document.getElementById('turkeyHeatmapCityCount');
+            const highRatedTotalEl = document.getElementById('turkeyHeatmapHighRatedTotal');
+            const liveMatchesTotalEl = document.getElementById('turkeyHeatmapLiveMatchesTotal');
+            const trackedTotalEl = document.getElementById('turkeyHeatmapTrackedTotal');
+            const searchEl = document.getElementById('turkeyHeatmapSearch');
+            const searchStateEl = document.getElementById('turkeyHeatmapSearchState');
+            if (!badge || !cityCountEl || !highRatedTotalEl || !liveMatchesTotalEl || !trackedTotalEl) return;
+
+            const fallbackCities = [
+                { key: 'istanbul', city: 'İstanbul', high_rated_players: 18, live_matches: 12, active_fields: 12, tracked_talents: 4, top_position: 'Sol Bek', intensity: 92, hover_text: 'Şu an 12 farklı sahada maç var ve 4 yetenek takibimizde.' },
+                { key: 'ankara', city: 'Ankara', high_rated_players: 10, live_matches: 7, active_fields: 7, tracked_talents: 3, top_position: 'On Numara', intensity: 70, hover_text: 'Şu an 7 farklı sahada maç var ve 3 yetenek takibimizde.' },
+                { key: 'izmir', city: 'İzmir', high_rated_players: 8, live_matches: 5, active_fields: 5, tracked_talents: 2, top_position: 'Stoper', intensity: 58, hover_text: 'Şu an 5 farklı sahada maç var ve 2 yetenek takibimizde.' },
+                { key: 'antalya', city: 'Antalya', high_rated_players: 6, live_matches: 4, active_fields: 4, tracked_talents: 2, top_position: 'Kanat', intensity: 44, hover_text: 'Şu an 4 farklı sahada maç var ve 2 yetenek takibimizde.' },
+            ];
+
+            const payload = await fetchJsonSafe(`${API_BASE_URL}/public/turkiye-heatmap`);
+            const summary = payload?.data?.summary || {};
+            const rows = Array.isArray(payload?.data?.cities) && payload.data.cities.length ? payload.data.cities : fallbackCities;
+            turkeyHeatmapState.cities = rows;
+
+            badge.innerHTML = `<i class="fas fa-wave-square"></i><span>${turkeyHeatmapState.cities.length} aktif şehir • ${esc(summary.top_city || turkeyHeatmapState.cities[0]?.city || 'Türkiye')}</span>`;
+            cityCountEl.textContent = String(summary.city_count || turkeyHeatmapState.cities.length || 0);
+            highRatedTotalEl.textContent = String(summary.high_rated_players || turkeyHeatmapState.cities.reduce((sum, item) => sum + Number(item.high_rated_players || 0), 0));
+            liveMatchesTotalEl.textContent = String(summary.live_matches || turkeyHeatmapState.cities.reduce((sum, item) => sum + Number(item.live_matches || 0), 0));
+            trackedTotalEl.textContent = String(summary.tracked_talents || turkeyHeatmapState.cities.reduce((sum, item) => sum + Number(item.tracked_talents || 0), 0));
+
+            if (searchEl) {
+                searchEl.oninput = () => {
+                    const query = normalizeTurkeyHeatmapText(searchEl.value);
+                    if (!query) {
+                        if (searchStateEl) searchStateEl.innerHTML = '<i class="fas fa-magnifying-glass"></i><span>Canlı şehir araması</span>';
+                        updateTurkeyHeatmapFocus(turkeyHeatmapState.cities[0]?.key || '');
+                        return;
+                    }
+                    const found = turkeyHeatmapState.cities.find((item) => normalizeTurkeyHeatmapText(item.city) === query);
+                    if (found) {
+                        updateTurkeyHeatmapFocus(found.key);
+                        return;
+                    }
+                    const partial = turkeyHeatmapState.cities.find((item) => normalizeTurkeyHeatmapText(item.city).includes(query));
+                    if (partial) {
+                        updateTurkeyHeatmapFocus(partial.key);
+                        return;
+                    }
+                    const fallbackKey = Object.keys(TURKEY_HEATMAP_CITY_LABELS).find((key) => {
+                        const label = TURKEY_HEATMAP_CITY_LABELS[key] || key;
+                        return normalizeTurkeyHeatmapText(label) === query || normalizeTurkeyHeatmapText(label).includes(query);
+                    });
+                    if (fallbackKey) {
+                        updateTurkeyHeatmapFocus(fallbackKey);
+                        return;
+                    }
+                    if (searchStateEl) searchStateEl.innerHTML = '<i class="fas fa-circle-info"></i><span>Şehir bulunamadı</span>';
+                };
+            }
+
+            updateTurkeyHeatmapFocus(turkeyHeatmapState.cities[0]?.key || '');
         }
 
         async function renderHomepageInfoCards() {
@@ -9875,6 +10382,7 @@
             // İlk yükleme
             renderBreakingNewsStrip();
             renderFeatureTransferCard();
+            renderTurkeyHeatmapCard();
             renderScoutRadarInsightCard();
             renderHomeNeedsInsightCard();
             renderTransferDeskCard();
@@ -9907,6 +10415,10 @@
             setInterval(() => {
                 renderHomepageInfoCards();
             }, 120000); // 120 seconds
+
+            setInterval(() => {
+                renderTurkeyHeatmapCard();
+            }, 180000); // 180 seconds
 
             setInterval(() => {
                 renderPaidClubPromoNamesInline();
@@ -10006,6 +10518,7 @@
             renderManagerNeedsButtonPanel();
             renderContractStatusTicker();
             window.NextScoutGrowth?.idle(() => renderFeatureTransferCard(), 800);
+            window.NextScoutGrowth?.idle(() => renderTurkeyHeatmapCard(), 820);
             window.NextScoutGrowth?.idle(() => renderScoutRadarInsightCard(), 830);
             window.NextScoutGrowth?.idle(() => renderHomeNeedsInsightCard(), 850);
             window.NextScoutGrowth?.idle(() => renderTransferDeskCard(), 860);

@@ -5350,7 +5350,7 @@
                 </div>
 
                 <!-- Register Form -->
-                <form id="registerForm">
+                <form id="registerForm" novalidate>
                     <div class="form-group">
                         <label><i class="fas fa-user"></i> Ad Soyad</label>
                         <input type="text" class="form-control" name="name" placeholder="Ad Soyad" required>
@@ -5400,9 +5400,11 @@
                         </label>
                     </div>
 
-                    <button type="submit" class="btn-primary btn-full">
+                    <button type="button" class="btn-primary btn-full" onclick="submitRegisterForm()">
                         <i class="fas fa-user-plus"></i> Kayıt Ol
                     </button>
+
+                    <div id="registerStatus" style="display:none;margin-top:12px;padding:10px 12px;border-radius:12px;font-size:13px;font-weight:700;"></div>
 
                     <div class="register-link">
                         Zaten hesabınız var mı? <a href="#" onclick="closeRegisterModal(); openLoginModal();">Giriş Yap</a>
@@ -9917,6 +9919,37 @@
             }
         }
 
+        function loginWithLocalUser(registeredUser) {
+            if (!registeredUser) return false;
+            localStorage.setItem('nextscout_token', 'local-session-token');
+            localStorage.setItem('nextscout_user', JSON.stringify({
+                name: registeredUser.name || 'Kullanıcı',
+                email: registeredUser.email,
+                role: registeredUser.role || 'player',
+            }));
+            localStorage.setItem('nextscout_demo_login', 'true');
+            closeLoginModal();
+            window.location.href = resolveLocalPage(getDashboardByRole(registeredUser.role || 'player', true));
+            return true;
+        }
+
+        function showRegisterStatus(message, type = 'error') {
+            const el = document.getElementById('registerStatus');
+            if (el) {
+                el.style.display = 'block';
+                el.textContent = String(message || '');
+                if (type === 'success') {
+                    el.style.background = 'rgba(16, 185, 129, 0.14)';
+                    el.style.border = '1px solid rgba(16, 185, 129, 0.45)';
+                    el.style.color = '#a7f3d0';
+                } else {
+                    el.style.background = 'rgba(239, 68, 68, 0.14)';
+                    el.style.border = '1px solid rgba(239, 68, 68, 0.45)';
+                    el.style.color = '#fecaca';
+                }
+            }
+        }
+
         function isUserLocallyVerified(user) {
             return !!user;
         }
@@ -10066,15 +10099,7 @@
                     nsnsAlert('Hesap doğrulanmadi. E-postana gönderilen linke tiklayip tekrar giriş yap.');
                     return;
                 }
-                localStorage.setItem('nextscout_token', 'local-session-token');
-                localStorage.setItem('nextscout_user', JSON.stringify({
-                    name: registeredUser.name || 'Kullanıcı',
-                    email: registeredUser.email,
-                    role: registeredUser.role || 'player',
-                }));
-                localStorage.setItem('nextscout_demo_login', 'true');
-                closeLoginModal();
-                    window.location.href = resolveLocalPage(getDashboardByRole(registeredUser.role || 'player', true));
+                loginWithLocalUser(registeredUser);
                 return;
             }
 
@@ -10116,7 +10141,11 @@
             })
             .catch((err) => {
                 console.error('❌ Giriş hatası:', err);
-                
+                const registeredUser = findRegisteredUser(payload.email, payload.password);
+                if (registeredUser) {
+                    loginWithLocalUser(registeredUser);
+                    return;
+                }
                 let errorMsg = err.message;
                 if (err.message === 'Failed to fetch') {
                     errorMsg = '❌ Server\'a bağlanılamadı!\n\nLütfen kontrol edin:\n1. Laravel server çalışıyor mu? (php artisan serve)\n2. URL doğru mu? ' + API_BASE_URL;
@@ -10127,22 +10156,44 @@
             });
         }
 
-        // Register Form Submit
-        const registerForm = document.getElementById('registerForm');
-        if (registerForm) {
-            registerForm.addEventListener('submit', function(e) {
-                e.preventDefault();
+        function submitRegisterForm() {
+            const registerForm = document.getElementById('registerForm');
+            if (!registerForm) {
+                nsnsAlert('Kayıt formu bulunamadı.');
+                return;
+            }
 
-            const formData = new FormData(this);
+            const formData = new FormData(registerForm);
             const name = formData.get('name');
             const email = formData.get('email');
             const password = formData.get('password');
             const password_confirmation = formData.get('password_confirmation');
             const role = formData.get('role');
+            const termsAccepted = formData.get('terms');
+
+            if (!(name || '').toString().trim()) {
+                showRegisterStatus('Ad Soyad alanını doldurun.');
+                return;
+            }
+
+            if (!(email || '').toString().trim()) {
+                showRegisterStatus('Email alanını doldurun.');
+                return;
+            }
+
+            if (!(role || '').toString().trim()) {
+                showRegisterStatus('Hesap Tipi seçin.');
+                return;
+            }
+
+            if (!termsAccepted) {
+                showRegisterStatus('Devam etmek için Kullanım Şartları onayını işaretleyin.');
+                return;
+            }
 
             // Şifre eşleşme kontrolü
             if (password !== password_confirmation) {
-                nsnsAlert('Şifreler eşleşmiyor!');
+                showRegisterStatus('Şifreler eşleşmiyor.');
                 return;
             }
 
@@ -10155,6 +10206,21 @@
             };
 
             console.log('📝 Kayıt denemesi:', { name: payload.name, email: payload.email, role: payload.role });
+
+            if (!payload.password) {
+                showRegisterStatus('Şifre alanını doldurun.');
+                return;
+            }
+
+            if (emailExistsLocally(payload.email)) {
+                showRegisterStatus('Bu e-posta ile zaten kayıt var. Lütfen farklı bir e-posta kullanın.');
+                return;
+            }
+
+            saveRegisteredUser(payload);
+            showRegisterStatus('Kayıt oluşturuldu. Şimdi giriş yapabilirsin.', 'success');
+            registerForm.reset();
+            return;
 
             // file:// modunda demo kayıt akışı
             if (window.location.protocol === 'file:') {
@@ -10205,7 +10271,12 @@
             })
             .catch((err) => {
                 console.error('❌ Kayıt hatası:', err);
-                
+                if (!emailExistsLocally(payload.email)) {
+                    saveRegisteredUser(payload);
+                    closeRegisterModal();
+                    nsnsAlert('Kayıt lokal olarak oluşturuldu. Artık giriş yapabilirsin.');
+                    return;
+                }
                 let errorMsg = err.message;
                 if (err.message === 'Failed to fetch') {
                     errorMsg = '❌ Server\'a bağlanılamadı!\n\nLütfen kontrol edin:\n1. Laravel server çalışıyor mu? (php artisan serve)\n2. URL doğru mu? ' + API_BASE_URL;
@@ -10213,6 +10284,14 @@
                 
                 nsnsAlert(errorMsg);
             });
+        }
+
+        // Register Form Submit
+        const registerForm = document.getElementById('registerForm');
+        if (registerForm) {
+            registerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitRegisterForm();
             });
         }
 

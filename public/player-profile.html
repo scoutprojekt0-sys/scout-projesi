@@ -26,6 +26,7 @@
     }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -68,6 +69,23 @@
             gap: 10px;
             margin-left: auto;
             flex-wrap: wrap;
+        }
+
+        .profile-close-btn {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 16px;
+            line-height: 1;
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+            color: #16325c;
+            border: 1px solid rgba(255, 126, 34, 0.45);
+            border-radius: 12px;
+            box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24);
         }
 
         .nav-title {
@@ -529,6 +547,14 @@
             background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
         }
 
+        body.boost-showcase-mode .nav-actions .back-btn {
+            display: none !important;
+        }
+
+        body.boost-showcase-mode .profile-close-btn {
+            display: inline-flex !important;
+        }
+
         .back-btn {
             display: inline-block;
             padding: 10px 14px;
@@ -775,6 +801,7 @@
             <div class="nav-actions">
                 <a href="index.html" class="back-btn home-btn">Ana Sayfa</a>
                 <a href="player-dashboard.html" class="back-btn">DASHBOARD</a>
+                <a href="index.html" class="profile-close-btn" id="profileCloseBtn" aria-label="Kapat" title="Kapat"><i class="fas fa-xmark"></i></a>
             </div>
         </div>
     </div>
@@ -1505,8 +1532,27 @@
             window.location.href = 'index.html';
         }
 
+        function applyBoostShowcaseMode() {
+            const params = new URLSearchParams(window.location.search);
+            const source = (params.get('source') || '').toString().trim().toLowerCase();
+            if (source !== 'boost-showcase') return;
+
+            document.body.classList.add('boost-showcase-mode');
+            const closeBtn = document.getElementById('profileCloseBtn');
+            if (!closeBtn) return;
+            closeBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                if (window.history.length > 1) {
+                    window.history.back();
+                    return;
+                }
+                window.location.href = 'index.html';
+            });
+        }
+
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
+                applyBoostShowcaseMode();
                 initMobileAccordionCards();
                 renderTabs();
                 refreshMobileAccordionMode();
@@ -1514,6 +1560,7 @@
                 loadProfileData();
             });
         } else {
+            applyBoostShowcaseMode();
             initMobileAccordionCards();
             renderTabs();
             refreshMobileAccordionMode();

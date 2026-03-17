@@ -87,6 +87,93 @@
         });
     }
 
+    function applyGlobalSquareCorners() {
+        if (document.getElementById('nextscout-square-corners')) return;
+        var style = document.createElement('style');
+        style.id = 'nextscout-square-corners';
+        style.textContent = [
+            '.btn,',
+            'a.btn,',
+            'button,',
+            'a[role="button"],',
+            'input[type="button"],',
+            'input[type="submit"],',
+            'input[type="reset"],',
+            'input,',
+            'select,',
+            'textarea,',
+            '.btn-small,',
+            '.back-btn,',
+            '.home-btn,',
+            '.home-btn-global,',
+            '.action-btn,',
+            '.search-btn,',
+            '.schedule-btn,',
+            '.sidebar-item,',
+            '.panel,',
+            '.card,',
+            '.stat-card,',
+            '.player-card,',
+            '.mini-item,',
+            '.modal-card,',
+            '.modal-content,',
+            '.need-modal,',
+            '.hero,',
+            '.hero-section,',
+            '.header-nav,',
+            '.seo-intro,',
+            '.seo-market-intro,',
+            '.sponsored-section,',
+            '.compare-card,',
+            '.compare-chip,',
+            '.info-item,',
+            '.tag,',
+            '.badge,',
+            '.pill,',
+            '.form-group,',
+            '.form-control,',
+            '.filter,',
+            '.filter-tools,',
+            '.results-section,',
+            '.search-section,',
+            '.toolbar,',
+            '.topbar,',
+            '.navbar,',
+            '.top-navbar,',
+            '.header,',
+            '.header-container,',
+            '.container,',
+            '.content,',
+            '.box,',
+            '.surface,',
+            '.tile,',
+            '.item,',
+            '.section,',
+            '.widget,',
+            '.empty,',
+            '[class*="card"],',
+            '[class*="panel"],',
+            '[class*="btn"],',
+            '[class*="button"],',
+            '[class*="input"],',
+            '[class*="select"],',
+            '[class*="textarea"],',
+            '[class*="badge"],',
+            '[class*="pill"],',
+            '[class*="chip"],',
+            '[class*="modal"],',
+            '[class*="dialog"],',
+            '[class*="hero"],',
+            '[class*="header"],',
+            '[class*="toolbar"],',
+            '[class*="widget"],',
+            '[class*="surface"],',
+            '[class*="tile"],',
+            '[class*="item"] { border-radius: 0 !important; }'
+        ].join('\n');
+        document.head.appendChild(style);
+    }
+
     async function safeFetchJson(url, fallback) {
         try {
             var response = await fetch(url);
@@ -111,6 +198,7 @@
     };
 
     setupClientErrorTelemetry();
+    applyGlobalSquareCorners();
 
     document.documentElement.setAttribute('data-runtime', IS_FILE_MODE ? 'file' : 'web');
 })();

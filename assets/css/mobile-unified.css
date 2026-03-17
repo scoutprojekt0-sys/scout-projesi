@@ -1,0 +1,166 @@
+/* Unified mobile design system for NextScout core pages */
+:root {
+    --m-bg: #1f252d;
+    --m-surface: #232a33;
+    --m-surface-soft: #2b3440;
+    --m-line: #334155;
+    --m-line-soft: #475569;
+    --m-text: #e2e8f0;
+    --m-muted: #94a3b8;
+    --m-primary: #60a5fa;
+    --m-primary-strong: #1d4ed8;
+}
+
+@media (max-width: 1024px) {
+    body {
+        background:
+            radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.16), transparent 34%),
+            radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.14), transparent 36%),
+            var(--m-bg) !important;
+        color: var(--m-text) !important;
+    }
+
+    .top-navbar,
+    .header {
+        background: rgba(31, 37, 45, 0.94) !important;
+        border-bottom: 1px solid var(--m-line) !important;
+        box-shadow: 0 8px 24px rgba(2, 6, 23, 0.35) !important;
+        backdrop-filter: blur(8px);
+    }
+
+    .logo {
+        color: #bfdbfe !important;
+        -webkit-text-fill-color: #bfdbfe !important;
+        background: none !important;
+    }
+
+    .main-container,
+    .container {
+        padding: 10px !important;
+        gap: 10px !important;
+    }
+
+    .sidebar,
+    .panel,
+    .search-section,
+    .results-section,
+    .need-section,
+    .offer-score-section,
+    .quick-report-section,
+    .needs-panel,
+    .transfer-summary-card,
+    .transfer-list-box,
+    .search-box,
+    .card,
+    .list-item,
+    .modal-content,
+    .modal-card,
+    .need-modal {
+        background: var(--m-surface) !important;
+        border-color: var(--m-line) !important;
+        color: var(--m-text) !important;
+        box-shadow: 0 10px 24px rgba(2, 6, 23, 0.26) !important;
+    }
+
+    .welcome-card {
+        background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 100%) !important;
+        color: #ffffff !important;
+    }
+
+    .stat-card,
+    .player-card,
+    .mini-item,
+    .sidebar-item {
+        background: var(--m-surface-soft) !important;
+        border-color: var(--m-line-soft) !important;
+        color: var(--m-text) !important;
+    }
+
+    .sidebar-item i,
+    .stat-card-value,
+    .player-position,
+    .section-title i {
+        color: var(--m-primary) !important;
+    }
+
+    .form-group label,
+    .promo-label,
+    .sidebar-title,
+    .stat-card-label,
+    .stat-label,
+    .player-info-label {
+        color: var(--m-muted) !important;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-control,
+    .promo-input,
+    .need-modal-body input,
+    .need-modal-body textarea,
+    .need-modal-body select,
+    textarea,
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    select {
+        background: #1f2937 !important;
+        color: #f8fafc !important;
+        border-color: var(--m-line-soft) !important;
+    }
+
+    .form-group input::placeholder,
+    .form-control::placeholder,
+    .promo-input::placeholder,
+    textarea::placeholder {
+        color: var(--m-muted) !important;
+    }
+
+    .btn-small,
+    .btn,
+    .nav a,
+    .search-btn,
+    .action-btn,
+    .btn-primary,
+    .btn-secondary,
+    .home-btn,
+    .home-btn-global {
+        border-radius: 10px !important;
+        min-height: 40px !important;
+        font-weight: 700 !important;
+        font-size: 12px !important;
+        line-height: 1.2 !important;
+    }
+
+    .btn-small.primary,
+    .btn-primary,
+    .search-btn,
+    .action-btn.primary,
+    .home-btn,
+    .home-btn-global {
+        background: linear-gradient(135deg, #1e40af 0%, var(--m-primary-strong) 100%) !important;
+        color: #ffffff !important;
+        border-color: #2563eb !important;
+    }
+
+    .btn-small.secondary,
+    .btn-secondary,
+    .action-btn {
+        background: #1f2937 !important;
+        color: #dbeafe !important;
+        border: 1px solid var(--m-line-soft) !important;
+    }
+
+    .quick-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px !important;
+    }
+
+    .players-grid,
+    .transfer-lists,
+    .search-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+}
+

@@ -127,3 +127,25 @@ curl https://scout-api-production.railway.app/api/ping
 - [ ] Backup planı var
 - [ ] CDN yapılandırıldı (optional)
 
+---
+
+## ⚙️ Test ve Doğrulama
+
+Deployment öncesi aşağıdaki adımları uygulayın:
+
+- `composer install` ile bağımlılıkları yükleyin.
+- `php artisan migrate --force` ile veritabanı şemasını oluşturun.
+- `php artisan test` ile testleri çalıştırarak doğrulama yapın.
+- Gerekirse `php artisan db:seed` ile örnek verileri yükleyin.
+
+### Adım 4: Docker ile Çalıştırma
+
+Docker ortamında çalıştırmak için:
+
+```
+docker-compose up -d
+```
+
+### Adım 5: Canlıya Alma
+
+Railway veya başka bir platformda deployment için yukarıdaki adımları takip edin ve ortam değişkenlerini doğru şekilde ayarlayın.

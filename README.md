@@ -1,3 +1,12 @@
+# Canlıya Hazırlık Notu (13 Mart 2026)
+
+- laravel/framework ve phpunit/phpunit CVE'leri giderildi, güncel sürümler yüklendi.
+- Tüm testler başarıyla çalıştırıldı ve doğrulandı.
+- Deployment rehberi ve ortam değişkenleri güncellendi.
+- Güvenlik ve dokümantasyon kontrolleri tamamlandı.
+
+Bu proje canlıya alınmaya hazırdır.
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
@@ -20,6 +29,29 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 - [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
+
+## Proje Canlıya Alma Adımları
+
+1. Ortam değişkenlerini .env dosyasına ekleyin (örnek için .env.example).
+2. `composer install` ile bağımlılıkları yükleyin.
+3. `php artisan migrate --force` ile veritabanı şemasını oluşturun.
+4. `php artisan db:seed` ile örnek verileri yükleyin (isteğe bağlı).
+5. `php artisan test` ile testleri çalıştırarak doğrulama yapın.
+6. Docker ile çalıştırmak için: `docker-compose up -d`.
+7. Railway veya başka bir platformda deployment için `DEPLOYMENT_GUIDE.md` dosyasını takip edin.
+
+## Test Çalıştırma
+
+
+Testleri çalıştırmak için aşağıdaki komutu kullanın:
+
+```
+php artisan test
+```
+
+## Katkı Sağlama
+
+Katkı sağlamak için `CONTRIBUTING.md` dosyasını inceleyin.
 
 ## Learning Laravel
 
@@ -196,6 +228,8 @@ CI guvenlik kontrolleri:
 | `RATE_LIMIT_API_WRITE_PER_MINUTE` | Optional | Optional | Optional | default `40` |
 | `AUTH_FAILED_ATTEMPTS_BEFORE_LOCK` | Optional | Optional | Optional | default `5` |
 | `AUTH_LOCK_SECONDS` | Optional | Optional | Optional | default `900` |
+| `STRIPE_WEBHOOK_TOLERANCE_SECONDS` | Optional | Optional | Optional | default `300` |
+| `PAYPAL_WEBHOOK_SECRET` | Optional | Optional | Recommended | enable PayPal webhook signature validation |
 
 Production boot-time validation now fails fast if these are missing:
 

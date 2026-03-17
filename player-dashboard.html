@@ -92,6 +92,8 @@
         }
 
         .nav a:hover { color: #dbeafe; border-color: #60a5fa; background: #334155; }
+        .nav a i { display: none; }
+        .nav-label { line-height: 1; }
 
         .container {
             max-width: 1200px;
@@ -492,6 +494,28 @@
             }
             .nav::-webkit-scrollbar { display: none; }
             .nav a { flex: 0 0 auto; font-size: 12px; padding: 7px 10px; }
+            .nav a:not(.home-btn-global) {
+                width: 36px;
+                height: 36px;
+                padding: 0;
+                font-size: 0;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .nav a:not(.home-btn-global) i {
+                font-size: 14px;
+                margin: 0;
+            }
+            .nav a.home-btn-global {
+                width: 36px !important;
+                height: 36px !important;
+                padding: 0 !important;
+                font-size: 0 !important;
+                gap: 0 !important;
+            }
+            .nav a .nav-label { display: none; }
+            .nav a i { display: inline-flex; }
 
             .container { padding: 12px; gap: 10px; }
             .welcome { padding: 14px; border-radius: 12px; }
@@ -525,6 +549,10 @@
                 justify-content: center;
             }
             .nav a i { font-size: 14px; margin: 0; }
+            .nav a.home-btn-global {
+                width: 34px !important;
+                height: 34px !important;
+            }
             .kpi-strip { grid-template-columns: 1fr; }
         }
     </style>
@@ -532,13 +560,13 @@
 </head>
 <body>
     <div class="header">
-        <div class="logo"><i class="fas fa-search"></i> NextScout</div>
+        <div class="logo">NextScout</div>
         <div class="nav">
-            <a class="home-btn-global" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a>
-            <a href="player-profile.html"><i class="fas fa-user"></i> Profil</a>
-            <a href="notifications.html"><i class="fas fa-bell"></i> Bildirim</a>
-            <a href="scout-watchlist.html"><i class="fas fa-list-check"></i> Takip Listem</a>
-            <a href="professional-players.html"><i class="fas fa-compass"></i> Kesfet</a>
+            <a class="home-btn-global" href="index.html" aria-label="Ana Sayfa" title="Ana Sayfa" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;"><i class="fas fa-house"></i><span class="nav-label">Ana Sayfa</span></a>
+            <a href="player-profile.html" aria-label="Profil" title="Profil"><i class="fas fa-user"></i><span class="nav-label">Profil</span></a>
+            <a href="notifications.html" aria-label="Bildirim" title="Bildirim"><i class="fas fa-bell"></i><span class="nav-label">Bildirim</span></a>
+            <a href="scout-watchlist.html" aria-label="Takip Listem" title="Takip Listem"><i class="fas fa-list-check"></i><span class="nav-label">Takip Listem</span></a>
+            <a href="professional-players.html" aria-label="Kesfet" title="Kesfet"><i class="fas fa-compass"></i><span class="nav-label">Kesfet</span></a>
         </div>
     </div>
 
@@ -1507,11 +1535,3 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
-
-
-
-

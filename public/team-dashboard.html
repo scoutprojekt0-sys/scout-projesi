@@ -71,18 +71,33 @@
         .btn-small:hover { transform: translateY(-1px); filter: brightness(1.06); }
         .needs-panel {
             position: fixed;
-            right: 16px;
-            bottom: 16px;
-            width: 300px;
+            top: 18% !important;
+            left: 50%;
+            right: auto;
+            bottom: auto;
+            transform: translate(-50%, -18%) !important;
+            width: min(560px, calc(100vw - 24px));
+            max-height: min(78vh, 760px);
+            overflow: auto;
             background: #ffffff;
             border: 1px solid #e5e7eb;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
-            padding: 12px;
+            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.28);
+            padding: 14px;
             display: none;
-            z-index: 999;
+            z-index: 2000;
+            margin: 0 !important;
         }
         .needs-panel.active { display: block; }
+        .panel-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.62);
+            backdrop-filter: blur(6px);
+            display: none;
+            z-index: 1990;
+        }
+        .panel-overlay.active { display: block; }
         .needs-panel h3 { font-size: 14px; margin-bottom: 8px; }
         .needs-panel textarea {
             width: 100%;
@@ -387,10 +402,12 @@
             .needs-panel,
             #trialPublishPanel,
             #clubPromoPanel {
-                left: 10px !important;
-                right: 10px !important;
-                width: auto !important;
-                bottom: 10px !important;
+                left: 50% !important;
+                right: auto !important;
+                top: 18% !important;
+                bottom: auto !important;
+                transform: translate(-50%, -18%) !important;
+                width: min(560px, calc(100vw - 20px)) !important;
                 border-color: #334155;
                 background: #232a33;
                 color: #e2e8f0;
@@ -415,6 +432,155 @@
             .compare-toolbar > div:last-child { grid-template-columns: 1fr; }
             .btn-small { font-size: 11px; min-height: 40px; }
         }
+        :root {
+            --ns-bg: #08131d;
+            --ns-card: #0f1f2e;
+            --ns-line: #2b4660;
+            --ns-text: #f5fbff;
+            --ns-muted: #9bb5cb;
+            --ns-cta: #ff5a1f;
+            --ns-cta-2: #ff7e22;
+            --ns-shadow: 0 18px 36px rgba(8,19,29,.34);
+        }
+
+        .top-navbar {
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+            box-shadow: var(--ns-shadow);
+            backdrop-filter: blur(18px);
+        }
+
+        .btn-small {
+            border: 1px solid rgba(255, 126, 34, 0.45);
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+            color: #16325c;
+            box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24);
+            font-weight: 800;
+        }
+
+        .btn-small.primary,
+        .home-btn-global {
+            background: linear-gradient(135deg, var(--ns-cta) 0%, var(--ns-cta-2) 100%) !important;
+            border-color: rgba(255, 126, 34, 0.6) !important;
+            color: #fff !important;
+            box-shadow: 0 16px 28px rgba(255,90,31,0.28) !important;
+        }
+
+        .btn-small.secondary,
+        .btn-small.light {
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%) !important;
+            color: #16325c !important;
+            border-color: rgba(255, 126, 34, 0.45) !important;
+        }
+
+        .sidebar,
+        .welcome-card,
+        .stat-card,
+        .search-section,
+        .needs-panel,
+        #trialPublishPanel,
+        #clubPromoPanel,
+        .transfer-summary-card,
+        .transfer-list-box,
+        .compare-result-card,
+        .player-card {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%) !important;
+            border: 1px solid var(--ns-line) !important;
+            box-shadow: var(--ns-shadow) !important;
+            color: var(--ns-text);
+        }
+
+        .sidebar::before,
+        .welcome-card::before,
+        .stat-card::before,
+        .search-section::before,
+        .needs-panel::before,
+        #trialPublishPanel::before,
+        #clubPromoPanel::before,
+        .player-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--ns-cta) 0%, var(--ns-cta-2) 55%, #60a5fa 100%);
+        }
+
+        .sidebar-item,
+        .transfer-list li,
+        .compare-chip,
+        .compare-badge,
+        .compare-rank,
+        .player-rating,
+        .form-group input,
+        .form-group select,
+        .promo-input,
+        .needs-panel textarea,
+        #trialPublishPanel input,
+        #trialPublishPanel select {
+            background: rgba(255,255,255,.04) !important;
+            border: 1px solid var(--ns-line) !important;
+            color: #dbeafe !important;
+        }
+
+        .sidebar-item {
+            color: #dbeafe;
+        }
+
+        .sidebar-item:hover,
+        .action-btn:hover,
+        .search-btn:hover {
+            border-color: rgba(255,126,34,.42) !important;
+        }
+
+        .sidebar-item.active {
+            background: linear-gradient(135deg, var(--ns-cta) 0%, var(--ns-cta-2) 100%) !important;
+            border-color: rgba(255,126,34,.6) !important;
+            color: #fff !important;
+        }
+
+        .welcome-card h1,
+        .search-section h2,
+        .player-name,
+        .transfer-list-title,
+        .compare-result-card h4,
+        .transfer-summary-card .v,
+        .compare-metric strong {
+            color: var(--ns-text) !important;
+        }
+
+        .welcome-card p,
+        .sidebar-title,
+        .stat-card-label,
+        .player-info-label,
+        .transfer-empty,
+        .compare-result-meta,
+        .compare-metric,
+        .needs-msg,
+        .promo-label,
+        .promo-check {
+            color: var(--ns-muted) !important;
+        }
+
+        .player-card-image {
+            background: linear-gradient(135deg, #16325c 0%, #1d4f91 100%) !important;
+        }
+
+        .action-btn,
+        .search-btn {
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+            color: #16325c;
+            border: 1px solid rgba(255,126,34,.45);
+            box-shadow: 0 12px 24px rgba(8,19,29,.2);
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, var(--ns-cta) 0%, var(--ns-cta-2) 100%);
+            border-color: rgba(255,126,34,.6);
+            color: #fff;
+        }
+
         .top-navbar,
         .btn-small,
         .needs-panel,
@@ -453,6 +619,8 @@
             <button class="btn-small light" onclick="toggleClubNeedsPanel()"><i class="fas fa-thumbtack"></i><span>KULÜP İhtiyaçları</span></button>
             <button class="btn-small light" onclick="toggleClubPromoPanel()"><i class="fas fa-bullhorn"></i><span>Kulübünü Tanıt</span></button>
             <button class="btn-small light" onclick="toggleTrialPublishPanel()"><i class="fas fa-calendar-check"></i><span>Deneme/İdman İlanı</span></button>
+            <button class="btn-small secondary" onclick="openTeamProfile()"><i class="fas fa-user-check"></i><span>Public Görünüm</span></button>
+            <button class="btn-small secondary" onclick="window.location.href='index.html?success_story=submit#homeStep3'"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></button>
             <button class="btn-small home-btn-global" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255, 126, 34, 0.6);background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 16px 28px rgba(255,90,31,0.28);" onclick="window.location.href='index.html'"><i class="fas fa-house"></i><span>Ana Sayfa</span></button>
             <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Çıkış</span></button>
         </div>
@@ -557,6 +725,8 @@
             </div>
         </div>
     </div>
+
+    <div id="panelOverlay" class="panel-overlay" onclick="closeAllTopPanels()"></div>
 
     <div id="clubNeedsPanel" class="needs-panel">
         <h3>KULÜP İhtiyaç Notu</h3>
@@ -1172,14 +1342,36 @@
 
         function toggleClubNeedsPanel(forceState) {
             const panel = document.getElementById('clubNeedsPanel');
+            const overlay = document.getElementById('panelOverlay');
             if (!panel) return;
             const shouldOpen = typeof forceState === 'boolean' ? forceState : !panel.classList.contains('active');
             panel.classList.toggle('active', shouldOpen);
+            panel.style.display = shouldOpen ? 'block' : 'none';
+            panel.style.position = 'fixed';
+            panel.style.left = '50%';
+            panel.style.top = '12%';
+            panel.style.right = 'auto';
+            panel.style.bottom = 'auto';
+            panel.style.transform = 'translate(-50%, 0)';
+            panel.style.width = 'min(560px, calc(100vw - 24px))';
+            panel.style.maxHeight = '78vh';
+            panel.style.margin = '0';
+            panel.style.zIndex = '2000';
+            if (overlay) overlay.classList.toggle('active', shouldOpen);
             if (shouldOpen) {
-                const textarea = document.getElementById('clubNeedsText');
+                const promoPanel = document.getElementById('clubPromoPanel');
+                const trialPanel = document.getElementById('trialPublishPanel');
+                if (promoPanel) {
+                    promoPanel.classList.remove('active');
+                    promoPanel.style.display = 'none';
+                }
+                if (trialPanel) {
+                    trialPanel.classList.remove('active');
+                    trialPanel.style.display = 'none';
+                }
                 const msg = document.getElementById('clubNeedsMsg');
                 if (msg) msg.textContent = '';
-                if (textarea) textarea.focus();
+                window.scrollTo({ top: 0, behavior: 'auto' });
             }
         }
 
@@ -1248,14 +1440,39 @@
 
         function toggleClubPromoPanel(forceState) {
             const panel = document.getElementById('clubPromoPanel');
+            const overlay = document.getElementById('panelOverlay');
             if (!panel) return;
             const shouldOpen = typeof forceState === 'boolean' ? forceState : !panel.classList.contains('active');
             panel.classList.toggle('active', shouldOpen);
+            panel.style.display = shouldOpen ? 'block' : 'none';
+            panel.style.position = 'fixed';
+            panel.style.left = '50%';
+            panel.style.top = '12%';
+            panel.style.right = 'auto';
+            panel.style.bottom = 'auto';
+            panel.style.transform = 'translate(-50%, 0)';
+            panel.style.width = 'min(560px, calc(100vw - 24px))';
+            panel.style.maxHeight = '78vh';
+            panel.style.margin = '0';
+            panel.style.zIndex = '2000';
+            if (overlay) overlay.classList.toggle('active', shouldOpen);
             if (!shouldOpen) return;
+
+            const needsPanel = document.getElementById('clubNeedsPanel');
+            const trialPanel = document.getElementById('trialPublishPanel');
+            if (needsPanel) {
+                needsPanel.classList.remove('active');
+                needsPanel.style.display = 'none';
+            }
+            if (trialPanel) {
+                trialPanel.classList.remove('active');
+                trialPanel.style.display = 'none';
+            }
 
             const nameInput = document.getElementById('clubPromoName');
             const msg = document.getElementById('clubPromoMsg');
             if (msg) msg.textContent = '';
+            window.scrollTo({ top: 0, behavior: 'auto' });
             if (nameInput && !nameInput.value.trim()) {
                 try {
                     const user = JSON.parse(localStorage.getItem('nextscout_user') || '{}');
@@ -1383,9 +1600,46 @@
 
         function toggleTrialPublishPanel(forceState) {
             const panel = document.getElementById('trialPublishPanel');
+            const overlay = document.getElementById('panelOverlay');
             if (!panel) return;
             const shouldOpen = typeof forceState === 'boolean' ? forceState : !panel.classList.contains('active');
             panel.classList.toggle('active', shouldOpen);
+            panel.style.display = shouldOpen ? 'block' : 'none';
+            panel.style.position = 'fixed';
+            panel.style.left = '50%';
+            panel.style.top = '12%';
+            panel.style.right = 'auto';
+            panel.style.bottom = 'auto';
+            panel.style.transform = 'translate(-50%, 0)';
+            panel.style.width = 'min(560px, calc(100vw - 24px))';
+            panel.style.maxHeight = '78vh';
+            panel.style.margin = '0';
+            panel.style.zIndex = '2000';
+            if (overlay) overlay.classList.toggle('active', shouldOpen);
+            if (!shouldOpen) return;
+
+            const needsPanel = document.getElementById('clubNeedsPanel');
+            const promoPanel = document.getElementById('clubPromoPanel');
+            if (needsPanel) {
+                needsPanel.classList.remove('active');
+                needsPanel.style.display = 'none';
+            }
+            if (promoPanel) {
+                promoPanel.classList.remove('active');
+                promoPanel.style.display = 'none';
+            }
+            window.scrollTo({ top: 0, behavior: 'auto' });
+        }
+
+        function closeAllTopPanels() {
+            ['clubNeedsPanel', 'clubPromoPanel', 'trialPublishPanel'].forEach((id) => {
+                const panel = document.getElementById(id);
+                if (!panel) return;
+                panel.classList.remove('active');
+                panel.style.display = 'none';
+            });
+            const overlay = document.getElementById('panelOverlay');
+            if (overlay) overlay.classList.remove('active');
         }
 
         function pushLocalNotification(title, message) {

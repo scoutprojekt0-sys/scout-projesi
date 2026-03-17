@@ -1,5 +1,7 @@
 # Final Delivery Summary (12 Mart 2026)
 
+> Not (13 Mart 2026): Bu dosya teslim/kurgu ozeti icindir. Canliya cikis karari icin tek kaynak `docs/RELEASE_DECISION_2026_03_13.md` ve `docs/GO_NO_GO_RELEASE_CHECKLIST.md` dosyalaridir.
+
 Bu dokuman, su anki tek dogru kaynaklari ve aktif kurallari tek sayfada toplar.
 
 ## 1) Canonical dosyalar
@@ -105,6 +107,7 @@ Bu endpointler `admin` middleware ile korunur.
 
 ## 6) Operasyonel dokumanlar
 
+- Release karari (tek kaynak): `scout_api_pr_clean/docs/RELEASE_DECISION_2026_03_13.md`
 - Tracker: `scout_api_pr_clean/docs/IMPLEMENTATION_TRACKER.md`
 - Web smoke listesi: `scout_api_pr_clean/docs/WEB_ADMIN_SMOKE_CHECKLIST.md`
 - Mobile quality gate: `scout_mobile/QUALITY_GATE_CHECKLIST.md`

@@ -1,5 +1,19 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Inter', sans-serif; background: #F8FAFC; color: #1F2937; }
+/* Kelime kırılması için toplu kural */
+.home-data-card,
+.below-card,
+.idea-news-item,
+.section-title,
+.section-description,
+.card,
+.mobile-player-card,
+.mobile-extra-card,
+.mobile-profile-section-text,
+.pcd-player-name,
+.pcd-detail-value,
+.pcd-about p,
+.nav-button,
 
 .header { background: #FFFFFF; border-bottom: 2px solid #EF4444; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.1); position: sticky; top: 0; z-index: 1000; }
 .logo { font-size: 24px; font-weight: 800; color: #EF4444; display: flex; align-items: center; gap: 8px; text-decoration: none; }

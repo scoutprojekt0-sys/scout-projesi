@@ -1,5 +1,7 @@
 # Backend Eksiklikler - Final Kontrol Raporu
 
+> Arsiv notu (13 Mart 2026): Bu belge backend kapsam tamamlanma raporudur; tek basina go-live onayi anlamina gelmez. Guncel release karari icin `docs/RELEASE_DECISION_2026_03_13.md` ve `docs/GO_NO_GO_RELEASE_CHECKLIST.md` kullanilmalidir.
+
 **Tarih**: 8 Mart 2026  
 **Son Kontrol**: Tamamlandı ✅
 

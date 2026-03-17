@@ -21,7 +21,8 @@
   <meta name="theme-color" content="#0B3B8A">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
@@ -67,22 +68,23 @@
       margin-bottom: 8px;
     }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 32px;
+    .hero {
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid #2b4660;
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+      margin-bottom: 24px;
+      color: #f5fbff;
     }
 
-    .header h1 {
-      font-size: 28px;
-      font-weight: 800;
-      margin: 0;
+    .hero h1 {
+      font-size: 30px;
+      margin-bottom: 8px;
     }
 
-    .header-actions {
-      display: flex;
-      gap: 12px;
+    .hero p {
+      color: #9bb5cb;
     }
 
     .btn {
@@ -309,8 +311,15 @@
     .pagination {
       display: flex;
       justify-content: center;
+      align-items: center;
       gap: 8px;
       margin-top: 40px;
+    }
+
+    #pageNumbers {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .pagination button {
@@ -409,11 +418,148 @@
         grid-template-columns: 1fr;
       }
 
-      .header {
-        flex-direction: column;
-        gap: 16px;
-        align-items: flex-start;
+      .hero {
+        padding: 14px;
+        border-radius: 12px;
       }
+
+      .hero h1 {
+        font-size: 22px;
+      }
+    }
+
+    .topbar { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; background: rgba(7, 18, 36, 0.78); border-bottom: 1px solid rgba(148, 163, 184, 0.24); color: #f5fbff; backdrop-filter: blur(18px); }
+    .brand { font-family: 'Poppins', sans-serif; font-size: 24px; color: #BFDBFE; text-decoration: none; }
+    .top-actions { display: flex; gap: 10px; }
+    @media (max-width: 768px) {
+      .topbar { padding: 10px 12px; }
+      .brand { font-size: 18px; }
+      .top-actions { gap: 6px; }
+    }
+
+    body.contracted-cards-only .hero {
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      padding: 0;
+      margin-top: 16px;
+    }
+
+    body.contracted-cards-only .players-grid {
+      margin-top: 16px;
+    }
+
+    body.weekly-digest-mode.contracted-cards-only .hero {
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid #2b4660;
+      box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+      padding: 24px;
+    }
+
+    body.weekly-digest-mode {
+      background:
+        radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+        radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+        #08131d;
+      color: #f5fbff;
+    }
+
+    body.weekly-digest-mode .market-wrapper {
+      grid-template-columns: 1fr;
+      max-width: 1180px;
+    }
+
+    body.weekly-digest-mode .market-ad-panel {
+      display: none;
+    }
+
+    body.weekly-digest-mode .container {
+      max-width: 1180px;
+    }
+
+    body.weekly-digest-mode .player-card,
+    body.weekly-digest-mode .filters,
+    body.weekly-digest-mode .compare-bar,
+    body.weekly-digest-mode .compare-card {
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border-color: #2b4660;
+      box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+      color: #f5fbff;
+    }
+
+    body.weekly-digest-mode .player-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 18px;
+    }
+
+    body.weekly-digest-mode .player-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
+    }
+
+    body.weekly-digest-mode .hero {
+      margin-top: 16px;
+      margin-bottom: 18px;
+    }
+
+    body.weekly-digest-mode .players-grid {
+      margin-top: 16px;
+      gap: 18px;
+    }
+
+    body.weekly-digest-mode .player-avatar {
+      background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 100%);
+      border-bottom: 1px solid rgba(96, 165, 250, 0.22);
+    }
+
+    body.weekly-digest-mode .player-name,
+    body.weekly-digest-mode .info-value,
+    body.weekly-digest-mode .rating-value {
+      color: #f5fbff;
+    }
+
+    body.weekly-digest-mode .player-position,
+    body.weekly-digest-mode .results-meta,
+    body.weekly-digest-mode .info-label {
+      color: #9bb5cb;
+    }
+
+    body.weekly-digest-mode .info-item {
+      padding: 10px 12px;
+      border: 1px solid #2b4660;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    body.weekly-digest-mode .player-actions button,
+    body.weekly-digest-mode .pagination button {
+      background: rgba(59, 130, 246, 0.12);
+      color: #dbeafe;
+      border-color: rgba(96, 165, 250, 0.24);
+      border-radius: 12px;
+    }
+
+    body.weekly-digest-mode .player-actions .compare-btn,
+    body.weekly-digest-mode .pagination button.active {
+      background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+      color: #fff;
+      border-color: rgba(255, 126, 34, 0.6);
+    }
+
+    body.weekly-digest-mode .player-card:hover {
+      border-color: #ff7e22;
+      box-shadow: 0 18px 34px rgba(8, 19, 29, 0.34);
+      transform: translateY(-2px);
+    }
+
+    body.scout-radar-mode .filters,
+    body.scout-radar-mode .results-meta,
+    body.scout-radar-mode .compare-bar {
+      display: none !important;
     }
 
     @media (max-width: 1320px) {
@@ -428,6 +574,12 @@
   </style>
 </head>
 <body>
+<header class="topbar">
+  <a class="brand" href="./index.html">NextScout</a>
+  <div class="top-actions">
+    <a class="home-btn-global" href="./index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #ff7e22;background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;box-shadow:0 16px 28px rgba(255,90,31,0.28);">Ana Sayfa</a>
+  </div>
+</header>
   <div class="market-wrapper">
     <aside class="market-ad-panel">
       <div class="market-ad-content">
@@ -438,12 +590,10 @@
 
     <div class="container">
     <!-- Header -->
-    <div class="header">
-      <h1>🏅 Profesyonel Sporcular</h1>
-      <div class="header-actions">
-        <a href="index.html" class="btn">← Ana Sayfa</a>
-      </div>
-    </div>
+    <section class="hero">
+      <h1 id="pageTitle"><i class="fa-solid fa-newspaper"></i> Sözleşmeli Sporcular</h1>
+      <p>Sözleşmesi devam eden sporcuları pozisyon, yaş, form, performans ve transfer kategorisine göre filtreleyerek tek ekranda inceleyin.</p>
+    </section>
 
     <!-- Filters -->
     <div class="filters">
@@ -538,7 +688,7 @@
     <!-- Pagination -->
     <div class="pagination" id="pagination">
       <button id="prevPageBtn" type="button">Önceki</button>
-      <button class="active" id="pageInfoBtn" type="button">1 / 1</button>
+      <div id="pageNumbers"></div>
       <button id="nextPageBtn" type="button">Sonraki</button>
     </div>
 
@@ -588,7 +738,7 @@
     const openCompareBtn = document.getElementById("openCompareBtn");
     const prevPageBtn = document.getElementById("prevPageBtn");
     const nextPageBtn = document.getElementById("nextPageBtn");
-    const pageInfoBtn = document.getElementById("pageInfoBtn");
+    const pageNumbers = document.getElementById("pageNumbers");
     let compareIds = [];
     let serverPage = 1;
     let serverLastPage = 1;
@@ -832,21 +982,58 @@
       `).join("");
     }
 
+    function normalizeQueryValue(value) {
+      return String(value || "")
+        .trim()
+        .toLocaleLowerCase("tr-TR")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/ı/g, "i")
+        .replace(/\s+/g, "-");
+    }
+
+    function getCanonicalTransferCategory(value) {
+      const category = normalizeQueryValue(value);
+      if (!category) return "";
+      if (category === "contracted" || category === "sozlesmeli") return "contracted";
+      if (category === "free" || category === "bosta") return "free";
+      if (category === "seeking-club" || category === "kulup-ariyor") return "seeking-club";
+      return "";
+    }
+
+    function getCanonicalScoutRadarCategory(value) {
+      const category = normalizeQueryValue(value);
+      if (!category) return "";
+      if (category === "new" || category === "yeni-eslesenler") return "new";
+      if (category === "rising" || category === "yukselenler") return "rising";
+      if (category === "hidden" || category === "gizli-yetenek") return "hidden";
+      return "";
+    }
+
     async function loadPlayersFromApi(page = 1) {
       try {
         const apiBase = getApiBaseUrl();
         const params = new URLSearchParams(window.location.search);
         const apiQuery = new URLSearchParams();
 
-        const transferCategory = (params.get("transfer_category") || "").trim();
-        const scoutRadar = (params.get("scout_radar") || "").trim();
+        const transferCategory = getCanonicalTransferCategory(params.get("transfer_category"));
+        const scoutRadar = getCanonicalScoutRadarCategory(params.get("scout_radar"));
         const q = (params.get("q") || "").trim();
 
         if (transferCategory) apiQuery.set("transfer_category", transferCategory);
         if (scoutRadar) apiQuery.set("scout_radar", scoutRadar);
         if (q) apiQuery.set("q", q);
 
-        const selectedSport = (sportFilter?.value || "").trim();
+        if (transferCategory === "contracted") {
+          apiQuery.set("contract_status", "active");
+        } else if (transferCategory === "free") {
+          apiQuery.set("contract_status", "free");
+        } else if (transferCategory === "seeking-club") {
+          apiQuery.set("seeking_club", "1");
+        }
+
+        const forcedTransferCategory = getTransferCategoryFromQuery();
+        const selectedSport = forcedTransferCategory ? "futbol" : (sportFilter?.value || "").trim();
         if (selectedSport) {
           apiQuery.set("sport", selectedSport);
         }
@@ -870,7 +1057,7 @@
         const sortMode = (sortFilter?.value || "rating_desc").trim();
         if (sortMode) apiQuery.set("sort", sortMode);
         apiQuery.set("page", String(page));
-        apiQuery.set("per_page", "24");
+        apiQuery.set("per_page", (getScoutRadarCategoryFromQuery() || getTransferCategoryFromQuery()) ? "12" : "24");
         apiQuery.set("limit", "1500");
 
         const url = apiQuery.toString()
@@ -912,27 +1099,67 @@
     }
 
     function renderPagination() {
-      if (pageInfoBtn) pageInfoBtn.textContent = `${serverPage} / ${serverLastPage}`;
       if (prevPageBtn) prevPageBtn.disabled = serverPage <= 1;
       if (nextPageBtn) nextPageBtn.disabled = serverPage >= serverLastPage;
+      if (!pageNumbers) return;
+      const buttons = [];
+      for (let page = 1; page <= serverLastPage; page += 1) {
+        buttons.push(`<button type="button" class="${page === serverPage ? "active" : ""}" data-page="${page}">${page}</button>`);
+      }
+      pageNumbers.innerHTML = buttons.join("");
+      pageNumbers.querySelectorAll("button[data-page]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const nextPage = Number(button.getAttribute("data-page") || "1");
+          if (!Number.isFinite(nextPage) || nextPage === serverPage) return;
+          await loadPlayersFromApi(nextPage);
+          filterPlayers();
+        });
+      });
     }
 
     function getTransferCategoryFromQuery() {
       const params = new URLSearchParams(window.location.search);
-      const category = (params.get("transfer_category") || "").toLowerCase();
-      if (category === "sozlesmeli") return "contracted";
-      if (category === "bosta") return "free";
-      if (category === "kulup-ariyor") return "seeking";
+      const category = getCanonicalTransferCategory(params.get("transfer_category"));
+      if (category === "contracted") return "contracted";
+      if (category === "free") return "free";
+      if (category === "seeking-club") return "seeking";
       return "";
+    }
+
+    function standardizeTransferCategoryQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get("transfer_category");
+      if (!raw) return;
+      const canonical = getCanonicalTransferCategory(raw);
+      if (!canonical || raw === canonical) return;
+      params.set("transfer_category", canonical);
+      const nextQuery = params.toString();
+      const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ""}${window.location.hash || ""}`;
+      window.history.replaceState({}, "", nextUrl);
     }
 
     function getScoutRadarCategoryFromQuery() {
       const params = new URLSearchParams(window.location.search);
-      const category = (params.get("scout_radar") || "").toLowerCase();
-      if (category === "yeni-eslesenler") return "new";
-      if (category === "yukselenler") return "rising";
-      if (category === "gizli-yetenek") return "hidden";
-      return "";
+      return getCanonicalScoutRadarCategory(params.get("scout_radar"));
+    }
+
+    function standardizeScoutRadarQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get("scout_radar");
+      if (!raw) return;
+      const canonical = getCanonicalScoutRadarCategory(raw);
+      if (!canonical || raw === canonical) return;
+      params.set("scout_radar", canonical);
+      const nextQuery = params.toString();
+      const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ""}${window.location.hash || ""}`;
+      window.history.replaceState({}, "", nextUrl);
+    }
+
+    function applyWeeklyDigestMode() {
+      const hasTransferCategory = Boolean(getTransferCategoryFromQuery());
+      const hasScoutRadarCategory = Boolean(getScoutRadarCategoryFromQuery());
+      document.body.classList.toggle("weekly-digest-mode", hasTransferCategory || hasScoutRadarCategory);
+      document.body.classList.toggle("scout-radar-mode", hasScoutRadarCategory);
     }
 
     function parseAgeRange(value) {
@@ -1249,8 +1476,49 @@
     });
     openCompareBtn.addEventListener("click", openCompareModal);
 
+    function syncFiltersWithQuery() {
+      const transferCategory = getTransferCategoryFromQuery();
+      const scoutCategory = getScoutRadarCategoryFromQuery();
+      const pageTitle = document.getElementById("pageTitle");
+      const pageDescription = document.getElementById("pageDescription");
+      if (transferCategory && sportFilter) {
+        sportFilter.value = "futbol";
+      }
+      if (transferCategory === "contracted" && contractFilter) {
+        contractFilter.value = "active";
+        if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Sözleşmeli Sporcular';
+        if (pageDescription) pageDescription.textContent = "Sözleşmesi devam eden sporcuları pozisyon, yaş, form, performans ve transfer kategorisine göre filtreleyerek tek ekranda inceleyin.";
+        document.title = "Sözleşmeli Futbolcular | NextScout";
+      } else if (transferCategory === "free" && contractFilter) {
+        contractFilter.value = "free";
+        if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Boştaki Sporcular';
+        if (pageDescription) pageDescription.textContent = "Kulübü olmayan ve transfer için uygun durumdaki sporcuları pozisyon, yaş, form ve performans filtreleriyle hızlıca görüntüleyin.";
+        document.title = "Boştaki Futbolcular | NextScout";
+      } else if (transferCategory === "seeking") {
+        if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Kulüp Arayan Sporcular';
+        if (pageDescription) pageDescription.textContent = "Yeni kulüp arayan sporcuları performans, yaş, pozisyon ve transfer durumu kriterlerine göre listeleyin.";
+        document.title = "Kulüp Arayan Futbolcular | NextScout";
+      } else if (scoutCategory === "new") {
+        if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Yeni Eşleşenler';
+        if (pageDescription) pageDescription.textContent = "Scout radarında yeni eşleşen oyuncuları güncel performans, pozisyon ve kulüp uyum sinyalleriyle inceleyin.";
+        document.title = "Yeni Eşleşenler | NextScout";
+      } else if (scoutCategory === "rising") {
+        if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Yükselenler';
+        if (pageDescription) pageDescription.textContent = "Yükseliş trendine giren oyuncuları form, görünürlük ve performans ivmesine göre takip edin.";
+        document.title = "Yükselenler | NextScout";
+      } else if (scoutCategory === "hidden") {
+        if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Gizli Yetenekler';
+        if (pageDescription) pageDescription.textContent = "Henüz yeterince öne çıkmamış ama radar sinyali veren gizli yetenekleri keşfedin.";
+        document.title = "Gizli Yetenekler | NextScout";
+      }
+    }
+
     // Initial render
     (async function init() {
+      standardizeTransferCategoryQuery();
+      standardizeScoutRadarQuery();
+      applyWeeklyDigestMode();
+      syncFiltersWithQuery();
       await loadPlayersFromApi();
       filterPlayers();
     })();
@@ -1258,7 +1526,3 @@
     <script src="assets/js/core-stability.js"></script>
 </body>
 </html>
-
-
-
-

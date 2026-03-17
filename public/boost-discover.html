@@ -11,81 +11,284 @@
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
     <meta property="og:title" content="Beni Keşfedin | Sponsorlu Oyuncu Vitrini | NextScout">
-    <meta property="og:description" content="�ne �ikan oyuncu profillerini vitrin mantigiyla listeleyen sponsorlu kesif alani. Scout ve kul�pler i�in hizli g�r�n�rl�k ekrani.">
+    <meta property="og:description" content="Öne çıkan oyuncu profillerini vitrin mantığıyla listeleyen sponsorlu keşif alanı. Scout ve kulüpler için hızlı görünürlük ekranı.">
     <meta property="og:url" content="https://nextscout.pro/boost-discover.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Beni Keşfedin | Sponsorlu Oyuncu Vitrini | NextScout">
-    <meta name="twitter:description" content="G�r�n�rl�g� artirilmis oyuncu kartlari ve sponsorlu vitrin alani.">
+    <meta name="twitter:description" content="Görünürlüğü artırılmış oyuncu kartları ve sponsorlu vitrin alanı.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --page-bg: radial-gradient(circle at top left, rgba(251, 191, 36, 0.18), transparent 30%), radial-gradient(circle at 82% 18%, rgba(56, 189, 248, 0.14), transparent 30%), linear-gradient(180deg, #14110b 0%, #1f2433 36%, #183b63 100%);
-            --panel-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(254, 249, 195, 0.92) 100%);
-            --panel-border: rgba(253, 224, 71, 0.34);
-            --text-main: #f8fafc;
-            --text-dark: #0f172a;
-            --text-soft: #475569;
-            --shadow-lg: 0 18px 44px rgba(15, 23, 42, 0.3);
+            --ns-bg: #050816;
+            --ns-bg-2: #0b1533;
+            --ns-panel: rgba(15, 23, 49, 0.9);
+            --ns-panel-2: rgba(24, 34, 70, 0.88);
+            --ns-line: rgba(96, 165, 250, 0.24);
+            --ns-line-strong: rgba(96, 165, 250, 0.52);
+            --ns-text: #e5eefc;
+            --ns-muted: #9fb3d9;
+            --ns-primary: #ff5a1f;
+            --ns-primary-2: #ff7e22;
+            --ns-glow: 0 20px 52px rgba(7, 12, 30, 0.46);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--page-bg); color: var(--text-main); min-height: 100vh; position: relative; overflow-x: hidden; }
-        body::before, body::after { content: ""; position: fixed; width: 340px; height: 340px; border-radius: 999px; filter: blur(22px); opacity: 0.46; pointer-events: none; z-index: 0; }
-        body::before { top: 84px; left: -98px; background: rgba(251, 191, 36, 0.22); }
-        body::after { right: -116px; bottom: 54px; background: rgba(59, 130, 246, 0.2); }
-        .topbar { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; background: rgba(7, 18, 36, 0.78); border-bottom: 1px solid rgba(148, 163, 184, 0.24); color: #f5fbff; backdrop-filter: blur(18px); }
-        .brand { font-family: 'Poppins', sans-serif; font-size: 24px; color: #BFDBFE; text-decoration: none; }
-        .top-actions { display: flex; gap: 10px; }
-        .btn, a.btn, button.btn { display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; border: 1px solid rgba(255, 126, 34, 0.45) !important; background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%) !important; color: #16325c !important; padding: 10px 16px !important; border-radius: 12px !important; text-decoration: none !important; font-weight: 800 !important; font-size: 13px !important; box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24) !important; transition: transform .18s ease, box-shadow .18s ease, filter .18s ease !important; }
-        .btn:hover, a.btn:hover, button.btn:hover { transform: translateY(-1px); box-shadow: 0 16px 28px rgba(8, 19, 29, 0.3) !important; filter: saturate(1.05); }
-        .page { position: relative; z-index: 1; max-width: 1180px; margin: 26px auto; padding: 0 20px 34px; }
-        .hero { background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 22px; padding: 24px; margin-bottom: 18px; box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34); backdrop-filter: none; color: #f5fbff; }
-        .hero h1 { font-size: 30px; margin-bottom: 8px; }
-        .hero p { color: #9bb5cb; }
-        .seo-intro { background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 18px; padding: 18px 20px; margin-bottom: 18px; box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28); backdrop-filter: none; color: #f5fbff; }
-        .seo-intro h2 { font-size: 18px; margin-bottom: 8px; }
-        .seo-intro p { color: #9bb5cb; line-height: 1.7; }
-        .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
-        .card { position: relative; overflow: hidden; background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 18px; padding: 18px; color: #f5fbff; box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28); }
-        .card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%); }
-        .card:hover { border-color: #ff7e22; box-shadow: 0 18px 34px rgba(8, 19, 29, 0.34); transform: translateY(-2px); }
-        .name { font-size: 19px; font-weight: 800; margin-bottom: 8px; color: #f8fbff; }
-        .line { color: #9bb5cb; font-size: 14px; margin-bottom: 8px; }
-        .tags { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 8px; }
-        .tag { background: rgba(255, 255, 255, 0.04); border: 1px solid #2b4660; color: #d6e8f7; border-radius: 999px; padding: 5px 9px; font-size: 12px; font-weight: 700; }
-        .empty { background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 18px; padding: 16px; color: #9bb5cb; box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28); }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            min-height: 100%;
+            background:
+                radial-gradient(circle at top left, rgba(59, 130, 246, 0.24), transparent 28%),
+                radial-gradient(circle at top right, rgba(14, 165, 233, 0.18), transparent 24%),
+                linear-gradient(180deg, #060914 0%, var(--ns-bg-2) 46%, var(--ns-bg) 100%);
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background: transparent;
+            color: var(--ns-text);
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            max-width: 1180px;
+            margin: 26px auto;
+            padding: 0 20px 34px;
+        }
+
+        .hero,
+        .seo-intro,
+        .card,
+        .empty {
+            background: linear-gradient(180deg, var(--ns-panel-2), var(--ns-panel));
+            border: 1px solid var(--ns-line);
+            box-shadow: var(--ns-glow);
+        }
+
+        .hero,
+        .card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before,
+        .card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--ns-primary) 0%, var(--ns-primary-2) 55%, #60a5fa 100%);
+        }
+
+        .hero {
+            position: relative;
+            border-radius: 0 !important;
+            padding: 24px;
+            margin-bottom: 18px;
+            color: #f5fbff;
+        }
+
+        .eyebrow {
+            margin: 0 0 8px;
+            font-size: 12px;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: #ffb58f;
+            font-weight: 800;
+        }
+
+        .hero h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 30px;
+            margin-bottom: 8px;
+            color: #f8fbff;
+        }
+
+        .hero p {
+            color: #9bb5cb;
+            line-height: 1.7;
+            max-width: 760px;
+        }
+
+        .hero-close {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 1px solid rgba(255, 126, 34, 0.45);
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+            color: #16325c;
+            padding: 10px 16px;
+            border-radius: 0 !important;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 13px;
+            box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24);
+            transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 16px 28px rgba(8, 19, 29, 0.3);
+            filter: saturate(1.05);
+        }
+
+        .btn.primary {
+            background: linear-gradient(135deg, var(--ns-primary) 0%, var(--ns-primary-2) 100%);
+            border-color: rgba(255, 126, 34, 0.6);
+            color: #fff;
+            box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28);
+        }
+
+        .seo-intro {
+            border-radius: 0 !important;
+            padding: 18px 20px;
+            margin-bottom: 18px;
+            color: #f5fbff;
+        }
+
+        .seo-intro h2 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #f8fbff;
+        }
+
+        .seo-intro p {
+            color: #9bb5cb;
+            line-height: 1.7;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            align-items: stretch;
+        }
+
+        .card {
+            border-radius: 0 !important;
+            padding: 18px;
+            color: #f5fbff;
+            transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            border-color: #ff7e22;
+            box-shadow: 0 18px 34px rgba(8, 19, 29, 0.34);
+            transform: translateY(-2px);
+        }
+
+        .name {
+            font-size: 19px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: #f8fbff;
+        }
+
+        .line {
+            color: #9bb5cb;
+            font-size: 14px;
+            margin-bottom: 8px;
+            line-height: 1.55;
+        }
+
+        .line strong {
+            color: #dbeafe;
+        }
+
+        .tags {
+            display: flex;
+            gap: 7px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid #2b4660;
+            color: #d6e8f7;
+            border-radius: 0 !important;
+            padding: 5px 9px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .empty {
+            border-radius: 0 !important;
+            padding: 18px;
+            color: #9bb5cb;
+            text-align: center;
+        }
+
         @media (max-width: 768px) {
-            .topbar { padding: 10px 12px; }
-            .brand { font-size: 18px; }
-            .top-actions { gap: 6px; }
-            .page { margin: 12px auto 18px; padding: 0 12px; }
-            .hero { padding: 14px; border-radius: 12px; }
-            .hero h1 { font-size: 22px; }
-            .card { padding: 12px; border-radius: 12px; }
+            .page {
+                margin: 12px auto 18px;
+                padding: 0 12px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .hero,
+            .seo-intro,
+            .card,
+            .empty {
+                border-radius: 0 !important;
+            }
+
+            .hero {
+                padding: 16px 14px;
+            }
+
+            .hero h1 {
+                font-size: 22px;
+            }
+
+            .hero-close {
+                top: 14px;
+                right: 14px;
+            }
+
+            .card {
+                padding: 12px;
+            }
         }
     </style>
     <link rel="stylesheet" href="assets/css/mobile-unified.css">
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
 <body>
-<header class="topbar">
-    <a class="brand" href="./index.html">NextScout</a>
-    <div class="top-actions">
-        <a class="home-btn-global" href="./index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #ff7e22;background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;box-shadow:0 16px 28px rgba(255,90,31,0.28);">Ana Sayfa</a>
-    </div>
-</header>
-
 <main class="page">
     <section class="hero">
+        <a href="index.html" class="btn hero-close" id="closeBtn" aria-label="Kapat" title="Kapat"><i class="fas fa-xmark"></i></a>
+        <p class="eyebrow">Sponsorlu Vitrin</p>
         <h1><i class="fa-solid fa-bolt"></i> Beni Keşfedin</h1>
-        <p>Bu sayfada sadece oyuncu özellikleri görünür. Fiyatlandırma gösterilmez.</p>
+        <p>Ödeme yapan oyuncuların vitrin profillerini tek akışta inceleyin. Bu alanda yalnızca oyuncu özellikleri ve öne çıkan özet bilgiler gösterilir.</p>
     </section>
 
-    <section class="seo-intro" aria-label="Sponsorlu oyuncu vitrini a�iklamasi">
-        <h2>Sponsorlu Oyuncu Kesif Alani</h2>
+    <section class="seo-intro" aria-label="Sponsorlu oyuncu vitrini açıklaması">
+        <h2>Sponsorlu Oyuncu Keşif Alanı</h2>
         <p>NextScout Beni Keşfedin sayfası; görünürlüğü artırılmış oyuncu kartlarını kulüpler, scout ekipleri ve menajerler için tek vitrin altında toplar. Bu alan, sponsorlu oyuncu profillerinin daha hızlı fark edilmesi ve öne çıkan adayların kısa listelere girmesi için tasarlandı.</p>
     </section>
 
@@ -99,6 +302,27 @@
         if (fromQuery) return fromQuery.replace(/\/$/, '');
         if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
         return '/api';
+    }
+
+    function resolveDashboardByRole() {
+        try {
+            const raw = localStorage.getItem('nextscout_user');
+            const user = raw ? JSON.parse(raw) : null;
+            const role = String(user?.role || localStorage.getItem('nextscout_user_role') || '').toLowerCase();
+            if (role === 'manager') return 'manager-dashboard.html';
+            if (role === 'team' || role === 'club') return 'team-dashboard.html';
+            if (role === 'scout' || role === 'coach') return 'coach-dashboard.html';
+        } catch (error) {}
+        return 'player-dashboard.html';
+    }
+
+    function escapeHtml(value) {
+        return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
 
     async function loadProfiles() {
@@ -119,6 +343,7 @@
         } catch (error) {
             rows = [];
         }
+
         if (!rows.length) {
             root.innerHTML = '<div class="empty">Henüz boost kaydı yok.</div>';
             return;
@@ -126,22 +351,33 @@
 
         root.innerHTML = rows.map((p) => `
             <article class="card">
-                <div class="name">${p.name || 'Oyuncu'}</div>
-                <div class="line"><strong>Pozisyon:</strong> ${p.position || '-'}</div>
-                <div class="line"><strong>Şehir:</strong> ${p.city || '-'}</div>
-                <div class="line"><strong>Tanıtım:</strong> ${p.summary || '-'}</div>
-                <div class="line"><strong>Ge�erlilik:</strong> ${p.expires_at ? new Date(p.expires_at).toLocaleString('tr-TR') : '-'}</div>
+                <div class="name">${escapeHtml(p.name || 'Oyuncu')}</div>
+                <div class="line"><strong>Pozisyon:</strong> ${escapeHtml(p.position || '-')}</div>
+                <div class="line"><strong>Şehir:</strong> ${escapeHtml(p.city || '-')}</div>
+                <div class="line"><strong>Tanıtım:</strong> ${escapeHtml(p.summary || '-')}</div>
+                <div class="line"><strong>Geçerlilik:</strong> ${escapeHtml(p.expires_at ? new Date(p.expires_at).toLocaleString('tr-TR') : '-')}</div>
                 <div class="tags">
-                    <span class="tag">${p.package_label || 'Boost'}</span>
+                    <span class="tag">${escapeHtml(p.package_label || 'Boost')}</span>
                     <span class="tag">Sponsorlu Yetenek</span>
                 </div>
             </article>
         `).join('');
     }
 
+    const closeBtn = document.getElementById('closeBtn');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+            if (window.history.length > 1) {
+                window.history.back();
+                return;
+            }
+            window.location.href = 'index.html';
+        });
+    }
     renderProfiles();
 </script>
-    <script src="assets/js/core-stability.js"></script>
-    <script src="assets/js/mobile-professional.js" defer></script>
+<script src="assets/js/core-stability.js"></script>
+<script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>

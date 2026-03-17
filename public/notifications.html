@@ -18,6 +18,7 @@
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
   <meta name="theme-color" content="#2563eb">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <style>
     :root {
       --bg: #08131d;
@@ -128,6 +129,52 @@
       display: grid;
       grid-template-columns: 350px 1fr;
       gap: 14px;
+    }
+    .quick-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding: 14px 16px;
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .quick-bar::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
+    }
+    .quick-stats {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .quick-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--line);
+      font-size: 12px;
+      font-weight: 700;
+      color: #dbeafe;
+    }
+    .quick-pill strong { color: #fff; }
+    .quick-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
     .layout > * { min-width: 0; }
 
@@ -367,6 +414,8 @@
       .title { font-size: 24px; }
       .header { align-items: flex-start; flex-direction: column; }
       .header-actions { width: 100%; }
+      .quick-bar { flex-direction: column; align-items: flex-start; }
+      .quick-actions { width: 100%; }
     }
 
     @media (max-width: 560px) {
@@ -401,7 +450,20 @@
       </div>
       <div class="header-actions">
         <a class="btn home-btn" href="index.html"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
-        <a class="btn dashboard-btn" href="player-dashboard.html"><i class="fas fa-table-columns"></i><span>Dashboard</span></a>
+        <a class="btn dashboard-btn" id="dashboardBtn" href="player-dashboard.html"><i class="fas fa-table-columns"></i><span>Dashboard</span></a>
+      </div>
+    </div>
+
+    <div class="quick-bar">
+      <div class="quick-stats">
+        <div class="quick-pill"><span>Toplam</span><strong id="quickTotal">0</strong></div>
+        <div class="quick-pill"><span>Okunmadı</span><strong id="quickUnread">0</strong></div>
+        <div class="quick-pill"><span>Okundu</span><strong id="quickRead">0</strong></div>
+      </div>
+      <div class="quick-actions">
+        <button class="btn" id="filterUnreadBtn">Okunmadı</button>
+        <button class="btn" id="filterReadBtn">Okundu</button>
+        <button class="btn btn-primary" id="markAllReadBtn">Tümünü Oku</button>
       </div>
     </div>
 
@@ -430,6 +492,7 @@
   <script>
     const USER_RAW = localStorage.getItem('nextscout_user');
     const USER = USER_RAW ? JSON.parse(USER_RAW) : { name: 'Oyuncu', email: 'oyuncu@nextscout.com' };
+    const USER_ROLE = String((localStorage.getItem('nextscout_user_role') || USER?.role || '')).trim().toLowerCase();
     const API_BASE = (function() {
       const p = new URLSearchParams(window.location.search);
       const fromQuery = (p.get('api_base') || '').trim();
@@ -577,6 +640,27 @@
     const detailEl = document.getElementById('detailPanel');
     const searchInput = document.getElementById('searchInput');
     const statusFilter = document.getElementById('statusFilter');
+    const quickTotal = document.getElementById('quickTotal');
+    const quickUnread = document.getElementById('quickUnread');
+    const quickRead = document.getElementById('quickRead');
+
+    (function syncDashboardButton() {
+      const btn = document.getElementById('dashboardBtn');
+      if (!btn) return;
+      if (USER_ROLE === 'manager') {
+        btn.href = 'manager-dashboard.html';
+        return;
+      }
+      if (USER_ROLE === 'team' || USER_ROLE === 'club') {
+        btn.href = 'team-dashboard.html';
+        return;
+      }
+      if (USER_ROLE === 'scout' || USER_ROLE === 'coach') {
+        btn.href = 'coach-dashboard.html';
+        return;
+      }
+      btn.href = 'player-dashboard.html';
+    })();
 
     function getTabCounts(messages) {
       const unread = messages.filter(m => !m.read).length;
@@ -627,6 +711,15 @@
           render();
         });
       });
+    }
+
+    function renderQuickStats() {
+      const total = state.messages.length;
+      const unread = state.messages.filter((m) => !m.read).length;
+      const read = total - unread;
+      if (quickTotal) quickTotal.textContent = String(total);
+      if (quickUnread) quickUnread.textContent = String(unread);
+      if (quickRead) quickRead.textContent = String(read);
     }
 
     function renderList() {
@@ -703,6 +796,7 @@
     }
 
     function render() {
+      renderQuickStats();
       renderTabs();
       renderList();
       renderDetail();
@@ -717,6 +811,31 @@
     statusFilter.addEventListener('change', () => {
       state.status = statusFilter.value;
       state.selectedId = null;
+      render();
+    });
+
+    document.getElementById('filterUnreadBtn')?.addEventListener('click', () => {
+      state.status = 'unread';
+      statusFilter.value = 'unread';
+      state.selectedId = null;
+      render();
+    });
+
+    document.getElementById('filterReadBtn')?.addEventListener('click', () => {
+      state.status = 'read';
+      statusFilter.value = 'read';
+      state.selectedId = null;
+      render();
+    });
+
+    document.getElementById('markAllReadBtn')?.addEventListener('click', async () => {
+      const unreadRows = state.messages.filter((msg) => !msg.read);
+      for (const msg of unreadRows) {
+        try { await updateReadState(msg, true); } catch (error) {}
+        msg.read = true;
+      }
+      state.status = 'all';
+      statusFilter.value = 'all';
       render();
     });
 
@@ -741,7 +860,3 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-

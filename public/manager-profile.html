@@ -19,64 +19,76 @@
     <meta name="twitter:description" content="NextScout manager profile sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --bg:#1f252d;
-      --ink:#e2e8f0;
-      --muted:#94a3b8;
-      --line:#334155;
-      --panel:#232a33;
-      --panel-soft:#2b3440;
+      --bg:#08131d;
+      --ink:#f5fbff;
+      --muted:#9bb5cb;
+      --line:#2b4660;
+      --panel:#0f1f2e;
+      --panel-soft:#12293d;
       --primary:#60a5fa;
-      --primary-strong:#1d4ed8;
+      --primary-strong:#16325c;
       --success:#14b8a6;
-      --shadow:0 14px 30px rgba(2,6,23,.35);
+      --cta:#ff5a1f;
+      --cta-2:#ff7e22;
+      --shadow:0 18px 36px rgba(8,19,29,.34);
     }
     *{box-sizing:border-box}
     body{
       margin:0;
       font-family:Inter,Segoe UI,Arial,sans-serif;
       color:var(--ink);
+      min-height:100vh;
       background:
-        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.16), transparent 34%),
-        radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.14), transparent 36%),
+        radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+        radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
         var(--bg);
+      background-repeat:no-repeat;
+      background-size:cover;
+      background-attachment:fixed;
     }
     .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 24px}
     .head{
-      display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px;
-      border:1px solid var(--line);border-radius:14px;background:rgba(35,42,51,.92);padding:14px 16px;
-      box-shadow:var(--shadow);
+      position:relative;
+      display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px;
+      border:1px solid var(--line);border-radius:0 !important;background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);padding:24px;
+      box-shadow:var(--shadow);overflow:hidden;
     }
-    .title{margin:0;font-size:30px;font-weight:800;color:#dbeafe;line-height:1.1}
-    .sub{margin-top:8px;color:var(--muted);font-size:13px}
+    .head::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--cta) 0%,var(--cta-2) 55%,#60a5fa 100%)}
+    .title{margin:0;font-size:32px;font-weight:800;font-family:Poppins,Inter,sans-serif;color:#dbeafe;line-height:1.1}
+    .sub{margin-top:8px;color:var(--muted);font-size:14px;line-height:1.7}
     .head-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
     .btn{
-      border:1px solid #475569;background:var(--panel-soft);color:var(--ink);padding:10px 14px;border-radius:999px;
-      text-decoration:none;font-weight:700;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;
-      transition:all .2s ease;
+      border:1px solid rgba(255,126,34,.45);background:linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);color:#16325c;padding:10px 14px;border-radius:12px;
+      text-decoration:none;font-weight:800;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+      transition:all .2s ease;line-height:1;box-shadow:0 12px 24px rgba(8,19,29,.24);
+      border-radius:0 !important;
     }
-    .btn:hover{transform:translateY(-1px);border-color:var(--primary)}
-    .btn-primary{background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;border-color:transparent}
+    .btn:hover{transform:translateY(-1px);border-color:rgba(255,126,34,.6)}
+    .btn-primary{background:linear-gradient(135deg,var(--cta) 0%,var(--cta-2) 100%);color:#fff;border-color:rgba(255,126,34,.6);box-shadow:0 16px 28px rgba(255,90,31,.28)}
+    .btn-secondary{background:linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);color:#16325c;border:1px solid rgba(255,126,34,.45)}
     .home-btn{
-      background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);
-      border:1px solid #2563eb;
+      background:linear-gradient(135deg,var(--cta) 0%,var(--cta-2) 100%);
+      border:1px solid rgba(255,126,34,.6);
       color:#fff;
-      border-radius:10px;
+      border-radius:0 !important;
       padding:10px 14px;
+      box-shadow:0 16px 28px rgba(255,90,31,.28);
     }
     .layout{display:grid;grid-template-columns:1.8fr 1fr;gap:12px}
     .card{
-      background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:14px;
+      position:relative;background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);border:1px solid var(--line);border-radius:0 !important;box-shadow:var(--shadow);padding:18px;overflow:hidden;
     }
+    .card::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--cta) 0%,var(--cta-2) 55%,#60a5fa 100%)}
     .section-title{margin:0 0 10px 0;font-size:16px;font-weight:800;color:#dbeafe}
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .field{display:flex;flex-direction:column;gap:6px}
     .label{font-size:12px;font-weight:700;color:#cbd5e1}
     .input,.textarea,.select{
-      border:1px solid #475569;border-radius:10px;padding:10px 12px;font-size:13px;background:#1f2937;color:#f8fafc;
+      border:1px solid var(--line);border-radius:0 !important;padding:10px 12px;font-size:13px;background:rgba(255,255,255,.04);color:#f8fafc;
     }
     .input::placeholder,.textarea::placeholder{color:#94a3b8}
     .input:focus,.textarea:focus,.select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(96,165,250,.16)}
@@ -84,8 +96,8 @@
     .full{grid-column:1/-1}
     .act{display:flex;gap:8px;margin-top:12px}
     .photo-box{display:flex;flex-direction:column;align-items:center;gap:10px}
-    .photo{width:132px;height:132px;border-radius:16px;border:1px solid #475569;object-fit:cover;background:#1f2937}
-    .row{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #334155;font-size:13px}
+    .photo{width:132px;height:132px;border-radius:0 !important;border:1px solid var(--line);object-fit:cover;background:rgba(255,255,255,.04)}
+    .row{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid rgba(148,163,184,.14);font-size:13px}
     .row:last-child{border-bottom:0}
     .muted{color:var(--muted)}
     .ok{color:#34d399;font-size:12px;min-height:16px;margin-top:8px;font-weight:700}
@@ -95,32 +107,33 @@
     }
     .preview-modal.show{display:flex}
     .preview-card{
-      width:min(560px,100%);max-height:90vh;overflow:auto;background:var(--panel);border:1px solid var(--line);
-      border-radius:16px;box-shadow:0 24px 50px rgba(2,6,23,.45);
+      width:min(560px,100%);max-height:90vh;overflow:auto;background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);border:1px solid var(--line);
+      border-radius:0 !important;box-shadow:0 24px 50px rgba(2,6,23,.45);position:relative;
     }
+    .preview-card::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--cta) 0%,var(--cta-2) 55%,#60a5fa 100%)}
     .preview-head{
       display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 14px 10px;border-bottom:1px solid var(--line);
     }
     .preview-title{margin:0;font-size:18px;font-weight:800;color:#dbeafe}
     .preview-close{
-      width:34px;height:34px;border-radius:10px;border:1px solid #475569;background:#2b3440;color:#dbeafe;cursor:pointer;
+      width:34px;height:34px;border-radius:0 !important;border:1px solid var(--line);background:rgba(255,255,255,.06);color:#dbeafe;cursor:pointer;
       display:inline-flex;align-items:center;justify-content:center;
     }
     .preview-body{padding:14px;display:grid;gap:12px}
     .preview-top{
-      display:flex;align-items:center;gap:12px;padding:10px;border:1px solid #475569;border-radius:12px;background:#1f2937;
+      display:flex;align-items:center;gap:12px;padding:10px;border:1px solid var(--line);border-radius:0 !important;background:rgba(255,255,255,.04);
     }
     .preview-photo{
-      width:78px;height:78px;border-radius:12px;border:1px solid #475569;object-fit:cover;background:#111827;flex:0 0 auto;
+      width:78px;height:78px;border-radius:0 !important;border:1px solid var(--line);object-fit:cover;background:#111827;flex:0 0 auto;
     }
     .preview-name{font-size:17px;font-weight:800;color:#f8fafc}
     .preview-branch{font-size:12px;color:#93c5fd;font-weight:700}
     .preview-bio{
-      border:1px solid #475569;border-radius:12px;background:#1f2937;padding:10px;font-size:13px;color:#cbd5e1;line-height:1.45;
+      border:1px solid var(--line);border-radius:0 !important;background:rgba(255,255,255,.04);padding:10px;font-size:13px;color:#cbd5e1;line-height:1.45;
     }
     .preview-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
     .preview-item{
-      border:1px solid #475569;border-radius:10px;background:#1f2937;padding:9px 10px;
+      border:1px solid var(--line);border-radius:0 !important;background:rgba(255,255,255,.04);padding:9px 10px;
     }
     .preview-k{font-size:10px;color:#94a3b8;text-transform:uppercase;font-weight:700;margin-bottom:4px}
     .preview-v{font-size:13px;color:#f8fafc;font-weight:700;word-break:break-word}
@@ -163,7 +176,8 @@
       </div>
       <div class="head-actions">
         <button type="button" class="btn" id="openPublicPreviewBtn"><i class="fas fa-user-check"></i><span>Public Gorunum</span></button>
-        <a class="btn home-btn" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
+        <a class="btn btn-secondary" href="manager-dashboard.html"><i class="fas fa-table-columns"></i><span>Dashboard</span></a>
+        <a class="btn home-btn" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,126,34,.6);background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;box-shadow:0 16px 28px rgba(255,90,31,.28);"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
       </div>
     </div>
 
@@ -399,6 +413,51 @@
 
     let profile = loadProfile();
 
+    function applyTurkishTextFixes() {
+      document.title = 'Manager Profili - NextScout';
+      const mapTexts = [
+        ['.sub', 'İsim ve foto dahil profil bilgilerini düzenle.'],
+        ['#openPublicPreviewBtn span', 'Public Görünüm'],
+        ['label[for="name"]', 'İsim Soyisim'],
+        ['label[for="agency"]', 'Şirket / Ajans'],
+        ['label[for="city"]', 'Şehir'],
+        ['label[for="country"]', 'Ülke'],
+        ['label[for="branch"]', 'Branş'],
+        ['label[for="bio"]', 'Hakkımda'],
+        ['#resetBtn span', 'Sıfırla'],
+        ['#clearPhotoBtn span', 'Fotoğrafı Kaldır'],
+        ['#sumName', '-'],
+        ['.preview-title', 'Public Profil Önizleme']
+      ];
+      mapTexts.forEach(([selector, text]) => {
+        const el = document.querySelector(selector);
+        if (el) el.textContent = text;
+      });
+      document.querySelectorAll('.row .muted, .preview-k').forEach((el) => {
+        el.textContent = (el.textContent || '')
+          .replace('Isim', 'İsim')
+          .replace('Brans', 'Branş')
+          .replace('Sehir', 'Şehir')
+          .replace('Ulke', 'Ülke')
+          .replace('Ajans', 'Ajans');
+      });
+      document.querySelectorAll('input[placeholder], textarea[placeholder], option').forEach((el) => {
+        if (el.tagName === 'OPTION') {
+          el.textContent = (el.textContent || '')
+            .replace('Seciniz', 'Seçiniz')
+            .replace('Coklu Brans', 'Çoklu Branş');
+          return;
+        }
+        const placeholder = el.getAttribute('placeholder') || '';
+        el.setAttribute('placeholder', placeholder
+          .replace('Ornek Sports Management', 'Örnek Sports Management')
+          .replace('Istanbul', 'İstanbul')
+          .replace('Turkiye', 'Türkiye')
+          .replace('Tï¿½rkiye', 'Türkiye')
+          .replace('Kisa manager tanitimi...', 'Kısa menajer tanıtımı...'));
+      });
+    }
+
     async function init() {
       const remote = await loadBackendProfile();
       if (remote) {
@@ -407,13 +466,14 @@
       }
       setForm(profile);
       renderSummary(profile);
+      applyTurkishTextFixes();
     }
 
     document.getElementById('managerForm')?.addEventListener('submit', async function(e){
       e.preventDefault();
       profile = readForm(profile);
       if(!profile.name){
-        document.getElementById('saveMsg').textContent = 'Isim zorunlu.';
+        document.getElementById('saveMsg').textContent = 'İsim zorunlu.';
         return;
       }
 
@@ -437,7 +497,7 @@
       setForm(profile);
       renderSummary(profile);
       renderPublicPreviewModal(profile);
-      document.getElementById('saveMsg').textContent = 'Profil sifirlandi.';
+      document.getElementById('saveMsg').textContent = 'Profil sıfırlandı.';
       setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 1500);
     });
 
@@ -472,10 +532,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
 
 
 

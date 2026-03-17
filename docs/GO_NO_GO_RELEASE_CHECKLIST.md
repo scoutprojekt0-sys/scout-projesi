@@ -1,5 +1,9 @@
 # Go / No-Go Release Checklist (12 Mart 2026)
 
+> Karar kurali (13 Mart 2026): Bu checklist, `docs/RELEASE_DECISION_2026_03_13.md` ile birlikte canliya cikis icin tek karar kaynagidir. Zorunlu maddeler kanitli sekilde yesil olmadan durum **GO** olarak ilan edilmez.
+
+> Mevcut repo-temelli karar: **NO-GO**. Sebep, asagidaki zorunlu maddelerin bugune ait dogrulanmis yesil kaniti bu dosyada islenmis degil.
+
 Bu checklist, canliya cikmadan once son karar adimi icindir.
 
 ## 1) Kritik servis sagligi

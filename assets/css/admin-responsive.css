@@ -1,4 +1,18 @@
 /* Mobile responsiveness for admin-dashboard.html */
+/* Kelime kırılması için toplu kural */
+.home-data-card,
+.below-card,
+.idea-news-item,
+.section-title,
+.section-description,
+.card,
+.mobile-player-card,
+.mobile-extra-card,
+.mobile-profile-section-text,
+.pcd-player-name,
+.pcd-detail-value,
+.pcd-about p,
+.nav-button,
 
 @media (max-width: 768px) {
     body {

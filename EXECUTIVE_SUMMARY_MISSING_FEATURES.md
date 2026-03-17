@@ -1,5 +1,7 @@
 # 🎯 NEXTSCOUT - ÖZELLİK EKSİKLİKLERİ ÖZET RAPORU
 
+> Arsiv notu (13 Mart 2026): Bu belge yonetici seviye bir ozet/backlog snapshot'idir. Guncel release karari icin `docs/RELEASE_DECISION_2026_03_13.md` ve `docs/GO_NO_GO_RELEASE_CHECKLIST.md` esas alinmalidir.
+
 **Tarih:** 4 Mart 2026  
 **Proje Durumu:** Yayına Hazır (Production Ready)  
 **Kritik Eksiklikler:** 5 Kategori

@@ -19,17 +19,20 @@
     <meta name="twitter:description" content="NextScout scout profile sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --bg:#1f252d;
-      --ink:#e2e8f0;
-      --muted:#94a3b8;
-      --line:#334155;
-      --panel:#232a33;
-      --panel-soft:#2b3440;
+      --bg:#08131d;
+      --ink:#f5fbff;
+      --muted:#9bb5cb;
+      --line:#2b4660;
+      --panel:#0f1f2e;
+      --panel-soft:rgba(255,255,255,.04);
       --primary:#60a5fa;
+      --cta:#ff5a1f;
+      --cta-2:#ff7e22;
+      --shadow:0 18px 36px rgba(8,19,29,.34);
     }
     *{box-sizing:border-box}
     body{
@@ -37,45 +40,52 @@
       font-family:Inter,Segoe UI,Arial,sans-serif;
       color:var(--ink);
       background:
-        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.16), transparent 34%),
-        radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.14), transparent 36%),
+        radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+        radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
         var(--bg);
+      min-height:100vh;
+      background-repeat:no-repeat;
+      background-size:cover;
+      background-attachment:fixed;
     }
-    .wrap{max-width:980px;margin:0 auto;padding:18px 14px}
+    .wrap{max-width:1100px;margin:0 auto;padding:22px 16px}
     .head{
       display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px;
-      border:1px solid var(--line);border-radius:14px;background:rgba(35,42,51,.9);padding:12px;
-      box-shadow:0 12px 26px rgba(2,6,23,.24);
+      border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);padding:24px;
+      box-shadow:var(--shadow);position:relative;overflow:hidden;
     }
-    .title{margin:0;font-size:30px;font-weight:800;color:#dbeafe}
+    .head::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--cta) 0%,var(--cta-2) 55%,#60a5fa 100%)}
+    .title{margin:0;font-size:30px;font-weight:800;color:var(--ink)}
     .sub{margin-top:6px;color:var(--muted);font-size:14px}
     .btn{
-      border:1px solid #475569;background:var(--panel-soft);color:#dbeafe;padding:10px 14px;border-radius:10px;
-      text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;
+      border:1px solid rgba(255, 126, 34, 0.45);background:linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);color:#16325c;padding:10px 14px;border-radius:12px;
+      text-decoration:none;font-weight:800;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;box-shadow:0 12px 24px rgba(8,19,29,.24);
     }
-    .btn-primary{background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;border-color:#2563eb}
+    .btn-primary{background:linear-gradient(135deg,var(--cta) 0%,var(--cta-2) 100%);color:#fff;border-color:rgba(255,126,34,.6);box-shadow:0 16px 28px rgba(255,90,31,.28)}
+    .btn-secondary{background:linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);color:#16325c;border:1px solid rgba(255,126,34,.45);box-shadow:0 12px 24px rgba(8,19,29,.24)}
     .layout{display:grid;grid-template-columns:2fr 1fr;gap:12px}
-    .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 24px rgba(2,6,23,.2);padding:14px}
-    .section-title{margin:0 0 10px 0;font-size:16px;font-weight:800;color:#dbeafe}
+    .card{background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px;position:relative;overflow:hidden}
+    .card::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--cta) 0%,var(--cta-2) 55%,#60a5fa 100%)}
+    .section-title{margin:0 0 10px 0;font-size:16px;font-weight:800;color:var(--ink)}
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .field{display:flex;flex-direction:column;gap:6px}
-    .label{font-size:12px;font-weight:700;color:#cbd5e1}
-    .input,.textarea,.select{border:1px solid #475569;border-radius:10px;padding:10px 12px;font-size:13px;background:#1f2937;color:#f8fafc}
-    .input::placeholder,.textarea::placeholder{color:#94a3b8}
+    .label{font-size:12px;font-weight:700;color:#dbeafe}
+    .input,.textarea,.select{border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13px;background:rgba(255,255,255,.04);color:var(--ink)}
+    .input::placeholder,.textarea::placeholder{color:var(--muted)}
     .input:focus,.textarea:focus,.select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(96,165,250,.16)}
     .textarea{min-height:90px;resize:vertical}
     .full{grid-column:1/-1}
     .act{display:flex;gap:8px;margin-top:12px}
     .photo-box{display:flex;flex-direction:column;align-items:center;gap:10px}
-    .photo{width:120px;height:120px;border-radius:14px;border:1px solid #475569;object-fit:cover;background:#1f2937}
-    .row{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #334155;font-size:13px}
+    .photo{width:120px;height:120px;border-radius:14px;border:1px solid var(--line);object-fit:cover;background:linear-gradient(135deg,#1e40af 0%,#0ea5e9 100%)}
+    .row{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid rgba(148,163,184,.16);font-size:13px}
     .row:last-child{border-bottom:0}
     .muted{color:var(--muted)}
     .ok{color:#34d399;font-size:12px;min-height:16px;margin-top:8px;font-weight:700}
     @media (max-width:900px){.layout{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}}
     @media (max-width:768px){
-      .wrap{padding:12px 10px 18px}
-      .head{flex-direction:column;align-items:flex-start}
+      .wrap{padding:14px 10px 18px}
+      .head{flex-direction:column;align-items:flex-start;padding:16px 14px;border-radius:14px}
       .title{font-size:24px}
       .sub{font-size:12px}
       .act{display:grid;grid-template-columns:1fr 1fr}
@@ -96,7 +106,10 @@
         <h1 class="title">Scout Profili</h1>
         <div class="sub">Scout profilini düzenle ve kaydet.</div>
       </div>
-      <a class="btn" href="index.html"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
+      <div class="act" style="margin-top:0;">
+        <a class="btn btn-primary" href="index.html"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
+        <a class="btn btn-secondary" href="coach-dashboard.html"><i class="fas fa-table-columns"></i><span>Dashboard</span></a>
+      </div>
     </div>
 
     <div class="layout">
@@ -297,17 +310,60 @@
       try { await saveBackendProfile(profile); } catch (error) {}
     });
 
+    function applyScoutProfileTextFixes() {
+      const replacements = new Map([
+        ['Scout profilini dÃ¼zenle ve kaydet.', 'Scout profilini düzenle ve kaydet.'],
+        ['Isim Soyisim', 'İsim Soyisim'],
+        ['Deneyim (Yil)', 'Deneyim (Yıl)'],
+        ['Brans', 'Branş'],
+        ['Seciniz', 'Seçiniz'],
+        ['Coklu Brans', 'Çoklu Branş'],
+        ['Ãœlke', 'Ülke'],
+        ['TÃ¼rkiye', 'Türkiye'],
+        ['Sehir', 'Şehir'],
+        ['Istanbul', 'İstanbul'],
+        ['Hakkimda', 'Hakkımda'],
+        ['Kisa scout tanitimi...', 'Kısa scout tanıtımı...'],
+        ['SÄ±fÄ±rla', 'Sıfırla'],
+        ['Profil Fotografi', 'Profil Fotoğrafı'],
+        ['Scout Fotograf', 'Scout Fotoğraf'],
+        ['Fotografi Kaldir', 'Fotoğrafı Kaldır'],
+        ['Ozet', 'Özet'],
+        ['Isim', 'İsim'],
+        ['Isim zorunlu.', 'İsim zorunlu.'],
+        ['Profil local kaydedildi.', 'Profil yerel olarak kaydedildi.'],
+        ['Profil sÄ±fÄ±rlandi.', 'Profil sıfırlandı.']
+      ]);
+
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach((node) => {
+        let value = node.nodeValue;
+        if (!value || !value.trim()) return;
+        replacements.forEach((next, prev) => {
+          if (value.includes(prev)) value = value.split(prev).join(next);
+        });
+        node.nodeValue = value;
+      });
+
+      document.querySelectorAll('input[placeholder], textarea[placeholder], img[alt]').forEach((el) => {
+        const attr = el.hasAttribute('placeholder') ? 'placeholder' : 'alt';
+        let value = el.getAttribute(attr) || '';
+        replacements.forEach((next, prev) => {
+          if (value.includes(prev)) value = value.split(prev).join(next);
+        });
+        el.setAttribute(attr, value);
+      });
+    }
+
+    applyScoutProfileTextFixes();
     init();
   </script>
     <script src="assets/js/core-stability.js"></script>
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
-
 
 
 
