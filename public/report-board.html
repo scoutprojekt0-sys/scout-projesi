@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rapor Panosu - NextScout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #07111f;
+      --card: linear-gradient(180deg, rgba(12, 21, 38, 0.94), rgba(9, 16, 29, 0.9));
+      --line: rgba(148, 163, 184, 0.2);
+      --text: #f8fafc;
+      --muted: #b8c4d9;
+      --primary: #f97316;
+      --accent: #38bdf8;
+      --shadow: 0 24px 60px rgba(2, 8, 23, 0.42);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 18%, rgba(56, 189, 248, 0.18), transparent 0 30%),
+        radial-gradient(circle at 88% 14%, rgba(249, 115, 22, 0.16), transparent 0 34%),
+        linear-gradient(180deg, #08111f 0%, #0b172a 52%, #09111d 100%);
+      background-attachment: fixed;
+    }
+    .wrap { max-width: 1280px; margin: 0 auto; padding: 24px 16px 40px; }
+    .head {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 16px;
+      padding: 28px 30px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(10, 18, 32, 0.92));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .head::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    .head-close {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 42px;
+      height: 42px;
+      padding: 0 !important;
+    }
+    .title { margin: 0; font-size: 32px; font-weight: 800; font-family: Poppins, Inter, sans-serif; }
+    .sub { margin-top: 8px; color: var(--muted); font-size: 14px; line-height: 1.7; max-width: 780px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 16px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(148, 163, 184, 0.12);
+      color: #e2e8f0;
+    }
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      box-shadow: 0 20px 44px rgba(2, 8, 23, 0.28);
+    }
+    .field {
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      padding: 11px 12px;
+      background: rgba(15, 23, 42, 0.78);
+      color: #f8fafc;
+      font-size: 13px;
+      width: 100%;
+    }
+    .board { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(340px, 0.95fr); gap: 14px; align-items: start; }
+    .table-wrap, .detail-card {
+      position: relative;
+      overflow: hidden;
+      background: var(--card);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+    .table-wrap::before, .detail-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 3px;
+      background: linear-gradient(90deg, rgba(249, 115, 22, 0.95), rgba(56, 189, 248, 0.95));
+    }
+    .table-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 18px 18px 14px; border-bottom: 1px solid rgba(148, 163, 184, 0.12); }
+    .panel-title { margin: 0; font-size: 18px; font-family: Poppins, Inter, sans-serif; }
+    .panel-sub { color: var(--muted); font-size: 13px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 14px 12px; text-align: left; font-size: 13px; border-bottom: 1px solid rgba(148, 163, 184, 0.1); }
+    th { background: rgba(15, 23, 42, 0.86); color: #cbd5e1; font-size: 12px; text-transform: uppercase; }
+    tr { cursor: pointer; }
+    tr:hover td, tr.is-active td { background: rgba(43, 52, 64, 0.82); }
+    .player-cell strong { display: block; font-size: 14px; }
+    .player-cell span { color: var(--muted); font-size: 12px; }
+    .tag { display: inline-block; padding: 4px 9px; font-size: 11px; font-weight: 700; background: rgba(15, 23, 42, 0.76); border: 1px solid rgba(148, 163, 184, 0.18); color: #dbeafe; }
+    .detail-card { padding: 20px; position: sticky; top: 18px; }
+    .detail-name { margin: 0; font-size: 24px; font-family: Poppins, Inter, sans-serif; }
+    .detail-role { margin-top: 6px; color: var(--muted); font-size: 13px; }
+    .detail-section { margin-top: 14px; }
+    .detail-section h3 { margin: 0 0 8px; font-size: 13px; text-transform: uppercase; color: #dbeafe; }
+    .detail-section p { margin: 0; color: var(--muted); line-height: 1.7; font-size: 13px; }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip { padding: 8px 10px; background: rgba(15, 23, 42, 0.76); border: 1px solid rgba(148, 163, 184, 0.18); color: #dbeafe; font-size: 12px; font-weight: 700; }
+    .empty { padding: 20px; color: var(--muted); }
+    @media (max-width: 980px) {
+      .toolbar { grid-template-columns: 1fr; }
+      .board { grid-template-columns: 1fr; }
+      .detail-card { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <a class="btn head-close" href="index.html" id="closeBtn" aria-label="Kapat" title="Kapat"><i class="fas fa-xmark"></i></a>
+      <div>
+        <h1 class="title">Rapor Panosu</h1>
+        <div class="sub">Scout tarafından paylaşılan raporları okuyun, oyuncu değerlendirmelerini tek panelden inceleyin ve detay notlara erişin.</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <input class="field" id="searchInput" type="text" placeholder="Oyuncu veya scout ara">
+      <select class="field" id="statusFilter">
+        <option value="">Durum (Tümü)</option>
+        <option value="Kısa Liste">Kısa Liste</option>
+        <option value="İncelemede">İncelemede</option>
+        <option value="Tekrar İzle">Tekrar İzle</option>
+        <option value="Uygun Değil">Uygun Değil</option>
+      </select>
+      <select class="field" id="positionFilter">
+        <option value="">Pozisyon (Tümü)</option>
+      </select>
+    </div>
+
+    <div class="board">
+      <div class="table-wrap">
+        <div class="table-head">
+          <div>
+            <h2 class="panel-title">Paylaşılan Raporlar</h2>
+            <div class="panel-sub">Liste görünümünde raporları seçip sağ panelde detayları okuyun.</div>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Oyuncu</th>
+              <th>Pozisyon</th>
+              <th>Scout</th>
+              <th>Durum</th>
+              <th>Tarih</th>
+            </tr>
+          </thead>
+          <tbody id="reportTableBody"></tbody>
+        </table>
+      </div>
+
+      <aside class="detail-card" id="reportDetail">
+        <h2 class="detail-name">Rapor seçin</h2>
+        <div class="detail-role">Detaylar burada görünecek.</div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'nextscout_scout_reports';
+    let allReports = [];
+    let activeReportId = '';
+
+    function esc(value) {
+      return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      }[char]));
+    }
+
+    function loadReports() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function fillPositionFilter(rows) {
+      const select = document.getElementById('positionFilter');
+      if (!select) return;
+      const positions = Array.from(new Set(rows.map((row) => (row?.position || '').trim()).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'tr'));
+      select.innerHTML = '<option value="">Pozisyon (Tümü)</option>' + positions.map((position) => `<option value="${esc(position)}">${esc(position)}</option>`).join('');
+    }
+
+    function renderDetail(report) {
+      const root = document.getElementById('reportDetail');
+      if (!root) return;
+      if (!report) {
+        root.innerHTML = '<h2 class="detail-name">Rapor seçin</h2><div class="detail-role">Detaylar burada görünecek.</div>';
+        return;
+      }
+
+      root.innerHTML = `
+        <h2 class="detail-name">${esc(report.player_name || 'Oyuncu')}</h2>
+        <div class="detail-role">${esc(report.position || '-')} • ${esc(report.club || 'Kulüp bilgisi yok')}</div>
+        <div class="detail-section">
+          <h3>Genel Değerlendirme</h3>
+          <p>${esc(report.general_assessment || 'Genel değerlendirme eklenmemiş.')}</p>
+        </div>
+        <div class="detail-section">
+          <h3>Güçlü Yönler</h3>
+          <div class="chips">${String(report.strengths || '').split(',').filter(Boolean).map((item) => `<span class="chip">${esc(item.trim())}</span>`).join('') || '<span class="chip">Not yok</span>'}</div>
+        </div>
+        <div class="detail-section">
+          <h3>Gelişim Alanları</h3>
+          <div class="chips">${String(report.development_areas || '').split(',').filter(Boolean).map((item) => `<span class="chip">${esc(item.trim())}</span>`).join('') || '<span class="chip">Not yok</span>'}</div>
+        </div>
+        <div class="detail-section">
+          <h3>Scout Notu</h3>
+          <p>${esc(report.scout_note || 'Scout notu eklenmemiş.')}</p>
+        </div>
+      `;
+    }
+
+    function renderTable(rows) {
+      const tbody = document.getElementById('reportTableBody');
+      if (!tbody) return;
+      if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty">Gösterilecek rapor bulunamadı.</td></tr>';
+        renderDetail(null);
+        return;
+      }
+
+      if (!activeReportId) {
+        activeReportId = String(rows[0]?.id || '');
+      }
+
+      tbody.innerHTML = rows.map((report) => {
+        const id = String(report.id || '');
+        const isActive = id === activeReportId ? 'is-active' : '';
+        return `
+          <tr class="${isActive}" data-report-id="${esc(id)}">
+            <td><div class="player-cell"><strong>${esc(report.player_name || 'Oyuncu')}</strong><span>${esc(report.age || '-')} yaş</span></div></td>
+            <td>${esc(report.position || '-')}</td>
+            <td>${esc(report.scout_name || report.author_name || '-')}</td>
+            <td><span class="tag">${esc(report.status || 'İncelemede')}</span></td>
+            <td>${esc(report.report_date || report.created_at || '-')}</td>
+          </tr>
+        `;
+      }).join('');
+
+      tbody.querySelectorAll('tr[data-report-id]').forEach((row) => {
+        row.addEventListener('click', () => {
+          activeReportId = row.getAttribute('data-report-id') || '';
+          const report = rows.find((item) => String(item.id || '') === activeReportId) || null;
+          renderTable(rows);
+          renderDetail(report);
+        });
+      });
+
+      const selected = rows.find((item) => String(item.id || '') === activeReportId) || rows[0];
+      activeReportId = String(selected?.id || '');
+      renderDetail(selected);
+    }
+
+    function applyFilters() {
+      const search = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
+      const status = (document.getElementById('statusFilter')?.value || '').trim();
+      const position = (document.getElementById('positionFilter')?.value || '').trim();
+
+      const filtered = allReports.filter((report) => {
+        const haystack = `${report.player_name || ''} ${report.scout_name || ''} ${report.position || ''}`.toLowerCase();
+        if (search && !haystack.includes(search)) return false;
+        if (status && (report.status || '') !== status) return false;
+        if (position && (report.position || '') !== position) return false;
+        return true;
+      });
+
+      if (!filtered.some((item) => String(item.id || '') === activeReportId)) {
+        activeReportId = String(filtered[0]?.id || '');
+      }
+      renderTable(filtered);
+    }
+
+    function init() {
+      allReports = loadReports().sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+      fillPositionFilter(allReports);
+      applyFilters();
+      document.getElementById('searchInput')?.addEventListener('input', applyFilters);
+      document.getElementById('statusFilter')?.addEventListener('change', applyFilters);
+      document.getElementById('positionFilter')?.addEventListener('change', applyFilters);
+    }
+
+    init();
+
+    const closeBtn = document.getElementById('closeBtn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        if (window.history.length > 1) {
+          window.history.back();
+          return;
+        }
+        window.location.href = 'index.html';
+      });
+    }
+  </script>
+</body>
+</html>

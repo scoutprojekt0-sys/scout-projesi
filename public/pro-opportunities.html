@@ -1,31 +1,16 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NextScout - Menajerlerin Aradığı Oyuncular</title>
-    <meta name="description" content="NextScout manager needs sayfası: menajer ilanlarını tek merkezde gösterir.">
-    <meta name="robots" content="index,follow">
-    <link rel="canonical" href="https://nextscout.app/manager-needs.html">
-    <meta property="og:type" content="website">
-    <meta property="og:locale" content="tr_TR">
-    <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="NextScout - Menajerlerin Aradığı Oyuncular">
-    <meta property="og:description" content="NextScout manager needs sayfası: menajer ilanlarını tek merkezde gösterir.">
-    <meta property="og:url" content="https://nextscout.app/manager-needs.html">
-    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="NextScout - Menajerlerin Aradığı Oyuncular">
-    <meta name="twitter:description" content="NextScout manager needs sayfası: menajer ilanlarını tek merkezde gösterir.">
-    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
-    <meta name="theme-color" content="#0B3B8A">
+    <title>NextScout - Profesyonel İlan Masası</title>
+    <meta name="description" content="NextScout profesyonel ilan masası: menajer ve antrenör ilanlarını tek merkezde gösterir.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
           --bg: #08131d;
           --panel: #0f1f2e;
-          --panel-2: #12293d;
           --line: #2b4660;
           --text: #f5fbff;
           --muted: #9bb5cb;
@@ -44,56 +29,37 @@
             var(--bg);
           min-height: 100vh;
         }
-        .topbar { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; background: linear-gradient(180deg, rgba(18, 41, 61, 0.96) 0%, rgba(15, 31, 46, 0.94) 100%); border-bottom: 1px solid rgba(148, 163, 184, 0.18); color: #f5fbff; backdrop-filter: blur(18px); box-shadow: 0 18px 36px rgba(8,19,29,.24); }
-        .brand { font-family: 'Poppins', sans-serif; font-size: 24px; color: #BFDBFE; text-decoration: none; }
-        .top-actions { display: flex; gap: 10px; }
-        .btn, a.btn, button.btn { display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; border: 1px solid rgba(255, 126, 34, 0.45) !important; background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%) !important; color: #16325c !important; padding: 10px 16px !important; border-radius: 12px !important; text-decoration: none !important; font-weight: 800 !important; font-size: 13px !important; cursor: pointer !important; box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24) !important; transition: transform .18s ease, box-shadow .18s ease, filter .18s ease !important; }
-        .btn:hover, a.btn:hover, button.btn:hover { transform: translateY(-1px); box-shadow: 0 16px 28px rgba(8, 19, 29, 0.3) !important; filter: saturate(1.05); }
-        .btn.primary, a.btn.primary, button.btn.primary { background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%) !important; border-color: #ff7e22 !important; color: #ffffff !important; box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28) !important; }
-        .btn.primary:hover, a.btn.primary:hover, button.btn.primary:hover { box-shadow: 0 18px 30px rgba(255, 90, 31, 0.34) !important; }
+        .btn, a.btn, button.btn { display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; border: 1px solid rgba(255, 126, 34, 0.45) !important; background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%) !important; color: #16325c !important; padding: 10px 16px !important; border-radius: 12px !important; text-decoration: none !important; font-weight: 800 !important; font-size: 13px !important; cursor: pointer !important; box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24) !important; }
+        .btn.primary, a.btn.primary, button.btn.primary { background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%) !important; border-color: #ff7e22 !important; color: #ffffff !important; }
         .page { max-width: 1180px; margin: 26px auto; padding: 0 20px; }
-        .hero { position:relative; overflow:hidden; background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 22px; padding: 24px; box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34); margin-bottom: 14px; color: var(--text); }
+        .hero { position:relative; overflow:hidden; background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 22px; padding: 24px; box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34); margin-bottom: 14px; }
         .hero::before { content:""; position:absolute; inset:0 0 auto 0; height:4px; background:linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%); }
+        .hero-close { position: absolute; top: 18px; right: 18px; width: 42px; height: 42px; padding: 0 !important; }
         .hero h1 { font-size: 30px; margin-bottom: 8px; }
         .hero p { color: var(--muted); margin-bottom: 14px; }
         .filters { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
         .control { width: 100%; padding: 10px 12px; border: 1px solid #2b4660; border-radius: 12px; background: rgba(255,255,255,.04); color: var(--text); font-size: 14px; }
         .list { display: grid; gap: 12px; margin-top: 14px; }
-        .job { position: relative; overflow: hidden; background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 18px; padding: 18px; color: var(--text); box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28); cursor: pointer; transition: all .2s ease; }
+        .job { position: relative; overflow: hidden; background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 18px; padding: 18px; color: var(--text); box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28); }
         .job::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%); }
-        .job:hover { border-color: #ff7e22; box-shadow: 0 18px 34px rgba(8, 19, 29, 0.34); transform: translateY(-2px); }
         .job-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
         .job-head h3 { font-size: 19px; color: #f8fbff; }
         .reward { background: linear-gradient(135deg, rgba(47, 212, 176, 0.2) 0%, rgba(47, 212, 176, 0.08) 100%); color: #8ff0d8; border: 1px solid rgba(47, 212, 176, 0.3); border-radius: 999px; padding: 5px 11px; font-size: 12px; font-weight: 800; }
         .meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 13px; margin-bottom: 12px; }
         .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
         .tag { background: rgba(255, 255, 255, 0.04); border: 1px solid #2b4660; color: #d6e8f7; border-radius: 999px; padding: 6px 10px; font-size: 12px; font-weight: 700; }
-        .empty { position:relative; overflow:hidden; background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 16px; padding: 16px; color: var(--muted); box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28); }
+        .empty { position:relative; overflow:hidden; background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 16px; padding: 16px; color: var(--muted); }
         .empty::before { content:""; position:absolute; inset:0 0 auto 0; height:4px; background:linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%); }
         @media (max-width: 1000px) { .filters { grid-template-columns: 1fr 1fr; } }
-        @media (max-width: 768px) {
-            .topbar { padding: 10px 12px; }
-            .brand { font-size: 18px; }
-            .top-actions { gap: 6px; }
-            .page { margin: 12px auto 18px; padding: 0 12px; }
-            .hero { padding: 14px; border-radius: 12px; }
-            .hero h1 { font-size: 22px; }
-        }
+        @media (max-width: 768px) { .filters { grid-template-columns: 1fr; } .hero h1 { font-size: 22px; } }
     </style>
 </head>
 <body>
-<header class="topbar">
-    <a class="brand" href="./index.html">NextScout</a>
-    <div class="top-actions">
-        <a class="btn" href="./manager-dashboard.html"><i class="fas fa-table-columns"></i><span>Dashboard</span></a>
-        <a class="home-btn-global" href="./index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:12px;border:1px solid #ff7e22;background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;box-shadow:0 16px 28px rgba(255,90,31,0.28);"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
-    </div>
-</header>
-
 <main class="page">
     <section class="hero">
-        <h1><i class="fa-solid fa-filter"></i> Menajerlerin Aradığı Oyuncular</h1>
-        <p>Menajerlerin dashboard'da kaydettiği ilanlar burada yayınlanır. Oyuncular filtreleyip kendine uygun ilanı bulur.</p>
+        <a href="index.html" class="btn hero-close" id="closeBtn" aria-label="Kapat" title="Kapat"><i class="fas fa-xmark"></i></a>
+        <h1><i class="fa-solid fa-filter"></i> Profesyonel İlan Masası</h1>
+        <p>Menajer ve antrenör ilanları burada birlikte yayınlanır. Oyuncular filtreleyip kendine uygun akışı tek sayfada görür.</p>
         <div class="filters">
             <select class="control" id="positionFilter">
                 <option value="">Pozisyon (Tümü)</option>
@@ -128,12 +94,16 @@
 
     async function loadJobs() {
         const apiBase = getApiBaseUrl();
-        const response = await fetch(`${apiBase}/discovery/manager-needs`, {
-            headers: { Accept: 'application/json' },
-        });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const payload = await response.json();
-        return Array.isArray(payload?.data) ? payload.data.map((item) => ({ ...item, source_role: 'manager' })) : [];
+        const [managerResponse, coachResponse] = await Promise.all([
+            fetch(`${apiBase}/discovery/manager-needs`, { headers: { Accept: 'application/json' } }),
+            fetch(`${apiBase}/discovery/coach-needs`, { headers: { Accept: 'application/json' } }),
+        ]);
+        if (!managerResponse.ok && !coachResponse.ok) throw new Error(`HTTP ${managerResponse.status}/${coachResponse.status}`);
+        const managerPayload = managerResponse.ok ? await managerResponse.json() : { data: [] };
+        const coachPayload = coachResponse.ok ? await coachResponse.json() : { data: [] };
+        const managerRows = Array.isArray(managerPayload?.data) ? managerPayload.data.map((item) => ({ ...item, source_role: 'manager' })) : [];
+        const coachRows = Array.isArray(coachPayload?.data) ? coachPayload.data.map((item) => ({ ...item, source_role: 'coach' })) : [];
+        return [...managerRows, ...coachRows];
     }
 
     function money(v) {
@@ -148,7 +118,7 @@
         }
 
         root.innerHTML = data.map((job) => {
-            const roleLabel = 'MENAJER İlanı';
+            const roleLabel = String(job.source_role || '').toLowerCase() === 'coach' ? 'ANTRENÖR İlanı' : 'MENAJER İlanı';
             const title = job.title || `${job.position || '-'} pozisyonu için oyuncu aranıyor`;
             const freeLabel = job.free_only === 'true' ? 'Bonservisi elinde' : (job.free_only === 'false' ? 'Kulübünde olabilir' : 'Bonservis fark etmez');
             const ageLabel = `${job.age_min || '-'}-${job.age_max || '-'} yaş`;
@@ -202,7 +172,19 @@
     }
 
     init();
+
+    const closeBtn = document.getElementById('closeBtn');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+            if (window.history.length > 1) {
+                window.history.back();
+                return;
+            }
+            window.location.href = 'index.html';
+        });
+    }
 </script>
-    <script src="assets/js/core-stability.js"></script>
+<script src="assets/js/core-stability.js"></script>
 </body>
 </html>

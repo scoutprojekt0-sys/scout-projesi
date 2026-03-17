@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scout Radar | NextScout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+        radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+        #08131d;
+      color: #f5fbff;
+      padding: 24px;
+    }
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+    .hero {
+      position: relative;
+      border: 1px solid #2b4660;
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+      padding: 20px 22px;
+      margin-bottom: 18px;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
+    }
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 6px;
+    }
+    .close-btn {
+      width: 42px;
+      height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 126, 34, 0.45);
+      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+      color: #16325c;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 800;
+    }
+    .hero h1 {
+      font-size: 30px;
+      margin-bottom: 8px;
+    }
+    .hero p {
+      max-width: 760px;
+      color: #9bb5cb;
+      line-height: 1.65;
+    }
+    .status {
+      margin-bottom: 18px;
+      color: #9bb5cb;
+      font-size: 14px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .card {
+      border: 1px solid #2b4660;
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 100%;
+    }
+    .card::before {
+      content: "";
+      display: block;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
+      margin: -18px -18px 10px;
+      width: calc(100% + 36px);
+    }
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .card h3 {
+      font-size: 20px;
+      line-height: 1.3;
+    }
+    .badge {
+      border: 1px solid rgba(255, 126, 34, 0.35);
+      background: rgba(255, 126, 34, 0.12);
+      color: #ffd9c2;
+      padding: 6px 8px;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .sub {
+      color: #9bb5cb;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .fact {
+      border: 1px solid #2b4660;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 10px;
+    }
+    .fact-k {
+      display: block;
+      font-size: 11px;
+      color: #9bb5cb;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .fact-v {
+      color: #f5fbff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .card-actions {
+      margin-top: auto;
+    }
+    .open-btn {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border: 1px solid rgba(255,126,34,.6);
+      background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+      color: #fff;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .empty {
+      border: 1px solid #2b4660;
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+      padding: 22px;
+      color: #9bb5cb;
+    }
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <div class="hero-top">
+        <span></span>
+        <a class="close-btn" href="index.html" id="closeBtn" aria-label="Kapat" title="Kapat"><i class="fas fa-xmark"></i></a>
+      </div>
+      <h1 id="pageTitle">Yeni Eşleşenler</h1>
+      <p id="pageDescription">Scout radarında yeni eşleşen oyuncuları doğrudan inceleyin.</p>
+    </section>
+
+    <div class="status" id="statusText">Oyuncular yükleniyor...</div>
+    <div class="grid" id="playersGrid"></div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const type = (params.get("type") || "new").toLowerCase();
+    const titleMap = {
+      new: ["Yeni Eşleşenler", "Scout radarında yeni eşleşen oyuncuları doğrudan inceleyin.", "Yeni radar akışı"],
+      rising: ["Yükselenler", "Yükseliş trendine giren oyuncuları tek ekranda takip edin.", "Yükseliş takibi"],
+      hidden: ["Gizli Yetenekler", "Henüz yeterince görünmeyen ama radar sinyali veren oyuncuları keşfedin.", "Gizli yetenek radarı"]
+    };
+    const current = titleMap[type] || titleMap.new;
+    const pageTitle = document.getElementById("pageTitle");
+    const pageDescription = document.getElementById("pageDescription");
+    const statusText = document.getElementById("statusText");
+    const playersGrid = document.getElementById("playersGrid");
+    const closeBtn = document.getElementById("closeBtn");
+
+    document.title = `${current[0]} | NextScout`;
+    pageTitle.textContent = current[0];
+    pageDescription.textContent = current[1];
+
+    closeBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+      if (window.history.length > 1) {
+        window.history.back();
+        return;
+      }
+      window.location.href = "index.html";
+    });
+
+    function getApiBaseUrl() {
+      if (window.location.protocol === "http:" || window.location.protocol === "https:") {
+        return window.location.origin + "/api";
+      }
+      const localParams = new URLSearchParams(window.location.search);
+      return localParams.get("api_base") || "http://localhost:8000/api";
+    }
+
+    function matchesRadar(player) {
+      if (type === "rising") return Boolean(player.radar_rising);
+      if (type === "hidden") return Boolean(player.radar_hidden);
+      return Boolean(player.radar_new);
+    }
+
+    function normalizePlayer(player) {
+      return {
+        id: player.id,
+        name: player.name || "Oyuncu",
+        position: player.position || "Oyuncu",
+        club: player.club || player.current_team || "-",
+        age: player.age || (player.birth_year ? (new Date().getFullYear() - Number(player.birth_year)) : "-"),
+        rating: Number(player.rating || 0),
+        nationality: player.nationality || "-",
+        radar_new: Boolean(player.radar_new),
+        radar_rising: Boolean(player.radar_rising),
+        radar_hidden: Boolean(player.radar_hidden),
+      };
+    }
+
+    function renderPlayers(players) {
+      if (!players.length) {
+        playersGrid.innerHTML = '<div class="empty">Bu radar kategorisinde gösterilecek oyuncu bulunamadı.</div>';
+        statusText.textContent = "Sonuç bulunamadı.";
+        return;
+      }
+
+      playersGrid.innerHTML = players.map((player) => `
+        <article class="card">
+          <div class="card-head">
+            <div>
+              <h3>${player.name}</h3>
+              <div class="sub">${player.position}</div>
+            </div>
+            <span class="badge">${player.rating.toFixed(1)}/10</span>
+          </div>
+          <div class="facts">
+            <div class="fact">
+              <span class="fact-k">Kulüp</span>
+              <span class="fact-v">${player.club}</span>
+            </div>
+            <div class="fact">
+              <span class="fact-k">Yaş</span>
+              <span class="fact-v">${player.age}</span>
+            </div>
+            <div class="fact">
+              <span class="fact-k">Uyruk</span>
+              <span class="fact-v">${player.nationality}</span>
+            </div>
+            <div class="fact">
+              <span class="fact-k">Radar</span>
+              <span class="fact-v">${current[0]}</span>
+            </div>
+          </div>
+          <div class="card-actions">
+            <a class="open-btn" href="player-profile.html?id=${encodeURIComponent(player.id || "")}&source=scout-radar">
+              <i class="fas fa-arrow-right"></i>
+              Profili Aç
+            </a>
+          </div>
+        </article>
+      `).join("");
+
+      statusText.textContent = `${players.length} oyuncu listelendi.`;
+    }
+
+    async function loadPlayers() {
+      try {
+        const response = await fetch(`${getApiBaseUrl()}/public/players?limit=1000`, { cache: "no-store" });
+        const data = await response.json();
+        const rows = Array.isArray(data?.data) ? data.data : Array.isArray(data?.data?.data) ? data.data.data : [];
+        const players = rows.map(normalizePlayer).filter(matchesRadar);
+        renderPlayers(players);
+      } catch (error) {
+        renderPlayers([]);
+      }
+    }
+
+    loadPlayers();
+  </script>
+</body>
+</html>

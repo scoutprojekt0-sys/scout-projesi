@@ -4,12 +4,133 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Favorite;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class FavoriteController extends Controller
 {
+    public function publicLeaderboard(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'role' => ['nullable', 'string', 'in:player,manager,scout,club'],
+            'limit' => ['nullable', 'integer', 'min:1', 'max:50'],
+        ]);
+
+        $role = (string) ($validated['role'] ?? 'player');
+        $limit = (int) ($validated['limit'] ?? 24);
+
+        if ($role === 'player') {
+            $rows = DB::table('users')
+                ->leftJoin('player_profiles', 'player_profiles.user_id', '=', 'users.id')
+                ->leftJoin('favorites', 'favorites.target_user_id', '=', 'users.id')
+                ->where('users.role', 'player')
+                ->groupBy([
+                    'users.id',
+                    'users.name',
+                    'users.role',
+                    'users.city',
+                    'users.age',
+                    'users.photo_url',
+                    'users.rating',
+                    'player_profiles.position',
+                    'player_profiles.current_team',
+                    'player_profiles.height_cm',
+                ])
+                ->selectRaw('
+                    users.id,
+                    users.name,
+                    users.role,
+                    users.city,
+                    users.age,
+                    users.photo_url,
+                    users.rating,
+                    player_profiles.position,
+                    player_profiles.current_team as club,
+                    player_profiles.height_cm as height,
+                    COUNT(favorites.id) as favorites_count
+                ')
+                ->orderByDesc('favorites_count')
+                ->orderByDesc('users.rating')
+                ->limit($limit)
+                ->get();
+        } elseif ($role === 'manager' || $role === 'scout') {
+            $rows = DB::table('users')
+                ->leftJoin('staff_profiles', 'staff_profiles.user_id', '=', 'users.id')
+                ->leftJoin('favorites', 'favorites.target_user_id', '=', 'users.id')
+                ->where('users.role', $role)
+                ->groupBy([
+                    'users.id',
+                    'users.name',
+                    'users.role',
+                    'users.city',
+                    'users.age',
+                    'users.photo_url',
+                    'users.rating',
+                    'staff_profiles.role_type',
+                    'staff_profiles.organization',
+                    'staff_profiles.experience_years',
+                ])
+                ->selectRaw('
+                    users.id,
+                    users.name,
+                    users.role,
+                    users.city,
+                    users.age,
+                    users.photo_url,
+                    users.rating,
+                    staff_profiles.role_type,
+                    staff_profiles.organization as club,
+                    staff_profiles.experience_years,
+                    COUNT(favorites.id) as favorites_count
+                ')
+                ->orderByDesc('favorites_count')
+                ->orderByDesc('users.rating')
+                ->limit($limit)
+                ->get();
+        } else {
+            $rows = DB::table('users')
+                ->leftJoin('team_profiles', 'team_profiles.user_id', '=', 'users.id')
+                ->leftJoin('favorites', 'favorites.target_user_id', '=', 'users.id')
+                ->whereIn('users.role', ['team', 'club'])
+                ->groupBy([
+                    'users.id',
+                    'users.name',
+                    'users.role',
+                    'users.city',
+                    'users.age',
+                    'users.photo_url',
+                    'users.rating',
+                    'team_profiles.team_name',
+                    'team_profiles.league_level',
+                    'team_profiles.founded_year',
+                ])
+                ->selectRaw('
+                    users.id,
+                    users.name,
+                    users.role,
+                    users.city,
+                    users.age,
+                    users.photo_url,
+                    users.rating,
+                    team_profiles.team_name as club,
+                    team_profiles.league_level as league,
+                    team_profiles.founded_year,
+                    COUNT(favorites.id) as favorites_count
+                ')
+                ->orderByDesc('favorites_count')
+                ->orderByDesc('users.rating')
+                ->limit($limit)
+                ->get();
+        }
+
+        return response()->json([
+            'ok' => true,
+            'data' => $rows,
+        ]);
+    }
+
     public function index(Request $request): JsonResponse
     {
         $favorites = Favorite::query()

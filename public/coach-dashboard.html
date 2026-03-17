@@ -470,7 +470,9 @@
       <button class="btn-small success" onclick="openCoachNeedModal()"><i class="fas fa-plus-circle"></i><span>İlan Ver</span></button>
       <button class="btn-small success" onclick="openTrialPublishModal()"><i class="fas fa-calendar-check"></i><span>Deneme/Idman Ilani</span></button>
       <button class="btn-small primary" onclick="openLiveScoutModal()"><i class="fas fa-tower-broadcast"></i><span>Canlı Scout Baslat</span></button>
-      <button class="btn-small home-btn-global" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;" onclick="window.location.href='index.html'"><i class="fas fa-house"></i><span>Ana Sayfa</span></button>
+      <button class="btn-small secondary" onclick="openScoutProfile()"><i class="fas fa-user-check"></i><span>Public Görünüm</span></button>
+      <button class="btn-small secondary" onclick="window.location.href='index.html?success_story=submit#homeStep3'"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></button>
+      <button class="btn-small home-btn-global" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255, 126, 34, 0.6);background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 16px 28px rgba(255,90,31,0.28);" onclick="window.location.href='index.html'"><i class="fas fa-house"></i><span>Ana Sayfa</span></button>
       <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Çıkış</span></button>
       </div>
     </div>
@@ -484,6 +486,7 @@
           <li class="sidebar-item" onclick="openScoutProfile()"><i class="fas fa-user"></i><span>Profilim</span></li>
           <li class="sidebar-item" onclick="openWatchlist()"><i class="fas fa-list-check"></i><span>Takip Listem</span></li>
           <li class="sidebar-item" onclick="openTrialCenter()"><i class="fas fa-calendar-check"></i><span>Deneme & Idmanlar</span></li>
+        <li class="sidebar-item" onclick="window.location.href='live-watch-demand.html'"><i class="fas fa-location-crosshairs"></i><span>Canlı İzleme Talebi</span></li>
         <li class="sidebar-item" onclick="openPerformance()"><i class="fas fa-chart-line"></i><span>Istatistikler</span></li>
         <li class="sidebar-item" onclick="openScoutReports()"><i class="fas fa-file-lines"></i><span>Scout Raporları</span></li>
           <li class="sidebar-item" onclick="openMessages()"><i class="fas fa-comments"></i><span>Mesajlarim</span></li>
@@ -1445,10 +1448,11 @@
 
       setText('.navbar-left .logo', 'NextScout Scout');
       setText('.sidebar-item:nth-of-type(4) span', 'Deneme & \u0130dmanlar');
-      setText('.sidebar-item:nth-of-type(5) span', '\u0130statistikler');
-      setText('.sidebar-item:nth-of-type(6) span', 'Scout Raporlar\u0131');
-      setText('.sidebar-item:nth-of-type(7) span', 'Mesajlar\u0131m');
-      setText('.sidebar-item:nth-of-type(9) span', 'Yard\u0131m');
+      setText('.sidebar-item:nth-of-type(5) span', 'Canl\u0131 \u0130zleme Talebi');
+      setText('.sidebar-item:nth-of-type(6) span', '\u0130statistikler');
+      setText('.sidebar-item:nth-of-type(7) span', 'Scout Raporlar\u0131');
+      setText('.sidebar-item:nth-of-type(8) span', 'Mesajlar\u0131m');
+      setText('.sidebar-item:nth-of-type(10) span', 'Yard\u0131m');
       setText('.content h1', 'Scout Dashboard');
       setText('.quick-report-result', 'Hen\u00fcz rapor kayd\u0131 yok.');
 

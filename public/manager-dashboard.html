@@ -189,6 +189,95 @@
         .stat-card-value { font-size: 30px; font-weight: 800; color: var(--primary); margin-bottom: 6px; }
         .stat-card-label { font-size: 11px; color: var(--muted); text-transform: uppercase; font-weight: 700; letter-spacing: .5px; }
 
+        .smart-manager-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+        }
+        .smart-manager-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            border: 1px solid var(--line);
+            padding: 18px 16px 16px;
+            background: var(--panel);
+            min-height: 320px;
+            display: grid;
+            grid-template-rows: auto auto 1fr auto;
+            box-shadow: 0 12px 24px rgba(2, 6, 23, 0.2);
+        }
+        .smart-manager-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--ns-cta) 0%, var(--ns-cta-2) 55%, #60a5fa 100%);
+        }
+        .smart-manager-eyebrow {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: #fdb278;
+            margin-bottom: 10px;
+        }
+        .smart-manager-title {
+            font-size: 20px;
+            line-height: 1.2;
+            color: #f8fafc;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        .smart-manager-copy {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #9bb5cb;
+            margin-bottom: 14px;
+        }
+        .smart-manager-list {
+            display: grid;
+            gap: 10px;
+            align-content: start;
+        }
+        .smart-manager-item {
+            background: rgba(15, 31, 46, 0.86);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 12px;
+        }
+        .smart-manager-item strong {
+            display: block;
+            font-size: 13px;
+            color: #f8fafc;
+            margin-bottom: 4px;
+        }
+        .smart-manager-item span {
+            display: block;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #9bb5cb;
+        }
+        .smart-manager-footer {
+            display: flex;
+            margin-top: 14px;
+        }
+        .smart-manager-cta {
+            width: 100%;
+            padding: 11px 13px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 126, 34, 0.45);
+            background: linear-gradient(135deg, rgba(255, 90, 31, 0.14), rgba(255, 126, 34, 0.08));
+            color: #fff7ed;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .smart-manager-cta:hover { filter: brightness(1.06); }
+
         .search-section,
         .results-section,
         .need-section,
@@ -605,6 +694,164 @@
                 align-items: stretch !important;
             }
         }
+        :root {
+            --ns-bg: #08131d;
+            --ns-card: #0f1f2e;
+            --ns-card-2: #12293d;
+            --ns-line: #2b4660;
+            --ns-text: #f5fbff;
+            --ns-muted: #9bb5cb;
+            --ns-cta: #ff5a1f;
+            --ns-cta-2: #ff7e22;
+            --ns-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+        }
+
+        .top-navbar {
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+            box-shadow: var(--ns-shadow);
+            backdrop-filter: blur(18px);
+        }
+
+        .btn-small {
+            border: 1px solid rgba(255, 126, 34, 0.45);
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+            color: #16325c;
+            box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24);
+            font-weight: 800;
+        }
+
+        .btn-small.primary,
+        .btn-small.success,
+        .home-btn {
+            background: linear-gradient(135deg, var(--ns-cta) 0%, var(--ns-cta-2) 100%) !important;
+            color: #fff !important;
+            border-color: rgba(255, 126, 34, 0.6) !important;
+            box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28) !important;
+        }
+
+        .btn-small.secondary {
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+            color: #16325c;
+            border-color: rgba(255, 126, 34, 0.45);
+            box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24);
+        }
+
+        .sidebar,
+        .welcome-card,
+        .stat-card,
+        .search-section,
+        .results-section,
+        .need-section,
+        .offer-score-section,
+        .need-modal,
+        .applications-modal,
+        .transfer-summary-card,
+        .transfer-list-box,
+        .compare-result-card,
+        .player-card {
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%) !important;
+            border: 1px solid var(--ns-line) !important;
+            box-shadow: var(--ns-shadow) !important;
+            color: var(--ns-text);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar::before,
+        .welcome-card::before,
+        .stat-card::before,
+        .search-section::before,
+        .results-section::before,
+        .need-section::before,
+        .offer-score-section::before,
+        .need-modal::before,
+        .applications-modal::before,
+        .player-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--ns-cta) 0%, var(--ns-cta-2) 55%, #60a5fa 100%);
+        }
+
+        .welcome-card h1,
+        .search-section h2,
+        .results-section h2,
+        .need-section h2,
+        .offer-score-section h2,
+        .player-name,
+        .need-item-title,
+        .applications-modal-title,
+        .need-modal-title {
+            color: var(--ns-text) !important;
+        }
+
+        .welcome-card p,
+        .sidebar-title,
+        .stat-card-label,
+        .player-info-label,
+        .need-item-meta,
+        .application-meta,
+        .application-message,
+        .transfer-empty {
+            color: var(--ns-muted) !important;
+        }
+
+        .sidebar-item,
+        .need-item,
+        .application-item,
+        .transfer-list li,
+        .player-rating,
+        .offer-score-result,
+        .compare-chip,
+        .compare-rank,
+        .compare-badge,
+        .form-group input,
+        .form-group select,
+        .need-grid .form-group input,
+        .need-grid .form-group select,
+        .need-grid .form-group textarea {
+            background: rgba(255, 255, 255, 0.04) !important;
+            border: 1px solid var(--ns-line) !important;
+            color: #dbeafe !important;
+        }
+
+        .sidebar-item:hover,
+        .action-btn:hover,
+        .search-btn:hover {
+            border-color: rgba(255, 126, 34, 0.42) !important;
+        }
+
+        .sidebar-item.active {
+            background: linear-gradient(135deg, var(--ns-cta) 0%, var(--ns-cta-2) 100%) !important;
+            border-color: rgba(255, 126, 34, 0.6) !important;
+            color: #fff !important;
+        }
+
+        .player-card-image {
+            background: linear-gradient(135deg, #16325c 0%, #1d4f91 100%) !important;
+        }
+
+        .action-btn,
+        .search-btn {
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+            color: #16325c;
+            border: 1px solid rgba(255, 126, 34, 0.45);
+            box-shadow: 0 12px 24px rgba(8, 19, 29, 0.2);
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, var(--ns-cta) 0%, var(--ns-cta-2) 100%);
+            border-color: rgba(255, 126, 34, 0.6);
+            color: #fff;
+        }
+
+        .stat-card-value,
+        .rating-value {
+            color: var(--ns-text);
+        }
+
         .top-navbar,
         .btn-small,
         .home-btn,
@@ -629,8 +876,28 @@
         .compare-chip,
         .compare-result-card,
         .compare-badge,
-        .compare-rank {
+        .compare-rank,
+        .need-item,
+        .offer-score-result,
+        .need-modal,
+        .applications-modal,
+        .application-item {
             border-radius: 0 !important;
+        }
+
+        @media (max-width: 1200px) {
+            .smart-manager-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 720px) {
+            .smart-manager-grid {
+                grid-template-columns: 1fr;
+            }
+            .smart-manager-card {
+                min-height: auto;
+            }
         }
     </style>
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
@@ -643,7 +910,9 @@
         <div class="navbar-right">
             <button class="btn-small success" onclick="openNeedModal()"><i class="fas fa-plus-circle"></i><span>İlan Gir</span></button>
             <button class="btn-small primary" onclick="window.location.href='manager-needs.html'"><i class="fas fa-list-check"></i><span>İlan Listesi</span></button>
-            <button class="btn-small home-btn" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;" onclick="window.location.href='index.html'"><i class="fas fa-house"></i><span>Ana Sayfa</span></button>
+            <button class="btn-small secondary" onclick="openManagerProfile()"><i class="fas fa-user-check"></i><span>Public Görünüm</span></button>
+            <button class="btn-small secondary" onclick="window.location.href='index.html?success_story=submit#homeStep3'"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></button>
+            <button class="btn-small home-btn" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255, 126, 34, 0.6);background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 16px 28px rgba(255,90,31,0.28);" onclick="window.location.href='index.html'"><i class="fas fa-house"></i><span>Ana Sayfa</span></button>
             <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Çıkış</span></button>
         </div>
     </div>
@@ -655,14 +924,15 @@
                 <ul class="sidebar-menu">
                     <li class="sidebar-item active" onclick="location.reload()"><i class="fas fa-magnifying-glass"></i><span>Oyuncu Ara</span></li>
                     <li class="sidebar-item" onclick="openManagerProfile()"><i class="fas fa-user"></i><span>Profilim</span></li>
-                    <li class="sidebar-item" onclick="openSentApplications()"><i class="fas fa-paper-plane"></i><span>Gonderilen Basvurular</span></li>
-                    <li class="sidebar-item" onclick="openAnsweredApplications()"><i class="fas fa-circle-check"></i><span>Yanitlanan Basvurular</span></li>
+                    <li class="sidebar-item" onclick="openSentApplications()"><i class="fas fa-paper-plane"></i><span>Gönderilen Başvurular</span></li>
+                    <li class="sidebar-item" onclick="openAnsweredApplications()"><i class="fas fa-circle-check"></i><span>Yanıtlanan Başvurular</span></li>
                     <li class="sidebar-item" onclick="openFavorites()"><i class="fas fa-star"></i><span>Favorilerim</span></li>
                     <li class="sidebar-item" onclick="openWatchlist()"><i class="fas fa-list-check"></i><span>Takip Listem</span></li>
-                    <li class="sidebar-item" onclick="window.location.href='manager-needs.html'"><i class="fas fa-thumbtack"></i><span>Aradigim Oyuncular</span></li>
-                    <li class="sidebar-item" onclick="openMessages()"><i class="fas fa-comments"></i><span>Mesajlarim</span></li>
+                    <li class="sidebar-item" onclick="window.location.href='manager-needs.html'"><i class="fas fa-thumbtack"></i><span>Aradığım Oyuncular</span></li>
+                    <li class="sidebar-item" onclick="window.location.href='live-watch-demand.html'"><i class="fas fa-location-crosshairs"></i><span>Canlı İzleme Talebi</span></li>
+                    <li class="sidebar-item" onclick="openMessages()"><i class="fas fa-comments"></i><span>Mesajlarım</span></li>
                     <li class="sidebar-item" onclick="openSettings()"><i class="fas fa-gear"></i><span>Ayarlar</span></li>
-                    <li class="sidebar-item" onclick="openHelp()"><i class="fas fa-circle-question"></i><span>Yardim</span></li>
+                    <li class="sidebar-item" onclick="openHelp()"><i class="fas fa-circle-question"></i><span>Yardım</span></li>
                 </ul>
             </div>
         </aside>
@@ -675,7 +945,7 @@
 
             <div class="need-section">
                 <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
-                    <h2 style="font-size:18px;font-weight:800;color:#e5e7eb;">Aradigim Oyuncu Ilanlari</h2>
+                    <h2 style="font-size:18px;font-weight:800;color:#e5e7eb;">Aradığım Oyuncu İlanları</h2>
                     <button class="btn-small success" onclick="openNeedModal()">+ Yeni İlan</button>
                 </div>
                 <div class="need-list" id="managerNeedRecent"></div>
@@ -744,7 +1014,7 @@
             </div>
 
             <div class="results-section">
-                <h2 style="margin-bottom:20px;font-size:18px;font-weight:800;color:#e5e7eb;">Arama Sonuclari</h2>
+                <h2 style="margin-bottom:20px;font-size:18px;font-weight:800;color:#e5e7eb;">Arama Sonuçları</h2>
                 <div class="players-grid" id="playersGrid"></div>
             </div>
         </div>
@@ -1007,6 +1277,59 @@
         function formatMoney(value) {
             const n = Number(value) || 0;
             return `${n.toLocaleString('tr-TR')} TL`;
+        }
+
+        function renderManagerSmartCards() {
+            const controlRoot = document.getElementById('managerControlList');
+            const matchesRoot = document.getElementById('managerMatchesList');
+            const alertsRoot = document.getElementById('managerAlertsList');
+            const flowRoot = document.getElementById('managerFlowList');
+            if (!controlRoot || !matchesRoot || !alertsRoot || !flowRoot) return;
+
+            const favorites = getFavorites();
+            const applications = getApplications();
+            const filteredCount = Array.isArray(filteredPlayers) ? filteredPlayers.length : 0;
+            const poolCount = Array.isArray(allPlayers) ? allPlayers.length : 0;
+
+            const topPlayers = (Array.isArray(filteredPlayers) ? filteredPlayers : [])
+                .slice()
+                .sort((a, b) => (Number(b?.rating) || 0) - (Number(a?.rating) || 0))
+                .slice(0, 3);
+
+            controlRoot.innerHTML = [
+                `<div class="smart-manager-item"><strong>${poolCount} oyunculuk havuz açık</strong><span>Bugün portföy taramasına hazır aktif oyuncu veri seti masanda duruyor.</span></div>`,
+                `<div class="smart-manager-item"><strong>${favorites.length} favori dosya takipte</strong><span>Öne çıkan oyuncularını favori listenden sıcak tut ve hızlı erişimle yönet.</span></div>`,
+                `<div class="smart-manager-item"><strong>${applications.length} başvuru gönderildi</strong><span>Gönderdiğin temas ve başvuru dosyaları canlı akışta izlenebilir durumda.</span></div>`,
+            ].join('');
+
+            if (!topPlayers.length) {
+                matchesRoot.innerHTML = '<div class="smart-manager-item"><strong>Henüz güçlü eşleşme yok</strong><span>Filtreledikçe ve ilanlar yenilendikçe burası kulüp fırsatlarıyla dolacak.</span></div>';
+            } else {
+                matchesRoot.innerHTML = topPlayers.map((player, index) => {
+                    const budgetBase = 45000 + (index * 15000);
+                    return `<div class="smart-manager-item"><strong>${escapeHtml(player.position || 'Oyuncu')} • ${escapeHtml(player.name || 'Profil')}</strong><span>${escapeHtml(player.club || 'Kulüp bilgisi yok')} çıkışlı bu profil için ${budgetBase.toLocaleString('tr-TR')} TL bandında kulüp ihtiyacı eşleşmesi öne çıkıyor.</span></div>`;
+                }).join('');
+            }
+
+            const weakSignals = [
+                !favorites.length ? '<div class="smart-manager-item"><strong>Favori listesi zayıf</strong><span>Karar havuzunu daraltmak için en az 3 güçlü oyuncuyu favoriye al.</span></div>' : '',
+                !applications.length ? '<div class="smart-manager-item"><strong>Başvuru trafiği yok</strong><span>Portföydeki oyuncular için bugün en az bir sıcak temas açman önerilir.</span></div>' : '',
+                filteredCount < 3 ? '<div class="smart-manager-item"><strong>Filtre seti çok dar</strong><span>Daha geniş bir pozisyon ve yaş aralığıyla yeni fırsat alanları açabilirsin.</span></div>' : '',
+            ].filter(Boolean);
+            alertsRoot.innerHTML = weakSignals.length
+                ? weakSignals.join('')
+                : '<div class="smart-manager-item"><strong>Portföy dengesi güçlü</strong><span>Favoriler, başvurular ve oyuncu filtreleri bugün sağlıklı seviyede görünüyor.</span></div><div class="smart-manager-item"><strong>Bir sonraki adım net</strong><span>Profilini güncelle ve yeni ilan ekleyerek portföyü daha görünür hale getir.</span></div>';
+
+            const answeredCount = applications.filter((x) => {
+                const status = String(x?.status || '').toLowerCase();
+                return ['accepted', 'rejected', 'answered', 'read', 'completed', 'closed'].includes(status);
+            }).length;
+            const pendingCount = Math.max(applications.length - answeredCount, 0);
+            flowRoot.innerHTML = [
+                `<div class="smart-manager-item"><strong>${pendingCount} dosya geri dönüş bekliyor</strong><span>Henüz tamamlanmamış görüşme ve temasların aktif takip istiyor.</span></div>`,
+                `<div class="smart-manager-item"><strong>${answeredCount} dosyada cevap var</strong><span>Yanıtlanan başvuruları tekrar açıp teklif potansiyeli olanları öne alabilirsin.</span></div>`,
+                `<div class="smart-manager-item"><strong>${poolCount} oyuncu arasında yeni fırsat var</strong><span>Canlı oyuncu havuzu üzerinden bugün sıcak dosyalara yeniden dönmek için doğru zaman.</span></div>`,
+            ].join('');
         }
 
         async function renderRecentNeeds() {
@@ -1337,6 +1660,7 @@
 
         function openFavorites() { window.location.href = 'favorites.html'; }
         function openWatchlist() { window.location.href = 'scout-watchlist.html'; }
+        function openScoutReports() { window.location.href = 'scout-reports.html'; }
         function openMessages() { window.location.href = 'notifications.html'; }
         function openManagerProfile() { window.location.href = 'manager-profile.html'; }
         function openSettings() { window.location.href = 'settings.html'; }
@@ -1474,6 +1798,20 @@
             if (welcomeTitle) welcomeTitle.textContent = 'Manager Dashboard';
             const welcomeSub = document.querySelector('.welcome-card p');
             if (welcomeSub) welcomeSub.textContent = 'Oyuncu ara, profil incele, başvuru gönder ve favori listeni yönet.';
+            const sidebarMenu = document.querySelector('.sidebar-menu');
+            if (sidebarMenu && !sidebarMenu.querySelector('[data-nav="scout-reports"]')) {
+                const reportsItem = document.createElement('li');
+                reportsItem.className = 'sidebar-item';
+                reportsItem.setAttribute('data-nav', 'scout-reports');
+                reportsItem.innerHTML = '<i class="fas fa-file-lines"></i><span>Scout Raporları</span>';
+                reportsItem.onclick = openScoutReports;
+                const helpItem = Array.from(sidebarMenu.querySelectorAll('.sidebar-item')).find((item) => {
+                    const label = item.querySelector('span:last-child');
+                    return /yard/i.test(label?.textContent || '');
+                });
+                if (helpItem) sidebarMenu.insertBefore(reportsItem, helpItem);
+                else sidebarMenu.appendChild(reportsItem);
+            }
             document.querySelectorAll('.sidebar-item span:last-child').forEach((el) => {
                 let text = el.textContent || '';
                 text = text
@@ -1493,6 +1831,37 @@
             });
             document.querySelectorAll('.stat-card-label').forEach((el) => {
                 el.textContent = (el.textContent || '').replace('Gonderilen Başvuru', 'Gönderilen Başvuru');
+            });
+            document.querySelectorAll('button, label, option, .need-modal-title, .applications-modal-title, .action-btn span').forEach((el) => {
+                let text = el.textContent || '';
+                text = text
+                    .replace('Basvur', 'Başvur')
+                    .replace('Basvurular', 'Başvurular')
+                    .replace('Iptal', 'İptal')
+                    .replace('Aradigin Oyuncuyu Ekle', 'Aradığın Oyuncuyu Ekle')
+                    .replace('Oyuncu Adi', 'Oyuncu Adı')
+                    .replace('Yas Araligi', 'Yaş Aralığı')
+                    .replace('Yas', 'Yaş')
+                    .replace('Tumu', 'Tümü')
+                    .replace('Butce Guveni', 'Bütçe Güveni')
+                    .replace('Sozlesme Netligi', 'Sözleşme Netliği')
+                    .replace('Odeme Hizi', 'Ödeme Hızı')
+                    .replace('Menejer', 'Menajer')
+                    .replace('Menajer Adi', 'Menajer Adı')
+                    .replace('Menajer Soyadi', 'Menajer Soyadı');
+                el.textContent = text;
+            });
+            document.querySelectorAll('input[placeholder], input[value]').forEach((el) => {
+                const placeholder = el.getAttribute('placeholder');
+                const value = el.getAttribute('value');
+                if (placeholder) {
+                    el.setAttribute('placeholder', placeholder
+                        .replace('Oyuncu adi gir', 'Oyuncu adı gir')
+                        .replace('Ad Soyad', 'Ad Soyad'));
+                }
+                if (value) {
+                    el.setAttribute('value', value.replace('Ilanda gorunecek isim', 'İlanda görünecek isim'));
+                }
             });
         }
 

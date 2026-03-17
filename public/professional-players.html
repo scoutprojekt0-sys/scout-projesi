@@ -38,12 +38,17 @@
         else if (['rising', 'yukselenler', 'yükselenler'].includes(rawRadar)) radar = 'rising';
         else if (['hidden', 'gizli-yetenek', 'gizli-yetenekler'].includes(rawRadar)) radar = 'hidden';
 
-        const playerView = ['discover', 'kesfet', 'for-you'].includes(rawView) ? 'discover' : '';
+        const playerView = ['discover', 'explore', 'quick', 'kesfet', 'for-you'].includes(rawView)
+          ? (rawView === 'explore' ? 'explore' : (rawView === 'quick' ? 'quick' : 'discover'))
+          : '';
 
         document.documentElement.dataset.transferCategory = transfer;
         document.documentElement.dataset.scoutRadar = radar;
         document.documentElement.dataset.playerView = playerView;
-        document.documentElement.classList.toggle('pre-hide-topbar', transfer === 'free' || radar === 'new');
+        const shouldPreHideContext = Boolean(transfer || radar || playerView);
+        document.documentElement.classList.toggle('pre-hide-topbar', transfer === 'free' || radar === 'new' || playerView === 'quick');
+        document.documentElement.classList.toggle('pre-hide-context-copy', shouldPreHideContext);
+        document.documentElement.classList.toggle('pre-hide-results', shouldPreHideContext);
       } catch (error) {}
     })();
   </script>
@@ -55,6 +60,30 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     html.pre-hide-topbar .topbar {
+      display: none !important;
+    }
+
+    html.pre-hide-context-copy .seo-market-intro,
+    html.pre-hide-context-copy .hero-copy {
+      visibility: hidden !important;
+    }
+
+    html.pre-hide-results #resultsMeta,
+    html.pre-hide-results #playersGrid,
+    html.pre-hide-results .compare-bar,
+    html.pre-hide-results #pagination {
+      visibility: hidden !important;
+    }
+
+    html[data-player-view="quick"] .topbar {
+      display: none !important;
+    }
+
+    html[data-player-view="quick"] .hero-actions > a:not(.quick-close-btn) {
+      display: none !important;
+    }
+
+    body.quick-discovery-mode .topbar {
       display: none !important;
     }
     
@@ -291,8 +320,9 @@
 
     .players-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 24px;
+      align-items: stretch;
     }
 
     .player-card {
@@ -302,6 +332,9 @@
       overflow: hidden;
       transition: all 0.3s ease;
       box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
     .player-card:hover {
@@ -323,6 +356,9 @@
 
     .player-content {
       padding: 20px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
     }
 
     .player-name {
@@ -392,6 +428,7 @@
     .player-actions {
       display: flex;
       gap: 8px;
+      margin-top: auto;
     }
 
     .player-actions button {
@@ -717,6 +754,8 @@
     body.weekly-digest-mode .players-grid {
       margin-top: 16px;
       gap: 18px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: stretch;
     }
 
     body.weekly-digest-mode .player-avatar {
@@ -868,6 +907,22 @@
       border-color: rgba(255,126,34,.6) !important;
       color: #fff !important;
       box-shadow: 0 16px 28px rgba(255,90,31,.28) !important;
+    }
+
+    body.player-discovery-mode.explore-view .hero-actions a:not(.home-btn) {
+      display: none !important;
+    }
+
+    body.quick-discovery-mode .hero-actions .home-btn,
+    body.quick-discovery-mode .hero-actions a:not(.quick-close-btn),
+    body.quick-discovery-mode .hero-actions .btn:not(.quick-close-btn) {
+      display: none !important;
+    }
+
+    body.quick-discovery-mode .hero-actions .quick-close-btn {
+      display: inline-flex !important;
+      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%) !important;
+      color: #16325c !important;
     }
 
     @media (max-width: 840px) {
@@ -1211,8 +1266,7 @@
         <p id="pageDescription">Sözleşmesi devam eden sporcuları pozisyon, yaş, form, performans ve transfer kategorisine göre filtreleyerek tek ekranda inceleyin.</p>
       </div>
       <div class="hero-actions">
-        <a class="btn home-btn" href="index.html">Ana Sayfa</a>
-        <a class="btn" href="player-dashboard.html">Dashboard</a>
+        <a class="btn quick-close-btn" href="index.html" id="quickCloseBtn" style="display:none;"><i class="fas fa-xmark"></i><span>Kapat</span></a>
       </div>
     </section>
     <script>
@@ -1224,10 +1278,10 @@
         const pageDescription = document.getElementById('pageDescription');
         if (!pageTitle || !pageDescription) return;
 
-        if (playerView === 'discover') {
-          pageTitle.innerHTML = '<i class="fa-solid fa-compass"></i> Keşfet İçin Öne Çıkanlar';
-          pageDescription.textContent = 'Senin için öne çıkan oyuncuları filtre kalabalığı olmadan tek akışta incele.';
-          document.title = 'Keşfet İçin Öne Çıkanlar | NextScout';
+        if (playerView === 'discover' || playerView === 'explore') {
+          pageTitle.innerHTML = '<i class="fa-solid fa-compass"></i> Oyuncuları Keşfet';
+          pageDescription.textContent = 'Pozisyon, form ve görünürlük sinyallerine göre öne çıkan oyuncuları tek akışta incele.';
+          document.title = 'Oyuncuları Keşfet | NextScout';
           return;
         }
         if (transfer === 'contracted') {
@@ -1431,6 +1485,10 @@
     let serverPage = 1;
     let serverLastPage = 1;
     let serverTotal = 0;
+
+    function revealContextResults() {
+      document.documentElement.classList.remove("pre-hide-results");
+    }
 
     function getApiBaseUrl() {
       if (window.location.protocol === "http:" || window.location.protocol === "https:") {
@@ -1738,6 +1796,8 @@
     function getPlayerViewFromQuery() {
       const params = new URLSearchParams(window.location.search);
       const value = normalizeQueryValue(params.get("player_view"));
+      if (value === "explore") return "explore";
+      if (value === "quick") return "quick";
       if (value === "discover" || value === "kesfet" || value === "for-you") return "discover";
       return "";
     }
@@ -1910,6 +1970,8 @@
       document.body.classList.toggle("weekly-digest-mode", hasTransferCategory || hasScoutRadarCategory || hasPlayerDiscoveryView);
       document.body.classList.toggle("scout-radar-mode", hasScoutRadarCategory);
       document.body.classList.toggle("player-discovery-mode", hasPlayerDiscoveryView);
+      document.body.classList.toggle("quick-discovery-mode", getPlayerViewFromQuery() === "quick");
+      document.body.classList.toggle("explore-view", getPlayerViewFromQuery() === "explore");
       document.body.classList.toggle("headerless-mode", transferCategory === "free" || scoutRadar === "new");
     }
 
@@ -1994,6 +2056,7 @@
             resultsMeta.textContent = `Toplam ${serverTotal || localCount} oyuncu • Sayfa: ${serverPage}/${serverLastPage} • Son güncelleme: ${new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}`;
       }
       renderPlayers(filtered);
+      revealContextResults();
     }
 
     function getCurrentPreset() {
@@ -2237,11 +2300,11 @@
       const playerView = getPlayerViewFromQuery();
       const pageTitle = document.getElementById("pageTitle");
       const pageDescription = document.getElementById("pageDescription");
-      if (playerView === "discover") {
+      if (playerView === "discover" || playerView === "explore") {
         document.body.classList.remove("contracted-cards-only");
-        if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-compass"></i> Keşfet İçin Öne Çıkanlar';
-        if (pageDescription) pageDescription.textContent = "Senin için öne çıkan oyuncuları filtre kalabalığı olmadan tek akışta incele.";
-        document.title = "Keşfet İçin Öne Çıkanlar | NextScout";
+        if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-compass"></i> Oyuncuları Keşfet';
+        if (pageDescription) pageDescription.textContent = "Pozisyon, form ve görünürlük sinyallerine göre öne çıkan oyuncuları tek akışta incele.";
+        document.title = "Oyuncuları Keşfet | NextScout";
       } else if (transferCategory === "contracted") {
         document.body.classList.add("contracted-cards-only");
         if (sportFilter) sportFilter.value = "futbol";
@@ -2302,7 +2365,10 @@
       const transferCategory = getTransferCategoryFromQuery();
       const scoutCategory = getScoutRadarCategoryFromQuery();
       const playerView = getPlayerViewFromQuery();
-      if (heroTitle && heroDescription && !playerView) {
+      if (heroTitle && heroDescription && playerView === 'explore') {
+        heroTitle.innerHTML = '<i class="fa-solid fa-compass"></i> Oyuncuları Keşfet';
+        heroDescription.textContent = 'Pozisyon, form ve görünürlük sinyallerine göre öne çıkan oyuncuları tek akışta incele.';
+      } else if (heroTitle && heroDescription) {
         if (transferCategory === 'contracted') {
           heroTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Sözleşmeli Sporcular';
           heroDescription.textContent = 'Sözleşmesi devam eden sporcuları pozisyon, yaş, form, performans ve transfer kategorisine göre filtreleyerek tek ekranda inceleyin.';
@@ -2332,6 +2398,49 @@
       }
     }
 
+    function resolveDashboardHref() {
+      const role = (localStorage.getItem('nextscout_role') || localStorage.getItem('userRole') || '').toLowerCase();
+      if (role.includes('team') || role.includes('club')) return 'team-dashboard.html';
+      if (role.includes('manager')) return 'manager-dashboard.html';
+      if (role.includes('coach') || role.includes('scout')) return 'coach-dashboard.html';
+      return 'player-dashboard.html';
+    }
+
+    function renderHeroActions() {
+      const actions = document.querySelector('.hero-actions');
+      if (!actions) return;
+      const isQuick = getPlayerViewFromQuery() === 'quick';
+      const quickCloseMarkup = '<a class="btn quick-close-btn" href="index.html" id="quickCloseBtn" aria-label="Kapat" title="Kapat"><i class="fas fa-xmark"></i></a>';
+      if (isQuick) {
+        actions.innerHTML = quickCloseMarkup;
+        return;
+      }
+      actions.innerHTML = `
+        <a class="btn home-btn" href="index.html">Ana Sayfa</a>
+        <a class="btn" href="${resolveDashboardHref()}">Dashboard</a>
+        ${quickCloseMarkup}
+      `;
+      const quickBtn = document.getElementById('quickCloseBtn');
+      if (quickBtn) quickBtn.style.display = 'none';
+    }
+
+    function bindQuickCloseButton() {
+      if (getPlayerViewFromQuery() !== 'quick') return;
+      document.querySelector('.topbar')?.remove();
+      document.querySelectorAll('.hero-actions a:not(.quick-close-btn)').forEach((node) => node.remove());
+      const btn = document.getElementById('quickCloseBtn');
+      if (!btn) return;
+      btn.style.display = 'inline-flex';
+      btn.setAttribute('href', 'index.html');
+      btn.addEventListener('click', function(event) {
+        event.preventDefault();
+        localStorage.setItem('nextscout_skip_auth_modal_once', '1');
+        localStorage.removeItem('nextscout_open_login');
+        localStorage.removeItem('nextscout_open_register');
+        window.location.replace('index.html');
+      });
+    }
+
     // Initial render
     (async function init() {
       standardizeTransferCategoryQuery();
@@ -2339,6 +2448,9 @@
       applyWeeklyDigestMode();
       syncLockedTransferFilters();
       applyTurkishTextFixes();
+      document.documentElement.classList.remove('pre-hide-context-copy');
+      renderHeroActions();
+      bindQuickCloseButton();
       await loadSponsoredProfiles();
       await loadPlayersFromApi();
       filterPlayers();

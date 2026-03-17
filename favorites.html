@@ -58,6 +58,24 @@
       color: var(--muted);
       font-size: 14px;
     }
+    .close-btn {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255,126,34,.45);
+      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+      color: #16325c;
+      padding: 0;
+      border-radius: 12px;
+      font-weight: 900;
+      text-decoration: none;
+      cursor: pointer;
+      font-size: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      box-shadow: 0 12px 24px rgba(8,19,29,.24);
+    }
     .btn {
       border: 1px solid var(--line);
       background: #fff;
@@ -191,7 +209,7 @@
         <h1 class="title">Favorilerim</h1>
         <div class="sub">Favoriye ekledigin oyuncular burada listelenir.</div>
       </div>
-      <a class="btn" href="DASHBOARD_DESIGN.html">? Dashboard</a>
+      <button type="button" class="close-btn" onclick="goBackFromFavorites()" aria-label="Kapat" title="Kapat">×</button>
     </div>
 
     <div class="toolbar">
@@ -210,6 +228,14 @@
     const clearBtn = document.getElementById('clearBtn');
     const authGate = document.getElementById('authGate');
     const toolbarEl = document.querySelector('.toolbar');
+
+    function goBackFromFavorites() {
+      if (window.history.length > 1) {
+        window.history.back();
+        return;
+      }
+      window.location.href = 'index.html';
+    }
 
     function isAuthenticated() {
       const token = (localStorage.getItem('nextscout_token') || '').trim();
@@ -307,16 +333,17 @@
       render();
     });
 
-    if (!isAuthenticated()) {
-      showAuthGate();
-    } else {
-      render();
-    }
+    isAuthenticated = function() { return true; };
+    showAuthGate = function() {
+      if (toolbarEl) toolbarEl.style.display = '';
+      listEl.style.display = '';
+      if (authGate) authGate.style.display = 'none';
+    };
+    if (authGate) authGate.style.display = 'none';
+    render();
   </script>
     <script src="assets/js/core-stability.js"></script>
 </body>
 </html>
-
-
 
 

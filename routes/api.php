@@ -44,6 +44,7 @@ use App\Http\Controllers\Api\Week8TransparencyController;
 use App\Http\Controllers\Api\Week10AnomalyController;
 use App\Http\Controllers\Api\Week11WorkloadController;
 use App\Http\Controllers\Api\Week12PublicTransparencyController;
+use App\Http\Controllers\Api\WatchDemandController;
 use Illuminate\Support\Facades\Route;
 
 // System endpoints
@@ -54,6 +55,7 @@ Route::get('/translations', [LocalizationController::class, 'getTranslations']);
 // Webhook endpoints (CSRF'den muaf, imza ile korunuyor)
 Route::post('/webhooks/stripe', [WebhookController::class, 'stripe'])->withoutMiddleware([\App\Http\Middleware\SanitizeInput::class]);
 Route::post('/webhooks/paypal', [WebhookController::class, 'paypal'])->withoutMiddleware([\App\Http\Middleware\SanitizeInput::class]);
+Route::post('/webhooks/iyzico', [WebhookController::class, 'iyzico'])->withoutMiddleware([\App\Http\Middleware\SanitizeInput::class]);
 
 // Week 12 - Public Transparency (no auth required)
 Route::get('/transparency/trust-report', [Week12PublicTransparencyController::class, 'platformTrustReport']);
@@ -65,6 +67,9 @@ Route::prefix('data-quality')->group(function () {
     Route::get('/source-health', [Week8TransparencyController::class, 'sourceHealth']);
     Route::get('/transparency/players', [Week8TransparencyController::class, 'players']);
     Route::get('/transparency/players/{playerId}', [Week8TransparencyController::class, 'playerDetail']);
+});
+
+Route::prefix('data-quality')->middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/audit-log', [DataQualityController::class, 'auditLog']);
     Route::get('/conflicts', [DataQualityController::class, 'conflictingData']);
     Route::get('/missing-source', [DataQualityController::class, 'missingSource']);
@@ -159,6 +164,9 @@ Route::post('/help/faq/{faqId}/helpful', [HelpController::class, 'markFaqHelpful
 Route::get('/help/search', [HelpController::class, 'search']);
 Route::get('/rising-stars', [DiscoveryController::class, 'risingStars']);
 Route::get('/club-needs', [DiscoveryController::class, 'clubNeeds']);
+Route::get('/public/favorites/leaderboard', [FavoriteController::class, 'publicLeaderboard']);
+Route::get('/public/new-professionals', [DiscoveryController::class, 'newProfessionals']);
+Route::get('/public/live-watch-heatmap', [WatchDemandController::class, 'publicHeatmap']);
 Route::get('/public/players/quality-summary', [LegacyCompatibilityController::class, 'publicPlayersQualitySummary']);
 Route::get('/community-events', [LegacyCompatibilityController::class, 'communityEventsIndex']);
 Route::get('/community-events/{id}', [LegacyCompatibilityController::class, 'communityEventsShow']);
@@ -167,12 +175,14 @@ Route::prefix('discovery')->group(function () {
     Route::get('/manager-needs', [DiscoveryController::class, 'managerNeeds']);
     Route::get('/coach-needs', [LegacyCompatibilityController::class, 'discoveryCoachNeeds']);
     Route::get('/boosts', [LegacyCompatibilityController::class, 'discoveryBoosts']);
+    Route::get('/weekly-digest', [DiscoveryController::class, 'weeklyDigest']);
 });
 
 // Public News & Billing
 Route::get('/news/live', [NewsController::class, 'live']);
 Route::get('/news', [NewsController::class, 'index']);
 Route::get('/billing/plans', [BillingController::class, 'plans']);
+Route::get('/billing/boost-packages', [BillingController::class, 'boostPackages']);
 Route::get('/teams/{id}/overview', [TeamController::class, 'overview']);
 Route::get('/clubs', [ClubController::class, 'index']);
 Route::get('/clubs/most-valuable', [ClubController::class, 'mostValuable']);
@@ -209,7 +219,7 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->group(function () {
     // Week 7 analytics
-    Route::get('/analytics/admin-overview', [Week7AnalyticsController::class, 'adminOverview']);
+    Route::get('/analytics/admin-overview', [Week7AnalyticsController::class, 'adminOverview'])->middleware('admin');
     Route::get('/analytics/team/{teamId}', [Week7AnalyticsController::class, 'teamScoutingFunnel']);
 
     // System
@@ -236,22 +246,31 @@ Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->grou
 
     Route::get('/opportunities', [OpportunityController::class, 'index']);
     Route::get('/opportunities/{id}', [OpportunityController::class, 'show']);
-    Route::post('/opportunities', [OpportunityController::class, 'store'])->middleware('ability:team');
-    Route::put('/opportunities/{id}', [OpportunityController::class, 'update'])->middleware('ability:team');
-    Route::patch('/opportunities/{id}', [OpportunityController::class, 'update'])->middleware('ability:team');
-    Route::delete('/opportunities/{id}', [OpportunityController::class, 'destroy'])->middleware('ability:team');
+    Route::post('/opportunities', [OpportunityController::class, 'store'])->middleware('ability:opportunity:write');
+    Route::put('/opportunities/{id}', [OpportunityController::class, 'update'])->middleware('ability:opportunity:write');
+    Route::patch('/opportunities/{id}', [OpportunityController::class, 'update'])->middleware('ability:opportunity:write');
+    Route::delete('/opportunities/{id}', [OpportunityController::class, 'destroy'])->middleware('ability:opportunity:write');
 
     Route::post('/opportunities/{id}/apply', [ApplicationController::class, 'apply'])->middleware('ability:player');
-    Route::get('/applications/incoming', [ApplicationController::class, 'incoming'])->middleware('ability:team');
+    Route::get('/applications/incoming', [ApplicationController::class, 'incoming'])->middleware('ability:application:incoming');
     Route::get('/applications/outgoing', [ApplicationController::class, 'outgoing'])->middleware('ability:player');
-    Route::patch('/applications/{id}/status', [ApplicationController::class, 'changeStatus'])->middleware('ability:team');
+    Route::patch('/applications/{id}/status', [ApplicationController::class, 'changeStatus'])->middleware('ability:application:incoming');
 
     Route::post('/contacts', [ContactController::class, 'store'])->middleware('ability:contact:write');
     Route::get('/contacts/inbox', [ContactController::class, 'inbox'])->middleware('ability:contact:read');
     Route::get('/contacts/sent', [ContactController::class, 'sent'])->middleware('ability:contact:read');
     Route::patch('/contacts/{id}/status', [ContactController::class, 'changeStatus'])->middleware('ability:contact:write');
+
+    Route::get('/player/match-schedules/my', [WatchDemandController::class, 'mySchedules'])->middleware('ability:player');
+    Route::post('/player/match-schedules', [WatchDemandController::class, 'storeSchedule'])->middleware('ability:player');
+    Route::delete('/player/match-schedules/{scheduleId}', [WatchDemandController::class, 'deleteSchedule'])->middleware('ability:player');
+
+    Route::get('/watch-requests/my', [WatchDemandController::class, 'myRequests'])->middleware('ability:staff');
+    Route::post('/watch-requests', [WatchDemandController::class, 'storeRequest'])->middleware('ability:staff');
+    Route::get('/watch-requests/{requestId}/matches', [WatchDemandController::class, 'resolveRequest'])->middleware('ability:staff');
     Route::post('/messages', [ContactController::class, 'sendMessage'])->middleware('ability:contact:write');
     Route::get('/messages/inbox', [ContactController::class, 'inbox'])->middleware('ability:contact:read');
+    Route::get('/discovery/matches-for-user', [DiscoveryController::class, 'matchesForUser'])->middleware('ability:profile:read');
     Route::get('/messages/sent', [ContactController::class, 'sent'])->middleware('ability:contact:read');
     Route::post('/messages/read-all', [ContactController::class, 'markAllAsRead'])->middleware('ability:contact:write');
     Route::patch('/messages/{id}/read', [ContactController::class, 'readMessage'])->middleware('ability:contact:write');
@@ -289,19 +308,16 @@ Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->grou
     Route::post('/profile-cards/{cardType}/{cardOwnerId}/like', [LegacyCompatibilityController::class, 'profileCardLike']);
 
     // Billing
-    Route::get('/billing/subscription', [BillingController::class, 'currentSubscription']);
-    Route::post('/billing/subscribe', [BillingController::class, 'subscribe']);
-    Route::post('/billing/cancel', [BillingController::class, 'cancel']);
-    Route::get('/billing/payments', [BillingController::class, 'payments']);
-    Route::get('/billing/invoices', [BillingController::class, 'invoices']);
+    Route::post('/billing/boost-purchase', [BillingController::class, 'boostPurchase'])->middleware('ability:player');
+    Route::get('/billing/boost-status', [BillingController::class, 'boostStatus'])->middleware('ability:player');
+    Route::get('/billing/boost-history', [BillingController::class, 'boostHistory'])->middleware('ability:player');
 
     // Admin Billing (Test/Development için)
-    Route::post('/admin/billing/test-payment', [AdminBillingController::class, 'createTestPayment'])->middleware('admin');
-    Route::post('/admin/billing/complete/{paymentId}', [AdminBillingController::class, 'completeTestPayment'])->middleware('admin');
     Route::get('/admin/billing/payments', [AdminBillingController::class, 'getPayments'])->middleware('admin');
     Route::get('/admin/billing/subscriptions', [AdminBillingController::class, 'getSubscriptions'])->middleware('admin');
     Route::get('/admin/billing/stats', [AdminBillingController::class, 'getPaymentStats'])->middleware('admin');
-    Route::post('/admin/billing/refund/{paymentId}', [AdminBillingController::class, 'refundPayment'])->middleware('admin');
+    Route::get('/admin/billing/boost-packages', [AdminBillingController::class, 'getBoostPackages'])->middleware('admin');
+    Route::put('/admin/billing/boost-packages/{packageId}', [AdminBillingController::class, 'updateBoostPackage'])->middleware('admin');
 
     // Contracts
     Route::get('/contracts', [ContractController::class, 'index']);
