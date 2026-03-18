@@ -86,6 +86,10 @@
     body.quick-discovery-mode .topbar {
       display: none !important;
     }
+
+    body.visibility-level-mode .topbar {
+      display: none !important;
+    }
     
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -96,6 +100,10 @@
       color: #f5fbff;
       min-height: 100vh;
       padding: 24px;
+    }
+
+    body.visibility-level-mode {
+      background: #08131d;
     }
 
     .container {
@@ -341,6 +349,66 @@
       border-color: #ff7e22;
       transform: translateY(-8px);
       box-shadow: 0 18px 34px rgba(8, 19, 29, 0.34);
+    }
+
+    .player-visibility-badge {
+      margin-top: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: max-content;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      background: rgba(15, 23, 42, 0.48);
+      color: #e5eef8;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 10px 24px rgba(2, 6, 23, 0.22);
+    }
+
+    .player-visibility-badge-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.06);
+    }
+
+    .player-visibility-badge.is-active {
+      border-color: rgba(56, 189, 248, 0.34);
+      background: linear-gradient(135deg, rgba(8, 47, 73, 0.92), rgba(12, 74, 110, 0.8));
+      color: #d8f3ff;
+    }
+
+    .player-visibility-badge.is-active .player-visibility-badge-dot {
+      background: #38bdf8;
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.18), 0 0 18px rgba(56, 189, 248, 0.45);
+    }
+
+    .player-visibility-badge.is-ready {
+      border-color: rgba(251, 191, 36, 0.34);
+      background: linear-gradient(135deg, rgba(120, 53, 15, 0.92), rgba(146, 64, 14, 0.8));
+      color: #fff4cf;
+    }
+
+    .player-visibility-badge.is-ready .player-visibility-badge-dot {
+      background: #f59e0b;
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.18), 0 0 18px rgba(245, 158, 11, 0.42);
+    }
+
+    .player-visibility-badge.is-featured {
+      border-color: rgba(250, 204, 21, 0.42);
+      background: linear-gradient(135deg, rgba(133, 77, 14, 0.96), rgba(202, 138, 4, 0.88));
+      color: #fff7d6;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 16px 32px rgba(161, 98, 7, 0.24);
+    }
+
+    .player-visibility-badge.is-featured .player-visibility-badge-dot {
+      background: #fde047;
+      box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.18), 0 0 22px rgba(250, 204, 21, 0.55);
     }
 
     .player-avatar {
@@ -1274,9 +1342,26 @@
         const transfer = document.documentElement.dataset.transferCategory || '';
         const radar = document.documentElement.dataset.scoutRadar || '';
         const playerView = document.documentElement.dataset.playerView || '';
+        const visibilityLevel = getVisibilityLevelFromQuery();
+        const visibilityRole = getVisibilityRoleFromQuery();
         const pageTitle = document.getElementById('pageTitle');
         const pageDescription = document.getElementById('pageDescription');
         if (!pageTitle || !pageDescription) return;
+
+        const visibilityCopy = getVisibilityContextCopy(visibilityLevel, visibilityRole);
+        const visibilityRoleCopy = !visibilityLevel ? getVisibilityRoleOverviewCopy(visibilityRole) : null;
+        if (visibilityCopy) {
+          pageTitle.innerHTML = visibilityCopy.title;
+          pageDescription.textContent = visibilityCopy.description;
+          document.title = visibilityCopy.documentTitle;
+          return;
+        }
+        if (visibilityRoleCopy) {
+          pageTitle.innerHTML = visibilityRoleCopy.title;
+          pageDescription.textContent = visibilityRoleCopy.description;
+          document.title = visibilityRoleCopy.documentTitle;
+          return;
+        }
 
         if (playerView === 'discover' || playerView === 'explore') {
           pageTitle.innerHTML = '<i class="fa-solid fa-compass"></i> Oyuncuları Keşfet';
@@ -1415,7 +1500,7 @@
         </div>
       </div>
     </div>
-    <div class="results-meta" id="resultsMeta">Sonuc hazirlaniyor...</div>
+      <div class="results-meta" id="resultsMeta">Sonuç hazırlanıyor...</div>
 
     <!-- Players Grid -->
     <div class="players-grid" id="playersGrid">
@@ -1481,6 +1566,27 @@
     const nextPageBtn = document.getElementById("nextPageBtn");
     const pageNumbers = document.getElementById("pageNumbers");
     const sponsoredList = document.getElementById("sponsoredList");
+    const SPORT_POSITION_OPTIONS = {
+      futbol: [
+        { value: "kaleci", label: "Kaleci" },
+        { value: "defans", label: "Defans" },
+        { value: "ortasaha", label: "Orta Saha" },
+        { value: "forvet", label: "Forvet" }
+      ],
+      basketbol: [
+        { value: "guard", label: "Guard" },
+        { value: "short-forward", label: "Kısa Forvet" },
+        { value: "power-forward", label: "Uzun Forvet" },
+        { value: "pivot", label: "Pivot" }
+      ],
+      voleybol: [
+        { value: "pasor", label: "Pasör" },
+        { value: "pasor-caprazi", label: "Pasör Çaprazı" },
+        { value: "smaçör", label: "Smaçör" },
+        { value: "orta-oyuncu", label: "Orta Oyuncu" },
+        { value: "libero", label: "Libero" }
+      ]
+    };
     let compareIds = [];
     let serverPage = 1;
     let serverLastPage = 1;
@@ -1488,6 +1594,19 @@
 
     function revealContextResults() {
       document.documentElement.classList.remove("pre-hide-results");
+    }
+
+    function syncPositionOptions() {
+      if (!positionFilter) return;
+      const selectedSport = String(sportFilter?.value || "").trim().toLowerCase();
+      const currentValue = String(positionFilter.value || "").trim().toLowerCase();
+      const options = SPORT_POSITION_OPTIONS[selectedSport] || SPORT_POSITION_OPTIONS.futbol;
+      positionFilter.innerHTML = ['<option value="">Tümü</option>']
+        .concat(options.map((option) => `<option value="${option.value}">${option.label}</option>`))
+        .join("");
+      if (options.some((option) => option.value === currentValue)) {
+        positionFilter.value = currentValue;
+      }
     }
 
     function getApiBaseUrl() {
@@ -1710,17 +1829,43 @@
 
     let allPlayers = [...mockPlayers];
 
+    function getVisibilityBadgeMeta(level, role = "") {
+      if (role === "club") {
+        if (level === "featured") return { label: "Öne Çıkan Aday", tone: "featured" };
+        if (level === "ready") return { label: "Vitrine Hazır", tone: "ready" };
+        if (level === "active") return { label: "Aktif Profil", tone: "active" };
+      }
+      if (role === "manager") {
+        if (level === "featured") return { label: "Güçlü Portföy Adayı", tone: "featured" };
+        if (level === "ready") return { label: "Portföye Hazır", tone: "ready" };
+        if (level === "active") return { label: "Temas Edilebilir", tone: "active" };
+      }
+      if (role === "coach") {
+        if (level === "featured") return { label: "Öncelikli Gözlem", tone: "featured" };
+        if (level === "ready") return { label: "İzlemeye Hazır", tone: "ready" };
+        if (level === "active") return { label: "Güncel Profil", tone: "active" };
+      }
+      if (level === "featured") return { label: "Öne Çıkan", tone: "featured" };
+      if (level === "ready") return { label: "Vitrine Hazır", tone: "ready" };
+      if (level === "active") return { label: "Aktif", tone: "active" };
+      return { label: "Standart", tone: "active" };
+    }
+
     function renderPlayers(players) {
       if (!players.length) {
         playersGrid.innerHTML = '<div class="player-card" style="padding:16px;">Oyuncu bulunamadı.</div>';
         return;
       }
+      const visibilityRole = getVisibilityRoleFromQuery();
       playersGrid.innerHTML = players.map(player => `
         <div class="player-card">
           <div class="player-avatar">⚽</div>
           <div class="player-content">
             <div class="player-name">${player.name}</div>
             <div class="player-position">${player.position}</div>
+            <div style="margin-top:8px;display:inline-flex;align-items:center;gap:6px;width:max-content;padding:6px 10px;border:1px solid rgba(99,102,241,.22);background:rgba(99,102,241,.08);color:#3730a3;font-size:11px;font-weight:800;border-radius:999px;">
+              ${player.visibility_level === 'featured' ? 'Öne Çıkan' : player.visibility_level === 'ready' ? 'Vitrine Hazır' : player.visibility_level === 'active' ? 'Aktif' : 'Standart'}
+            </div>
 
             <div class="player-info">
               <div class="info-item">
@@ -1765,6 +1910,69 @@
       `).join("");
     }
 
+    function renderPlayers(players) {
+      if (!players.length) {
+        playersGrid.innerHTML = '<div class="player-card" style="padding:16px;">Oyuncu bulunamadı.</div>';
+        return;
+      }
+      const visibilityRole = getVisibilityRoleFromQuery();
+      playersGrid.innerHTML = players.map((player) => {
+        const badge = getVisibilityBadgeMeta(player.visibility_level, visibilityRole);
+        return `
+        <div class="player-card">
+          <div class="player-avatar">⚽</div>
+          <div class="player-content">
+            <div class="player-name">${player.name}</div>
+            <div class="player-position">${player.position}</div>
+            <div class="player-visibility-badge is-${badge.tone}">
+              <span class="player-visibility-badge-dot"></span>
+              <span>${badge.label}</span>
+            </div>
+
+            <div class="player-info">
+              <div class="info-item">
+                <span class="info-label">Yaş</span>
+                <span class="info-value">${player.age}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Boy</span>
+                <span class="info-value">${player.height}cm</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Branş</span>
+                <span class="info-value" style="font-size: 12px; text-transform: capitalize;">${player.sport || '-'}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Lig</span>
+                <span class="info-value" style="font-size: 12px;">${player.league}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">KULÜP</span>
+                <span class="info-value" style="font-size: 12px;">${player.club}</span>
+              </div>
+            </div>
+
+            <div class="player-rating">
+              <span class="rating-stars">★★★★★</span>
+              <span class="rating-value">${player.rating}/10</span>
+            </div>
+            <div style="font-size:11px;opacity:.65;margin-top:6px;">
+              Kaynak: ${player.data_source || 'Sistem'} • Güven: ${player.quality_score || 0}
+              ${player.updated_at ? ` • ${new Date(player.updated_at).toLocaleDateString('tr-TR')}` : ""}
+            </div>
+
+            <div class="player-actions">
+              <button onclick="viewProfile(${player.id})">Profil</button>
+              <button onclick="addToFavorite(${player.id})">❤️</button>
+              <button class="compare-btn" onclick="toggleCompare(${player.id})">⚖ Karşılaştır</button>
+              <button onclick="contact(${player.id})">İletişim</button>
+            </div>
+          </div>
+        </div>
+      `;
+      }).join("");
+    }
+
     function normalizeQueryValue(value) {
       return String(value || "")
         .trim()
@@ -1799,6 +2007,53 @@
       if (value === "explore") return "explore";
       if (value === "quick") return "quick";
       if (value === "discover" || value === "kesfet" || value === "for-you") return "discover";
+      return "";
+    }
+
+    function getVisibilityLevelFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const value = normalizeQueryValue(params.get("visibility_level"));
+      if (value === "active") return "active";
+      if (value === "ready") return "ready";
+      if (value === "featured") return "featured";
+      return "";
+    }
+
+    function getVisibilityRoleFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const value = normalizeQueryValue(params.get("visibility_role"));
+      if (value === "club" || value === "team" || value === "kulup" || value === "klup") return "club";
+      if (value === "manager" || value === "menajer" || value === "menejer") return "manager";
+      if (value === "coach" || value === "antrenor" || value === "antroner") return "coach";
+      return "";
+    }
+
+    function hasRecentVisibilityActivity(player) {
+      const updatedAt = Date.parse(player?.updated_at || "");
+      const recentByDate = Number.isFinite(updatedAt) && (Date.now() - updatedAt) <= (15 * 24 * 60 * 60 * 1000);
+      return Boolean(recentByDate || player?.radar_new || player?.radar_rising || player?.radar_hidden);
+    }
+
+    function hasReadyProfileShape(player) {
+      const checks = [
+        Boolean(String(player?.name || "").trim() && String(player?.name || "").trim() !== "Oyuncu"),
+        Boolean(String(player?.position || "").trim() && String(player?.position || "").trim() !== "Oyuncu"),
+        Boolean(Number(player?.age || 0)),
+        Boolean(String(player?.height || "").trim() && String(player?.height || "").trim() !== "-"),
+        Boolean(String(player?.club || "").trim() && String(player?.club || "").trim() !== "-"),
+        Boolean(String(player?.nationality || "").trim() && String(player?.nationality || "").trim() !== "-"),
+        Boolean(Number(player?.rating || 0) > 0 || Number(player?.quality_score || 0) > 0),
+      ];
+      return checks.filter(Boolean).length >= 5;
+    }
+
+    function getVisibilityLevelForPlayer(player) {
+      const active = hasRecentVisibilityActivity(player);
+      const ready = hasReadyProfileShape(player);
+      const strongProfile = Number(player?.rating || 0) >= 7 || Number(player?.quality_score || 0) >= 65 || Boolean(player?.radar_rising);
+      if (active && ready && strongProfile) return "featured";
+      if (ready) return "ready";
+      if (active) return "active";
       return "";
     }
 
@@ -1880,6 +2135,9 @@
           radar_new: Boolean(p.radar_new),
           radar_rising: Boolean(p.radar_rising),
           radar_hidden: Boolean(p.radar_hidden),
+        })).map((player) => ({
+          ...player,
+          visibility_level: getVisibilityLevelForPlayer(player),
         }));
         if (isContractedTransfer) {
           allPlayers = allPlayers.filter((p) => String(p.sport || "").toLowerCase() === "futbol" && String(p.contract_status || "") === "active");
@@ -1901,6 +2159,10 @@
           : transferCategory === "seeking"
             ? mockPlayers.filter((p) => String(p.sport || "").toLowerCase() === "futbol" && Boolean(p.seeking_club))
             : [...mockPlayers];
+        allPlayers = allPlayers.map((player) => ({
+          ...player,
+          visibility_level: getVisibilityLevelForPlayer(player),
+        }));
       }
     }
 
@@ -1965,14 +2227,17 @@
       const hasTransferCategory = Boolean(getTransferCategoryFromQuery());
       const hasScoutRadarCategory = Boolean(getScoutRadarCategoryFromQuery());
       const hasPlayerDiscoveryView = Boolean(getPlayerViewFromQuery());
+      const hasVisibilityLevel = Boolean(getVisibilityLevelFromQuery());
+      const hasVisibilityRole = Boolean(getVisibilityRoleFromQuery());
       const transferCategory = getTransferCategoryFromQuery();
       const scoutRadar = getScoutRadarCategoryFromQuery();
-      document.body.classList.toggle("weekly-digest-mode", hasTransferCategory || hasScoutRadarCategory || hasPlayerDiscoveryView);
+      document.body.classList.toggle("weekly-digest-mode", hasTransferCategory || hasScoutRadarCategory || hasPlayerDiscoveryView || hasVisibilityLevel || hasVisibilityRole);
       document.body.classList.toggle("scout-radar-mode", hasScoutRadarCategory);
       document.body.classList.toggle("player-discovery-mode", hasPlayerDiscoveryView);
       document.body.classList.toggle("quick-discovery-mode", getPlayerViewFromQuery() === "quick");
       document.body.classList.toggle("explore-view", getPlayerViewFromQuery() === "explore");
-      document.body.classList.toggle("headerless-mode", transferCategory === "free" || scoutRadar === "new");
+      document.body.classList.toggle("visibility-level-mode", hasVisibilityLevel || hasVisibilityRole);
+      document.body.classList.toggle("headerless-mode", transferCategory === "free" || scoutRadar === "new" || hasVisibilityRole);
     }
 
     function parseAgeRange(value) {
@@ -2042,6 +2307,14 @@
         filtered = filtered.filter((p) => Boolean(p.radar_new) || Boolean(p.radar_rising) || Boolean(p.radar_hidden));
       }
 
+      const visibilityLevel = getVisibilityLevelFromQuery();
+      const visibilityRole = getVisibilityRoleFromQuery();
+      if (visibilityLevel) {
+        filtered = filtered.filter((p) => String(p.visibility_level || "") === visibilityLevel);
+      } else if (visibilityRole) {
+        filtered = filtered.filter((p) => ["active", "ready", "featured"].includes(String(p.visibility_level || "")));
+      }
+
       const sortMode = (sortFilter?.value || "rating_desc").toLowerCase();
       if (sortMode === "rating_desc") filtered.sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
       if (sortMode === "rating_asc") filtered.sort((a, b) => Number(a.rating || 0) - Number(b.rating || 0));
@@ -2057,6 +2330,119 @@
       }
       renderPlayers(filtered);
       revealContextResults();
+    }
+
+    function getVisibilityContextCopy(level, role = "") {
+      if (role === "club" && level === "active") {
+        return {
+          title: '<i class="fa-solid fa-signal"></i> Aktif Profil',
+          description: "Kulüp açısından yakın dönemde hareket gösteren ve daha sıcak aday olarak okunan oyuncular burada listelenir.",
+          documentTitle: "Aktif Profil | NextScout",
+        };
+      }
+      if (role === "club" && level === "ready") {
+        return {
+          title: '<i class="fa-solid fa-id-card"></i> Vitrine Hazır',
+          description: "Kulübün için temel detayları net, daha güvenli ve daha okunabilir oyuncuları tek alanda ayır.",
+          documentTitle: "Vitrine Hazır Oyuncular | NextScout",
+        };
+      }
+      if (role === "club" && level === "featured") {
+        return {
+          title: '<i class="fa-solid fa-star"></i> Öne Çıkan Aday',
+          description: "Hem aktif hem güçlü profile sahip oyuncuları kulüp kısa listesi için daha net görüntüle.",
+          documentTitle: "Öne Çıkan Adaylar | NextScout",
+        };
+      }
+      if (role === "manager" && level === "active") {
+        return {
+          title: '<i class="fa-solid fa-handshake"></i> Temas Edilebilir',
+          description: "Menajer tarafında ilk temas kurmaya uygun, aktif ve daha sıcak görünen oyuncular burada açılır.",
+          documentTitle: "Temas Edilebilir Oyuncular | NextScout",
+        };
+      }
+      if (role === "manager" && level === "ready") {
+        return {
+          title: '<i class="fa-solid fa-briefcase"></i> Portföye Hazır',
+          description: "Portföye alınabilecek kadar net, düzenli ve temsil edilmeye uygun oyuncuları bu listede ayır.",
+          documentTitle: "Portföye Hazır Oyuncular | NextScout",
+        };
+      }
+      if (role === "manager" && level === "featured") {
+        return {
+          title: '<i class="fa-solid fa-star"></i> Güçlü Portföy Adayı',
+          description: "Hem aktif hem görünürlüğü yüksek oyuncuları menajer önceliğiyle burada öne al.",
+          documentTitle: "Güçlü Portföy Adayları | NextScout",
+        };
+      }
+      if (role === "coach" && level === "active") {
+        return {
+          title: '<i class="fa-solid fa-signal"></i> Güncel Profil',
+          description: "Antrenör için taze veri taşıyan ve yakın dönemde aktif kalmış oyuncular burada açılır.",
+          documentTitle: "Güncel Profiller | NextScout",
+        };
+      }
+      if (role === "coach" && level === "ready") {
+        return {
+          title: '<i class="fa-solid fa-clipboard-list"></i> İzlemeye Hazır',
+          description: "Temel saha ve profil detayları net olan oyuncuları teknik gözlem için burada ayır.",
+          documentTitle: "İzlemeye Hazır Oyuncular | NextScout",
+        };
+      }
+      if (role === "coach" && level === "featured") {
+        return {
+          title: '<i class="fa-solid fa-binoculars"></i> Öncelikli Gözlem',
+          description: "Hem aktif hem güçlü profile sahip oyuncuları teknik ekip için öncelikli gözlem listesinde görüntüle.",
+          documentTitle: "Öncelikli Gözlem Adayları | NextScout",
+        };
+      }
+      if (level === "active") {
+        return {
+          title: '<i class="fa-solid fa-signal"></i> Aktif Oyuncular',
+          description: "Son 15 gün hareket gösteren veya yakın dönemde güncellenmiş oyuncuları tek akışta inceleyin.",
+          documentTitle: "Aktif Oyuncular | NextScout",
+        };
+      }
+      if (level === "ready") {
+        return {
+          title: '<i class="fa-solid fa-id-card"></i> Vitrine Hazır Oyuncular',
+          description: "Temel profil detayları tamamlanmış ve daha okunur durumda olan oyuncuları burada ayırın.",
+          documentTitle: "Vitrine Hazır Oyuncular | NextScout",
+        };
+      }
+      if (level === "featured") {
+        return {
+          title: '<i class="fa-solid fa-star"></i> Öne Çıkan Oyuncular',
+          description: "Hem aktif hem de profil gücü yüksek olan oyuncuları daha güçlü vitrin seviyesiyle görüntüleyin.",
+          documentTitle: "Öne Çıkan Oyuncular | NextScout",
+        };
+      }
+      return null;
+    }
+
+    function getVisibilityRoleOverviewCopy(role = "") {
+      if (role === "club") {
+        return {
+          title: '<i class="fa-solid fa-shield-halved"></i> Hazır Oyuncu Havuzu',
+          description: "Kulüp açısından aktif, vitrine hazır ve öne çıkan adayları aynı havuzda inceleyin.",
+          documentTitle: "Hazır Oyuncu Havuzu | NextScout",
+        };
+      }
+      if (role === "manager") {
+        return {
+          title: '<i class="fa-solid fa-briefcase"></i> Portföy Havuzu',
+          description: "Menajer tarafında temas edilebilir, portföye hazır ve güçlü adayları tek listede görün.",
+          documentTitle: "Portföy Havuzu | NextScout",
+        };
+      }
+      if (role === "coach") {
+        return {
+          title: '<i class="fa-solid fa-clipboard-list"></i> İzleme Havuzu',
+          description: "Teknik ekip için güncel, izlemeye hazır ve öncelikli gözlem adaylarını aynı akışta görüntüleyin.",
+          documentTitle: "İzleme Havuzu | NextScout",
+        };
+      }
+      return null;
     }
 
     function getCurrentPreset() {
@@ -2076,6 +2462,7 @@
     function applyPreset(preset) {
       if (!preset || typeof preset !== "object") return;
       if (sportFilter) sportFilter.value = preset.sport || "";
+      syncPositionOptions();
       if (positionFilter) positionFilter.value = preset.position || "";
       if (leagueFilter) leagueFilter.value = preset.league || "";
       if (ageFilter) ageFilter.value = preset.age || "";
@@ -2259,7 +2646,11 @@
       serverPage = 1;
       loadPlayersFromApi(1).then(filterPlayers);
     }
-    sportFilter.addEventListener("change", refreshFromServerFirstPage);
+    syncPositionOptions();
+    sportFilter.addEventListener("change", () => {
+      syncPositionOptions();
+      refreshFromServerFirstPage();
+    });
     positionFilter.addEventListener("change", refreshFromServerFirstPage);
     leagueFilter.addEventListener("change", refreshFromServerFirstPage);
     ageFilter.addEventListener("input", refreshFromServerFirstPage);
@@ -2298,9 +2689,23 @@
       const transferCategory = getTransferCategoryFromQuery();
       const scoutCategory = getScoutRadarCategoryFromQuery();
       const playerView = getPlayerViewFromQuery();
+      const visibilityLevel = getVisibilityLevelFromQuery();
+      const visibilityRole = getVisibilityRoleFromQuery();
       const pageTitle = document.getElementById("pageTitle");
       const pageDescription = document.getElementById("pageDescription");
-      if (playerView === "discover" || playerView === "explore") {
+      const visibilityCopy = getVisibilityContextCopy(visibilityLevel, visibilityRole);
+      const visibilityRoleCopy = !visibilityLevel ? getVisibilityRoleOverviewCopy(visibilityRole) : null;
+      if (visibilityCopy) {
+        document.body.classList.remove("contracted-cards-only");
+        if (pageTitle) pageTitle.innerHTML = visibilityCopy.title;
+        if (pageDescription) pageDescription.textContent = visibilityCopy.description;
+        document.title = visibilityCopy.documentTitle;
+      } else if (visibilityRoleCopy) {
+        document.body.classList.remove("contracted-cards-only");
+        if (pageTitle) pageTitle.innerHTML = visibilityRoleCopy.title;
+        if (pageDescription) pageDescription.textContent = visibilityRoleCopy.description;
+        document.title = visibilityRoleCopy.documentTitle;
+      } else if (playerView === "discover" || playerView === "explore") {
         document.body.classList.remove("contracted-cards-only");
         if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-compass"></i> Oyuncuları Keşfet';
         if (pageDescription) pageDescription.textContent = "Pozisyon, form ve görünürlük sinyallerine göre öne çıkan oyuncuları tek akışta incele.";
@@ -2365,7 +2770,17 @@
       const transferCategory = getTransferCategoryFromQuery();
       const scoutCategory = getScoutRadarCategoryFromQuery();
       const playerView = getPlayerViewFromQuery();
-      if (heroTitle && heroDescription && playerView === 'explore') {
+      const visibilityLevel = getVisibilityLevelFromQuery();
+      const visibilityRole = getVisibilityRoleFromQuery();
+      const visibilityCopy = getVisibilityContextCopy(visibilityLevel, visibilityRole);
+      const visibilityRoleCopy = !visibilityLevel ? getVisibilityRoleOverviewCopy(visibilityRole) : null;
+      if (heroTitle && heroDescription && visibilityCopy) {
+        heroTitle.innerHTML = visibilityCopy.title;
+        heroDescription.textContent = visibilityCopy.description;
+      } else if (heroTitle && heroDescription && visibilityRoleCopy) {
+        heroTitle.innerHTML = visibilityRoleCopy.title;
+        heroDescription.textContent = visibilityRoleCopy.description;
+      } else if (heroTitle && heroDescription && playerView === 'explore') {
         heroTitle.innerHTML = '<i class="fa-solid fa-compass"></i> Oyuncuları Keşfet';
         heroDescription.textContent = 'Pozisyon, form ve görünürlük sinyallerine göre öne çıkan oyuncuları tek akışta incele.';
       } else if (heroTitle && heroDescription) {
