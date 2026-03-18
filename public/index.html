@@ -7840,7 +7840,7 @@
                         </div>
                     </div>
                 </aside>
-                <aside class="idea-news-square starter-card">
+                <aside class="idea-news-square starter-card" id="starterRoleCard" style="display:none;">
                     <div class="eyebrow">30 Saniyede Başla</div>
                     <h3>Sen Kimsin?</h3>
                     <div class="starter-copy">NextScout içinde sana uygun akışı seç, doğru oyuncu, kulüp ya da scout ağına hızlıca gir.</div>
@@ -7872,6 +7872,54 @@
                         <button type="button" class="insight-cta" onclick="openRegisterModal()"><i class="fas fa-user-plus"></i><span>Hemen Ücretsiz Başla</span></button>
                     </div>
                 </aside>
+                <script>
+                    (function () {
+                        const card = document.getElementById('starterRoleCard');
+                        if (!card) return;
+
+                        function normalizeRole(value) {
+                            return (value || '')
+                                .toString()
+                                .trim()
+                                .toLocaleLowerCase('tr-TR')
+                                .normalize('NFD')
+                                .replace(/[\u0300-\u036f]/g, '')
+                                .replace(/\s+/g, '')
+                                .replace(/[_-]+/g, '');
+                        }
+
+                        function readRole() {
+                            let role = '';
+                            try {
+                                role = (JSON.parse(localStorage.getItem('nextscout_user') || '{}')?.role || '').toString();
+                            } catch (error) {}
+
+                            if (!role) {
+                                role = (localStorage.getItem('nextscout_role') || localStorage.getItem('userRole') || '').toString();
+                            }
+
+                            return normalizeRole(role);
+                        }
+
+                        function applyStarterVisibility() {
+                            const hasSession = Boolean((localStorage.getItem('nextscout_token') || '').trim() || (localStorage.getItem('nextscout_user') || '').trim());
+                            const role = readRole();
+                            if (!hasSession) {
+                                card.style.display = 'flex';
+                                return;
+                            }
+                            if (role === 'player' || role === 'oyuncu') {
+                                card.style.display = 'flex';
+                                return;
+                            }
+                            card.style.display = 'none';
+                        }
+
+                        applyStarterVisibility();
+                        window.addEventListener('load', applyStarterVisibility);
+                        setTimeout(applyStarterVisibility, 250);
+                    })();
+                </script>
             </div>
 
             <section class="home-insight-grid">
@@ -8349,6 +8397,7 @@
             const token = localStorage.getItem('nextscout_token');
             let userData = localStorage.getItem('nextscout_user');
             const demoLogin = localStorage.getItem('nextscout_demo_login') === 'true';
+            const starterRoleCard = document.getElementById('starterRoleCard');
 
             const registerBtn = document.getElementById('registerBtn');
             const loginBtn = document.getElementById('loginBtn');
@@ -8382,6 +8431,15 @@
             if (token && userData) {
                 try {
                     const user = JSON.parse(userData);
+                    const normalizedRole = (user?.role || '')
+                        .toString()
+                        .trim()
+                        .toLocaleLowerCase('tr-TR')
+                        .normalize('NFD')
+                        .replace(/[\u0300-\u036f]/g, '');
+                    if (starterRoleCard && normalizedRole !== 'player' && normalizedRole !== 'oyuncu') {
+                        starterRoleCard.style.display = 'none';
+                    }
                     // Giriş yapılmış: giriş/kayıt butonlarını gizle, profil butonunu göster
                     registerBtn.style.display = 'none';
                     loginBtn.style.display = 'none';
@@ -14267,11 +14325,5 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
-
-
 
 
