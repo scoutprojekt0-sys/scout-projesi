@@ -3335,6 +3335,275 @@
             font-weight: 800;
         }
 
+        .market-analysis-panel {
+            margin-top: 16px;
+            position: relative;
+            overflow: hidden;
+            padding: 22px 20px;
+            border: 1px solid var(--ns-line);
+            background:
+                radial-gradient(circle at top right, rgba(251, 146, 60, 0.18), transparent 30%),
+                linear-gradient(180deg, rgba(24, 31, 67, 0.94), rgba(13, 18, 40, 0.97));
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 36px rgba(2, 5, 18, 0.28);
+            border-radius: 0 !important;
+            display: grid;
+            grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+            gap: 18px;
+            align-items: start;
+        }
+
+        .market-analysis-panel::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, #f97316 0%, #fb923c 30%, #60a5fa 100%);
+        }
+
+        .market-analysis-kicker {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: #ffb787;
+            margin-bottom: 8px;
+        }
+
+        .market-analysis-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .market-analysis-title {
+            margin: 0;
+            font-size: 24px;
+            line-height: 1.15;
+            color: var(--ns-text);
+        }
+
+        .market-analysis-summary {
+            margin-top: 10px;
+            color: var(--ns-muted);
+            font-size: 14px;
+            line-height: 1.6;
+            max-width: 640px;
+        }
+
+        .market-analysis-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(255,255,255,.05);
+            color: var(--ns-text);
+            font-size: 12px;
+            font-weight: 800;
+            border-radius: 0 !important;
+            white-space: nowrap;
+        }
+
+        .market-analysis-search {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .market-analysis-search input {
+            width: 100%;
+            min-height: 46px;
+            padding: 12px 14px;
+            border: 1px solid rgba(110, 138, 255, 0.24);
+            background: rgba(255,255,255,.05);
+            color: var(--ns-text);
+            font-size: 14px;
+            border-radius: 0 !important;
+        }
+
+        .market-analysis-search input::placeholder {
+            color: #cbd5e1;
+        }
+
+        .market-analysis-search button {
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 126, 34, 0.45);
+            background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+            color: #fff7f0;
+            font-size: 13px;
+            font-weight: 800;
+            border-radius: 0 !important;
+            cursor: pointer;
+        }
+
+        .market-analysis-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .market-analysis-tab {
+            padding: 10px 12px;
+            border: 1px solid rgba(110, 138, 255, 0.24);
+            background: rgba(255,255,255,.05);
+            color: var(--ns-text);
+            font-size: 12px;
+            font-weight: 800;
+            border-radius: 0 !important;
+            cursor: pointer;
+        }
+
+        .market-analysis-tab.active {
+            border-color: rgba(255, 126, 34, 0.45);
+            background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+            color: #fff7f0;
+        }
+
+        .market-match-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .market-match-footer {
+            margin-top: 10px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .market-match-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            text-decoration: none;
+            background: rgba(255,255,255,.05);
+            border: 1px solid rgba(110, 138, 255, 0.24);
+            color: var(--ns-text);
+            font-size: 12px;
+            font-weight: 800;
+            border-radius: 0 !important;
+        }
+
+        .market-match-item {
+            min-height: 112px;
+            padding: 14px;
+            border: 1px solid rgba(110, 138, 255, 0.24);
+            background: rgba(255,255,255,.05);
+            border-radius: 0 !important;
+            display: grid;
+            gap: 8px;
+        }
+
+        .market-match-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .market-match-name {
+            color: var(--ns-text);
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .market-match-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #fde68a;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .market-match-meta {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+            font-size: 12px;
+            color: #cbd5e1;
+        }
+
+        .market-analysis-right {
+            display: grid;
+            gap: 10px;
+        }
+
+        .market-trend-card {
+            padding: 14px;
+            border: 1px solid rgba(110, 138, 255, 0.24);
+            background: rgba(255,255,255,.05);
+            border-radius: 0 !important;
+        }
+
+        .market-trend-card.clickable {
+            cursor: pointer;
+            transition: border-color .18s ease, background .18s ease, transform .18s ease;
+        }
+
+        .market-trend-card.clickable:hover {
+            border-color: rgba(255, 126, 34, 0.42);
+            background: rgba(255,255,255,.08);
+            transform: translateY(-2px);
+        }
+
+        .market-trend-label {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--ns-muted);
+            margin-bottom: 8px;
+        }
+
+        .market-trend-value {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--ns-text);
+            margin-bottom: 6px;
+        }
+
+        .market-trend-note {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        .market-analysis-foot {
+            padding: 14px;
+            border: 1px solid rgba(255, 126, 34, 0.24);
+            background: rgba(255, 126, 34, 0.10);
+            color: #ffe6d1;
+            font-size: 13px;
+            line-height: 1.7;
+            border-radius: 0 !important;
+        }
+
+        .market-analysis-actions {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .market-analysis-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 13px;
+            text-decoration: none;
+            background: rgba(255,255,255,.05);
+            border: 1px solid rgba(110, 138, 255, 0.24);
+            color: var(--ns-text);
+            font-size: 12px;
+            font-weight: 800;
+            border-radius: 0 !important;
+        }
+
         .homepage-visibility-step-desc {
             color: var(--ns-muted);
             font-size: 12px;
@@ -5800,6 +6069,18 @@
             }
 
             .homepage-visibility-steps {
+                grid-template-columns: 1fr;
+            }
+
+            .market-analysis-panel,
+            .market-analysis-search,
+            .market-match-meta {
+                grid-template-columns: 1fr;
+            }
+
+            .market-analysis-head,
+            .market-match-top {
+                display: grid;
                 grid-template-columns: 1fr;
             }
 
@@ -8356,6 +8637,58 @@
                     <div class="card-mini-meta" id="risingStarsMeta">4 transfer akışı • Güncelleme: bekleniyor</div>
                 </article>
             </div>
+
+            <section class="market-analysis-panel" id="marketAnalysisPanel">
+                <div class="market-analysis-left">
+                    <div class="market-analysis-head">
+                        <div>
+                            <div class="market-analysis-kicker">Piyasa Analizi</div>
+                            <h3 class="market-analysis-title">Şehre göre canlı futbol hareketini oku.</h3>
+                            <div class="market-analysis-summary">Şehir ara, o şehirdeki canlı ve oynanacak maçları gör; saha adı, tarih, saat ve yükselen pozisyon trendlerini tek bakışta takip et.</div>
+                        </div>
+                        <div class="market-analysis-badge"><i class="fas fa-chart-line"></i><span id="marketCityBadge">İstanbul Analizi</span></div>
+                    </div>
+
+                    <div class="market-analysis-search">
+                        <input type="text" id="marketCitySearch" placeholder="Şehir yaz... Ör: İstanbul">
+                        <button type="button" onclick="applyMarketAnalysisCity()">Şehir Ara</button>
+                    </div>
+
+                    <div class="market-analysis-tabs">
+                        <button type="button" class="market-analysis-tab active" data-market-tab="live" onclick="setMarketAnalysisTab('live')">Canlı Maçlar</button>
+                        <button type="button" class="market-analysis-tab" data-market-tab="upcoming" onclick="setMarketAnalysisTab('upcoming')">Oynanacak Maçlar</button>
+                    </div>
+
+                    <div class="market-match-list" id="marketMatchList"></div>
+                    <div class="market-match-footer">
+                        <a class="market-match-more" id="marketMatchesMoreLink" href="./trial-center.html"><span>Tümünü Gör</span><i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="market-analysis-right">
+                    <article class="market-trend-card clickable" id="marketTopPositionCard" role="link" tabindex="0">
+                        <div class="market-trend-label">En Çok Aranan Pozisyon</div>
+                        <div class="market-trend-value" id="marketTopPosition">Forvet</div>
+                        <div class="market-trend-note" id="marketTopPositionNote">Son 7 günde kulüplerin en çok baktığı profil.</div>
+                    </article>
+                    <article class="market-trend-card clickable" id="marketRisingPlayersCard" role="link" tabindex="0">
+                        <div class="market-trend-label">Yükselişte Olan Futbolcular</div>
+                        <div class="market-trend-value" id="marketRisingPlayers">U17 Kanat Oyuncuları</div>
+                        <div class="market-trend-note" id="marketRisingPlayersNote">İzlenme ve talep ivmesi yükselen oyuncu kategorisi.</div>
+                    </article>
+                    <article class="market-trend-card clickable" id="marketHotAgeGroupCard" role="link" tabindex="0">
+                        <div class="market-trend-label">En Hareketli Yaş Grubu</div>
+                        <div class="market-trend-value" id="marketHotAgeGroup">U16</div>
+                        <div class="market-trend-note" id="marketHotAgeGroupNote">Scout ve menajer radarında yoğun trafik alan grup.</div>
+                    </article>
+                    <div class="market-analysis-foot" id="marketAnalysisFoot">İstanbul tarafında son haftada forvet ve hızlı kanat oyuncularına ilgi artarken, akşam saatlerindeki seçme ve hazırlık maçları piyasa hareketini yukarı çekiyor.</div>
+                    <div class="market-analysis-actions">
+                        <a class="market-analysis-link" id="marketMatchesLink" href="./trial-center.html"><i class="fas fa-calendar-check"></i><span>Maçlara Git</span></a>
+                        <a class="market-analysis-link" id="marketNeedsLink" href="./club-needs-board.html"><i class="fas fa-list-check"></i><span>İhtiyaçları Aç</span></a>
+                        <a class="market-analysis-link" id="marketPlayersLink" href="./professional-players.html"><i class="fas fa-user-group"></i><span>Oyuncuları İncele</span></a>
+                    </div>
+                </div>
+            </section>
 
             <section class="homepage-visibility-card" id="homepageVisibilityCard" hidden>
                 <div class="homepage-visibility-copy">
@@ -14408,6 +14741,295 @@
             }
         }
 
+        let marketAnalysisCity = 'istanbul';
+        let marketAnalysisTab = 'live';
+
+        function normalizeMarketCity(value) {
+            return String(value || '')
+                .trim()
+                .toLocaleLowerCase('tr-TR')
+                .replace(/ı/g, 'i')
+                .replace(/ğ/g, 'g')
+                .replace(/ü/g, 'u')
+                .replace(/ş/g, 's')
+                .replace(/ö/g, 'o')
+                .replace(/ç/g, 'c');
+        }
+
+        function getMarketCityLabel(key) {
+            const map = { istanbul: 'İstanbul', ankara: 'Ankara', izmir: 'İzmir' };
+            return map[key] || (key ? key.charAt(0).toUpperCase() + key.slice(1) : 'Şehir');
+        }
+
+        function getMarketLocalEvents() {
+            try {
+                const rows = JSON.parse(localStorage.getItem('nextscout_trial_events') || '[]');
+                return Array.isArray(rows) ? rows : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function getMarketLocalNeeds() {
+            try {
+                const rows = JSON.parse(localStorage.getItem('nextscout_club_needs_notes') || '[]');
+                return Array.isArray(rows) ? rows : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function mapMarketEvent(item) {
+            const rawDate = item?.event_date || item?.date || '';
+            const eventDate = rawDate ? new Date(rawDate) : null;
+            const valid = eventDate && !Number.isNaN(eventDate.getTime());
+            return {
+                title: item?.title || item?.name || 'Etkinlik',
+                venue: item?.venue || 'Saha bilgisi girilmedi',
+                city: item?.city || item?.location || '',
+                date: valid ? eventDate.toLocaleDateString('tr-TR') : (item?.date || '-'),
+                time: valid ? eventDate.toTimeString().slice(0, 5) : (item?.time || ''),
+                timestamp: valid ? eventDate.getTime() : 0,
+                status: String(item?.status || '').toLowerCase(),
+            };
+        }
+
+        function mapMarketNeed(item) {
+            const rawPosition = item?.position
+                || item?.player_position
+                || item?.need_position
+                || item?.position_needed
+                || item?.positionNeed
+                || item?.role
+                || '';
+            const textBlob = [
+                item?.title,
+                item?.details,
+                item?.description,
+                item?.note,
+            ].filter(Boolean).join(' ').toLowerCase();
+            let inferredPosition = rawPosition;
+            if (!inferredPosition) {
+                if (/kaleci/.test(textBlob)) inferredPosition = 'Kaleci';
+                else if (/stoper|defans|bek/.test(textBlob)) inferredPosition = 'Defans';
+                else if (/orta saha|on numara|merkez orta saha/.test(textBlob)) inferredPosition = 'Orta Saha';
+                else if (/forvet|kanat|golcu|santrafor/.test(textBlob)) inferredPosition = 'Forvet';
+            }
+            return {
+                city: item?.city || item?.location || '',
+                position: inferredPosition || 'Pozisyon belirtilmedi',
+            };
+        }
+
+        function mapMarketPlayer(item) {
+            return {
+                name: item?.name || item?.player_name || 'Oyuncu',
+                city: item?.city || item?.location || '',
+                position: item?.position || item?.player_position || 'Oyuncu',
+                age: Number(item?.age || 0),
+                rating: Number(item?.rating || item?.overall_rating || 0),
+                sport: String(item?.sport || item?.branch || 'futbol').toLocaleLowerCase('tr-TR'),
+                updatedAt: item?.updated_at || item?.last_active_at || item?.created_at || '',
+            };
+        }
+
+        async function loadMarketPlayers() {
+            try {
+                const payload = await fetchJsonSafe(`${API_BASE_URL}/public/players?limit=1000`);
+                const rows = (window.NextScoutData?.toArray ? window.NextScoutData.toArray(payload?.data ?? payload) : (Array.isArray(payload?.data) ? payload.data : [])).filter(Boolean);
+                return rows.map(mapMarketPlayer);
+            } catch (error) {
+                return [];
+            }
+        }
+
+        async function loadMarketNeeds() {
+            try {
+                const payload = await fetchJsonSafe(`${API_BASE_URL}/club-needs?limit=300`);
+                const rows = (window.NextScoutData?.toArray ? window.NextScoutData.toArray(payload?.data ?? payload) : (Array.isArray(payload?.data) ? payload.data : [])).filter(Boolean);
+                return rows.map(mapMarketNeed);
+            } catch (error) {
+                return getMarketLocalNeeds().map(mapMarketNeed);
+            }
+        }
+
+        async function loadMarketEvents() {
+            try {
+                const payload = await fetchJsonSafe(`${API_BASE_URL}/community-events?trial_only=1`);
+                const rows = Array.isArray(payload?.data?.data) ? payload.data.data : (Array.isArray(payload?.data) ? payload.data : []);
+                return rows.map(mapMarketEvent);
+            } catch (error) {
+                return getMarketLocalEvents().map(mapMarketEvent);
+            }
+        }
+
+        function getMarketAgeGroup(age) {
+            if (!age || age >= 20) return 'A Takım';
+            return `U${age}`;
+        }
+
+        function getMarketAgeRangeLabel(groupLabel) {
+            const value = String(groupLabel || '').trim();
+            if (/^u\d+$/i.test(value)) {
+                const age = Number(value.replace(/[^0-9]/g, ''));
+                if (Number.isFinite(age) && age > 0) return `${age}-${age}`;
+            }
+            if (/a tak/i.test(value)) return '20-40';
+            return '';
+        }
+
+        function pickTopLabel(rows, getter, fallbackLabel) {
+            const counts = new Map();
+            rows.forEach((row) => {
+                const label = getter(row);
+                if (!label) return;
+                counts.set(label, (counts.get(label) || 0) + 1);
+            });
+            return [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || fallbackLabel;
+        }
+
+        async function renderMarketAnalysis() {
+            const cityKey = marketAnalysisCity || 'istanbul';
+            const cityLabel = getMarketCityLabel(cityKey);
+            const listRoot = document.getElementById('marketMatchList');
+            if (!listRoot) return;
+
+            const [allEvents, allNeeds, allPlayers] = await Promise.all([
+                loadMarketEvents(),
+                loadMarketNeeds(),
+                loadMarketPlayers(),
+            ]);
+
+            const cityEvents = allEvents
+                .filter((row) => normalizeMarketCity(row.city).includes(cityKey))
+                .sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+
+            const now = Date.now();
+            let liveRows = cityEvents.filter((row) => row.status.includes('live') || row.status.includes('active') || row.status.includes('ongoing'));
+            if (!liveRows.length) {
+                liveRows = cityEvents.filter((row) => row.timestamp && Math.abs(row.timestamp - now) < 6 * 60 * 60 * 1000).slice(0, 3).map((row) => ({ ...row, status: 'Canlı Takip' }));
+            }
+            const upcomingRows = cityEvents.filter((row) => !row.timestamp || row.timestamp >= now).slice(0, 4).map((row) => ({ ...row, status: row.status ? row.status : 'Yakında' }));
+            const rows = (marketAnalysisTab === 'upcoming' ? upcomingRows : liveRows).slice(0, 2);
+
+            const cityNeeds = allNeeds.filter((row) => normalizeMarketCity(row.city).includes(cityKey));
+            const cityPlayers = allPlayers.filter((row) => row.sport === 'futbol' && normalizeMarketCity(row.city).includes(cityKey));
+            const validNeedRows = allNeeds.filter((row) => row.position && row.position !== 'Pozisyon belirtilmedi');
+            const cityNeedRows = cityNeeds.filter((row) => row.position && row.position !== 'Pozisyon belirtilmedi');
+            const topPosition = cityNeedRows.length
+                ? pickTopLabel(cityNeedRows, (row) => row.position, 'Veri Bekleniyor')
+                : (validNeedRows.length
+                    ? pickTopLabel(validNeedRows, (row) => row.position, 'Veri Bekleniyor')
+                    : pickTopLabel(cityPlayers, (row) => row.position, 'Veri Bekleniyor'));
+            const hotAgeGroup = pickTopLabel(cityPlayers, (row) => getMarketAgeGroup(row.age), cityEvents.length ? pickTopLabel(cityEvents, (row) => {
+                const title = String(row.title || '').match(/u\d+/i);
+                return title ? title[0].toUpperCase() : '';
+            }, 'A Takım') : 'A Takım');
+            const risingPlayersRows = cityPlayers
+                .sort((a, b) => {
+                    const ratingDiff = (Number(b.rating) || 0) - (Number(a.rating) || 0);
+                    if (ratingDiff !== 0) return ratingDiff;
+                    return new Date(b.updatedAt || 0).getTime() - new Date(a.updatedAt || 0).getTime();
+                })
+                .slice(0, 2);
+            const risingPlayers = risingPlayersRows.length ? risingPlayersRows.map((row) => row.name).join(' • ') : 'Veri Bekleniyor';
+
+            document.getElementById('marketCityBadge').textContent = `${cityLabel} Analizi`;
+            document.getElementById('marketTopPosition').textContent = topPosition;
+            document.getElementById('marketTopPositionNote').textContent = cityNeedRows.length
+                ? `${cityLabel} tarafında kulüp ihtiyaçlarına göre en çok talep gören pozisyon.`
+                : (validNeedRows.length
+                    ? `${cityLabel} için doğrudan ihtiyaç bulunamadı; genel açık ihtiyaç havuzuna göre öne çıkan pozisyon gösteriliyor.`
+                    : `${cityLabel} için kulüp ihtiyacı verisi bekleniyor.`);
+            document.getElementById('marketRisingPlayers').textContent = risingPlayers;
+            document.getElementById('marketRisingPlayersNote').textContent = risingPlayersRows.length ? `Rating ve güncellik verisine göre ${cityLabel} içinde öne çıkan futbolcular.` : `${cityLabel} için futbolcu trend verisi bekleniyor.`;
+            document.getElementById('marketHotAgeGroup').textContent = hotAgeGroup;
+            document.getElementById('marketHotAgeGroupNote').textContent = cityPlayers.length ? `${cityLabel} tarafında şehir bazlı oyuncu yoğunluğu en çok bu yaş grubunda.` : `${cityLabel} için yaş grubu verisi sınırlı.`;
+            document.getElementById('marketAnalysisFoot').textContent = `${cityLabel} için ${cityNeeds.length} kulüp ihtiyacı, ${cityEvents.length} maç/etkinlik ve ${cityPlayers.length} futbolcu kaydı taranarak piyasa özeti üretildi.`;
+            const matchesLink = document.getElementById('marketMatchesLink');
+            const matchesMoreLink = document.getElementById('marketMatchesMoreLink');
+            const needsLink = document.getElementById('marketNeedsLink');
+            const playersLink = document.getElementById('marketPlayersLink');
+            const topPositionCard = document.getElementById('marketTopPositionCard');
+            const risingPlayersCard = document.getElementById('marketRisingPlayersCard');
+            const hotAgeGroupCard = document.getElementById('marketHotAgeGroupCard');
+            const needsHref = `./club-needs-board.html?city=${encodeURIComponent(cityLabel)}&position=${encodeURIComponent(topPosition)}`;
+            const playersHref = `./professional-players.html?city=${encodeURIComponent(cityLabel)}&sort=updated_desc`;
+            const ageGroupHref = `./professional-players.html?city=${encodeURIComponent(cityLabel)}&age=${encodeURIComponent(getMarketAgeRangeLabel(hotAgeGroup))}&sort=age_asc`;
+            if (matchesLink) matchesLink.href = `./trial-center.html?city=${encodeURIComponent(cityLabel)}`;
+            if (matchesMoreLink) matchesMoreLink.href = `./trial-center.html?city=${encodeURIComponent(cityLabel)}&tab=${encodeURIComponent(marketAnalysisTab)}`;
+            if (needsLink) needsLink.href = needsHref;
+            if (playersLink) playersLink.href = playersHref;
+            if (topPositionCard) {
+                topPositionCard.onclick = () => { window.location.href = needsHref; };
+                topPositionCard.onkeydown = (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        window.location.href = needsHref;
+                    }
+                };
+            }
+            if (risingPlayersCard) {
+                risingPlayersCard.onclick = () => { window.location.href = playersHref; };
+                risingPlayersCard.onkeydown = (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        window.location.href = playersHref;
+                    }
+                };
+            }
+            if (hotAgeGroupCard) {
+                hotAgeGroupCard.onclick = () => { window.location.href = ageGroupHref; };
+                hotAgeGroupCard.onkeydown = (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        window.location.href = ageGroupHref;
+                    }
+                };
+            }
+
+            document.querySelectorAll('[data-market-tab]').forEach((button) => {
+                button.classList.toggle('active', button.dataset.marketTab === marketAnalysisTab);
+            });
+
+            if (!rows.length) {
+                listRoot.innerHTML = `<article class="market-match-item"><div class="market-match-name">${cityLabel} için bu sekmede maç verisi bulunamadı.</div><div class="market-match-meta"><span><strong>Saha:</strong> Bekleniyor</span><span><strong>Tarih:</strong> -</span><span><strong>Saat:</strong> -</span></div></article>`;
+                return;
+            }
+
+            listRoot.innerHTML = rows.map((row) => `
+                <article class="market-match-item">
+                    <div class="market-match-top">
+                        <div class="market-match-name">${row.title}</div>
+                        <div class="market-match-status"><i class="fas fa-bolt"></i><span>${row.status || (marketAnalysisTab === 'live' ? 'Canlı' : 'Yakında')}</span></div>
+                    </div>
+                    <div class="market-match-meta">
+                        <span><strong>Saha:</strong> ${row.venue}</span>
+                        <span><strong>Tarih:</strong> ${row.date}</span>
+                        <span><strong>Saat:</strong> ${row.time || '-'}</span>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        function applyMarketAnalysisCity() {
+            const input = document.getElementById('marketCitySearch');
+            const raw = normalizeMarketCity((input?.value || '').toString());
+            if (!raw) {
+                marketAnalysisCity = 'istanbul';
+            } else {
+                const known = ['istanbul', 'ankara', 'izmir'];
+                const matchedKey = known.find((key) => key.includes(raw) || raw.includes(key));
+                marketAnalysisCity = matchedKey || raw;
+            }
+            renderMarketAnalysis();
+        }
+
+        function setMarketAnalysisTab(tabKey) {
+            marketAnalysisTab = tabKey === 'upcoming' ? 'upcoming' : 'live';
+            renderMarketAnalysis();
+        }
+
         // Login Form Submit
         const loginForm = document.getElementById('loginForm');
         if (loginForm) {
@@ -14666,6 +15288,13 @@
 
         syncHomeViewportMode();
         window.addEventListener('resize', syncHomeViewportMode);
+        renderMarketAnalysis();
+        document.getElementById('marketCitySearch')?.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                applyMarketAnalysisCity();
+            }
+        });
 
     </script>
     <script src="assets/js/core-stability.js"></script>

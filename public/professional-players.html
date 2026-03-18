@@ -90,6 +90,78 @@
     body.visibility-level-mode .topbar {
       display: none !important;
     }
+
+    body.market-rising-mode .topbar {
+      display: none !important;
+    }
+
+    body.market-rising-mode .seo-market-intro {
+      display: none !important;
+    }
+
+    body.market-rising-mode .hero {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    body.market-rising-mode .hero-copy {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    body.market-rising-mode .hero-actions {
+      display: flex !important;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      flex: 0 0 auto;
+    }
+
+    body.market-rising-mode .hero-actions .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    body.market-age-mode .topbar {
+      display: none !important;
+    }
+
+    body.market-age-mode .seo-market-intro {
+      display: none !important;
+    }
+
+    body.market-age-mode .hero {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    body.market-age-mode .hero-copy {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    body.market-age-mode .hero-actions {
+      display: flex !important;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      flex: 0 0 auto;
+    }
+
+    body.market-age-mode .hero-actions .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
     
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -104,6 +176,19 @@
 
     body.visibility-level-mode {
       background: #08131d;
+    }
+
+    body.market-rising-mode {
+      background: #08131d;
+    }
+
+    body.market-age-mode {
+      background: #08131d;
+    }
+
+    body.market-age-mode .market-wrapper {
+      grid-template-columns: 200px minmax(0, 1fr) 200px;
+      max-width: 1460px;
     }
 
     .container {
@@ -994,6 +1079,35 @@
     }
 
     @media (max-width: 840px) {
+      body.market-rising-mode .hero {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      body.market-rising-mode .hero-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      body.market-age-mode .hero {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      body.market-age-mode .hero-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      body.market-age-mode .market-wrapper {
+        grid-template-columns: 1fr;
+        max-width: 100%;
+      }
+
+      body.market-age-mode .players-grid {
+        grid-template-columns: 1fr;
+      }
+
       body.player-discovery-mode .hero {
         flex-direction: column;
         align-items: flex-start;
@@ -1350,6 +1464,20 @@
 
         const visibilityCopy = getVisibilityContextCopy(visibilityLevel, visibilityRole);
         const visibilityRoleCopy = !visibilityLevel ? getVisibilityRoleOverviewCopy(visibilityRole) : null;
+        const marketRisingCity = getMarketRisingCityFromQuery();
+        const marketAgeContext = getMarketAgeGroupContextFromQuery();
+        if (marketRisingCity) {
+          pageTitle.innerHTML = `<i class="fa-solid fa-arrow-trend-up"></i> ${marketRisingCity} Yukselen Futbolcular`;
+          pageDescription.textContent = `${marketRisingCity} icindeki guncel ve one cikan futbolculari son hareket zamanina gore inceleyin.`;
+          document.title = `${marketRisingCity} Yukselen Futbolcular | NextScout`;
+          return;
+        }
+        if (marketAgeContext) {
+          pageTitle.innerHTML = `<i class="fa-solid fa-people-group"></i> ${marketAgeContext.city} ${marketAgeContext.age} Yas Grubu`;
+          pageDescription.textContent = `${marketAgeContext.city} icindeki ${marketAgeContext.age} yas araligina uyan oyunculari inceleyin.`;
+          document.title = `${marketAgeContext.city} ${marketAgeContext.age} Yas Grubu | NextScout`;
+          return;
+        }
         if (visibilityCopy) {
           pageTitle.innerHTML = visibilityCopy.title;
           pageDescription.textContent = visibilityCopy.description;
@@ -1554,6 +1682,27 @@
     const contractFilter = document.getElementById("contractFilter");
     const qualityMinFilter = document.getElementById("qualityMinFilter");
     const sortFilter = document.getElementById("sortFilter");
+    const initialQueryParams = new URLSearchParams(window.location.search);
+    const initialSort = (initialQueryParams.get("sort") || "").trim().toLowerCase();
+    if (sortFilter && initialSort) {
+      const hasInitialSort = Array.from(sortFilter.options).some((option) => option.value === initialSort);
+      if (hasInitialSort) sortFilter.value = initialSort;
+    }
+    function getMarketRisingCityFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const city = (params.get("city") || "").trim();
+      const sort = (params.get("sort") || "").trim().toLowerCase();
+      if (!city || sort !== "updated_desc") return "";
+      return city;
+    }
+    function getMarketAgeGroupContextFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const city = (params.get("city") || "").trim();
+      const age = (params.get("age") || "").trim();
+      const sort = (params.get("sort") || "").trim().toLowerCase();
+      if (!city || !age || sort !== "age_asc") return null;
+      return { city, age };
+    }
     const savePresetBtn = document.getElementById("savePresetBtn");
     const loadPresetBtn = document.getElementById("loadPresetBtn");
     const resetFilterBtn = document.getElementById("resetFilterBtn");
@@ -2067,10 +2216,12 @@
         const scoutRadar = getCanonicalScoutRadarCategory(params.get("scout_radar"));
         const playerView = getPlayerViewFromQuery();
         const q = (params.get("q") || "").trim();
+        const city = (params.get("city") || "").trim();
 
         if (transferCategory) apiQuery.set("transfer_category", transferCategory);
         if (scoutRadar) apiQuery.set("scout_radar", scoutRadar);
         if (q) apiQuery.set("q", q);
+        if (city) apiQuery.set("city", city);
 
         const selectedSport = transferCategory === "contracted" || transferCategory === "free" || transferCategory === "seeking-club"
           ? "futbol"
@@ -2231,11 +2382,16 @@
       const hasVisibilityRole = Boolean(getVisibilityRoleFromQuery());
       const transferCategory = getTransferCategoryFromQuery();
       const scoutRadar = getScoutRadarCategoryFromQuery();
+      const marketRisingCity = getMarketRisingCityFromQuery();
+      const marketAgeContext = getMarketAgeGroupContextFromQuery();
+      const hasMarketPanelMode = Boolean(marketRisingCity || marketAgeContext);
       document.body.classList.toggle("weekly-digest-mode", hasTransferCategory || hasScoutRadarCategory || hasPlayerDiscoveryView || hasVisibilityLevel || hasVisibilityRole);
       document.body.classList.toggle("scout-radar-mode", hasScoutRadarCategory);
       document.body.classList.toggle("player-discovery-mode", hasPlayerDiscoveryView);
       document.body.classList.toggle("quick-discovery-mode", getPlayerViewFromQuery() === "quick");
       document.body.classList.toggle("explore-view", getPlayerViewFromQuery() === "explore");
+      document.body.classList.toggle("market-rising-mode", hasMarketPanelMode);
+      document.body.classList.toggle("market-age-mode", Boolean(marketAgeContext));
       document.body.classList.toggle("visibility-level-mode", hasVisibilityLevel || hasVisibilityRole);
       document.body.classList.toggle("headerless-mode", transferCategory === "free" || scoutRadar === "new" || hasVisibilityRole);
     }
@@ -2695,7 +2851,19 @@
       const pageDescription = document.getElementById("pageDescription");
       const visibilityCopy = getVisibilityContextCopy(visibilityLevel, visibilityRole);
       const visibilityRoleCopy = !visibilityLevel ? getVisibilityRoleOverviewCopy(visibilityRole) : null;
-      if (visibilityCopy) {
+      const marketRisingCity = getMarketRisingCityFromQuery();
+      const marketAgeContext = getMarketAgeGroupContextFromQuery();
+      if (marketRisingCity) {
+        document.body.classList.remove("contracted-cards-only");
+        if (pageTitle) pageTitle.innerHTML = `<i class="fa-solid fa-arrow-trend-up"></i> ${marketRisingCity} Yukselen Futbolcular`;
+        if (pageDescription) pageDescription.textContent = `${marketRisingCity} icindeki guncel ve one cikan futbolculari son hareket zamanina gore inceleyin.`;
+        document.title = `${marketRisingCity} Yukselen Futbolcular | NextScout`;
+      } else if (marketAgeContext) {
+        document.body.classList.remove("contracted-cards-only");
+        if (pageTitle) pageTitle.innerHTML = `<i class="fa-solid fa-people-group"></i> ${marketAgeContext.city} ${marketAgeContext.age} Yas Grubu`;
+        if (pageDescription) pageDescription.textContent = `${marketAgeContext.city} icindeki ${marketAgeContext.age} yas araligina uyan oyunculari inceleyin.`;
+        document.title = `${marketAgeContext.city} ${marketAgeContext.age} Yas Grubu | NextScout`;
+      } else if (visibilityCopy) {
         document.body.classList.remove("contracted-cards-only");
         if (pageTitle) pageTitle.innerHTML = visibilityCopy.title;
         if (pageDescription) pageDescription.textContent = visibilityCopy.description;
@@ -2774,7 +2942,15 @@
       const visibilityRole = getVisibilityRoleFromQuery();
       const visibilityCopy = getVisibilityContextCopy(visibilityLevel, visibilityRole);
       const visibilityRoleCopy = !visibilityLevel ? getVisibilityRoleOverviewCopy(visibilityRole) : null;
-      if (heroTitle && heroDescription && visibilityCopy) {
+      const marketRisingCity = getMarketRisingCityFromQuery();
+      const marketAgeContext = getMarketAgeGroupContextFromQuery();
+      if (heroTitle && heroDescription && marketRisingCity) {
+        heroTitle.innerHTML = `<i class="fa-solid fa-arrow-trend-up"></i> ${marketRisingCity} Yukselen Futbolcular`;
+        heroDescription.textContent = `${marketRisingCity} icindeki guncel ve one cikan futbolculari son hareket zamanina gore inceleyin.`;
+      } else if (heroTitle && heroDescription && marketAgeContext) {
+        heroTitle.innerHTML = `<i class="fa-solid fa-people-group"></i> ${marketAgeContext.city} ${marketAgeContext.age} Yas Grubu`;
+        heroDescription.textContent = `${marketAgeContext.city} icindeki ${marketAgeContext.age} yas araligina uyan oyunculari inceleyin.`;
+      } else if (heroTitle && heroDescription && visibilityCopy) {
         heroTitle.innerHTML = visibilityCopy.title;
         heroDescription.textContent = visibilityCopy.description;
       } else if (heroTitle && heroDescription && visibilityRoleCopy) {

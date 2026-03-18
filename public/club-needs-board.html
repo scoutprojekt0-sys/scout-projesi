@@ -354,6 +354,15 @@
             return (!position || positionValue.includes(position))
                 && (!club || clubValue.includes(club))
                 && (!city || cityValue.includes(city));
+        }).sort((a, b) => {
+            const aPosition = normalizePosition(a?.position || a?.player_position || a?.need_position || a?.role).toLocaleLowerCase('tr-TR');
+            const bPosition = normalizePosition(b?.position || b?.player_position || b?.need_position || b?.role).toLocaleLowerCase('tr-TR');
+            const aCity = (a?.city || a?.location || '').toString().trim().toLocaleLowerCase('tr-TR');
+            const bCity = (b?.city || b?.location || '').toString().trim().toLocaleLowerCase('tr-TR');
+            const aScore = (position && aPosition === position ? 4 : 0) + (city && aCity === city ? 2 : 0);
+            const bScore = (position && bPosition === position ? 4 : 0) + (city && bCity === city ? 2 : 0);
+            if (bScore !== aScore) return bScore - aScore;
+            return new Date(b?.created_at || 0).getTime() - new Date(a?.created_at || 0).getTime();
         });
 
         renderNeeds(filtered);
@@ -363,6 +372,13 @@
         try {
             const query = new URLSearchParams(window.location.search);
             const presetPosition = (query.get('position') || '').trim();
+            const presetCity = (query.get('city') || '').trim();
+            const heroTitle = document.querySelector('.hero h1');
+            const heroSummary = document.querySelector('.hero p');
+            if (presetPosition && presetCity) {
+                if (heroTitle) heroTitle.innerHTML = '<i class="fas fa-location-dot"></i> Sehir Mac Merkezi';
+                if (heroSummary) heroSummary.textContent = `${presetCity} icin one cikan ${presetPosition} ihtiyaclarini bu akista inceleyebilirsin.`;
+            }
             const response = await fetch(`${API_BASE}/club-needs?limit=300`, { headers: { Accept: 'application/json' } });
             const payload = await response.json();
             allNeeds = Array.isArray(payload?.data) ? payload.data : [];
@@ -370,6 +386,10 @@
             if (presetPosition) {
                 const positionInput = document.getElementById('positionFilter');
                 if (positionInput) positionInput.value = presetPosition;
+            }
+            if (presetCity) {
+                const cityInput = document.getElementById('cityFilter');
+                if (cityInput) cityInput.value = presetCity;
             }
 
             applyFilters();

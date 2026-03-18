@@ -1050,7 +1050,33 @@
             <input id="trialTime" type="time" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;">
         </div>
         <input id="trialCity" type="text" placeholder="Sehir" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;margin-bottom:8px;">
-        <input id="trialVenue" type="text" placeholder="Saha/Tesis" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;">
+        <input id="trialVenue" type="text" placeholder="Saha/Tesis" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;margin-bottom:8px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+            <select id="trialAgeGroup" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;">
+                <option value="">Yas Grubu</option>
+                <option value="U9">U9</option>
+                <option value="U10">U10</option>
+                <option value="U11">U11</option>
+                <option value="U12">U12</option>
+                <option value="U13">U13</option>
+                <option value="U14">U14</option>
+                <option value="U15">U15</option>
+                <option value="U16">U16</option>
+                <option value="U17">U17</option>
+                <option value="U19">U19</option>
+                <option value="A Takim">A Takim</option>
+            </select>
+            <select id="trialSport" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;">
+                <option value="futbol">Futbol</option>
+                <option value="basketbol">Basketbol</option>
+                <option value="voleybol">Voleybol</option>
+            </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+            <input id="trialPositionNeed" type="text" placeholder="Pozisyon Ihtiyaci" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;">
+            <input id="trialCapacity" type="number" min="1" placeholder="Kontenjan" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;">
+        </div>
+        <textarea id="trialDescription" placeholder="Aciklama: seviye, hedef grup, notlar" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;min-height:88px;margin-bottom:8px;"></textarea>
         <div class="needs-actions">
             <button class="btn-small secondary" onclick="toggleTrialPublishPanel(false)">Kapat</button>
             <button class="btn-small primary" onclick="publishTrialEvent()">Yayina Al</button>
@@ -2154,10 +2180,15 @@
             const time = (document.getElementById('trialTime')?.value || '').trim();
             const city = (document.getElementById('trialCity')?.value || '').trim();
             const venue = (document.getElementById('trialVenue')?.value || '').trim();
+            const ageGroup = (document.getElementById('trialAgeGroup')?.value || '').trim();
+            const sport = (document.getElementById('trialSport')?.value || 'futbol').trim();
+            const positionNeed = (document.getElementById('trialPositionNeed')?.value || '').trim();
+            const capacity = Number(document.getElementById('trialCapacity')?.value || 0);
+            const description = (document.getElementById('trialDescription')?.value || '').trim();
             const msg = document.getElementById('trialPublishMsg');
 
-            if (!title || !date || !time || !city) {
-                if (msg) msg.textContent = 'Baslik, tarih, saat ve sehir zorunlu.';
+            if (!title || !date || !time || !city || !venue) {
+                if (msg) msg.textContent = 'Baslik, tarih, saat, sehir ve saha zorunlu.';
                 return;
             }
 
@@ -2170,13 +2201,15 @@
                 event_type: typeMap[type] || 'trial_day',
                 city,
                 district: null,
-                venue: venue || 'Belirtilecek',
+                venue,
                 event_date: eventDateIso,
-                max_participants: 60,
+                max_participants: capacity > 0 ? capacity : 60,
                 entry_fee: 0,
                 is_free: true,
-                skill_level: 'all_levels',
+                skill_level: ageGroup || 'all_levels',
                 contact_info: '',
+                sport_type: sport,
+                position_need: positionNeed || null,
             };
 
             publishTrialEventApi(payload)

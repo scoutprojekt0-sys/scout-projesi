@@ -263,6 +263,28 @@
       return (p.get('view') || '').toLowerCase();
     }
 
+    function getCityFilter() {
+      const p = new URLSearchParams(window.location.search);
+      return (p.get('city') || '').trim();
+    }
+
+    function getTabFilter() {
+      const p = new URLSearchParams(window.location.search);
+      return (p.get('tab') || '').trim().toLowerCase();
+    }
+
+    function normalizeCity(value) {
+      return String(value || '')
+        .trim()
+        .toLocaleLowerCase('tr-TR')
+        .replace(/ı/g, 'i')
+        .replace(/ğ/g, 'g')
+        .replace(/ü/g, 'u')
+        .replace(/ş/g, 's')
+        .replace(/ö/g, 'o')
+        .replace(/ç/g, 'c');
+    }
+
     function goLogin() {
       localStorage.setItem('nextscout_open_login', '1');
       window.location.href = 'index.html';
@@ -271,8 +293,26 @@
     function setNotice() {
       const notice = document.getElementById('notice');
       const view = getView();
+      const city = normalizeCity(getCityFilter());
+      const tab = getTabFilter();
       const dashboardBtn = document.getElementById('coachDashboardBtn');
+      const heroTitle = document.querySelector('.hero h1');
+      const heroText = document.querySelector('.hero p');
       if (dashboardBtn) dashboardBtn.style.display = view === 'coach' ? 'inline-flex' : 'none';
+      if (city && heroTitle && heroText) {
+        const cityLabel = city.charAt(0).toUpperCase() + city.slice(1);
+        heroTitle.textContent = `${cityLabel} Maç Merkezi`;
+        heroText.textContent = tab === 'live'
+          ? `${cityLabel} şehrindeki canlı maç akışını, saha bilgilerini ve saat detaylarını takip et.`
+          : `${cityLabel} şehrindeki yaklaşan maçları, saha bilgilerini ve organizasyon detaylarını takip et.`;
+      }
+      if (city) {
+        const cityLabel = city.charAt(0).toUpperCase() + city.slice(1);
+        notice.innerHTML = tab === 'live'
+          ? `<strong>${esc(cityLabel)}</strong> için canlı maç akışı gösteriliyor.`
+          : `<strong>${esc(cityLabel)}</strong> için oynanacak maç akışı gösteriliyor.`;
+        return;
+      }
       if (view === 'player') {
         notice.innerHTML = isAuthed()
           ? 'Oyuncu olarak <strong>Başvur</strong> butonunu kullanabilirsin.'
@@ -350,7 +390,18 @@
 
     function renderBucket(elId, rows, typeFilter) {
       const root = document.getElementById(elId);
-      const items = rows.filter((x) => x.type === typeFilter);
+      const cityFilter = normalizeCity(getCityFilter());
+      const tabFilter = getTabFilter();
+      const items = rows.filter((x) => {
+        if (x.type !== typeFilter) return false;
+        if (cityFilter && normalizeCity(x.city) !== cityFilter) return false;
+        if (!cityFilter || typeFilter !== 'match') return true;
+        const status = String(x.status || '').toLowerCase();
+        const isLive = /live|active|ongoing|canli/.test(status);
+        if (tabFilter === 'live') return isLive;
+        if (tabFilter === 'upcoming') return !isLive;
+        return true;
+      });
       if (!items.length) {
         root.innerHTML = '<div class="empty">Henuz etkinlik yok.</div>';
         return;
@@ -377,10 +428,23 @@
 
     async function init() {
       setNotice();
+      const city = normalizeCity(getCityFilter());
+      const tab = getTabFilter();
+      if (city) {
+        const cityLabel = city.charAt(0).toUpperCase() + city.slice(1);
+        const cards = document.querySelectorAll('.grid .card h3');
+        const subtitles = document.querySelectorAll('.grid .card .muted');
+        if (cards[0]) cards[0].textContent = tab === 'live' ? `${cityLabel} Canlı Maçlar` : `${cityLabel} Yaklaşan Maçlar`;
+        if (cards[1]) cards[1].textContent = `${cityLabel} Saha Takvimi`;
+        if (cards[2]) cards[2].textContent = `${cityLabel} Diğer Maç Akışı`;
+        if (subtitles[0]) subtitles[0].textContent = tab === 'live' ? 'Şehirde şu an aktif görünen maçlar' : 'Şehirde sıradaki maç organizasyonları';
+        if (subtitles[1]) subtitles[1].textContent = 'Seçilen şehir için saha ve saat planı';
+        if (subtitles[2]) subtitles[2].textContent = 'Maç odaklı diğer etkinlikler ve akışlar';
+      }
       try {
         const rows = await loadEvents();
-        renderBucket('openTrials', rows, 'trial');
-        renderBucket('trainingList', rows, 'training');
+        renderBucket('openTrials', rows, city ? 'match' : 'trial');
+        renderBucket('trainingList', rows, city ? 'match' : 'training');
         renderBucket('trialMatches', rows, 'match');
       } catch (error) {
         const err = `<div class="empty">API verisi alinamadi: ${esc(error.message || 'Bilinmeyen hata')}</div>`;
@@ -396,6 +460,4 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
 

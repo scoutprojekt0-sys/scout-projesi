@@ -655,8 +655,34 @@
           </div>
           <div class="live-grid">
             <input type="text" id="trialEventCity" placeholder="Sehir" required>
-            <input type="text" id="trialEventVenue" placeholder="Saha / Tesis">
+            <input type="text" id="trialEventVenue" placeholder="Saha / Tesis" required>
           </div>
+          <div class="live-grid">
+            <select id="trialEventAgeGroup">
+              <option value="">Yas Grubu</option>
+              <option value="U9">U9</option>
+              <option value="U10">U10</option>
+              <option value="U11">U11</option>
+              <option value="U12">U12</option>
+              <option value="U13">U13</option>
+              <option value="U14">U14</option>
+              <option value="U15">U15</option>
+              <option value="U16">U16</option>
+              <option value="U17">U17</option>
+              <option value="U19">U19</option>
+              <option value="A Takim">A Takim</option>
+            </select>
+            <select id="trialEventSport">
+              <option value="futbol">Futbol</option>
+              <option value="basketbol">Basketbol</option>
+              <option value="voleybol">Voleybol</option>
+            </select>
+          </div>
+          <div class="live-grid">
+            <input type="text" id="trialEventPositionNeed" placeholder="Pozisyon Ihtiyaci (opsiyonel)">
+            <input type="number" id="trialEventCapacity" min="1" placeholder="Kontenjan (opsiyonel)">
+          </div>
+          <textarea id="trialEventDescription" placeholder="Aciklama (opsiyonel): seviye, hedef grup, notlar"></textarea>
         </div>
         <div class="need-modal-actions">
           <button class="btn-small secondary" type="button" onclick="closeTrialPublishModal()">Iptal</button>
@@ -1346,9 +1372,14 @@
       const time = (document.getElementById('trialEventTime').value || '').trim();
       const city = (document.getElementById('trialEventCity').value || '').trim();
       const venue = (document.getElementById('trialEventVenue').value || '').trim();
+      const ageGroup = (document.getElementById('trialEventAgeGroup').value || '').trim();
+      const sport = (document.getElementById('trialEventSport').value || 'futbol').trim();
+      const positionNeed = (document.getElementById('trialEventPositionNeed').value || '').trim();
+      const capacity = Number(document.getElementById('trialEventCapacity').value || 0);
+      const description = (document.getElementById('trialEventDescription').value || '').trim();
 
-      if (!title || !date || !time || !city) {
-        window.nsNotify?.error ? window.nsNotify.error('Baslik, tarih, saat ve sehir zorunlu.') : nsnsAlert('Baslik, tarih, saat ve sehir zorunlu.');
+      if (!title || !date || !time || !city || !venue) {
+        window.nsNotify?.error ? window.nsNotify.error('Baslik, tarih, saat, sehir ve saha zorunlu.') : nsnsAlert('Baslik, tarih, saat, sehir ve saha zorunlu.');
         return;
       }
 
@@ -1357,17 +1388,19 @@
 
       const payload = {
         title,
-        description: 'DASHBOARD ilani',
+        description: description || 'DASHBOARD ilani',
         event_type: typeMap[type] || 'trial_day',
         city,
         district: null,
-        venue: venue || 'Belirtilecek',
+        venue,
         event_date: eventDateIso,
-        max_participants: 40,
+        max_participants: capacity > 0 ? capacity : 40,
         entry_fee: 0,
         is_free: true,
-        skill_level: 'all_levels',
+        skill_level: ageGroup || 'all_levels',
         contact_info: '',
+        sport_type: sport,
+        position_need: positionNeed || null,
       };
 
       publishTrialEventApi(payload)
