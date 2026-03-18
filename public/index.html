@@ -8906,58 +8906,6 @@
                 </div>
             </section>
 
-            <section class="turkey-heatmap-card" id="turkeyHeatmapCard">
-                <div class="turkey-heatmap-head">
-                    <div>
-                        <div class="eyebrow">Canlı Talep Haritası</div>
-                        <h3 class="turkey-heatmap-title">Türkiye Yetenek Isı Haritası</h3>
-                        <div class="turkey-heatmap-copy" id="turkeyHeatmapCopy">Şehir bazlı arama ile yüksek puanlı oyuncu yoğunluğunu ve canlı maç trafiğini tek kartta gör. Bir il yazdığında o şehrin sıcak verisi anında açılır.</div>
-                        <div class="turkey-search-bar">
-                            <input class="turkey-search-input" id="turkeyHeatmapSearch" type="text" placeholder="Şehir yaz: İstanbul, Aydın, Ankara...">
-                            <div class="turkey-search-chip" id="turkeyHeatmapSearchState"><i class="fas fa-magnifying-glass"></i><span>Canlı şehir araması</span></div>
-                        </div>
-                    </div>
-                    <div class="turkey-heatmap-badge" id="turkeyHeatmapBadge">
-                        <i class="fas fa-wave-square"></i>
-                        <span>Canlı şehir yoğunluğu yükleniyor</span>
-                    </div>
-                </div>
-                <div class="turkey-heatmap-layout">
-                    <div class="turkey-heatmap-side">
-                        <article class="turkey-side-card">
-                            <div class="turkey-side-k">Odak Şehir</div>
-                            <div class="turkey-focus-city" id="turkeyHeatmapFocusCity">İstanbul</div>
-                            <div class="turkey-focus-copy" id="turkeyHeatmapFocusCopy">Şu an 12 farklı sahada maç var ve 4 yetenek takibimizde.</div>
-                            <div class="turkey-focus-meta">
-                                <div class="turkey-focus-line"><span>Yüksek Puanlı Oyuncu</span><strong id="turkeyHeatmapHighRated">0</strong></div>
-                                <div class="turkey-focus-line"><span>Canlı Maç</span><strong id="turkeyHeatmapMatches">0</strong></div>
-                                <div class="turkey-focus-line"><span>Takipteki Yetenek</span><strong id="turkeyHeatmapTracked">0</strong></div>
-                                <div class="turkey-focus-line"><span>Öne Çıkan Rol</span><strong id="turkeyHeatmapTopRole">-</strong></div>
-                            </div>
-                            <div class="turkey-fixture-list" id="turkeyHeatmapFixtureList">
-                                <div class="turkey-fixture-item">
-                                    <div class="turkey-fixture-title">Şehir sonucu bekleniyor</div>
-                                    <div class="turkey-fixture-meta">Şehir yazdığında o ile ait maç ve saha listesi burada açılacak.</div>
-                                </div>
-                            </div>
-                            <div class="turkey-detail-card" id="turkeyHeatmapDetailCard" style="margin-top:12px;">
-                                <div class="turkey-detail-title">Detay paneli hazır</div>
-                                <div class="turkey-detail-copy">Bir maç satırına bastığında oyuncu, saha, pozisyon ve saat bilgisi burada açılacak.</div>
-                            </div>
-                        </article>
-                        <article class="turkey-side-card">
-                            <div class="turkey-side-k">7 Günlük Snapshot</div>
-                            <div class="turkey-focus-meta">
-                                <div class="turkey-focus-line"><span>Aktif Şehir</span><strong id="turkeyHeatmapCityCount">0</strong></div>
-                                <div class="turkey-focus-line"><span>Yüksek Puanlı Toplam</span><strong id="turkeyHeatmapHighRatedTotal">0</strong></div>
-                                <div class="turkey-focus-line"><span>Canlı Maç Toplamı</span><strong id="turkeyHeatmapLiveMatchesTotal">0</strong></div>
-                                <div class="turkey-focus-line"><span>Takipteki Yetenek</span><strong id="turkeyHeatmapTrackedTotal">0</strong></div>
-                            </div>
-                        </article>
-                    </div>
-                </div>
-            </section>
-
             <section class="home-data-center-panel">
                 <div class="home-data-center-grid">
                     <article class="home-data-card">
@@ -11394,7 +11342,6 @@
             // İlk yükleme
             renderBreakingNewsStrip();
             renderFeatureTransferCard();
-            renderTurkeyHeatmapCard();
             renderScoutRadarInsightCard();
             renderHomeNeedsInsightCard();
             renderTransferDeskCard();
@@ -11429,7 +11376,6 @@
             }, 120000); // 120 seconds
 
             setInterval(() => {
-                renderTurkeyHeatmapCard();
             }, 180000); // 180 seconds
 
             setInterval(() => {
@@ -11530,7 +11476,6 @@
             renderManagerNeedsButtonPanel();
             renderContractStatusTicker();
             window.NextScoutGrowth?.idle(() => renderFeatureTransferCard(), 800);
-            window.NextScoutGrowth?.idle(() => renderTurkeyHeatmapCard(), 820);
             window.NextScoutGrowth?.idle(() => renderScoutRadarInsightCard(), 830);
             window.NextScoutGrowth?.idle(() => renderHomeNeedsInsightCard(), 850);
             window.NextScoutGrowth?.idle(() => renderTransferDeskCard(), 860);
