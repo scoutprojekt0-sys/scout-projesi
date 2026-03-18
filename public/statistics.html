@@ -3,416 +3,598 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Istatistikler - NextScout</title>
-    <meta name="description" content="NextScout statistics sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
-    <meta name="robots" content="index,follow">
-    <link rel="canonical" href="https://nextscout.pro/statistics.html">
-    <meta property="og:type" content="website">
-    <meta property="og:locale" content="tr_TR">
-    <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="Istatistikler - NextScout">
-    <meta property="og:description" content="NextScout statistics sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
-    <meta property="og:url" content="https://nextscout.pro/statistics.html">
-    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Istatistikler - NextScout">
-    <meta name="twitter:description" content="NextScout statistics sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
-    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
-    <meta name="theme-color" content="#0B3B8A">
+  <title>İstatistikler - NextScout</title>
+  <meta name="description" content="Oyuncu istatistikleri, performans özeti ve sistem puanı.">
+  <meta name="theme-color" content="#0B3B8A">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <style>
     :root {
-      --bg: #07111f;
-      --card: linear-gradient(180deg, rgba(12, 21, 38, 0.94), rgba(9, 16, 29, 0.9));
-      --line: rgba(148, 163, 184, 0.2);
-      --text: #f8fafc;
-      --muted: #b8c4d9;
-      --primary: #f97316;
-      --primary-2: #fb923c;
-      --accent: #38bdf8;
-      --green: #22c55e;
-      --amber: #f59e0b;
-      --shadow: 0 24px 60px rgba(2, 8, 23, 0.42);
+      --bg: #08131d;
+      --ink: #f5fbff;
+      --text: #f5fbff;
+      --muted: #9bb5cb;
+      --line: #2b4660;
+      --panel: #0f1f2e;
+      --panel-2: #12293d;
+      --primary: #8fd3ff;
+      --accent: #60a5fa;
+      --green: #2fd4b0;
+      --amber: #ffb347;
+      --cta: #ff5a1f;
+      --cta-2: #ff7e22;
+      --shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
     }
     * { box-sizing: border-box; }
-    html {
-      min-height: 100%;
-      background:
-        radial-gradient(circle at 12% 18%, rgba(56, 189, 248, 0.18), transparent 0 30%),
-        radial-gradient(circle at 88% 14%, rgba(249, 115, 22, 0.16), transparent 0 34%),
-        radial-gradient(circle at 50% 100%, rgba(14, 165, 233, 0.08), transparent 0 38%),
-        linear-gradient(180deg, #08111f 0%, #0b172a 52%, #09111d 100%);
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-attachment: fixed;
-    }
     body {
       margin: 0;
       min-height: 100vh;
       font-family: Inter, Segoe UI, Arial, sans-serif;
+      color: var(--ink);
       background:
-        radial-gradient(circle at 12% 18%, rgba(56, 189, 248, 0.18), transparent 0 30%),
-        radial-gradient(circle at 88% 14%, rgba(249, 115, 22, 0.16), transparent 0 34%),
-        radial-gradient(circle at 50% 100%, rgba(14, 165, 233, 0.08), transparent 0 38%),
-        linear-gradient(180deg, #08111f 0%, #0b172a 52%, #09111d 100%);
-      background-repeat: no-repeat;
-      background-size: cover;
+        radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+        radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+        var(--bg);
       background-attachment: fixed;
-      color: var(--text);
     }
     .wrap {
-      position: relative;
-      max-width: 1150px;
+      max-width: 1180px;
       margin: 0 auto;
       padding: 24px 16px 40px;
     }
-    .header {
+    .header,
+    .card,
+    .panel,
+    .table-card {
       position: relative;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 18px;
-      margin-bottom: 16px;
-      padding: 28px 30px;
-      border-radius: 26px;
-      border: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(10, 18, 32, 0.92));
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
       overflow: hidden;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      box-shadow: var(--shadow);
+      border-radius: 0;
     }
-    .header::before {
+    .header::before,
+    .card::before,
+    .panel::before,
+    .table-card::before {
       content: "";
       position: absolute;
       inset: 0 0 auto 0;
       height: 4px;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
+      background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
     }
-    .title { margin: 0; font-size: 32px; font-weight: 800; font-family: Poppins, Inter, sans-serif; letter-spacing: -0.02em; }
-    .subtitle { margin-top: 8px; color: var(--muted); font-size: 14px; line-height: 1.7; }
-    .actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 28px 30px;
+      margin-bottom: 16px;
+    }
+    .title {
+      margin: 0;
+      font-size: 32px;
+      font-weight: 800;
+      font-family: Poppins, Inter, sans-serif;
+      letter-spacing: -0.02em;
+    }
+    .subtitle {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      border: 1px solid rgba(148, 163, 184, 0.22);
-      background: rgba(148, 163, 184, 0.12);
-      color: #e2e8f0;
       padding: 11px 16px;
-      border-radius: 12px;
+      border-radius: 0;
       text-decoration: none;
       font-weight: 700;
       font-size: 13px;
-      cursor: pointer;
-      line-height: 1;
-      box-shadow: 0 16px 36px rgba(2, 8, 23, 0.25);
-      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      color: #dbeafe;
     }
-    .btn:hover { transform: translateY(-1px); border-color: rgba(56, 189, 248, 0.4); background: rgba(148, 163, 184, 0.2); color: #fff; }
     .btn-primary {
-      border-color: rgba(249, 115, 22, 0.38);
-      background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
-      color: #fff7ed;
+      border-color: rgba(255, 126, 34, 0.65);
+      background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
+      color: #ffffff;
     }
-    .btn-primary:hover { border-color: rgba(251, 146, 60, 0.62); background: linear-gradient(135deg, #ea580c 0%, #f97316 100%); }
     .btn-secondary {
-      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
-      color: #16325c;
-      border: 1px solid rgba(255,126,34,.45);
-      box-shadow: 0 12px 24px rgba(8,19,29,.24);
+      background: rgba(255, 255, 255, 0.04);
+      color: #dbeafe;
+      border-color: var(--line);
     }
-    .btn-secondary:hover {
-      color: #102746;
-      border-color: rgba(255,126,34,.6);
-      background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(219,234,254,0.96) 100%);
-    }
-    .grid {
+    .summary-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0,1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
       margin-bottom: 14px;
     }
     .card {
-      position: relative;
-      overflow: hidden;
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      box-shadow: var(--shadow);
       padding: 20px;
-      backdrop-filter: blur(16px);
     }
-    .card::before,
-    .chart-wrap::before {
-      content: "";
-      position: absolute;
-      inset: 0 0 auto 0;
-      height: 3px;
-      background: linear-gradient(90deg, rgba(249, 115, 22, 0.95), rgba(56, 189, 248, 0.95));
+    .label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
     }
-    .k { font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; }
-    .v { margin-top: 6px; font-size: 28px; font-weight: 800; }
-    .delta { margin-top: 6px; font-size: 12px; font-weight: 700; }
-    .up { color: var(--green); }
-    .mid { color: var(--amber); }
-    .panel {
+    .value {
+      margin-top: 8px;
+      font-size: 30px;
+      font-weight: 800;
+    }
+    .delta {
+      margin-top: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .delta.up { color: var(--green); }
+    .delta.mid { color: var(--amber); }
+    .main-grid {
       display: grid;
-      grid-template-columns: 2fr 1fr;
+      grid-template-columns: 1.45fr 1fr;
       gap: 12px;
+      margin-bottom: 14px;
     }
-    .chart-wrap {
-      position: relative;
-      overflow: hidden;
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      box-shadow: var(--shadow);
+    .panel {
       padding: 20px;
-      backdrop-filter: blur(16px);
     }
     .panel-title {
-      margin: 0 0 10px 0;
+      margin: 0 0 12px 0;
       font-size: 16px;
       font-weight: 800;
       font-family: Poppins, Inter, sans-serif;
     }
-    .list {
+    .score-shell {
       display: grid;
-      gap: 8px;
+      grid-template-columns: 160px 1fr;
+      gap: 16px;
+      align-items: center;
     }
-    .row {
-      background: rgba(15, 23, 42, 0.76);
-      border: 1px solid rgba(148, 163, 184, 0.18);
-      border-radius: 16px;
-      padding: 12px;
+    .score-ring {
+      width: 160px;
+      height: 160px;
+      border-radius: 0;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at center, rgba(8, 19, 29, 0.96) 0 56%, transparent 57% 100%),
+        conic-gradient(#f97316 0deg, #38bdf8 var(--score-angle), rgba(148, 163, 184, 0.18) var(--score-angle), rgba(148, 163, 184, 0.18) 360deg);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+    .score-core {
+      text-align: center;
+    }
+    .score-number {
+      font-size: 34px;
+      font-weight: 800;
+    }
+    .score-caption {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .score-list {
+      display: grid;
+      gap: 10px;
+    }
+    .score-item {
       display: flex;
       justify-content: space-between;
-      gap: 8px;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 0;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--line);
+    }
+    .score-item strong {
+      display: block;
+      font-size: 14px;
+    }
+    .score-item span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .score-item b {
+      font-size: 18px;
+    }
+    .tables {
+      display: grid;
+      gap: 12px;
+    }
+    .table-card {
+      padding: 20px;
+    }
+    .table-sub {
+      margin: 0 0 12px 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 0;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    table {
+      width: 100%;
+      min-width: 720px;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
       font-size: 13px;
     }
-    .row .rk { color: var(--muted); }
-    .row .rv { font-weight: 700; }
-    canvas {
-      width: 100%;
-      height: 260px;
-      border-radius: 16px;
-      background: linear-gradient(180deg, rgba(15, 23, 42, 0.92) 0%, rgba(17, 24, 39, 0.96) 100%);
-      border: 1px solid rgba(148, 163, 184, 0.18);
+    th {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #dbeafe;
+      background: rgba(8, 19, 29, 0.42);
+    }
+    td { color: var(--text); }
+    tr:last-child td { border-bottom: none; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 0;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      color: #dbeafe;
+      white-space: nowrap;
+    }
+    .pill.verified {
+      border-color: rgba(47, 212, 176, 0.34);
+      background: rgba(47, 212, 176, 0.14);
+      color: #b9ffe6;
+    }
+    .pill.evidence {
+      border-color: rgba(255, 126, 34, 0.34);
+      background: rgba(255, 126, 34, 0.14);
+      color: #ffd5b0;
+    }
+    .pill.self {
+      border-color: rgba(143, 211, 255, 0.34);
+      background: rgba(143, 211, 255, 0.14);
+      color: #d6efff;
     }
     @media (max-width: 980px) {
-      .grid { grid-template-columns: 1fr 1fr; }
-      .panel { grid-template-columns: 1fr; }
+      .summary-grid { grid-template-columns: 1fr 1fr; }
+      .main-grid { grid-template-columns: 1fr; }
+      .score-shell { grid-template-columns: 1fr; }
+      .score-ring { margin: 0 auto; }
     }
     @media (max-width: 560px) {
-      .grid { grid-template-columns: 1fr; }
+      .summary-grid { grid-template-columns: 1fr; }
+      .header { flex-direction: column; padding: 20px 18px; }
       .title { font-size: 24px; }
-      .wrap { padding: 14px 10px 28px; }
-      .header { flex-direction: column; align-items: flex-start; gap: 12px; padding: 20px 18px; border-radius: 22px; }
       .actions { width: 100%; }
-      .btn { width: 100%; text-align: center; }
-      .chart-wrap { padding: 12px; }
-      canvas { height: 220px; }
+      .btn { width: 100%; }
+      .wrap { padding: 14px 10px 28px; }
     }
   </style>
-    <link rel="stylesheet" href="assets/css/mobile-unified.css">
-    <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
 <body>
   <div class="wrap">
     <div class="header">
       <div>
         <h1 class="title">İstatistikler</h1>
-        <div class="subtitle">Sezon performansın ve son form durumun.</div>
+        <div class="subtitle" id="pageSubtitle">Sezon performansın ve sistem puanın burada görünür.</div>
       </div>
       <div class="actions">
-        <a class="btn btn-primary" href="index.html">
-          <i class="fas fa-house"></i>
-          <span>Ana Sayfa</span>
-        </a>
-        <a class="btn btn-secondary" href="coach-dashboard.html">
-          <i class="fas fa-table-columns"></i>
-          <span>Dashboard</span>
-        </a>
+        <a class="btn btn-primary" href="index.html"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
+        <a class="btn btn-secondary" href="player-dashboard.html"><i class="fas fa-table-columns"></i><span>Dashboard</span></a>
       </div>
     </div>
 
-    <div class="grid" id="statsCards"></div>
+    <div class="summary-grid" id="summaryGrid"></div>
 
-    <div class="panel">
-      <div class="chart-wrap">
-        <h2 class="panel-title">Son 6 Ma� Form Grafigi</h2>
-        <canvas id="formChart" width="760" height="260"></canvas>
-      </div>
+    <div class="main-grid">
+      <section class="panel">
+        <h2 class="panel-title">Sistem Performans Puanı</h2>
+        <div class="score-shell">
+          <div class="score-ring" id="scoreRing">
+            <div class="score-core">
+              <div class="score-number" id="scoreNumber">0</div>
+              <div class="score-caption">Genel Puan</div>
+            </div>
+          </div>
+          <div class="score-list" id="scoreList"></div>
+        </div>
+      </section>
 
-      <div class="chart-wrap">
-        <h2 class="panel-title">Detay Dagilim</h2>
-        <div class="list" id="detailList"></div>
-      </div>
+      <section class="panel">
+        <h2 class="panel-title">Detay Dağılım</h2>
+        <div class="score-list" id="detailList"></div>
+      </section>
+    </div>
+
+    <div class="tables">
+      <section class="table-card">
+        <h2 class="panel-title">Sezon İstatistik Tablosu</h2>
+        <div class="table-sub">Oyuncunun branşa göre girilen temel sezon verileri ve sistem durumu.</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Metrik</th>
+                <th>Değer</th>
+                <th>Kaynak</th>
+                <th>Durum</th>
+              </tr>
+            </thead>
+            <tbody id="seasonTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="table-card">
+        <h2 class="panel-title">Doğrulama ve Kaynak</h2>
+        <div class="table-sub">Veri oyuncu girişi olsa bile sistem hangi alanın ne kadar güvenli olduğunu ayrı gösterir.</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Alan</th>
+                <th>Kaynak</th>
+                <th>Kanıt</th>
+                <th>Yorum</th>
+              </tr>
+            </thead>
+            <tbody id="verificationTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="table-card">
+        <h2 class="panel-title">Yayın ve Güven Kuralları</h2>
+        <div class="table-sub">Puanı sistem üretir. Oyuncu veri girer ama sistem hepsini aynı ağırlıkta kabul etmez.</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Alan</th>
+                <th>Yayın</th>
+                <th>Etiket</th>
+                <th>Not</th>
+              </tr>
+            </thead>
+            <tbody id="rulesTable"></tbody>
+          </table>
+        </div>
+      </section>
     </div>
   </div>
 
   <script>
-    const profileRaw = localStorage.getItem('playerProfile');
-    let p = {};
-    try { p = profileRaw ? JSON.parse(profileRaw) : {}; } catch { p = {}; }
+    const profileRaw = localStorage.getItem("playerProfile");
+    let profile = {};
+    try {
+      profile = profileRaw ? JSON.parse(profileRaw) : {};
+    } catch (_) {
+      profile = {};
+    }
 
-    const stats = {
-      matches: Number(p.matches || 28),
-      goals: Number(p.goals || 15),
-      assists: Number(p.assists || 6),
-      rating: Number(p.rating || 4.8),
-      keyPasses: Number(p.keyPasses || 19),
-      duelsWon: Number(p.duelsWon || 42)
+    const sport = String(profile.sport || profile.branch || "futbol").toLocaleLowerCase("tr-TR");
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function pill(text, tone) {
+      return `<span class="pill ${tone || ""}">${text}</span>`;
+    }
+
+    function renderRows(targetId, rows) {
+      const root = document.getElementById(targetId);
+      if (!root) return;
+      root.innerHTML = rows.map((row) => `
+        <tr>
+          ${row.map((cell) => `<td>${cell}</td>`).join("")}
+        </tr>
+      `).join("");
+    }
+
+    const football = {
+      matches: Number(profile.matches || 28),
+      goals: Number(profile.goals || 15),
+      assists: Number(profile.assists || 6),
+      rating: Number(profile.rating || 4.8),
+      minutes: Number(profile.minutes || 2110)
     };
 
-    const cards = [
-      { k: 'Ma�', v: stats.matches, d: '+3 bu ay', c: 'up' },
-      { k: 'Gol', v: stats.goals, d: '+2 son hafta', c: 'up' },
-      { k: 'Asist', v: stats.assists, d: '+1 son hafta', c: 'up' },
-      { k: 'Rating', v: stats.rating.toFixed(1), d: 'stabil', c: 'mid' }
-    ];
+    const basketball = {
+      matches: Number(profile.matches || 32),
+      points: Number(profile.points || 18.4),
+      rebounds: Number(profile.rebounds || 7.2),
+      assists: Number(profile.assists || 5.6),
+      minutes: Number(profile.minutes || 29.8)
+    };
 
-    const statsCards = document.getElementById('statsCards');
-    statsCards.innerHTML = cards.map(x => `
-      <div class="card">
-        <div class="k">${x.k}</div>
-        <div class="v">${x.v}</div>
-        <div class="delta ${x.c}">${x.d}</div>
-      </div>
-    `).join('');
+    const volleyball = {
+      matches: Number(profile.matches || 24),
+      sets: Number(profile.sets || 88),
+      points: Number(profile.points || 146),
+      aces: Number(profile.aces || 21),
+      blocks: Number(profile.blocks || 18),
+      reception: Number(profile.reception || 62)
+    };
 
-    const detailList = document.getElementById('detailList');
-    detailList.innerHTML = `
-      <div class="row"><span class="rk">Toplam Ma�</span><span class="rv">${stats.matches}</span></div>
-      <div class="row"><span class="rk">Toplam Gol</span><span class="rv">${stats.goals}</span></div>
-      <div class="row"><span class="rk">Toplam Asist</span><span class="rv">${stats.assists}</span></div>
-      <div class="row"><span class="rk">Kilit Pas</span><span class="rv">${stats.keyPasses}</span></div>
-      <div class="row"><span class="rk">Kazanilan Ikili M�cadele</span><span class="rv">${stats.duelsWon}</span></div>
-      <div class="row"><span class="rk">Ortalama Rating</span><span class="rv">${stats.rating.toFixed(1)}</span></div>
-    `;
-
-    const form = [6.8, 7.2, 7.6, 8.1, 7.9, Math.max(6.5, Math.min(9.8, stats.rating + 2))];
-    const labels = ['M1', 'M2', 'M3', 'M4', 'M5', 'M6'];
-
-    function applyTurkishTextFixes() {
-      document.title = 'İstatistikler - NextScout';
-      const metaDescription = document.querySelector('meta[name="description"]');
-      if (metaDescription) metaDescription.setAttribute('content', 'NextScout istatistik sayfası: futbol scout, kulüp ve oyuncu odaklı platform içeriği.');
-      const ogTitle = document.querySelector('meta[property="og:title"]');
-      if (ogTitle) ogTitle.setAttribute('content', 'İstatistikler - NextScout');
-      const ogDescription = document.querySelector('meta[property="og:description"]');
-      if (ogDescription) ogDescription.setAttribute('content', 'NextScout istatistik sayfası: futbol scout, kulüp ve oyuncu odaklı platform içeriği.');
-      const twitterTitle = document.querySelector('meta[name="twitter:title"]');
-      if (twitterTitle) twitterTitle.setAttribute('content', 'İstatistikler - NextScout');
-      const twitterDescription = document.querySelector('meta[name="twitter:description"]');
-      if (twitterDescription) twitterDescription.setAttribute('content', 'NextScout istatistik sayfası: futbol scout, kulüp ve oyuncu odaklı platform içeriği.');
-
-      const title = document.querySelector('.title');
-      if (title) title.textContent = 'İstatistikler';
-      const subtitle = document.querySelector('.subtitle');
-      if (subtitle) subtitle.textContent = 'Sezon performansın ve son form durumun.';
-      const panelTitles = document.querySelectorAll('.panel-title');
-      if (panelTitles[0]) panelTitles[0].textContent = 'Son 6 Maç Form Grafiği';
-      if (panelTitles[1]) panelTitles[1].textContent = 'Detay Dağılım';
-
-      document.querySelectorAll('.card .k').forEach((el) => {
-        if (el.textContent.includes('Ma')) el.textContent = 'Maç';
-      });
-
-      document.querySelectorAll('.row .rk').forEach((el) => {
-        const text = el.textContent || '';
-        if (text.includes('Toplam Ma')) el.textContent = 'Toplam Maç';
-        if (text.includes('Kazanilan') || text.includes('Ikili') || text.includes('Mï¿½cadele')) {
-          el.textContent = text
-            .replace('Kazanilan', 'Kazanılan')
-            .replace('Ikili', 'İkili')
-            .replace('Mï¿½cadele', 'Mücadele');
+    const model = sport === "basketbol"
+      ? {
+          subtitle: "Sezon performansın, sayı üretimin ve oyun katkın burada görünür.",
+          summary: [
+            { label: "Maç", value: basketball.matches, delta: "+4 bu ay", tone: "up" },
+            { label: "Sayı Ort.", value: basketball.points.toFixed(1), delta: "+1.8 son hafta", tone: "up" },
+            { label: "Ribaund", value: basketball.rebounds.toFixed(1), delta: "stabil", tone: "mid" },
+            { label: "Asist", value: basketball.assists.toFixed(1), delta: "+0.7 son hafta", tone: "up" }
+          ],
+          scoreParts: [
+            { label: "Maç Katkısı", text: "Oynama hacmi", value: clamp(basketball.matches * 1.4, 0, 30) },
+            { label: "Süre Katkısı", text: "Dakika ortalaması", value: clamp(basketball.minutes * 1.1, 0, 30) },
+            { label: "Üretim Katkısı", text: "Sayı + asist + ribaund", value: clamp((basketball.points * 1.6) + basketball.assists + basketball.rebounds, 0, 40) }
+          ],
+          details: [
+            ["Toplam Maç", basketball.matches],
+            ["Sayı Ortalaması", basketball.points.toFixed(1)],
+            ["Ribaund Ortalaması", basketball.rebounds.toFixed(1)],
+            ["Asist Ortalaması", basketball.assists.toFixed(1)],
+            ["Dakika Ortalaması", basketball.minutes.toFixed(1)]
+          ],
+          seasonRows: [
+            ["Maç", basketball.matches, pill("Oyuncu Girişi", "self"), pill("Sistem Hesabı", "verified")],
+            ["Sayı Ort.", basketball.points.toFixed(1), pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")],
+            ["Ribaund", basketball.rebounds.toFixed(1), pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")],
+            ["Asist", basketball.assists.toFixed(1), pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")],
+            ["Dakika", basketball.minutes.toFixed(1), pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")]
+          ],
+          verificationRows: [
+            ["Maç / Dakika", pill("Oyuncu Beyanı", "self"), "Varsa video / skor kaydı", "Sistem puanı buna göre hesaplanır"],
+            ["Sayı / Asist", pill("Oyuncu Beyanı", "self"), "İsteğe bağlı belge", "Ham veri görünür, puanı sistem verir"],
+            ["Ribaund", pill("Oyuncu Beyanı", "self"), "İsteğe bağlı belge", "Tek başına güven rozeti üretmez"]
+          ]
         }
-      });
-    }
+      : sport === "voleybol"
+        ? {
+            subtitle: "Sezon performansın, set üretimin ve hücum verin burada görünür.",
+            summary: [
+              { label: "Maç", value: volleyball.matches, delta: "+2 bu ay", tone: "up" },
+              { label: "Set", value: volleyball.sets, delta: "aktif sezon", tone: "mid" },
+              { label: "Sayı", value: volleyball.points, delta: "+11 son hafta", tone: "up" },
+              { label: "Ace", value: volleyball.aces, delta: "+3 son hafta", tone: "up" }
+            ],
+            scoreParts: [
+              { label: "Maç Katkısı", text: "Oynama hacmi", value: clamp(volleyball.matches * 1.3, 0, 28) },
+              { label: "Set Katkısı", text: "Sahada kalma süresi", value: clamp(volleyball.sets * 0.34, 0, 32) },
+              { label: "Hücum Katkısı", text: "Sayı + ace + blok", value: clamp((volleyball.points * 0.18) + (volleyball.aces * 1.4) + (volleyball.blocks * 1.2), 0, 40) }
+            ],
+            details: [
+              ["Toplam Maç", volleyball.matches],
+              ["Toplam Set", volleyball.sets],
+              ["Toplam Sayı", volleyball.points],
+              ["Ace", volleyball.aces],
+              ["Blok", volleyball.blocks],
+              ["Manşet %", `%${volleyball.reception}`]
+            ],
+            seasonRows: [
+              ["Maç", volleyball.matches, pill("Oyuncu Girişi", "self"), pill("Sistem Hesabı", "verified")],
+              ["Set", volleyball.sets, pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")],
+              ["Sayı", volleyball.points, pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")],
+              ["Ace", volleyball.aces, pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")],
+              ["Blok", volleyball.blocks, pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")]
+            ],
+            verificationRows: [
+              ["Maç / Set", pill("Oyuncu Beyanı", "self"), "Varsa maç kağıdı", "Sistem puanı buna göre hesaplanır"],
+              ["Sayı / Ace", pill("Oyuncu Beyanı", "self"), "İsteğe bağlı video", "Ham veri görünür, puanı sistem verir"],
+              ["Blok / Manşet", pill("Oyuncu Beyanı", "self"), "İsteğe bağlı belge", "Güven etiketi ayrı tutulur"]
+            ]
+          }
+        : {
+            subtitle: "Sezon performansın ve sistem puanın burada görünür.",
+            summary: [
+              { label: "Maç", value: football.matches, delta: "+3 bu ay", tone: "up" },
+              { label: "Gol", value: football.goals, delta: "+2 son hafta", tone: "up" },
+              { label: "Asist", value: football.assists, delta: "+1 son hafta", tone: "up" },
+              { label: "Rating", value: football.rating.toFixed(1), delta: "stabil", tone: "mid" }
+            ],
+            scoreParts: [
+              { label: "Maç Katkısı", text: "Oynama hacmi", value: clamp(football.matches * 1.4, 0, 25) },
+              { label: "Süre Katkısı", text: "Dakika toplamı", value: clamp((football.minutes / 90), 0, 25) },
+              { label: "Çıktı Katkısı", text: "Gol + asist", value: clamp((football.goals * 4) + (football.assists * 3), 0, 30) },
+              { label: "Form Katkısı", text: "Rating etkisi", value: clamp(football.rating * 2, 0, 20) }
+            ],
+            details: [
+              ["Toplam Maç", football.matches],
+              ["Toplam Dakika", football.minutes],
+              ["Toplam Gol", football.goals],
+              ["Toplam Asist", football.assists],
+              ["Rating", football.rating.toFixed(1)]
+            ],
+            seasonRows: [
+              ["Maç", football.matches, pill("Oyuncu Girişi", "self"), pill("Sistem Hesabı", "verified")],
+              ["Dakika", football.minutes, pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")],
+              ["Gol", football.goals, pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")],
+              ["Asist", football.assists, pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")],
+              ["Rating", football.rating.toFixed(1), pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")]
+            ],
+            verificationRows: [
+              ["Maç / Dakika", pill("Oyuncu Beyanı", "self"), "Varsa maç kağıdı", "Sistem puanı buna göre hesaplanır"],
+              ["Gol / Asist", pill("Oyuncu Beyanı", "self"), "İsteğe bağlı video", "Ham veri görünür, puanı sistem verir"],
+              ["Rating", pill("Sistem Üretimi", "verified"), "İç model", "Elle puan verilmez"]
+            ]
+          };
 
-    const canvas = document.getElementById('formChart');
-    const ctx = canvas.getContext('2d');
-    const w = canvas.width;
-    const h = canvas.height;
+    const totalScore = Math.round(model.scoreParts.reduce((sum, item) => sum + item.value, 0));
+    const scoreList = document.getElementById("scoreList");
+    const summaryGrid = document.getElementById("summaryGrid");
+    const detailList = document.getElementById("detailList");
+    const scoreNumber = document.getElementById("scoreNumber");
+    const scoreRing = document.getElementById("scoreRing");
+    const subtitle = document.getElementById("pageSubtitle");
 
-    function drawChart() {
-      ctx.clearRect(0, 0, w, h);
+    if (subtitle) subtitle.textContent = model.subtitle;
+    if (scoreNumber) scoreNumber.textContent = totalScore;
+    if (scoreRing) scoreRing.style.setProperty("--score-angle", `${Math.round((totalScore / 100) * 360)}deg`);
 
-      const pad = { l: 46, r: 20, t: 22, b: 34 };
-      const cw = w - pad.l - pad.r;
-      const ch = h - pad.t - pad.b;
+    summaryGrid.innerHTML = model.summary.map((item) => `
+      <article class="card">
+        <div class="label">${item.label}</div>
+        <div class="value">${item.value}</div>
+        <div class="delta ${item.tone}">${item.delta}</div>
+      </article>
+    `).join("");
 
-      ctx.strokeStyle = '#334155';
-      ctx.lineWidth = 1;
-      for (let i = 0; i <= 4; i++) {
-        const y = pad.t + (ch / 4) * i;
-        ctx.beginPath();
-        ctx.moveTo(pad.l, y);
-        ctx.lineTo(w - pad.r, y);
-        ctx.stroke();
-      }
+    scoreList.innerHTML = model.scoreParts.map((item) => `
+      <div class="score-item">
+        <div>
+          <strong>${item.label}</strong>
+          <span>${item.text}</span>
+        </div>
+        <b>${Math.round(item.value)}</b>
+      </div>
+    `).join("");
 
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = '12px Inter, Arial';
-      for (let i = 0; i < labels.length; i++) {
-        const x = pad.l + (cw / (labels.length - 1)) * i;
-        ctx.fillText(labels[i], x - 10, h - 12);
-      }
+    detailList.innerHTML = model.details.map((item) => `
+      <div class="score-item">
+        <div>
+          <strong>${item[0]}</strong>
+        </div>
+        <b>${item[1]}</b>
+      </div>
+    `).join("");
 
-      const minY = 6.0;
-      const maxY = 10.0;
-      const toX = i => pad.l + (cw / (form.length - 1)) * i;
-      const toY = v => pad.t + (1 - (v - minY) / (maxY - minY)) * ch;
-
-      const grad = ctx.createLinearGradient(0, pad.t, 0, h - pad.b);
-      grad.addColorStop(0, 'rgba(37,99,235,0.30)');
-      grad.addColorStop(1, 'rgba(37,99,235,0.05)');
-
-      ctx.beginPath();
-      ctx.moveTo(toX(0), h - pad.b);
-      form.forEach((v, i) => ctx.lineTo(toX(i), toY(v)));
-      ctx.lineTo(toX(form.length - 1), h - pad.b);
-      ctx.closePath();
-      ctx.fillStyle = grad;
-      ctx.fill();
-
-      ctx.beginPath();
-      form.forEach((v, i) => {
-        const x = toX(i), y = toY(v);
-        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-      });
-      ctx.strokeStyle = '#60a5fa';
-      ctx.lineWidth = 3;
-      ctx.stroke();
-
-      form.forEach((v, i) => {
-        const x = toX(i), y = toY(v);
-        ctx.beginPath();
-        ctx.arc(x, y, 4.5, 0, Math.PI * 2);
-        ctx.fillStyle = '#0f172a';
-        ctx.fill();
-        ctx.strokeStyle = '#60a5fa';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        ctx.fillStyle = '#bfdbfe';
-        ctx.font = '11px Inter, Arial';
-        ctx.fillText(v.toFixed(1), x - 10, y - 10);
-      });
-    }
-
-    drawChart();
-    applyTurkishTextFixes();
+    renderRows("seasonTable", model.seasonRows);
+    renderRows("verificationTable", model.verificationRows);
+    renderRows("rulesTable", [
+      ["Oyuncu girişi", "Evet", pill("Oyuncu Beyanı", "self"), "Sistem puanı oyuncu verisinden üretilir"],
+      ["Puan alanı", "Hayır", pill("Otomatik", "verified"), "Oyuncu puan girmez, sistem hesaplar"],
+      ["Eksik veri", "Sınırlı", pill("Düşük Güven", "evidence"), "Eksik veri puanı düşürür"],
+      ["Tutarsız veri", "Filtrelenir", pill("Kontrol Gerekir", "evidence"), "Aşırı uç değerler sistemde baskılanır"]
+    ]);
   </script>
-    <script src="assets/js/core-stability.js"></script>
-    <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-

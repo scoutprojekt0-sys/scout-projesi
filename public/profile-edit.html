@@ -901,6 +901,16 @@
                     <input type="number" id="matchesInput" value="28" min="0">
                 </div>
                 <div class="stat-input">
+                    <label>Dakika</label>
+                    <input type="number" id="minutesInput" value="1980" min="0">
+                </div>
+                <div class="stat-input">
+                    <label>Rating (0-10)</label>
+                    <input type="number" id="ratingInput" value="4.8" min="0" max="10" step="0.1">
+                </div>
+            </div>
+            <div class="stats-grid" id="footballStatsGroup">
+                <div class="stat-input">
                     <label>Goller</label>
                     <input type="number" id="goalsInput" value="15" min="0">
                 </div>
@@ -908,9 +918,37 @@
                     <label>Asistler</label>
                     <input type="number" id="assistsInput" value="6" min="0">
                 </div>
+            </div>
+            <div class="stats-grid" id="basketballStatsGroup" style="display: none;">
                 <div class="stat-input">
-                    <label>Rating (0-10)</label>
-                    <input type="number" id="ratingInput" value="4.8" min="0" max="10" step="0.1">
+                    <label>Sayi</label>
+                    <input type="number" id="pointsInput" value="420" min="0">
+                </div>
+                <div class="stat-input">
+                    <label>Ribaund</label>
+                    <input type="number" id="reboundsInput" value="110" min="0">
+                </div>
+                <div class="stat-input">
+                    <label>Asist</label>
+                    <input type="number" id="basketAssistsInput" value="96" min="0">
+                </div>
+            </div>
+            <div class="stats-grid" id="volleyballStatsGroup" style="display: none;">
+                <div class="stat-input">
+                    <label>Sayi</label>
+                    <input type="number" id="volleyballPointsInput" value="188" min="0">
+                </div>
+                <div class="stat-input">
+                    <label>Ace</label>
+                    <input type="number" id="acesInput" value="21" min="0">
+                </div>
+                <div class="stat-input">
+                    <label>Blok</label>
+                    <input type="number" id="blocksInput" value="33" min="0">
+                </div>
+                <div class="stat-input">
+                    <label>Set</label>
+                    <input type="number" id="setsInput" value="72" min="0">
                 </div>
             </div>
         </div>
@@ -944,6 +982,18 @@
     <script>
         let currentGalleryIndex = 0;
         const galleryImages = new Array(6);
+
+        function syncSportStatsFields() {
+            const sport = document.getElementById('sportSelect')?.value || 'futbol';
+            const footballGroup = document.getElementById('footballStatsGroup');
+            const basketballGroup = document.getElementById('basketballStatsGroup');
+            const volleyballGroup = document.getElementById('volleyballStatsGroup');
+            if (!footballGroup || !basketballGroup || !volleyballGroup) return;
+
+            footballGroup.style.display = sport === 'futbol' ? 'grid' : 'none';
+            basketballGroup.style.display = sport === 'basketbol' ? 'grid' : 'none';
+            volleyballGroup.style.display = sport === 'voleybol' ? 'grid' : 'none';
+        }
 
         function getApiBaseUrl() {
             if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
@@ -1087,11 +1137,12 @@
 
         // Profil Kaydet
         async function saveProfile() {
-            const profileData = {
+            const sport = document.getElementById('sportSelect').value;
+            const baseProfileData = {
                 name: document.getElementById('nameInput').value,
                 position: document.getElementById('positionSelect').value,
                 gender: document.getElementById('genderSelect').value,
-                sport: document.getElementById('sportSelect').value,
+                sport,
                 age: document.getElementById('ageInput').value,
                 height: document.getElementById('heightInput').value,
                 contract_status: document.getElementById('contractStatusSelect').value,
@@ -1099,12 +1150,32 @@
                 current_club: document.getElementById('currentClubInput').value,
                 bio: document.getElementById('bioInput').value,
                 matches: document.getElementById('matchesInput').value,
-                goals: document.getElementById('goalsInput').value,
-                assists: document.getElementById('assistsInput').value,
+                minutes: document.getElementById('minutesInput').value,
                 rating: document.getElementById('ratingInput').value,
                 galleryImages: galleryImages,
                 videos: videos
             };
+
+            const profileData = {
+                ...baseProfileData
+            };
+
+            if (sport === 'basketbol') {
+                profileData.points = document.getElementById('pointsInput').value;
+                profileData.rebounds = document.getElementById('reboundsInput').value;
+                profileData.assists = document.getElementById('basketAssistsInput').value;
+                profileData.goals = profileData.points;
+            } else if (sport === 'voleybol') {
+                profileData.points = document.getElementById('volleyballPointsInput').value;
+                profileData.aces = document.getElementById('acesInput').value;
+                profileData.blocks = document.getElementById('blocksInput').value;
+                profileData.sets = document.getElementById('setsInput').value;
+                profileData.goals = profileData.points;
+                profileData.assists = profileData.aces;
+            } else {
+                profileData.goals = document.getElementById('goalsInput').value;
+                profileData.assists = document.getElementById('assistsInput').value;
+            }
 
             localStorage.setItem('playerProfile', JSON.stringify(profileData));
             localStorage.setItem('playerGallery', JSON.stringify(galleryImages));
@@ -1186,10 +1257,21 @@
                 document.getElementById('currentClubInput').value = data.current_club || '';
                 document.getElementById('bioInput').value = data.bio || '';
                 document.getElementById('matchesInput').value = data.matches || '0';
+                document.getElementById('minutesInput').value = data.minutes || '0';
                 document.getElementById('goalsInput').value = data.goals || '0';
                 document.getElementById('assistsInput').value = data.assists || '0';
                 document.getElementById('ratingInput').value = data.rating || '0';
+                document.getElementById('pointsInput').value = data.points || data.goals || '0';
+                document.getElementById('reboundsInput').value = data.rebounds || '0';
+                document.getElementById('basketAssistsInput').value = data.assists || '0';
+                document.getElementById('volleyballPointsInput').value = data.points || data.goals || '0';
+                document.getElementById('acesInput').value = data.aces || data.assists || '0';
+                document.getElementById('blocksInput').value = data.blocks || '0';
+                document.getElementById('setsInput').value = data.sets || '0';
             }
+
+            syncSportStatsFields();
+            document.getElementById('sportSelect').addEventListener('change', syncSportStatsFields);
 
             const savedGallery = localStorage.getItem('playerGallery');
             if (savedGallery) {
@@ -1220,7 +1302,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
 
 
 
