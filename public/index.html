@@ -3355,6 +3355,10 @@
             gap: 12px;
         }
 
+        .staff-role-visibility-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
         .role-visibility-card {
             position: relative;
             overflow: hidden;
@@ -3369,6 +3373,10 @@
             display: grid;
             grid-template-rows: auto auto 1fr auto;
             gap: 14px;
+        }
+
+        .idea-news-square .role-visibility-card {
+            min-height: 100%;
         }
 
         .role-visibility-card::before {
@@ -8029,40 +8037,166 @@
                     </div>
                 </aside>
                 <aside class="idea-news-square starter-card" id="starterRoleCard" style="display:none;">
-                    <div class="eyebrow">30 Saniyede Başla</div>
-                    <h3>Sen Kimsin?</h3>
-                    <div class="starter-copy">NextScout içinde sana uygun akışı seç, doğru oyuncu, kulüp ya da scout ağına hızlıca gir.</div>
-                    <div class="starter-role-grid">
-                        <button type="button" class="starter-role-btn" onclick="openRegisterWithRole('player')">
-                            <strong>Oyuncuyum</strong>
-                            <span>Vitrine çık, keşfedil ve kulüplere görün.</span>
-                        </button>
-                        <button type="button" class="starter-role-btn" onclick="openRegisterWithRole('scout')">
-                            <strong>Scoutum</strong>
-                            <span>Radar oluştur, oyuncu izle ve rapor yönet.</span>
-                        </button>
-                        <button type="button" class="starter-role-btn" onclick="openRegisterWithRole('team')">
-                            <strong>Kulübüm</strong>
-                            <span>İhtiyacına uygun oyuncuyu hızlıca bul.</span>
-                        </button>
-                        <button type="button" class="starter-role-btn" onclick="openRegisterWithRole('manager')">
-                            <strong>Menajerim</strong>
-                            <span>Oyuncu portföyünü yönet ve fırsat yakala.</span>
-                        </button>
+                    <div id="starterRoleCardContent">
+                        <div class="eyebrow">30 Saniyede Başla</div>
+                        <h3>Sen Kimsin?</h3>
+                        <div class="starter-copy">NextScout içinde sana uygun akışı seç, doğru oyuncu, kulüp ya da scout ağına hızlıca gir.</div>
+                        <div class="starter-role-grid">
+                            <button type="button" class="starter-role-btn" onclick="openRegisterWithRole('player')">
+                                <strong>Oyuncuyum</strong>
+                                <span>Vitrine çık, keşfedil ve kulüplere görün.</span>
+                            </button>
+                            <button type="button" class="starter-role-btn" onclick="openRegisterWithRole('scout')">
+                                <strong>Scoutum</strong>
+                                <span>Radar oluştur, oyuncu izle ve rapor yönet.</span>
+                            </button>
+                            <button type="button" class="starter-role-btn" onclick="openRegisterWithRole('team')">
+                                <strong>Kulübüm</strong>
+                                <span>İhtiyacına uygun oyuncuyu hızlıca bul.</span>
+                            </button>
+                            <button type="button" class="starter-role-btn" onclick="openRegisterWithRole('manager')">
+                                <strong>Menajerim</strong>
+                                <span>Oyuncu portföyünü yönet ve fırsat yakala.</span>
+                            </button>
+                        </div>
+                        <div class="starter-benefits">
+                            <span class="starter-benefit"><i class="fas fa-users"></i><span>Oyuncu Havuzu</span></span>
+                            <span class="starter-benefit"><i class="fas fa-crosshairs"></i><span>Scout Radar</span></span>
+                            <span class="starter-benefit"><i class="fas fa-bullseye"></i><span>Kulüp İhtiyaçları</span></span>
+                            <span class="starter-benefit"><i class="fas fa-scale-balanced"></i><span>Profesyonel Destek</span></span>
+                        </div>
+                        <div class="insight-footer">
+                            <button type="button" class="insight-cta" onclick="openRegisterModal()"><i class="fas fa-user-plus"></i><span>Hemen Ücretsiz Başla</span></button>
+                        </div>
                     </div>
-                    <div class="starter-benefits">
-                        <span class="starter-benefit"><i class="fas fa-users"></i><span>Oyuncu Havuzu</span></span>
-                        <span class="starter-benefit"><i class="fas fa-crosshairs"></i><span>Scout Radar</span></span>
-                        <span class="starter-benefit"><i class="fas fa-bullseye"></i><span>Kulüp İhtiyaçları</span></span>
-                        <span class="starter-benefit"><i class="fas fa-scale-balanced"></i><span>Profesyonel Destek</span></span>
-                    </div>
-                    <div class="insight-footer">
-                        <button type="button" class="insight-cta" onclick="openRegisterModal()"><i class="fas fa-user-plus"></i><span>Hemen Ücretsiz Başla</span></button>
-                    </div>
+                    <article class="role-visibility-card is-club" id="clubHomeVisibilityCard" style="display:none;">
+                        <div class="role-visibility-head">
+                            <div class="role-visibility-eyebrow">Kulüp Perspektifi</div>
+                            <div class="role-visibility-badge"><i class="fas fa-shield-halved"></i><span>Kulüp</span></div>
+                        </div>
+                        <div>
+                            <h3 class="role-visibility-title">Hazır Oyuncu Seviyesi</h3>
+                            <div class="role-visibility-summary">Kulübün için incelediğin oyuncuların ne kadar güncel, düzenli ve değerlendirmeye hazır olduğunu hızlıca ayırt et.</div>
+                        </div>
+                        <div class="role-visibility-stages">
+                            <a class="role-visibility-stage" href="./professional-players.html?visibility_role=club&visibility_level=active">
+                                <span class="role-visibility-stage-index">01</span>
+                                <div>
+                                    <div class="role-visibility-stage-title">Aktif Profil</div>
+                                    <div class="role-visibility-stage-note">Yakın dönemde hareket üreten oyuncu canlı aday olarak görünür.</div>
+                                    <span class="role-visibility-stage-link"><span>Aktif oyuncuları gör</span><i class="fas fa-arrow-right"></i></span>
+                                </div>
+                            </a>
+                            <a class="role-visibility-stage" href="./professional-players.html?visibility_role=club&visibility_level=ready">
+                                <span class="role-visibility-stage-index">02</span>
+                                <div>
+                                    <div class="role-visibility-stage-title">Vitrine Hazır</div>
+                                    <div class="role-visibility-stage-note">Temel detayları tam olan oyuncu daha güvenli ve okunur görünür.</div>
+                                    <span class="role-visibility-stage-link"><span>Hazır oyuncuları gör</span><i class="fas fa-arrow-right"></i></span>
+                                </div>
+                            </a>
+                            <a class="role-visibility-stage" href="./professional-players.html?visibility_role=club&visibility_level=featured">
+                                <span class="role-visibility-stage-index">03</span>
+                                <div>
+                                    <div class="role-visibility-stage-title">Öne Çıkan Aday</div>
+                                    <div class="role-visibility-stage-note">Hem aktif hem güçlü profil kısa listeye alınacak aday seviyesine çıkar.</div>
+                                    <span class="role-visibility-stage-link"><span>Öne çıkan adayları gör</span><i class="fas fa-arrow-right"></i></span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="role-visibility-footer">
+                            <div class="role-visibility-footer-copy">Kulüp tarafında karar hızı için aynı sistemin seçim dili.</div>
+                            <a class="role-visibility-link" href="./professional-players.html?visibility_role=club"><span>Oyuncuları İncele</span><i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </article>
+                    <article class="role-visibility-card is-manager" id="managerHomeVisibilityCard" style="display:none;">
+                        <div class="role-visibility-head">
+                            <div class="role-visibility-eyebrow">Menajer Perspektifi</div>
+                            <div class="role-visibility-badge"><i class="fas fa-briefcase"></i><span>Menajer</span></div>
+                        </div>
+                        <div>
+                            <h3 class="role-visibility-title">Portföy Potansiyeli</h3>
+                            <div class="role-visibility-summary">Temsil etmeye uygun oyuncuları profil gücü, güncellik ve görünürlük seviyesine göre daha net ayır.</div>
+                        </div>
+                        <div class="role-visibility-stages">
+                            <a class="role-visibility-stage" href="./professional-players.html?visibility_role=manager&visibility_level=active">
+                                <span class="role-visibility-stage-index">01</span>
+                                <div>
+                                    <div class="role-visibility-stage-title">Temas Edilebilir</div>
+                                    <div class="role-visibility-stage-note">Aktif oyuncu ilk temas ve iletişim için daha sıcak görünür.</div>
+                                    <span class="role-visibility-stage-link"><span>Temas kurulabilir oyuncular</span><i class="fas fa-arrow-right"></i></span>
+                                </div>
+                            </a>
+                            <a class="role-visibility-stage" href="./professional-players.html?visibility_role=manager&visibility_level=ready">
+                                <span class="role-visibility-stage-index">02</span>
+                                <div>
+                                    <div class="role-visibility-stage-title">Portföye Hazır</div>
+                                    <div class="role-visibility-stage-note">Tam ve net profil temsil sürecine alınabilecek düzende görünür.</div>
+                                    <span class="role-visibility-stage-link"><span>Portföye hazır oyuncular</span><i class="fas fa-arrow-right"></i></span>
+                                </div>
+                            </a>
+                            <a class="role-visibility-stage" href="./professional-players.html?visibility_role=manager&visibility_level=featured">
+                                <span class="role-visibility-stage-index">03</span>
+                                <div>
+                                    <div class="role-visibility-stage-title">Güçlü Portföy Adayı</div>
+                                    <div class="role-visibility-stage-note">Görünürlüğü yüksek oyuncu menajer tarafında önceliklenen aday olur.</div>
+                                    <span class="role-visibility-stage-link"><span>Güçlü adayları gör</span><i class="fas fa-arrow-right"></i></span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="role-visibility-footer">
+                            <div class="role-visibility-footer-copy">Portföy yönetiminde okunabilir ve hızlı karar katmanı.</div>
+                            <a class="role-visibility-link" href="./professional-players.html?visibility_role=manager"><span>Portföyü Aç</span><i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </article>
+                    <article class="role-visibility-card is-coach" id="coachHomeVisibilityCard" style="display:none;">
+                        <div class="role-visibility-head">
+                            <div class="role-visibility-eyebrow">Antrenör Perspektifi</div>
+                            <div class="role-visibility-badge"><i class="fas fa-clipboard-list"></i><span>Antrenör</span></div>
+                        </div>
+                        <div>
+                            <h3 class="role-visibility-title">İzleme Önceliği</h3>
+                            <div class="role-visibility-summary">Teknik değerlendirme için hangi oyuncuların daha hazır ve gözleme uygun olduğunu tek bakışta gör.</div>
+                        </div>
+                        <div class="role-visibility-stages">
+                            <a class="role-visibility-stage" href="./professional-players.html?visibility_role=coach&visibility_level=active">
+                                <span class="role-visibility-stage-index">01</span>
+                                <div>
+                                    <div class="role-visibility-stage-title">Güncel Profil</div>
+                                    <div class="role-visibility-stage-note">Yakın dönemde aktif kalan oyuncu daha taze veriyle okunur.</div>
+                                    <span class="role-visibility-stage-link"><span>Güncel profilleri gör</span><i class="fas fa-arrow-right"></i></span>
+                                </div>
+                            </a>
+                            <a class="role-visibility-stage" href="./professional-players.html?visibility_role=coach&visibility_level=ready">
+                                <span class="role-visibility-stage-index">02</span>
+                                <div>
+                                    <div class="role-visibility-stage-title">İzlemeye Hazır</div>
+                                    <div class="role-visibility-stage-note">Temel saha ve profil bilgileri net olan oyuncu teknik izlemeye daha uygundur.</div>
+                                    <span class="role-visibility-stage-link"><span>İzlemeye hazır oyuncular</span><i class="fas fa-arrow-right"></i></span>
+                                </div>
+                            </a>
+                            <a class="role-visibility-stage" href="./professional-players.html?visibility_role=coach&visibility_level=featured">
+                                <span class="role-visibility-stage-index">03</span>
+                                <div>
+                                    <div class="role-visibility-stage-title">Öncelikli Gözlem</div>
+                                    <div class="role-visibility-stage-note">Hem aktif hem güçlü vitrini olan oyuncu gözlem listesinde üst sıraya çıkar.</div>
+                                    <span class="role-visibility-stage-link"><span>Öncelikli gözlem adayları</span><i class="fas fa-arrow-right"></i></span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="role-visibility-footer">
+                            <div class="role-visibility-footer-copy">Teknik ekip için aynı sistemin izleme ve öncelik dili.</div>
+                            <a class="role-visibility-link" href="./professional-players.html?visibility_role=coach"><span>Oyuncuları Değerlendir</span><i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </article>
                 </aside>
                 <script>
                     (function () {
                         const card = document.getElementById('starterRoleCard');
+                        const starterContent = document.getElementById('starterRoleCardContent');
+                        const clubCard = document.getElementById('clubHomeVisibilityCard');
+                        const managerCard = document.getElementById('managerHomeVisibilityCard');
+                        const coachCard = document.getElementById('coachHomeVisibilityCard');
                         if (!card) return;
 
                         function normalizeRole(value) {
@@ -8092,12 +8226,36 @@
                         function applyStarterVisibility() {
                             const hasSession = Boolean((localStorage.getItem('nextscout_token') || '').trim() || (localStorage.getItem('nextscout_user') || '').trim());
                             const role = readRole();
+                            const isClub = role === 'club' || role === 'team' || role === 'kulup' || role === 'klup';
+                            const isManager = role === 'manager' || role === 'menajer' || role === 'menejer';
+                            const isCoach = role === 'coach' || role === 'antrenor' || role === 'antroner';
+                            if (starterContent) starterContent.style.display = 'none';
+                            if (clubCard) clubCard.style.display = 'none';
+                            if (managerCard) managerCard.style.display = 'none';
+                            if (coachCard) coachCard.style.display = 'none';
                             if (!hasSession) {
                                 card.style.display = 'flex';
+                                if (starterContent) starterContent.style.display = '';
                                 return;
                             }
                             if (role === 'player' || role === 'oyuncu') {
                                 card.style.display = 'flex';
+                                if (starterContent) starterContent.style.display = '';
+                                return;
+                            }
+                            if (isClub) {
+                                card.style.display = 'flex';
+                                if (clubCard) clubCard.style.display = 'grid';
+                                return;
+                            }
+                            if (isManager) {
+                                card.style.display = 'flex';
+                                if (managerCard) managerCard.style.display = 'grid';
+                                return;
+                            }
+                            if (isCoach) {
+                                card.style.display = 'flex';
+                                if (coachCard) coachCard.style.display = 'grid';
                                 return;
                             }
                             card.style.display = 'none';
@@ -8257,128 +8415,7 @@
                     }
                 })();
             </script>
-            <section class="role-visibility-grid" aria-label="Karar Verici Kartlari">
-                <article class="role-visibility-card is-club">
-                    <div class="role-visibility-head">
-                        <div class="role-visibility-eyebrow">Kulüp Perspektifi</div>
-                        <div class="role-visibility-badge"><i class="fas fa-shield-halved"></i><span>Kulüp</span></div>
-                    </div>
-                    <div>
-                        <h3 class="role-visibility-title">Hazır Oyuncu Seviyesi</h3>
-                        <div class="role-visibility-summary">Kulübün için incelediğin oyuncuların ne kadar güncel, düzenli ve değerlendirmeye hazır olduğunu hızlıca ayırt et.</div>
-                    </div>
-                    <div class="role-visibility-stages">
-                        <a class="role-visibility-stage" href="./professional-players.html?visibility_role=club&visibility_level=active">
-                            <span class="role-visibility-stage-index">01</span>
-                            <div>
-                                <div class="role-visibility-stage-title">Aktif Profil</div>
-                                <div class="role-visibility-stage-note">Yakın dönemde hareket üreten oyuncu canlı aday olarak görünür.</div>
-                                <span class="role-visibility-stage-link"><span>Aktif oyuncuları gör</span><i class="fas fa-arrow-right"></i></span>
-                            </div>
-                        </a>
-                        <a class="role-visibility-stage" href="./professional-players.html?visibility_role=club&visibility_level=ready">
-                            <span class="role-visibility-stage-index">02</span>
-                            <div>
-                                <div class="role-visibility-stage-title">Vitrine Hazır</div>
-                                <div class="role-visibility-stage-note">Temel detayları tam olan oyuncu daha güvenli ve okunur görünür.</div>
-                                <span class="role-visibility-stage-link"><span>Hazır oyuncuları gör</span><i class="fas fa-arrow-right"></i></span>
-                            </div>
-                        </a>
-                        <a class="role-visibility-stage" href="./professional-players.html?visibility_role=club&visibility_level=featured">
-                            <span class="role-visibility-stage-index">03</span>
-                            <div>
-                                <div class="role-visibility-stage-title">Öne Çıkan Aday</div>
-                                <div class="role-visibility-stage-note">Hem aktif hem güçlü profil kısa listeye alınacak aday seviyesine çıkar.</div>
-                                <span class="role-visibility-stage-link"><span>Öne çıkan adayları gör</span><i class="fas fa-arrow-right"></i></span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="role-visibility-footer">
-                        <div class="role-visibility-footer-copy">Kulüp tarafında karar hızı için aynı sistemin seçim dili.</div>
-                        <a class="role-visibility-link" href="./professional-players.html?visibility_role=club"><span>Oyuncuları İncele</span><i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </article>
-                <article class="role-visibility-card is-manager">
-                    <div class="role-visibility-head">
-                        <div class="role-visibility-eyebrow">Menajer Perspektifi</div>
-                        <div class="role-visibility-badge"><i class="fas fa-briefcase"></i><span>Menajer</span></div>
-                    </div>
-                    <div>
-                        <h3 class="role-visibility-title">Portföy Potansiyeli</h3>
-                        <div class="role-visibility-summary">Temsil etmeye uygun oyuncuları profil gücü, güncellik ve görünürlük seviyesine göre daha net ayır.</div>
-                    </div>
-                    <div class="role-visibility-stages">
-                        <a class="role-visibility-stage" href="./professional-players.html?visibility_role=manager&visibility_level=active">
-                            <span class="role-visibility-stage-index">01</span>
-                            <div>
-                                <div class="role-visibility-stage-title">Temas Edilebilir</div>
-                                <div class="role-visibility-stage-note">Aktif oyuncu ilk temas ve iletişim için daha sıcak görünür.</div>
-                                <span class="role-visibility-stage-link"><span>Temas kurulabilir oyuncular</span><i class="fas fa-arrow-right"></i></span>
-                            </div>
-                        </a>
-                        <a class="role-visibility-stage" href="./professional-players.html?visibility_role=manager&visibility_level=ready">
-                            <span class="role-visibility-stage-index">02</span>
-                            <div>
-                                <div class="role-visibility-stage-title">Portföye Hazır</div>
-                                <div class="role-visibility-stage-note">Tam ve net profil temsil sürecine alınabilecek düzende görünür.</div>
-                                <span class="role-visibility-stage-link"><span>Portföye hazır oyuncular</span><i class="fas fa-arrow-right"></i></span>
-                            </div>
-                        </a>
-                        <a class="role-visibility-stage" href="./professional-players.html?visibility_role=manager&visibility_level=featured">
-                            <span class="role-visibility-stage-index">03</span>
-                            <div>
-                                <div class="role-visibility-stage-title">Güçlü Portföy Adayı</div>
-                                <div class="role-visibility-stage-note">Görünürlüğü yüksek oyuncu menajer tarafında önceliklenen aday olur.</div>
-                                <span class="role-visibility-stage-link"><span>Güçlü adayları gör</span><i class="fas fa-arrow-right"></i></span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="role-visibility-footer">
-                        <div class="role-visibility-footer-copy">Portföy yönetiminde okunabilir ve hızlı karar katmanı.</div>
-                        <a class="role-visibility-link" href="./professional-players.html?visibility_role=manager"><span>Portföyü Aç</span><i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </article>
-                <article class="role-visibility-card is-coach">
-                    <div class="role-visibility-head">
-                        <div class="role-visibility-eyebrow">Antrenör Perspektifi</div>
-                        <div class="role-visibility-badge"><i class="fas fa-clipboard-list"></i><span>Antrenör</span></div>
-                    </div>
-                    <div>
-                        <h3 class="role-visibility-title">İzleme Önceliği</h3>
-                        <div class="role-visibility-summary">Teknik değerlendirme için hangi oyuncuların daha hazır ve gözleme uygun olduğunu tek bakışta gör.</div>
-                    </div>
-                    <div class="role-visibility-stages">
-                        <a class="role-visibility-stage" href="./professional-players.html?visibility_role=coach&visibility_level=active">
-                            <span class="role-visibility-stage-index">01</span>
-                            <div>
-                                <div class="role-visibility-stage-title">Güncel Profil</div>
-                                <div class="role-visibility-stage-note">Yakın dönemde aktif kalan oyuncu daha taze veriyle okunur.</div>
-                                <span class="role-visibility-stage-link"><span>Güncel profilleri gör</span><i class="fas fa-arrow-right"></i></span>
-                            </div>
-                        </a>
-                        <a class="role-visibility-stage" href="./professional-players.html?visibility_role=coach&visibility_level=ready">
-                            <span class="role-visibility-stage-index">02</span>
-                            <div>
-                                <div class="role-visibility-stage-title">İzlemeye Hazır</div>
-                                <div class="role-visibility-stage-note">Temel saha ve profil bilgileri net olan oyuncu teknik izlemeye daha uygundur.</div>
-                                <span class="role-visibility-stage-link"><span>İzlemeye hazır oyuncular</span><i class="fas fa-arrow-right"></i></span>
-                            </div>
-                        </a>
-                        <a class="role-visibility-stage" href="./professional-players.html?visibility_role=coach&visibility_level=featured">
-                            <span class="role-visibility-stage-index">03</span>
-                            <div>
-                                <div class="role-visibility-stage-title">Öncelikli Gözlem</div>
-                                <div class="role-visibility-stage-note">Hem aktif hem güçlü vitrini olan oyuncu gözlem listesinde üst sıraya çıkar.</div>
-                                <span class="role-visibility-stage-link"><span>Öncelikli gözlem adayları</span><i class="fas fa-arrow-right"></i></span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="role-visibility-footer">
-                        <div class="role-visibility-footer-copy">Teknik ekip için aynı sistemin izleme ve öncelik dili.</div>
-                        <a class="role-visibility-link" href="./professional-players.html?visibility_role=coach"><span>Oyuncuları Değerlendir</span><i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </article>
-            </section>
+            <section class="role-visibility-grid staff-role-visibility-grid" aria-label="Karar Verici Kartlari" hidden></section>
 
             <section class="player-only-grid" id="playerOnlyGrid">
                 <section class="role-action-card" id="todayForYouCard">
