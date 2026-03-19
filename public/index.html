@@ -8694,10 +8694,6 @@
 
                         function applyStarterVisibility() {
                             const hasSession = Boolean((localStorage.getItem('nextscout_token') || '').trim() || (localStorage.getItem('nextscout_user') || '').trim());
-                            const role = readRole();
-                            const isClub = role === 'club' || role === 'team' || role === 'kulup' || role === 'klup';
-                            const isManager = role === 'manager' || role === 'menajer' || role === 'menejer';
-                            const isCoach = role === 'coach' || role === 'antrenor' || role === 'antroner' || role === 'scout';
                             if (starterContent) starterContent.style.display = 'none';
                             if (clubCard) clubCard.style.display = 'none';
                             if (managerCard) managerCard.style.display = 'none';
@@ -8705,26 +8701,6 @@
                             if (!hasSession) {
                                 card.style.display = 'flex';
                                 if (starterContent) starterContent.style.display = '';
-                                return;
-                            }
-                            if (role === 'player' || role === 'oyuncu') {
-                                card.style.display = 'flex';
-                                if (starterContent) starterContent.style.display = '';
-                                return;
-                            }
-                            if (isClub) {
-                                card.style.display = 'flex';
-                                if (clubCard) clubCard.style.display = 'grid';
-                                return;
-                            }
-                            if (isManager) {
-                                card.style.display = 'flex';
-                                if (managerCard) managerCard.style.display = 'grid';
-                                return;
-                            }
-                            if (isCoach) {
-                                card.style.display = 'flex';
-                                if (coachCard) coachCard.style.display = 'grid';
                                 return;
                             }
                             card.style.display = 'none';
@@ -9256,7 +9232,7 @@
                         .toLocaleLowerCase('tr-TR')
                         .normalize('NFD')
                         .replace(/[\u0300-\u036f]/g, '');
-                    if (starterRoleCard && normalizedRole !== 'player' && normalizedRole !== 'oyuncu') {
+                    if (starterRoleCard) {
                         starterRoleCard.style.display = 'none';
                     }
                     // Giriş yapılmış: giriş/kayıt butonlarını gizle, profil butonunu göster
@@ -14469,7 +14445,9 @@
 
             if (starterRoleCard) {
                 starterRoleCard.hidden = isPlayerSession;
-                starterRoleCard.style.display = isPlayerSession ? 'none' : starterRoleCard.style.display;
+                if (isPlayerSession) {
+                    starterRoleCard.style.display = 'none';
+                }
             }
 
             if (homepageVisibilityCard) {
