@@ -8269,7 +8269,7 @@
             </section>
 
             <div class="idea-news-container">
-                <aside class="idea-news-square">
+                <aside class="idea-news-square" id="platformSummaryCard" hidden style="display:none;">
                     <div class="feature-news-card">
                         <div class="eyebrow">Günün Özeti</div>
                         <div class="headline">Platform Özeti</div>
@@ -9026,6 +9026,7 @@
             let userData = localStorage.getItem('nextscout_user');
             const demoLogin = localStorage.getItem('nextscout_demo_login') === 'true';
             const starterRoleCard = document.getElementById('starterRoleCard');
+            applyPlatformSummaryVisibility();
 
             const registerBtn = document.getElementById('registerBtn');
             const loginBtn = document.getElementById('loginBtn');
@@ -14079,12 +14080,25 @@
         function getSessionRole() {
             try {
                 const rawUser = localStorage.getItem('nextscout_user');
-                if (!rawUser) return '';
-                const user = JSON.parse(rawUser);
-                return (user?.role || '').toString().trim().toLowerCase();
+                if (rawUser) {
+                    const user = JSON.parse(rawUser);
+                    const role = (user?.role || '').toString().trim().toLowerCase();
+                    if (role) return role;
+                }
+                return (localStorage.getItem('nextscout_role') || localStorage.getItem('userRole') || '').toString().trim().toLowerCase();
             } catch (error) {
-                return '';
+                return (localStorage.getItem('nextscout_role') || localStorage.getItem('userRole') || '').toString().trim().toLowerCase();
             }
+        }
+
+        function applyPlatformSummaryVisibility() {
+            const card = document.getElementById('platformSummaryCard');
+            if (!card) return;
+            const token = (localStorage.getItem('nextscout_token') || '').toString().trim();
+            const role = getSessionRole();
+            const isRealSession = Boolean(token && token !== 'local-session-token' && role);
+            card.hidden = !isRealSession;
+            card.style.display = isRealSession ? '' : 'none';
         }
 
         function isPlayerSessionActive() {
