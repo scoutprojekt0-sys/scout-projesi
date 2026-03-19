@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform Akışı | NextScout</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        :root {
+            --bg: #091521;
+            --panel: #12293d;
+            --panel-2: #0f1f2e;
+            --line: rgba(96, 165, 250, 0.18);
+            --text: #f8fafc;
+            --muted: rgba(226, 232, 240, 0.78);
+            --accent: #ff7e22;
+            --accent-2: #60a5fa;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(255, 126, 34, 0.14), transparent 28%),
+                radial-gradient(circle at top right, rgba(96, 165, 250, 0.14), transparent 32%),
+                linear-gradient(180deg, var(--bg) 0%, #08121b 100%);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .shell {
+            width: min(1240px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 28px 0 40px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .brand {
+            display: grid;
+            gap: 6px;
+        }
+
+        .eyebrow {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #fb923c;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 34px;
+            line-height: 1.05;
+        }
+
+        .sub {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+            max-width: 760px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 14px;
+            border: 1px solid var(--line);
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .btn.primary {
+            border-color: rgba(251, 146, 60, 0.28);
+            background: rgba(249, 115, 22, 0.08);
+        }
+
+        .hero {
+            border: 1px solid #2b4660;
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before,
+        .panel::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.3fr .9fr;
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        .hero-stream {
+            display: grid;
+            gap: 12px;
+        }
+
+        .stream-item {
+            display: grid;
+            grid-template-columns: 72px minmax(0, 1fr);
+            gap: 12px;
+            padding: 12px;
+            border: 1px solid var(--line);
+            background: rgba(255,255,255,0.04);
+        }
+
+        .stream-time {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            background: rgba(249, 115, 22, 0.12);
+            border: 1px solid rgba(251, 146, 60, 0.2);
+            color: #fde68a;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .stream-title {
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.45;
+        }
+
+        .stream-copy {
+            margin-top: 4px;
+            font-size: 12px;
+            line-height: 1.55;
+            color: var(--muted);
+        }
+
+        .hero-side {
+            display: grid;
+            gap: 12px;
+        }
+
+        .hero-stat {
+            border: 1px solid var(--line);
+            background: rgba(255,255,255,0.04);
+            padding: 14px;
+        }
+
+        .hero-stat .k {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #93c5fd;
+            font-weight: 800;
+        }
+
+        .hero-stat .v {
+            margin-top: 8px;
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .panel {
+            position: relative;
+            border: 1px solid #2b4660;
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            padding: 22px;
+            min-height: 300px;
+        }
+
+        .panel h2 {
+            margin: 8px 0 0;
+            font-size: 22px;
+            line-height: 1.15;
+        }
+
+        .panel-copy {
+            margin-top: 10px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
+        .stack {
+            display: grid;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .stack-item {
+            padding: 12px;
+            border: 1px solid var(--line);
+            background: rgba(255,255,255,0.04);
+        }
+
+        .stack-item strong {
+            display: block;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .stack-item span {
+            display: block;
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.55;
+        }
+
+        .empty {
+            padding: 14px;
+            border: 1px dashed rgba(148, 163, 184, 0.28);
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        @media (max-width: 980px) {
+            .hero-grid,
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <div class="topbar">
+        <div class="brand">
+            <div class="eyebrow">Canlı Akış</div>
+            <h1>Platform Akışı</h1>
+            <div class="sub">Kulüp ihtiyaçları, yeni maç ve etkinlik kayıtları, güncellenen oyuncu vitrinleri ve karar verici hareketleri tek akışta toplanır.</div>
+        </div>
+        <div class="actions">
+            <a class="btn" href="./index.html"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
+            <a class="btn primary" href="./professional-players.html?player_view=explore"><i class="fas fa-user-group"></i><span>Oyuncuları Aç</span></a>
+        </div>
+    </div>
+
+    <section class="hero">
+        <div class="eyebrow">Şu An Platformda</div>
+        <h2 style="margin:8px 0 0;font-size:28px;">Canlı Haber Akışı</h2>
+        <div class="panel-copy">Bu alan açık ihtiyaç, etkinlik ve güncellenen profil hareketlerinden kısa haber başlıkları üretir.</div>
+        <div class="hero-grid">
+            <div class="hero-stream" id="liveNewsStream"></div>
+            <div class="hero-side">
+                <article class="hero-stat">
+                    <div class="k">Açık İhtiyaç</div>
+                    <div class="v" id="statNeeds">0</div>
+                </article>
+                <article class="hero-stat">
+                    <div class="k">Etkinlik Akışı</div>
+                    <div class="v" id="statEvents">0</div>
+                </article>
+                <article class="hero-stat">
+                    <div class="k">Güncellenen Profil</div>
+                    <div class="v" id="statPlayers">0</div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="grid">
+        <article class="panel">
+            <div class="eyebrow">Kulüp İhtiyaçları</div>
+            <h2>Yeni Talepler</h2>
+            <div class="panel-copy">Kulüplerin son açtığı pozisyon ve ihtiyaç kayıtları.</div>
+            <div class="stack" id="needsStack"></div>
+        </article>
+        <article class="panel">
+            <div class="eyebrow">Maç ve Etkinlikler</div>
+            <h2>Yeni Kayıtlar</h2>
+            <div class="panel-copy">Deneme, idman ve maç başlıklarının son akışı.</div>
+            <div class="stack" id="eventsStack"></div>
+        </article>
+        <article class="panel">
+            <div class="eyebrow">Oyuncu Hareketi</div>
+            <h2>Güncellenen Profiller</h2>
+            <div class="panel-copy">Son güncellenen oyuncu vitrinleri ve yükselen profil hareketleri.</div>
+            <div class="stack" id="playersStack"></div>
+        </article>
+    </section>
+</div>
+
+<script>
+    const API_BASE_URL = `${window.location.origin}/api`;
+
+    function resolveList(payload) {
+        const list = payload && Array.isArray(payload.data) ? payload.data : payload;
+        return Array.isArray(list) ? list : [];
+    }
+
+    async function fetchJsonSafe(url) {
+        const response = await fetch(url, {
+            headers: { 'Accept': 'application/json' },
+            credentials: 'same-origin'
+        });
+        if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+        return response.json();
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function formatTime(value) {
+        if (!value) return 'Bugün';
+        const parsed = new Date(value);
+        if (Number.isNaN(parsed.getTime())) return 'Bugün';
+        return parsed.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function renderStream(items) {
+        const root = document.getElementById('liveNewsStream');
+        if (!root) return;
+        if (!items.length) {
+            root.innerHTML = '<div class="empty">Canlı akış için veri bekleniyor.</div>';
+            return;
+        }
+        root.innerHTML = items.map((item) => `
+            <article class="stream-item">
+                <div class="stream-time">${escapeHtml(item.time)}</div>
+                <div>
+                    <div class="stream-title">${escapeHtml(item.title)}</div>
+                    <div class="stream-copy">${escapeHtml(item.copy)}</div>
+                </div>
+            </article>
+        `).join('');
+    }
+
+    function renderStack(id, items, formatter) {
+        const root = document.getElementById(id);
+        if (!root) return;
+        if (!items.length) {
+            root.innerHTML = '<div class="empty">Bu bölüm için veri bekleniyor.</div>';
+            return;
+        }
+        root.innerHTML = items.map(formatter).join('');
+    }
+
+    async function renderPlatformFlow() {
+        const fallbackNeeds = [];
+        const fallbackEvents = [];
+        const fallbackPlayers = [];
+
+        try {
+            const [needsPayload, managerPayload, coachPayload, eventsPayload, playersPayload] = await Promise.all([
+                fetchJsonSafe(`${API_BASE_URL}/club-needs?limit=20`),
+                fetchJsonSafe(`${API_BASE_URL}/discovery/manager-needs`),
+                fetchJsonSafe(`${API_BASE_URL}/discovery/coach-needs`),
+                fetchJsonSafe(`${API_BASE_URL}/community-events?trial_only=1`),
+                fetchJsonSafe(`${API_BASE_URL}/public/players?limit=20&sort=updated_desc`)
+            ]);
+
+            const needs = resolveList(needsPayload).filter(Boolean);
+            const managerNeeds = resolveList(managerPayload).filter(Boolean);
+            const coachNeeds = resolveList(coachPayload).filter(Boolean);
+            const events = resolveList(eventsPayload).filter(Boolean);
+            const players = resolveList(playersPayload).filter(Boolean);
+
+            document.getElementById('statNeeds').textContent = String(needs.length + managerNeeds.length + coachNeeds.length);
+            document.getElementById('statEvents').textContent = String(events.length);
+            document.getElementById('statPlayers').textContent = String(players.length);
+
+            const stream = [];
+
+            const need = needs[0];
+            if (need) {
+                stream.push({
+                    time: formatTime(need.updated_at || need.created_at),
+                    title: `${(need.club_name || need.club || 'Bir kulüp')} yeni ihtiyaç açtı`,
+                    copy: `${(need.position || need.position_name || 'Oyuncu')} pozisyonu için yeni talep listelendi.`
+                });
+            }
+
+            const event = events[0];
+            if (event) {
+                stream.push({
+                    time: formatTime(event.date ? `${event.date} ${event.time || ''}` : event.created_at),
+                    title: (event.title || event.name || 'Yeni etkinlik kaydı'),
+                    copy: `${(event.venue || event.facility || event.field || 'Saha bilgisi')} için yeni akış açıldı.`
+                });
+            }
+
+            const player = players[0];
+            if (player) {
+                stream.push({
+                    time: formatTime(player.updated_at || player.created_at),
+                    title: `${(player.name || player.full_name || 'Bir oyuncu')} vitrini güncellendi`,
+                    copy: `${(player.city || player.location || 'Platform')} içindeki profil hareketi yükselen akışa düştü.`
+                });
+            }
+
+            const decision = managerNeeds[0] || coachNeeds[0];
+            if (decision) {
+                stream.push({
+                    time: formatTime(decision.updated_at || decision.created_at),
+                    title: `${(decision.author_name || decision.manager_name || decision.coach_name || 'Karar verici')} yeni tarama açtı`,
+                    copy: `${(decision.position || decision.specialty || 'Oyuncu taraması')} için yeni değerlendirme akışı görünür oldu.`
+                });
+            }
+
+            renderStream(stream);
+
+            renderStack('needsStack', needs.slice(0, 5), (row) => `
+                <article class="stack-item">
+                    <strong>${escapeHtml((row.club_name || row.club || 'Kulüp'))}</strong>
+                    <span>${escapeHtml((row.position || row.position_name || 'Oyuncu'))} ihtiyacı açtı.</span>
+                </article>
+            `);
+
+            renderStack('eventsStack', events.slice(0, 5), (row) => `
+                <article class="stack-item">
+                    <strong>${escapeHtml((row.title || row.name || 'Etkinlik'))}</strong>
+                    <span>${escapeHtml((row.venue || row.facility || row.field || 'Saha bilgisi'))} • ${(row.date || '')} ${(row.time || '')}</span>
+                </article>
+            `);
+
+            renderStack('playersStack', players.slice(0, 5), (row) => `
+                <article class="stack-item">
+                    <strong>${escapeHtml((row.name || row.full_name || 'Oyuncu'))}</strong>
+                    <span>${escapeHtml((row.city || row.location || 'Konum yok'))} • ${(row.position || row.primary_position || 'Pozisyon bilgisi yok')}</span>
+                </article>
+            `);
+            return;
+        } catch (error) {
+            document.getElementById('statNeeds').textContent = '0';
+            document.getElementById('statEvents').textContent = '0';
+            document.getElementById('statPlayers').textContent = '0';
+            renderStream([
+                { time: 'Şimdi', title: 'Canlı akış hazırlanıyor', copy: 'API bağlantısı hazır olduğunda ihtiyaç, etkinlik ve oyuncu hareketi burada listelenecek.' }
+            ]);
+            renderStack('needsStack', fallbackNeeds, () => '');
+            renderStack('eventsStack', fallbackEvents, () => '');
+            renderStack('playersStack', fallbackPlayers, () => '');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', renderPlatformFlow);
+</script>
+</body>
+</html>

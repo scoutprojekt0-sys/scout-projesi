@@ -5727,6 +5727,159 @@
             background: rgba(249, 115, 22, 0.06);
         }
 
+        .live-news-card {
+            display: grid;
+            gap: 14px;
+            height: 100%;
+            align-content: start;
+            padding-top: 4px;
+        }
+
+        .live-news-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .live-news-eyebrow {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #fb923c;
+        }
+
+        .live-news-title {
+            margin-top: 6px;
+            font-size: 24px;
+            line-height: 1.1;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+
+        .live-news-summary {
+            margin-top: 8px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: rgba(226, 232, 240, 0.88);
+        }
+
+        .live-news-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border: 1px solid rgba(251, 146, 60, 0.24);
+            background: rgba(249, 115, 22, 0.08);
+            color: #fde68a;
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .live-news-status-dot {
+            width: 8px;
+            height: 8px;
+            background: #fb923c;
+            box-shadow: 0 0 0 5px rgba(249, 115, 22, 0.16);
+            animation: pulse 1.8s ease-in-out infinite;
+        }
+
+        .live-news-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .live-news-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 10px;
+            border: 1px solid rgba(96, 165, 250, 0.18);
+            background: rgba(59, 130, 246, 0.08);
+            color: #dbeafe;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .live-news-stream {
+            display: grid;
+            gap: 10px;
+        }
+
+        .live-news-item {
+            display: grid;
+            grid-template-columns: 66px minmax(0, 1fr);
+            gap: 12px;
+            padding: 12px;
+            border: 1px solid rgba(110, 138, 255, 0.18);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .live-news-time {
+            display: inline-flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 7px 8px;
+            background: rgba(249, 115, 22, 0.12);
+            border: 1px solid rgba(251, 146, 60, 0.2);
+            color: #fde68a;
+            font-size: 11px;
+            font-weight: 800;
+            min-height: 34px;
+        }
+
+        .live-news-item-title {
+            font-size: 13px;
+            font-weight: 800;
+            line-height: 1.45;
+            color: #f8fafc;
+        }
+
+        .live-news-item-copy {
+            margin-top: 4px;
+            font-size: 12px;
+            line-height: 1.55;
+            color: rgba(226, 232, 240, 0.82);
+        }
+
+        .live-news-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: auto;
+            padding-top: 4px;
+        }
+
+        .live-news-footnote {
+            font-size: 11px;
+            line-height: 1.45;
+            color: rgba(191, 219, 254, 0.76);
+        }
+
+        .live-news-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            text-decoration: none;
+            border: 1px solid rgba(110, 138, 255, 0.24);
+            background: rgba(255, 255, 255, 0.05);
+            color: #f8fafc;
+            font-size: 12px;
+            font-weight: 800;
+            transition: transform .18s ease, border-color .18s ease, background .18s ease;
+        }
+
+        .live-news-link:hover {
+            transform: translateY(-1px);
+            border-color: rgba(251, 146, 60, 0.34);
+            background: rgba(249, 115, 22, 0.06);
+        }
+
         .entry-spotlight-modal {
             width: min(92vw, 760px);
             border: 1px solid #2b4660;
@@ -8269,6 +8422,41 @@
             </section>
 
             <div class="idea-news-container">
+                <aside class="idea-news-square" id="liveNewsCard">
+                    <div class="live-news-card">
+                        <div class="live-news-head">
+                            <div>
+                                <div class="live-news-eyebrow">Canlı Haber</div>
+                                <div class="live-news-title">Platformda Şu An</div>
+                                <div class="live-news-summary" id="liveNewsSummary">Kulüp ihtiyaçları, yeni maç akışları ve güncellenen oyuncu profilleri tek listede akıyor.</div>
+                            </div>
+                            <div class="live-news-status">
+                                <span class="live-news-status-dot"></span>
+                                <span id="liveNewsStatusLabel">Canlı Akış</span>
+                            </div>
+                        </div>
+                        <div class="live-news-pills">
+                            <span class="live-news-pill"><i class="fas fa-tower-broadcast"></i><span id="liveNewsPillPrimary">Güncel veri izleniyor</span></span>
+                            <span class="live-news-pill"><i class="fas fa-clock"></i><span id="liveNewsPillDate">Bugün</span></span>
+                        </div>
+                        <div class="live-news-stream" id="liveNewsList">
+                            <article class="live-news-item">
+                                <div class="live-news-time">Şimdi</div>
+                                <div>
+                                    <div class="live-news-item-title">Canlı haber akışı hazırlanıyor</div>
+                                    <div class="live-news-item-copy">Kulüp ihtiyaçları, maç hareketleri ve güncellenen vitrin profilleri burada listelenecek.</div>
+                                </div>
+                            </article>
+                        </div>
+                        <div class="live-news-footer">
+                            <div class="live-news-footnote" id="liveNewsFootnote">Son hareketler otomatik yenilenir.</div>
+                            <a class="live-news-link" id="liveNewsPrimaryAction" href="./platform-akisi.html">
+                                <span id="liveNewsPrimaryActionLabel">Akışı Aç</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </aside>
                 <aside class="idea-news-square" id="platformSummaryCard" hidden style="display:none;">
                     <div class="feature-news-card">
                         <div class="eyebrow">Günün Özeti</div>
@@ -9027,6 +9215,7 @@
             const demoLogin = localStorage.getItem('nextscout_demo_login') === 'true';
             const starterRoleCard = document.getElementById('starterRoleCard');
             applyPlatformSummaryVisibility();
+            applyLiveNewsVisibility();
 
             const registerBtn = document.getElementById('registerBtn');
             const loginBtn = document.getElementById('loginBtn');
@@ -10946,6 +11135,146 @@
             if (secondaryActionLabelEl) secondaryActionLabelEl.textContent = 'Raporları Aç';
         }
 
+        function formatLiveNewsTime(input) {
+            if (!input) return 'Bugün';
+            const parsed = new Date(input);
+            if (Number.isNaN(parsed.getTime())) return 'Bugün';
+            return parsed.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function buildLiveNewsItem(timeLabel, title, copy) {
+            return `
+                <article class="live-news-item">
+                    <div class="live-news-time">${escapeHtml(timeLabel || 'Bugün')}</div>
+                    <div>
+                        <div class="live-news-item-title">${escapeHtml(title || 'Canlı haber')}</div>
+                        <div class="live-news-item-copy">${escapeHtml(copy || 'Akış güncelleniyor.')}</div>
+                    </div>
+                </article>
+            `;
+        }
+
+        async function renderLiveNewsCard() {
+            const summaryEl = document.getElementById('liveNewsSummary');
+            const statusEl = document.getElementById('liveNewsStatusLabel');
+            const primaryPillEl = document.getElementById('liveNewsPillPrimary');
+            const datePillEl = document.getElementById('liveNewsPillDate');
+            const listEl = document.getElementById('liveNewsList');
+            const footnoteEl = document.getElementById('liveNewsFootnote');
+            const actionEl = document.getElementById('liveNewsPrimaryAction');
+            const actionLabelEl = document.getElementById('liveNewsPrimaryActionLabel');
+            if (!summaryEl || !listEl) return;
+
+            const toArray = window.NextScoutData?.toArray || ((input) => Array.isArray(input) ? input : []);
+            const todayLabel = new Date().toLocaleDateString('tr-TR', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric',
+            });
+
+            const fallbackItems = [
+                {
+                    time: 'Şimdi',
+                    title: 'Yeni kulüp ihtiyacı açıldı',
+                    copy: 'Kulüplerin aradığı yeni pozisyonlar ve eksik bölgeler burada anlık görünür.',
+                },
+                {
+                    time: '14:30',
+                    title: 'Yeni maç ve etkinlik akışı eklendi',
+                    copy: 'Deneme, idman ve canlı maç başlıkları şehir bazlı akışa düşer.',
+                },
+                {
+                    time: '13:10',
+                    title: 'Oyuncu vitrinleri güncellendi',
+                    copy: 'Son güncellenen profiller ve yükselen vitrin hareketleri bu listede öne çıkar.',
+                },
+            ];
+
+            try {
+                const [needsPayload, managerNeedsPayload, coachNeedsPayload, eventsPayload, playersPayload] = await Promise.all([
+                    fetchJsonSafe(`${API_BASE_URL}/club-needs?limit=12`),
+                    fetchJsonSafe(`${API_BASE_URL}/discovery/manager-needs`),
+                    fetchJsonSafe(`${API_BASE_URL}/discovery/coach-needs`),
+                    fetchJsonSafe(`${API_BASE_URL}/community-events?trial_only=1`),
+                    fetchJsonSafe(`${API_BASE_URL}/public/players?limit=12&sort=updated_desc`),
+                ]);
+
+                const clubNeeds = toArray(needsPayload?.data ?? needsPayload).filter((row) => row && typeof row === 'object');
+                const managerNeeds = toArray(managerNeedsPayload?.data ?? managerNeedsPayload).filter((row) => row && typeof row === 'object');
+                const coachNeeds = toArray(coachNeedsPayload?.data ?? coachNeedsPayload).filter((row) => row && typeof row === 'object');
+                const events = toArray(eventsPayload?.data ?? eventsPayload).filter((row) => row && typeof row === 'object');
+                const players = toArray(playersPayload?.data ?? playersPayload).filter((row) => row && typeof row === 'object');
+
+                const items = [];
+
+                const firstClubNeed = clubNeeds[0];
+                if (firstClubNeed) {
+                    const clubName = (firstClubNeed.club_name || firstClubNeed.club || 'Bir kulüp').toString().trim();
+                    const position = (firstClubNeed.position || firstClubNeed.position_name || firstClubNeed.role || 'oyuncu').toString().trim();
+                    items.push({
+                        time: formatLiveNewsTime(firstClubNeed.updated_at || firstClubNeed.created_at),
+                        title: `${clubName} yeni ihtiyaç açtı`,
+                        copy: `${position} pozisyonu için yeni talep canlı listelere eklendi.`,
+                    });
+                }
+
+                const firstEvent = events.find((row) => (row.status || '').toString().trim()) || events[0];
+                if (firstEvent) {
+                    const title = (firstEvent.title || firstEvent.name || 'Yeni maç akışı').toString().trim();
+                    const venue = (firstEvent.venue || firstEvent.facility || firstEvent.field || 'Saha bilgisi yakında').toString().trim();
+                    items.push({
+                        time: formatLiveNewsTime(firstEvent.date ? `${firstEvent.date} ${firstEvent.time || ''}` : firstEvent.created_at),
+                        title,
+                        copy: `${venue} için yeni etkinlik akışı görünür oldu.`,
+                    });
+                }
+
+                const firstPlayer = players[0];
+                if (firstPlayer) {
+                    const playerName = (firstPlayer.name || firstPlayer.full_name || 'Bir oyuncu').toString().trim();
+                    const city = (firstPlayer.city || firstPlayer.location || '').toString().trim();
+                    items.push({
+                        time: formatLiveNewsTime(firstPlayer.updated_at || firstPlayer.created_at),
+                        title: `${playerName} vitrini güncellendi`,
+                        copy: city ? `${city} içindeki güncel profil hareketi keşif akışına yansıdı.` : 'Güncellenen profil keşif akışında öne çıktı.',
+                    });
+                }
+
+                const firstManagerNeed = managerNeeds[0] || coachNeeds[0];
+                if (firstManagerNeed) {
+                    const author = (firstManagerNeed.author_name || firstManagerNeed.manager_name || firstManagerNeed.coach_name || 'Karar verici').toString().trim();
+                    const focus = (firstManagerNeed.position || firstManagerNeed.specialty || firstManagerNeed.topic || 'oyuncu taraması').toString().trim();
+                    items.push({
+                        time: formatLiveNewsTime(firstManagerNeed.updated_at || firstManagerNeed.created_at),
+                        title: `${author} yeni tarama açtı`,
+                        copy: `${focus} için yeni ilgi akışı platform üzerinde görünür durumda.`,
+                    });
+                }
+
+                const newsItems = items.slice(0, 4);
+                if (!newsItems.length) throw new Error('No live items');
+
+                summaryEl.textContent = 'Kulüp ihtiyaçları, şehir bazlı etkinlikler ve güncellenen oyuncu hareketleri aynı akışta izleniyor.';
+                if (statusEl) statusEl.textContent = 'Canlı Akış';
+                if (primaryPillEl) primaryPillEl.textContent = `${clubNeeds.length + managerNeeds.length + coachNeeds.length + events.length + players.length} kayıt tarandı`;
+                if (datePillEl) datePillEl.textContent = todayLabel;
+                if (footnoteEl) footnoteEl.textContent = 'Akış, açık ihtiyaçlar ve güncellenen profillerden otomatik üretilir.';
+                if (actionEl) actionEl.href = resolveLocalPage('platform-akisi.html');
+                if (actionLabelEl) actionLabelEl.textContent = 'Akışı Aç';
+                listEl.innerHTML = newsItems.map((item) => buildLiveNewsItem(item.time, item.title, item.copy)).join('');
+                return;
+            } catch (error) {
+                summaryEl.textContent = 'Yeni kulüp ihtiyaçları, maç akışları ve oyuncu hareketleri tek haber bandında toplanır.';
+                if (statusEl) statusEl.textContent = 'Hazır Akış';
+                if (primaryPillEl) primaryPillEl.textContent = 'Demo haber akışı';
+                if (datePillEl) datePillEl.textContent = todayLabel;
+                if (footnoteEl) footnoteEl.textContent = 'Canlı veri gelmediğinde kart örnek haber akışıyla görünür kalır.';
+                if (actionEl) actionEl.href = resolveLocalPage('platform-akisi.html');
+                if (actionLabelEl) actionLabelEl.textContent = 'Akışı Aç';
+                listEl.innerHTML = fallbackItems.map((item) => buildLiveNewsItem(item.time, item.title, item.copy)).join('');
+            }
+        }
+
         function bindFeatureTransferCard() {
             return;
         }
@@ -11342,6 +11671,7 @@
         function startAutoRefresh() {
             // İlk yükleme
             renderBreakingNewsStrip();
+            renderLiveNewsCard();
             renderFeatureTransferCard();
             renderScoutRadarInsightCard();
             renderHomeNeedsInsightCard();
@@ -11423,6 +11753,10 @@
                 renderBreakingNewsStrip();
             }, 90000); // 90 seconds
 
+            setInterval(() => {
+                renderLiveNewsCard();
+            }, 120000); // 120 seconds
+
         }
 
         // Sayfa yüklendiğinde başlat
@@ -11476,6 +11810,7 @@
             bindContractTickerEvents();
             renderManagerNeedsButtonPanel();
             renderContractStatusTicker();
+            window.NextScoutGrowth?.idle(() => renderLiveNewsCard(), 760);
             window.NextScoutGrowth?.idle(() => renderFeatureTransferCard(), 800);
             window.NextScoutGrowth?.idle(() => renderScoutRadarInsightCard(), 830);
             window.NextScoutGrowth?.idle(() => renderHomeNeedsInsightCard(), 850);
@@ -14099,6 +14434,16 @@
             const isRealSession = Boolean(token && token !== 'local-session-token' && role);
             card.hidden = !isRealSession;
             card.style.display = isRealSession ? '' : 'none';
+        }
+
+        function applyLiveNewsVisibility() {
+            const card = document.getElementById('liveNewsCard');
+            if (!card) return;
+            const token = (localStorage.getItem('nextscout_token') || '').toString().trim();
+            const role = getSessionRole();
+            const isRealSession = Boolean(token && token !== 'local-session-token' && role);
+            card.hidden = isRealSession;
+            card.style.display = isRealSession ? 'none' : '';
         }
 
         function isPlayerSessionActive() {
