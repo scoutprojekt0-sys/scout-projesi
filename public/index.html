@@ -9216,6 +9216,7 @@
             const starterRoleCard = document.getElementById('starterRoleCard');
             applyPlatformSummaryVisibility();
             applyLiveNewsVisibility();
+            applyPlayerHomepageVisibility();
 
             const registerBtn = document.getElementById('registerBtn');
             const loginBtn = document.getElementById('loginBtn');
@@ -9279,6 +9280,7 @@
             }
             updatePlayerOnlyGridVisibility();
             updateStaffOnlyGridVisibility();
+            applyPlayerHomepageVisibility();
             ensureMobileNotificationTabs();
         }
 
@@ -14426,12 +14428,17 @@
             }
         }
 
+        function isPlayerRole(role) {
+            const normalizedRole = (role || '').toString().trim().toLowerCase();
+            return normalizedRole === 'player' || normalizedRole === 'oyuncu';
+        }
+
         function applyPlatformSummaryVisibility() {
             const card = document.getElementById('platformSummaryCard');
             if (!card) return;
             const token = (localStorage.getItem('nextscout_token') || '').toString().trim();
             const role = getSessionRole();
-            const isRealSession = Boolean(token && token !== 'local-session-token' && role);
+            const isRealSession = Boolean(token && token !== 'local-session-token' && role && !isPlayerRole(role));
             card.hidden = !isRealSession;
             card.style.display = isRealSession ? '' : 'none';
         }
@@ -14446,9 +14453,34 @@
             card.style.display = isRealSession ? 'none' : '';
         }
 
+        function applyPlayerHomepageVisibility() {
+            const role = getSessionRole();
+            const token = (localStorage.getItem('nextscout_token') || '').toString().trim();
+            const isPlayerSession = Boolean(token) && isPlayerRole(role);
+
+            const marketAnalysisPanel = document.getElementById('marketAnalysisPanel');
+            const starterRoleCard = document.getElementById('starterRoleCard');
+            const homepageVisibilityCard = document.getElementById('homepageVisibilityCard');
+
+            if (marketAnalysisPanel) {
+                marketAnalysisPanel.hidden = isPlayerSession;
+                marketAnalysisPanel.style.display = isPlayerSession ? 'none' : '';
+            }
+
+            if (starterRoleCard) {
+                starterRoleCard.hidden = isPlayerSession;
+                starterRoleCard.style.display = isPlayerSession ? 'none' : starterRoleCard.style.display;
+            }
+
+            if (homepageVisibilityCard) {
+                homepageVisibilityCard.hidden = !isPlayerSession;
+                homepageVisibilityCard.style.display = isPlayerSession ? '' : 'none';
+            }
+        }
+
         function isPlayerSessionActive() {
             const token = (localStorage.getItem('nextscout_token') || '').trim();
-            return getSessionRole() === 'player' && Boolean(token);
+            return isPlayerRole(getSessionRole()) && Boolean(token);
         }
 
         function isManagerCoachSessionActive() {
