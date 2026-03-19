@@ -8693,17 +8693,19 @@
                         }
 
                         function applyStarterVisibility() {
+                            const role = readRole();
+                            const isPlayerSession = role === 'player' || role === 'oyuncu';
                             const hasSession = Boolean((localStorage.getItem('nextscout_token') || '').trim() || (localStorage.getItem('nextscout_user') || '').trim());
                             if (starterContent) starterContent.style.display = 'none';
                             if (clubCard) clubCard.style.display = 'none';
                             if (managerCard) managerCard.style.display = 'none';
                             if (coachCard) coachCard.style.display = 'none';
-                            if (!hasSession) {
-                                card.style.display = 'flex';
-                                if (starterContent) starterContent.style.display = '';
+                            if (hasSession || isPlayerSession) {
+                                card.style.display = 'none';
                                 return;
                             }
-                            card.style.display = 'none';
+                            card.style.display = 'flex';
+                            if (starterContent) starterContent.style.display = '';
                         }
 
                         applyStarterVisibility();
@@ -8907,9 +8909,8 @@
                     if (!role) {
                         role = (localStorage.getItem('nextscout_role') || localStorage.getItem('userRole') || '').toString().trim().toLowerCase();
                     }
-                    if (role === 'player' || role === 'oyuncu') {
-                        card.hidden = false;
-                    }
+                    card.hidden = false;
+                    card.style.display = '';
                 })();
             </script>
             <section class="role-visibility-grid staff-role-visibility-grid" aria-label="Karar Verici Kartlari" hidden></section>
@@ -10379,10 +10380,7 @@
             const ctaEl = document.getElementById('liveWatchDemandCta');
             if (!cardRoot || !heatmapRoot || !summaryEl || !badgeEl || !citiesEl || !matchesEl || !positionEl || !playersEl) return;
 
-            if (!updateStaffOnlyGridVisibility()) {
-                cardRoot.style.display = 'none';
-                return;
-            }
+            updateStaffOnlyGridVisibility();
 
             if (wrapperRoot) wrapperRoot.style.display = 'grid';
             cardRoot.style.display = '';
@@ -10867,9 +10865,7 @@
             const actionsEl = document.getElementById('todayForYouActions');
             if (!titleEl || !summaryEl || !actionsEl || !cardRoot) return;
 
-            const user = safeParseJson(localStorage.getItem('nextscout_user'));
-            const role = String(user?.role || '').toLowerCase();
-            if (!updatePlayerOnlyGridVisibility() || role !== 'player') {
+            if (!updatePlayerOnlyGridVisibility()) {
                 cardRoot.style.display = 'none';
                 return;
             }
@@ -11319,7 +11315,6 @@
 
             const token = (localStorage.getItem('nextscout_token') || '').trim();
             const user = safeParseJson(localStorage.getItem('nextscout_user'));
-            const role = String(user?.role || '').toLowerCase();
 
             const renderInfo = (items, summary, ctaHref, ctaLabel) => {
                 listRoot.innerHTML = items.join('');
@@ -11329,15 +11324,26 @@
                 if (span) span.textContent = ctaLabel;
             };
 
-            if (!updatePlayerOnlyGridVisibility() || !token || !user) {
+            if (!updatePlayerOnlyGridVisibility()) {
                 panelRoot.style.display = 'none';
                 return;
             }
 
             ctaRoot.onclick = null;
 
-            if (role !== 'player') {
-                panelRoot.style.display = 'none';
+            if (!token || !user) {
+                if (wrapperRoot) wrapperRoot.style.display = 'grid';
+                panelRoot.style.display = '';
+                renderInfo([
+                    `<article class="match-opportunity-item">
+                        <div class="match-opportunity-top">
+                            <div><div class="match-club">Fırsat akışı hazır</div><div class="match-role">Kişisel eşleşme için giriş yap</div></div>
+                            <span class="match-score">%--</span>
+                        </div>
+                        <div class="match-reason">Oyuncu girişi yaptığında profilinle eşleşen kulüp ihtiyaçları ve açık fırsatlar burada listelenecek.</div>
+                        <div class="match-meta">Anasayfa görünümü • oyuncu akışı</div>
+                    </article>`
+                ], 'Profiline göre çalışan eşleşmeler oyuncu oturumunda burada görünür.', './my-matches.html', 'Tüm Eşleşmeleri Gör');
                 return;
             }
             if (wrapperRoot) wrapperRoot.style.display = 'grid';
@@ -11409,15 +11415,33 @@
             const listRoot = document.getElementById('profileStrengthList');
             if (!wrapperRoot || !panelRoot || !scoreRoot || !stateRoot || !listRoot) return;
 
-            const token = (localStorage.getItem('nextscout_token') || '').trim();
             const user = safeParseJson(localStorage.getItem('nextscout_user'));
-            const role = String(user?.role || '').toLowerCase();
-            if (!updatePlayerOnlyGridVisibility() || !token || !user || role !== 'player') {
+            if (!updatePlayerOnlyGridVisibility()) {
                 panelRoot.style.display = 'none';
                 return;
             }
             wrapperRoot.style.display = 'grid';
             panelRoot.style.display = '';
+
+            if (!user) {
+                scoreRoot.textContent = '72%';
+                stateRoot.textContent = 'Profilini güçlendirdikçe bu kart oyuncu hesabında kişisel analize döner';
+                listRoot.innerHTML = `
+                    <div class="profile-strength-item">
+                        <span class="profile-strength-label">Profil Fotoğrafı</span>
+                        <span class="profile-strength-state">Kontrol</span>
+                    </div>
+                    <div class="profile-strength-item">
+                        <span class="profile-strength-label">Pozisyon Bilgisi</span>
+                        <span class="profile-strength-state">Kontrol</span>
+                    </div>
+                    <div class="profile-strength-item">
+                        <span class="profile-strength-label">Video Portföyü</span>
+                        <span class="profile-strength-state">Güçlendir</span>
+                    </div>
+                `;
+                return;
+            }
 
             let score = 0;
             const checks = [
@@ -11482,13 +11506,25 @@
 
             const token = (localStorage.getItem('nextscout_token') || '').trim();
             const user = safeParseJson(localStorage.getItem('nextscout_user'));
-            const role = String(user?.role || '').toLowerCase();
-            if (!updatePlayerOnlyGridVisibility() || !token || !user || role !== 'player') {
+            if (!updatePlayerOnlyGridVisibility()) {
                 panelRoot.style.display = 'none';
                 return;
             }
             wrapperRoot.style.display = 'grid';
             panelRoot.style.display = '';
+
+            if (!token || !user) {
+                listRoot.innerHTML = `
+                    <article class="player-view-item">
+                        <div class="player-view-name">İnceleme akışı hazır</div>
+                        <div class="player-view-role">Oyuncu hesabıyla kişisel hale gelir</div>
+                        <div class="player-view-time">Giriş yapıldığında seni inceleyen karar vericiler burada listelenir.</div>
+                    </article>
+                `;
+                totalRoot.innerHTML = `0<small>Toplam</small>`;
+                summaryRoot.textContent = 'Bu alan oyuncu profiline gelen ilgi ve görüntülenmeleri gösterir.';
+                return;
+            }
 
             try {
                 const headers = {
@@ -14412,53 +14448,104 @@
         function applyPlatformSummaryVisibility() {
             const card = document.getElementById('platformSummaryCard');
             if (!card) return;
-            const token = (localStorage.getItem('nextscout_token') || '').toString().trim();
             const role = getSessionRole();
-            const isRealSession = Boolean(token && token !== 'local-session-token' && role && !isPlayerRole(role));
-            card.hidden = !isRealSession;
-            card.style.display = isRealSession ? '' : 'none';
+            const normalizedRole = (role || '').toString().trim().toLowerCase();
+            const shouldShow = normalizedRole === 'club' || normalizedRole === 'team' || normalizedRole === 'kulup' || normalizedRole === 'klup' || normalizedRole === 'manager' || normalizedRole === 'menajer' || normalizedRole === 'menejer';
+            card.hidden = !shouldShow;
+            card.style.display = shouldShow ? '' : 'none';
         }
 
         function applyLiveNewsVisibility() {
             const card = document.getElementById('liveNewsCard');
             if (!card) return;
-            const token = (localStorage.getItem('nextscout_token') || '').toString().trim();
             const role = getSessionRole();
-            const isRealSession = Boolean(token && token !== 'local-session-token' && role);
-            card.hidden = isRealSession;
-            card.style.display = isRealSession ? 'none' : '';
+            const normalizedRole = (role || '').toString().trim().toLowerCase();
+            const shouldShow = !normalizedRole || isPlayerRole(normalizedRole) || normalizedRole === 'scout' || normalizedRole === 'club' || normalizedRole === 'team' || normalizedRole === 'kulup' || normalizedRole === 'klup' || normalizedRole === 'manager' || normalizedRole === 'menajer' || normalizedRole === 'menejer';
+            card.hidden = !shouldShow;
+            card.style.display = shouldShow ? '' : 'none';
         }
 
         function applyPlayerHomepageVisibility() {
             const role = getSessionRole();
-            const token = (localStorage.getItem('nextscout_token') || '').toString().trim();
-            const isPlayerSession = Boolean(token) && isPlayerRole(role);
-
+            const isPlayerSession = isPlayerRole(role);
+            const isScoutSession = (role || '').toString().trim().toLowerCase() === 'scout';
+            const normalizedRole = (role || '').toString().trim().toLowerCase();
+            const isClubSession = normalizedRole === 'club' || normalizedRole === 'team' || normalizedRole === 'kulup' || normalizedRole === 'klup';
+            const isManagerSession = normalizedRole === 'manager' || normalizedRole === 'menajer' || normalizedRole === 'menejer';
+            const isPublicSession = !role;
             const marketAnalysisPanel = document.getElementById('marketAnalysisPanel');
             const starterRoleCard = document.getElementById('starterRoleCard');
             const homepageVisibilityCard = document.getElementById('homepageVisibilityCard');
+            const staffOnlyGrid = document.getElementById('staffOnlyGrid');
+            const playerOnlyGrid = document.getElementById('playerOnlyGrid');
+            const homeInsightGrid = document.querySelector('.home-insight-grid');
+            const belowCardsGrid = document.querySelector('.below-cards-grid');
+            const scoutRadarCard = homeInsightGrid?.children?.[0];
+            const homeNeedsCard = homeInsightGrid?.children?.[1];
+            const lawInsightCard = homeInsightGrid?.children?.[2];
+            const playerOfWeekCard = document.getElementById('playerOfWeekCard');
+            const weeklyTrendsCard = document.getElementById('weeklyTrendsCard');
+            const risingStarsCard = document.getElementById('risingStarsCard');
 
             if (marketAnalysisPanel) {
-                marketAnalysisPanel.hidden = isPlayerSession;
-                marketAnalysisPanel.style.display = isPlayerSession ? 'none' : '';
+                const shouldShow = isPublicSession || isPlayerSession || isScoutSession || isClubSession || isManagerSession;
+                marketAnalysisPanel.hidden = !shouldShow;
+                marketAnalysisPanel.style.display = shouldShow ? '' : 'none';
             }
 
             if (starterRoleCard) {
-                starterRoleCard.hidden = isPlayerSession;
-                if (isPlayerSession) {
-                    starterRoleCard.style.display = 'none';
-                }
+                starterRoleCard.hidden = !isPublicSession;
+                starterRoleCard.style.display = isPublicSession ? '' : 'none';
             }
 
             if (homepageVisibilityCard) {
                 homepageVisibilityCard.hidden = !isPlayerSession;
                 homepageVisibilityCard.style.display = isPlayerSession ? '' : 'none';
             }
+
+            if (playerOnlyGrid) {
+                playerOnlyGrid.style.display = isPlayerSession ? 'grid' : 'none';
+            }
+
+            if (staffOnlyGrid) {
+                staffOnlyGrid.style.display = isScoutSession ? 'grid' : 'none';
+            }
+
+            if (homeInsightGrid) {
+                homeInsightGrid.style.display = (isPublicSession || isScoutSession || isClubSession || isManagerSession) ? 'grid' : 'none';
+            }
+
+            if (scoutRadarCard) {
+                scoutRadarCard.style.display = (isPublicSession || isScoutSession) ? '' : 'none';
+            }
+
+            if (homeNeedsCard) {
+                homeNeedsCard.style.display = '';
+            }
+
+            if (lawInsightCard) {
+                lawInsightCard.style.display = '';
+            }
+
+            if (belowCardsGrid) {
+                belowCardsGrid.style.display = (isPublicSession || isScoutSession || isClubSession || isManagerSession) ? 'grid' : 'none';
+            }
+
+            if (playerOfWeekCard) {
+                playerOfWeekCard.style.display = isScoutSession || isClubSession || isManagerSession ? '' : 'none';
+            }
+
+            if (weeklyTrendsCard) {
+                weeklyTrendsCard.style.display = isPublicSession || isPlayerSession ? '' : 'none';
+            }
+
+            if (risingStarsCard) {
+                risingStarsCard.style.display = (isPublicSession || isScoutSession || isClubSession || isManagerSession) ? '' : 'none';
+            }
         }
 
         function isPlayerSessionActive() {
-            const token = (localStorage.getItem('nextscout_token') || '').trim();
-            return isPlayerRole(getSessionRole()) && Boolean(token);
+            return isPlayerRole(getSessionRole());
         }
 
         function isManagerCoachSessionActive() {
@@ -14480,7 +14567,7 @@
             const wrapperRoot = document.getElementById('staffOnlyGrid');
             if (!wrapperRoot) return false;
 
-            const shouldShow = isManagerCoachSessionActive();
+            const shouldShow = !isPlayerRole(getSessionRole());
             wrapperRoot.style.display = shouldShow ? 'grid' : 'none';
             return shouldShow;
         }
