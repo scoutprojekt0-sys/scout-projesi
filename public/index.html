@@ -4414,6 +4414,54 @@
             line-height: 1.55;
         }
 
+        .club-system-meta {
+            margin-top: 16px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .club-system-stat {
+            padding: 12px;
+            border: 1px solid rgba(110, 138, 255, 0.22);
+            background: rgba(255,255,255,.04);
+        }
+
+        .club-system-branch-select {
+            width: 100%;
+            min-height: 38px;
+            margin-top: 8px;
+            padding: 0 10px;
+            border: 1px solid rgba(110, 138, 255, 0.22);
+            background: rgba(255,255,255,.05);
+            color: var(--ns-text);
+            font-size: 12px;
+            font-weight: 800;
+            outline: none;
+        }
+
+        .club-system-stat-label {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: #9fb4ff;
+        }
+
+        .club-system-stat-value {
+            margin-top: 6px;
+            color: var(--ns-text);
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 640px) {
+            .club-system-meta {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .insight-link:hover,
         .insight-item:hover {
             border-color: rgba(255, 126, 34, 0.5);
@@ -8871,7 +8919,7 @@
             </div>
 
             <section class="home-insight-grid">
-                <article class="insight-card">
+                <article class="insight-card" id="scoutRadarCard">
                     <div class="eyebrow">Keşif Merkezi</div>
                     <h3 class="insight-title">Scout Radar</h3>
                     <div class="insight-summary">Scout ekibinin radarına giren yeni eşleşmeleri, yükselen profilleri ve gizli yetenekleri tek alandan filtreleyin.</div>
@@ -8892,7 +8940,7 @@
                     <div class="insight-note" id="scoutRadarNote">Bu hafta radar yoğunluğu savunma hattı ve kenar oyuncularında toplanıyor.</div>
                 </article>
 
-                <article class="insight-card">
+                <article class="insight-card" id="homeNeedsCard">
                     <div class="eyebrow">Kulüp Talepleri</div>
                     <h3 class="insight-title">Kulüplerin Bugünkü İhtiyaçları</h3>
                     <div class="insight-summary">Bugün kulüplerin en çok aradığı pozisyonları ve açık kadro ihtiyaçlarını pozisyon bazlı inceleyin.</div>
@@ -8910,7 +8958,39 @@
                     </div>
                 </article>
 
-                <article class="insight-card">
+                <article class="insight-card" id="clubSystemFitCard" style="display:none;">
+                    <div class="eyebrow">Kulüp Oyunu</div>
+                    <h3 class="insight-title">Sistemine Uygun Oyuncular</h3>
+                    <div class="insight-summary" id="clubSystemFitSummary">Kulübünün oyun modeline göre en uygun oyuncuları tek karttan aç.</div>
+                    <div class="club-system-meta">
+                        <div class="club-system-stat">
+                            <div class="club-system-stat-label">Aktif Sistem</div>
+                            <div class="club-system-stat-value" id="clubSystemFitLabel">Gegenpressing | 4-3-3 Ofansif</div>
+                        </div>
+                        <div class="club-system-stat">
+                            <div class="club-system-stat-label">Brans</div>
+                            <div class="club-system-stat-value" id="clubSystemFitBranch">Futbol</div>
+                            <select class="club-system-branch-select" id="clubSystemBranchSelect">
+                                <option value="futbol">Futbol</option>
+                                <option value="basketbol">Basketbol</option>
+                                <option value="voleybol">Voleybol</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="insight-actions">
+                        <a class="insight-link" id="clubSystemPlayersLink" href="./professional-players.html?visibility_role=club&system=gegenpressing">
+                            <span class="insight-link-main"><span>Sisteme Uygun Oyunculari Ac</span></span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                        <a class="insight-link" id="clubSystemProfileLink" href="./club-profile.html">
+                            <span class="insight-link-main"><span>Sistemi Kulup Profilinde Guncelle</span></span>
+                            <i class="fas fa-pen"></i>
+                        </a>
+                    </div>
+                    <div class="insight-note" id="clubSystemFitNote">Mevcut oyuncu havuzu kulübünün seçtiği sisteme göre AI uyumluluk puanıyla sıralanır.</div>
+                </article>
+
+                <article class="insight-card" id="lawInsightCard">
                     <div class="eyebrow">Profesyonel Destek</div>
                     <h3 class="insight-title">Hukuk ve Sözleşme Desteği</h3>
                     <div class="insight-summary" id="lawInsightSummary">Sözleşme süreçleri, profesyonel danışmanlık ve hukuki destek için uzman avukat profillerine ulaşın.</div>
@@ -14600,6 +14680,110 @@
             return normalizedRole === 'player' || normalizedRole === 'oyuncu';
         }
 
+        const HOMEPAGE_SYSTEM_LABELS = {
+            gegenpressing: 'Gegenpressing | 4-3-3 Ofansif',
+            park_the_bus: 'Park the Bus | 5-4-1 Savunma',
+            possession_control: 'Topa Sahip Olan Oyun | 4-2-3-1',
+            transition_play: 'Gecis Oyunu | 3-4-3 Direkt',
+        };
+        const HOMEPAGE_BRANCH_STORAGE_KEY = 'nextscout_home_club_system_branch';
+        const HOMEPAGE_BRANCH_LABELS = {
+            futbol: 'Futbol',
+            basketbol: 'Basketbol',
+            voleybol: 'Voleybol',
+        };
+
+        function getStoredClubProfile() {
+            try {
+                const raw = localStorage.getItem('nextscout_club_profile');
+                return raw ? JSON.parse(raw) : {};
+            } catch (error) {
+                return {};
+            }
+        }
+
+        function normalizeClubBranchValue(value) {
+            const normalized = (value || '')
+                .toString()
+                .trim()
+                .toLocaleLowerCase('tr-TR')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '');
+            if (normalized === 'futbol') return 'futbol';
+            if (normalized === 'basketbol') return 'basketbol';
+            if (normalized === 'voleybol') return 'voleybol';
+            return 'futbol';
+        }
+
+        function getHomepageSelectedBranch(defaultBranch) {
+            const rawStoredValue = (localStorage.getItem(HOMEPAGE_BRANCH_STORAGE_KEY) || '').toString().trim();
+            if (rawStoredValue) {
+                return normalizeClubBranchValue(rawStoredValue);
+            }
+            return normalizeClubBranchValue(defaultBranch);
+        }
+
+        function updateHomepageBranchButtons(activeBranch) {
+            const buttons = document.querySelectorAll('#clubSystemBranchPicker .club-system-branch-btn');
+            buttons.forEach((button) => {
+                const buttonBranch = normalizeClubBranchValue(button.getAttribute('data-branch') || '');
+                button.classList.toggle('active', buttonBranch === activeBranch);
+            });
+        }
+
+        function bindHomepageBranchButtons(preferredSystem) {
+            const buttons = document.querySelectorAll('#clubSystemBranchPicker .club-system-branch-btn');
+            buttons.forEach((button) => {
+                if (button.dataset.bound === '1') return;
+                button.dataset.bound = '1';
+                button.addEventListener('click', () => {
+                    const selectedBranch = normalizeClubBranchValue(button.getAttribute('data-branch') || '');
+                    localStorage.setItem(HOMEPAGE_BRANCH_STORAGE_KEY, selectedBranch);
+                    updateClubSystemHomepageCard(preferredSystem);
+                });
+            });
+        }
+
+        function updateClubSystemHomepageCard(forcedSystem) {
+            const card = document.getElementById('clubSystemFitCard');
+            if (!card) return;
+
+            const profile = getStoredClubProfile();
+            const preferredSystem = (forcedSystem || profile?.preferredSystem || 'gegenpressing').toString().trim();
+            const profileBranch = (profile?.branch || 'Futbol').toString().trim() || 'Futbol';
+            const branchValue = getHomepageSelectedBranch(profileBranch);
+            const branch = HOMEPAGE_BRANCH_LABELS[branchValue] || profileBranch;
+            const systemLabel = HOMEPAGE_SYSTEM_LABELS[preferredSystem] || 'Sistem secilmedi';
+            const summary = document.getElementById('clubSystemFitSummary');
+            const label = document.getElementById('clubSystemFitLabel');
+            const branchNode = document.getElementById('clubSystemFitBranch');
+            const note = document.getElementById('clubSystemFitNote');
+            const playersLink = document.getElementById('clubSystemPlayersLink');
+            const profileLink = document.getElementById('clubSystemProfileLink');
+
+            if (summary) {
+                summary.textContent = `${branch} bransinda ${systemLabel} modeline uygun oyunculari hizli ac.`;
+            }
+            if (label) {
+                label.textContent = systemLabel;
+            }
+            if (branchNode) {
+                branchNode.textContent = branch;
+            }
+            if (note) {
+                note.textContent = `${branch} secili. Sisteme uygun oyuncular acildiginda sadece bu branstaki oyuncular listelenir.`;
+            }
+            if (playersLink) {
+                const params = new URLSearchParams({ visibility_role: 'club', system: preferredSystem, sport: branchValue });
+                playersLink.href = resolveLocalPage(`professional-players.html?${params.toString()}`);
+            }
+            if (profileLink) {
+                profileLink.href = resolveLocalPage('club-profile.html');
+            }
+            updateHomepageBranchButtons(branchValue);
+            bindHomepageBranchButtons(preferredSystem);
+        }
+
         function applyPlatformSummaryVisibility() {
             const card = document.getElementById('platformSummaryCard');
             if (!card) return;
@@ -14635,12 +14819,15 @@
             const playerOnlyGrid = document.getElementById('playerOnlyGrid');
             const homeInsightGrid = document.querySelector('.home-insight-grid');
             const belowCardsGrid = document.querySelector('.below-cards-grid');
-            const scoutRadarCard = homeInsightGrid?.children?.[0];
-            const homeNeedsCard = homeInsightGrid?.children?.[1];
-            const lawInsightCard = homeInsightGrid?.children?.[2];
+            const scoutRadarCard = document.getElementById('scoutRadarCard');
+            const homeNeedsCard = document.getElementById('homeNeedsCard');
+            const clubSystemFitCard = document.getElementById('clubSystemFitCard');
+            const lawInsightCard = document.getElementById('lawInsightCard');
             const playerOfWeekCard = document.getElementById('playerOfWeekCard');
             const weeklyTrendsCard = document.getElementById('weeklyTrendsCard');
             const risingStarsCard = document.getElementById('risingStarsCard');
+
+            updateClubSystemHomepageCard();
 
             if (marketAnalysisPanel) {
                 const shouldShow = isPublicSession || isPlayerSession || isScoutSession || isClubSession || isManagerSession;
@@ -14676,6 +14863,10 @@
 
             if (homeNeedsCard) {
                 homeNeedsCard.style.display = '';
+            }
+
+            if (clubSystemFitCard) {
+                clubSystemFitCard.style.display = isClubSession ? '' : 'none';
             }
 
             if (lawInsightCard) {

@@ -1789,6 +1789,12 @@
       if (!city || !age || sort !== "age_asc") return null;
       return { city, age };
     }
+
+    function getSportFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const value = String(params.get("sport") || params.get("branch") || "").trim().toLowerCase();
+      return ["futbol", "basketbol", "voleybol"].includes(value) ? value : "";
+    }
     const savePresetBtn = document.getElementById("savePresetBtn");
     const loadPresetBtn = document.getElementById("loadPresetBtn");
     const resetFilterBtn = document.getElementById("resetFilterBtn");
@@ -1929,6 +1935,14 @@
       if (!sortFilter.value || sortFilter.value === "rating_desc") {
         sortFilter.value = "compatibility_desc";
       }
+    }
+
+    function syncSportFilterFromContext() {
+      if (!sportFilter) return;
+      const querySport = getSportFromQuery();
+      if (!querySport) return;
+      sportFilter.value = querySport;
+      syncPositionOptions();
     }
 
     function buildAgeWindowScore(age, minAge, maxAge) {
@@ -3299,6 +3313,7 @@
       standardizeScoutRadarQuery();
       applyWeeklyDigestMode();
       syncLockedTransferFilters();
+      syncSportFilterFromContext();
       syncSystemFilterFromContext();
       applyTurkishTextFixes();
       document.documentElement.classList.remove('pre-hide-context-copy');

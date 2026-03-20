@@ -391,6 +391,21 @@
         .player-rating { display: flex; align-items: center; gap: 8px; padding: 10px; background: #fff9e6; border-radius: 8px; margin-bottom: 12px; }
         .rating-stars { color: #fbbf24; font-size: 14px; }
         .rating-value { color: #fbbf24; font-weight: 700; font-size: 13px; }
+        .system-fit-card {
+            margin-bottom: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(79, 70, 229, 0.16);
+            background: linear-gradient(135deg, rgba(59,130,246,0.12) 0%, rgba(255,255,255,0.94) 58%, rgba(249,115,22,0.1) 100%);
+        }
+        .system-fit-top { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:6px; }
+        .system-fit-label { font-size:11px; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:.08em; }
+        .system-fit-score { font-size:24px; font-weight:900; color:#1e3a8a; }
+        .system-fit-bar { width:100%; height:8px; border-radius:999px; background:#dbeafe; overflow:hidden; margin-bottom:6px; }
+        .system-fit-fill { height:100%; border-radius:inherit; background:linear-gradient(90deg, #38bdf8 0%, #6366f1 45%, #f97316 100%); }
+        .system-fit-sub { font-size:12px; color:#475569; line-height:1.4; }
+        .system-fit-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+        .system-fit-tag { padding:4px 8px; border-radius:999px; background:#eef2ff; color:#3730a3; font-size:11px; font-weight:800; }
         .card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .action-btn {
             padding: 8px 10px;
@@ -955,6 +970,14 @@
                 <div class="search-grid">
                     <div class="form-group"><label>Oyuncu Adi</label><input type="text" id="playerName" placeholder="Oyuncu adi gir"></div>
                     <div class="form-group">
+                        <label>Brans</label>
+                        <select id="sportFilter">
+                            <option value="futbol">Futbol</option>
+                            <option value="basketbol">Basketbol</option>
+                            <option value="voleybol">Voleybol</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label>Pozisyon</label>
                         <select id="position">
                             <option value="">Tumu</option>
@@ -973,6 +996,16 @@
                             <option value="7.5">7.5+</option>
                             <option value="8.0">8.0+</option>
                             <option value="8.5">8.5+</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>AI Sistem Secici</label>
+                        <select id="teamSystemFilter">
+                            <option value="">Sistem secilmedi</option>
+                            <option value="gegenpressing">Gegenpressing | 4-3-3 Ofansif</option>
+                            <option value="park_the_bus">Park the Bus | 5-4-1 Savunma</option>
+                            <option value="possession_control">Topa Sahip Olan Oyun | 4-2-3-1</option>
+                            <option value="transition_play">Gecis Oyunu | 3-4-3 Direkt</option>
                         </select>
                     </div>
                 </div>
@@ -1219,6 +1252,56 @@
         const CLUB_NEEDS_KEY = 'nextscout_club_needs_notes';
         const CLUB_PROMOS_KEY = 'nextscout_paid_club_promos';
         const CLUB_GROUP_PLAYERS_KEY = 'nextscout_club_group_players';
+        const TACTICAL_SYSTEMS = {
+            gegenpressing: {
+                label: 'Gegenpressing',
+                shape: '4-3-3 Ofansif',
+                description: 'Onde baski, hizli top kazanimi ve yuksek tempo odakli yapi.',
+                emphasis: { ortasaha: 15, forvet: 13, defans: 8, kaleci: 4 },
+            },
+            park_the_bus: {
+                label: 'Park the Bus',
+                shape: '5-4-1 Savunma',
+                description: 'Derin blok, alan savunmasi ve fizik gucu odakli yapi.',
+                emphasis: { defans: 16, kaleci: 13, ortasaha: 8, forvet: 5 },
+            },
+            possession_control: {
+                label: 'Topa Sahip Olan Oyun',
+                shape: '4-2-3-1',
+                description: 'Pas akisi ve top hakimiyeti isteyen kontrol oyunu.',
+                emphasis: { ortasaha: 16, defans: 8, forvet: 8, kaleci: 5 },
+            },
+            transition_play: {
+                label: 'Gecis Oyunu',
+                shape: '3-4-3 Direkt',
+                description: 'Dikey atak ve hizli gecis tehdidi odakli yapi.',
+                emphasis: { forvet: 15, ortasaha: 11, defans: 8, kaleci: 4 },
+            }
+        };
+        const SPORT_POSITION_OPTIONS = {
+            futbol: [
+                { value: '', label: 'Tumu' },
+                { value: 'Kaleci', label: 'Kaleci' },
+                { value: 'Defans', label: 'Defans' },
+                { value: 'Orta Saha', label: 'Orta Saha' },
+                { value: 'Forvet', label: 'Forvet' },
+            ],
+            basketbol: [
+                { value: '', label: 'Tumu' },
+                { value: 'Guard', label: 'Guard' },
+                { value: 'Kisa Forvet', label: 'Kisa Forvet' },
+                { value: 'Uzun Forvet', label: 'Uzun Forvet' },
+                { value: 'Pivot', label: 'Pivot' },
+            ],
+            voleybol: [
+                { value: '', label: 'Tumu' },
+                { value: 'Pasor', label: 'Pasor' },
+                { value: 'Pasor Caprazi', label: 'Pasor Caprazi' },
+                { value: 'Smacor', label: 'Smacor' },
+                { value: 'Orta Oyuncu', label: 'Orta Oyuncu' },
+                { value: 'Libero', label: 'Libero' },
+            ],
+        };
         let allPlayers = [];
         let filteredPlayers = [];
         let selectedCompareIds = [];
@@ -1400,6 +1483,96 @@
             return Math.round((hit / checks.length) * 100);
         }
 
+        function clamp(value, min, max) {
+            return Math.max(min, Math.min(max, value));
+        }
+
+        function normalizePositionName(value) {
+            return String(value || '').trim().toLocaleLowerCase('tr-TR').replace(/\s+/g, '');
+        }
+
+        function getTeamSystemFilterValue() {
+            const el = document.getElementById('teamSystemFilter');
+            return String(el?.value || '').trim();
+        }
+
+        function getSportFilterValue() {
+            const el = document.getElementById('sportFilter');
+            return String(el?.value || 'futbol').trim().toLowerCase();
+        }
+
+        function syncTeamPositionOptions() {
+            const sport = getSportFilterValue();
+            const positionSelect = document.getElementById('position');
+            if (!positionSelect) return;
+            const currentValue = String(positionSelect.value || '').trim();
+            const options = SPORT_POSITION_OPTIONS[sport] || SPORT_POSITION_OPTIONS.futbol;
+            positionSelect.innerHTML = options.map((option) => `<option value="${escapeHtml(option.value)}">${escapeHtml(option.label)}</option>`).join('');
+            if (options.some((option) => option.value === currentValue)) {
+                positionSelect.value = currentValue;
+            }
+        }
+
+        function getClubPreferredSystem() {
+            try {
+                const raw = localStorage.getItem('nextscout_club_profile');
+                if (!raw) return '';
+                const parsed = JSON.parse(raw);
+                const value = String(parsed?.preferredSystem || '').trim();
+                return TACTICAL_SYSTEMS[value] ? value : '';
+            } catch (error) {
+                return '';
+            }
+        }
+
+        function syncTeamSystemFromClubProfile() {
+            const el = document.getElementById('teamSystemFilter');
+            if (!el || el.value) return;
+            const preferredSystem = getClubPreferredSystem();
+            if (preferredSystem) {
+                el.value = preferredSystem;
+            }
+        }
+
+        function getSystemCompatibility(player, systemKey) {
+            const system = systemKey && TACTICAL_SYSTEMS[systemKey] ? TACTICAL_SYSTEMS[systemKey] : null;
+            if (!system) return null;
+
+            const rating = Number(player.rating) || 0;
+            const age = Number(player.age) || 0;
+            const height = Number(String(player.height || '').replace(/[^\d.]/g, '')) || 0;
+            const position = normalizePositionName(player.position);
+            const positionScore = system.emphasis[position] || 6;
+            const ratingScore = clamp(rating * 5.5, 0, 32);
+            const ageScore = systemKey === 'gegenpressing'
+                ? clamp(16 - Math.abs(age - 24) * 2, 4, 16)
+                : systemKey === 'park_the_bus'
+                    ? clamp(16 - Math.abs(age - 28) * 2, 4, 16)
+                    : clamp(16 - Math.abs(age - 25) * 2, 4, 16);
+            const physiqueScore = systemKey === 'park_the_bus'
+                ? clamp((height - 175) * 0.35, 0, 12)
+                : systemKey === 'transition_play'
+                    ? clamp((188 - Math.abs(height - 180)) * 0.1, 0, 10)
+                    : clamp((188 - Math.abs(height - 182)) * 0.08, 0, 8);
+            const rawScore = 28 + ratingScore + ageScore + positionScore + physiqueScore;
+            const score = clamp(Math.round(rawScore), 55, 99);
+            const strengths = [];
+
+            if (positionScore >= 12) strengths.push('Rol uyumu guclu');
+            if (ageScore >= 14) strengths.push('Yas profili uygun');
+            if (systemKey === 'gegenpressing') strengths.push('Tempo aksiyonuna uygun');
+            if (systemKey === 'park_the_bus' && physiqueScore >= 8) strengths.push('Fizik avantajli');
+            if (systemKey === 'possession_control') strengths.push('Pas oyunu icin uygun');
+            if (systemKey === 'transition_play') strengths.push('Gecis tehdidi yuksek');
+
+            return {
+                score,
+                shape: system.shape,
+                description: system.description,
+                strengths: strengths.slice(0, 3),
+            };
+        }
+
         function renderPlayers(players) {
             const grid = document.getElementById('playersGrid');
             if (!Array.isArray(players) || players.length === 0) {
@@ -1407,11 +1580,13 @@
                 return;
             }
 
+            const activeSystem = getTeamSystemFilterValue();
             grid.innerHTML = players.map((player) => {
                 const rating = Number(player.rating) || 0;
                 const starCount = Math.max(1, Math.min(5, Math.round(rating / 2)));
                 const stars = '★'.repeat(starCount) + '☆'.repeat(5 - starCount);
                 const selected = selectedCompareIds.includes(Number(player.id));
+                const compatibility = player.system_compatibility || (activeSystem ? getSystemCompatibility(player, activeSystem) : null);
 
                 return `
                 <div class="player-card">
@@ -1424,6 +1599,21 @@
                             <div class="player-info-item"><span class="player-info-label">Boy</span><span class="player-info-value">${escapeHtml(player.height || '-')}</span></div>
                         </div>
                         <div class="player-rating"><span class="rating-stars">${stars}</span><span class="rating-value">${rating ? rating.toFixed(1) : '-'}</span></div>
+                        ${compatibility ? `
+                        <div class="system-fit-card">
+                            <div class="system-fit-top">
+                                <div>
+                                    <div class="system-fit-label">AI Compatibility Score</div>
+                                    <div class="system-fit-sub">${compatibility.shape} sistemine uyumu</div>
+                                </div>
+                                <div class="system-fit-score">%${compatibility.score}</div>
+                            </div>
+                            <div class="system-fit-bar"><div class="system-fit-fill" style="width:${compatibility.score}%;"></div></div>
+                            <div class="system-fit-sub">${compatibility.description}</div>
+                            <div class="system-fit-tags">
+                                ${compatibility.strengths.map((item) => `<span class="system-fit-tag">${escapeHtml(item)}</span>`).join('')}
+                            </div>
+                        </div>` : ''}
                         <div class="card-actions">
                             <button class="action-btn primary" onclick="openPlayerProfile(${Number(player.id) || 0})">Profil</button>
                             <button class="action-btn" onclick="sendOffer(${Number(player.id) || 0})">Teklif</button>
@@ -1677,6 +1867,7 @@
             return {
                 id: Number(raw && raw.id) || 0,
                 name: (raw && raw.name) || '-',
+                sport: (raw && (raw.sport || raw.branch)) || 'futbol',
                 position: (raw && raw.position) || '-',
                 age: (raw && raw.age) || '-',
                 height: (raw && raw.height) || '-',
@@ -1695,31 +1886,44 @@
 
         function getFallbackPlayers() {
             return [
-                { id: 1, name: 'Ahmet Yilmaz', position: 'Forvet', age: 24, height: '180cm', rating: 8.1 },
-                { id: 2, name: 'Serdar Aziz', position: 'Defans', age: 28, height: '185cm', rating: 7.6 },
-                { id: 3, name: 'Kerem Akturkoglu', position: 'Forvet', age: 26, height: '183cm', rating: 8.2 },
-                { id: 4, name: 'Okay Yokuslu', position: 'Orta Saha', age: 27, height: '188cm', rating: 7.9 },
+                { id: 1, name: 'Ahmet Yilmaz', sport: 'futbol', position: 'Forvet', age: 24, height: '180cm', rating: 8.1 },
+                { id: 2, name: 'Serdar Aziz', sport: 'futbol', position: 'Defans', age: 28, height: '185cm', rating: 7.6 },
+                { id: 3, name: 'Kerem Akturkoglu', sport: 'futbol', position: 'Forvet', age: 26, height: '183cm', rating: 8.2 },
+                { id: 4, name: 'Okay Yokuslu', sport: 'futbol', position: 'Orta Saha', age: 27, height: '188cm', rating: 7.9 },
+                { id: 5, name: 'Mert Can', sport: 'basketbol', position: 'Guard', age: 21, height: '191cm', rating: 7.7 },
+                { id: 6, name: 'Deniz Ece', sport: 'voleybol', position: 'Smacor', age: 22, height: '186cm', rating: 7.8 },
             ];
         }
 
         function searchPlayers() {
             const name = document.getElementById('playerName').value.trim().toLowerCase();
+            const sport = getSportFilterValue();
             const position = document.getElementById('position').value.trim().toLowerCase();
             const ageText = document.getElementById('ageRange').value.trim();
             const ratingMin = Number(document.getElementById('rating').value || 0);
+            const activeSystem = getTeamSystemFilterValue();
             const parsedAge = parseAgeRange(ageText);
 
             filteredPlayers = allPlayers.filter((p) => {
                 const pName = String(p.name || '').toLowerCase();
+                const pSport = String(p.sport || p.branch || '').toLowerCase();
                 const pPosition = String(p.position || '').toLowerCase();
                 const pAge = Number(p.age) || 0;
                 const pRating = Number(p.rating) || 0;
                 if (name && !pName.includes(name)) return false;
+                if (sport && pSport && pSport !== sport) return false;
                 if (position && pPosition !== position) return false;
                 if (ratingMin && pRating < ratingMin) return false;
                 if (parsedAge && (pAge < parsedAge.min || pAge > parsedAge.max)) return false;
                 return true;
-            });
+            }).map((player) => ({
+                ...player,
+                system_compatibility: activeSystem ? getSystemCompatibility(player, activeSystem) : null,
+            }));
+
+            if (activeSystem) {
+                filteredPlayers.sort((a, b) => Number(b.system_compatibility?.score || 0) - Number(a.system_compatibility?.score || 0));
+            }
 
             renderPlayers(filteredPlayers);
             updateStats();
@@ -2337,17 +2541,22 @@
             } catch (error) {
                 allPlayers = getFallbackPlayers();
             }
+            syncTeamPositionOptions();
             filteredPlayers = allPlayers.slice();
             renderPlayers(filteredPlayers);
             updateStats();
             await loadTeamTransferSummary();
             renderCompareSelection();
 
-            ['playerName', 'position', 'ageRange', 'rating'].forEach((id) => {
+            syncTeamSystemFromClubProfile();
+            ['playerName', 'position', 'ageRange', 'rating', 'teamSystemFilter', 'sportFilter'].forEach((id) => {
                 const el = document.getElementById(id);
                 if (!el) return;
-                const evt = id === 'position' || id === 'rating' ? 'change' : 'input';
+                const evt = id === 'position' || id === 'rating' || id === 'teamSystemFilter' || id === 'sportFilter' ? 'change' : 'input';
                 el.addEventListener(evt, scheduleSearchPlayers);
+            });
+            document.getElementById('sportFilter')?.addEventListener('change', () => {
+                syncTeamPositionOptions();
             });
         }
 
