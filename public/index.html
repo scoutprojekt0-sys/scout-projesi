@@ -7092,6 +7092,117 @@
         .search-container {
             background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%) !important;
         }
+
+        .scout-entry-strip {
+            margin: 18px 0 32px;
+            width: 100%;
+            padding: 14px;
+            border: 1px solid rgba(255, 126, 34, 0.32);
+            background: linear-gradient(135deg, rgba(16, 24, 54, 0.96), rgba(9, 15, 35, 0.98));
+            box-shadow: 0 24px 48px rgba(2, 5, 18, 0.28);
+        }
+
+        .scout-entry-strip-inner {
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.9fr);
+            gap: 16px;
+            align-items: center;
+        }
+
+        .scout-entry-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            padding: 6px 12px;
+            background: rgba(255, 126, 34, 0.12);
+            border: 1px solid rgba(255, 126, 34, 0.24);
+            color: #ffd4b4;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .scout-entry-title {
+            margin: 0 0 8px;
+            color: var(--ns-text);
+            font-size: clamp(1.35rem, 1.9vw, 1.95rem);
+            line-height: 1.12;
+        }
+
+        .scout-entry-text {
+            margin: 0;
+            max-width: 760px;
+            color: var(--ns-muted);
+            font-size: 0.92rem;
+            line-height: 1.55;
+        }
+
+        .scout-entry-points {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .scout-entry-point {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(79, 111, 255, 0.12);
+            border: 1px solid rgba(110, 138, 255, 0.22);
+            color: var(--ns-text);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .scout-entry-actions {
+            display: grid;
+            gap: 8px;
+        }
+
+        .scout-entry-card {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .scout-entry-card-title {
+            margin: 0 0 4px;
+            color: var(--ns-text);
+            font-size: 0.86rem;
+            font-weight: 800;
+        }
+
+        .scout-entry-card-text {
+            margin: 0 0 8px;
+            color: var(--ns-muted);
+            font-size: 0.78rem;
+            line-height: 1.35;
+        }
+
+        .scout-entry-card .btn,
+        .scout-entry-card .btn-secondary {
+            width: 100%;
+            justify-content: center;
+            min-height: 38px;
+            padding: 8px 12px !important;
+            font-size: 0.78rem !important;
+        }
+
+        @media (max-width: 960px) {
+            .scout-entry-strip-inner {
+                grid-template-columns: 1fr;
+            }
+
+            .scout-entry-strip {
+                margin: 16px 0 24px;
+                width: 100%;
+                padding: 12px;
+            }
+        }
     </style>
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
@@ -8156,6 +8267,7 @@
                             <option value="">Seçiniz</option>
                             <option value="player">Oyuncu</option>
                             <option value="scout">Scout</option>
+                            <option value="coach">Antrenör</option>
                             <option value="manager">MENAJER</option>
                             <option value="team">KULÜP</option>
                             <option value="lawyer">Avukat</option>
@@ -8421,6 +8533,45 @@
                 </div>
             </section>
 
+            <section class="scout-entry-strip" aria-label="Scout girisi">
+                <div class="scout-entry-strip-inner">
+                    <div>
+                        <div class="scout-entry-kicker">
+                            <i class="fas fa-video"></i>
+                            <span>Scout Projekt</span>
+                        </div>
+                        <h2 class="scout-entry-title">Mahallendeki yeteneği videoyla sisteme sok.</h2>
+                        <p class="scout-entry-text">
+                            Yerel maçta dikkatini çeken oyuncuyu bildir, scout hesabınla sisteme gir, süreç doğrulandıkça puan kazan.
+                            Profesyonel yolculuğa dönüşen keşiflerde ödül modeli devreye girsin.
+                        </p>
+                        <div class="scout-entry-points">
+                            <span class="scout-entry-point"><i class="fas fa-circle-check"></i> Scout olarak kayıt ol</span>
+                            <span class="scout-entry-point"><i class="fas fa-upload"></i> Video ve oyuncu bilgisi ekle</span>
+                            <span class="scout-entry-point"><i class="fas fa-ranking-star"></i> Puan ve ödül akışını takip et</span>
+                        </div>
+                    </div>
+                    <div class="scout-entry-actions">
+                        <div class="scout-entry-card">
+                            <h3 class="scout-entry-card-title">Scout Et</h3>
+                            <p class="scout-entry-card-text">Yeni kullanıcıysan kayıt ekranını scout rolüyle aç. Hesabın varsa giriş yapıp paneline geç.</p>
+                            <button type="button" class="btn" onclick="openScoutEntryFlow()">
+                                <i class="fas fa-bullseye"></i>
+                                Scout Et
+                            </button>
+                        </div>
+                        <div class="scout-entry-card">
+                            <h3 class="scout-entry-card-title">Zaten hesabın var mı?</h3>
+                            <p class="scout-entry-card-text">Doğrudan giriş yapıp mevcut hesabınla dashboard'una devam et.</p>
+                            <button type="button" class="btn-secondary" onclick="openLoginModal()">
+                                <i class="fas fa-right-to-bracket"></i>
+                                Giriş Yap
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <div class="idea-news-container">
                 <aside class="idea-news-square" id="liveNewsCard">
                     <div class="live-news-card">
@@ -8518,6 +8669,10 @@
                             <button type="button" class="starter-role-btn" onclick="openRegisterWithRole('scout')">
                                 <strong>Scoutum</strong>
                                 <span>Radar oluştur, oyuncu izle ve rapor yönet.</span>
+                            </button>
+                            <button type="button" class="starter-role-btn" onclick="openRegisterWithRole('coach')">
+                                <strong>Antrenörüm</strong>
+                                <span>Oyuncu izle, teknik değerlendirme yap ve süreci yönet.</span>
                             </button>
                             <button type="button" class="starter-role-btn" onclick="openRegisterWithRole('team')">
                                 <strong>Kulübüm</strong>
@@ -14583,14 +14738,16 @@
             if (featureKey === 'urgent-needs') {
                 if (role === 'team' || role === 'club') target = 'team-dashboard.html';
                 else if (role === 'manager') target = 'manager-dashboard.html';
-                else if (role === 'coach' || role === 'scout') target = 'coach-dashboard.html';
+                else if (role === 'coach') target = 'coach-dashboard.html';
+                else if (role === 'scout') target = 'scout-dashboard.html';
             } else if (featureKey === 'club-promo') {
                 target = 'team-dashboard.html';
             } else if (featureKey === 'weekly-trends') {
                 target = 'professional-players.html';
             } else if (featureKey === 'rising-stars') {
                 if (role === 'manager') target = 'manager-dashboard.html';
-                else if (role === 'coach' || role === 'scout') target = 'coach-dashboard.html';
+                else if (role === 'coach') target = 'coach-dashboard.html';
+                else if (role === 'scout') target = 'scout-dashboard.html';
             }
 
             window.location.href = resolveLocalPage(target);
@@ -14907,18 +15064,51 @@
             document.body.style.overflow = 'hidden';
         }
 
+        function openScoutRegisterModal() {
+            openRegisterModal();
+            const roleSelect = document.querySelector('#registerForm select[name="role"]');
+            if (roleSelect) {
+                roleSelect.value = 'scout';
+            }
+        }
+
+        function openScoutEntryFlow() {
+            const isFileMode = window.location.protocol === 'file:';
+            let storedUser = null;
+
+            try {
+                storedUser = JSON.parse(localStorage.getItem('nextscout_user') || 'null');
+            } catch (error) {
+                storedUser = null;
+            }
+
+            if (storedUser && typeof storedUser === 'object') {
+                const role = (storedUser.role || 'scout').toString().trim().toLowerCase();
+                window.location.href = resolveLocalPage(getDashboardByRole(role || 'scout', isFileMode));
+                return;
+            }
+
+            openScoutRegisterModal();
+        }
+
         function closeRegisterModal() {
             document.getElementById('registerModal').classList.remove('active');
             document.body.style.overflow = 'auto';
         }
 
         function getDashboardByRole(role, isFileMode = false) {
-            const normalizedRole = (role || '').toString().trim().toLowerCase();
+            const normalizedRole = (role || '')
+                .toString()
+                .trim()
+                .toLocaleLowerCase('tr-TR')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '');
 
             if (isFileMode) {
                 if (normalizedRole === 'admin') return 'admin-dashboard.html';
                 if (normalizedRole === 'manager') return 'manager-dashboard.html';
-                if (normalizedRole === 'coach' || normalizedRole === 'scout') return 'coach-dashboard.html';
+                if (normalizedRole === 'coach' || normalizedRole === 'antrenor') return 'coach-dashboard.html';
+                if (normalizedRole === 'scout') return 'scout-dashboard.html';
                 if (normalizedRole === 'team' || normalizedRole === 'club') return 'team-dashboard.html';
                 if (normalizedRole === 'lawyer') return 'lawyer-dashboard.html';
                 if (normalizedRole === 'player') return 'player-dashboard.html';
@@ -14927,7 +15117,8 @@
 
             if (normalizedRole === 'admin') return 'admin-dashboard.html';
             if (normalizedRole === 'manager') return 'manager-dashboard.html';
-            if (normalizedRole === 'coach' || normalizedRole === 'scout') return 'coach-dashboard.html';
+            if (normalizedRole === 'coach' || normalizedRole === 'antrenor') return 'coach-dashboard.html';
+            if (normalizedRole === 'scout') return 'scout-dashboard.html';
             if (normalizedRole === 'team' || normalizedRole === 'club') return 'team-dashboard.html';
             if (normalizedRole === 'lawyer') return 'lawyer-dashboard.html';
             if (normalizedRole === 'player') return 'player-dashboard.html';

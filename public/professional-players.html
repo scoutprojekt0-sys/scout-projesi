@@ -2993,7 +2993,8 @@
       const role = (localStorage.getItem('nextscout_role') || localStorage.getItem('userRole') || '').toLowerCase();
       if (role.includes('team') || role.includes('club')) return 'team-dashboard.html';
       if (role.includes('manager')) return 'manager-dashboard.html';
-      if (role.includes('coach') || role.includes('scout')) return 'coach-dashboard.html';
+      if (role.includes('coach')) return 'coach-dashboard.html';
+      if (role.includes('scout')) return 'scout-dashboard.html';
       return 'player-dashboard.html';
     }
 

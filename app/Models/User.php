@@ -43,6 +43,11 @@ class User extends Authenticatable
         'rejected_contributions',
         'contribution_accuracy',
         'trust_score',
+        'scout_points',
+        'scout_tips_count',
+        'successful_tips_count',
+        'scout_accuracy_rate',
+        'scout_rank',
         'editor_since',
         'reviews_count',
         'avg_review_time_hours',
@@ -71,6 +76,7 @@ class User extends Authenticatable
         'has_conflicts' => 'boolean',
         'contribution_accuracy' => 'decimal:2',
         'trust_score' => 'decimal:2',
+        'scout_accuracy_rate' => 'decimal:2',
         'editor_since' => 'datetime',
         'can_verify_critical' => 'boolean',
         'can_dual_approve' => 'boolean',
@@ -173,9 +179,44 @@ class User extends Authenticatable
         return $this->hasMany(ProfileView::class, 'viewed_user_id');
     }
 
+    public function writtenProfileReviews()
+    {
+        return $this->hasMany(ProfileReview::class, 'author_id');
+    }
+
+    public function receivedProfileReviews()
+    {
+        return $this->hasMany(ProfileReview::class, 'target_id');
+    }
+
     public function viewedProfiles()
     {
         return $this->hasMany(ProfileView::class, 'viewer_user_id');
+    }
+
+    public function scoutTips()
+    {
+        return $this->hasMany(ScoutTip::class, 'submitted_by');
+    }
+
+    public function scoutPointEntries()
+    {
+        return $this->hasMany(ScoutPointLedger::class);
+    }
+
+    public function scoutRewards()
+    {
+        return $this->hasMany(ScoutReward::class);
+    }
+
+    public function requestedVideoAnalyses()
+    {
+        return $this->hasMany(VideoAnalysis::class, 'requested_by');
+    }
+
+    public function playerVideoMetrics()
+    {
+        return $this->hasMany(PlayerVideoMetric::class, 'player_id');
     }
 
     protected static function booted(): void

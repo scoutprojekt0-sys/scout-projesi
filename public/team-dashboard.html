@@ -22,6 +22,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/mobile-unified.css">
+    <link rel="stylesheet" href="assets/css/ai-video-lab.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html {
@@ -834,6 +835,87 @@
                 <div class="stat-card"><div class="stat-card-value" id="statAverageRating">0.0</div><div class="stat-card-label">Ortalama Rating</div></div>
                 <div class="stat-card"><div class="stat-card-value" id="statProfileCompletion">0%</div><div class="stat-card-label">Profil Tamamlama</div></div>
             </div>
+
+            <section class="ai-video-lab" data-ai-video-lab>
+                <div class="ai-video-lab-head">
+                    <div>
+                        <h2>AI Video Analiz Laboratuvari</h2>
+                        <p>Kulup panelinde oyuncu arat, sehri ve pozisyonu filtrele, videoyu sec ve analiz sonucunu ac.</p>
+                    </div>
+                    <div class="ai-video-lab-tag"><i class="fas fa-flask"></i><span>AI Lab</span></div>
+                </div>
+                <div class="ai-video-lab-search">
+                    <div class="ai-video-lab-field">
+                        <label>Oyuncu Adi</label>
+                        <input class="ai-video-lab-input" type="text" placeholder="Oyuncu adi yaz" data-ai-player-search>
+                    </div>
+                    <div class="ai-video-lab-field">
+                        <label>Sehir</label>
+                        <input class="ai-video-lab-input" type="text" placeholder="Istanbul" data-ai-city-search>
+                    </div>
+                    <div class="ai-video-lab-field">
+                        <label>Pozisyon</label>
+                        <select class="ai-video-lab-select" data-ai-position-search>
+                            <option value="">Tumu</option>
+                            <option value="Kaleci">Kaleci</option>
+                            <option value="Defans">Defans</option>
+                            <option value="Orta Saha">Orta Saha</option>
+                            <option value="Forvet">Forvet</option>
+                        </select>
+                    </div>
+                    <button class="search-btn ai-video-lab-search-btn" type="button" data-ai-search-btn>Oyuncu Ara</button>
+                </div>
+                <div class="ai-video-lab-results" data-ai-results>
+                    <div class="ai-video-lab-empty">Analiz icin oyuncu aramasi yap.</div>
+                </div>
+                <div class="ai-video-lab-grid">
+                    <div class="ai-video-lab-card">
+                        <h3>Secilen Oyuncu ve Video</h3>
+                        <p>Kulup yetkilisi olarak secili oyuncunun videolarini gorup uygun klibi analiz edebilirsin.</p>
+                        <div class="ai-video-lab-empty" data-ai-selected-player hidden>
+                            <strong data-ai-selected-name>Oyuncu secilmedi</strong>
+                            <div class="ai-video-lab-note" data-ai-selected-meta>Video listesi secimden sonra gelir.</div>
+                        </div>
+                        <div class="ai-video-lab-field" style="margin-top:12px;">
+                            <label>Oyuncu Videolari</label>
+                            <select class="ai-video-lab-select" data-ai-video-select>
+                                <option value="">Oyuncu secilmedi</option>
+                            </select>
+                        </div>
+                        <input type="hidden" data-ai-target-player-id>
+                        <div class="ai-video-lab-preview" data-ai-video-preview hidden>
+                            <img class="ai-video-lab-thumb" data-ai-video-thumb alt="Video thumbnail">
+                            <div>
+                                <div class="ai-video-lab-preview-title" data-ai-video-title>Video secilmedi</div>
+                                <div class="ai-video-lab-preview-meta">
+                                    <span data-ai-video-date>Tarih: -</span>
+                                    <span data-ai-video-duration>Sure: -</span>
+                                    <span data-ai-video-platform>Platform: -</span>
+                                </div>
+                                <div class="ai-video-lab-actions">
+                                    <a class="btn-small secondary" href="#" target="_blank" rel="noopener noreferrer" data-ai-video-link>Videoyu Ac</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ai-video-lab-actions">
+                            <button class="btn-small primary" type="button" data-ai-analyze-btn>Analizi Baslat</button>
+                        </div>
+                    </div>
+                    <div class="ai-video-lab-card">
+                        <h3>Analiz Sonucu</h3>
+                        <p>Ilk fazda kulup taramasi icin ozet metrikler ve tespit edilen eventler gosterilir.</p>
+                        <div class="ai-video-lab-summary" data-ai-summary>
+                            <div class="ai-video-lab-summary-item"><strong>-</strong><span>Pass</span></div>
+                            <div class="ai-video-lab-summary-item"><strong>-</strong><span>Cross</span></div>
+                            <div class="ai-video-lab-summary-item"><strong>-</strong><span>Speed</span></div>
+                        </div>
+                        <div class="ai-video-lab-events" data-ai-events style="margin-top:12px;">
+                            <div class="ai-video-lab-empty">Analiz baslatildiginda eventler burada gorunur.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ai-video-lab-notice" data-ai-notice></div>
+            </section>
 
             <div class="search-section">
                 <h2 style="margin-bottom:16px;font-size:18px;font-weight:800;color:#1f2937;">Hafta 5 - Transfer Ozet</h2>
@@ -2287,6 +2369,7 @@
         window.addEventListener('DOMContentLoaded', applyTurkishTextFixes);
         window.addEventListener('DOMContentLoaded', init);
     </script>
+    <script src="assets/js/ai-video-lab.js"></script>
     <script src="assets/js/core-stability.js"></script>
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>

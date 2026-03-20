@@ -311,7 +311,8 @@
             const role = String(user?.role || localStorage.getItem('nextscout_user_role') || '').toLowerCase();
             if (role === 'manager') return 'manager-dashboard.html';
             if (role === 'team' || role === 'club') return 'team-dashboard.html';
-            if (role === 'scout' || role === 'coach') return 'coach-dashboard.html';
+        if (role === 'coach') return 'coach-dashboard.html';
+        if (role === 'scout') return 'scout-dashboard.html';
         } catch (error) {}
         return 'player-dashboard.html';
     }

@@ -388,7 +388,8 @@
       const normalized = String(role || '').trim().toLowerCase();
       if (normalized === 'manager') return 'manager-dashboard.html';
       if (normalized === 'team' || normalized === 'club') return 'team-dashboard.html';
-      if (normalized === 'scout' || normalized === 'coach') return 'coach-dashboard.html';
+      if (normalized === 'coach') return 'coach-dashboard.html';
+      if (normalized === 'scout') return 'scout-dashboard.html';
       return 'player-dashboard.html';
     }
 

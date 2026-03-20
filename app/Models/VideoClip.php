@@ -32,4 +32,14 @@ class VideoClip extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function scoutTips()
+    {
+        return $this->hasMany(ScoutTip::class, 'video_clip_id');
+    }
+
+    public function analyses()
+    {
+        return $this->hasMany(VideoAnalysis::class);
+    }
 }

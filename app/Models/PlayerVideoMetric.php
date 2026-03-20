@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class PlayerVideoMetric extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'player_id',
+        'video_analysis_id',
+        'passes',
+        'successful_passes',
+        'cross_attempts',
+        'successful_crosses',
+        'shots',
+        'dribbles',
+        'ball_recoveries',
+        'movement_score',
+        'speed_score',
+        'cross_quality_score',
+        'metadata',
+    ];
+
+    protected $casts = [
+        'metadata' => 'array',
+    ];
+
+    public function player()
+    {
+        return $this->belongsTo(User::class, 'player_id');
+    }
+
+    public function videoAnalysis()
+    {
+        return $this->belongsTo(VideoAnalysis::class);
+    }
+}

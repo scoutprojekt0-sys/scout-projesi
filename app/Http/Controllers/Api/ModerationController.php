@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\DataAuditLog;
 use App\Models\ModerationQueue;
+use App\Models\PlayerTransfer;
+use App\Services\ScoutAttributionService;
 use InvalidArgumentException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -12,6 +14,11 @@ use Illuminate\Support\Facades\Validator;
 
 class ModerationController extends Controller
 {
+    public function __construct(
+        private readonly ScoutAttributionService $scoutAttributionService,
+    ) {
+    }
+
     private function canModerate(Request $request): bool
     {
         $user = $request->user();
@@ -168,6 +175,8 @@ class ModerationController extends Controller
         }
 
         if ($approved) {
+            $this->syncApprovedModelState($item, $userId);
+
             // Log the approval
             DataAuditLog::logChange(
                 $item->model_type,
@@ -220,6 +229,7 @@ class ModerationController extends Controller
         $userId = auth()->id();
 
         $item->reject($userId, $request->reason);
+        $this->syncRejectedModelState($item, $userId, $request->reason);
 
         DataAuditLog::logChange(
             $item->model_type,
@@ -300,5 +310,46 @@ class ModerationController extends Controller
             'ok' => true,
             'data' => $stats,
         ]);
+    }
+
+    private function syncApprovedModelState(ModerationQueue $item, int $userId): void
+    {
+        if ($item->model_type !== 'PlayerTransfer') {
+            return;
+        }
+
+        $transfer = PlayerTransfer::find($item->model_id);
+        if (! $transfer) {
+            return;
+        }
+
+        $transfer->update([
+            'verification_status' => 'verified',
+            'verified_by' => $userId,
+            'verified_at' => now(),
+        ]);
+
+        $this->scoutAttributionService->syncTransferVerification($transfer, true);
+    }
+
+    private function syncRejectedModelState(ModerationQueue $item, int $userId, string $reason): void
+    {
+        if ($item->model_type !== 'PlayerTransfer') {
+            return;
+        }
+
+        $transfer = PlayerTransfer::find($item->model_id);
+        if (! $transfer) {
+            return;
+        }
+
+        $transfer->update([
+            'verification_status' => 'rejected',
+            'verified_by' => $userId,
+            'verified_at' => now(),
+            'notes' => trim(($transfer->notes ? $transfer->notes."\n" : '').'Moderation rejected: '.$reason),
+        ]);
+
+        $this->scoutAttributionService->syncTransferVerification($transfer, false);
     }
 }

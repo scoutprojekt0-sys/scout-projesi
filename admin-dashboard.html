@@ -324,10 +324,70 @@
                             <td><strong style="color: #4285F4; font-size: 18px;">�50,820</strong></td>
                             <td><span class="badge badge-success"><i class="fas fa-arrow-up"></i> +20.1%</span></td>
                         </tr>
-                    </tbody>
-                </table>
-            </div>
+                </tbody>
+            </table>
         </div>
+
+        <div class="section">
+            <div class="section-title"><i class="fas fa-user-secret"></i> Crowdsourced Scout Queue</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:14px;">
+                <div style="background:linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%);border:1px solid #bfdbfe;border-radius:12px;padding:14px;">
+                    <div style="font-size:12px;color:#1d4ed8;font-weight:700;text-transform:uppercase;">Bekleyen Tip</div>
+                    <div id="adminScoutPendingCount" style="font-size:28px;font-weight:800;color:#0f172a;margin-top:6px;">-</div>
+                </div>
+                <div style="background:linear-gradient(135deg,#ecfdf5 0%,#d1fae5 100%);border:1px solid #a7f3d0;border-radius:12px;padding:14px;">
+                    <div style="font-size:12px;color:#047857;font-weight:700;text-transform:uppercase;">Shortlist</div>
+                    <div id="adminScoutShortlistCount" style="font-size:28px;font-weight:800;color:#0f172a;margin-top:6px;">-</div>
+                </div>
+                <div style="background:linear-gradient(135deg,#fff7ed 0%,#ffedd5 100%);border:1px solid #fdba74;border-radius:12px;padding:14px;">
+                    <div style="font-size:12px;color:#c2410c;font-weight:700;text-transform:uppercase;">Bekleyen Odul</div>
+                    <div id="adminScoutRewardPendingCount" style="font-size:28px;font-weight:800;color:#0f172a;margin-top:6px;">-</div>
+                </div>
+            </div>
+            <div class="action-buttons" style="margin-bottom:12px;">
+                <select id="adminScoutStatusFilter" style="min-width:160px;padding:10px 12px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;color:#0f172a;">
+                    <option value="">Tum aktif tipler</option>
+                    <option value="pending">Pending</option>
+                    <option value="screened">Screened</option>
+                    <option value="shortlisted">Shortlisted</option>
+                    <option value="signed">Signed</option>
+                </select>
+                <button class="btn btn-secondary" type="button" onclick="loadAdminScoutQueue()"><i class="fas fa-rotate"></i> Queue Yenile</button>
+                <button class="btn btn-secondary" type="button" onclick="loadAdminScoutRewards()"><i class="fas fa-coins"></i> Odulleri Yenile</button>
+            </div>
+            <div style="margin-bottom:8px;color:#64748B;font-size:13px;" id="adminScoutMeta">Scout queue bekleniyor...</div>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Oyuncu</th>
+                        <th>Gonderen</th>
+                        <th>Durum</th>
+                        <th>Skor</th>
+                        <th>Aksiyon</th>
+                    </tr>
+                </thead>
+                <tbody id="adminScoutQueueBody">
+                    <tr><td colspan="5" style="text-align:center;color:#64748B;">Veri bekleniyor...</td></tr>
+                </tbody>
+            </table>
+            <div style="height:16px;"></div>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Kullanici</th>
+                        <th>Tip</th>
+                        <th>Tipi</th>
+                        <th>Durum</th>
+                        <th>Tutar</th>
+                        <th>Aksiyon</th>
+                    </tr>
+                </thead>
+                <tbody id="adminScoutRewardsBody">
+                    <tr><td colspan="6" style="text-align:center;color:#64748B;">Odul verisi bekleniyor...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
         <!-- Platform Istatistikleri -->
         <div class="section">
@@ -498,10 +558,68 @@
         </div>
     </div>
 
+    <div id="scoutActionModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:1350;align-items:center;justify-content:center;padding:16px;">
+        <div style="background:#fff;width:min(560px,100%);max-height:90vh;overflow:auto;border-radius:14px;border:1px solid #e5e7eb;box-shadow:0 24px 60px rgba(15,23,42,.28);">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #e5e7eb;">
+                <strong id="scoutActionModalTitle">Scout Aksiyonu</strong>
+                <button class="btn btn-secondary" type="button" style="padding:6px 10px;font-size:12px;" onclick="closeScoutActionModal()">Kapat</button>
+            </div>
+            <div style="padding:16px;">
+                <div id="scoutActionModalHint" style="margin-bottom:12px;color:#64748B;font-size:13px;">Review detaylarini gir.</div>
+                <div id="scoutActionModalSummary" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px;padding:12px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;">
+                    <div style="grid-column:1 / -1;color:#64748B;font-size:13px;">Scout tip ozeti yukleniyor...</div>
+                </div>
+                <div style="display:grid;gap:12px;">
+                    <label style="display:grid;gap:6px;">
+                        <span style="font-size:13px;font-weight:600;color:#334155;">Not</span>
+                        <textarea id="scoutActionNotes" rows="4" style="padding:10px;border:1px solid #cbd5e1;border-radius:10px;resize:vertical;" placeholder="Review notu gir"></textarea>
+                    </label>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <label style="display:grid;gap:6px;">
+                            <span style="font-size:13px;font-weight:600;color:#334155;">Player ID</span>
+                            <input id="scoutActionPlayerId" type="number" min="1" style="padding:10px;border:1px solid #cbd5e1;border-radius:10px;" placeholder="Opsiyonel">
+                        </label>
+                        <label id="scoutActionScoreWrap" style="display:grid;gap:6px;">
+                            <span style="font-size:13px;font-weight:600;color:#334155;">Review Score</span>
+                            <input id="scoutActionReviewScore" type="number" min="0" max="100" value="75" style="padding:10px;border:1px solid #cbd5e1;border-radius:10px;">
+                        </label>
+                    </div>
+                </div>
+                <div style="margin-top:16px;display:flex;justify-content:flex-end;gap:8px;">
+                    <button class="btn btn-secondary" type="button" onclick="closeScoutActionModal()">Vazgec</button>
+                    <button class="btn btn-primary" type="button" onclick="submitScoutActionModal()">Uygula</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="scoutRewardModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:1350;align-items:center;justify-content:center;padding:16px;">
+        <div style="background:#fff;width:min(420px,100%);max-height:90vh;overflow:auto;border-radius:14px;border:1px solid #e5e7eb;box-shadow:0 24px 60px rgba(15,23,42,.28);">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #e5e7eb;">
+                <strong id="scoutRewardModalTitle">Reward Aksiyonu</strong>
+                <button class="btn btn-secondary" type="button" style="padding:6px 10px;font-size:12px;" onclick="closeScoutRewardModal()">Kapat</button>
+            </div>
+            <div style="padding:16px;">
+                <div id="scoutRewardModalHint" style="margin-bottom:14px;color:#64748B;font-size:13px;">Odul aksiyonunu onayla.</div>
+                <div id="scoutRewardModalSummary" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px;padding:12px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;">
+                    <div style="grid-column:1 / -1;color:#64748B;font-size:13px;">Reward ozeti yukleniyor...</div>
+                </div>
+                <div style="display:flex;justify-content:flex-end;gap:8px;">
+                    <button class="btn btn-secondary" type="button" onclick="closeScoutRewardModal()">Vazgec</button>
+                    <button class="btn btn-primary" type="button" onclick="submitScoutRewardModal()">Onayla</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="assets/js/site-core.js"></script>
     <script src="assets/js/growth-upgrade.js"></script>
     <script>
         let lastDataQualityPayload = null;
+        let currentScoutActionState = null;
+        let currentScoutRewardState = null;
+        const adminScoutQueueCache = new Map();
+        const adminScoutRewardCache = new Map();
 
         function formatRole(role) {
             const map = {
@@ -1025,6 +1143,186 @@
             const modal = document.getElementById('userProfileCardModal');
             if (!modal) return;
             modal.style.display = 'none';
+        }
+
+        function closeScoutActionModal() {
+            const modal = document.getElementById('scoutActionModal');
+            if (!modal) return;
+            modal.style.display = 'none';
+            currentScoutActionState = null;
+        }
+
+        function openScoutActionModal(tipId, action) {
+            currentScoutActionState = { tipId, action };
+            const modal = document.getElementById('scoutActionModal');
+            const title = document.getElementById('scoutActionModalTitle');
+            const hint = document.getElementById('scoutActionModalHint');
+            const summary = document.getElementById('scoutActionModalSummary');
+            const notes = document.getElementById('scoutActionNotes');
+            const playerId = document.getElementById('scoutActionPlayerId');
+            const scoreWrap = document.getElementById('scoutActionScoreWrap');
+            const score = document.getElementById('scoutActionReviewScore');
+            if (!modal || !title || !hint || !summary || !notes || !playerId || !scoreWrap || !score) return;
+
+            title.textContent = `Scout Aksiyonu: ${action}`;
+            hint.textContent = 'Review notu ve gerekiyorsa oyuncu eslemesini gir.';
+            notes.value = '';
+            playerId.value = '';
+            score.value = '75';
+            scoreWrap.style.display = action === 'screen' ? 'grid' : 'none';
+            const tip = adminScoutQueueCache.get(Number(tipId));
+            summary.innerHTML = tip ? `
+                <div style="grid-column:1 / -1;">
+                    <strong style="font-size:16px;color:#0f172a;">${escapeHtml(tip.player_name || '-')}</strong>
+                    <div style="margin-top:4px;color:#64748B;font-size:13px;">${escapeHtml(tip.city || '-')} ${tip.position ? ' / ' + escapeHtml(tip.position) : ''}</div>
+                </div>
+                <div>
+                    <div style="font-size:12px;color:#64748B;text-transform:uppercase;">Gonderen</div>
+                    <div style="margin-top:4px;font-weight:600;color:#0f172a;">${escapeHtml(tip.submitter?.name || '-')}</div>
+                </div>
+                <div>
+                    <div style="font-size:12px;color:#64748B;text-transform:uppercase;">Skor</div>
+                    <div style="margin-top:4px;font-weight:600;color:#0f172a;">${escapeHtml(String(tip.final_score ?? '-'))}</div>
+                </div>
+                <div>
+                    <div style="font-size:12px;color:#64748B;text-transform:uppercase;">Durum</div>
+                    <div style="margin-top:4px;font-weight:600;color:#0f172a;">${escapeHtml(tip.status || '-')}</div>
+                </div>
+                <div>
+                    <div style="font-size:12px;color:#64748B;text-transform:uppercase;">Video</div>
+                    <div style="margin-top:4px;font-weight:600;color:#0f172a;">${tip.video_clip_id ? 'Var' : 'Yok'}</div>
+                </div>
+            ` : '<div style="grid-column:1 / -1;color:#64748B;font-size:13px;">Scout tip ozeti bulunamadi.</div>';
+            modal.style.display = 'flex';
+        }
+
+        async function submitScoutActionModal() {
+            if (!currentScoutActionState) return;
+            const { tipId, action } = currentScoutActionState;
+            const token = getAuthToken();
+            if (!token) {
+                nsAlert('Admin token bulunamadi.');
+                return;
+            }
+
+            const notes = (document.getElementById('scoutActionNotes')?.value || '').trim();
+            const playerIdRaw = (document.getElementById('scoutActionPlayerId')?.value || '').trim();
+            const reviewScoreRaw = (document.getElementById('scoutActionReviewScore')?.value || '').trim();
+            const payload = { action, notes };
+            if (playerIdRaw) payload.player_id = Number(playerIdRaw);
+            if (action === 'screen' && reviewScoreRaw) payload.review_score = Number(reviewScoreRaw);
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/admin/scout-tips/${encodeURIComponent(tipId)}/review`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(payload),
+                });
+                const body = await response.json().catch(() => ({}));
+                if (!response.ok || body?.ok === false) {
+                    throw new Error(body?.message || `HTTP ${response.status}`);
+                }
+                closeScoutActionModal();
+                await loadAdminScoutQueue();
+                await loadAdminScoutRewards();
+            } catch (error) {
+                nsAlert(`Scout review hatasi: ${error.message}`);
+            }
+        }
+
+        function closeScoutRewardModal() {
+            const modal = document.getElementById('scoutRewardModal');
+            if (!modal) return;
+            modal.style.display = 'none';
+            currentScoutRewardState = null;
+        }
+
+        function openScoutRewardModal(rewardId, action) {
+            currentScoutRewardState = { rewardId, action };
+            const modal = document.getElementById('scoutRewardModal');
+            const title = document.getElementById('scoutRewardModalTitle');
+            const hint = document.getElementById('scoutRewardModalHint');
+            const summary = document.getElementById('scoutRewardModalSummary');
+            if (!modal || !title || !hint || !summary) return;
+            title.textContent = `Reward Aksiyonu: ${action}`;
+            hint.textContent = action === 'approve'
+                ? 'Bu odulu onaylamak uzeresin.'
+                : 'Bu odulu odendi olarak isaretlemek uzeresin.';
+            const reward = adminScoutRewardCache.get(Number(rewardId));
+            summary.innerHTML = reward ? `
+                <div>
+                    <div style="font-size:12px;color:#64748B;text-transform:uppercase;">Kullanici</div>
+                    <div style="margin-top:4px;font-weight:600;color:#0f172a;">${escapeHtml(reward.user?.name || '-')}</div>
+                </div>
+                <div>
+                    <div style="font-size:12px;color:#64748B;text-transform:uppercase;">Oyuncu</div>
+                    <div style="margin-top:4px;font-weight:600;color:#0f172a;">${escapeHtml(reward.scout_tip?.player_name || '-')}</div>
+                </div>
+                <div>
+                    <div style="font-size:12px;color:#64748B;text-transform:uppercase;">Basis</div>
+                    <div style="margin-top:4px;font-weight:600;color:#0f172a;">${escapeHtml(reward.basis || '-')}</div>
+                </div>
+                <div>
+                    <div style="font-size:12px;color:#64748B;text-transform:uppercase;">Tutar</div>
+                    <div style="margin-top:4px;font-weight:600;color:#0f172a;">${reward.amount ? `${escapeHtml(String(reward.amount))} ${escapeHtml(reward.currency || '')}` : '-'}</div>
+                </div>
+                <div>
+                    <div style="font-size:12px;color:#64748B;text-transform:uppercase;">Durum</div>
+                    <div style="margin-top:4px;">
+                        <span class="badge ${
+                            reward.status === 'approved'
+                                ? 'badge-success'
+                                : reward.status === 'paid'
+                                    ? 'badge-info'
+                                    : reward.status === 'cancelled'
+                                        ? 'badge-danger'
+                                        : 'badge-warning'
+                        }">${escapeHtml(reward.status || '-')}</span>
+                    </div>
+                </div>
+                <div>
+                    <div style="font-size:12px;color:#64748B;text-transform:uppercase;">Payout Durumu</div>
+                    <div style="margin-top:4px;font-weight:600;color:#0f172a;">
+                        ${reward.status === 'paid'
+                            ? 'Odeme tamamlandi'
+                            : reward.status === 'approved'
+                                ? 'Odeme bekliyor'
+                                : reward.status === 'pending'
+                                    ? 'Admin onayi bekliyor'
+                                    : 'Kapali'}
+                    </div>
+                </div>
+            ` : '<div style="grid-column:1 / -1;color:#64748B;font-size:13px;">Reward ozeti bulunamadi.</div>';
+            modal.style.display = 'flex';
+        }
+
+        async function submitScoutRewardModal() {
+            if (!currentScoutRewardState) return;
+            const { rewardId, action } = currentScoutRewardState;
+            const token = getAuthToken();
+            if (!token) {
+                nsAlert('Admin token bulunamadi.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/admin/scout-rewards/${encodeURIComponent(rewardId)}/${action}`, {
+                    method: 'POST',
+                    headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    throw new Error(payload?.message || `HTTP ${response.status}`);
+                }
+                closeScoutRewardModal();
+                await loadAdminScoutRewards();
+            } catch (error) {
+                nsAlert(`Reward aksiyonu hatasi: ${error.message}`);
+            }
         }
 
         function kvRow(label, value, isPrivate = false) {
@@ -1632,6 +1930,123 @@
             }
         }
 
+        async function loadAdminScoutQueue() {
+            const tbody = document.getElementById('adminScoutQueueBody');
+            const meta = document.getElementById('adminScoutMeta');
+            const statusFilter = document.getElementById('adminScoutStatusFilter');
+            const token = getAuthToken();
+            if (!tbody || !meta) return;
+            if (!token) {
+                meta.textContent = 'Admin token bulunamadi.';
+                return;
+            }
+
+            const apiBase = getApiBaseUrl();
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#64748B;">Yukleniyor...</td></tr>';
+
+            try {
+                const statusQuery = statusFilter && statusFilter.value ? `&status=${encodeURIComponent(statusFilter.value)}` : '';
+                const response = await fetch(`${apiBase}/admin/scout-tips/queue?per_page=10${statusQuery}`, {
+                    headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
+                });
+                const payload = await response.json().catch(() => ({}));
+                const rows = Array.isArray(payload?.data) ? payload.data : [];
+                adminScoutQueueCache.clear();
+                rows.forEach((row) => adminScoutQueueCache.set(Number(row.id), row));
+                const pendingCount = rows.filter((row) => row.status === 'pending').length;
+                const shortlistCount = rows.filter((row) => row.status === 'shortlisted').length;
+                const pendingNode = document.getElementById('adminScoutPendingCount');
+                const shortlistNode = document.getElementById('adminScoutShortlistCount');
+                if (pendingNode) pendingNode.textContent = String(pendingCount);
+                if (shortlistNode) shortlistNode.textContent = String(shortlistCount);
+                meta.textContent = `${rows.length} scout ihbari listelendi.`;
+
+                if (!rows.length) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#64748B;">Bekleyen scout ihbari yok.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = rows.map((row) => `
+                    <tr>
+                        <td>
+                            <strong>${escapeHtml(row.player_name || '-')}</strong><br>
+                            <small>${escapeHtml(row.city || '-')} ${row.position ? ' / ' + escapeHtml(row.position) : ''}</small>
+                        </td>
+                        <td>
+                            ${escapeHtml(row.submitter?.name || '-')}<br>
+                            <small>${escapeHtml(row.submitter?.scout_rank || '-')} / ${escapeHtml(String(row.submitter?.scout_points ?? 0))} puan</small>
+                        </td>
+                        <td><span class="badge ${row.status === 'pending' ? 'badge-warning' : row.status === 'shortlisted' ? 'badge-success' : 'badge-secondary'}">${escapeHtml(row.status || '-')}</span></td>
+                        <td>
+                            <strong>${escapeHtml(String(row.final_score ?? '-'))}</strong><br>
+                            <small>${row.video_clip_id ? 'Video var' : 'Video yok'}</small>
+                        </td>
+                        <td style="display:flex;gap:6px;flex-wrap:wrap;">
+                            <button class="btn btn-primary" style="padding:6px 10px;font-size:12px;" onclick="openScoutActionModal(${Number(row.id)}, 'screen')">Screen</button>
+                            <button class="btn btn-secondary" style="padding:6px 10px;font-size:12px;" onclick="openScoutActionModal(${Number(row.id)}, 'shortlist')">Shortlist</button>
+                            <button class="btn btn-secondary" style="padding:6px 10px;font-size:12px;" onclick="openScoutActionModal(${Number(row.id)}, 'mark-signed')">Signed</button>
+                            <button class="btn btn-secondary" style="padding:6px 10px;font-size:12px;" onclick="openScoutActionModal(${Number(row.id)}, 'reject')">Reject</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                meta.textContent = `Hata: ${error.message}`;
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#b91c1c;">${escapeHtml(error.message)}</td></tr>`;
+            }
+        }
+
+        async function loadAdminScoutRewards() {
+            const tbody = document.getElementById('adminScoutRewardsBody');
+            if (!tbody) return;
+            const token = getAuthToken();
+            if (!token) return;
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/admin/scout-rewards?per_page=10`, {
+                    headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
+                });
+                const payload = await response.json().catch(() => ({}));
+                const rows = payload?.data?.data || [];
+                adminScoutRewardCache.clear();
+                rows.forEach((row) => adminScoutRewardCache.set(Number(row.id), row));
+                const pendingRewardNode = document.getElementById('adminScoutRewardPendingCount');
+                if (pendingRewardNode) {
+                    pendingRewardNode.textContent = String(rows.filter((row) => row.status === 'pending').length);
+                }
+
+                if (!rows.length) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#64748B;">Scout odulu yok.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = rows.map((row) => `
+                    <tr>
+                        <td>${escapeHtml(row.user?.name || '-')}</td>
+                        <td>${escapeHtml(row.scout_tip?.player_name || '-')}</td>
+                        <td>${escapeHtml(row.reward_type || '-')} / ${escapeHtml(row.basis || '-')}</td>
+                        <td>
+                            <span class="badge ${
+                                row.status === 'approved'
+                                    ? 'badge-success'
+                                    : row.status === 'paid'
+                                        ? 'badge-info'
+                                        : row.status === 'cancelled'
+                                            ? 'badge-danger'
+                                            : 'badge-warning'
+                            }">${escapeHtml(row.status || '-')}</span>
+                        </td>
+                        <td>${row.amount ? `${escapeHtml(String(row.amount))} ${escapeHtml(row.currency || '')}` : '-'}</td>
+                        <td style="display:flex;gap:6px;flex-wrap:wrap;">
+                            <button class="btn btn-primary" style="padding:6px 10px;font-size:12px;" onclick="openScoutRewardModal(${Number(row.id)}, 'approve')">Onayla</button>
+                            <button class="btn btn-secondary" style="padding:6px 10px;font-size:12px;" onclick="openScoutRewardModal(${Number(row.id)}, 'mark-paid')">Paid</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#b91c1c;">${escapeHtml(error.message)}</td></tr>`;
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             updateAuthNotice();
             loadContactMessages();
@@ -1640,6 +2055,8 @@
             loadDataQualityWidget();
             loadOpsSummary();
             loadClientErrorLogs();
+            loadAdminScoutQueue();
+            loadAdminScoutRewards();
             applyRegisteredUsersStateFromUrl();
 
             const probeBtn = document.getElementById('ops429ProbeBtn');
@@ -1675,6 +2092,31 @@
             if (roleSelect) {
                 roleSelect.addEventListener('change', function () {
                     loadRegisteredUsers(1);
+                });
+            }
+
+            const scoutActionModal = document.getElementById('scoutActionModal');
+            if (scoutActionModal) {
+                scoutActionModal.addEventListener('click', function (event) {
+                    if (event.target === scoutActionModal) {
+                        closeScoutActionModal();
+                    }
+                });
+            }
+
+            const scoutRewardModal = document.getElementById('scoutRewardModal');
+            if (scoutRewardModal) {
+                scoutRewardModal.addEventListener('click', function (event) {
+                    if (event.target === scoutRewardModal) {
+                        closeScoutRewardModal();
+                    }
+                });
+            }
+
+            const scoutStatusFilter = document.getElementById('adminScoutStatusFilter');
+            if (scoutStatusFilter) {
+                scoutStatusFilter.addEventListener('change', function () {
+                    loadAdminScoutQueue();
                 });
             }
 

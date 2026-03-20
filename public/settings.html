@@ -172,7 +172,8 @@
       if(!btn) return;
       if(USER_ROLE === 'manager'){ btn.href = 'manager-dashboard.html'; return; }
       if(USER_ROLE === 'team' || USER_ROLE === 'club'){ btn.href = 'team-dashboard.html'; return; }
-      if(USER_ROLE === 'scout' || USER_ROLE === 'coach'){ btn.href = 'coach-dashboard.html'; return; }
+      if(USER_ROLE === 'coach'){ btn.href = 'coach-dashboard.html'; return; }
+      if(USER_ROLE === 'scout'){ btn.href = 'scout-dashboard.html'; return; }
       btn.href = 'player-dashboard.html';
     })();
 
@@ -355,7 +356,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
 
 
 

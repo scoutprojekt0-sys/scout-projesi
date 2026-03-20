@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scout Dashboard | NextScout</title>
+  <meta name="description" content="Scout dashboard: yetenek bildir, puanini takip et, ihbarlarini ve odullerini yonet.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="canonical" href="https://nextscout.pro/scout-dashboard.html">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:site_name" content="NextScout">
+  <meta property="og:title" content="Scout Dashboard | NextScout">
+  <meta property="og:description" content="Scout dashboard: yetenek bildir, puanini takip et, ihbarlarini ve odullerini yonet.">
+  <meta property="og:url" content="https://nextscout.pro/scout-dashboard.html">
+  <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Scout Dashboard | NextScout">
+  <meta name="twitter:description" content="Scout dashboard: yetenek bildir, puanini takip et, ihbarlarini ve odullerini yonet.">
+  <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
+  <meta name="theme-color" content="#08131d">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/ai-video-lab.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #08131d;
+      --ink: #f5fbff;
+      --muted: #9bb5cb;
+      --line: #2b4660;
+      --panel: #0f1f2e;
+      --panel-2: #12293d;
+      --primary: #8fd3ff;
+      --accent: #60a5fa;
+      --good: #2fd4b0;
+      --warn: #ff7e22;
+      --cta: #ff5a1f;
+      --cta-2: #ff7e22;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+        radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+        var(--bg);
+      min-height: 100vh;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(7, 18, 36, 0.78);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.24);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 12px 28px rgba(8, 19, 29, 0.26);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .logo {
+      font-family: 'Poppins', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #BFDBFE;
+      letter-spacing: 0.2px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .main-container {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 16px;
+      padding: 18px;
+      max-width: 1400px;
+      margin: 0 auto;
+      align-items: start;
+    }
+
+    .sidebar {
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid var(--line);
+      padding: 16px;
+      position: sticky;
+      top: 90px;
+      box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28);
+      overflow: hidden;
+      border-radius: 0;
+    }
+
+    .sidebar::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+    }
+
+    .sidebar-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: 0.8px;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      color: #dbeafe;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease;
+      border-radius: 0;
+    }
+
+    .sidebar-item i {
+      width: 18px;
+      text-align: center;
+      color: #8fd3ff;
+      font-size: 13px;
+    }
+
+    .sidebar-item:hover {
+      transform: translateY(-1px);
+      border-color: rgba(255, 126, 34, 0.55);
+      box-shadow: 0 16px 28px rgba(8, 19, 29, 0.26);
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .sidebar-item.active {
+      background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
+      border-color: rgba(255, 126, 34, 0.65);
+      color: #ffffff;
+    }
+
+    .sidebar-item.active i {
+      color: #ffffff;
+    }
+
+    .container {
+      max-width: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 14px;
+    }
+
+    .welcome {
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      color: var(--ink);
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 0;
+      box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .welcome::before,
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+    }
+
+    .welcome h1 { font-size: clamp(22px, 3vw, 34px); margin-bottom: 6px; }
+    .welcome p { font-size: 14px; color: var(--muted); }
+
+    .hero-actions, .hero-points, .form-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .hero-actions, .hero-points { margin-top: 18px; }
+    .btn {
+      border: none;
+      border-radius: 0;
+      padding: 11px 12px;
+      font-weight: 700;
+      font-size: 13px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
+      color: #ffffff;
+    }
+    .btn-secondary {
+      background: rgba(59, 130, 246, 0.12);
+      color: #dbeafe;
+      border: 1px solid rgba(96, 165, 250, 0.22);
+    }
+    .btn-technical {
+      background: transparent;
+      color: #8fd3ff;
+      border: 1px solid rgba(96, 165, 250, 0.38);
+      box-shadow: inset 0 0 0 1px rgba(96, 165, 250, 0.08);
+    }
+    .ai-lab-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 11px 12px;
+      border: 1px solid rgba(96, 165, 250, 0.32);
+      background: rgba(59, 130, 246, 0.1);
+      color: #bfe4ff;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .home-btn {
+      background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
+      color: #fff;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 0 10px;
+      margin-bottom: 14px;
+    }
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 0;
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(96, 165, 250, 0.22);
+      color: #8fd3ff;
+    }
+    .brand h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #dbeafe;
+    }
+    .brand p {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .sidebar-note {
+      margin-top: 14px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 0;
+    }
+    .sidebar-note h3 {
+      margin: 0 0 8px;
+      color: #dbeafe;
+      font-size: 15px;
+      font-weight: 800;
+    }
+    .sidebar-note p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .hero-kicker {
+      display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; padding: 8px 12px; border-radius: 999px;
+      background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(96, 165, 250, 0.25); color: #dbeafe; font-size: 11px; font-weight: 800;
+      letter-spacing: 0.12em; text-transform: uppercase;
+    }
+    .hero-title { margin: 0; max-width: 720px; font: 800 clamp(2rem, 3vw, 3rem)/1.02 Inter, sans-serif; letter-spacing: -0.03em; color: var(--ink); }
+    .hero-sub { margin: 14px 0 0; max-width: 740px; color: var(--muted); font-size: 14px; line-height: 1.7; }
+    .pill, .meta-chip, .badge {
+      display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; font-size: 12px; font-weight: 800;
+    }
+    .pill { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--line); color: #dbeafe; }
+    .meta-chip { background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(96, 165, 250, 0.25); color: #dbeafe; }
+    .hero-side, .card, .panel {
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28);
+      position: relative;
+      overflow: hidden;
+    }
+    .panel-title, .card-copy h2 { font-size: 17px; font-weight: 800; margin-bottom: 10px; color: #dbeafe; }
+    .panel-sub, .row-copy, .card-copy p, .empty, .stat-foot { color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .status-stack, .stack, .list { display: grid; gap: 12px; }
+    .status-row, .tip-item, .reward-item, .leader-item, .point-item, .footer-link {
+      padding: 14px; border-radius: 0; border: 1px solid var(--line); background: rgba(255, 255, 255, 0.04);
+    }
+    .status-row { display: flex; justify-content: space-between; gap: 10px; }
+    .status-row span:first-child, .stat-label {
+      color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 18px; }
+    .stat {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--line);
+      border-radius: 0;
+      padding: 18px;
+      box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+    }
+    .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .stat-value, .money { margin-top: 12px; font: 800 28px/1 Inter, sans-serif; letter-spacing: -0.02em; color: var(--ink); }
+    .stat-foot { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .layout-grid, .layout { display: grid; grid-template-columns: 1.1fr 1fr; gap: 14px; }
+    .card-head, .row-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .card-head { margin-bottom: 16px; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .field { display: grid; gap: 6px; }
+    .field.full { grid-column: 1 / -1; }
+    .field label { color: #dce7f7; font-size: 12px; font-weight: 700; }
+    .input, .select, .textarea {
+      width: 100%; border: 1px solid var(--line); background: rgba(255, 255, 255, 0.04); color: #f8fafc;
+      border-radius: 0; padding: 10px; font: 500 14px/1.4 Inter, sans-serif; outline: none;
+    }
+    .textarea { min-height: 110px; resize: vertical; }
+    .input:focus, .select:focus, .textarea:focus { border-color: rgba(255, 126, 34, 0.55); box-shadow: 0 0 0 3px rgba(255,126,34,.12); }
+    .notice { margin-top: 14px; padding: 12px 14px; border-radius: 0; font-size: 13px; font-weight: 700; display: none; }
+    .notice.show { display: block; }
+    .notice.ok { background: rgba(34,197,94,0.1); color: #bbf7d0; border: 1px solid rgba(34,197,94,0.18); }
+    .notice.bad { background: rgba(239,68,68,0.1); color: #fecaca; border: 1px solid rgba(239,68,68,0.18); }
+    .row-title { margin: 0 0 4px; font-size: 15px; font-weight: 800; }
+    .row-meta { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 10px; color: var(--muted); font-size: 12px; }
+    .badge.pending { background: rgba(245,158,11,0.14); color: #fcd34d; }
+    .badge.screened { background: rgba(87,183,255,0.14); color: #bfe4ff; }
+    .badge.shortlisted { background: rgba(168,85,247,0.14); color: #e9d5ff; }
+    .badge.approved { background: rgba(34,197,94,0.14); color: #bbf7d0; }
+    .badge.trial { background: rgba(59,130,246,0.14); color: #bfdbfe; }
+    .badge.signed, .badge.paid { background: rgba(16,185,129,0.14); color: #a7f3d0; }
+    .badge.rejected, .badge.cancelled { background: rgba(239,68,68,0.14); color: #fecaca; }
+    .leader-item { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; }
+    .leader-rank { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 0; background: rgba(59, 130, 246, 0.12); color: #dbeafe; font-size: 13px; font-weight: 800; }
+    .leader-points { text-align: right; font-weight: 800; }
+    .leader-points span { display: block; color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+    .footer-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .footer-link strong { display: block; margin-bottom: 6px; font-size: 14px; }
+    .footer-link span { color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .analysis-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .analysis-block {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 14px;
+      border-radius: 12px;
+    }
+    .analysis-block h3 {
+      margin: 0 0 8px;
+      color: #dbeafe;
+      font-size: 15px;
+      font-weight: 800;
+    }
+    .analysis-block p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .analysis-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .video-preview {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 12px;
+      border-radius: 12px;
+    }
+    .video-preview[hidden] {
+      display: none;
+    }
+    .video-preview-thumb {
+      width: 120px;
+      height: 72px;
+      object-fit: cover;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .video-preview-title {
+      margin: 0 0 6px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #f5fbff;
+    }
+    .video-preview-meta {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .video-preview-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      color: #8fd3ff;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .analysis-mini {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 10px;
+      border-radius: 12px;
+    }
+    .analysis-mini strong {
+      display: block;
+      color: #f5fbff;
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+    .analysis-mini span {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    @media (max-width: 1180px) {
+      .main-container, .hero, .layout, .layout-grid { grid-template-columns: 1fr; }
+      .sidebar { position: static; top: auto; }
+      .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .analysis-layout,
+      .analysis-summary-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 760px) {
+      .header { padding: 14px 12px; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+      .header-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+      .main-container { padding: 12px; gap: 10px; }
+      .sidebar { padding: 12px; }
+      .sidebar-menu { grid-template-columns: 1fr 1fr; }
+      .hero-panel, .hero-side, .card, .panel, .stat { padding: 16px; border-radius: 0; }
+      .grid-4, .form-grid, .footer-links { grid-template-columns: 1fr; }
+      .btn, .hero-actions .btn, .form-actions .btn { width: 100%; }
+    }
+    @media (max-width: 560px) {
+      .sidebar-menu { grid-template-columns: 1fr; }
+      .header-actions { grid-template-columns: 1fr; }
+    }
+
+    .sidebar,
+    .sidebar-item,
+    .sidebar-note,
+    .welcome,
+    .panel,
+    .hero-side,
+    .stat,
+    .status-row,
+    .tip-item,
+    .reward-item,
+    .leader-item,
+    .point-item,
+    .footer-link,
+    .brand-mark,
+    .btn,
+    .hero-kicker,
+    .pill,
+    .meta-chip,
+    .badge,
+    .input,
+    .select,
+    .textarea,
+    .notice,
+    .leader-rank,
+    .ai-video-lab,
+    .ai-video-lab-tag,
+    .ai-video-lab-input,
+    .ai-video-lab-select,
+    .ai-video-lab-player,
+    .ai-video-lab-card,
+    .ai-video-lab-preview,
+    .ai-video-lab-thumb,
+    .ai-video-lab-summary-item,
+    .ai-video-lab-event,
+    .ai-video-lab-badge,
+    .ai-video-lab-empty,
+    .ai-video-lab-notice {
+      border-radius: 0 !important;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo"><i class="fas fa-binoculars"></i><span>NextScout Scout</span></div>
+    <div class="header-actions">
+      <a class="btn btn-secondary home-btn" href="index.html"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
+      <a class="btn btn-secondary" href="scout-profile.html"><i class="fas fa-user-check"></i><span>Public Profil</span></a>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark"><i class="fas fa-binoculars"></i></div>
+        <div>
+          <h1>Scout Hub</h1>
+          <p>Yerelden profesyonel radar akisi</p>
+        </div>
+      </div>
+
+      <div class="sidebar-title">Scout Menusu</div>
+      <nav class="sidebar-menu">
+        <a class="sidebar-item active" href="#overview"><i class="fas fa-house"></i><span>Dashboard</span></a>
+        <a class="sidebar-item" href="#submit"><i class="fas fa-video"></i><span>Yetenek Bildir</span></a>
+        <a class="sidebar-item" href="#tips"><i class="fas fa-list-check"></i><span>Ihbarlarim</span></a>
+        <a class="sidebar-item" href="#rewards"><i class="fas fa-trophy"></i><span>Odullerim</span></a>
+        <a class="sidebar-item" href="#leaderboard"><i class="fas fa-ranking-star"></i><span>Liderlik</span></a>
+        <a class="sidebar-item" href="scout-watchlist.html"><i class="fas fa-bookmark"></i><span>Takip Listem</span></a>
+        <a class="sidebar-item" href="scout-reports.html"><i class="fas fa-file-lines"></i><span>Scout Raporlari</span></a>
+        <a class="sidebar-item" href="scout-profile.html"><i class="fas fa-user-check"></i><span>Public Gorunum</span></a>
+        <a class="sidebar-item" href="scout-live-matches.html"><i class="fas fa-tower-broadcast"></i><span>Canli Scout</span></a>
+        <a class="sidebar-item" href="settings.html"><i class="fas fa-gear"></i><span>Ayarlar</span></a>
+      </nav>
+
+      <div class="sidebar-note">
+        <h3>Odak</h3>
+        <p>Bu panel bir scout operasyon masasi gibi calisir: yeni oyuncu bildir, sonucu takip et, puan ve odul akisini ayni yerden yonet.</p>
+        <button class="btn btn-primary" type="button" onclick="scrollToBlock('submit')">
+          <i class="fas fa-plus"></i>
+          Yeni Scout Tip
+        </button>
+      </div>
+    </aside>
+
+    <main class="container">
+      <section class="hero" id="overview">
+        <div class="welcome">
+          <div class="hero-kicker">
+            <i class="fas fa-bullseye"></i>
+            <span>Crowdsourced Scout</span>
+          </div>
+          <h2 class="hero-title">Mahallendeki yetenegi sisteme sok, dogru kesiflerden puan ve odul kazan.</h2>
+          <p class="hero-sub" id="heroGreeting">
+            Scout hesabinla oyuncu bildir, dogrulanan ihbarlari takip et ve profesyonel surece donusen kesiflerde kendi etkini gor.
+          </p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" type="button" onclick="scrollToBlock('submit')">
+              <i class="fas fa-video"></i>
+              Yetenek Bildir
+            </button>
+            <a class="btn btn-secondary" href="scout-watchlist.html">
+              <i class="fas fa-bookmark"></i>
+              Watchlist Ac
+            </a>
+          </div>
+          <div class="hero-points">
+            <span class="pill"><i class="fas fa-circle-check"></i><span>Dogrulanan kesif puan kazandirir</span></span>
+            <span class="pill"><i class="fas fa-handshake-angle"></i><span>Trial ve imza adimlari odul baglar</span></span>
+            <span class="pill"><i class="fas fa-ranking-star"></i><span>Lider tabloda yuksel</span></span>
+          </div>
+        </div>
+
+        <aside class="panel hero-side">
+          <h3 class="panel-title">Scout Durumu</h3>
+          <p class="panel-sub">Guncel kullanici ve hesap sinyalleri tek panelde.</p>
+          <div class="status-stack">
+            <div class="status-row"><span>Kullanici</span><strong id="statusUser">Misafir</strong></div>
+            <div class="status-row"><span>Rol</span><strong id="statusRole">Scout</strong></div>
+            <div class="status-row"><span>Scout Rank</span><strong id="statusRank">-</strong></div>
+            <div class="status-row"><span>Baglanti</span><strong id="statusApi">Bekleniyor</strong></div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="grid-4">
+        <article class="stat">
+          <div class="stat-label">Scout Puani</div>
+          <div class="stat-value" id="statPoints">0</div>
+          <div class="stat-foot" id="statPointsFoot">Toplam puan</div>
+        </article>
+        <article class="stat">
+          <div class="stat-label">Toplam Ihbar</div>
+          <div class="stat-value" id="statTips">0</div>
+          <div class="stat-foot">Yukledigin kesif sayisi</div>
+        </article>
+        <article class="stat">
+          <div class="stat-label">Basarili Ihbar</div>
+          <div class="stat-value" id="statSuccess">0</div>
+          <div class="stat-foot">Shortlist, trial veya imza olan</div>
+        </article>
+        <article class="stat">
+          <div class="stat-label">Isabet Orani</div>
+          <div class="stat-value" id="statAccuracy">%0</div>
+          <div class="stat-foot">Dogru sinyal kalitesi</div>
+        </article>
+      </section>
+
+      <section class="ai-video-lab" data-ai-video-lab>
+        <div class="ai-video-lab-head">
+          <div>
+            <h2>Global AI Video Lab</h2>
+            <p>Kendi videolarinin disinda da oyuncu ara, sehri filtrele, oyuncuya bagli videolari ac ve scout panelinden analiz ettir.</p>
+          </div>
+          <div class="ai-video-lab-tag"><i class="fas fa-flask"></i><span>AI Lab</span></div>
+        </div>
+        <div class="ai-video-lab-search">
+          <div class="ai-video-lab-field">
+            <label>Oyuncu Adi</label>
+            <input class="ai-video-lab-input" type="text" placeholder="Oyuncu adi yaz" data-ai-player-search>
+          </div>
+          <div class="ai-video-lab-field">
+            <label>Sehir</label>
+            <input class="ai-video-lab-input" type="text" placeholder="Istanbul" data-ai-city-search>
+          </div>
+          <div class="ai-video-lab-field">
+            <label>Pozisyon</label>
+            <select class="ai-video-lab-select" data-ai-position-search>
+              <option value="">Tumu</option>
+              <option value="Kaleci">Kaleci</option>
+              <option value="Defans">Defans</option>
+              <option value="Orta Saha">Orta Saha</option>
+              <option value="Forvet">Forvet</option>
+            </select>
+          </div>
+          <button class="btn btn-secondary ai-video-lab-search-btn" type="button" data-ai-search-btn>Oyuncu Ara</button>
+        </div>
+        <div class="ai-video-lab-results" data-ai-results>
+          <div class="ai-video-lab-empty">Analiz icin oyuncu aramasi yap.</div>
+        </div>
+        <div class="ai-video-lab-grid">
+          <div class="ai-video-lab-card">
+            <h3>Secilen Oyuncu ve Video</h3>
+            <p>Bu alan global havuzdan oyuncu secer. Scout tipe baglamadan sadece analiz de calistirabilirsin.</p>
+            <div class="ai-video-lab-empty" data-ai-selected-player hidden>
+              <strong data-ai-selected-name>Oyuncu secilmedi</strong>
+              <div class="ai-video-lab-note" data-ai-selected-meta>Video listesi secimden sonra gelir.</div>
+            </div>
+            <div class="ai-video-lab-field" style="margin-top:12px;">
+              <label>Oyuncu Videolari</label>
+              <select class="ai-video-lab-select" data-ai-video-select>
+                <option value="">Oyuncu secilmedi</option>
+              </select>
+            </div>
+            <input type="hidden" data-ai-target-player-id>
+            <div class="ai-video-lab-preview" data-ai-video-preview hidden>
+              <img class="ai-video-lab-thumb" data-ai-video-thumb alt="Video thumbnail">
+              <div>
+                <div class="ai-video-lab-preview-title" data-ai-video-title>Video secilmedi</div>
+                <div class="ai-video-lab-preview-meta">
+                  <span data-ai-video-date>Tarih: -</span>
+                  <span data-ai-video-duration>Sure: -</span>
+                  <span data-ai-video-platform>Platform: -</span>
+                </div>
+                <div class="ai-video-lab-actions">
+                  <a class="btn btn-secondary" href="#" target="_blank" rel="noopener noreferrer" data-ai-video-link>Videoyu Ac</a>
+                </div>
+              </div>
+            </div>
+            <div class="ai-video-lab-actions">
+              <button class="btn btn-technical" type="button" data-ai-analyze-btn>
+                <i class="fas fa-microchip"></i>
+                Analizi Baslat
+              </button>
+            </div>
+          </div>
+          <div class="ai-video-lab-card">
+            <h3>Analiz Sonucu</h3>
+            <p>Global oyuncu havuzunda mock AI pipeline ile event ve metrik ciktilari uretilir.</p>
+            <div class="ai-video-lab-summary" data-ai-summary>
+              <div class="ai-video-lab-summary-item"><strong>-</strong><span>Pass</span></div>
+              <div class="ai-video-lab-summary-item"><strong>-</strong><span>Cross</span></div>
+              <div class="ai-video-lab-summary-item"><strong>-</strong><span>Speed</span></div>
+            </div>
+            <div class="ai-video-lab-events" data-ai-events style="margin-top:12px;">
+              <div class="ai-video-lab-empty">Analiz baslatildiginda eventler burada gorunur.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ai-video-lab-notice" data-ai-notice></div>
+      </section>
+
+      <section class="layout-grid">
+        <div class="stack">
+          <article class="panel" id="submit">
+            <div class="card-head">
+              <div class="card-copy">
+                <h2>Yetenek Bildir</h2>
+                <p>Yeni oyuncu veya mevcut oyuncu icin scout tip gonder. Minimum alanlarla hizli akisi koru.</p>
+              </div>
+              <div class="meta-chip"><i class="fas fa-bolt"></i><span>Canli Form</span></div>
+            </div>
+
+            <form id="scoutTipForm">
+              <div class="form-grid">
+                <div class="field">
+                  <label for="analysisVideoClipId">Analiz Videosu</label>
+                  <select class="select" id="analysisVideoClipId" name="analysis_video_clip_id" onchange="updateSelectedVideoPreview()">
+                    <option value="">Videolar yukleniyor...</option>
+                  </select>
+                  <div class="video-preview" id="selectedVideoPreview" hidden>
+                    <img class="video-preview-thumb" id="selectedVideoThumb" alt="Video thumbnail">
+                    <div>
+                      <div class="video-preview-title" id="selectedVideoTitle">Video secilmedi</div>
+                      <div class="video-preview-meta">
+                        <span id="selectedVideoDate">Tarih: -</span>
+                        <span id="selectedVideoDuration">Sure: -</span>
+                        <span id="selectedVideoPlatform">Platform: -</span>
+                      </div>
+                      <a class="video-preview-link" id="selectedVideoLink" href="#" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-up-right-from-square"></i>
+                        <span>Videoyu Ac</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="analysisTargetPlayerId">Analiz Oyuncu ID</label>
+                  <input class="input" id="analysisTargetPlayerId" name="analysis_target_player_id" type="number" min="1" placeholder="42">
+                </div>
+                <div class="field">
+                  <label for="sourceType">Kaynak Tipi</label>
+                  <select class="select" id="sourceType" name="source_type">
+                    <option value="new_player">Yeni oyuncu</option>
+                    <option value="existing_player">Mevcut oyuncu</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="playerName">Oyuncu Adi</label>
+                  <input class="input" id="playerName" name="player_name" placeholder="Oyuncu adi soyadi" required>
+                </div>
+                <div class="field">
+                  <label for="city">Sehir</label>
+                  <input class="input" id="city" name="city" placeholder="Istanbul" required>
+                </div>
+                <div class="field">
+                  <label for="position">Pozisyon</label>
+                  <input class="input" id="position" name="position" placeholder="10 numara / Sol bek">
+                </div>
+                <div class="field">
+                  <label for="birthYear">Dogum Yili</label>
+                  <input class="input" id="birthYear" name="birth_year" type="number" min="1990" max="2026" placeholder="2008">
+                </div>
+                <div class="field">
+                  <label for="teamName">Takim / Okul</label>
+                  <input class="input" id="teamName" name="team_name" placeholder="Mahalle Takimi / Okul">
+                </div>
+                <div class="field">
+                  <label for="competitionLevel">Mac Seviyesi</label>
+                  <input class="input" id="competitionLevel" name="competition_level" placeholder="U17, Amator, okul maci">
+                </div>
+                <div class="field">
+                  <label for="guardianConsentStatus">Veli Onayi</label>
+                  <select class="select" id="guardianConsentStatus" name="guardian_consent_status">
+                    <option value="not_required">Gerekmiyor</option>
+                    <option value="pending">Bekleniyor</option>
+                    <option value="received">Alindi</option>
+                    <option value="rejected">Reddedildi</option>
+                  </select>
+                </div>
+                <div class="field full">
+                  <label for="description">Scout Notu</label>
+                  <textarea class="textarea" id="description" name="description" placeholder="Oyuncunun dikkat ceken ozellikleri, mac baglami ve neden bildirildigi..." required></textarea>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button class="btn btn-primary" type="submit">
+                  <i class="fas fa-paper-plane"></i>
+                  Scout Tipe Bagla
+                </button>
+                <button class="btn btn-technical" type="button" onclick="startVideoAnalysis()">
+                  <i class="fas fa-microchip"></i>
+                  Sadece Analiz Et
+                </button>
+                <span class="ai-lab-chip">
+                  <i class="fas fa-flask"></i>
+                  AI Lab
+                </span>
+                <button class="btn btn-secondary" type="button" onclick="document.getElementById('scoutTipForm').reset()">
+                  <i class="fas fa-rotate-left"></i>
+                  Formu Temizle
+                </button>
+              </div>
+              <div class="notice" id="formNotice"></div>
+            </form>
+
+            <div class="analysis-layout" style="margin-top:16px;">
+              <div class="analysis-block">
+                <h3>Analiz Ozeti</h3>
+                <p>Baslatilan son video analizinin ozet metrikleri burada gorunur.</p>
+                <div class="analysis-summary-grid" id="analysisSummaryGrid">
+                  <div class="analysis-mini"><strong>-</strong><span>Pass</span></div>
+                  <div class="analysis-mini"><strong>-</strong><span>Cross</span></div>
+                  <div class="analysis-mini"><strong>-</strong><span>Speed</span></div>
+                </div>
+              </div>
+              <div class="analysis-block">
+                <h3>Analiz Eventleri</h3>
+                <p>Son analizde bulunan aksiyon eventleri burada listelenir.</p>
+                <div class="list" id="analysisEventsList">
+                  <div class="empty">Henuz analiz baslatilmadi.</div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel" id="tips">
+            <div class="card-head">
+              <div class="card-copy">
+                <h2>Son Ihbarlarim</h2>
+                <p>Kendi gonderdigin scout tiplerin son durumu. Oncelikle son 6 kayit listelenir.</p>
+              </div>
+              <button class="btn btn-secondary" type="button" onclick="loadTips()">
+                <i class="fas fa-arrows-rotate"></i>
+                Yenile
+              </button>
+            </div>
+            <div class="list" id="tipsList">
+              <div class="empty">Ihbarlar yukleniyor...</div>
+            </div>
+          </article>
+        </div>
+
+        <div class="stack">
+          <article class="panel" id="rewards">
+            <div class="card-head">
+              <div class="card-copy">
+                <h2>Odullerim</h2>
+                <p>Trial, imza veya verified transfer gibi asamalardan dogan oduller burada listelenir.</p>
+              </div>
+            </div>
+            <div class="list" id="rewardsList">
+              <div class="empty">Oduller yukleniyor...</div>
+            </div>
+          </article>
+
+          <article class="panel" id="leaderboard">
+            <div class="card-head">
+              <div class="card-copy">
+                <h2>Scout Liderlik Tablosu</h2>
+                <p>Puan bazli yukselen scoutlari ve kendi yerini karsilastir.</p>
+              </div>
+            </div>
+            <div class="list" id="leaderboardList">
+              <div class="empty">Liderlik tablosu yukleniyor...</div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="layout-grid" style="margin-top:18px;">
+        <div class="stack">
+          <article class="panel">
+            <div class="card-head">
+              <div class="card-copy">
+                <h2>Son Puan Hareketleri</h2>
+                <p>Puanin nereden geldigi net gorunsun diye son hareketleri burada aciyoruz.</p>
+              </div>
+            </div>
+            <div class="list" id="pointsList">
+              <div class="empty">Puan hareketleri yukleniyor...</div>
+            </div>
+          </article>
+        </div>
+        <div class="stack">
+          <article class="panel">
+            <div class="card-head">
+              <div class="card-copy">
+                <h2>Operasyon Kisa Yollari</h2>
+                <p>Scout akisinda sik kullanilan sayfalara hizli gecis.</p>
+              </div>
+            </div>
+            <div class="footer-links">
+              <a class="footer-link" href="scout-watchlist.html">
+                <strong>Takip Listesi</strong>
+                <span>Izlemeye aldigin oyunculari ayri listede tut.</span>
+              </a>
+              <a class="footer-link" href="scout-reports.html">
+                <strong>Rapor Merkezi</strong>
+                <span>Hazir raporlarini ac ve degerlendirme notlarini gor.</span>
+              </a>
+              <a class="footer-link" href="scout-profile.html">
+                <strong>Public Profil</strong>
+                <span>Disa acik scout profilini guncelle ve gorunurlugunu yonet.</span>
+              </a>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script>
+    const API_BASE_URL = (() => {
+      const configured = (window.NEXTSCOUT_API_BASE || '').toString().trim();
+      if (configured) return configured.replace(/\/$/, '');
+      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      return `${window.location.origin}/api`;
+    })();
+    let cachedScoutVideos = [];
+
+    function getToken() {
+      return (localStorage.getItem('nextscout_token') || '').trim();
+    }
+
+    function getUser() {
+      try {
+        return JSON.parse(localStorage.getItem('nextscout_user') || 'null');
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function formatDate(value) {
+      if (!value) return '-';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return value;
+      return new Intl.DateTimeFormat('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
+    }
+
+    function formatMoney(value) {
+      const amount = Number(value || 0);
+      return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(amount);
+    }
+
+    function formatStatus(status) {
+      const key = String(status || 'pending').toLowerCase();
+      const labels = {
+        pending: 'Beklemede',
+        screened: 'Screened',
+        shortlisted: 'Shortlist',
+        approved: 'Approved',
+        trial: 'Trial',
+        signed: 'Signed',
+        rejected: 'Rejected',
+        withdrawn: 'Geri cekildi',
+        paid: 'Paid',
+        cancelled: 'Cancelled'
+      };
+      return labels[key] || key;
+    }
+
+    function setStatusApi(text) {
+      const node = document.getElementById('statusApi');
+      if (node) node.textContent = text;
+    }
+
+    function showNotice(message, type) {
+      const node = document.getElementById('formNotice');
+      if (!node) return;
+      node.className = `notice show ${type === 'ok' ? 'ok' : 'bad'}`;
+      node.textContent = message;
+    }
+
+    function scrollToBlock(id) {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    async function apiGet(path) {
+      const token = getToken();
+      if (!token) throw new Error('Oturum bulunamadi. Lutfen once giris yap.');
+      const response = await fetch(`${API_BASE_URL}${path}`, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.ok === false) {
+        throw new Error(data.message || 'Veri alinmadi.');
+      }
+      return data.data ?? data;
+    }
+
+    async function apiPost(path, payload) {
+      const token = getToken();
+      if (!token) throw new Error('Oturum bulunamadi. Lutfen once giris yap.');
+      const response = await fetch(`${API_BASE_URL}${path}`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.ok === false) {
+        const firstError = data?.errors ? Object.values(data.errors)?.[0]?.[0] : '';
+        throw new Error(firstError || data.message || 'Islem basarisiz.');
+      }
+      return data.data ?? data;
+    }
+
+    function renderScoreboard(payload) {
+      const user = payload?.user || {};
+      document.getElementById('statusUser').textContent = user.name || 'Scout';
+      document.getElementById('statusRole').textContent = 'Scout';
+      document.getElementById('statusRank').textContent = user.scout_rank || '-';
+      document.getElementById('statPoints').textContent = Number(user.scout_points || 0).toLocaleString('tr-TR');
+      document.getElementById('statTips').textContent = Number(user.scout_tips_count || 0).toLocaleString('tr-TR');
+      document.getElementById('statSuccess').textContent = Number(user.successful_tips_count || 0).toLocaleString('tr-TR');
+      document.getElementById('statAccuracy').textContent = `%${Number(user.scout_accuracy_rate || 0).toLocaleString('tr-TR')}`;
+      document.getElementById('statPointsFoot').textContent = user.scout_rank ? `${user.scout_rank} seviyesinde` : 'Toplam puan';
+
+      const recent = Array.isArray(payload?.recent_points) ? payload.recent_points.slice(0, 6) : [];
+      const root = document.getElementById('pointsList');
+      if (!recent.length) {
+        root.innerHTML = '<div class="empty">Henuz puan hareketi yok.</div>';
+        return;
+      }
+
+      root.innerHTML = recent.map((row) => {
+        const delta = Number(row.points_delta || 0);
+        const prefix = delta > 0 ? '+' : '';
+        return `
+          <article class="point-item">
+            <div class="row-top">
+              <div>
+                <div class="row-title">${escapeHtml(row.reason || row.event_type || 'Puan hareketi')}</div>
+                <div class="row-copy">${escapeHtml(row.notes || 'Scout puan hareketi kaydi')}</div>
+              </div>
+              <div class="money">${prefix}${delta}</div>
+            </div>
+            <div class="row-meta">
+              <span><i class="fas fa-clock"></i> ${formatDate(row.created_at)}</span>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderTips(payload) {
+      const rows = Array.isArray(payload?.data) ? payload.data.slice(0, 6) : [];
+      const root = document.getElementById('tipsList');
+      if (!rows.length) {
+        root.innerHTML = '<div class="empty">Henuz scout tip gondermedin.</div>';
+        return;
+      }
+
+      root.innerHTML = rows.map((tip) => {
+        const video = tip.video_clip?.video_url || tip.video_clip?.title ? 'Video bagli' : 'Video yok';
+        const statusKey = String(tip.status || 'pending').toLowerCase();
+        return `
+          <article class="tip-item">
+            <div class="row-top">
+              <div>
+                <div class="row-title">${escapeHtml(tip.player_name || 'Oyuncu')}</div>
+                <div class="row-copy">${escapeHtml(tip.description || '')}</div>
+              </div>
+              <span class="badge ${escapeHtml(statusKey)}">${escapeHtml(formatStatus(tip.status))}</span>
+            </div>
+            <div class="row-meta">
+              <span><i class="fas fa-location-dot"></i> ${escapeHtml(tip.city || '-')}</span>
+              <span><i class="fas fa-futbol"></i> ${escapeHtml(tip.position || '-')}</span>
+              <span><i class="fas fa-camera"></i> ${video}</span>
+              <span><i class="fas fa-calendar"></i> ${formatDate(tip.created_at)}</span>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderRewards(payload) {
+      const rows = Array.isArray(payload?.data) ? payload.data.slice(0, 6) : [];
+      const root = document.getElementById('rewardsList');
+      if (!rows.length) {
+        root.innerHTML = '<div class="empty">Henuz reward kaydi yok.</div>';
+        return;
+      }
+
+      root.innerHTML = rows.map((reward) => {
+        const statusKey = String(reward.status || 'pending').toLowerCase();
+        return `
+          <article class="reward-item">
+            <div class="row-top">
+              <div>
+                <div class="row-title">${escapeHtml(reward.scout_tip?.player_name || 'Scout reward')}</div>
+                <div class="row-copy">${escapeHtml(reward.basis || 'Reward basis')}</div>
+              </div>
+              <span class="badge ${escapeHtml(statusKey)}">${escapeHtml(formatStatus(reward.status))}</span>
+            </div>
+            <div class="row-meta">
+              <span><i class="fas fa-money-bill-wave"></i> ${formatMoney(reward.amount || 0)}</span>
+              <span><i class="fas fa-flag-checkered"></i> ${escapeHtml(reward.scout_tip?.status || '-')}</span>
+              <span><i class="fas fa-calendar"></i> ${formatDate(reward.created_at)}</span>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderLeaderboard(rows) {
+      const list = Array.isArray(rows) ? rows.slice(0, 8) : [];
+      const root = document.getElementById('leaderboardList');
+      if (!list.length) {
+        root.innerHTML = '<div class="empty">Liderlik tablosu bos.</div>';
+        return;
+      }
+
+      root.innerHTML = list.map((item, index) => `
+        <article class="leader-item">
+          <div class="leader-rank">#${index + 1}</div>
+          <div>
+            <div class="row-title">${escapeHtml(item.name || 'Scout')}</div>
+            <div class="row-copy">${escapeHtml(item.city || 'Sehir yok')} · ${escapeHtml(item.scout_rank || 'Rank yok')}</div>
+          </div>
+          <div class="leader-points">
+            ${Number(item.scout_points || 0).toLocaleString('tr-TR')}
+            <span>Scout Puani</span>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    async function loadScoreboard() {
+      const payload = await apiGet('/scout-scoreboard/me');
+      renderScoreboard(payload);
+    }
+
+    async function loadTips() {
+      const payload = await apiGet('/scout-tips/my?per_page=6');
+      renderTips(payload);
+    }
+
+    async function loadRewards() {
+      const payload = await apiGet('/scout-rewards/my?per_page=6');
+      renderRewards(payload);
+    }
+
+    async function loadLeaderboard() {
+      const payload = await apiGet('/scout-scoreboard/leaderboard');
+      renderLeaderboard(payload);
+    }
+
+    function renderVideoOptions(rows) {
+      const select = document.getElementById('analysisVideoClipId');
+      if (!select) return;
+
+      const videos = Array.isArray(rows) ? rows : [];
+      cachedScoutVideos = videos;
+
+      if (!videos.length) {
+        select.innerHTML = '<option value="">Analiz icin uygun video bulunamadi</option>';
+        updateSelectedVideoPreview();
+        return;
+      }
+
+      select.innerHTML = ['<option value="">Video sec</option>']
+        .concat(videos.map((video) => {
+          const title = escapeHtml(video.title || `Video #${video.id}`);
+          const duration = video.duration_seconds ? ` · ${video.duration_seconds}s` : '';
+          return `<option value="${video.id}">${title}${duration}</option>`;
+        }))
+        .join('');
+      updateSelectedVideoPreview();
+    }
+
+    async function loadMyVideos() {
+      const user = getUser();
+      if (!user?.id || !getToken()) {
+        renderVideoOptions([]);
+        return;
+      }
+
+      try {
+        const payload = await apiGet(`/users/${user.id}/videos`);
+        renderVideoOptions(payload?.data || payload);
+      } catch (error) {
+        renderVideoOptions([]);
+      }
+    }
+
+    function updateSelectedVideoPreview() {
+      const select = document.getElementById('analysisVideoClipId');
+      const preview = document.getElementById('selectedVideoPreview');
+      const title = document.getElementById('selectedVideoTitle');
+      const date = document.getElementById('selectedVideoDate');
+      const duration = document.getElementById('selectedVideoDuration');
+      const platform = document.getElementById('selectedVideoPlatform');
+      const thumb = document.getElementById('selectedVideoThumb');
+      const link = document.getElementById('selectedVideoLink');
+
+      if (!select || !preview || !title || !date || !duration || !platform || !thumb || !link) return;
+
+      const selectedId = Number(select.value || 0);
+      const selectedVideo = cachedScoutVideos.find((video) => Number(video.id) === selectedId);
+
+      if (!selectedVideo) {
+        preview.hidden = true;
+        return;
+      }
+
+      preview.hidden = false;
+      title.textContent = selectedVideo.title || `Video #${selectedVideo.id}`;
+      date.textContent = `Tarih: ${selectedVideo.match_date ? formatDate(selectedVideo.match_date) : '-'}`;
+      duration.textContent = `Sure: ${selectedVideo.duration_seconds ? `${selectedVideo.duration_seconds}s` : '-'}`;
+      platform.textContent = `Platform: ${selectedVideo.platform || '-'}`;
+      thumb.src = selectedVideo.thumbnail_url || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="72"%3E%3Crect width="120" height="72" fill="%230f1f2e"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%239bb5cb" font-size="12"%3EVideo%3C/text%3E%3C/svg%3E';
+      link.href = selectedVideo.video_url || '#';
+      link.style.pointerEvents = selectedVideo.video_url ? 'auto' : 'none';
+      link.style.opacity = selectedVideo.video_url ? '1' : '0.5';
+    }
+
+    function renderAnalysisSummary(summary) {
+      const root = document.getElementById('analysisSummaryGrid');
+      if (!summary) {
+        root.innerHTML = '<div class="analysis-mini"><strong>-</strong><span>Pass</span></div><div class="analysis-mini"><strong>-</strong><span>Cross</span></div><div class="analysis-mini"><strong>-</strong><span>Speed</span></div>';
+        return;
+      }
+
+      root.innerHTML = `
+        <div class="analysis-mini"><strong>${Number(summary.successful_passes || 0)}</strong><span>Basarili Pass</span></div>
+        <div class="analysis-mini"><strong>${Number(summary.successful_crosses || 0)}</strong><span>Basarili Cross</span></div>
+        <div class="analysis-mini"><strong>${Number(summary.speed_score || 0)}</strong><span>Speed Score</span></div>
+        <div class="analysis-mini"><strong>${Number(summary.dribbles || 0)}</strong><span>Dribble</span></div>
+        <div class="analysis-mini"><strong>${Number(summary.shots || 0)}</strong><span>Shot</span></div>
+        <div class="analysis-mini"><strong>${Number(summary.movement_score || 0)}</strong><span>Movement</span></div>
+      `;
+    }
+
+    function renderAnalysisEvents(events) {
+      const root = document.getElementById('analysisEventsList');
+      const rows = Array.isArray(events) ? events.slice(0, 6) : [];
+      if (!rows.length) {
+        root.innerHTML = '<div class="empty">Henuz analiz eventi yok.</div>';
+        return;
+      }
+
+      root.innerHTML = rows.map((event) => `
+        <article class="point-item">
+          <div class="row-top">
+            <div>
+              <div class="row-title">${escapeHtml(String(event.event_type || '').toUpperCase())}</div>
+              <div class="row-copy">${escapeHtml(event.payload?.successful ? 'Basarili aksiyon' : 'Tespit edilen aksiyon')}</div>
+            </div>
+            <span class="badge screened">%${Number(event.confidence || 0)}</span>
+          </div>
+          <div class="row-meta">
+            <span><i class="fas fa-film"></i> ${Number(event.start_second || 0)}s - ${Number(event.end_second || 0)}s</span>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    async function startVideoAnalysis(options = {}) {
+      const videoClipId = Number(document.getElementById('analysisVideoClipId')?.value || 0);
+      const targetPlayerId = Number(document.getElementById('analysisTargetPlayerId')?.value || 0) || null;
+      const silent = Boolean(options.silent);
+
+      if (!videoClipId) {
+        if (!silent) {
+          showNotice('Video analizi icin once bir video sec.', 'bad');
+        }
+        return;
+      }
+
+      try {
+        const analysis = await apiPost('/video-analyses/start', {
+          video_clip_id: videoClipId,
+          target_player_id: targetPlayerId,
+          analysis_type: 'scout_mvp'
+        });
+
+        renderAnalysisSummary(analysis.summary || {});
+
+        const events = await apiGet(`/video-analyses/${analysis.id}/events`);
+        renderAnalysisEvents(events);
+
+        if (!silent) {
+          showNotice('Video analizi tamamlandi. Event ve ozetler guncellendi.', 'ok');
+        }
+      } catch (error) {
+        renderAnalysisSummary(null);
+        renderAnalysisEvents([]);
+        if (!silent) {
+          showNotice(error.message || 'Video analizi baslatilamadi.', 'bad');
+        }
+        throw error;
+      }
+    }
+
+    async function submitScoutTip(event) {
+      event.preventDefault();
+      const form = document.getElementById('scoutTipForm');
+      const formData = new FormData(form);
+      const payload = {
+        source_type: String(formData.get('source_type') || 'new_player'),
+        player_name: String(formData.get('player_name') || '').trim(),
+        city: String(formData.get('city') || '').trim(),
+        position: String(formData.get('position') || '').trim() || null,
+        birth_year: formData.get('birth_year') ? Number(formData.get('birth_year')) : null,
+        team_name: String(formData.get('team_name') || '').trim() || null,
+        competition_level: String(formData.get('competition_level') || '').trim() || null,
+        guardian_consent_status: String(formData.get('guardian_consent_status') || 'not_required'),
+        description: String(formData.get('description') || '').trim()
+      };
+
+      if (!payload.player_name || !payload.city || !payload.description) {
+        showNotice('Oyuncu adi, sehir ve scout notu zorunlu.', 'bad');
+        return;
+      }
+      if (payload.description.length < 30) {
+        showNotice('Scout notu en az 30 karakter olmali.', 'bad');
+        return;
+      }
+
+      try {
+        await apiPost('/scout-tips', payload);
+        const selectedVideoId = Number(document.getElementById('analysisVideoClipId')?.value || 0);
+        if (selectedVideoId) {
+          await startVideoAnalysis({ silent: true });
+          showNotice('Scout tipe baglandi ve secilen video icin analiz baslatildi.', 'ok');
+        } else {
+          showNotice('Scout tipe baglandi. Moderasyon sirasina alindi.', 'ok');
+        }
+        form.reset();
+        updateSelectedVideoPreview();
+        await Promise.all([loadScoreboard(), loadTips()]);
+      } catch (error) {
+        showNotice(error.message || 'Scout tip gonderilemedi.', 'bad');
+      }
+    }
+
+    async function init() {
+      const user = getUser();
+      if (user?.name) {
+        document.getElementById('heroGreeting').textContent = `${user.name}, bugun yerelde gordugun yetenekleri sisteme sokabilir, puanini ve reward akisini tek panelden takip edebilirsin.`;
+        document.getElementById('statusUser').textContent = user.name;
+      }
+      if (user?.role) {
+        document.getElementById('statusRole').textContent = String(user.role);
+      }
+
+      document.getElementById('scoutTipForm')?.addEventListener('submit', submitScoutTip);
+
+      if (!getToken()) {
+        setStatusApi('Login gerekli');
+        document.getElementById('tipsList').innerHTML = '<div class="empty">Bu paneli kullanmak icin once giris yapman gerekiyor.</div>';
+        document.getElementById('pointsList').innerHTML = '<div class="empty">Giris yaptiktan sonra puan hareketlerin burada gorunur.</div>';
+        document.getElementById('rewardsList').innerHTML = '<div class="empty">Giris yaptiktan sonra reward kayitlarin burada gorunur.</div>';
+        document.getElementById('leaderboardList').innerHTML = '<div class="empty">Giris yaptiginda liderlik tablosu yuklenir.</div>';
+        renderVideoOptions([]);
+        return;
+      }
+
+      setStatusApi('Baglaniyor');
+
+      try {
+        await Promise.all([loadScoreboard(), loadTips(), loadRewards(), loadLeaderboard()]);
+        await loadMyVideos();
+        setStatusApi('API baglandi');
+      } catch (error) {
+        setStatusApi('Baglanti hatasi');
+        document.getElementById('tipsList').innerHTML = `<div class="empty">${escapeHtml(error.message || 'Veri alinamadi.')}</div>`;
+        document.getElementById('pointsList').innerHTML = '<div class="empty">Puan hareketleri yuklenemedi.</div>';
+        document.getElementById('rewardsList').innerHTML = '<div class="empty">Oduller yuklenemedi.</div>';
+        document.getElementById('leaderboardList').innerHTML = '<div class="empty">Liderlik tablosu yuklenemedi.</div>';
+        renderVideoOptions([]);
+      }
+    }
+
+    init();
+  </script>
+  <script src="assets/js/ai-video-lab.js"></script>
+</body>
+</html>

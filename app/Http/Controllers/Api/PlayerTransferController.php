@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DataAuditLog;
 use App\Models\ModerationQueue;
 use App\Models\PlayerTransfer;
+use App\Services\ScoutAttributionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -13,6 +14,11 @@ use Illuminate\Support\Facades\Validator;
 
 class PlayerTransferController extends Controller
 {
+    public function __construct(
+        private readonly ScoutAttributionService $scoutAttributionService,
+    ) {
+    }
+
     public function index(Request $request): JsonResponse
     {
         $query = PlayerTransfer::query()
@@ -106,6 +112,8 @@ class PlayerTransferController extends Controller
             auth()->id(),
             'New transfer record created'
         );
+
+        $this->scoutAttributionService->attachTransferRewardCandidate($transfer);
 
         return response()->json([
             'ok' => true,

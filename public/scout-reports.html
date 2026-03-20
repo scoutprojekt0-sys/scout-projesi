@@ -536,7 +536,8 @@
     function getDashboardHref(role) {
       const normalized = String(role || '').trim().toLowerCase();
       if (normalized === 'manager') return 'manager-dashboard.html';
-      if (normalized === 'scout' || normalized === 'coach') return 'coach-dashboard.html';
+    if (normalized === 'coach') return 'coach-dashboard.html';
+    if (normalized === 'scout') return 'scout-dashboard.html';
       return 'team-dashboard.html';
     }
 
@@ -926,4 +927,3 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-

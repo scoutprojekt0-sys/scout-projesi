@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\AdminBillingController;
+use App\Http\Controllers\Api\AdminScoutController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BillingController;
 use App\Http\Controllers\Api\ContactController;
@@ -27,16 +28,23 @@ use App\Http\Controllers\Api\PlayerAnalyticsController;
 use App\Http\Controllers\Api\PlayerCareerController;
 use App\Http\Controllers\Api\PlayerController;
 use App\Http\Controllers\Api\PlayerMarketValueController;
+use App\Http\Controllers\Api\ProfileReviewController;
 use App\Http\Controllers\Api\PlayerSearchController;
 use App\Http\Controllers\Api\PlayerTransferController;
+use App\Http\Controllers\Api\PlayerVideoMetricController;
 use App\Http\Controllers\Api\ProfileViewController;
 use App\Http\Controllers\Api\ReportController;
+use App\Http\Controllers\Api\ScoutingSearchController;
+use App\Http\Controllers\Api\ScoutRewardController;
+use App\Http\Controllers\Api\ScoutScoreboardController;
+use App\Http\Controllers\Api\ScoutTipController;
 use App\Http\Controllers\Api\SocialMediaController;
 use App\Http\Controllers\Api\StaffController;
 use App\Http\Controllers\Api\SupportTicketController;
 use App\Http\Controllers\Api\SystemController;
 use App\Http\Controllers\Api\TeamController;
 use App\Http\Controllers\Api\TrendingController;
+use App\Http\Controllers\Api\VideoAnalysisController;
 use App\Http\Controllers\Api\VideoClipController;
 use App\Http\Controllers\Api\WebhookController;
 use App\Http\Controllers\Api\Week7AnalyticsController;
@@ -131,6 +139,43 @@ Route::prefix('contributions')->middleware('auth:sanctum')->group(function () {
     Route::post('/{id}/reject', [ContributionController::class, 'reject']);
     Route::post('/{id}/request-info', [ContributionController::class, 'requestInfo']);
 });
+
+Route::prefix('scout-tips')->middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->group(function () {
+    Route::get('/', [ScoutTipController::class, 'index'])->middleware('ability:profile:read');
+    Route::get('/my', [ScoutTipController::class, 'my'])->middleware('ability:profile:read');
+    Route::get('/{id}', [ScoutTipController::class, 'show'])->middleware('ability:profile:read');
+    Route::post('/', [ScoutTipController::class, 'store'])->middleware('ability:profile:write');
+    Route::post('/{id}/withdraw', [ScoutTipController::class, 'withdraw'])->middleware('ability:profile:write');
+    Route::post('/{id}/screen', [ScoutTipController::class, 'screen'])->middleware('ability:staff');
+    Route::post('/{id}/shortlist', [ScoutTipController::class, 'shortlist'])->middleware('ability:staff');
+    Route::post('/{id}/approve', [ScoutTipController::class, 'approve'])->middleware('ability:staff');
+    Route::post('/{id}/reject', [ScoutTipController::class, 'reject'])->middleware('ability:staff');
+    Route::post('/{id}/mark-trial', [ScoutTipController::class, 'markTrial'])->middleware('ability:staff');
+    Route::post('/{id}/mark-signed', [ScoutTipController::class, 'markSigned'])->middleware('ability:staff');
+});
+
+Route::prefix('scout-scoreboard')->middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->group(function () {
+    Route::get('/me', [ScoutScoreboardController::class, 'me'])->middleware('ability:profile:read');
+    Route::get('/leaderboard', [ScoutScoreboardController::class, 'leaderboard'])->middleware('ability:profile:read');
+});
+
+Route::prefix('scout-rewards')->middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->group(function () {
+    Route::get('/my', [ScoutRewardController::class, 'my'])->middleware('ability:profile:read');
+});
+
+Route::prefix('video-analyses')->middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->group(function () {
+    Route::post('/start', [VideoAnalysisController::class, 'start'])->middleware('ability:profile:write');
+    Route::get('/{id}', [VideoAnalysisController::class, 'show'])->middleware('ability:profile:read');
+    Route::get('/{id}/events', [VideoAnalysisController::class, 'events'])->middleware('ability:profile:read');
+    Route::get('/{id}/clips', [VideoAnalysisController::class, 'clips'])->middleware('ability:profile:read');
+});
+
+Route::get('/players/{playerId}/video-metrics', [PlayerVideoMetricController::class, 'index'])
+    ->middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api', 'ability:profile:read']);
+
+Route::get('/scouting-search/video-metrics', [ScoutingSearchController::class, 'videoMetrics'])
+    ->middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api', 'ability:profile:read']);
+
 Route::get('/live-matches/count', [LiveMatchController::class, 'getCount']);
 Route::get('/live-matches', [LiveMatchController::class, 'liveMatches']);
 Route::get('/match-center/live-matches', [LiveMatchController::class, 'liveMatches']);
@@ -198,6 +243,7 @@ Route::get('/leagues/{league}/top-assists', [LeagueController::class, 'topAssist
 Route::get('/lawyers', [LawyerController::class, 'publicIndex']);
 Route::get('/lawyers/{lawyerId}', [LawyerController::class, 'show']);
 Route::get('/profiles/{userId}/views/count', [ProfileViewController::class, 'viewCount']);
+Route::get('/profiles/{userId}/reviews', [ProfileReviewController::class, 'index']);
 
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:auth');
@@ -298,7 +344,11 @@ Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->grou
     Route::post('/lawyers/register', [LawyerController::class, 'register'])->middleware('ability:profile:write');
     Route::put('/lawyers/{lawyerId}', [LawyerController::class, 'update'])->middleware('ability:profile:write');
     Route::post('/profiles/{userId}/view', [ProfileViewController::class, 'track'])->middleware('ability:profile:write');
+    Route::post('/profiles/{userId}/reviews', [ProfileReviewController::class, 'store'])->middleware('ability:profile:write');
     Route::get('/profiles/my-views', [ProfileViewController::class, 'myViews'])->middleware('ability:profile:read');
+    Route::post('/profile-reviews/{reviewId}/reply', [ProfileReviewController::class, 'reply'])->middleware('ability:profile:write');
+    Route::post('/profile-reviews/{reviewId}/report', [ProfileReviewController::class, 'report'])->middleware('ability:profile:write');
+    Route::patch('/profile-reviews/{reviewId}/status', [ProfileReviewController::class, 'moderate'])->middleware('admin');
     Route::get('/featured/admin', [FeaturedController::class, 'adminList'])->middleware('ability:profile:read');
     Route::post('/featured/admin', [FeaturedController::class, 'adminStore'])->middleware('ability:profile:write');
     Route::patch('/featured/admin/{id}/active', [FeaturedController::class, 'adminToggleActive'])->middleware('ability:profile:write');
@@ -319,6 +369,11 @@ Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->grou
     Route::get('/admin/billing/stats', [AdminBillingController::class, 'getPaymentStats'])->middleware('admin');
     Route::get('/admin/billing/boost-packages', [AdminBillingController::class, 'getBoostPackages'])->middleware('admin');
     Route::put('/admin/billing/boost-packages/{packageId}', [AdminBillingController::class, 'updateBoostPackage'])->middleware('admin');
+    Route::get('/admin/scout-tips/queue', [AdminScoutController::class, 'queue'])->middleware('admin');
+    Route::post('/admin/scout-tips/{tipId}/review', [AdminScoutController::class, 'review'])->middleware('admin');
+    Route::get('/admin/scout-rewards', [AdminScoutController::class, 'rewards'])->middleware('admin');
+    Route::post('/admin/scout-rewards/{rewardId}/approve', [AdminScoutController::class, 'approveReward'])->middleware('admin');
+    Route::post('/admin/scout-rewards/{rewardId}/mark-paid', [AdminScoutController::class, 'markRewardPaid'])->middleware('admin');
 
     // Contracts
     Route::get('/contracts', [ContractController::class, 'index']);
