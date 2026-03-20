@@ -1289,6 +1289,80 @@
       border-radius: 14px;
     }
 
+    .system-fit-card {
+      margin-bottom: 16px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(96,165,250,.22);
+      background: linear-gradient(135deg, rgba(14, 116, 144, 0.18) 0%, rgba(15, 23, 42, 0.72) 55%, rgba(249, 115, 22, 0.16) 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+    }
+
+    .system-fit-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .system-fit-label {
+      font-size: 11px;
+      color: #cfe4f7;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 800;
+    }
+
+    .system-fit-score {
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 900;
+      color: #f8fbff;
+    }
+
+    .system-fit-bar {
+      height: 8px;
+      width: 100%;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(148, 163, 184, 0.18);
+      margin-bottom: 8px;
+    }
+
+    .system-fit-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #38bdf8 0%, #f59e0b 55%, #f97316 100%);
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.28);
+    }
+
+    .system-fit-sub {
+      font-size: 12px;
+      color: #dbeafe;
+      line-height: 1.45;
+    }
+
+    .system-fit-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .system-fit-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: rgba(255,255,255,.06);
+      color: #e2e8f0;
+    }
+
     .player-actions .compare-btn {
       background: linear-gradient(135deg, #1e40af, #2563eb);
       border-color: rgba(96, 165, 250, 0.34);
@@ -1608,8 +1682,19 @@
         <input type="number" id="qualityMinFilter" placeholder="60" min="0" max="100" step="5">
       </div>
       <div class="filter">
+        <label>AI Sistem Seçici</label>
+        <select id="systemFilter">
+          <option value="">Sistem secilmedi</option>
+          <option value="gegenpressing">Gegenpressing | 4-3-3 Ofansif</option>
+          <option value="park_the_bus">Park the Bus | 5-4-1 Savunma</option>
+          <option value="possession_control">Topa Sahip Olan Oyun | 4-2-3-1</option>
+          <option value="transition_play">Gecis Oyunu | 3-4-3 Direkt</option>
+        </select>
+      </div>
+      <div class="filter">
         <label>Sıralama</label>
         <select id="sortFilter">
+          <option value="compatibility_desc">AI Uyumluluk (Yüksekten)</option>
                     <option value="rating_desc">Rating (Yüksekten)</option>
           <option value="rating_asc">Rating (Dusukten)</option>
                     <option value="value_desc">Piyasa Değeri (Yüksekten)</option>
@@ -1681,6 +1766,7 @@
     const marketMinFilter = document.getElementById("marketMinFilter");
     const contractFilter = document.getElementById("contractFilter");
     const qualityMinFilter = document.getElementById("qualityMinFilter");
+    const systemFilter = document.getElementById("systemFilter");
     const sortFilter = document.getElementById("sortFilter");
     const initialQueryParams = new URLSearchParams(window.location.search);
     const initialSort = (initialQueryParams.get("sort") || "").trim().toLowerCase();
@@ -1740,6 +1826,32 @@
     let serverPage = 1;
     let serverLastPage = 1;
     let serverTotal = 0;
+    const TACTICAL_SYSTEMS = {
+      gegenpressing: {
+        label: "Gegenpressing",
+        shape: "4-3-3 Ofansif",
+        description: "Onde baski, hizli geri kazanim ve yuksek tempo isteyen yapi.",
+        emphasis: { ortasaha: 15, forvet: 13, defans: 8, kaleci: 4 },
+      },
+      park_the_bus: {
+        label: "Park the Bus",
+        shape: "5-4-1 Savunma",
+        description: "Derin blok, alan kapatma ve fiziksel savunma gucu odakli yapi.",
+        emphasis: { defans: 16, kaleci: 13, ortasaha: 8, forvet: 5 },
+      },
+      possession_control: {
+        label: "Topa Sahip Olan Oyun",
+        shape: "4-2-3-1",
+        description: "Pas kalitesi, oyun gorusu ve topa sahip olma surekliligi isteyen yapi.",
+        emphasis: { ortasaha: 16, defans: 8, forvet: 8, kaleci: 5 },
+      },
+      transition_play: {
+        label: "Gecis Oyunu",
+        shape: "3-4-3 Direkt",
+        description: "Dikey cikis, hizli kanat kullanimi ve ani atak tehdidi odakli yapi.",
+        emphasis: { forvet: 15, ortasaha: 11, defans: 8, kaleci: 4 },
+      }
+    };
 
     function revealContextResults() {
       document.documentElement.classList.remove("pre-hide-results");
@@ -1764,6 +1876,115 @@
       }
       const params = new URLSearchParams(window.location.search);
       return params.get("api_base") || "http://localhost:8000/api";
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function toNumber(value, fallback = 0) {
+      const parsed = Number(value);
+      return Number.isFinite(parsed) ? parsed : fallback;
+    }
+
+    function normalizePositionName(value) {
+      return String(value || "")
+        .trim()
+        .toLocaleLowerCase("tr-TR")
+        .replace(/\s+/g, "");
+    }
+
+    function getActiveSystemDefinition() {
+      const key = String(systemFilter?.value || "").trim();
+      return key && TACTICAL_SYSTEMS[key] ? { key, ...TACTICAL_SYSTEMS[key] } : null;
+    }
+
+    function getSystemFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const value = String(params.get("system") || "").trim();
+      return value && TACTICAL_SYSTEMS[value] ? value : "";
+    }
+
+    function getClubPreferredSystemFromStorage() {
+      try {
+        const raw = localStorage.getItem('nextscout_club_profile');
+        if (!raw) return "";
+        const parsed = JSON.parse(raw);
+        const value = String(parsed?.preferredSystem || "").trim();
+        return value && TACTICAL_SYSTEMS[value] ? value : "";
+      } catch (error) {
+        return "";
+      }
+    }
+
+    function syncSystemFilterFromContext() {
+      if (!systemFilter) return;
+      const querySystem = getSystemFromQuery();
+      const role = String(localStorage.getItem('nextscout_role') || localStorage.getItem('userRole') || "").toLowerCase();
+      const visibilityRole = getVisibilityRoleFromQuery();
+      const shouldUseClubContext = visibilityRole === "club" || role.includes("team") || role.includes("club");
+      const contextualSystem = querySystem || (shouldUseClubContext ? getClubPreferredSystemFromStorage() : "");
+      if (!contextualSystem) return;
+      systemFilter.value = contextualSystem;
+      if (!sortFilter.value || sortFilter.value === "rating_desc") {
+        sortFilter.value = "compatibility_desc";
+      }
+    }
+
+    function buildAgeWindowScore(age, minAge, maxAge) {
+      const safeAge = toNumber(age, 0);
+      if (!safeAge) return 8;
+      if (safeAge >= minAge && safeAge <= maxAge) return 16;
+      const distance = safeAge < minAge ? minAge - safeAge : safeAge - maxAge;
+      return clamp(16 - (distance * 3), 4, 16);
+    }
+
+    function getSystemCompatibility(player, systemKey) {
+      const system = systemKey && TACTICAL_SYSTEMS[systemKey] ? TACTICAL_SYSTEMS[systemKey] : null;
+      if (!system) return null;
+
+      const position = normalizePositionName(player.position);
+      const rating = clamp(toNumber(player.rating, 0) * 5.5, 0, 32);
+      const quality = clamp(toNumber(player.quality_score, 0) * 0.18, 0, 18);
+      const height = toNumber(player.height, 0);
+      const ageScore = systemKey === "gegenpressing"
+        ? buildAgeWindowScore(player.age, 20, 27)
+        : buildAgeWindowScore(player.age, 24, 32);
+      const positionScore = system.emphasis[position] || 6;
+      const trendScore = systemKey === "gegenpressing"
+        ? (player.radar_rising ? 9 : 0) + (player.radar_new ? 5 : 0)
+        : systemKey === "park_the_bus"
+          ? (player.radar_hidden ? 6 : 0) + (player.radar_rising ? 3 : 0)
+          : systemKey === "possession_control"
+            ? (player.radar_new ? 4 : 0) + (player.radar_rising ? 5 : 0)
+            : (player.radar_rising ? 7 : 0) + (player.radar_new ? 4 : 0);
+      const physiqueScore = systemKey === "park_the_bus"
+        ? clamp((height - 175) * 0.35, 0, 12)
+        : systemKey === "transition_play"
+          ? clamp((188 - Math.abs(height - 180)) * 0.1, 0, 10)
+          : clamp((188 - Math.abs(height - 182)) * 0.08, 0, 8);
+      const contractScore = player.contract_status === "free" ? 4 : player.seeking_club ? 3 : 1;
+
+      const rawScore = 26 + rating + quality + ageScore + positionScore + trendScore + physiqueScore + contractScore;
+      const score = clamp(Math.round(rawScore), 55, 99);
+      const strengths = [];
+
+      if (positionScore >= 12) strengths.push("Rol uyumu guclu");
+      if (ageScore >= 14) strengths.push("Yas profili uygun");
+      if (quality >= 12) strengths.push("Veri guveni yuksek");
+      if (systemKey === "gegenpressing" && player.radar_rising) strengths.push("Tempo ivmesi var");
+      if (systemKey === "park_the_bus" && physiqueScore >= 8) strengths.push("Fizik avantajli");
+      if (systemKey === "possession_control") strengths.push("Pas oyunu icin uygun");
+      if (systemKey === "transition_play") strengths.push("Gecis tehdidi yuksek");
+      if (!strengths.length) strengths.push("Temel sistem eslesmesi var");
+
+      return {
+        score,
+        label: system.label,
+        shape: system.shape,
+        description: system.description,
+        strengths: strengths.slice(0, 3),
+      };
     }
 
     function renderSponsoredProfiles(rows) {
@@ -2065,8 +2286,10 @@
         return;
       }
       const visibilityRole = getVisibilityRoleFromQuery();
+      const activeSystem = getActiveSystemDefinition();
       playersGrid.innerHTML = players.map((player) => {
         const badge = getVisibilityBadgeMeta(player.visibility_level, visibilityRole);
+        const compatibility = player.system_compatibility || (activeSystem ? getSystemCompatibility(player, activeSystem.key) : null);
         return `
         <div class="player-card">
           <div class="player-avatar">⚽</div>
@@ -2105,6 +2328,23 @@
               <span class="rating-stars">★★★★★</span>
               <span class="rating-value">${player.rating}/10</span>
             </div>
+            ${compatibility ? `
+            <div class="system-fit-card">
+              <div class="system-fit-top">
+                <div>
+                  <div class="system-fit-label">AI Compatibility Score</div>
+                  <div class="system-fit-sub">${compatibility.shape} sistemine uyumu</div>
+                </div>
+                <div class="system-fit-score">%${compatibility.score}</div>
+              </div>
+              <div class="system-fit-bar">
+                <div class="system-fit-fill" style="width:${compatibility.score}%;"></div>
+              </div>
+              <div class="system-fit-sub">${compatibility.description}</div>
+              <div class="system-fit-tags">
+                ${compatibility.strengths.map((item) => `<span class="system-fit-tag">${item}</span>`).join("")}
+              </div>
+            </div>` : ""}
             <div style="font-size:11px;opacity:.65;margin-top:6px;">
               Kaynak: ${player.data_source || 'Sistem'} • Güven: ${player.quality_score || 0}
               ${player.updated_at ? ` • ${new Date(player.updated_at).toLocaleDateString('tr-TR')}` : ""}
@@ -2406,6 +2646,7 @@
 
     function filterPlayers() {
       let filtered = [...allPlayers];
+      const activeSystem = getActiveSystemDefinition();
 
       if (positionFilter.value) {
         filtered = filtered.filter(p => p.position.toLowerCase() === positionFilter.value.toLowerCase());
@@ -2471,7 +2712,13 @@
         filtered = filtered.filter((p) => ["active", "ready", "featured"].includes(String(p.visibility_level || "")));
       }
 
+      filtered = filtered.map((player) => ({
+        ...player,
+        system_compatibility: activeSystem ? getSystemCompatibility(player, activeSystem.key) : null,
+      }));
+
       const sortMode = (sortFilter?.value || "rating_desc").toLowerCase();
+      if (sortMode === "compatibility_desc") filtered.sort((a, b) => Number(b.system_compatibility?.score || 0) - Number(a.system_compatibility?.score || 0));
       if (sortMode === "rating_desc") filtered.sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
       if (sortMode === "rating_asc") filtered.sort((a, b) => Number(a.rating || 0) - Number(b.rating || 0));
       if (sortMode === "value_desc") filtered.sort((a, b) => Number(b.market_value || 0) - Number(a.market_value || 0));
@@ -2479,10 +2726,15 @@
       if (sortMode === "age_asc") filtered.sort((a, b) => Number(a.age || 999) - Number(b.age || 999));
       if (sortMode === "age_desc") filtered.sort((a, b) => Number(b.age || 0) - Number(a.age || 0));
       if (sortMode === "name_asc") filtered.sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "tr"));
+      if (activeSystem && sortMode !== "compatibility_desc") {
+        filtered.sort((a, b) => Number(b.system_compatibility?.score || 0) - Number(a.system_compatibility?.score || 0));
+      }
 
       if (resultsMeta) {
         const localCount = filtered.length;
-            resultsMeta.textContent = `Toplam ${serverTotal || localCount} oyuncu • Sayfa: ${serverPage}/${serverLastPage} • Son güncelleme: ${new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}`;
+        const eliteMatches = activeSystem ? filtered.filter((p) => Number(p.system_compatibility?.score || 0) >= 85).length : 0;
+        const systemText = activeSystem ? ` • Sistem: ${activeSystem.label} (${eliteMatches} guclu eslesme)` : "";
+        resultsMeta.textContent = `Toplam ${serverTotal || localCount} oyuncu • Sayfa: ${serverPage}/${serverLastPage}${systemText} • Son güncelleme: ${new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}`;
       }
       renderPlayers(filtered);
       revealContextResults();
@@ -2611,6 +2863,7 @@
         marketMin: marketMinFilter?.value || "",
         contract: contractFilter?.value || "",
         qualityMin: qualityMinFilter?.value || "",
+        system: systemFilter?.value || "",
         sort: sortFilter?.value || "rating_desc"
       };
     }
@@ -2626,6 +2879,7 @@
       if (marketMinFilter) marketMinFilter.value = preset.marketMin || "";
       if (contractFilter) contractFilter.value = preset.contract || "";
       if (qualityMinFilter) qualityMinFilter.value = preset.qualityMin || "";
+      if (systemFilter) systemFilter.value = preset.system || "";
       if (sortFilter) sortFilter.value = preset.sort || "rating_desc";
       serverPage = 1;
       loadPlayersFromApi(1).then(filterPlayers);
@@ -2814,6 +3068,12 @@
     marketMinFilter.addEventListener("change", refreshFromServerFirstPage);
     contractFilter.addEventListener("change", refreshFromServerFirstPage);
     qualityMinFilter.addEventListener("change", refreshFromServerFirstPage);
+    systemFilter.addEventListener("change", () => {
+      if (systemFilter.value && (!sortFilter.value || sortFilter.value === "rating_desc")) {
+        sortFilter.value = "compatibility_desc";
+      }
+      filterPlayers();
+    });
     sortFilter.addEventListener("change", refreshFromServerFirstPage);
 
     savePresetBtn.addEventListener("click", () => {
@@ -2827,7 +3087,7 @@
       } catch (error) {}
     });
     resetFilterBtn.addEventListener("click", () => {
-      applyPreset({ sport: "", position: "", league: "", age: "", rating: "", marketMin: "", contract: "", qualityMin: "", sort: "rating_desc" });
+      applyPreset({ sport: "", position: "", league: "", age: "", rating: "", marketMin: "", contract: "", qualityMin: "", system: "", sort: "rating_desc" });
     });
     prevPageBtn?.addEventListener("click", async () => {
       if (serverPage <= 1) return;
@@ -3039,6 +3299,7 @@
       standardizeScoutRadarQuery();
       applyWeeklyDigestMode();
       syncLockedTransferFilters();
+      syncSystemFilterFromContext();
       applyTurkishTextFixes();
       document.documentElement.classList.remove('pre-hide-context-copy');
       renderHeroActions();
