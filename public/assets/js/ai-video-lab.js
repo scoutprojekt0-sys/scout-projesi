@@ -183,6 +183,33 @@
       root.insertBefore(quickRoot, searchBlock);
     }
 
+    const discoveryRoot = document.createElement('div');
+    discoveryRoot.className = 'ai-video-lab-discovery';
+    discoveryRoot.innerHTML = '' +
+      '<div class="ai-video-lab-head" style="margin-bottom:0;">' +
+        '<div>' +
+          '<h2>AI Discovery</h2>' +
+          '<p>Analiz metrikleriyle oyuncu kesfet: en iyi cross, speed, movement ve filtreli siralama.</p>' +
+        '</div>' +
+        '<div class="ai-video-lab-tag"><i class="fas fa-ranking-star"></i><span>Discovery</span></div>' +
+      '</div>' +
+      '<div class="ai-video-lab-discovery-grid">' +
+        '<div class="ai-video-lab-discovery-card"><strong>En Iyi Cross</strong><div class="ai-video-lab-chip-list" data-ai-best-crosses><div class="ai-video-lab-empty">Yukleniyor...</div></div></div>' +
+        '<div class="ai-video-lab-discovery-card"><strong>En Hizli Oyuncular</strong><div class="ai-video-lab-chip-list" data-ai-best-speed><div class="ai-video-lab-empty">Yukleniyor...</div></div></div>' +
+        '<div class="ai-video-lab-discovery-card"><strong>En Yuksek Movement</strong><div class="ai-video-lab-chip-list" data-ai-best-movement><div class="ai-video-lab-empty">Yukleniyor...</div></div></div>' +
+      '</div>' +
+      '<div class="ai-video-lab-discovery-filters">' +
+        '<div class="ai-video-lab-field"><label>Oyuncu Adi</label><input class="ai-video-lab-input" type="text" placeholder="Oyuncu ara" data-ai-discovery-search></div>' +
+        '<div class="ai-video-lab-field"><label>Sehir</label><input class="ai-video-lab-input" type="text" placeholder="Istanbul" data-ai-discovery-city></div>' +
+        '<div class="ai-video-lab-field"><label>Pozisyon</label><select class="ai-video-lab-select" data-ai-discovery-position><option value=\"\">Tumu</option><option value=\"Kaleci\">Kaleci</option><option value=\"Defans\">Defans</option><option value=\"Orta Saha\">Orta Saha</option><option value=\"Forvet\">Forvet</option></select></div>' +
+        '<div class="ai-video-lab-field"><label>Sirala</label><select class="ai-video-lab-select" data-ai-discovery-sort><option value=\"speed_score_desc\">Speed</option><option value=\"successful_crosses_desc\">Cross</option><option value=\"movement_score_desc\">Movement</option><option value=\"successful_passes_desc\">Pass</option><option value=\"cross_quality_desc\">Cross Quality</option></select></div>' +
+        '<button class="btn-small primary ai-video-lab-search-btn" type="button" data-ai-discovery-btn>Discovery Ara</button>' +
+      '</div>' +
+      '<div class="ai-video-lab-discovery-results" data-ai-discovery-results><div class="ai-video-lab-empty">AI discovery listesi yukleniyor...</div></div>';
+    if (searchBlock) {
+      root.insertBefore(discoveryRoot, searchBlock);
+    }
+
     const searchInput = root.querySelector('[data-ai-player-search]');
     const cityInput = root.querySelector('[data-ai-city-search]');
     const positionSelect = root.querySelector('[data-ai-position-search]');
@@ -209,6 +236,15 @@
     const risingRoot = root.querySelector('[data-ai-rising-stars]');
     const resultCard = root.querySelectorAll('.ai-video-lab-card')[1];
     let sourceBadge = root.querySelector('[data-ai-analysis-source]');
+    const discoverySearchInput = root.querySelector('[data-ai-discovery-search]');
+    const discoveryCityInput = root.querySelector('[data-ai-discovery-city]');
+    const discoveryPositionSelect = root.querySelector('[data-ai-discovery-position]');
+    const discoverySortSelect = root.querySelector('[data-ai-discovery-sort]');
+    const discoveryButton = root.querySelector('[data-ai-discovery-btn]');
+    const discoveryResultsRoot = root.querySelector('[data-ai-discovery-results]');
+    const bestCrossesRoot = root.querySelector('[data-ai-best-crosses]');
+    const bestSpeedRoot = root.querySelector('[data-ai-best-speed]');
+    const bestMovementRoot = root.querySelector('[data-ai-best-movement]');
 
     if (!sourceBadge && resultCard) {
       const heading = resultCard.querySelector('h3');
@@ -228,6 +264,23 @@
     let players = [];
     let videos = [];
     let selectedPlayer = null;
+
+    const head = root.querySelector('.ai-video-lab-head');
+    if (head && !head.querySelector('[data-ai-open-page]')) {
+      let actions = head.querySelector('.ai-video-lab-head-actions');
+      if (!actions) {
+        actions = document.createElement('div');
+        actions.className = 'ai-video-lab-head-actions';
+        head.appendChild(actions);
+      }
+
+      const link = document.createElement('a');
+      link.className = 'ai-video-lab-link-btn';
+      link.href = 'ai-discovery.html';
+      link.setAttribute('data-ai-open-page', 'true');
+      link.innerHTML = '<i class="fas fa-up-right-from-square"></i><span>Tam Ekran Discovery</span>';
+      actions.prepend(link);
+    }
 
     function setNotice(message, type) {
       if (!notice) return;
@@ -306,6 +359,13 @@
       '</button>';
     }
 
+    function createDiscoveryChip(player, metricKey) {
+      const value = Number(player[metricKey] || 0);
+      return '<button type="button" class="ai-video-lab-chip" data-ai-quick-pick="' + escapeHtml(player.player_id || player.id) + '">' +
+        escapeHtml(player.name || 'Oyuncu') + ' · ' + escapeHtml(value) +
+      '</button>';
+    }
+
     function bindQuickPickButtons(scope, sourceRows) {
       if (!scope) return;
       scope.querySelectorAll('[data-ai-quick-pick]').forEach(function (button) {
@@ -350,6 +410,103 @@
           ? rising.map(createQuickChip).join('')
           : '<div class="ai-video-lab-empty">Yukselen yildiz bulunamadi.</div>';
         bindQuickPickButtons(risingRoot, rising);
+      }
+    }
+
+    async function loadDiscoveryRankings() {
+      try {
+        const payload = await apiGet('/scouting-search/rankings?limit=5', false);
+        const bestCrosses = Array.isArray(payload?.best_crosses) ? payload.best_crosses : [];
+        const bestSpeed = Array.isArray(payload?.best_speed) ? payload.best_speed : [];
+        const bestMovement = Array.isArray(payload?.best_movement) ? payload.best_movement : [];
+
+        if (bestCrossesRoot) {
+          bestCrossesRoot.innerHTML = bestCrosses.length
+            ? bestCrosses.map(function (row) { return createDiscoveryChip(row, 'successful_crosses'); }).join('')
+            : '<div class="ai-video-lab-empty">Liste bos.</div>';
+          bindQuickPickButtons(bestCrossesRoot, bestCrosses.map(function (row) { return { id: row.player_id, name: row.name, position: row.position, city: row.city }; }));
+        }
+        if (bestSpeedRoot) {
+          bestSpeedRoot.innerHTML = bestSpeed.length
+            ? bestSpeed.map(function (row) { return createDiscoveryChip(row, 'speed_score'); }).join('')
+            : '<div class="ai-video-lab-empty">Liste bos.</div>';
+          bindQuickPickButtons(bestSpeedRoot, bestSpeed.map(function (row) { return { id: row.player_id, name: row.name, position: row.position, city: row.city }; }));
+        }
+        if (bestMovementRoot) {
+          bestMovementRoot.innerHTML = bestMovement.length
+            ? bestMovement.map(function (row) { return createDiscoveryChip(row, 'movement_score'); }).join('')
+            : '<div class="ai-video-lab-empty">Liste bos.</div>';
+          bindQuickPickButtons(bestMovementRoot, bestMovement.map(function (row) { return { id: row.player_id, name: row.name, position: row.position, city: row.city }; }));
+        }
+      } catch (error) {
+        if (bestCrossesRoot) bestCrossesRoot.innerHTML = '<div class="ai-video-lab-empty">Ranking verisi alinamadi.</div>';
+        if (bestSpeedRoot) bestSpeedRoot.innerHTML = '<div class="ai-video-lab-empty">Ranking verisi alinamadi.</div>';
+        if (bestMovementRoot) bestMovementRoot.innerHTML = '<div class="ai-video-lab-empty">Ranking verisi alinamadi.</div>';
+      }
+    }
+
+    function renderDiscoveryResults(rows) {
+      if (!discoveryResultsRoot) return;
+      if (!Array.isArray(rows) || !rows.length) {
+        discoveryResultsRoot.innerHTML = '<div class="ai-video-lab-empty">AI filtrelere uygun oyuncu bulunamadi.</div>';
+        return;
+      }
+
+      discoveryResultsRoot.innerHTML = rows.map(function (row) {
+        return '' +
+          '<article class="ai-video-lab-discovery-player">' +
+            '<div>' +
+              '<strong>' + escapeHtml(row.name || 'Oyuncu') + '</strong>' +
+              '<div class="ai-video-lab-discovery-meta">' +
+                '<span>ID: ' + escapeHtml(row.player_id) + '</span>' +
+                '<span>' + escapeHtml(row.position || '-') + '</span>' +
+                '<span>' + escapeHtml(row.city || '-') + '</span>' +
+                '<span>Yas: ' + escapeHtml(row.age || '-') + '</span>' +
+              '</div>' +
+              '<div class="ai-video-lab-discovery-stats">' +
+                '<span class="ai-video-lab-metric">Cross ' + escapeHtml(Number(row.successful_crosses || 0)) + '</span>' +
+                '<span class="ai-video-lab-metric">Pass ' + escapeHtml(Number(row.successful_passes || 0)) + '</span>' +
+                '<span class="ai-video-lab-metric">Speed ' + escapeHtml(Number(row.speed_score || 0)) + '</span>' +
+                '<span class="ai-video-lab-metric">Move ' + escapeHtml(Number(row.movement_score || 0)) + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<button type="button" class="btn-small primary" data-ai-discovery-pick="' + escapeHtml(row.player_id) + '">Analize Git</button>' +
+          '</article>';
+      }).join('');
+
+      const mappedRows = rows.map(function (row) {
+        return { id: row.player_id, name: row.name, position: row.position, city: row.city, age: row.age };
+      });
+      bindQuickPickButtons(discoveryResultsRoot, mappedRows);
+      discoveryResultsRoot.querySelectorAll('[data-ai-discovery-pick]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          const playerId = Number(button.getAttribute('data-ai-discovery-pick') || 0);
+          const found = mappedRows.find(function (item) { return Number(item.id) === playerId; });
+          if (found) {
+            selectPlayer(found);
+          }
+        });
+      });
+    }
+
+    async function runDiscoverySearch() {
+      if (discoveryResultsRoot) {
+        discoveryResultsRoot.innerHTML = '<div class="ai-video-lab-empty">AI discovery araniyor...</div>';
+      }
+      const query = new URLSearchParams();
+      if (discoverySearchInput?.value.trim()) query.set('search', discoverySearchInput.value.trim());
+      if (discoveryCityInput?.value.trim()) query.set('city', discoveryCityInput.value.trim());
+      if (discoveryPositionSelect?.value.trim()) query.set('position', discoveryPositionSelect.value.trim());
+      if (discoverySortSelect?.value.trim()) query.set('sort', discoverySortSelect.value.trim());
+      query.set('per_page', '8');
+
+      try {
+        const payload = await apiGet('/scouting-search/discovery?' + query.toString(), false);
+        renderDiscoveryResults(Array.isArray(payload?.data) ? payload.data : payload);
+      } catch (error) {
+        if (discoveryResultsRoot) {
+          discoveryResultsRoot.innerHTML = '<div class="ai-video-lab-empty">' + escapeHtml(error.message || 'Discovery verisi alinamadi.') + '</div>';
+        }
       }
     }
 
@@ -399,7 +556,7 @@
       videos = [];
       renderVideos();
       try {
-        const payload = await apiGet('/users/' + playerId + '/videos', false);
+        const payload = await apiGet('/users/' + playerId + '/videos', Boolean(getToken()));
         videos = Array.isArray(payload?.data) ? payload.data : (Array.isArray(payload) ? payload : []);
         renderVideos();
       } catch (error) {
@@ -478,6 +635,18 @@
         });
         const analysis = analysisResponse.data || {};
         const analysisSource = analysisResponse.meta?.analysis_source || 'fresh';
+        if (analysis.status && analysis.status !== 'completed') {
+          if (summaryRoot) {
+            summaryRoot.innerHTML = createSummaryMarkup(null);
+          }
+          if (eventsRoot) {
+            eventsRoot.innerHTML = '<div class="ai-video-lab-empty">Analiz worker kuyruğuna gonderildi. Sonuc bekleniyor...</div>';
+          }
+          setSourceBadge(analysisSource);
+          setNotice('Analiz worker kuyruğuna gonderildi. Sonuc bekleniyor.', 'ok');
+          pollAnalysisUntilComplete(analysis.id, analysisSource, cacheKey, videoClipId);
+          return;
+        }
         if (summaryRoot) {
           summaryRoot.innerHTML = createSummaryMarkup(analysis.summary || {});
         }
@@ -514,6 +683,58 @@
       }
     }
 
+    async function pollAnalysisUntilComplete(analysisId, analysisSource, cacheKey, videoClipId) {
+      let attempts = 0;
+      const maxAttempts = 6;
+      const intervalMs = 2000;
+
+      async function tick() {
+        attempts += 1;
+        try {
+          const analysis = await apiGet('/video-analyses/' + analysisId, true);
+          if (analysis.status === 'completed') {
+            if (summaryRoot) {
+              summaryRoot.innerHTML = createSummaryMarkup(analysis.summary || {});
+            }
+            const events = await apiGet('/video-analyses/' + analysis.id + '/events', true);
+            if (eventsRoot) {
+              eventsRoot.innerHTML = createEventMarkup(events);
+            }
+            const cache = getAnalysisCache();
+            cache[cacheKey] = {
+              analysis_id: analysis.id,
+              player_id: selectedPlayer.id,
+              video_clip_id: videoClipId,
+              summary: analysis.summary || null,
+              events: Array.isArray(events) ? events : [],
+              cached_at: new Date().toISOString()
+            };
+            setAnalysisCache(cache);
+            setSourceBadge(analysisSource);
+            setNotice('Analiz tamamlandi. Sonuc worker uzerinden geldi.', 'ok');
+            return;
+          }
+
+          if (analysis.status === 'failed') {
+            setSourceBadge('');
+            setNotice(analysis.failure_reason || 'Analiz worker tarafinda basarisiz oldu.', 'bad');
+            return;
+          }
+        } catch (error) {
+          setNotice(error.message || 'Analiz durumu alinamadi.', 'bad');
+          return;
+        }
+
+        if (attempts < maxAttempts) {
+          window.setTimeout(tick, intervalMs);
+        } else {
+          setNotice('Analiz suruyor. Birazdan yeniden kontrol et.', 'ok');
+        }
+      }
+
+      window.setTimeout(tick, intervalMs);
+    }
+
     if (searchButton) searchButton.addEventListener('click', runSearch);
     if (searchInput) {
       searchInput.addEventListener('keydown', function (event) {
@@ -533,7 +754,18 @@
     }
     if (videoSelect) videoSelect.addEventListener('change', updatePreview);
     if (analyzeButton) analyzeButton.addEventListener('click', startAnalysis);
+    if (discoveryButton) discoveryButton.addEventListener('click', runDiscoverySearch);
+    if (discoverySearchInput) {
+      discoverySearchInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          runDiscoverySearch();
+        }
+      });
+    }
     loadQuickPicks();
+    loadDiscoveryRankings();
+    runDiscoverySearch();
   }
 
   document.addEventListener('DOMContentLoaded', function () {

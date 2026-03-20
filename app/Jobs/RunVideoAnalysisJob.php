@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\VideoAnalysis;
-use App\Services\MockVideoAnalysisService;
+use App\Services\VideoAnalysisDispatchService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -22,7 +22,7 @@ class RunVideoAnalysisJob implements ShouldQueue
     ) {
     }
 
-    public function handle(MockVideoAnalysisService $analysisService): void
+    public function handle(VideoAnalysisDispatchService $analysisService): void
     {
         $analysis = VideoAnalysis::find($this->videoAnalysisId);
 
@@ -30,6 +30,6 @@ class RunVideoAnalysisJob implements ShouldQueue
             return;
         }
 
-        $analysisService->run($analysis);
+        $analysisService->dispatch($analysis);
     }
 }

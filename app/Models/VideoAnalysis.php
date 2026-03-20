@@ -15,19 +15,26 @@ class VideoAnalysis extends Model
         'target_player_id',
         'status',
         'analysis_type',
+        'provider',
+        'external_job_id',
+        'worker_status',
         'analysis_version',
         'summary',
         'raw_output',
         'failure_reason',
         'started_at',
+        'submitted_at',
         'completed_at',
+        'failed_at',
     ];
 
     protected $casts = [
         'summary' => 'array',
         'raw_output' => 'array',
         'started_at' => 'datetime',
+        'submitted_at' => 'datetime',
         'completed_at' => 'datetime',
+        'failed_at' => 'datetime',
     ];
 
     public function videoClip()

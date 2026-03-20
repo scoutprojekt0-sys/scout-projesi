@@ -64,6 +64,9 @@ Route::get('/translations', [LocalizationController::class, 'getTranslations']);
 Route::post('/webhooks/stripe', [WebhookController::class, 'stripe'])->withoutMiddleware([\App\Http\Middleware\SanitizeInput::class]);
 Route::post('/webhooks/paypal', [WebhookController::class, 'paypal'])->withoutMiddleware([\App\Http\Middleware\SanitizeInput::class]);
 Route::post('/webhooks/iyzico', [WebhookController::class, 'iyzico'])->withoutMiddleware([\App\Http\Middleware\SanitizeInput::class]);
+Route::post('/video-analyses/{id}/callback', [VideoAnalysisController::class, 'callback'])
+    ->withoutMiddleware([\App\Http\Middleware\SanitizeInput::class])
+    ->name('video-analyses.callback');
 
 // Week 12 - Public Transparency (no auth required)
 Route::get('/transparency/trust-report', [Week12PublicTransparencyController::class, 'platformTrustReport']);
@@ -173,6 +176,8 @@ Route::prefix('video-analyses')->middleware(['auth:sanctum', 'reject_legacy_toke
 Route::get('/players/{playerId}/video-metrics', [PlayerVideoMetricController::class, 'index'])
     ->middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api', 'ability:profile:read']);
 
+Route::get('/scouting-search/discovery', [ScoutingSearchController::class, 'discovery']);
+Route::get('/scouting-search/rankings', [ScoutingSearchController::class, 'rankings']);
 Route::get('/scouting-search/video-metrics', [ScoutingSearchController::class, 'videoMetrics'])
     ->middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api', 'ability:profile:read']);
 
@@ -244,6 +249,7 @@ Route::get('/lawyers', [LawyerController::class, 'publicIndex']);
 Route::get('/lawyers/{lawyerId}', [LawyerController::class, 'show']);
 Route::get('/profiles/{userId}/views/count', [ProfileViewController::class, 'viewCount']);
 Route::get('/profiles/{userId}/reviews', [ProfileReviewController::class, 'index']);
+Route::get('/users/{userId}/videos', [VideoClipController::class, 'index']);
 
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:auth');
@@ -390,7 +396,6 @@ Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->grou
     // Video Clips
     Route::get('/videos/trending', [VideoClipController::class, 'trending']);
     Route::get('/videos/tag/{tag}', [VideoClipController::class, 'byTag']);
-    Route::get('/users/{userId}/videos', [VideoClipController::class, 'index']);
     Route::get('/videos/{id}', [VideoClipController::class, 'show']);
     Route::post('/videos', [VideoClipController::class, 'store'])->middleware('ability:profile:write');
     Route::delete('/videos/{id}', [VideoClipController::class, 'destroy'])->middleware('ability:profile:write');

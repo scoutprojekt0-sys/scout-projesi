@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\RunVideoAnalysisJob;
 use App\Models\VideoAnalysis;
 use App\Models\VideoClip;
+use App\Services\VideoAnalysisResultService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -53,7 +54,9 @@ class VideoAnalysisController extends Controller
             'requested_by' => $request->user()->id,
             'target_player_id' => $targetPlayerId,
             'analysis_type' => $analysisType,
+            'provider' => (string) config('scout.ai_analysis.mode', 'mock') === 'external' ? 'external' : 'mock',
             'status' => 'queued',
+            'worker_status' => 'queued',
             'analysis_version' => 'mock-v1',
         ]);
 
@@ -103,10 +106,55 @@ class VideoAnalysisController extends Controller
         );
     }
 
+    public function callback(Request $request, int $id, VideoAnalysisResultService $resultService): JsonResponse
+    {
+        $this->authorizeCallback($request);
+
+        $validated = $request->validate([
+            'status' => ['required', 'string', 'in:completed,failed'],
+            'analysis_version' => ['nullable', 'string', 'max:40'],
+            'summary' => ['nullable', 'array'],
+            'raw_output' => ['nullable', 'array'],
+            'failure_reason' => ['nullable', 'string'],
+            'targets' => ['nullable', 'array'],
+            'events' => ['nullable', 'array'],
+            'metrics' => ['nullable', 'array'],
+        ]);
+
+        $analysis = VideoAnalysis::with('videoClip')->findOrFail($id);
+
+        if ($validated['status'] === 'failed') {
+            $resultService->fail(
+                $analysis,
+                $validated['failure_reason'] ?? 'AI worker analizi basarisiz oldu.',
+                $validated['raw_output'] ?? null
+            );
+
+            return $this->successResponse($analysis->fresh(), 'Video analiz callback failure kaydi alindi.');
+        }
+
+        $updated = $resultService->complete($analysis, $validated);
+
+        return $this->successResponse($updated, 'Video analiz callback sonucu islendi.');
+    }
+
     private function authorizeView(Request $request, VideoAnalysis $analysis): void
     {
         if ((int) $analysis->requested_by !== (int) $request->user()->id && (int) $analysis->videoClip->user_id !== (int) $request->user()->id) {
             abort(403, 'Bu video analizine erisim yetkiniz yok.');
+        }
+    }
+
+    private function authorizeCallback(Request $request): void
+    {
+        $configuredSecret = (string) config('scout.ai_analysis.callback_secret', '');
+        if ($configuredSecret === '' && ! app()->environment('production')) {
+            return;
+        }
+
+        $providedSecret = (string) $request->header('X-Analysis-Callback-Secret', '');
+        if (! hash_equals($configuredSecret, $providedSecret)) {
+            abort(403, 'Gecersiz callback imzasi.');
         }
     }
 }

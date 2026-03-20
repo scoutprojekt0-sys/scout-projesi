@@ -51,6 +51,7 @@ class DatabaseSeeder extends Seeder
             SubscriptionPlanSeeder::class,
             DemoDataSeeder::class,
             Week4To6DemoSeeder::class,
+            AiDiscoveryDemoSeeder::class,
         ]);
     }
 }

@@ -37,4 +37,11 @@ return [
     'monitoring' => [
         'slow_request_ms' => (int) env('MONITOR_SLOW_REQUEST_MS', 800),
     ],
+
+    'ai_analysis' => [
+        'mode' => env('AI_ANALYSIS_MODE', 'mock'),
+        'worker_base_url' => env('AI_ANALYSIS_WORKER_BASE_URL', ''),
+        'worker_timeout_seconds' => (int) env('AI_ANALYSIS_WORKER_TIMEOUT_SECONDS', 20),
+        'callback_secret' => env('AI_ANALYSIS_CALLBACK_SECRET', ''),
+    ],
 ];

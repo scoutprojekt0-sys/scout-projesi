@@ -49,6 +49,14 @@ Testleri çalıştırmak için aşağıdaki komutu kullanın:
 php artisan test
 ```
 
+## AI Worker
+
+Dis AI worker servisi `ai-worker/` klasorunde bulunur.
+
+Kurulum ve entegrasyon:
+
+- [docs/AI_WORKER_SETUP.md](docs/AI_WORKER_SETUP.md)
+
 ## Katkı Sağlama
 
 Katkı sağlamak için `CONTRIBUTING.md` dosyasını inceleyin.
