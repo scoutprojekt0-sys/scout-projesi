@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Concerns\ApiResponds;
 use App\Http\Controllers\Controller;
 use App\Models\Lawyer;
+use App\Support\ProfileReviewData;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -64,11 +65,14 @@ class LawyerController extends Controller
         return $this->successResponse($lawyer->load('user:id,name,email,role,city'), 'Avukat profili olusturuldu.');
     }
 
-    public function show(int $lawyerId): JsonResponse
+    public function show(Request $request, int $lawyerId): JsonResponse
     {
         $lawyer = Lawyer::query()->with('user:id,name,email,role,city')->findOrFail($lawyerId);
 
-        return $this->successResponse($lawyer, 'Avukat profili hazir.');
+        return $this->successResponse([
+            ...$lawyer->toArray(),
+            'reviews' => ProfileReviewData::latestForTarget($lawyer->user_id, $request->user()),
+        ], 'Avukat profili hazir.');
     }
 
     public function update(Request $request, int $lawyerId): JsonResponse

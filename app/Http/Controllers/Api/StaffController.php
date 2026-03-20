@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Concerns\EnforcesPrivacy;
+use App\Support\ProfileReviewData;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -107,7 +108,10 @@ class StaffController extends Controller
 
         return response()->json([
             'ok' => true,
-            'data' => $staff,
+            'data' => [
+                ...((array) $staff),
+                'reviews' => ProfileReviewData::latestForTarget($id, $authUser),
+            ],
         ]);
     }
 

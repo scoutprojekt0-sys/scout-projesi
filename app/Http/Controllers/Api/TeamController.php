@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Support\ProfileReviewData;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -10,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TeamController extends Controller
 {
-    public function overview(int $id): JsonResponse
+    public function overview(Request $request, int $id): JsonResponse
     {
         $team = DB::table('users')
             ->leftJoin('team_profiles', 'team_profiles.user_id', '=', 'users.id')
@@ -83,6 +84,7 @@ class TeamController extends Controller
                 'squad_count' => $squad->count(),
                 'squad' => $squad,
                 'latest_transfers' => $latestTransfers,
+                'reviews' => ProfileReviewData::latestForTarget($id, $request->user()),
             ],
         ]);
     }
@@ -145,7 +147,7 @@ class TeamController extends Controller
         ]);
     }
 
-    public function show(int $id): JsonResponse
+    public function show(Request $request, int $id): JsonResponse
     {
         $team = DB::table('users')
             ->leftJoin('team_profiles', 'team_profiles.user_id', '=', 'users.id')
@@ -175,7 +177,10 @@ class TeamController extends Controller
 
         return response()->json([
             'ok' => true,
-            'data' => $team,
+            'data' => [
+                ...((array) $team),
+                'reviews' => ProfileReviewData::latestForTarget($id, $request->user()),
+            ],
         ]);
     }
 

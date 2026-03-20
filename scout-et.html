@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scout Et | NextScout</title>
+  <meta name="description" content="Mahallendeki yeteneği bildir, video ekle, Scout Puanı kazan.">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#0B3B8A">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #071320;
+      --card: rgba(13, 24, 39, 0.9);
+      --card-2: rgba(21, 37, 59, 0.92);
+      --line: rgba(96, 165, 250, 0.18);
+      --text: #edf4ff;
+      --muted: #9fb3ca;
+      --primary: #f97316;
+      --primary-2: #fb923c;
+      --accent: #38bdf8;
+      --success: #34d399;
+      --danger: #f87171;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(56, 189, 248, 0.16), transparent 30%),
+        radial-gradient(circle at 90% 0%, rgba(249, 115, 22, 0.14), transparent 25%),
+        linear-gradient(160deg, #04101b, var(--bg));
+      padding: 24px 16px 40px;
+    }
+    .page { width: min(1120px, 100%); margin: 0 auto; }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .brand {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .back-link {
+      color: #dbeafe;
+      text-decoration: none;
+      border: 1px solid var(--line);
+      background: rgba(15, 23, 42, 0.55);
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .panel {
+      background: linear-gradient(180deg, var(--card-2), var(--card));
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: 0 18px 40px rgba(2, 8, 20, 0.28);
+    }
+    .hero-copy { padding: 28px; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #fdba74;
+      margin-bottom: 14px;
+    }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(34px, 5vw, 56px);
+      line-height: 1.02;
+    }
+    .hero-copy p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.65;
+      max-width: 700px;
+    }
+    .hero-stats {
+      padding: 24px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+    .stat {
+      padding: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      border-radius: 16px;
+      background: rgba(15, 23, 42, 0.55);
+    }
+    .stat strong {
+      display: block;
+      font-size: 26px;
+      margin-bottom: 4px;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 18px;
+    }
+    .side-card, .form-card {
+      padding: 22px;
+    }
+    .side-title, .form-title {
+      margin: 0 0 12px;
+      font-size: 20px;
+      font-weight: 800;
+    }
+    .side-card p, .helper-text {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .steps {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .step {
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.52);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+    }
+    .step strong { display: block; margin-bottom: 4px; }
+    .auth-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .mini-card {
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(15, 23, 42, 0.56);
+      border: 1px solid rgba(148, 163, 184, 0.16);
+    }
+    form { display: grid; gap: 12px; }
+    .field-group {
+      display: grid;
+      gap: 6px;
+    }
+    .field-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #dbeafe;
+    }
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: rgba(2, 6, 23, 0.64);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font: inherit;
+      outline: none;
+    }
+    textarea { min-height: 120px; resize: vertical; }
+    input:focus, textarea:focus, select:focus {
+      border-color: rgba(56, 189, 248, 0.52);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
+    }
+    .btn {
+      border: 0;
+      border-radius: 14px;
+      padding: 13px 16px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .btn-primary {
+      color: white;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      box-shadow: 0 12px 24px rgba(249, 115, 22, 0.24);
+    }
+    .btn-secondary {
+      color: var(--text);
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid rgba(148, 163, 184, 0.16);
+    }
+    .status {
+      display: none;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .status.success { display: block; background: rgba(52, 211, 153, 0.12); border: 1px solid rgba(52, 211, 153, 0.4); color: #a7f3d0; }
+    .status.error { display: block; background: rgba(248, 113, 113, 0.12); border: 1px solid rgba(248, 113, 113, 0.38); color: #fecaca; }
+    .tips {
+      margin-top: 18px;
+      display: grid;
+      gap: 10px;
+    }
+    .tip-item {
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+    }
+    .tip-item strong { display: block; margin-bottom: 4px; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      background: rgba(59, 130, 246, 0.18);
+      color: #bfdbfe;
+    }
+    .hidden { display: none !important; }
+    @media (max-width: 960px) {
+      .hero, .layout, .auth-grid, .field-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="topbar">
+      <a class="brand" href="index.html">NextScout</a>
+      <a class="back-link" href="index.html">← Anasayfa</a>
+    </div>
+
+    <section class="hero">
+      <div class="panel hero-copy">
+        <div class="eyebrow">Crowdsourced Scout Network</div>
+        <h1>Mahallendeki Yeteneği Bildir.</h1>
+        <p>Video ekle, oyuncuyu sisteme taşı, scout ekibi doğrulasın. İsabetli ihbarın puan kazansın, hikaye büyürse ödüle dönüşsün.</p>
+      </div>
+      <div class="panel hero-stats">
+        <div class="stat">
+          <strong>1 Video</strong>
+          <span>Bir oyuncunun yolculuğunu başlatabilir.</span>
+        </div>
+        <div class="stat">
+          <strong>3 Adım</strong>
+          <span>Video ekle, yetenek bildir, sonucu takip et.</span>
+        </div>
+        <div class="stat">
+          <strong>Scout Puanı</strong>
+          <span>Doğru sinyal üret, sistem seni öne çıkarsın.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <aside class="panel side-card">
+        <h2 class="side-title">Nasıl çalışır?</h2>
+        <p>Bu alan dosya yükleme sayfası değil. Buradan yerel maçta gördüğün oyuncu için net bir scout ihbarı oluşturursun.</p>
+        <div class="steps">
+          <div class="step">
+            <strong>1. Oyuncuyu yaz</strong>
+            Şehir, takım, pozisyon ve kısa açıklamayı gir.
+          </div>
+          <div class="step">
+            <strong>2. Video ekle</strong>
+            YouTube linki veya elindeki maç videosu linkini koy.
+          </div>
+          <div class="step">
+            <strong>3. Takip et</strong>
+            İhbarlarım bölümünde pending, screened, shortlisted gibi durumları gör.
+          </div>
+        </div>
+
+        <div id="authGate" class="auth-grid">
+          <section class="mini-card">
+            <h3 style="margin:0 0 8px;">Giriş Yap</h3>
+            <form id="loginForm">
+              <div class="field-group">
+                <label for="loginEmail">E-posta</label>
+                <input id="loginEmail" name="email" type="email" required placeholder="ornek@mail.com">
+              </div>
+              <div class="field-group">
+                <label for="loginPassword">Şifre</label>
+                <input id="loginPassword" name="password" type="password" required placeholder="Şifren">
+              </div>
+              <button class="btn btn-primary" type="submit">Giriş Yap ve Scout Et</button>
+            </form>
+          </section>
+          <section class="mini-card">
+            <h3 style="margin:0 0 8px;">Hızlı Kayıt</h3>
+            <form id="registerForm">
+              <div class="field-group">
+                <label for="registerName">Ad Soyad</label>
+                <input id="registerName" name="name" type="text" required placeholder="Ad Soyad">
+              </div>
+              <div class="field-group">
+                <label for="registerEmail">E-posta</label>
+                <input id="registerEmail" name="email" type="email" required placeholder="ornek@mail.com">
+              </div>
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="registerPassword">Şifre</label>
+                  <input id="registerPassword" name="password" type="password" required minlength="8">
+                </div>
+                <div class="field-group">
+                  <label for="registerPasswordConfirmation">Şifre Tekrar</label>
+                  <input id="registerPasswordConfirmation" name="password_confirmation" type="password" required minlength="8">
+                </div>
+              </div>
+              <button class="btn btn-secondary" type="submit">Kayıt Ol</button>
+            </form>
+          </section>
+        </div>
+      </aside>
+
+      <section class="panel form-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
+          <div>
+            <h2 class="form-title">Yetenek Bildir</h2>
+            <div class="helper-text">Login sonrası doğrudan bu formu kullanırsın. Video linki eklersen sistem önce klibi kaydeder, sonra scout ihbarını oluşturur.</div>
+          </div>
+          <div id="sessionBadge" class="badge hidden">Oturum açık</div>
+        </div>
+
+        <div id="formStatus" class="status"></div>
+
+        <form id="scoutTipForm" class="hidden" style="margin-top:18px;">
+          <div class="field-row">
+            <div class="field-group">
+              <label for="playerName">Oyuncu Adı</label>
+              <input id="playerName" name="player_name" type="text" required placeholder="Oyuncu adı">
+            </div>
+            <div class="field-group">
+              <label for="birthYear">Doğum Yılı</label>
+              <input id="birthYear" name="birth_year" type="number" min="1990" max="2100" placeholder="2010">
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label for="city">Şehir</label>
+              <input id="city" name="city" type="text" required placeholder="İstanbul">
+            </div>
+            <div class="field-group">
+              <label for="district">İlçe</label>
+              <input id="district" name="district" type="text" placeholder="Kadıköy">
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label for="position">Pozisyon</label>
+              <input id="position" name="position" type="text" placeholder="Winger">
+            </div>
+            <div class="field-group">
+              <label for="teamName">Takım</label>
+              <input id="teamName" name="team_name" type="text" placeholder="Moda Gençlik">
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label for="competitionLevel">Seviye</label>
+              <select id="competitionLevel" name="competition_level">
+                <option value="mahalle">Mahalle</option>
+                <option value="okul">Okul</option>
+                <option value="amatör">Amatör</option>
+                <option value="altyapi">Altyapı</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label for="guardianConsent">Veli Onayı</label>
+              <select id="guardianConsent" name="guardian_consent_status">
+                <option value="received">Alındı</option>
+                <option value="pending">Bekliyor</option>
+                <option value="not_required">Gerekli değil</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="description">Neden önemli?</label>
+            <textarea id="description" name="description" required placeholder="Oyuncunun fark yarattığı şeyi yaz. Örn: bire birde adam eksiltiyor, oyunu hızlandırıyor, karar kalitesi yüksek."></textarea>
+          </div>
+
+          <div style="padding:14px;border-radius:16px;background:rgba(15,23,42,.52);border:1px solid rgba(148,163,184,.14);">
+            <h3 style="margin:0 0 10px;font-size:16px;">Maç Videosu</h3>
+            <div class="field-row">
+              <div class="field-group">
+                <label for="videoTitle">Video Başlığı</label>
+                <input id="videoTitle" name="video_title" type="text" placeholder="Mahalle maçı klibi">
+              </div>
+              <div class="field-group">
+                <label for="videoPlatform">Platform</label>
+                <select id="videoPlatform" name="video_platform">
+                  <option value="custom">Custom</option>
+                  <option value="youtube">YouTube</option>
+                  <option value="vimeo">Vimeo</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="videoUrl">Video URL</label>
+              <input id="videoUrl" name="video_url" type="url" placeholder="https://...">
+            </div>
+          </div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-primary" type="submit">Scout İhbarını Gönder</button>
+            <button class="btn btn-secondary" type="button" id="loadMyTipsBtn">İhbarlarımı Yenile</button>
+          </div>
+        </form>
+
+        <div id="myTipsWrap" class="hidden" style="margin-top:22px;">
+          <h3 style="margin:0 0 10px;">İhbarlarım</h3>
+          <div id="myTipsList" class="tips">
+            <div class="tip-item">Henüz scout ihbarın yok.</div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const API_BASE = `${window.location.protocol === 'file:' ? 'http://127.0.0.1:8000' : window.location.origin}/api`;
+
+    function getToken() {
+      return (localStorage.getItem('nextscout_token') || '').trim();
+    }
+
+    function getUser() {
+      try {
+        return JSON.parse(localStorage.getItem('nextscout_user') || '{}');
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function setStatus(message, type = 'success') {
+      const el = document.getElementById('formStatus');
+      if (!el) return;
+      el.className = `status ${type}`;
+      el.textContent = message;
+    }
+
+    function updateAuthUi() {
+      const authenticated = Boolean(getToken() || getUser()?.email);
+      document.getElementById('authGate')?.classList.toggle('hidden', authenticated);
+      document.getElementById('scoutTipForm')?.classList.toggle('hidden', !authenticated);
+      document.getElementById('myTipsWrap')?.classList.toggle('hidden', !authenticated);
+      document.getElementById('sessionBadge')?.classList.toggle('hidden', !authenticated);
+      if (authenticated) {
+        loadMyTips();
+      }
+    }
+
+    async function apiRequest(path, options = {}) {
+      const token = getToken();
+      const headers = {
+        Accept: 'application/json',
+        ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+        ...(options.headers || {}),
+      };
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`${API_BASE}${path}`, { ...options, headers });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || payload?.ok === false) {
+        throw new Error(payload?.message || `HTTP ${response.status}`);
+      }
+      return payload;
+    }
+
+    async function handleLogin(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const formData = new FormData(form);
+
+      const payload = await apiRequest('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: formData.get('email'),
+          password: formData.get('password'),
+        }),
+      });
+
+      localStorage.setItem('nextscout_token', payload.data.token);
+      localStorage.setItem('nextscout_user', JSON.stringify(payload.data.user || {}));
+      setStatus('Giriş başarılı. Artık scout ihbarı gönderebilirsin.');
+      updateAuthUi();
+      form.reset();
+    }
+
+    async function handleRegister(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const formData = new FormData(form);
+
+      await apiRequest('/auth/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: formData.get('name'),
+          email: formData.get('email'),
+          password: formData.get('password'),
+          password_confirmation: formData.get('password_confirmation'),
+          role: 'scout',
+        }),
+      });
+
+      setStatus('Kayıt alındı. Şimdi giriş yaparak scout formunu kullanabilirsin.');
+      form.reset();
+    }
+
+    async function handleScoutSubmit(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const formData = new FormData(form);
+      let videoClipId = null;
+
+      try {
+        const videoUrl = (formData.get('video_url') || '').toString().trim();
+        if (videoUrl) {
+          const videoPayload = await apiRequest('/videos', {
+            method: 'POST',
+            body: JSON.stringify({
+              title: (formData.get('video_title') || '').toString().trim() || `${formData.get('player_name')} Scout Clip`,
+              description: 'Scout tip için eklenen maç videosu',
+              video_url: videoUrl,
+              platform: (formData.get('video_platform') || 'custom').toString(),
+              tags: ['scout_tip'],
+            }),
+          });
+          videoClipId = videoPayload?.data?.id || null;
+        }
+
+        await apiRequest('/scout-tips', {
+          method: 'POST',
+          body: JSON.stringify({
+            source_type: 'new_player',
+            player_name: formData.get('player_name'),
+            birth_year: formData.get('birth_year') ? Number(formData.get('birth_year')) : null,
+            city: formData.get('city'),
+            district: formData.get('district'),
+            position: formData.get('position'),
+            team_name: formData.get('team_name'),
+            competition_level: formData.get('competition_level'),
+            guardian_consent_status: formData.get('guardian_consent_status'),
+            description: formData.get('description'),
+            ...(videoClipId ? { video_clip_id: videoClipId } : {}),
+          }),
+        });
+
+        setStatus('Scout ihbarı gönderildi. Aşağıda durumunu takip edebilirsin.');
+        form.reset();
+        document.getElementById('competitionLevel').value = 'mahalle';
+        document.getElementById('guardianConsent').value = 'received';
+        document.getElementById('videoPlatform').value = 'custom';
+        loadMyTips();
+      } catch (error) {
+        setStatus(error.message || 'İhbar gönderilemedi.', 'error');
+      }
+    }
+
+    async function loadMyTips() {
+      const root = document.getElementById('myTipsList');
+      if (!root) return;
+      root.innerHTML = '<div class="tip-item">Yükleniyor...</div>';
+
+      try {
+        const payload = await apiRequest('/scout-tips/my');
+        const rows = Array.isArray(payload?.data) ? payload.data : [];
+
+        if (!rows.length) {
+          root.innerHTML = '<div class="tip-item">Henüz scout ihbarın yok.</div>';
+          return;
+        }
+
+        root.innerHTML = rows.map((row) => `
+          <div class="tip-item">
+            <strong>${(row.player_name || '-')}</strong>
+            <div style="margin-bottom:6px;color:#9fb3ca;">${(row.city || '-')} ${row.position ? ' / ' + row.position : ''}</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+              <span class="badge">${(row.status || 'pending')}</span>
+              <span>Skor: ${row.final_score || 0}</span>
+              <span>${row.video_clip_id ? 'Video var' : 'Video yok'}</span>
+            </div>
+          </div>
+        `).join('');
+      } catch (error) {
+        root.innerHTML = `<div class="tip-item" style="color:#fecaca;">${error.message}</div>`;
+      }
+    }
+
+    document.getElementById('loginForm')?.addEventListener('submit', async (event) => {
+      try {
+        await handleLogin(event);
+      } catch (error) {
+        setStatus(error.message || 'Giriş başarısız.', 'error');
+      }
+    });
+
+    document.getElementById('registerForm')?.addEventListener('submit', async (event) => {
+      try {
+        await handleRegister(event);
+      } catch (error) {
+        setStatus(error.message || 'Kayıt başarısız.', 'error');
+      }
+    });
+
+    document.getElementById('scoutTipForm')?.addEventListener('submit', handleScoutSubmit);
+    document.getElementById('loadMyTipsBtn')?.addEventListener('click', loadMyTips);
+
+    updateAuthUi();
+  </script>
+</body>
+</html>

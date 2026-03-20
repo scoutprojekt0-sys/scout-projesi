@@ -6,11 +6,13 @@ use App\Models\Application;
 use App\Models\Contact;
 use App\Models\Media;
 use App\Models\Opportunity;
+use App\Models\ScoutTip;
 use App\Models\Subscription;
 use App\Policies\ApplicationPolicy;
 use App\Policies\ContactPolicy;
 use App\Policies\MediaPolicy;
 use App\Policies\OpportunityPolicy;
+use App\Policies\ScoutTipPolicy;
 use App\Policies\SubscriptionPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -34,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Contact::class, ContactPolicy::class);
         Gate::policy(Media::class, MediaPolicy::class);
         Gate::policy(Opportunity::class, OpportunityPolicy::class);
+        Gate::policy(ScoutTip::class, ScoutTipPolicy::class);
         Gate::policy(Subscription::class, SubscriptionPolicy::class);
 
         RateLimiter::for('auth', function (Request $request) {

@@ -259,6 +259,63 @@
             margin-top: 16px;
         }
 
+        .crowd-scout-cta {
+            margin-top: 18px;
+            padding: 20px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(255, 126, 34, 0.16), rgba(56, 189, 248, 0.14));
+            border: 1px solid rgba(255, 126, 34, 0.32);
+            box-shadow: 0 14px 30px rgba(15, 23, 42, 0.22);
+        }
+
+        .crowd-scout-cta-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .crowd-scout-cta h2 {
+            margin: 0 0 8px;
+            font-size: clamp(26px, 3vw, 40px);
+            color: var(--ns-text) !important;
+        }
+
+        .crowd-scout-cta p {
+            margin: 0;
+            color: var(--ns-muted) !important;
+            max-width: 760px;
+        }
+
+        .crowd-scout-cta-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .crowd-scout-cta-meta {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .crowd-scout-meta-card {
+            padding: 14px;
+            border-radius: 14px;
+            background: rgba(15, 23, 42, 0.42);
+            border: 1px solid rgba(148, 163, 184, 0.14);
+            color: var(--ns-text);
+        }
+
+        .crowd-scout-meta-card strong {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
         .desktop-support-card {
             background: linear-gradient(180deg, rgba(24, 31, 67, 0.94), rgba(13, 18, 40, 0.97));
             border: 1px solid var(--ns-line);
@@ -4017,6 +4074,10 @@
                 gap: 16px;
             }
 
+            .crowd-scout-cta-meta {
+                grid-template-columns: 1fr;
+            }
+
             .ad-panel {
                 min-height: 300px;
             }
@@ -5852,6 +5913,37 @@
                     Reklam Panosu
                 </div>
             </div>
+
+            <section class="crowd-scout-cta" aria-label="Crowdsourced scout girişi">
+                <div class="crowd-scout-cta-top">
+                    <div>
+                        <h2>Mahallendeki Yeteneği Sen Bildir.</h2>
+                        <p>Yerel maçta gördüğün oyuncuyu web’den sisteme ekle. Video linki koy, scout ekibi doğrulasın, ihbarını takip et, Scout Puanı kazan.</p>
+                    </div>
+                </div>
+                <div class="crowd-scout-cta-actions">
+                    <button class="btn btn-primary" type="button" onclick="window.location.href=resolveLocalPage('scout-et.html')">
+                        <i class="fas fa-video"></i> Scout Et
+                    </button>
+                    <button class="btn btn-secondary" type="button" onclick="window.location.href=resolveLocalPage('scout-et.html')">
+                        <i class="fas fa-clipboard-list"></i> Web'den Video Ekle
+                    </button>
+                </div>
+                <div class="crowd-scout-cta-meta">
+                    <div class="crowd-scout-meta-card">
+                        <strong>1. Giriş Yap</strong>
+                        Hesabın yoksa hızlı kayıt ol.
+                    </div>
+                    <div class="crowd-scout-meta-card">
+                        <strong>2. Yetenek Bildir</strong>
+                        Oyuncu bilgisi ve video linkini gir.
+                    </div>
+                    <div class="crowd-scout-meta-card">
+                        <strong>3. Durumu Takip Et</strong>
+                        Pending, screened ve shortlist sürecini gör.
+                    </div>
+                </div>
+            </section>
 
             <div class="below-cards-grid">
                 <article class="below-card" id="playerOfWeekCard" data-dashboard-feature="player-of-week" role="button" tabindex="0">
@@ -10607,7 +10699,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
 
 
 
