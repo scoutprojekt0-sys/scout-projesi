@@ -495,6 +495,10 @@
           <li class="sidebar-item" onclick="window.location.href='ai-discovery.html'"><i class="fas fa-flask"></i><span>AI Discovery</span></li>
           <li class="sidebar-item" onclick="openScoutProfile()"><i class="fas fa-user"></i><span>Antrenor Profili</span></li>
           <li class="sidebar-item" onclick="openWatchlist()"><i class="fas fa-list-check"></i><span>Takip Listem</span></li>
+          <li class="sidebar-item" onclick="openCoachWorkspace('reviews')"><i class="fas fa-comments"></i><span>Profil Yorumları</span></li>
+          <li class="sidebar-item" onclick="openCoachWorkspace('notes')"><i class="fas fa-notes-medical"></i><span>Teknik Not Defteri</span></li>
+          <li class="sidebar-item" onclick="openCoachWorkspace('clips')"><i class="fas fa-film"></i><span>Video Üzerinden Klip İşaretleme</span></li>
+          <li class="sidebar-item" onclick="openCoachWorkspace('evaluations')"><i class="fas fa-clipboard-list"></i><span>Kaydedilmiş Değerlendirmeler</span></li>
           <li class="sidebar-item" onclick="openTrialCenter()"><i class="fas fa-calendar-check"></i><span>Deneme & Idmanlar</span></li>
         <li class="sidebar-item" onclick="window.location.href='live-watch-demand.html'"><i class="fas fa-location-crosshairs"></i><span>Canlı İzleme Talebi</span></li>
         <li class="sidebar-item" onclick="openPerformance()"><i class="fas fa-chart-line"></i><span>Istatistikler</span></li>
@@ -510,6 +514,98 @@
       <div class="welcome-card">
           <h1>Antrenor Profili</h1>
         <p>Oyuncu izle, analiz et ve takip listene ekle.</p>
+      </div>
+
+      <div class="search-section" id="coachWorkspaceCard" style="display:none;">
+        <h2 id="coachWorkspaceTitle">Antrenör Çalışma Alanı</h2>
+        <p id="coachWorkspaceSummary" style="color:#9bb5cb; margin:8px 0 14px;">Seçilen modül burada açılır.</p>
+        <div id="coachWorkspaceBody" style="display:grid; gap:14px;">
+          <section id="coachWorkspaceReviews" style="display:none; padding:18px;border:1px solid #475569;border-radius:12px;background:#1f2937;color:#dbeafe;">
+            <div class="quick-report-grid" style="grid-template-columns:repeat(3,1fr); margin-bottom:14px;">
+              <div class="quick-report-result"><strong id="coachReviewTotal">0</strong><br><span>Toplam</span></div>
+              <div class="quick-report-result"><strong id="coachReviewPositive">%0</strong><br><span>Olumlu</span></div>
+              <div class="quick-report-result"><strong id="coachReviewTrust">0/10</strong><br><span>Güven Skoru</span></div>
+            </div>
+            <div class="search-grid" style="grid-template-columns:1fr 1fr; margin-bottom:12px;">
+              <div class="form-group">
+                <label>İlişki</label>
+                <select id="coachDashboardReviewRelationship">
+                  <option value="teknik_ekip">Teknik ekip</option>
+                  <option value="birlikte_calistik">Birlikte çalıştık</option>
+                  <option value="izledim">İzledim</option>
+                  <option value="kulup_sureci">Kulüp süreci</option>
+                  <option value="rakiptik">Rakiptik</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Ton</label>
+                <select id="coachDashboardReviewSentiment">
+                  <option value="olumlu">Olumlu</option>
+                  <option value="notr">Nötr</option>
+                  <option value="dikkat">Dikkat</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+              <label>Yorum</label>
+              <textarea id="coachDashboardReviewBody" style="min-height:96px;" placeholder="Antrenörün teknik iletişimi ve süreç yönetimi hakkında yorum yaz..."></textarea>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
+              <button class="btn-small primary" type="button" id="coachDashboardReviewSubmit">Yorumu Gönder</button>
+              <div class="quick-report-result" id="coachDashboardReviewMessage">Yorumlar burada listelenir.</div>
+            </div>
+            <div id="coachDashboardReviewList" style="display:grid; gap:10px;"></div>
+          </section>
+
+          <section id="coachWorkspaceNotes" style="display:none; padding:18px;border:1px solid #475569;border-radius:12px;background:#1f2937;color:#dbeafe;">
+            <div class="search-grid" style="grid-template-columns:repeat(2,1fr);">
+              <div class="form-group"><label>Oyuncu</label><input type="text" id="coachDashboardNotePlayer" placeholder="Oyuncu adı"></div>
+              <div class="form-group"><label>Pozisyon</label><input type="text" id="coachDashboardNotePosition" placeholder="Forvet / Orta saha / Bek"></div>
+              <div class="form-group"><label>Etiket</label><select id="coachDashboardNoteTag"><option value="izlenecek">İzlenecek</option><option value="tekrar-bak">Tekrar Bak</option><option value="gelisim-var">Gelişim Var</option><option value="hazir">Hazır</option></select></div>
+              <div class="form-group"><label>Odak</label><select id="coachDashboardNoteFocus"><option value="teknik">Teknik</option><option value="taktik">Taktik</option><option value="fizik">Fizik</option><option value="zihinsel">Zihinsel</option></select></div>
+            </div>
+            <div class="form-group" style="margin:12px 0;">
+              <label>Not</label>
+              <textarea id="coachDashboardNoteBody" style="min-height:96px;" placeholder="Kısa teknik not..."></textarea>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
+              <button class="btn-small primary" type="button" id="coachDashboardNoteSubmit">Notu Kaydet</button>
+              <input type="text" id="coachDashboardNoteSearch" placeholder="Notlarda ara..." style="flex:1; padding:10px; border:1px solid #475569; border-radius:10px; background:#0f172a; color:#e2e8f0;">
+            </div>
+            <div id="coachDashboardNotesList" style="display:grid; gap:10px;"></div>
+          </section>
+
+          <section id="coachWorkspaceClips" style="display:none; padding:18px;border:1px solid #475569;border-radius:12px;background:#1f2937;color:#dbeafe;">
+            <div class="search-grid" style="grid-template-columns:repeat(2,1fr);">
+              <div class="form-group"><label>Oyuncu</label><input type="text" id="coachDashboardClipPlayer" placeholder="Oyuncu adı"></div>
+              <div class="form-group"><label>Video Linki</label><input type="url" id="coachDashboardClipUrl" placeholder="https://..."></div>
+              <div class="form-group"><label>Dakika</label><input type="number" id="coachDashboardClipMinute" min="0" max="180" placeholder="12"></div>
+              <div class="form-group"><label>Saniye</label><input type="number" id="coachDashboardClipSecond" min="0" max="59" placeholder="34"></div>
+            </div>
+            <div class="form-group" style="margin:12px 0;">
+              <label>Klip Notu</label>
+              <textarea id="coachDashboardClipBody" style="min-height:96px;" placeholder="Sahne bazlı kısa teknik not..."></textarea>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
+              <button class="btn-small primary" type="button" id="coachDashboardClipSubmit">Klibi Kaydet</button>
+              <input type="text" id="coachDashboardClipSearch" placeholder="Kliplerde ara..." style="flex:1; padding:10px; border:1px solid #475569; border-radius:10px; background:#0f172a; color:#e2e8f0;">
+            </div>
+            <div id="coachDashboardClipsList" style="display:grid; gap:10px;"></div>
+          </section>
+
+          <section id="coachWorkspaceEvaluations" style="display:none; padding:18px;border:1px solid #475569;border-radius:12px;background:#1f2937;color:#dbeafe;">
+            <div class="quick-report-grid" style="grid-template-columns:repeat(3,1fr); margin-bottom:14px;">
+              <div class="quick-report-result"><strong id="coachEvalTotal">0</strong><br><span>Toplam</span></div>
+              <div class="quick-report-result"><strong id="coachEvalLastPlayer">-</strong><br><span>Son Oyuncu</span></div>
+              <div class="quick-report-result"><strong id="coachEvalLastDate">-</strong><br><span>Son Kayıt</span></div>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
+              <input type="text" id="coachDashboardEvalSearch" placeholder="Oyuncu, pozisyon veya karar notu..." style="flex:1; padding:10px; border:1px solid #475569; border-radius:10px; background:#0f172a; color:#e2e8f0;">
+              <input type="number" id="coachDashboardEvalMinScore" min="0" max="100" placeholder="Min. ort." style="width:140px; padding:10px; border:1px solid #475569; border-radius:10px; background:#0f172a; color:#e2e8f0;">
+            </div>
+            <div id="coachDashboardEvaluationsList" style="display:grid; gap:10px;"></div>
+          </section>
+        </div>
       </div>
 
       <div class="quick-stats">
@@ -788,6 +884,8 @@
 
   <script>
     const WATCH_KEY = 'nextscout_scout_watchlist';
+    const COACH_NOTES_KEY = 'nextscout_coach_notes';
+    const COACH_CLIPS_KEY = 'nextscout_coach_clips';
     let allPlayers = [];
     let filteredPlayers = [];
 
@@ -811,6 +909,100 @@
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
+    }
+
+    function getToken() {
+      return (localStorage.getItem('nextscout_token') || '').trim();
+    }
+
+    function getCurrentAuthUserFromStorage() {
+      try {
+        const raw = localStorage.getItem('nextscout_user');
+        const user = raw ? JSON.parse(raw) : null;
+        return user && typeof user === 'object' ? user : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function getCoachReviewTargetId() {
+      const authUser = getCurrentAuthUserFromStorage();
+      const id = Number(authUser?.id || 0);
+      return Number.isFinite(id) ? id : null;
+    }
+
+    function formatReviewDate(value) {
+      if (!value) return '-';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '-';
+      return date.toLocaleDateString('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function reviewLabelMap() {
+      return {
+        birlikte_calistik: 'Birlikte çalıştık',
+        rakiptik: 'Rakiptik',
+        izledim: 'İzledim',
+        kulup_sureci: 'Kulüp süreci',
+        teknik_ekip: 'Teknik ekip',
+        olumlu: 'Olumlu',
+        notr: 'Nötr',
+        dikkat: 'Dikkat',
+      };
+    }
+
+    function loadCoachNotesWorkspace() {
+      try {
+        const raw = localStorage.getItem(COACH_NOTES_KEY);
+        const rows = raw ? JSON.parse(raw) : [];
+        return Array.isArray(rows) ? rows : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveCoachNotesWorkspace(rows) {
+      localStorage.setItem(COACH_NOTES_KEY, JSON.stringify((Array.isArray(rows) ? rows : []).slice(0, 200)));
+    }
+
+    function loadCoachClipsWorkspace() {
+      try {
+        const raw = localStorage.getItem(COACH_CLIPS_KEY);
+        const rows = raw ? JSON.parse(raw) : [];
+        return Array.isArray(rows) ? rows : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveCoachClipsWorkspace(rows) {
+      localStorage.setItem(COACH_CLIPS_KEY, JSON.stringify((Array.isArray(rows) ? rows : []).slice(0, 200)));
+    }
+
+    function loadCoachEvaluationsWorkspace() {
+      const rows = [];
+      try {
+        for (let i = 0; i < localStorage.length; i += 1) {
+          const key = localStorage.key(i);
+          if (!key || !String(key).startsWith('nextscout_coach_eval_')) continue;
+          const raw = localStorage.getItem(key);
+          if (!raw) continue;
+          const parsed = JSON.parse(raw);
+          if (!parsed || typeof parsed !== 'object') continue;
+          const scores = parsed.scores && typeof parsed.scores === 'object' ? Object.values(parsed.scores).map((value) => Number(value) || 0) : [];
+          const average = scores.length ? (scores.reduce((sum, value) => sum + value, 0) / scores.length) : 0;
+          rows.push({
+            player_name: String(parsed.player_name || key.replace('nextscout_coach_eval_', '').replace(/[_-]+/g, ' ')).trim(),
+            position: String(parsed.position || '-').trim(),
+            decision_note: String(parsed.decision_note || '').trim(),
+            saved_at: String(parsed.saved_at || '-').trim(),
+            average: Number(average.toFixed(1)),
+          });
+        }
+      } catch (error) {
+        return [];
+      }
+      return rows.sort((a, b) => String(b.saved_at).localeCompare(String(a.saved_at)));
     }
 
     function parseAgeRange(value) {
@@ -1012,6 +1204,87 @@
     }
 
     function openWatchlist() { window.location.href = 'scout-watchlist.html'; }
+    function openCoachWorkspace(type) {
+      const card = document.getElementById('coachWorkspaceCard');
+      const title = document.getElementById('coachWorkspaceTitle');
+      const summary = document.getElementById('coachWorkspaceSummary');
+      const body = document.getElementById('coachWorkspaceBody');
+      if (!card || !title || !summary || !body) return;
+
+      const contentMap = {
+        reviews: {
+          title: 'Profil Yorumları',
+          summary: 'Antrenör hakkındaki geri bildirimleri bu alanda takip edebilirsin.',
+          body: 'Profil yorumları dashboard modülü burada açılacak.',
+        },
+        notes: {
+          title: 'Teknik Not Defteri',
+          summary: 'Oyuncu bazlı teknik gözlem ve kısa karar notlarını buradan yöneteceksin.',
+          body: 'Teknik not defteri dashboard modülü burada açılacak.',
+        },
+        clips: {
+          title: 'Video Üzerinden Klip İşaretleme',
+          summary: 'İşaretlenen klipler ve sahne bazlı teknik notlar burada toplanacak.',
+          body: 'Klip işaretleme dashboard modülü burada açılacak.',
+        },
+      };
+
+      const selected = contentMap[type];
+      if (!selected) return;
+      title.textContent = selected.title;
+      summary.textContent = selected.summary;
+      body.textContent = selected.body;
+      card.style.display = 'block';
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    function openCoachWorkspace(type) {
+      const card = document.getElementById('coachWorkspaceCard');
+      const title = document.getElementById('coachWorkspaceTitle');
+      const summary = document.getElementById('coachWorkspaceSummary');
+      const reviews = document.getElementById('coachWorkspaceReviews');
+      const notes = document.getElementById('coachWorkspaceNotes');
+      const clips = document.getElementById('coachWorkspaceClips');
+      const evaluations = document.getElementById('coachWorkspaceEvaluations');
+      if (!card || !title || !summary || !reviews || !notes || !clips || !evaluations) return;
+
+      const contentMap = {
+        reviews: {
+          title: 'Profil Yorumları',
+          summary: 'Antrenör hakkındaki geri bildirimleri bu alanda takip edebilirsin.',
+        },
+        notes: {
+          title: 'Teknik Not Defteri',
+          summary: 'Oyuncu bazlı teknik gözlem ve kısa karar notlarını buradan yöneteceksin.',
+        },
+        clips: {
+          title: 'Video Üzerinden Klip İşaretleme',
+          summary: 'İşaretlenen klipler ve sahne bazlı teknik notlar burada toplanacak.',
+        },
+        evaluations: {
+          title: 'Kaydedilmiş Değerlendirmeler',
+          summary: 'Oyuncu profillerinde kaydettiğin teknik değerlendirmeleri burada toplu görürsün.',
+        },
+      };
+
+      const selected = contentMap[type];
+      if (!selected) return;
+
+      title.textContent = selected.title;
+      summary.textContent = selected.summary;
+      reviews.style.display = type === 'reviews' ? 'block' : 'none';
+      notes.style.display = type === 'notes' ? 'block' : 'none';
+      clips.style.display = type === 'clips' ? 'block' : 'none';
+      evaluations.style.display = type === 'evaluations' ? 'block' : 'none';
+      card.style.display = 'block';
+
+      if (type === 'reviews') loadDashboardCoachReviews();
+      if (type === 'notes') renderDashboardCoachNotes();
+      if (type === 'clips') renderDashboardCoachClips();
+      if (type === 'evaluations') renderDashboardCoachEvaluations();
+
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
     function openTrialCenter() { window.location.href = 'trial-center.html?view=coach'; }
     function openScoutProfile() { window.location.href = 'coach-profile.html'; }
     function openPerformance() { window.location.href = 'statistics.html'; }
@@ -1019,6 +1292,233 @@
     function openMessages() { window.location.href = 'notifications.html'; }
     function openSettings() { window.location.href = 'settings.html'; }
     function openHelp() { window.location.href = 'help.html'; }
+
+    function renderDashboardCoachReviews(items) {
+      const rows = Array.isArray(items) ? items : [];
+      const list = document.getElementById('coachDashboardReviewList');
+      const total = document.getElementById('coachReviewTotal');
+      const positive = document.getElementById('coachReviewPositive');
+      const trust = document.getElementById('coachReviewTrust');
+      if (!list || !total || !positive || !trust) return;
+
+      const labels = reviewLabelMap();
+      const positiveCount = rows.filter((row) => row?.sentiment === 'olumlu').length;
+      const positiveRate = rows.length ? Math.round((positiveCount / rows.length) * 100) : 0;
+      const trustScore = rows.length ? ((positiveCount * 10) + ((rows.length - positiveCount) * 5)) / rows.length / 10 : 0;
+
+      total.textContent = String(rows.length);
+      positive.textContent = `%${positiveRate}`;
+      trust.textContent = `${trustScore.toFixed(1)}/10`;
+
+      if (!rows.length) {
+        list.innerHTML = '<div class="quick-report-result">Henüz yorum yok.</div>';
+        return;
+      }
+
+      list.innerHTML = rows.map((review) => `
+        <div class="quick-report-result" style="text-align:left;">
+          <strong>${escapeHtml(review?.author_name || 'Kullanıcı')}</strong>
+          <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(review?.author_role || 'rol belirtilmedi')} • ${escapeHtml(formatReviewDate(review?.created_at))}</div>
+          <div style="margin-top:8px;"><span>${escapeHtml(labels[review?.relationship_type] || review?.relationship_type || '-')}</span> • <span>${escapeHtml(labels[review?.sentiment] || review?.sentiment || '-')}</span></div>
+          <div style="margin-top:8px; color:#e2e8f0;">${escapeHtml(review?.body || '')}</div>
+        </div>
+      `).join('');
+    }
+
+    async function loadDashboardCoachReviews() {
+      const list = document.getElementById('coachDashboardReviewList');
+      const targetId = getCoachReviewTargetId();
+      if (!list || !targetId) return;
+      list.innerHTML = '<div class="quick-report-result">Yorumlar yükleniyor...</div>';
+      try {
+        const res = await fetch(`${getApiBaseUrl()}/profiles/${encodeURIComponent(targetId)}/reviews`, {
+          headers: { Accept: 'application/json' },
+        });
+        const data = await res.json().catch(() => null);
+        const items = Array.isArray(data?.data?.data)
+          ? data.data.data
+          : Array.isArray(data?.data?.items)
+          ? data.data.items
+          : Array.isArray(data?.data)
+          ? data.data
+          : [];
+        renderDashboardCoachReviews(items);
+      } catch (error) {
+        list.innerHTML = '<div class="quick-report-result">Yorumlar şu an alınamıyor.</div>';
+      }
+    }
+
+    async function submitDashboardCoachReview() {
+      const token = getToken();
+      const targetId = getCoachReviewTargetId();
+      const relationship = document.getElementById('coachDashboardReviewRelationship');
+      const sentiment = document.getElementById('coachDashboardReviewSentiment');
+      const body = document.getElementById('coachDashboardReviewBody');
+      const message = document.getElementById('coachDashboardReviewMessage');
+      if (!token || !targetId || !relationship || !sentiment || !body || !message) return;
+
+      const payload = {
+        relationship_type: relationship.value,
+        sentiment: sentiment.value,
+        body: String(body.value || '').trim(),
+      };
+
+      if (payload.body.length < 10) {
+        message.textContent = 'Yorum en az 10 karakter olmalı.';
+        return;
+      }
+
+      try {
+        const res = await fetch(`${getApiBaseUrl()}/profiles/${encodeURIComponent(targetId)}/reviews`, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data?.ok) throw new Error(data?.message || 'Yorum kaydedilemedi');
+        body.value = '';
+        message.textContent = data?.message || 'Yorum kaydedildi.';
+        loadDashboardCoachReviews();
+      } catch (error) {
+        message.textContent = error?.message || 'Yorum kaydedilemedi.';
+      }
+    }
+
+    function renderDashboardCoachNotes() {
+      const list = document.getElementById('coachDashboardNotesList');
+      const search = String(document.getElementById('coachDashboardNoteSearch')?.value || '').trim().toLowerCase();
+      if (!list) return;
+      const rows = loadCoachNotesWorkspace().filter((row) => {
+        const haystack = `${row.player} ${row.position} ${row.body}`.toLowerCase();
+        return !search || haystack.includes(search);
+      });
+      if (!rows.length) {
+        list.innerHTML = '<div class="quick-report-result">Henüz teknik not yok.</div>';
+        return;
+      }
+      list.innerHTML = rows.map((row) => `
+        <div class="quick-report-result" style="text-align:left;">
+          <strong>${escapeHtml(row.player || 'Oyuncu')}</strong>
+          <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(row.position || '-')} • ${escapeHtml(row.tag || '-')} • ${escapeHtml(row.focus || '-')}</div>
+          <div style="margin-top:8px; color:#e2e8f0;">${escapeHtml(row.body || '')}</div>
+        </div>
+      `).join('');
+    }
+
+    function submitDashboardCoachNote() {
+      const player = document.getElementById('coachDashboardNotePlayer');
+      const position = document.getElementById('coachDashboardNotePosition');
+      const tag = document.getElementById('coachDashboardNoteTag');
+      const focus = document.getElementById('coachDashboardNoteFocus');
+      const body = document.getElementById('coachDashboardNoteBody');
+      if (!player || !position || !tag || !focus || !body) return;
+      const note = {
+        player: String(player.value || '').trim(),
+        position: String(position.value || '').trim(),
+        tag: String(tag.value || '').trim(),
+        focus: String(focus.value || '').trim(),
+        body: String(body.value || '').trim(),
+      };
+      if (!note.player || !note.body || note.body.length < 8) return;
+      const rows = loadCoachNotesWorkspace();
+      rows.unshift(note);
+      saveCoachNotesWorkspace(rows);
+      player.value = '';
+      position.value = '';
+      body.value = '';
+      renderDashboardCoachNotes();
+    }
+
+    function renderDashboardCoachClips() {
+      const list = document.getElementById('coachDashboardClipsList');
+      const search = String(document.getElementById('coachDashboardClipSearch')?.value || '').trim().toLowerCase();
+      if (!list) return;
+      const rows = loadCoachClipsWorkspace().filter((row) => {
+        const haystack = `${row.player} ${row.url} ${row.body} ${row.stamp}`.toLowerCase();
+        return !search || haystack.includes(search);
+      });
+      if (!rows.length) {
+        list.innerHTML = '<div class="quick-report-result">Henüz klip kaydı yok.</div>';
+        return;
+      }
+      list.innerHTML = rows.map((row) => `
+        <div class="quick-report-result" style="text-align:left;">
+          <strong>${escapeHtml(row.player || 'Oyuncu')}</strong>
+          <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(row.stamp || '-')} • ${escapeHtml(row.url || '-')}</div>
+          <div style="margin-top:8px; color:#e2e8f0;">${escapeHtml(row.body || '')}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderDashboardCoachEvaluations() {
+      const list = document.getElementById('coachDashboardEvaluationsList');
+      const total = document.getElementById('coachEvalTotal');
+      const lastPlayer = document.getElementById('coachEvalLastPlayer');
+      const lastDate = document.getElementById('coachEvalLastDate');
+      const search = String(document.getElementById('coachDashboardEvalSearch')?.value || '').trim().toLowerCase();
+      const minScore = Math.max(0, Number(document.getElementById('coachDashboardEvalMinScore')?.value || 0));
+      if (!list || !total || !lastPlayer || !lastDate) return;
+
+      const rows = loadCoachEvaluationsWorkspace();
+      const filtered = rows.filter((row) => {
+        const haystack = `${row.player_name} ${row.position} ${row.decision_note}`.toLowerCase();
+        const searchMatch = !search || haystack.includes(search);
+        const scoreMatch = !minScore || row.average >= minScore;
+        return searchMatch && scoreMatch;
+      });
+
+      total.textContent = String(rows.length);
+      lastPlayer.textContent = rows[0]?.player_name || '-';
+      lastDate.textContent = rows[0]?.saved_at || '-';
+
+      if (!rows.length) {
+        list.innerHTML = '<div class="quick-report-result">Henüz kaydedilmiş değerlendirme yok.</div>';
+        return;
+      }
+
+      if (!filtered.length) {
+        list.innerHTML = '<div class="quick-report-result">Bu filtreyle eşleşen değerlendirme yok.</div>';
+        return;
+      }
+
+      list.innerHTML = filtered.map((row) => `
+        <div class="quick-report-result" style="text-align:left;">
+          <strong>${escapeHtml(row.player_name || 'Oyuncu')}</strong>
+          <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(row.position || '-')} • Ortalama ${escapeHtml(row.average)}</div>
+          <div style="margin-top:8px; color:#e2e8f0;">${escapeHtml(row.decision_note || '-')}</div>
+          <div style="margin-top:8px; color:#9bb5cb;">${escapeHtml(row.saved_at || '-')}</div>
+        </div>
+      `).join('');
+    }
+
+    function submitDashboardCoachClip() {
+      const player = document.getElementById('coachDashboardClipPlayer');
+      const url = document.getElementById('coachDashboardClipUrl');
+      const minute = document.getElementById('coachDashboardClipMinute');
+      const second = document.getElementById('coachDashboardClipSecond');
+      const body = document.getElementById('coachDashboardClipBody');
+      if (!player || !url || !minute || !second || !body) return;
+      const clip = {
+        player: String(player.value || '').trim(),
+        url: String(url.value || '').trim(),
+        stamp: `${String(Math.max(0, Number(minute.value || 0))).padStart(2, '0')}:${String(Math.max(0, Math.min(59, Number(second.value || 0)))).padStart(2, '0')}`,
+        body: String(body.value || '').trim(),
+      };
+      if (!clip.player || !clip.url || !clip.body || clip.body.length < 8) return;
+      const rows = loadCoachClipsWorkspace();
+      rows.unshift(clip);
+      saveCoachClipsWorkspace(rows);
+      player.value = '';
+      url.value = '';
+      minute.value = '';
+      second.value = '';
+      body.value = '';
+      renderDashboardCoachClips();
+    }
 
     function openPlayerSearchModal() {
       const modal = document.getElementById('playerSearchModal');
@@ -1641,6 +2141,10 @@ setText('.content h1', 'Antrenör Profili');
 
       setText('.sidebar-item[onclick="openScoutProfile()"] span', 'Antrenör Profili');
       setText('.sidebar-item[onclick="openWatchlist()"] span', 'Scout Watchlist');
+      setText('.sidebar-item[onclick="openCoachWorkspace(\'reviews\')"] span', 'Profil Yorumları');
+      setText('.sidebar-item[onclick="openCoachWorkspace(\'notes\')"] span', 'Teknik Not Defteri');
+      setText('.sidebar-item[onclick="openCoachWorkspace(\'clips\')"] span', 'Video Üzerinden Klip İşaretleme');
+      setText('.sidebar-item[onclick="openCoachWorkspace(\'evaluations\')"] span', 'Kaydedilmiş Değerlendirmeler');
       setText('.sidebar-item[onclick="openTrialCenter()"] span', 'Deneme & İdmanlar');
       setText('.sidebar-item[onclick="window.location.href=\'live-watch-demand.html\'"] span', 'Canlı İzleme Talebi');
       setText('.sidebar-item[onclick="openPerformance()"] span', 'İstatistikler');
@@ -1704,6 +2208,14 @@ setText('.content h1', 'Antrenör Profili');
         openLiveScoutModal();
       }
       initQuickScoutReportWidget();
+
+      document.getElementById('coachDashboardReviewSubmit')?.addEventListener('click', submitDashboardCoachReview);
+      document.getElementById('coachDashboardNoteSubmit')?.addEventListener('click', submitDashboardCoachNote);
+      document.getElementById('coachDashboardNoteSearch')?.addEventListener('input', renderDashboardCoachNotes);
+      document.getElementById('coachDashboardClipSubmit')?.addEventListener('click', submitDashboardCoachClip);
+      document.getElementById('coachDashboardClipSearch')?.addEventListener('input', renderDashboardCoachClips);
+      document.getElementById('coachDashboardEvalSearch')?.addEventListener('input', renderDashboardCoachEvaluations);
+      document.getElementById('coachDashboardEvalMinScore')?.addEventListener('input', renderDashboardCoachEvaluations);
     }
 
     window.addEventListener('DOMContentLoaded', init);
@@ -1713,15 +2225,3 @@ setText('.content h1', 'Antrenör Profili');
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
