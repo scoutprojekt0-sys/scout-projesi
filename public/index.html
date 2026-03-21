@@ -254,16 +254,87 @@
 
         .desktop-support-grid {
             display: grid;
-            gap: 14px;
+            gap: 18px;
             margin-top: 16px;
+            padding: 24px;
+            border: 1px solid rgba(110, 138, 255, 0.26);
+            background: linear-gradient(180deg, rgba(18, 26, 56, 0.96), rgba(9, 15, 34, 0.98));
+            box-shadow: 0 22px 44px rgba(2, 6, 23, 0.28);
+            position: relative;
+            overflow: hidden;
         }
 
-        .desktop-support-card {
-            background: linear-gradient(180deg, rgba(24, 31, 67, 0.94), rgba(13, 18, 40, 0.97));
-            border: 1px solid var(--ns-line);
-            border-radius: 0 !important;
-            padding: 18px 20px;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 36px rgba(2, 5, 18, 0.28);
+        .desktop-support-grid::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(circle at top left, rgba(118, 144, 255, 0.16), transparent 32%);
+        }
+
+        .desktop-support-headline {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            gap: 6px;
+        }
+
+        .desktop-support-kicker {
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: rgba(152, 171, 255, 0.9);
+        }
+
+        .desktop-support-title {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--ns-text);
+        }
+
+        .desktop-support-summary {
+            margin: 0;
+            color: var(--ns-muted);
+            font-size: 0.96rem;
+            line-height: 1.6;
+            max-width: 780px;
+        }
+
+        .desktop-support-columns {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .desktop-support-section {
+            display: grid;
+            gap: 12px;
+            padding: 18px;
+            border: 1px solid rgba(110, 138, 255, 0.2);
+            background: rgba(15, 22, 46, 0.72);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+        }
+
+        .desktop-support-label {
+            font-size: 0.84rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(152, 171, 255, 0.9);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .desktop-support-note {
+            margin: 0;
+            color: var(--ns-muted);
+            font-size: 0.92rem;
+            line-height: 1.6;
         }
 
         .below-card,
@@ -328,8 +399,7 @@
         .contract-card::before,
         .idea-news-square::before,
         .promo-ad-card::before,
-        .ad-panel::before,
-        .desktop-support-card::before {
+        .ad-panel::before {
             content: "";
             position: absolute;
             inset: 0;
@@ -413,24 +483,17 @@
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 14px 28px rgba(2, 5, 18, 0.18) !important;
         }
 
-        .desktop-support-head {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 14px;
-            font-size: 1.02rem;
-            font-weight: 800;
-            color: var(--ns-text);
-        }
-
-        .desktop-support-head i {
-            color: #98abff;
-        }
-
         .desktop-chip-row {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
+            flex: 1;
+        }
+
+        #desktopSponsorChips {
+            display: grid;
+            gap: 8px;
+            justify-items: start;
         }
 
         .desktop-chip,
@@ -438,24 +501,40 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-height: 42px;
-            padding: 10px 16px;
-            border-radius: 999px;
-            border: 1px solid rgba(110, 138, 255, 0.34);
-            background: rgba(23, 31, 67, 0.82);
+            min-height: 0;
+            padding: 0;
+            border: 0;
+            background: transparent;
             color: var(--ns-text);
             font-size: 0.95rem;
             font-weight: 700;
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03), 0 0 16px rgba(88, 112, 255, 0.1);
+            box-shadow: none;
         }
 
         .desktop-chip-btn {
             cursor: pointer;
+            text-decoration: underline;
+            text-decoration-color: rgba(140, 157, 255, 0.45);
+            text-underline-offset: 4px;
         }
 
         .desktop-chip-btn:hover {
-            border-color: rgba(140, 157, 255, 0.48);
-            background: rgba(31, 41, 86, 0.92);
+            color: #c9d5ff;
+            text-decoration-color: rgba(201, 213, 255, 0.85);
+        }
+
+        @media (max-width: 1024px) {
+            .desktop-support-grid {
+                padding: 18px;
+            }
+
+            .desktop-support-columns {
+                grid-template-columns: 1fr;
+            }
+
+            .desktop-support-section {
+                gap: 10px;
+            }
         }
 
         .mobile-discover-panel,
@@ -3445,6 +3524,133 @@
             font-size: 13px;
             font-weight: 800;
             border-radius: 0 !important;
+        }
+
+        .public-home-grid {
+            margin-top: 16px;
+            display: none;
+            grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+            gap: 12px;
+        }
+
+        .public-home-card {
+            position: relative;
+            overflow: hidden;
+            min-height: 220px;
+            padding: 20px;
+            border: 1px solid rgba(96, 165, 250, 0.18);
+            border-radius: 6px;
+            background:
+                radial-gradient(circle at 84% 16%, rgba(249, 115, 22, 0.16), transparent 24%),
+                radial-gradient(circle at 14% 18%, rgba(96, 165, 250, 0.16), transparent 20%),
+                linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            box-shadow: 0 22px 40px rgba(8, 19, 29, 0.3);
+        }
+
+        .public-home-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
+        }
+
+        .public-home-eyebrow {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: #ffb787;
+            margin-bottom: 10px;
+        }
+
+        .public-home-title {
+            margin: 0;
+            font-size: 24px;
+            line-height: 1.08;
+            color: var(--ns-text);
+        }
+
+        .public-home-summary {
+            margin-top: 10px;
+            color: var(--ns-muted);
+            font-size: 14px;
+            line-height: 1.7;
+            max-width: 620px;
+        }
+
+        .public-home-steps,
+        .public-home-opps {
+            margin-top: 16px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .public-home-step,
+        .public-home-opp {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 14px;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            background: rgba(255,255,255,.05);
+            border-radius: 6px;
+        }
+
+        .public-home-step-index {
+            flex: 0 0 34px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            background: rgba(255, 126, 34, 0.12);
+            color: #fed7aa;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .public-home-step strong,
+        .public-home-opp strong {
+            display: block;
+            color: var(--ns-text);
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .public-home-step span,
+        .public-home-opp span {
+            color: var(--ns-muted);
+            font-size: 13px;
+            line-height: 1.62;
+        }
+
+        .public-home-actions {
+            margin-top: 16px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .public-home-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 42px;
+            padding: 0 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 800;
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            background: rgba(255,255,255,.05);
+            color: #dbeafe;
+        }
+
+        @media (max-width: 768px) {
+            .public-home-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .homepage-visibility-steps {
@@ -8886,6 +9092,53 @@
                 </div>
             </section>
 
+            <section class="public-home-grid" id="publicHomeGrid" hidden>
+                <article class="public-home-card" id="publicHowItWorksCard">
+                    <div class="public-home-eyebrow">NextScout Nasıl Çalışır?</div>
+                    <h3 class="public-home-title">Keşfet, görünür ol, teklif sürecine gir.</h3>
+                    <div class="public-home-summary">Public kullanıcı için en net akış bu: rolünü seç, doğru vitrine veya keşif hattına gir, ardından sistem içindeki gerçek fırsatları takip et.</div>
+                    <div class="public-home-steps">
+                        <div class="public-home-step">
+                            <div class="public-home-step-index">01</div>
+                            <div><strong>Rolünü seç</strong><span>Oyuncu, scout, kulüp, menajer veya antrenör olarak doğru giriş yolunu aç.</span></div>
+                        </div>
+                        <div class="public-home-step">
+                            <div class="public-home-step-index">02</div>
+                            <div><strong>Sisteme gir</strong><span>Video, profil, ihtiyaç veya ilan üzerinden sistemin aktif akışına bağlan.</span></div>
+                        </div>
+                        <div class="public-home-step">
+                            <div class="public-home-step-index">03</div>
+                            <div><strong>Sonuca yaklaş</strong><span>Scout ilgisi, görünürlük, eşleşme ve teklif akışını aynı ağda ilerlet.</span></div>
+                        </div>
+                    </div>
+                    <div class="public-home-actions">
+                        <button type="button" class="public-home-link" onclick="openRegisterModal()"><i class="fas fa-user-plus"></i><span>Hemen Başla</span></button>
+                    </div>
+                </article>
+
+                <article class="public-home-card" id="publicLiveOpportunitiesCard">
+                    <div class="public-home-eyebrow">Canlı Fırsatlar</div>
+                    <h3 class="public-home-title">Bugün sistemde gerçekten açılan kapılar</h3>
+                    <div class="public-home-summary">Static tanıtım yerine public kullanıcıya doğrudan aktif alanları göster. Böylece platformun yaşayan tarafı ilk bakışta anlaşılır.</div>
+                    <div class="public-home-opps">
+                        <div class="public-home-opp">
+                            <div><strong>Kulüp ihtiyaçları</strong><span>Bugün takımların aradığı pozisyonları ve açık kadro ihtiyaçlarını incele.</span></div>
+                        </div>
+                        <div class="public-home-opp">
+                            <div><strong>İlan ve fırsatlar</strong><span>Oyuncu, menajer ve antrenör tarafındaki açık hareketleri tek yerden gör.</span></div>
+                        </div>
+                        <div class="public-home-opp">
+                            <div><strong>Transfer akışı</strong><span>Boşta, sözleşmeli ve kulüp arayan oyuncu havuzuna hızlı geçiş yap.</span></div>
+                        </div>
+                    </div>
+                    <div class="public-home-actions">
+                        <a class="public-home-link" href="./club-needs-board.html"><i class="fas fa-list-check"></i><span>İhtiyaçları Aç</span></a>
+                        <a class="public-home-link" href="./discover-opportunities.html"><i class="fas fa-bolt"></i><span>Fırsatları Gör</span></a>
+                        <a class="public-home-link" href="./professional-players.html?transfer_category=free&player_view=quick"><i class="fas fa-arrow-right"></i><span>Oyuncu Havuzunu Aç</span></a>
+                    </div>
+                </article>
+            </section>
+
             <section class="scout-entry-strip" id="scoutEntryStrip" aria-label="Scout girisi">
                 <div class="scout-entry-strip-inner">
                     <div>
@@ -9793,62 +10046,35 @@
                 </div>
             </section>
 
-            <section class="home-data-center-panel">
-                <div class="home-data-center-grid">
-                    <article class="home-data-card">
-                        <div class="k">Lig</div>
-                        <div class="v" id="homeLeagueCount">-</div>
-                    </article>
-                    <article class="home-data-card">
-                        <div class="k">KULÜP</div>
-                        <div class="v" id="homeClubCount">-</div>
-                    </article>
-                    <article class="home-data-card">
-                        <div class="k">Oyuncu</div>
-                        <div class="v" id="homePlayerCount">-</div>
-                    </article>
-                    <article class="home-data-card">
-                        <div class="k">ANTRENÖR</div>
-                        <div class="v" id="homeCoachCount">-</div>
-                    </article>
-                    <article class="home-data-card">
-                        <div class="k">Trend</div>
-                        <div class="v" id="homeTrendCount">-</div>
-                    </article>
-                </div>
-                <section class="data-status-strip" id="dataStatusStrip">Veri Durumu: Yukleniyor...</section>
-            </section>
-
             <section class="desktop-support-grid" aria-label="Sponsor ve kurumsal bilgiler">
-                <article class="desktop-support-card">
-                    <div class="desktop-support-head"><i class="fas fa-handshake"></i> Ana Sponsorlar</div>
-                    <div class="desktop-chip-row" id="desktopSponsorChips">
-                        <span class="desktop-chip">NextScout Pro</span>
-                        <span class="desktop-chip">Talent Partner</span>
-                        <span class="desktop-chip">Performance Lab</span>
+                <div class="desktop-support-columns">
+                    <div class="desktop-support-section">
+                        <div class="desktop-support-label"><i class="fas fa-handshake"></i> Ana Sponsorlar</div>
+                        <div class="desktop-chip-row" id="desktopSponsorChips">
+                            <span class="desktop-chip">NextScout Pro</span>
+                            <span class="desktop-chip">Talent Partner</span>
+                            <span class="desktop-chip">Performance Lab</span>
+                        </div>
                     </div>
-                </article>
 
-                <article class="desktop-support-card">
-                    <div class="desktop-support-head"><i class="fas fa-hashtag"></i> Sosyal Medya</div>
-                    <div class="desktop-chip-row">
-                        <span class="desktop-chip">Instagram: @nextscout</span>
-                        <span class="desktop-chip">X: @nextscoutapp</span>
-                        <span class="desktop-chip">YouTube: NextScout TV</span>
+                    <div class="desktop-support-section">
+                        <div class="desktop-support-label"><i class="fas fa-hashtag"></i> Topluluk Kanalları</div>
+                        <div class="desktop-chip-row">
+                            <span class="desktop-chip">Instagram</span>
+                            <span class="desktop-chip">X</span>
+                            <span class="desktop-chip">YouTube</span>
+                        </div>
                     </div>
-                </article>
 
-                <article class="desktop-support-card">
-                    <div class="desktop-support-head"><i class="fas fa-building"></i> Kurumsal</div>
-                    <div class="desktop-chip-row">
-                        <button type="button" class="desktop-chip-btn" onclick="openAboutModal()">Hakkimizda</button>
-                        <button type="button" class="desktop-chip-btn" onclick="openHomeInfoModal('contact')">İletişim</button>
-                        <button type="button" class="desktop-chip-btn" onclick="openHomeInfoModal('faq')">SSS</button>
-                        <button type="button" class="desktop-chip-btn" onclick="openHomeInfoModal('trust')">Guven & Referans</button>
-                        <button type="button" class="desktop-chip-btn" onclick="openHomeInfoModal('terms')">Kullanim Sartlari</button>
-                        <button type="button" class="desktop-chip-btn" onclick="openHomeInfoModal('privacy')">Gizlilik</button>
+                    <div class="desktop-support-section">
+                        <div class="desktop-support-label"><i class="fas fa-building"></i> Kurumsal Erişim</div>
+                        <div class="desktop-chip-row">
+                            <button type="button" class="desktop-chip-btn" onclick="openAboutModal()">Hakkimizda</button>
+                            <button type="button" class="desktop-chip-btn" onclick="openHomeInfoModal('contact')">İletişim</button>
+                            <button type="button" class="desktop-chip-btn" onclick="openHomeInfoModal('trust')">Guven & Referans</button>
+                        </div>
                     </div>
-                </article>
+                </div>
             </section>
 
         </section>
@@ -11229,7 +11455,9 @@
 
         async function renderDataStatusStrip() {
             const root = document.getElementById('dataStatusStrip');
-            if (!root) return;
+            const liveNewsFootnote = document.getElementById('liveNewsFootnote');
+            const role = getSessionRole();
+            const isPublicSession = !role;
 
             const [playersPayload, clubNeedsPayload, coachesPayload, trendsPayload, qualityPayload] = await Promise.all([
                 fetchJsonSafe(`${API_BASE_URL}/public/players?limit=250`),
@@ -11276,7 +11504,20 @@
             if (coachCountEl) coachCountEl.textContent = String(coachCount);
             if (trendCountEl) trendCountEl.textContent = String(trendCount);
 
-            root.textContent = `Veri Durumu: Güncel veri ${leaguesCount} lig / ${clubCount} KULÜP / ${playerCount} oyuncu / ${coachCount} ANTRENÖR / ${qualityHigh} yüksek kalite profil`;
+            const statusText = `Güncel veri ${leaguesCount} lig / ${clubCount} KULÜP / ${playerCount} oyuncu / ${coachCount} ANTRENÖR / ${qualityHigh} yüksek kalite profil`;
+            if (root) {
+                root.textContent = `Veri Durumu: ${statusText}`;
+            }
+            if (liveNewsFootnote) {
+                liveNewsFootnote.textContent = statusText;
+            }
+            if (root) {
+                if (isPublicSession) {
+                    root.style.display = 'none';
+                } else {
+                    root.style.display = '';
+                }
+            }
         }
 
         function normalizeTransferCategoryValue(value) {
@@ -15472,6 +15713,7 @@
 
         function applyPlayerHomepageVisibility() {
             const role = getSessionRole();
+            const hasSession = isUserAuthenticated();
             const isPlayerSession = isPlayerRole(role);
             const isScoutSession = (role || '').toString().trim().toLowerCase() === 'scout';
             const normalizedRole = (role || '').toString().trim().toLowerCase();
@@ -15479,7 +15721,7 @@
             const isManagerSession = normalizedRole === 'manager' || normalizedRole === 'menajer' || normalizedRole === 'menejer';
             const isCoachSession = normalizedRole === 'coach' || normalizedRole === 'antrenor';
             const isLawyerSession = normalizedRole === 'lawyer' || normalizedRole === 'avukat';
-            const isPublicSession = !role;
+            const isPublicSession = !hasSession || !role;
             const marketAnalysisPanel = document.getElementById('marketAnalysisPanel');
             const scoutEntryStrip = document.getElementById('scoutEntryStrip');
             const starterRoleCard = document.getElementById('starterRoleCard');
@@ -15503,6 +15745,9 @@
             const playerOfWeekCard = document.getElementById('playerOfWeekCard');
             const weeklyTrendsCard = document.getElementById('weeklyTrendsCard');
             const risingStarsCard = document.getElementById('risingStarsCard');
+            const publicHomeGrid = document.getElementById('publicHomeGrid');
+            const dataStatusStrip = document.getElementById('dataStatusStrip');
+            const homeDataPanel = document.querySelector('.home-data-center-panel');
 
             syncNegotiationRoomNavVisibility(normalizedRole);
             syncNegotiationSpotlight(normalizedRole);
@@ -15576,7 +15821,7 @@
             }
 
             if (scoutRadarCard) {
-                scoutRadarCard.style.display = (isPublicSession || isScoutSession) ? '' : 'none';
+                scoutRadarCard.style.display = isScoutSession ? '' : 'none';
             }
 
             if (homeNeedsCard) {
@@ -15588,7 +15833,20 @@
             }
 
             if (lawInsightCard) {
-                lawInsightCard.style.display = '';
+                lawInsightCard.style.display = isPublicSession ? 'none' : '';
+            }
+
+            if (publicHomeGrid) {
+                publicHomeGrid.hidden = !isPublicSession;
+                publicHomeGrid.style.display = isPublicSession ? 'grid' : 'none';
+            }
+
+            if (dataStatusStrip) {
+                dataStatusStrip.style.display = isPublicSession ? 'none' : '';
+            }
+
+            if (homeDataPanel) {
+                homeDataPanel.style.display = isPublicSession ? 'none' : '';
             }
 
             if (belowCardsGrid) {
@@ -16744,6 +17002,9 @@
 
         function syncHomeViewportMode() {
             const isMobileViewport = window.innerWidth <= 1024;
+            const currentRole = getSessionRole();
+            const normalizedRole = normalizeRole(currentRole);
+            const isPublicSession = !isUserAuthenticated() || !normalizedRole || normalizedRole === 'public' || normalizedRole === 'guest';
             const mobilePanel = document.getElementById('mobileDiscoverPanel');
             const mobileBottomPanel = document.querySelector('.mobile-bottom-search-panel');
             const mobileSquare = document.getElementById('mobileIconSquare');
@@ -16766,10 +17027,14 @@
                 mobileSquare.style.display = isMobileViewport ? 'block' : 'none';
             }
 
-            [heroWrapper, homeStep2, homeStep3, homeDataPanel].forEach((el) => {
+            [heroWrapper, homeStep2, homeStep3].forEach((el) => {
                 if (!el) return;
                 el.style.display = isMobileViewport ? 'none' : '';
             });
+
+            if (homeDataPanel) {
+                homeDataPanel.style.display = isMobileViewport || isPublicSession ? 'none' : '';
+            }
         }
 
         syncHomeViewportMode();
