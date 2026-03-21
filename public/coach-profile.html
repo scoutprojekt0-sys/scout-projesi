@@ -313,6 +313,53 @@
       text-transform:uppercase;
     }
     .clip-body { color:#e2e8f0; font-size:14px; line-height:1.72; }
+    .clip-preview {
+      display:grid;
+      gap:12px;
+      margin-bottom:16px;
+      padding:16px;
+      border-radius:18px;
+      border:1px solid rgba(148,163,184,.14);
+      background:rgba(15,23,42,.28);
+    }
+    .clip-preview-frame {
+      position:relative;
+      aspect-ratio:16/9;
+      width:100%;
+      overflow:hidden;
+      border-radius:16px;
+      background:linear-gradient(180deg, rgba(15,23,42,.9) 0%, rgba(30,41,59,.85) 100%);
+      border:1px solid rgba(148,163,184,.12);
+    }
+    .clip-preview-frame iframe,
+    .clip-preview-frame video {
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+    }
+    .clip-preview-empty {
+      height:100%;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.7;
+      padding:24px;
+    }
+    .clip-preview-meta {
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .clip-preview-note {
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.6;
+    }
     @media (max-width:900px) {
       .layout, .form-grid, .review-form-grid, .review-summary-grid, .notes-summary-grid { grid-template-columns: 1fr; }
     }
@@ -428,6 +475,15 @@
         </div>
         <div class="notes-form">
           <div class="review-note">Oyuncu bazlı teknik gözlem notunu kısa, karar odaklı ve tekrar okunabilir biçimde tut.</div>
+          <div class="clip-preview">
+            <div class="clip-preview-frame" id="coachClipPreviewFrame">
+              <div class="clip-preview-empty">Video linkini yapistir. Destekleniyorsa player burada acilir ve <strong>Bu Ani Isaretle</strong> ile zaman otomatik dolar.</div>
+            </div>
+            <div class="clip-preview-meta">
+              <div class="clip-preview-note" id="coachClipPreviewNote">YouTube ve dogrudan video dosyalarinda otomatik zaman alma aktif olur. Diger linklerde manuel dakika ve saniye ile devam edebilirsin.</div>
+              <button class="btn" type="button" id="markCoachClipMomentBtn"><i class="fas fa-location-crosshairs"></i><span>Bu Ani Isaretle</span></button>
+            </div>
+          </div>
           <div class="form-grid">
             <div class="field"><label class="label" for="coachNotePlayer">Oyuncu</label><input class="input" id="coachNotePlayer" placeholder="Oyuncu adı"></div>
             <div class="field"><label class="label" for="coachNotePosition">Pozisyon</label><input class="input" id="coachNotePosition" placeholder="Forvet / Orta saha / Bek"></div>
@@ -469,6 +525,7 @@
     const KEY = 'nextscout_coach_profile';
     const NOTES_KEY = 'nextscout_coach_notes';
     const CLIPS_KEY = 'nextscout_coach_clips';
+    let coachClipPlayerState = { type: 'none', video: null };
 
     function getApiBaseUrl() {
       const params = new URLSearchParams(window.location.search);
@@ -616,6 +673,94 @@
       const target = buildTimedClipUrl(rawUrl, stamp);
       if (!target) return;
       window.open(target, '_blank', 'noopener,noreferrer');
+    }
+
+    function getCoachClipElements() {
+      return {
+        url: document.getElementById('coachClipUrl'),
+        minute: document.getElementById('coachClipMinute'),
+        second: document.getElementById('coachClipSecond'),
+        frame: document.getElementById('coachClipPreviewFrame'),
+        note: document.getElementById('coachClipPreviewNote'),
+      };
+    }
+
+    function parseYouTubeId(rawUrl) {
+      try {
+        const url = new URL(String(rawUrl || '').trim());
+        const host = (url.hostname || '').toLowerCase();
+        if (host.includes('youtu.be')) return url.pathname.replace(/\//g, '') || '';
+        if (host.includes('youtube.com')) return url.searchParams.get('v') || '';
+      } catch (error) {
+        return '';
+      }
+      return '';
+    }
+
+    function isDirectVideoUrl(rawUrl) {
+      return /\.(mp4|webm|ogg)(\?|#|$)/i.test(String(rawUrl || '').trim());
+    }
+
+    function setCoachClipTime(seconds) {
+      const { minute, second } = getCoachClipElements();
+      const total = Math.max(0, Number(seconds || 0));
+      if (minute) minute.value = String(Math.floor(total / 60));
+      if (second) second.value = String(Math.floor(total % 60)).padStart(2, '0');
+    }
+
+    function renderCoachClipPreview() {
+      const { url, frame, note } = getCoachClipElements();
+      if (!url || !frame || !note) return;
+
+      const source = String(url.value || '').trim();
+      coachClipPlayerState = { type: 'none', video: null };
+
+      if (!source) {
+        frame.innerHTML = '<div class="clip-preview-empty">Video linkini yapistir. Destekleniyorsa player burada acilir ve <strong>Bu Ani Isaretle</strong> ile zaman otomatik dolar.</div>';
+        note.textContent = 'YouTube ve dogrudan video dosyalarinda otomatik zaman alma aktif olur. Diger linklerde manuel dakika ve saniye ile devam edebilirsin.';
+        return;
+      }
+
+      const youtubeId = parseYouTubeId(source);
+      if (youtubeId) {
+        const embedUrl = `https://www.youtube.com/embed/${youtubeId}?rel=0&modestbranding=1`;
+        frame.innerHTML = `<iframe src="${esc(embedUrl)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Klip onizleme"></iframe>`;
+        note.textContent = 'YouTube onizleme acildi. Zamani tam otomatik okuyamayiz; izledigin ani tek tusla mevcut manual alanlara hizla doldurmak icin dakika ve saniyeyi yine kontrol et.';
+        coachClipPlayerState = { type: 'youtube', video: null };
+        return;
+      }
+
+      if (isDirectVideoUrl(source)) {
+        frame.innerHTML = `<video id="coachClipVideoPreview" src="${esc(source)}" controls preload="metadata"></video>`;
+        const video = frame.querySelector('#coachClipVideoPreview');
+        coachClipPlayerState = { type: 'video', video };
+        note.textContent = 'Video onizleme acildi. Oynatirken Bu Ani Isaretle butonu mevcut saniyeyi otomatik yazar.';
+        return;
+      }
+
+      frame.innerHTML = '<div class="clip-preview-empty">Bu linkte yerlesik onizleme acilmiyor. Manuel dakika ve saniye ile devam edebilirsin.</div>';
+      note.textContent = 'Desteklenmeyen baglanti. Dakika ve saniyeyi manuel girip klibi kaydet.';
+    }
+
+    function markCoachClipMoment() {
+      const { url } = getCoachClipElements();
+      const source = String(url?.value || '').trim();
+      if (!source) {
+        alert('Once bir video linki gir.');
+        return;
+      }
+
+      if (coachClipPlayerState.type === 'video' && coachClipPlayerState.video) {
+        setCoachClipTime(coachClipPlayerState.video.currentTime || 0);
+        return;
+      }
+
+      if (coachClipPlayerState.type === 'youtube') {
+        alert('YouTube onizlemede zamani tarayici icinden tam okuyamiyoruz. Izledigin saniyeyi manuel alanlarda duzenleyebilirsin.');
+        return;
+      }
+
+      alert('Bu linkte otomatik zaman alma desteklenmiyor. Manuel dakika ve saniye ile devam et.');
     }
 
     function saveProfile(profile) {
@@ -789,6 +934,7 @@
       second.value = '';
       body.value = '';
       renderCoachClips();
+      renderCoachClipPreview();
     }
 
     function bindCoachClipInteractions() {
@@ -994,6 +1140,7 @@
       renderCoachNotes();
       renderCoachClips();
       bindCoachClipInteractions();
+      renderCoachClipPreview();
     }
 
     document.getElementById('coachForm')?.addEventListener('submit', async function (e) {
@@ -1049,6 +1196,8 @@
 
     document.getElementById('saveCoachNoteBtn')?.addEventListener('click', submitCoachNote);
     document.getElementById('saveCoachClipBtn')?.addEventListener('click', submitCoachClip);
+    document.getElementById('coachClipUrl')?.addEventListener('input', renderCoachClipPreview);
+    document.getElementById('markCoachClipMomentBtn')?.addEventListener('click', markCoachClipMoment);
 
     init();
   </script>
