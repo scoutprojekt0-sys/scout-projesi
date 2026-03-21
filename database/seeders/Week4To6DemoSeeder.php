@@ -15,7 +15,7 @@ class Week4To6DemoSeeder extends Seeder
 {
     public function run(): void
     {
-        $clubA = User::firstOrCreate(
+        $clubA = User::updateOrCreate(
             ['email' => 'club-a@nextscout.pro'],
             [
                 'name' => 'Istanbul Athletic',
@@ -23,10 +23,13 @@ class Week4To6DemoSeeder extends Seeder
                 'role' => 'team',
                 'city' => 'Istanbul',
                 'phone' => null,
+                'is_verified' => true,
+                'email_verified_at' => now(),
+                'email_verification_token' => null,
             ]
         );
 
-        $clubB = User::firstOrCreate(
+        $clubB = User::updateOrCreate(
             ['email' => 'club-b@nextscout.pro'],
             [
                 'name' => 'Ankara United',
@@ -34,10 +37,13 @@ class Week4To6DemoSeeder extends Seeder
                 'role' => 'team',
                 'city' => 'Ankara',
                 'phone' => null,
+                'is_verified' => true,
+                'email_verified_at' => now(),
+                'email_verification_token' => null,
             ]
         );
 
-        $player = User::firstOrCreate(
+        $player = User::updateOrCreate(
             ['email' => 'player-demo@nextscout.pro'],
             [
                 'name' => 'Demir Yilmaz',
@@ -50,6 +56,9 @@ class Week4To6DemoSeeder extends Seeder
                 'has_source' => true,
                 'verification_status' => 'verified',
                 'confidence_score' => 0.85,
+                'is_verified' => true,
+                'email_verified_at' => now(),
+                'email_verification_token' => null,
             ]
         );
 

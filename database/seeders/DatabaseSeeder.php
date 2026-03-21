@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Test kullanıcıları
-        User::query()->firstOrCreate(
+        User::query()->updateOrCreate(
             ['email' => 'player@test.com'],
             [
                 'name'       => 'Test Oyuncu',
@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        User::query()->firstOrCreate(
+        User::query()->updateOrCreate(
             ['email' => 'team@test.com'],
             [
                 'name'       => 'Test Takım',
@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        User::query()->firstOrCreate(
+        User::query()->updateOrCreate(
             ['email' => 'scout@test.com'],
             [
                 'name'       => 'Test Scout',

@@ -1,14 +1,155 @@
 <?php
 
+use App\Models\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schedule;
+use Illuminate\Support\Facades\Hash;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+Artisan::command('legacy-auth:repair {--dry-run : Show affected users without writing changes}', function () {
+    $cutoff = Carbon::create(2026, 3, 11, 9, 0, 0, config('app.timezone', 'UTC'));
+
+    $legacyUsers = User::query()
+        ->where(function ($query) {
+            $query->where('is_verified', false)->orWhereNull('is_verified');
+        })
+        ->whereNull('email_verified_at')
+        ->whereNull('email_verification_token')
+        ->where('created_at', '<', $cutoff)
+        ->orderBy('id')
+        ->get();
+
+    $demoUsers = [
+        'player@test.com' => [
+            'name' => 'Test Oyuncu',
+            'password' => 'Password123!',
+            'role' => 'player',
+            'city' => 'Istanbul',
+        ],
+        'team@test.com' => [
+            'name' => 'Test Takim',
+            'password' => 'Password123!',
+            'role' => 'team',
+            'city' => 'Ankara',
+        ],
+        'scout@test.com' => [
+            'name' => 'Test Scout',
+            'password' => 'Password123!',
+            'role' => 'scout',
+            'city' => 'Izmir',
+        ],
+        'club-a@nextscout.pro' => [
+            'name' => 'Istanbul Athletic',
+            'password' => 'Password123',
+            'role' => 'team',
+            'city' => 'Istanbul',
+        ],
+        'club-b@nextscout.pro' => [
+            'name' => 'Ankara United',
+            'password' => 'Password123',
+            'role' => 'team',
+            'city' => 'Ankara',
+        ],
+        'player-demo@nextscout.pro' => [
+            'name' => 'Demir Yilmaz',
+            'password' => 'Password123',
+            'role' => 'player',
+            'city' => 'Istanbul',
+        ],
+    ];
+
+    $this->info('Legacy auth repair scan');
+    $this->line('Legacy users to verify: '.$legacyUsers->count());
+    foreach ($legacyUsers as $user) {
+        $this->line(sprintf(' - #%d %s', $user->id, $user->email));
+    }
+
+    $this->newLine();
+    $this->line('Demo users to normalize: '.count($demoUsers));
+    foreach (array_keys($demoUsers) as $email) {
+        $this->line(' - '.$email);
+    }
+
+    if ($this->option('dry-run')) {
+        $this->newLine();
+        $this->comment('Dry run only. No changes were written.');
+
+        return SymfonyCommand::SUCCESS;
+    }
+
+    $updatedLegacyCount = 0;
+    foreach ($legacyUsers as $user) {
+        $user->forceFill([
+            'is_verified' => true,
+            'email_verified_at' => $user->created_at ?? now(),
+        ])->save();
+        $updatedLegacyCount++;
+    }
+
+    foreach ($demoUsers as $email => $profile) {
+        User::query()->updateOrCreate(
+            ['email' => $email],
+            [
+                'name' => $profile['name'],
+                'password' => Hash::make($profile['password']),
+                'role' => $profile['role'],
+                'city' => $profile['city'],
+                'is_verified' => true,
+                'email_verified_at' => now(),
+                'email_verification_token' => null,
+            ]
+        );
+    }
+
+    $this->newLine();
+    $this->info("Repaired {$updatedLegacyCount} legacy users.");
+    $this->info('Normalized known demo accounts and passwords.');
+    $this->line('Demo credentials:');
+    $this->line(' - player@test.com / Password123!');
+    $this->line(' - team@test.com / Password123!');
+    $this->line(' - scout@test.com / Password123!');
+    $this->line(' - club-a@nextscout.pro / Password123');
+    $this->line(' - club-b@nextscout.pro / Password123');
+    $this->line(' - player-demo@nextscout.pro / Password123');
+
+    return SymfonyCommand::SUCCESS;
+})->purpose('Repair legacy users and normalize demo account credentials');
+
+Artisan::command('legacy-auth:set-password {email} {password} {--verify : Mark the user as verified too}', function (string $email, string $password) {
+    $user = User::query()->whereRaw('LOWER(email) = ?', [strtolower(trim($email))])->first();
+
+    if (! $user) {
+        $this->error('User not found: '.$email);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $updates = [
+        'password' => Hash::make($password),
+    ];
+
+    if ($this->option('verify')) {
+        $updates['is_verified'] = true;
+        $updates['email_verified_at'] = $user->email_verified_at ?? now();
+        $updates['email_verification_token'] = null;
+    }
+
+    $user->forceFill($updates)->save();
+
+    $this->info('Password updated for '.$user->email);
+    if ($this->option('verify')) {
+        $this->line('User was also marked as verified.');
+    }
+
+    return SymfonyCommand::SUCCESS;
+})->purpose('Set a temporary password for a specific legacy user');
 
 Artisan::command('release:check {--env-file=}', function () {
     $isPublicUrl = static function (?string $value): bool {

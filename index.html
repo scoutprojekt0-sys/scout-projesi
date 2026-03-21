@@ -10508,7 +10508,7 @@
             .catch((err) => {
                 console.error('❌ Giriş hatası:', err);
                 const registeredUser = findRegisteredUser(payload.email, payload.password);
-                if (registeredUser) {
+                if (err.message === 'Failed to fetch' && registeredUser) {
                     loginWithLocalUser(registeredUser);
                     return;
                 }
@@ -10578,16 +10578,6 @@
                 return;
             }
 
-            if (emailExistsLocally(payload.email)) {
-                showRegisterStatus('Bu e-posta ile zaten kayıt var. Lütfen farklı bir e-posta kullanın.');
-                return;
-            }
-
-            saveRegisteredUser(payload);
-            showRegisterStatus('Kayıt oluşturuldu. Şimdi giriş yapabilirsin.', 'success');
-            registerForm.reset();
-            return;
-
             // file:// modunda demo kayıt akışı
             if (window.location.protocol === 'file:') {
                 if (!payload.name || !payload.email || !payload.password) {
@@ -10632,15 +10622,19 @@
                     created_at: registeredUser?.created_at || new Date().toISOString(),
                 });
 
-                closeRegisterModal();
-                nsnsAlert('Kayıt alındı. Artık giriş yapabilirsin.');
+                showRegisterStatus('Kayıt oluşturuldu. Şimdi giriş yapabilirsin.', 'success');
+                registerForm.reset();
+                setTimeout(() => {
+                    closeRegisterModal();
+                    openLoginModal();
+                }, 400);
             })
             .catch((err) => {
                 console.error('❌ Kayıt hatası:', err);
-                if (!emailExistsLocally(payload.email)) {
+                if (err.message === 'Failed to fetch' && !emailExistsLocally(payload.email)) {
                     saveRegisteredUser(payload);
-                    closeRegisterModal();
-                    nsnsAlert('Kayıt lokal olarak oluşturuldu. Artık giriş yapabilirsin.');
+                    showRegisterStatus('Sunucuya ulaşılamadı. Kayıt bu tarayıcıda yerel olarak saklandı; şimdi giriş yapabilirsin.', 'success');
+                    registerForm.reset();
                     return;
                 }
                 let errorMsg = err.message;
@@ -10699,9 +10693,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
 
 
 

@@ -3113,7 +3113,7 @@
         .below-cards-grid {
             margin-top: 16px;
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 12px;
         }
 
@@ -3139,6 +3139,21 @@
         .below-cards-grid .below-card .card-mini-meta {
             margin-top: auto;
             padding-top: 14px;
+        }
+
+        .below-cards-grid #roleHomeTipGrid {
+            display: contents;
+        }
+
+        .below-cards-grid .role-tip-card {
+            min-height: 220px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .below-cards-grid .role-tip-feed {
+            margin-top: 8px;
         }
 
         .homepage-visibility-card {
@@ -3714,6 +3729,104 @@
             display: grid;
             grid-template-columns: 1fr;
             gap: 10px;
+        }
+
+        .role-tip-card {
+            position: relative;
+            overflow: hidden;
+            padding: 18px;
+            border: 1px solid rgba(110, 138, 255, 0.18);
+            background:
+                radial-gradient(circle at top right, rgba(96, 165, 250, 0.14), transparent 30%),
+                linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(10, 15, 31, 0.98));
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 18px 34px rgba(2, 6, 23, .22);
+            display: none;
+            grid-template-rows: auto auto 1fr auto;
+            gap: 14px;
+        }
+
+        .role-tip-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 3px;
+            background: linear-gradient(90deg, #f97316 0%, #fb923c 35%, #60a5fa 100%);
+        }
+
+        .role-tip-card.is-club::before {
+            background: linear-gradient(90deg, #f97316 0%, #fb923c 45%, #fde68a 100%);
+        }
+
+        .role-tip-card.is-manager::before {
+            background: linear-gradient(90deg, #60a5fa 0%, #818cf8 45%, #f97316 100%);
+        }
+
+        .role-tip-card.is-coach::before {
+            background: linear-gradient(90deg, #22c55e 0%, #14b8a6 40%, #60a5fa 100%);
+        }
+
+        .role-tip-card-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .role-tip-card-title {
+            margin: 0;
+            font-size: 22px;
+            color: var(--ns-text);
+        }
+
+        .role-tip-card-summary {
+            color: var(--ns-muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .role-tip-feed {
+            display: grid;
+            gap: 10px;
+        }
+
+        .role-tip-feed-item {
+            padding: 13px 12px;
+            border: 1px solid rgba(255,255,255,.1);
+            background: rgba(255,255,255,.04);
+        }
+
+        .role-tip-feed-item strong {
+            display: block;
+            color: #f8fbff;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .role-tip-feed-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            color: #bfd1e7;
+            font-size: 12px;
+        }
+
+        .role-tip-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 9px;
+            border: 1px solid rgba(255,255,255,.1);
+            background: rgba(255,255,255,.05);
+            color: #e0ecff;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .role-tip-footer {
+            display: flex;
+            justify-content: flex-end;
         }
 
         .role-visibility-stage {
@@ -4454,6 +4567,23 @@
             font-size: 14px;
             font-weight: 800;
             line-height: 1.4;
+        }
+
+        .club-system-stat-button {
+            width: 100%;
+            text-align: left;
+            border: 1px solid rgba(96, 165, 250, 0.32);
+            background: rgba(15, 23, 42, 0.28);
+            border-radius: 12px;
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: border-color .2s ease, background .2s ease, transform .2s ease;
+        }
+
+        .club-system-stat-button:hover {
+            border-color: rgba(96, 165, 250, 0.6);
+            background: rgba(30, 41, 59, 0.52);
+            transform: translateY(-1px);
         }
 
         @media (max-width: 640px) {
@@ -8581,7 +8711,7 @@
                 </div>
             </section>
 
-            <section class="scout-entry-strip" aria-label="Scout girisi">
+            <section class="scout-entry-strip" id="scoutEntryStrip" aria-label="Scout girisi">
                 <div class="scout-entry-strip-inner">
                     <div>
                         <div class="scout-entry-kicker">
@@ -8603,10 +8733,10 @@
                         <div class="scout-entry-card">
                             <h3 class="scout-entry-card-title">Scout Et</h3>
                             <p class="scout-entry-card-text">Yeni kullanıcıysan kayıt ekranını scout rolüyle aç. Hesabın varsa giriş yapıp paneline geç.</p>
-                            <button type="button" class="btn" onclick="openScoutEntryFlow()">
+                            <a href="./scout-et.html" class="btn">
                                 <i class="fas fa-bullseye"></i>
                                 Scout Et
-                            </button>
+                            </a>
                         </div>
                         <div class="scout-entry-card">
                             <h3 class="scout-entry-card-title">Zaten hesabın var mı?</h3>
@@ -8866,9 +8996,13 @@
                     (function () {
                         const card = document.getElementById('starterRoleCard');
                         const starterContent = document.getElementById('starterRoleCardContent');
+                        const roleTipGrid = document.getElementById('roleHomeTipGrid');
                         const clubCard = document.getElementById('clubHomeVisibilityCard');
                         const managerCard = document.getElementById('managerHomeVisibilityCard');
                         const coachCard = document.getElementById('coachHomeVisibilityCard');
+                        const clubTipCard = document.getElementById('clubHomeTipCard');
+                        const managerTipCard = document.getElementById('managerHomeTipCard');
+                        const coachTipCard = document.getElementById('coachHomeTipCard');
                         if (!card) return;
 
                         function normalizeRole(value) {
@@ -8897,23 +9031,116 @@
 
                         function applyStarterVisibility() {
                             const role = readRole();
-                            const isPlayerSession = role === 'player' || role === 'oyuncu';
                             const hasSession = Boolean((localStorage.getItem('nextscout_token') || '').trim() || (localStorage.getItem('nextscout_user') || '').trim());
                             if (starterContent) starterContent.style.display = 'none';
                             if (clubCard) clubCard.style.display = 'none';
                             if (managerCard) managerCard.style.display = 'none';
                             if (coachCard) coachCard.style.display = 'none';
-                            if (hasSession || isPlayerSession) {
-                                card.style.display = 'none';
+                            if (clubTipCard) clubTipCard.style.display = 'none';
+                            if (managerTipCard) managerTipCard.style.display = 'none';
+                            if (coachTipCard) coachTipCard.style.display = 'none';
+                            if (roleTipGrid) roleTipGrid.style.display = 'none';
+
+                            if (hasSession && (role === 'team' || role === 'kulup' || role === 'club')) {
+                                card.style.display = 'grid';
+                                if (clubCard) clubCard.style.display = 'grid';
+                                if (roleTipGrid) roleTipGrid.style.display = 'contents';
+                                if (clubTipCard) clubTipCard.style.display = 'grid';
                                 return;
                             }
+
+                            if (hasSession && (role === 'manager' || role === 'menajer')) {
+                                card.style.display = 'grid';
+                                if (managerCard) managerCard.style.display = 'grid';
+                                if (roleTipGrid) roleTipGrid.style.display = 'contents';
+                                if (managerTipCard) managerTipCard.style.display = 'grid';
+                                return;
+                            }
+
+                            if (hasSession && (role === 'coach' || role === 'antrenor')) {
+                                card.style.display = 'grid';
+                                if (coachCard) coachCard.style.display = 'grid';
+                                if (roleTipGrid) roleTipGrid.style.display = 'contents';
+                                if (coachTipCard) coachTipCard.style.display = 'grid';
+                                return;
+                            }
+
                             card.style.display = 'flex';
                             if (starterContent) starterContent.style.display = '';
                         }
 
+                        function formatTipStatus(value) {
+                            const status = (value || '').toString().trim().toLowerCase();
+                            if (status === 'screened') return 'Tarandı';
+                            if (status === 'shortlisted') return 'Kısa Liste';
+                            if (status === 'approved') return 'Onay';
+                            return 'Beklemede';
+                        }
+
+                        function formatTipDate(value) {
+                            if (!value) return 'Bugün';
+                            const date = new Date(value);
+                            if (Number.isNaN(date.getTime())) return 'Bugün';
+                            return date.toLocaleDateString('tr-TR', { day: '2-digit', month: 'short' });
+                        }
+
+                        async function loadRoleTipFeeds() {
+                            const role = readRole();
+                            const hasSession = Boolean((localStorage.getItem('nextscout_token') || '').trim() || (localStorage.getItem('nextscout_user') || '').trim());
+                            if (!hasSession || !['team', 'kulup', 'club', 'manager', 'menajer', 'coach', 'antrenor'].includes(role)) {
+                                return;
+                            }
+
+                            const targets = [clubTipCard, managerTipCard, coachTipCard].filter(Boolean);
+                            targets.forEach((node) => {
+                                const feed = node.querySelector('.role-tip-feed');
+                                if (feed) feed.innerHTML = '<div class="role-tip-feed-item">İhbarlar yükleniyor...</div>';
+                            });
+
+                            const apiBase = `${window.location.protocol === 'file:' ? 'http://127.0.0.1:8000' : window.location.origin}/api`;
+
+                            try {
+                                const response = await fetch(`${apiBase}/scout-tips/feed?limit=2`, {
+                                    headers: { Accept: 'application/json' }
+                                });
+                                const payload = await response.json().catch(() => ({}));
+                                const rows = Array.isArray(payload?.data) ? payload.data : [];
+                                const markup = rows.length
+                                    ? rows.map((row) => `
+                                        <div class="role-tip-feed-item">
+                                            <strong>${row.player_name || '-'}</strong>
+                                            <div class="role-tip-feed-meta">
+                                                <span>${row.city || '-'}</span>
+                                                <span>${row.position || 'Pozisyon bekleniyor'}</span>
+                                                <span>${formatTipStatus(row.status)}</span>
+                                            </div>
+                                            <div class="role-tip-feed-meta">
+                                                <span>${row.is_guest ? 'Misafir ihbarı' : 'Hesaplı ihbar'}</span>
+                                                <span>Skor: ${row.final_score || 0}</span>
+                                                <span>${formatTipDate(row.created_at)}</span>
+                                            </div>
+                                        </div>
+                                    `).join('')
+                                    : '<div class="role-tip-feed-item">Henüz ihbar yok.</div>';
+
+                                targets.forEach((node) => {
+                                    const feed = node.querySelector('.role-tip-feed');
+                                    if (feed) feed.innerHTML = markup;
+                                });
+                            } catch (error) {
+                                targets.forEach((node) => {
+                                    const feed = node.querySelector('.role-tip-feed');
+                                    if (feed) feed.innerHTML = '<div class="role-tip-feed-item">İhbarlar şu an alınamıyor.</div>';
+                                });
+                            }
+                        }
+
                         applyStarterVisibility();
+                        loadRoleTipFeeds();
                         window.addEventListener('load', applyStarterVisibility);
+                        window.addEventListener('load', loadRoleTipFeeds);
                         setTimeout(applyStarterVisibility, 250);
+                        setTimeout(loadRoleTipFeeds, 450);
                     })();
                 </script>
             </div>
@@ -8965,11 +9192,15 @@
                     <div class="club-system-meta">
                         <div class="club-system-stat">
                             <div class="club-system-stat-label">Aktif Sistem</div>
-                            <div class="club-system-stat-value" id="clubSystemFitLabel">Gegenpressing | 4-3-3 Ofansif</div>
+                            <select class="club-system-stat-value club-system-branch-select club-system-stat-button" id="clubSystemFitLabel">
+                                <option value="gegenpressing">Gegenpressing | 4-3-3 Ofansif</option>
+                                <option value="park_the_bus">Park the Bus | 5-4-1 Savunma</option>
+                                <option value="possession_control">Topa Sahip Olan Oyun | 4-2-3-1</option>
+                                <option value="transition_play">Gecis Oyunu | 3-4-3 Direkt</option>
+                            </select>
                         </div>
                         <div class="club-system-stat">
                             <div class="club-system-stat-label">Brans</div>
-                            <div class="club-system-stat-value" id="clubSystemFitBranch">Futbol</div>
                             <select class="club-system-branch-select" id="clubSystemBranchSelect">
                                 <option value="futbol">Futbol</option>
                                 <option value="basketbol">Basketbol</option>
@@ -9037,6 +9268,56 @@
                     <div class="desc" id="risingStarsBody">Transfer kategorileri hazırlanıyor.</div>
                     <div class="card-mini-meta" id="risingStarsMeta">4 transfer akışı • Güncelleme: bekleniyor</div>
                 </article>
+                <div id="roleHomeTipGrid" style="display:none;">
+                    <article class="role-tip-card is-club" id="clubHomeTipCard" style="display:none;">
+                        <div class="role-tip-card-head">
+                            <div>
+                                <div class="role-visibility-eyebrow">Scout Akışı</div>
+                                <h3 class="role-tip-card-title">Son Scout İhbarları</h3>
+                            </div>
+                            <span class="role-tip-badge"><i class="fas fa-bell"></i><span>Canlı</span></span>
+                        </div>
+                        <div class="role-tip-card-summary">Kulübün için hızlı ön izleme. Son düşen iki ihbarı buradan gör, sonra tam akışa geç.</div>
+                        <div class="role-tip-feed" id="clubHomeTipFeed">
+                            <div class="role-tip-feed-item">İhbarlar yükleniyor...</div>
+                        </div>
+                        <div class="role-tip-footer">
+                            <a class="role-visibility-link" href="./scout-ihbarlari.html"><span>Tümünü Gör</span><i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </article>
+                    <article class="role-tip-card is-manager" id="managerHomeTipCard" style="display:none;">
+                        <div class="role-tip-card-head">
+                            <div>
+                                <div class="role-visibility-eyebrow">Scout Akışı</div>
+                                <h3 class="role-tip-card-title">Son Scout İhbarları</h3>
+                            </div>
+                            <span class="role-tip-badge"><i class="fas fa-bell"></i><span>Canlı</span></span>
+                        </div>
+                        <div class="role-tip-card-summary">Portföye girebilecek yeni ihbarları kısa ve okunur kart düzeninde önceden yakala.</div>
+                        <div class="role-tip-feed" id="managerHomeTipFeed">
+                            <div class="role-tip-feed-item">İhbarlar yükleniyor...</div>
+                        </div>
+                        <div class="role-tip-footer">
+                            <a class="role-visibility-link" href="./scout-ihbarlari.html"><span>Tümünü Gör</span><i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </article>
+                    <article class="role-tip-card is-coach" id="coachHomeTipCard" style="display:none;">
+                        <div class="role-tip-card-head">
+                            <div>
+                                <div class="role-visibility-eyebrow">Scout Akışı</div>
+                                <h3 class="role-tip-card-title">Son Scout İhbarları</h3>
+                            </div>
+                            <span class="role-tip-badge"><i class="fas fa-bell"></i><span>Canlı</span></span>
+                        </div>
+                        <div class="role-tip-card-summary">Teknik gözleme uygun yeni ihbarları iki satırlık özetle gör ve tüm listeye geç.</div>
+                        <div class="role-tip-feed" id="coachHomeTipFeed">
+                            <div class="role-tip-feed-item">İhbarlar yükleniyor...</div>
+                        </div>
+                        <div class="role-tip-footer">
+                            <a class="role-visibility-link" href="./scout-ihbarlari.html"><span>Tümünü Gör</span><i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </article>
+                </div>
             </div>
 
             <section class="market-analysis-panel" id="marketAnalysisPanel">
@@ -14723,25 +15004,38 @@
             return normalizeClubBranchValue(defaultBranch);
         }
 
-        function updateHomepageBranchButtons(activeBranch) {
-            const buttons = document.querySelectorAll('#clubSystemBranchPicker .club-system-branch-btn');
-            buttons.forEach((button) => {
-                const buttonBranch = normalizeClubBranchValue(button.getAttribute('data-branch') || '');
-                button.classList.toggle('active', buttonBranch === activeBranch);
+        function bindHomepageBranchButtons() {
+            const branchSelect = document.getElementById('clubSystemBranchSelect');
+            if (!branchSelect || branchSelect.dataset.bound === '1') return;
+
+            branchSelect.addEventListener('change', () => {
+                const selectedBranch = normalizeClubBranchValue(branchSelect.value || '');
+                const systemSelect = document.getElementById('clubSystemFitLabel');
+                const currentSystem = (systemSelect?.value || getStoredClubProfile()?.preferredSystem || 'gegenpressing').toString().trim();
+                localStorage.setItem(HOMEPAGE_BRANCH_STORAGE_KEY, selectedBranch);
+                updateClubSystemHomepageCard(currentSystem);
             });
+
+            branchSelect.dataset.bound = '1';
         }
 
-        function bindHomepageBranchButtons(preferredSystem) {
-            const buttons = document.querySelectorAll('#clubSystemBranchPicker .club-system-branch-btn');
-            buttons.forEach((button) => {
-                if (button.dataset.bound === '1') return;
-                button.dataset.bound = '1';
-                button.addEventListener('click', () => {
-                    const selectedBranch = normalizeClubBranchValue(button.getAttribute('data-branch') || '');
-                    localStorage.setItem(HOMEPAGE_BRANCH_STORAGE_KEY, selectedBranch);
-                    updateClubSystemHomepageCard(preferredSystem);
-                });
+        function bindHomepageSystemSelect() {
+            const systemSelect = document.getElementById('clubSystemFitLabel');
+            if (!systemSelect || systemSelect.dataset.bound === '1') return;
+
+            systemSelect.addEventListener('change', () => {
+                const nextSystem = (systemSelect.value || 'gegenpressing').toString().trim();
+                try {
+                    const profile = getStoredClubProfile();
+                    localStorage.setItem('nextscout_club_profile', JSON.stringify({
+                        ...profile,
+                        preferredSystem: nextSystem,
+                    }));
+                } catch (error) {}
+                updateClubSystemHomepageCard(nextSystem);
             });
+
+            systemSelect.dataset.bound = '1';
         }
 
         function updateClubSystemHomepageCard(forcedSystem) {
@@ -14756,7 +15050,7 @@
             const systemLabel = HOMEPAGE_SYSTEM_LABELS[preferredSystem] || 'Sistem secilmedi';
             const summary = document.getElementById('clubSystemFitSummary');
             const label = document.getElementById('clubSystemFitLabel');
-            const branchNode = document.getElementById('clubSystemFitBranch');
+            const branchSelect = document.getElementById('clubSystemBranchSelect');
             const note = document.getElementById('clubSystemFitNote');
             const playersLink = document.getElementById('clubSystemPlayersLink');
             const profileLink = document.getElementById('clubSystemProfileLink');
@@ -14765,10 +15059,10 @@
                 summary.textContent = `${branch} bransinda ${systemLabel} modeline uygun oyunculari hizli ac.`;
             }
             if (label) {
-                label.textContent = systemLabel;
+                label.value = preferredSystem;
             }
-            if (branchNode) {
-                branchNode.textContent = branch;
+            if (branchSelect) {
+                branchSelect.value = branchValue;
             }
             if (note) {
                 note.textContent = `${branch} secili. Sisteme uygun oyuncular acildiginda sadece bu branstaki oyuncular listelenir.`;
@@ -14780,8 +15074,8 @@
             if (profileLink) {
                 profileLink.href = resolveLocalPage('club-profile.html');
             }
-            updateHomepageBranchButtons(branchValue);
-            bindHomepageBranchButtons(preferredSystem);
+            bindHomepageBranchButtons();
+            bindHomepageSystemSelect();
         }
 
         function applyPlatformSummaryVisibility() {
@@ -14811,9 +15105,19 @@
             const normalizedRole = (role || '').toString().trim().toLowerCase();
             const isClubSession = normalizedRole === 'club' || normalizedRole === 'team' || normalizedRole === 'kulup' || normalizedRole === 'klup';
             const isManagerSession = normalizedRole === 'manager' || normalizedRole === 'menajer' || normalizedRole === 'menejer';
+            const isCoachSession = normalizedRole === 'coach' || normalizedRole === 'antrenor';
             const isPublicSession = !role;
             const marketAnalysisPanel = document.getElementById('marketAnalysisPanel');
+            const scoutEntryStrip = document.getElementById('scoutEntryStrip');
             const starterRoleCard = document.getElementById('starterRoleCard');
+            const starterRoleCardContent = document.getElementById('starterRoleCardContent');
+            const clubHomeVisibilityCard = document.getElementById('clubHomeVisibilityCard');
+            const managerHomeVisibilityCard = document.getElementById('managerHomeVisibilityCard');
+            const coachHomeVisibilityCard = document.getElementById('coachHomeVisibilityCard');
+            const roleHomeTipGrid = document.getElementById('roleHomeTipGrid');
+            const clubHomeTipCard = document.getElementById('clubHomeTipCard');
+            const managerHomeTipCard = document.getElementById('managerHomeTipCard');
+            const coachHomeTipCard = document.getElementById('coachHomeTipCard');
             const homepageVisibilityCard = document.getElementById('homepageVisibilityCard');
             const staffOnlyGrid = document.getElementById('staffOnlyGrid');
             const playerOnlyGrid = document.getElementById('playerOnlyGrid');
@@ -14835,9 +15139,48 @@
                 marketAnalysisPanel.style.display = shouldShow ? '' : 'none';
             }
 
+            if (scoutEntryStrip) {
+                const shouldShowScoutEntry = isPublicSession || isScoutSession;
+                scoutEntryStrip.hidden = !shouldShowScoutEntry;
+                scoutEntryStrip.style.display = shouldShowScoutEntry ? '' : 'none';
+            }
+
             if (starterRoleCard) {
-                starterRoleCard.hidden = !isPublicSession;
-                starterRoleCard.style.display = isPublicSession ? '' : 'none';
+                const shouldShowStarterRoleCard = isPublicSession || isClubSession || isManagerSession || isCoachSession;
+                starterRoleCard.hidden = !shouldShowStarterRoleCard;
+                starterRoleCard.style.display = shouldShowStarterRoleCard ? '' : 'none';
+            }
+
+            if (starterRoleCardContent) {
+                starterRoleCardContent.style.display = isPublicSession ? '' : 'none';
+            }
+
+            if (clubHomeVisibilityCard) {
+                clubHomeVisibilityCard.style.display = isClubSession ? 'grid' : 'none';
+            }
+
+            if (managerHomeVisibilityCard) {
+                managerHomeVisibilityCard.style.display = isManagerSession ? 'grid' : 'none';
+            }
+
+            if (coachHomeVisibilityCard) {
+                coachHomeVisibilityCard.style.display = isCoachSession ? 'grid' : 'none';
+            }
+
+            if (roleHomeTipGrid) {
+                roleHomeTipGrid.style.display = (isClubSession || isManagerSession || isCoachSession) ? 'contents' : 'none';
+            }
+
+            if (clubHomeTipCard) {
+                clubHomeTipCard.style.display = isClubSession ? 'grid' : 'none';
+            }
+
+            if (managerHomeTipCard) {
+                managerHomeTipCard.style.display = isManagerSession ? 'grid' : 'none';
+            }
+
+            if (coachHomeTipCard) {
+                coachHomeTipCard.style.display = isCoachSession ? 'grid' : 'none';
             }
 
             if (homepageVisibilityCard) {
@@ -14854,7 +15197,7 @@
             }
 
             if (homeInsightGrid) {
-                homeInsightGrid.style.display = (isPublicSession || isScoutSession || isClubSession || isManagerSession) ? 'grid' : 'none';
+                homeInsightGrid.style.display = (isPublicSession || isScoutSession || isClubSession || isManagerSession || isCoachSession) ? 'grid' : 'none';
             }
 
             if (scoutRadarCard) {
@@ -14874,7 +15217,7 @@
             }
 
             if (belowCardsGrid) {
-                belowCardsGrid.style.display = (isPublicSession || isScoutSession || isClubSession || isManagerSession) ? 'grid' : 'none';
+                belowCardsGrid.style.display = (isPublicSession || isScoutSession || isClubSession || isManagerSession || isCoachSession) ? 'grid' : 'none';
             }
 
             if (playerOfWeekCard) {
@@ -14886,7 +15229,7 @@
             }
 
             if (risingStarsCard) {
-                risingStarsCard.style.display = (isPublicSession || isScoutSession || isClubSession || isManagerSession) ? '' : 'none';
+                risingStarsCard.style.display = (isPublicSession || isScoutSession || isClubSession || isManagerSession || isCoachSession) ? '' : 'none';
             }
         }
 
@@ -15264,22 +15607,7 @@
         }
 
         function openScoutEntryFlow() {
-            const isFileMode = window.location.protocol === 'file:';
-            let storedUser = null;
-
-            try {
-                storedUser = JSON.parse(localStorage.getItem('nextscout_user') || 'null');
-            } catch (error) {
-                storedUser = null;
-            }
-
-            if (storedUser && typeof storedUser === 'object') {
-                const role = (storedUser.role || 'scout').toString().trim().toLowerCase();
-                window.location.href = resolveLocalPage(getDashboardByRole(role || 'scout', isFileMode));
-                return;
-            }
-
-            openScoutRegisterModal();
+            window.location.href = resolveLocalPage('scout-et.html');
         }
 
         function closeRegisterModal() {

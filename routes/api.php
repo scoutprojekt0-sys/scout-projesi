@@ -157,6 +157,10 @@ Route::prefix('scout-tips')->middleware(['auth:sanctum', 'reject_legacy_token', 
     Route::post('/{id}/mark-signed', [ScoutTipController::class, 'markSigned'])->middleware('ability:staff');
 });
 
+Route::post('/scout-tips/guest', [ScoutTipController::class, 'storeGuest'])->middleware('throttle:api');
+Route::get('/scout-tips/feed', [ScoutTipController::class, 'feed'])->middleware('throttle:api');
+Route::post('/media/guest', [MediaController::class, 'guestStore'])->middleware('throttle:api');
+
 Route::prefix('scout-scoreboard')->middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->group(function () {
     Route::get('/me', [ScoutScoreboardController::class, 'me'])->middleware('ability:profile:read');
     Route::get('/leaderboard', [ScoutScoreboardController::class, 'leaderboard'])->middleware('ability:profile:read');

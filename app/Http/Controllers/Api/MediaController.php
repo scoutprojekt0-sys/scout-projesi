@@ -6,9 +6,12 @@ use App\Http\Controllers\Concerns\ApiResponds;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Media\StoreMediaRequest;
 use App\Models\Media;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class MediaController extends Controller
@@ -31,6 +34,30 @@ class MediaController extends Controller
         ]);
 
         return $this->successResponse($media, 'Media yuklendi.', Response::HTTP_CREATED);
+    }
+
+    public function guestStore(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'file' => ['required', 'file', 'max:51200', 'mimetypes:image/jpeg,image/png,image/webp,image/gif,video/mp4,video/quicktime,video/x-msvideo,video/webm'],
+            'title' => ['nullable', 'string', 'max:160'],
+        ]);
+
+        $guestUser = $this->resolveGuestUploader();
+        $file = $request->file('file');
+        $mime = (string) $file->getMimeType();
+        $type = str_starts_with($mime, 'image/') ? 'image' : 'video';
+
+        $path  = $file->store('media/'.$guestUser->id, 'public');
+        $media = Media::query()->create([
+            'user_id' => (int) $guestUser->id,
+            'type' => $type,
+            'url' => Storage::disk('public')->url($path),
+            'thumb_url' => null,
+            'title' => $validated['title'] ?? null,
+        ]);
+
+        return $this->successResponse($media, 'Misafir medya yuklendi.', Response::HTTP_CREATED);
     }
 
     public function indexByUser(int $id): JsonResponse
@@ -74,5 +101,21 @@ class MediaController extends Controller
         $media->delete();
 
         return $this->successResponse(null, 'Media silindi.');
+    }
+
+    private function resolveGuestUploader(): User
+    {
+        return User::firstOrCreate(
+            ['email' => 'guest-scout@nextscout.local'],
+            [
+                'name' => 'Guest Scout Pool',
+                'password' => Hash::make(Str::random(32)),
+                'role' => 'scout',
+                'is_verified' => true,
+                'email_verified_at' => now(),
+                'subscription_status' => 'free',
+                'is_public' => false,
+            ]
+        );
     }
 }

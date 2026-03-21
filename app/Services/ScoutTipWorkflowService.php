@@ -27,6 +27,7 @@ class ScoutTipWorkflowService
                 ->where('city', $payload['city'])
                 ->latest('id')
                 ->first();
+            $isGuestSubmission = (bool) data_get($payload, 'metadata.guest_submission', false);
 
             $payload['ai_quality_score'] = $this->scoringService->calculateInitialScore($payload, $user);
             $payload['final_score'] = $payload['ai_quality_score'];
@@ -40,14 +41,16 @@ class ScoutTipWorkflowService
 
             $this->createModerationItem($tip, $user->id, $duplicate !== null);
 
-            $user->increment('scout_tips_count');
-            $this->pointService->award(
-                $user->fresh(),
-                $tip,
-                'tip_submitted',
-                $duplicate !== null ? 2 : 5,
-                $duplicate !== null ? 'Potential duplicate scout tip submitted.' : 'Scout tip submitted.'
-            );
+            if (! $isGuestSubmission) {
+                $user->increment('scout_tips_count');
+                $this->pointService->award(
+                    $user->fresh(),
+                    $tip,
+                    'tip_submitted',
+                    $duplicate !== null ? 2 : 5,
+                    $duplicate !== null ? 'Potential duplicate scout tip submitted.' : 'Scout tip submitted.'
+                );
+            }
 
             DataAuditLog::logChange(
                 'ScoutTip',
@@ -67,6 +70,7 @@ class ScoutTipWorkflowService
     {
         return DB::transaction(function () use ($tip, $actor, $status, $attributes) {
             $oldValues = $tip->toArray();
+            $isGuestSubmission = (bool) data_get($tip->metadata, 'guest_submission', false);
             $eventType = 'tip_updated';
             $auditAction = 'updated';
             $points = 0;
@@ -108,17 +112,23 @@ class ScoutTipWorkflowService
                     $tip->status = 'trial';
                     $tip->trial_at = now();
                     $eventType = 'trial_invite';
-                    $points = 100;
-                    $tip->submitter->increment('successful_tips_count');
+                    $points = $isGuestSubmission ? 0 : 100;
+                    if (! $isGuestSubmission && $tip->submitter) {
+                        $tip->submitter->increment('successful_tips_count');
+                    }
                     break;
 
                 case 'signed':
                     $tip->status = 'signed';
                     $tip->signed_at = now();
                     $eventType = 'signed';
-                    $points = 500;
-                    $tip->submitter->increment('successful_tips_count');
-                    $this->createRewardCandidate($tip);
+                    $points = $isGuestSubmission ? 0 : 500;
+                    if (! $isGuestSubmission && $tip->submitter) {
+                        $tip->submitter->increment('successful_tips_count');
+                    }
+                    if (! $isGuestSubmission) {
+                        $this->createRewardCandidate($tip);
+                    }
                     break;
 
                 case 'withdrawn':
@@ -135,9 +145,9 @@ class ScoutTipWorkflowService
             $this->syncModeration($tip, $actor->id, $status, $eventNotes);
             $this->logEvent($tip, $actor->id, $eventType, $eventNotes, $attributes);
 
-            if ($points !== 0) {
+            if (! $isGuestSubmission && $points !== 0 && $tip->submitter) {
                 $this->pointService->award($tip->submitter->fresh(), $tip, $eventType, $points, $eventNotes);
-            } else {
+            } elseif (! $isGuestSubmission && $tip->submitter) {
                 $this->pointService->refreshScoutProfile($tip->submitter->fresh());
             }
 

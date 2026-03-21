@@ -260,6 +260,24 @@
       margin-bottom: 16px;
     }
 
+    .system-fit-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(14, 165, 233, 0.12);
+      border: 1px solid rgba(14, 165, 233, 0.24);
+      color: #075985;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .system-fit-badge strong {
+      color: #0f172a;
+    }
+
     .rating-stars {
       color: #fbbf24;
       font-size: 16px;
@@ -591,8 +609,8 @@
     <div class="container">
     <!-- Header -->
     <section class="hero">
-      <h1 id="pageTitle"><i class="fa-solid fa-newspaper"></i> Sözleşmeli Sporcular</h1>
-      <p>Sözleşmesi devam eden sporcuları pozisyon, yaş, form, performans ve transfer kategorisine göre filtreleyerek tek ekranda inceleyin.</p>
+      <h1 id="pageTitle"><i class="fa-solid fa-magnifying-glass-chart"></i> Yapay Zeka Destekli Scout Arama</h1>
+      <p id="pageDescription">Sistem, branş, pozisyon, yaş ve performans verilerine göre en uygun sporcuları yapay zeka destekli scout mantığıyla keşfedin.</p>
     </section>
 
     <!-- Filters -->
@@ -743,6 +761,32 @@
     let serverPage = 1;
     let serverLastPage = 1;
     let serverTotal = 0;
+    const SYSTEM_LABELS = {
+      gegenpressing: "Gegenpressing | 4-3-3 Ofansif",
+      park_the_bus: "Park the Bus | 5-4-1 Savunma",
+      possession_control: "Topa Sahip Olan Oyun | 4-2-3-1",
+      transition_play: "Gecis Oyunu | 3-4-3 Direkt",
+    };
+    const SYSTEM_POSITION_WEIGHTS = {
+      futbol: {
+        gegenpressing: { "Forvet": 96, "Orta Saha": 88, "Defans": 74, "Kaleci": 60 },
+        park_the_bus: { "Defans": 96, "Kaleci": 90, "Orta Saha": 76, "Forvet": 60 },
+        possession_control: { "Orta Saha": 96, "Defans": 82, "Forvet": 74, "Kaleci": 66 },
+        transition_play: { "Forvet": 94, "Orta Saha": 84, "Defans": 78, "Kaleci": 58 },
+      },
+      basketbol: {
+        gegenpressing: { "Guard": 95, "Forvet": 84, "Pivot": 72 },
+        park_the_bus: { "Pivot": 96, "Forvet": 82, "Guard": 70 },
+        possession_control: { "Guard": 94, "Forvet": 80, "Pivot": 74 },
+        transition_play: { "Guard": 92, "Forvet": 86, "Pivot": 68 },
+      },
+      voleybol: {
+        gegenpressing: { "Smaçör": 94, "Pasör": 82, "Orta Oyuncu": 74, "Libero": 70 },
+        park_the_bus: { "Libero": 92, "Orta Oyuncu": 88, "Pasör": 78, "Smaçör": 72 },
+        possession_control: { "Pasör": 95, "Smaçör": 84, "Orta Oyuncu": 80, "Libero": 76 },
+        transition_play: { "Smaçör": 93, "Pasör": 86, "Orta Oyuncu": 72, "Libero": 68 },
+      },
+    };
 
     function getApiBaseUrl() {
       if (window.location.protocol === "http:" || window.location.protocol === "https:") {
@@ -928,6 +972,7 @@
     let allPlayers = [...mockPlayers];
 
     function renderPlayers(players) {
+      const activeSystem = getSystemFromQuery();
       if (!players.length) {
         playersGrid.innerHTML = '<div class="player-card" style="padding:16px;">Oyuncu bulunamadı.</div>';
         return;
@@ -938,6 +983,7 @@
           <div class="player-content">
             <div class="player-name">${player.name}</div>
             <div class="player-position">${player.position}</div>
+            ${activeSystem ? `<div class="system-fit-badge"><span>Sistem Uyumu</span><strong>%${getSystemFitScore(player, activeSystem) || 0}</strong></div>` : ""}
 
             <div class="player-info">
               <div class="info-item">
@@ -1008,6 +1054,24 @@
       if (category === "rising" || category === "yukselenler") return "rising";
       if (category === "hidden" || category === "gizli-yetenek") return "hidden";
       return "";
+    }
+
+    function getSystemFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const system = (params.get("system") || "").trim().toLowerCase();
+      return SYSTEM_LABELS[system] ? system : "";
+    }
+
+    function getSystemFitScore(player, systemKey) {
+      if (!systemKey || !SYSTEM_LABELS[systemKey]) return null;
+      const sportKey = String(player?.sport || "futbol").trim().toLowerCase();
+      const positionKey = String(player?.position || "").trim();
+      const sportWeights = SYSTEM_POSITION_WEIGHTS[sportKey] || SYSTEM_POSITION_WEIGHTS.futbol;
+      const systemWeights = sportWeights?.[systemKey] || {};
+      const positionScore = Number(systemWeights[positionKey] || 70);
+      const ratingScore = Math.round((Math.min(Number(player?.rating || 0), 10) / 10) * 20);
+      const qualityScore = Math.round(Math.min(Number(player?.quality_score || 0), 100) * 0.12);
+      return Math.max(45, Math.min(99, positionScore + ratingScore + qualityScore - 12));
     }
 
     async function loadPlayersFromApi(page = 1) {
@@ -1172,6 +1236,7 @@
 
     function filterPlayers() {
       let filtered = [...allPlayers];
+      const systemKey = getSystemFromQuery();
 
       if (positionFilter.value) {
         filtered = filtered.filter(p => p.position.toLowerCase() === positionFilter.value.toLowerCase());
@@ -1226,17 +1291,26 @@
       }
 
       const sortMode = (sortFilter?.value || "rating_desc").toLowerCase();
-      if (sortMode === "rating_desc") filtered.sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
-      if (sortMode === "rating_asc") filtered.sort((a, b) => Number(a.rating || 0) - Number(b.rating || 0));
-      if (sortMode === "value_desc") filtered.sort((a, b) => Number(b.market_value || 0) - Number(a.market_value || 0));
-      if (sortMode === "updated_desc") filtered.sort((a, b) => new Date(b.updated_at || 0) - new Date(a.updated_at || 0));
-      if (sortMode === "age_asc") filtered.sort((a, b) => Number(a.age || 999) - Number(b.age || 999));
-      if (sortMode === "age_desc") filtered.sort((a, b) => Number(b.age || 0) - Number(a.age || 0));
-      if (sortMode === "name_asc") filtered.sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "tr"));
+      if (systemKey) {
+        filtered.sort((a, b) => {
+          const scoreDiff = Number(getSystemFitScore(b, systemKey) || 0) - Number(getSystemFitScore(a, systemKey) || 0);
+          if (scoreDiff !== 0) return scoreDiff;
+          return Number(b.rating || 0) - Number(a.rating || 0);
+        });
+      } else {
+        if (sortMode === "rating_desc") filtered.sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
+        if (sortMode === "rating_asc") filtered.sort((a, b) => Number(a.rating || 0) - Number(b.rating || 0));
+        if (sortMode === "value_desc") filtered.sort((a, b) => Number(b.market_value || 0) - Number(a.market_value || 0));
+        if (sortMode === "updated_desc") filtered.sort((a, b) => new Date(b.updated_at || 0) - new Date(a.updated_at || 0));
+        if (sortMode === "age_asc") filtered.sort((a, b) => Number(a.age || 999) - Number(b.age || 999));
+        if (sortMode === "age_desc") filtered.sort((a, b) => Number(b.age || 0) - Number(a.age || 0));
+        if (sortMode === "name_asc") filtered.sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "tr"));
+      }
 
       if (resultsMeta) {
         const localCount = filtered.length;
-        resultsMeta.textContent = `Toplam ${serverTotal || localCount} oyuncu • Sayfa: ${serverPage}/${serverLastPage} • Son guncelleme: ${new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}`;
+        const systemText = systemKey ? ` • Sistem: ${SYSTEM_LABELS[systemKey]}` : "";
+        resultsMeta.textContent = `Toplam ${serverTotal || localCount} oyuncu • Sayfa: ${serverPage}/${serverLastPage}${systemText} • Son guncelleme: ${new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}`;
       }
       renderPlayers(filtered);
     }
@@ -1479,8 +1553,22 @@
     function syncFiltersWithQuery() {
       const transferCategory = getTransferCategoryFromQuery();
       const scoutCategory = getScoutRadarCategoryFromQuery();
+      const params = new URLSearchParams(window.location.search);
+      const requestedSport = (params.get("sport") || "").trim().toLowerCase();
+      const requestedSystem = (params.get("system") || "").trim().toLowerCase();
       const pageTitle = document.getElementById("pageTitle");
       const pageDescription = document.getElementById("pageDescription");
+      const systemLabels = {
+        gegenpressing: "Gegenpressing | 4-3-3 Ofansif",
+        park_the_bus: "Park the Bus | 5-4-1 Savunma",
+        possession_control: "Topa Sahip Olan Oyun | 4-2-3-1",
+        transition_play: "Gecis Oyunu | 3-4-3 Direkt",
+      };
+
+      if (!transferCategory && sportFilter && ["futbol", "basketbol", "voleybol"].includes(requestedSport)) {
+        sportFilter.value = requestedSport;
+      }
+
       if (transferCategory && sportFilter) {
         sportFilter.value = "futbol";
       }
@@ -1510,6 +1598,13 @@
         if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Gizli Yetenekler';
         if (pageDescription) pageDescription.textContent = "Henüz yeterince öne çıkmamış ama radar sinyali veren gizli yetenekleri keşfedin.";
         document.title = "Gizli Yetenekler | NextScout";
+      } else if (requestedSystem && systemLabels[requestedSystem]) {
+        if (pageTitle) pageTitle.innerHTML = `<i class="fa-solid fa-magnifying-glass-chart"></i> Yapay Zeka Destekli Scout Arama`;
+        if (pageDescription) {
+          const sportText = sportFilter?.value ? `${sportFilter.value} branşında ` : "";
+          pageDescription.textContent = `${sportText}${systemLabels[requestedSystem]} sistemine göre en uygun sporcuları yapay zeka destekli scout analiziyle inceleyin.`;
+        }
+        document.title = `${systemLabels[requestedSystem]} | NextScout`;
       }
     }
 
