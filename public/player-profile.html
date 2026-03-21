@@ -1102,6 +1102,24 @@
             line-height: 1.6;
         }
 
+        .coach-eval-input {
+            width: 64px;
+            border-radius: 12px;
+            border: 1px solid rgba(148,163,184,.18);
+            background: rgba(15,23,42,.72);
+            color: #f8fafc;
+            padding: 7px 10px;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .coach-eval-input:focus {
+            outline: none;
+            border-color: rgba(96,165,250,.6);
+            box-shadow: 0 0 0 3px rgba(96,165,250,.16);
+        }
+
         .coach-eval-footer {
             color: #9bb5cb;
             font-size: 12px;
@@ -1110,6 +1128,45 @@
             border-radius: 18px;
             border: 1px solid rgba(96,165,250,.14);
             background: rgba(255,255,255,.04);
+        }
+
+        .coach-eval-actions {
+            display: grid;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .coach-eval-textarea {
+            width: 100%;
+            min-height: 92px;
+            resize: vertical;
+            border-radius: 16px;
+            border: 1px solid rgba(148,163,184,.18);
+            background: rgba(15,23,42,.72);
+            color: #e2e8f0;
+            padding: 14px 16px;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .coach-eval-textarea:focus {
+            outline: none;
+            border-color: rgba(96,165,250,.6);
+            box-shadow: 0 0 0 3px rgba(96,165,250,.16);
+        }
+
+        .coach-eval-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .coach-eval-save-note {
+            color: rgba(191,219,254,.78);
+            font-size: 12px;
+            line-height: 1.6;
         }
 
         .achievement-item {
@@ -1917,6 +1974,13 @@
                         </div>
                         <div class="coach-eval-grid" id="coachEvalGrid"></div>
                         <div class="coach-eval-footer" id="coachEvalFooter">Pozisyona göre ilk teknik yorum burada görünür.</div>
+                        <div class="coach-eval-actions">
+                            <textarea class="coach-eval-textarea" id="coachEvalDecisionNote" placeholder="Antrenör kararı: bu oyuncuda öncelikli teknik okuma, risk alanı ve tekrar izlenmesi gereken konu..."></textarea>
+                            <div class="coach-eval-meta">
+                                <div class="coach-eval-save-note" id="coachEvalSaveState">Henüz kaydedilmiş teknik karar yok.</div>
+                                <button class="btn btn-primary" type="button" id="saveCoachEvaluationBtn"><i class="fas fa-floppy-disk"></i><span>Degerlendirmeyi Kaydet</span></button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="card" id="achievements">
@@ -2760,6 +2824,58 @@
             };
         }
 
+        function getCoachEvaluationStorageKey(data) {
+            const params = new URLSearchParams(window.location.search);
+            const explicitId = (params.get('user_id') || '').toString().trim();
+            const explicitName = (params.get('player_name') || '').toString().trim();
+            const base = explicitId || String(data?.id || data?.user_id || explicitName || data?.name || 'local-player').trim().toLowerCase();
+            return `nextscout_coach_eval_${base}`;
+        }
+
+        function loadSavedCoachEvaluation(data) {
+            try {
+                const raw = localStorage.getItem(getCoachEvaluationStorageKey(data));
+                const parsed = raw ? JSON.parse(raw) : null;
+                return parsed && typeof parsed === 'object' ? parsed : null;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveCoachEvaluation(data, payload) {
+            localStorage.setItem(getCoachEvaluationStorageKey(data), JSON.stringify(payload));
+        }
+
+        function renderCoachEvaluationSaveState(saved) {
+            const state = document.getElementById('coachEvalSaveState');
+            const note = document.getElementById('coachEvalDecisionNote');
+            if (note) note.value = saved?.decision_note || '';
+            if (!state) return;
+            state.textContent = saved?.saved_at ? `Son kayit: ${saved.saved_at}` : 'Henüz kaydedilmiş teknik karar yok.';
+        }
+
+        function bindCoachEvaluationSave(data) {
+            const button = document.getElementById('saveCoachEvaluationBtn');
+            const note = document.getElementById('coachEvalDecisionNote');
+            const grid = document.getElementById('coachEvalGrid');
+            if (!button || !note || !grid) return;
+
+            button.onclick = function () {
+                const scores = Array.from(grid.querySelectorAll('[data-coach-eval-input]')).map((input) => ({
+                    label: input.getAttribute('data-label') || '',
+                    value: Math.max(0, Math.min(100, Number(input.value || 0))),
+                    note: input.getAttribute('data-note') || '',
+                }));
+                const payload = {
+                    decision_note: String(note.value || '').trim(),
+                    scores,
+                    saved_at: new Date().toLocaleString('tr-TR'),
+                };
+                saveCoachEvaluation(data, payload);
+                renderCoachEvaluationSaveState(payload);
+            };
+        }
+
         function renderCoachPositionEvaluation(data) {
             const card = document.getElementById('coachPositionEvaluationCard');
             const summary = document.getElementById('coachEvalSummary');
@@ -2775,19 +2891,34 @@
             }
 
             const template = buildCoachEvaluationTemplate(data?.position || data?.primary_position || data?.role_position || '');
+            const saved = loadSavedCoachEvaluation(data);
+            const items = (saved?.scores?.length ? saved.scores : template.items).map((item, index) => ({
+                ...item,
+                value: Number(saved?.scores?.[index]?.value ?? item.value),
+            }));
             summary.textContent = template.summary;
             badge.innerHTML = `<i class="fas fa-clipboard-check"></i><span>${esc(template.badge)}</span>`;
             footer.textContent = template.footer;
-            grid.innerHTML = template.items.map((item) => `
+            grid.innerHTML = items.map((item) => `
                 <article class="coach-eval-item">
                     <div class="coach-eval-item-top">
                         <div class="coach-eval-item-label">${esc(item.label)}</div>
-                        <div class="coach-eval-item-value">%${esc(String(item.value))}</div>
+                        <input class="coach-eval-input" type="number" min="0" max="100" value="${esc(String(item.value))}" data-coach-eval-input="1" data-label="${esc(item.label)}" data-note="${esc(item.note)}" aria-label="${esc(item.label)} yuzde degeri">
                     </div>
                     <div class="coach-eval-bar"><span class="coach-eval-fill" style="width:${esc(String(item.value))}%"></span></div>
                     <div class="coach-eval-note">${esc(item.note)}</div>
                 </article>
             `).join('');
+            renderCoachEvaluationSaveState(saved);
+            bindCoachEvaluationSave(data);
+            Array.from(grid.querySelectorAll('[data-coach-eval-input]')).forEach((input) => {
+                input.addEventListener('input', function () {
+                    const article = input.closest('.coach-eval-item');
+                    const fill = article?.querySelector('.coach-eval-fill');
+                    const value = Math.max(0, Math.min(100, Number(input.value || 0)));
+                    if (fill) fill.style.width = `${value}%`;
+                });
+            });
             card.style.display = '';
         }
 
