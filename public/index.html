@@ -4838,7 +4838,186 @@
         }
 
         .role-home-flow-row.secondary {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .role-home-flow-row.tertiary {
             grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .coach-focus-card {
+            position: relative;
+            overflow: hidden;
+            padding: 18px;
+            border: 1px solid var(--ns-line);
+            background: linear-gradient(180deg, rgba(24, 31, 67, 0.94), rgba(13, 18, 40, 0.97));
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 36px rgba(2, 5, 18, 0.28);
+            border-radius: 0 !important;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .coach-focus-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, #60a5fa 0%, #93c5fd 42%, #f97316 100%);
+        }
+
+        .coach-focus-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .coach-focus-eyebrow {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #9fb2ff;
+            margin-bottom: 6px;
+        }
+
+        .coach-focus-title {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--ns-text);
+        }
+
+        .coach-focus-summary {
+            color: var(--ns-muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .coach-focus-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border: 1px solid rgba(110, 138, 255, 0.34);
+            background: rgba(18, 27, 58, 0.82);
+            color: var(--ns-text);
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .coach-watch-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .coach-watch-item {
+            display: grid;
+            gap: 4px;
+            padding: 12px;
+            border: 1px solid rgba(110, 138, 255, 0.22);
+            background: rgba(15, 22, 46, 0.72);
+        }
+
+        .coach-watch-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .coach-watch-name {
+            color: var(--ns-text);
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .coach-watch-tag {
+            color: #bfdbfe;
+            border: 1px solid rgba(96, 165, 250, 0.28);
+            background: rgba(10, 18, 39, 0.82);
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .coach-watch-meta,
+        .coach-watch-note {
+            color: var(--ns-muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .coach-suitability-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .coach-suitability-stat {
+            display: grid;
+            gap: 8px;
+            padding: 12px;
+            border: 1px solid rgba(110, 138, 255, 0.22);
+            background: rgba(15, 22, 46, 0.72);
+        }
+
+        .coach-suitability-label {
+            color: #c8d3ff;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .coach-suitability-value {
+            color: var(--ns-text);
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .coach-suitability-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+
+        .coach-suitability-fill {
+            display: block;
+            height: 100%;
+            background: linear-gradient(90deg, #60a5fa 0%, #f97316 100%);
+        }
+
+        .coach-suitability-note {
+            color: var(--ns-muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .coach-focus-footer {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .coach-focus-meta {
+            color: var(--ns-muted);
+            font-size: 12px;
+        }
+
+        .coach-focus-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--ns-text);
+            font-size: 12px;
+            font-weight: 800;
+            text-decoration: none;
         }
 
         .insight-card {
@@ -7001,7 +7180,8 @@
             }
 
             .role-home-flow-row.primary,
-            .role-home-flow-row.secondary {
+            .role-home-flow-row.secondary,
+            .role-home-flow-row.tertiary {
                 grid-template-columns: 1fr;
             }
         }
@@ -9112,17 +9292,6 @@
                     </div>
                     <div class="contract-live-highlight"><i class="fas fa-star"></i><span>Vitrin Oyuncuları</span></div>
                 </div>
-                <div class="contract-ticker">
-                    <div class="contract-ticker-track" id="contractTickerTrack">
-                        <article class="contract-card">
-                            <div class="contract-card-top">
-                                <span class="contract-card-player">Vitrin yükleniyor...</span>
-                                <span class="contract-badge">Öne Çıkan</span>
-                            </div>
-                            <div class="contract-card-note">Ödeme yapan oyuncu kartları hazırlanıyor...</div>
-                        </article>
-                    </div>
-                </div>
                 <div class="contract-live-footer">
                     <a href="./boost-discover.html" class="btn"><i class="fas fa-arrow-right"></i><span>Tümünü Gör</span></a>
                 </div>
@@ -9663,18 +9832,71 @@
             <section class="role-home-flow" id="coachHomeFlow" hidden>
                 <div class="role-home-flow-row primary" id="coachHomeFlowPrimary"></div>
                 <div class="role-home-flow-row secondary" id="coachHomeFlowSecondary"></div>
+                <div class="role-home-flow-row tertiary" id="coachHomeFlowTertiary">
+                    <article class="coach-focus-card" id="coachWatchlistCard">
+                        <div class="coach-focus-head">
+                            <div>
+                                <div class="coach-focus-eyebrow">Günlük İzleme</div>
+                                <h3 class="coach-focus-title">Bugün İzlenecek Oyuncular</h3>
+                            </div>
+                            <div class="coach-focus-badge" id="coachWatchlistBadge"><i class="fas fa-eye"></i><span>Canlı Liste</span></div>
+                        </div>
+                        <div class="coach-focus-summary" id="coachWatchlistSummary">Bugün teknik gözlem için öne çıkan oyuncular hazırlanıyor.</div>
+                        <div class="coach-watch-list" id="coachWatchlistBody">
+                            <article class="coach-watch-item">
+                                <div class="coach-watch-top">
+                                    <div class="coach-watch-name">Liste hazırlanıyor</div>
+                                    <span class="coach-watch-tag">Bekle</span>
+                                </div>
+                                <div class="coach-watch-meta">Pozisyon ve maç bağlamı yükleniyor.</div>
+                                <div class="coach-watch-note">İzleme gerekçesi birazdan burada görünecek.</div>
+                            </article>
+                        </div>
+                        <div class="coach-focus-footer">
+                            <div class="coach-focus-meta" id="coachWatchlistMeta">3 oyuncu • Güncelleme bekleniyor</div>
+                            <a class="coach-focus-link" id="coachWatchlistLink" href="./professional-players.html?visibility_role=coach">
+                                <span>Tümünü Gör</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </article>
+                    <article class="coach-focus-card" id="coachTrainingFitCard">
+                        <div class="coach-focus-head">
+                            <div>
+                                <div class="coach-focus-eyebrow">Hazırlık Analizi</div>
+                                <h3 class="coach-focus-title">Antrenman Uygunluk Kartı</h3>
+                            </div>
+                            <div class="coach-focus-badge" id="coachTrainingFitBadge"><i class="fas fa-dumbbell"></i><span>Hazırlanıyor</span></div>
+                        </div>
+                        <div class="coach-focus-summary" id="coachTrainingFitSummary">Oyuncuların tempo, disiplin ve yük yönetimi sinyallerine göre ilk bakış antrenman uygunluğu çıkarılır.</div>
+                        <div class="coach-suitability-grid" id="coachTrainingFitGrid">
+                            <article class="coach-suitability-stat">
+                                <div class="coach-suitability-label">Tempo</div>
+                                <div class="coach-suitability-value">--</div>
+                                <div class="coach-suitability-bar"><span class="coach-suitability-fill" style="width:0%"></span></div>
+                            </article>
+                            <article class="coach-suitability-stat">
+                                <div class="coach-suitability-label">Disiplin</div>
+                                <div class="coach-suitability-value">--</div>
+                                <div class="coach-suitability-bar"><span class="coach-suitability-fill" style="width:0%"></span></div>
+                            </article>
+                            <article class="coach-suitability-stat">
+                                <div class="coach-suitability-label">Yük Yönetimi</div>
+                                <div class="coach-suitability-value">--</div>
+                                <div class="coach-suitability-bar"><span class="coach-suitability-fill" style="width:0%"></span></div>
+                            </article>
+                        </div>
+                        <div class="coach-suitability-note" id="coachTrainingFitNote">Canlı profil sinyalleri alındığında uygunluk özeti burada görünür.</div>
+                        <div class="coach-focus-footer">
+                            <div class="coach-focus-meta" id="coachTrainingFitMeta">Profil verisi bekleniyor</div>
+                            <a class="coach-focus-link" id="coachTrainingFitLink" href="./professional-players.html?visibility_role=coach&sort=updated_desc">
+                                <span>Oyuncuları Aç</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </article>
+                </div>
             </section>
-
-            <div class="promo-ad-grid">
-                <div class="promo-ad-card">
-                    <i class="fas fa-ad"></i>
-                    Reklam Panosu
-                </div>
-                <div class="promo-ad-card">
-                    <i class="fas fa-ad"></i>
-                    Reklam Panosu
-                </div>
-            </div>
 
             <div class="below-cards-grid">
                 <article class="below-card" id="playerOfWeekCard">
@@ -12544,6 +12766,203 @@
             }
         }
 
+        function normalizeCoachKey(value) {
+            return (value || '')
+                .toString()
+                .trim()
+                .toLocaleLowerCase('tr-TR')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]+/g, ' ')
+                .trim();
+        }
+
+        function parseCoachDate(value) {
+            const parsed = new Date(value || '');
+            return Number.isNaN(parsed.getTime()) ? 0 : parsed.getTime();
+        }
+
+        function computeCoachReadinessScore(player) {
+            let score = 24;
+            if (String(player?.position || player?.primary_position || '').trim()) score += 14;
+            if (String(player?.city || player?.location || '').trim()) score += 10;
+            if (String(player?.club || player?.club_name || '').trim()) score += 8;
+            if (String(player?.photo_url || player?.avatar || player?.image || '').trim()) score += 10;
+            if (String(player?.video_url || player?.highlight_video || player?.video_clip || '').trim()) score += 16;
+            if (String(player?.bio || player?.about || player?.summary || '').trim()) score += 10;
+            const age = Number(player?.age || 0);
+            if (age >= 16 && age <= 28) score += 10;
+            const updatedAt = parseCoachDate(player?.updated_at || player?.created_at || player?.joined_at);
+            if (updatedAt && (Date.now() - updatedAt) < (1000 * 60 * 60 * 24 * 45)) score += 8;
+            return Math.max(0, Math.min(100, score));
+        }
+
+        function deriveCoachSuitability(player) {
+            const score = computeCoachReadinessScore(player);
+            const age = Number(player?.age || 0);
+            const positionKey = normalizeCoachKey(player?.position || player?.primary_position || '');
+            const hasVideo = Boolean(String(player?.video_url || player?.highlight_video || player?.video_clip || '').trim());
+            const tempoBoost = /kanat|wing|bek|forvet|guard|point|orta saha|midfield/.test(positionKey) ? 12 : 0;
+            const disciplineBoost = String(player?.bio || player?.about || '').trim() ? 10 : 0;
+            const loadPenalty = age > 31 ? 12 : age && age < 18 ? 6 : 0;
+            const tempo = Math.max(42, Math.min(96, score + tempoBoost - 4));
+            const discipline = Math.max(40, Math.min(95, score + disciplineBoost - 8));
+            const load = Math.max(38, Math.min(92, score - loadPenalty + (hasVideo ? 4 : 0)));
+            const band = score >= 78 ? 'Hazır' : score >= 58 ? 'Geliştir' : 'Riskli';
+            return { score, tempo, discipline, load, band };
+        }
+
+        async function renderCoachWatchlistCard() {
+            const bodyRoot = document.getElementById('coachWatchlistBody');
+            const summaryRoot = document.getElementById('coachWatchlistSummary');
+            const metaRoot = document.getElementById('coachWatchlistMeta');
+            const badgeRoot = document.getElementById('coachWatchlistBadge');
+            const linkRoot = document.getElementById('coachWatchlistLink');
+            if (!bodyRoot || !summaryRoot || !metaRoot || !badgeRoot || !linkRoot) return;
+
+            const role = getSessionRole();
+            const isCoachSession = (role || '').toString().trim().toLowerCase() === 'coach' || (role || '').toString().trim().toLowerCase() === 'antrenor';
+            if (!isCoachSession) return;
+
+            const toArray = window.NextScoutData?.toArray || ((input) => Array.isArray(input) ? input : []);
+
+            try {
+                const [playersPayload, coachNeedsPayload] = await Promise.all([
+                    fetchJsonSafe(`${API_BASE_URL}/public/players?limit=180&sort=updated_desc`),
+                    fetchJsonSafe(`${API_BASE_URL}/discovery/coach-needs`),
+                ]);
+
+                const players = toArray(playersPayload?.data ?? playersPayload).filter((row) => row && typeof row === 'object');
+                const coachNeeds = toArray(coachNeedsPayload?.data ?? coachNeedsPayload).filter((row) => row && typeof row === 'object');
+                const topPositions = coachNeeds
+                    .map((row) => normalizeCoachKey(row?.position || row?.position_needed || row?.title || row?.focus || ''))
+                    .filter(Boolean)
+                    .slice(0, 6);
+
+                const ranked = players
+                    .map((player) => {
+                        const readiness = deriveCoachSuitability(player);
+                        const positionLabel = (player?.position || player?.primary_position || 'Pozisyon yok').toString().trim();
+                        const normalizedPosition = normalizeCoachKey(positionLabel);
+                        const matchesNeed = topPositions.some((item) => normalizedPosition.includes(item) || item.includes(normalizedPosition));
+                        const recency = parseCoachDate(player?.updated_at || player?.created_at || player?.joined_at);
+                        return {
+                            player,
+                            readiness,
+                            matchesNeed,
+                            recency,
+                            positionLabel,
+                        };
+                    })
+                    .sort((a, b) => {
+                        if (Number(b.matchesNeed) !== Number(a.matchesNeed)) return Number(b.matchesNeed) - Number(a.matchesNeed);
+                        if (b.readiness.score !== a.readiness.score) return b.readiness.score - a.readiness.score;
+                        return b.recency - a.recency;
+                    })
+                    .slice(0, 3);
+
+                if (!ranked.length) {
+                    throw new Error('empty-watchlist');
+                }
+
+                const hottestNeed = coachNeeds[0]?.position || coachNeeds[0]?.position_needed || coachNeeds[0]?.title || 'teknik izleme';
+                summaryRoot.textContent = `Bugün ${hottestNeed} odağında teknik gözleme uygun 3 oyuncu öne çıktı.`;
+                badgeRoot.innerHTML = `<i class="fas fa-eye"></i><span>${ranked.length} oyuncu</span>`;
+                metaRoot.textContent = `${ranked.length} oyuncu • Güncelleme: ${new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`;
+                if (topPositions[0]) {
+                    linkRoot.href = resolveLocalPage(`professional-players.html?visibility_role=coach&q=${encodeURIComponent(coachNeeds[0]?.position || coachNeeds[0]?.position_needed || '')}`);
+                }
+
+                bodyRoot.innerHTML = ranked.map(({ player, readiness, matchesNeed, positionLabel }) => {
+                    const city = (player?.city || player?.location || 'Konum yok').toString().trim();
+                    const club = (player?.club || player?.club_name || 'Kulüp bilgisi yok').toString().trim();
+                    const reason = matchesNeed
+                        ? `Teknik ihtiyaçlarla eşleşiyor, ${readiness.band.toLocaleLowerCase('tr-TR')} seviyesinde görünüyor.`
+                        : `Profil gücü ve güncelliği nedeniyle teknik gözlem listesine girdi.`;
+                    return `
+                        <article class="coach-watch-item">
+                            <div class="coach-watch-top">
+                                <div class="coach-watch-name">${esc(player?.name || 'Oyuncu')}</div>
+                                <span class="coach-watch-tag">${esc(readiness.band)}</span>
+                            </div>
+                            <div class="coach-watch-meta">${esc(positionLabel)} • ${esc(city)} • ${esc(club)}</div>
+                            <div class="coach-watch-note">${esc(reason)}</div>
+                        </article>
+                    `;
+                }).join('');
+                return;
+            } catch (error) {}
+
+            summaryRoot.textContent = 'Teknik gözlem için öne çıkan oyuncular şu an alınamıyor.';
+            badgeRoot.innerHTML = '<i class="fas fa-eye"></i><span>Bekle</span>';
+            metaRoot.textContent = '3 oyuncu • Güncelleme bekleniyor';
+            bodyRoot.innerHTML = `
+                <article class="coach-watch-item">
+                    <div class="coach-watch-top">
+                        <div class="coach-watch-name">İzleme listesi alınamadı</div>
+                        <span class="coach-watch-tag">Bekle</span>
+                    </div>
+                    <div class="coach-watch-meta">Canlı oyuncu verisi geçici olarak yüklenemedi.</div>
+                    <div class="coach-watch-note">Oyuncuları Değerlendir akışıyla manuel izlemeye geçebilirsin.</div>
+                </article>
+            `;
+        }
+
+        async function renderCoachTrainingFitCard() {
+            const gridRoot = document.getElementById('coachTrainingFitGrid');
+            const summaryRoot = document.getElementById('coachTrainingFitSummary');
+            const noteRoot = document.getElementById('coachTrainingFitNote');
+            const metaRoot = document.getElementById('coachTrainingFitMeta');
+            const badgeRoot = document.getElementById('coachTrainingFitBadge');
+            const linkRoot = document.getElementById('coachTrainingFitLink');
+            if (!gridRoot || !summaryRoot || !noteRoot || !metaRoot || !badgeRoot || !linkRoot) return;
+
+            const role = getSessionRole();
+            const isCoachSession = (role || '').toString().trim().toLowerCase() === 'coach' || (role || '').toString().trim().toLowerCase() === 'antrenor';
+            if (!isCoachSession) return;
+
+            const toArray = window.NextScoutData?.toArray || ((input) => Array.isArray(input) ? input : []);
+
+            try {
+                const payload = await fetchJsonSafe(`${API_BASE_URL}/public/players?limit=150&sort=updated_desc`);
+                const players = toArray(payload?.data ?? payload).filter((row) => row && typeof row === 'object');
+                const ranked = players
+                    .map((player) => ({ player, readiness: deriveCoachSuitability(player) }))
+                    .sort((a, b) => b.readiness.score - a.readiness.score);
+
+                const lead = ranked[0];
+                if (!lead) throw new Error('empty-fit');
+
+                const { tempo, discipline, load, band } = lead.readiness;
+                summaryRoot.textContent = `${lead.player?.name || 'Seçili oyuncu'} için ilk antrenman okumasi: tempo, disiplin ve yük yönetimi sinyalleri tek kartta toplandı.`;
+                noteRoot.textContent = band === 'Hazır'
+                    ? 'Hazır profiller ilk takım temposuna daha hızlı adapte olabilir. Yine de karar öncesi saha içi gözlem önerilir.'
+                    : band === 'Geliştir'
+                        ? 'Bu profil antrenman yapısına alınabilir ancak teknik detay ve fizik yük dağılımı yakından takip edilmelidir.'
+                        : 'Riskli profiller için kontrollü yükleme ve ayrı bireysel gelişim planı daha doğru olur.';
+                metaRoot.textContent = `${lead.player?.position || lead.player?.primary_position || 'Pozisyon'} • ${band} seviye uygunluk`;
+                badgeRoot.innerHTML = `<i class="fas fa-dumbbell"></i><span>${esc(band)}</span>`;
+                linkRoot.href = resolveLocalPage(`professional-players.html?visibility_role=coach&q=${encodeURIComponent(lead.player?.position || lead.player?.primary_position || '')}`);
+                gridRoot.innerHTML = [
+                    { label: 'Tempo', value: tempo },
+                    { label: 'Disiplin', value: discipline },
+                    { label: 'Yük Yönetimi', value: load },
+                ].map((item) => `
+                    <article class="coach-suitability-stat">
+                        <div class="coach-suitability-label">${esc(item.label)}</div>
+                        <div class="coach-suitability-value">%${Math.round(item.value)}</div>
+                        <div class="coach-suitability-bar"><span class="coach-suitability-fill" style="width:${Math.round(item.value)}%"></span></div>
+                    </article>
+                `).join('');
+                return;
+            } catch (error) {}
+
+            summaryRoot.textContent = 'Antrenman uygunluk özeti şu an üretilemiyor.';
+            noteRoot.textContent = 'Canlı oyuncu verisi alındığında tempo, disiplin ve yük yönetimi sinyalleri burada görünür.';
+            metaRoot.textContent = 'Profil verisi bekleniyor';
+            badgeRoot.innerHTML = '<i class="fas fa-dumbbell"></i><span>Bekle</span>';
+        }
+
 
         function openSuccessStoryModal() {
             if (!requireAuthForFeature()) return;
@@ -12656,6 +13075,8 @@
             renderMatchOpportunitiesCard();
             renderProfileStrengthCard();
             renderPlayerViewsCard();
+            renderCoachWatchlistCard();
+            renderCoachTrainingFitCard();
             renderLiveWatchDemandCard();
             renderClubNeedsInlineList();
             renderPaidClubPromoNamesInline();
@@ -12695,6 +13116,11 @@
 
             setInterval(() => {
                 renderScoutRadarInsightCard();
+            }, 120000); // 120 seconds
+
+            setInterval(() => {
+                renderCoachWatchlistCard();
+                renderCoachTrainingFitCard();
             }, 120000); // 120 seconds
 
             setInterval(() => {
@@ -15803,7 +16229,7 @@
             }
 
             if (starterRoleCard) {
-                const shouldShowStarterRoleCard = isPublicSession || isClubSession || isManagerSession || isCoachSession;
+                const shouldShowStarterRoleCard = isPublicSession || isClubSession || isManagerSession;
                 starterRoleCard.hidden = !shouldShowStarterRoleCard;
                 starterRoleCard.style.display = shouldShowStarterRoleCard ? '' : 'none';
             }
@@ -15854,12 +16280,17 @@
             }
 
             if (homeInsightGrid) {
-                homeInsightGrid.style.display = (isPublicSession || isScoutSession || isClubSession || isManagerSession || isCoachSession) ? 'grid' : 'none';
+                homeInsightGrid.style.display = (isPublicSession || isScoutSession || isClubSession || isManagerSession) ? 'grid' : 'none';
                 homeInsightGrid.classList.toggle('is-public', isPublicSession);
             }
 
             if (ideaNewsContainer) {
                 ideaNewsContainer.classList.toggle('is-public', isPublicSession);
+                if (isCoachSession) {
+                    ideaNewsContainer.style.display = 'none';
+                } else {
+                    ideaNewsContainer.style.display = '';
+                }
             }
 
             if (scoutRadarCard) {
@@ -15887,7 +16318,7 @@
             }
 
             if (belowCardsGrid) {
-                belowCardsGrid.style.display = (isPublicSession || isScoutSession || isClubSession || isManagerSession || isCoachSession) ? 'grid' : 'none';
+                belowCardsGrid.style.display = (isPublicSession || isScoutSession || isClubSession || isManagerSession) ? 'grid' : 'none';
                 belowCardsGrid.classList.toggle('is-public', isPublicSession);
             }
 
@@ -15904,15 +16335,15 @@
             }
 
             if (isCoachSession) {
-                if (starterRoleCard) {
-                    starterRoleCard.hidden = true;
-                    starterRoleCard.style.display = 'none';
+                const liveNewsCard = document.getElementById('liveNewsCard');
+                const platformSummaryCard = document.getElementById('platformSummaryCard');
+                if (liveNewsCard) {
+                    liveNewsCard.hidden = true;
+                    liveNewsCard.style.display = 'none';
                 }
-                if (homeInsightGrid) {
-                    homeInsightGrid.style.display = 'none';
-                }
-                if (belowCardsGrid) {
-                    belowCardsGrid.style.display = 'none';
+                if (platformSummaryCard) {
+                    platformSummaryCard.hidden = true;
+                    platformSummaryCard.style.display = 'none';
                 }
                 applyCoachHomeFlow();
             } else {
