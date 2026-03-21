@@ -2796,17 +2796,20 @@
             const savedProfile = localStorage.getItem('playerProfile');
             const savedPhoto = localStorage.getItem('playerPhoto');
             const sessionUserRaw = localStorage.getItem('nextscout_user');
+            const params = new URLSearchParams(window.location.search);
+            const fallbackName = (params.get('player_name') || '').toString().trim();
+            const fallbackPosition = (params.get('position') || '').toString().trim();
             let sessionUser = null;
 
             try { sessionUser = sessionUserRaw ? JSON.parse(sessionUserRaw) : null; } catch (e) { sessionUser = null; }
 
-            setText('playerName', sessionUser?.name || 'Ahmet Yilmaz');
+            setText('playerName', fallbackName || sessionUser?.name || 'Ahmet Yilmaz');
 
             if (savedProfile) {
                 try {
                     const data = JSON.parse(savedProfile);
-                    setText('playerPosition', (data.position || 'Forvet').toUpperCase());
-                    setText('playerName', sessionUser?.name || data.name || 'Ahmet Yilmaz');
+                    setText('playerPosition', (fallbackPosition || data.position || 'Forvet').toUpperCase());
+                    setText('playerName', fallbackName || sessionUser?.name || data.name || 'Ahmet Yilmaz');
                     setText('playerAge', data.age || '24');
                     setText('playerHeight', (data.height || '180') + 'cm');
                     setText('playerRating', data.rating || '4.8');
@@ -2820,8 +2823,8 @@
                     setText('currentClubBadge', `KULUP: ${data.current_club || '-'}`);
                     updateHeroEditorial({
                         id: data.id || 7,
-                        name: sessionUser?.name || data.name || 'Oyuncu',
-                        position: data.position || 'Oyuncu',
+                        name: fallbackName || sessionUser?.name || data.name || 'Oyuncu',
+                        position: fallbackPosition || data.position || 'Oyuncu',
                         sport: data.sport || 'oyuncu profili',
                         nationality: data.nationality || 'Turkiye',
                         club: data.current_club || '-'
@@ -2846,7 +2849,10 @@
             }
 
             if (savedPhoto) setHeroImage(savedPhoto);
-            if (!savedProfile) updateHeroEditorial({ name: sessionUser?.name || 'Oyuncu', sport: 'oyuncu profili' });
+            if (!savedProfile) {
+                if (fallbackPosition) setText('playerPosition', fallbackPosition.toUpperCase());
+                updateHeroEditorial({ name: fallbackName || sessionUser?.name || 'Oyuncu', position: fallbackPosition || 'Oyuncu', sport: 'oyuncu profili' });
+            }
             if (!savedProfile) updateHeroMarketPanel(0, 'Local profilde piyasa verisi bulunamadi.');
             if (!savedProfile) renderProfileShowcase({});
             if (!savedProfile) renderCoachPositionEvaluation({});
