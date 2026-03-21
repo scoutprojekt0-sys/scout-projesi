@@ -279,6 +279,36 @@
       text-transform:uppercase;
     }
     .note-body { color:#e2e8f0; font-size:14px; line-height:1.72; }
+    .clips-shell { display:grid; gap:16px; }
+    .clip-item {
+      position:relative;
+      padding:18px;
+      border-radius:20px;
+      border:1px solid rgba(96,165,250,.14);
+      background: linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%);
+      box-shadow: 0 18px 32px rgba(2,6,23,.16);
+    }
+    .clip-item::before { content:""; position:absolute; inset:0 auto 0 0; width:4px; border-radius:20px 0 0 20px; background:linear-gradient(180deg,#ff7e22 0%,#60a5fa 100%); }
+    .clip-head { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:10px; }
+    .clip-title { display:grid; gap:4px; }
+    .clip-title strong { color:#f5fbff; font-size:15px; }
+    .clip-title span, .clip-meta, .clip-empty { color:var(--muted); font-size:12px; line-height:1.6; }
+    .clip-tags { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 14px; }
+    .clip-pill {
+      display:inline-flex;
+      align-items:center;
+      min-height:28px;
+      padding:0 11px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,.16);
+      background:rgba(255,255,255,.06);
+      color:#dbeafe;
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .clip-body { color:#e2e8f0; font-size:14px; line-height:1.72; }
     @media (max-width:900px) {
       .layout, .form-grid, .review-form-grid, .review-summary-grid, .notes-summary-grid { grid-template-columns: 1fr; }
     }
@@ -406,11 +436,35 @@
         <div class="notes-list" id="coachNotesList"></div>
       </div>
     </div>
+
+    <div class="card" id="coachClipsCard" style="margin-top:12px;">
+      <h2 class="section-title">Video Üzerinden Klip İşaretleme</h2>
+      <div class="clips-shell">
+        <div class="notes-summary-grid" id="coachClipsSummary">
+          <div class="notes-summary-card"><div class="notes-summary-label">Toplam Klip</div><div class="notes-summary-value">0</div></div>
+          <div class="notes-summary-card"><div class="notes-summary-label">Son Oyuncu</div><div class="notes-summary-value">-</div></div>
+          <div class="notes-summary-card"><div class="notes-summary-label">Son Damga</div><div class="notes-summary-value">-</div></div>
+        </div>
+        <div class="notes-form">
+          <div class="review-note">Video linki, zaman damgası ve kısa teknik notla sahne bazlı klip kaydı tut.</div>
+          <div class="form-grid">
+            <div class="field"><label class="label" for="coachClipPlayer">Oyuncu</label><input class="input" id="coachClipPlayer" placeholder="Oyuncu adı"></div>
+            <div class="field"><label class="label" for="coachClipUrl">Video Linki</label><input class="input" id="coachClipUrl" placeholder="https://..."></div>
+            <div class="field"><label class="label" for="coachClipMinute">Dakika</label><input class="input" id="coachClipMinute" type="number" min="0" max="180" placeholder="12"></div>
+            <div class="field"><label class="label" for="coachClipSecond">Saniye</label><input class="input" id="coachClipSecond" type="number" min="0" max="59" placeholder="34"></div>
+            <div class="field full"><label class="label" for="coachClipBody">Klip Notu</label><textarea class="textarea" id="coachClipBody" placeholder="Örnek: 12:34 anında ters ayağa açılan pres kırıcı pas, ilk kontrol sonrası doğru yön değişimi..."></textarea></div>
+          </div>
+          <div class="act"><button class="btn btn-primary" type="button" id="saveCoachClipBtn"><i class="fas fa-film"></i><span>Klibi Kaydet</span></button></div>
+        </div>
+        <div class="notes-list" id="coachClipsList"></div>
+      </div>
+    </div>
   </div>
 
   <script>
     const KEY = 'nextscout_coach_profile';
     const NOTES_KEY = 'nextscout_coach_notes';
+    const CLIPS_KEY = 'nextscout_coach_clips';
 
     function getApiBaseUrl() {
       const params = new URLSearchParams(window.location.search);
@@ -508,6 +562,20 @@
 
     function saveCoachNotes(rows) {
       localStorage.setItem(NOTES_KEY, JSON.stringify((Array.isArray(rows) ? rows : []).slice(0, 200)));
+    }
+
+    function loadCoachClips() {
+      try {
+        const raw = localStorage.getItem(CLIPS_KEY);
+        const rows = raw ? JSON.parse(raw) : [];
+        return Array.isArray(rows) ? rows : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveCoachClips(rows) {
+      localStorage.setItem(CLIPS_KEY, JSON.stringify((Array.isArray(rows) ? rows : []).slice(0, 200)));
     }
 
     function saveProfile(profile) {
@@ -611,6 +679,76 @@
       player.value = '';
       position.value = '';
       renderCoachNotes();
+    }
+
+    function renderCoachClips() {
+      const rows = loadCoachClips();
+      const list = document.getElementById('coachClipsList');
+      const summary = document.getElementById('coachClipsSummary');
+      if (!list || !summary) return;
+
+      const lastPlayer = rows[0]?.player || '-';
+      const lastStamp = rows[0]?.stamp || '-';
+      summary.innerHTML = `
+        <div class="notes-summary-card"><div class="notes-summary-label">Toplam Klip</div><div class="notes-summary-value">${rows.length}</div></div>
+        <div class="notes-summary-card"><div class="notes-summary-label">Son Oyuncu</div><div class="notes-summary-value">${esc(lastPlayer)}</div></div>
+        <div class="notes-summary-card"><div class="notes-summary-label">Son Damga</div><div class="notes-summary-value">${esc(lastStamp)}</div></div>
+      `;
+
+      if (!rows.length) {
+        list.innerHTML = '<div class="clip-empty">Henüz klip kaydı yok. İlk video işaretini yukarıdan ekle.</div>';
+        return;
+      }
+
+      list.innerHTML = rows.map((row) => `
+        <article class="clip-item">
+          <div class="clip-head">
+            <div class="clip-title">
+              <strong>${esc(row.player || 'Oyuncu')}</strong>
+              <span>${esc(row.url || 'Video bağlantısı yok')}</span>
+            </div>
+            <div class="clip-meta">${esc(row.created_at || '-')}</div>
+          </div>
+          <div class="clip-tags">
+            <span class="clip-pill">${esc(row.stamp || '-')}</span>
+          </div>
+          <div class="clip-body">${esc(row.body || '')}</div>
+        </article>
+      `).join('');
+    }
+
+    function submitCoachClip() {
+      const player = document.getElementById('coachClipPlayer');
+      const url = document.getElementById('coachClipUrl');
+      const minute = document.getElementById('coachClipMinute');
+      const second = document.getElementById('coachClipSecond');
+      const body = document.getElementById('coachClipBody');
+      if (!player || !url || !minute || !second || !body) return;
+
+      const minuteValue = Math.max(0, Number(minute.value || 0));
+      const secondValue = Math.max(0, Math.min(59, Number(second.value || 0)));
+      const clip = {
+        player: String(player.value || '').trim(),
+        url: String(url.value || '').trim(),
+        stamp: `${String(minuteValue).padStart(2, '0')}:${String(secondValue).padStart(2, '0')}`,
+        body: String(body.value || '').trim(),
+        created_at: new Date().toLocaleString('tr-TR'),
+      };
+
+      if (!clip.player || !clip.url || !clip.body || clip.body.length < 8) {
+        alert('Oyuncu, video linki ve en az 8 karakterlik klip notu gerekli.');
+        return;
+      }
+
+      const rows = loadCoachClips();
+      rows.unshift(clip);
+      saveCoachClips(rows);
+      player.value = '';
+      url.value = '';
+      minute.value = '';
+      second.value = '';
+      body.value = '';
+      renderCoachClips();
     }
 
     async function loadBackendProfile() {
@@ -794,6 +932,7 @@
       updateCoachReviewVisibility();
       loadCoachProfileReviews();
       renderCoachNotes();
+      renderCoachClips();
     }
 
     document.getElementById('coachForm')?.addEventListener('submit', async function (e) {
@@ -848,6 +987,7 @@
     });
 
     document.getElementById('saveCoachNoteBtn')?.addEventListener('click', submitCoachNote);
+    document.getElementById('saveCoachClipBtn')?.addEventListener('click', submitCoachClip);
 
     init();
   </script>
