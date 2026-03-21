@@ -1625,6 +1625,65 @@ setText('.content h1', 'Antrenör Profili');
       });
     }
 
+    function applyTurkishTextFixesFinal() {
+      document.title = 'Antrenör Profili | NextScout';
+
+      const setText = (selector, text) => {
+        const el = document.querySelector(selector);
+        if (el) el.textContent = text;
+      };
+
+      setText('.navbar-left .logo', 'NextScout Antrenör Profili');
+      setText('.navbar-right button[onclick="openCoachNeedModal()"] span', 'İlan Ver');
+      setText('.navbar-right button[onclick="openTrialPublishModal()"] span', 'Deneme/İdman İlanı');
+      setText('.navbar-right button[onclick="openLiveScoutModal()"] span', 'Canlı Scout Başlat');
+      setText('.navbar-right button[onclick="openScoutProfile()"] span', 'Antrenör Profili');
+
+      setText('.sidebar-item[onclick="openScoutProfile()"] span', 'Antrenör Profili');
+      setText('.sidebar-item[onclick="openWatchlist()"] span', 'Scout Watchlist');
+      setText('.sidebar-item[onclick="openTrialCenter()"] span', 'Deneme & İdmanlar');
+      setText('.sidebar-item[onclick="window.location.href=\'live-watch-demand.html\'"] span', 'Canlı İzleme Talebi');
+      setText('.sidebar-item[onclick="openPerformance()"] span', 'İstatistikler');
+      setText('.sidebar-item[onclick="openScoutReports()"] span', 'Scout Raporları');
+      setText('.sidebar-item[onclick="openMessages()"] span', 'Mesajlarım');
+      setText('.sidebar-item[onclick="openSettings()"] span', 'Ayarlar');
+      setText('.sidebar-item[onclick="openHelp()"] span', 'Yardım');
+
+      setText('.content h1', 'Antrenör Profili');
+      setText('.quick-report-result', 'Henüz rapor kaydı yok.');
+
+      document.querySelectorAll('label').forEach((label) => {
+        const value = (label.textContent || '').trim();
+        if (value === 'Yas Araligi') label.textContent = 'Yaş Aralığı';
+        if (value === 'Yas') label.textContent = 'Yaş';
+      });
+
+      document.querySelectorAll('button, span, h2, h3, option').forEach((el) => {
+        const value = (el.textContent || '').trim();
+        if (value === 'Deneme/Idman Ilani') el.textContent = 'Deneme/İdman İlanı';
+        if (value === 'Canlı Scout Baslat' || value === 'Canli Scout Baslat') el.textContent = 'Canlı Scout Başlat';
+        if (value === 'Mesajlarim') el.textContent = 'Mesajlarım';
+        if (value === 'Yardim') el.textContent = 'Yardım';
+        if (value === 'Scout Sonuclari') el.textContent = 'Scout Sonuçları';
+        if (value === 'Iptal') el.textContent = 'İptal';
+        if (value === 'Yayini Baslat') el.textContent = 'Yayını Başlat';
+        if (value === 'Deneme / Idman Ilani') el.textContent = 'Deneme / İdman İlanı';
+        if (value === 'Idman') el.textContent = 'İdman';
+        if (value === 'Deneme Maci') el.textContent = 'Deneme Maçı';
+        if (value === 'Yayina Al') el.textContent = 'Yayına Al';
+      });
+
+      document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach((el) => {
+        const value = el.getAttribute('placeholder') || '';
+        if (value === 'Oyuncu adi gir') el.setAttribute('placeholder', 'Oyuncu adı gir');
+        if (value === 'Baslik (or: U19 icin hizli sol kanat araniyor)') el.setAttribute('placeholder', 'Başlık (ör: U19 için hızlı sol kanat aranıyor)');
+        if (value === 'Ne aradigini yaz... (pozisyon, yas, fizik, oyun tarzi vb.)') el.setAttribute('placeholder', 'Ne aradığını yaz... (pozisyon, yaş, fizik, oyun tarzı vb.)');
+        if (value === 'Mac adi (or: U19 Hazirlik Maci)') el.setAttribute('placeholder', 'Maç adı (ör: U19 Hazırlık Maçı)');
+        if (value === 'Ana yayin linki (opsiyonel)') el.setAttribute('placeholder', 'Ana yayın linki (opsiyonel)');
+        if (value === 'Baslik (or: U19 Acik Deneme)') el.setAttribute('placeholder', 'Başlık (ör: U19 Açık Deneme)');
+      });
+    }
+
     async function init() {
       applyTurkishTextFixesFinal();
       const grid = document.getElementById('playersGrid');
@@ -1654,7 +1713,6 @@ setText('.content h1', 'Antrenör Profili');
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
 
 
 
