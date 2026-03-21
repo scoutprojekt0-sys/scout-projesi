@@ -4822,6 +4822,25 @@
             gap: 12px;
         }
 
+        .role-home-flow {
+            display: none;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .role-home-flow-row {
+            display: grid;
+            gap: 12px;
+        }
+
+        .role-home-flow-row.primary {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .role-home-flow-row.secondary {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
         .insight-card {
             position: relative;
             overflow: hidden;
@@ -6979,6 +6998,11 @@
 
             .ad-panel {
                 min-height: 300px;
+            }
+
+            .role-home-flow-row.primary,
+            .role-home-flow-row.secondary {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -9344,6 +9368,7 @@
                             <a class="role-visibility-link" href="./professional-players.html?visibility_role=manager"><span>Portföyü Aç</span><i class="fas fa-arrow-right"></i></a>
                         </div>
                     </article>
+                    <span id="coachHomeVisibilityCardSlot" hidden></span>
                     <article class="role-visibility-card is-coach" id="coachHomeVisibilityCard" style="display:none;">
                         <div class="role-visibility-head">
                             <div class="role-visibility-eyebrow">Antrenör Perspektifi</div>
@@ -9560,6 +9585,7 @@
                     <div class="insight-note" id="scoutRadarNote">Bu hafta radar yoğunluğu savunma hattı ve kenar oyuncularında toplanıyor.</div>
                 </article>
 
+                <span id="homeNeedsCardSlot" hidden></span>
                 <article class="insight-card" id="homeNeedsCard">
                     <div class="eyebrow">Kulüp Talepleri</div>
                     <h3 class="insight-title">Kulüplerin Bugünkü İhtiyaçları</h3>
@@ -9614,6 +9640,7 @@
                     <div class="insight-note" id="clubSystemFitNote">Mevcut oyuncu havuzu kulübünün seçtiği sisteme göre AI uyumluluk puanıyla sıralanır.</div>
                 </article>
 
+                <span id="lawInsightCardSlot" hidden></span>
                 <article class="insight-card" id="lawInsightCard">
                     <div class="eyebrow">Profesyonel Destek</div>
                     <h3 class="insight-title">Hukuk ve Sözleşme Desteği</h3>
@@ -9631,6 +9658,11 @@
                         <a class="insight-cta" href="./lawyers-directory.html"><i class="fas fa-arrow-right"></i><span>Avukatları İncele</span></a>
                     </div>
                 </article>
+            </section>
+
+            <section class="role-home-flow" id="coachHomeFlow" hidden>
+                <div class="role-home-flow-row primary" id="coachHomeFlowPrimary"></div>
+                <div class="role-home-flow-row secondary" id="coachHomeFlowSecondary"></div>
             </section>
 
             <div class="promo-ad-grid">
@@ -9656,6 +9688,7 @@
                     </ul>
                     <div class="card-mini-meta" id="weeklyTrendsMeta">Profesyonel ilan akışı • Güncelleme: bekleniyor</div>
                 </article>
+                <span id="risingStarsCardSlot" hidden></span>
                 <article class="below-card" id="risingStarsCard" data-dashboard-feature="rising-stars" role="button" tabindex="0">
                     <div class="title">Transfer Masası</div>
                     <div class="desc" id="risingStarsBody">Transfer kategorileri hazırlanıyor.</div>
@@ -9694,6 +9727,7 @@
                             <a class="role-visibility-link" href="./scout-ihbarlari.html"><span>Tümünü Gör</span><i class="fas fa-arrow-right"></i></a>
                         </div>
                     </article>
+                    <span id="coachHomeTipCardSlot" hidden></span>
                     <article class="role-tip-card is-coach" id="coachHomeTipCard" style="display:none;">
                         <div class="role-tip-card-head">
                             <div>
@@ -15713,6 +15747,44 @@
             const risingStarsCard = document.getElementById('risingStarsCard');
             const dataStatusStrip = document.getElementById('dataStatusStrip');
             const homeDataPanel = document.querySelector('.home-data-center-panel');
+            const coachHomeFlow = document.getElementById('coachHomeFlow');
+            const coachHomeFlowPrimary = document.getElementById('coachHomeFlowPrimary');
+            const coachHomeFlowSecondary = document.getElementById('coachHomeFlowSecondary');
+            const coachHomeVisibilityCardSlot = document.getElementById('coachHomeVisibilityCardSlot');
+            const homeNeedsCardSlot = document.getElementById('homeNeedsCardSlot');
+            const risingStarsCardSlot = document.getElementById('risingStarsCardSlot');
+            const coachHomeTipCardSlot = document.getElementById('coachHomeTipCardSlot');
+            const lawInsightCardSlot = document.getElementById('lawInsightCardSlot');
+
+            function restoreCard(slot, card) {
+                if (!slot || !card || slot.parentNode !== card.parentNode || card.previousElementSibling === slot) {
+                    return;
+                }
+                slot.parentNode.insertBefore(card, slot.nextSibling);
+            }
+
+            function restoreCoachHomeFlow() {
+                restoreCard(coachHomeVisibilityCardSlot, coachHomeVisibilityCard);
+                restoreCard(homeNeedsCardSlot, homeNeedsCard);
+                restoreCard(risingStarsCardSlot, risingStarsCard);
+                restoreCard(coachHomeTipCardSlot, coachHomeTipCard);
+                restoreCard(lawInsightCardSlot, lawInsightCard);
+                if (coachHomeFlow) {
+                    coachHomeFlow.hidden = true;
+                    coachHomeFlow.style.display = 'none';
+                }
+            }
+
+            function applyCoachHomeFlow() {
+                if (!coachHomeFlow || !coachHomeFlowPrimary || !coachHomeFlowSecondary) return;
+                if (coachHomeVisibilityCard) coachHomeFlowSecondary.appendChild(coachHomeVisibilityCard);
+                if (homeNeedsCard) coachHomeFlowPrimary.appendChild(homeNeedsCard);
+                if (risingStarsCard) coachHomeFlowPrimary.appendChild(risingStarsCard);
+                if (coachHomeTipCard) coachHomeFlowPrimary.appendChild(coachHomeTipCard);
+                if (lawInsightCard) coachHomeFlowSecondary.appendChild(lawInsightCard);
+                coachHomeFlow.hidden = false;
+                coachHomeFlow.style.display = 'grid';
+            }
 
             syncNegotiationRoomNavVisibility(normalizedRole);
             syncNegotiationSpotlight(normalizedRole);
@@ -15829,6 +15901,22 @@
 
             if (risingStarsCard) {
                 risingStarsCard.style.display = (isPublicSession || isScoutSession || isClubSession || isManagerSession || isCoachSession) ? '' : 'none';
+            }
+
+            if (isCoachSession) {
+                if (starterRoleCard) {
+                    starterRoleCard.hidden = true;
+                    starterRoleCard.style.display = 'none';
+                }
+                if (homeInsightGrid) {
+                    homeInsightGrid.style.display = 'none';
+                }
+                if (belowCardsGrid) {
+                    belowCardsGrid.style.display = 'none';
+                }
+                applyCoachHomeFlow();
+            } else {
+                restoreCoachHomeFlow();
             }
         }
 
