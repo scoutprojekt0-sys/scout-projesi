@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NextScout | Futbol Scout, KULÜP ve Oyuncu Veri Platformu</title>
-    <meta name="description" content="NextScout ana sayfasi: scout radar, haftanin trendleri, yukselen yildizlar ve KULÜP ihtiyaçlarini tek merkezde gosterir.">
+    <meta name="description" content="NextScout ana sayfasi: oyuncu vitrini, scout girisi, kulup ihtiyaclari ve profesyonel futbol akisini tek merkezde gosterir.">
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
     <link rel="canonical" href="https://nextscout.pro/">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
     <meta property="og:title" content="NextScout | Futbol Scout, KULÜP ve Oyuncu Veri Platformu">
-    <meta property="og:description" content="NextScout ana sayfasi: scout radar, haftanin trendleri, yukselen yildizlar ve KULÜP ihtiyaçlarini tek merkezde gosterir.">
+    <meta property="og:description" content="NextScout ana sayfasi: oyuncu vitrini, scout girisi, kulup ihtiyaclari ve profesyonel futbol akisini tek merkezde gosterir.">
     <meta property="og:url" content="https://nextscout.pro/">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-home.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="NextScout | Futbol Scout Platformu">
-    <meta name="twitter:description" content="NextScout ana sayfasi: scout radar, haftanin trendleri, yukselen yildizlar ve KULÜP ihtiyaçlarini tek merkezde gosterir.">
+    <meta name="twitter:description" content="NextScout ana sayfasi: oyuncu vitrini, scout girisi, kulup ihtiyaclari ve profesyonel futbol akisini tek merkezde gosterir.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-home.jpg">
     <meta name="theme-color" content="#0B3B8A">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -3166,6 +3166,10 @@
             align-items: stretch;
         }
 
+        .idea-news-container.is-public {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
         .idea-news-square {
             position: relative;
             width: 100%;
@@ -3194,6 +3198,14 @@
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 12px;
+        }
+
+        .below-cards-grid.is-public {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .home-insight-grid.is-public {
+            grid-template-columns: minmax(0, 1fr);
         }
 
         .below-cards-grid .below-card {
@@ -9090,53 +9102,6 @@
                 <div class="contract-live-footer">
                     <a href="./boost-discover.html" class="btn"><i class="fas fa-arrow-right"></i><span>Tümünü Gör</span></a>
                 </div>
-            </section>
-
-            <section class="public-home-grid" id="publicHomeGrid" hidden>
-                <article class="public-home-card" id="publicHowItWorksCard">
-                    <div class="public-home-eyebrow">NextScout Nasıl Çalışır?</div>
-                    <h3 class="public-home-title">Keşfet, görünür ol, teklif sürecine gir.</h3>
-                    <div class="public-home-summary">Public kullanıcı için en net akış bu: rolünü seç, doğru vitrine veya keşif hattına gir, ardından sistem içindeki gerçek fırsatları takip et.</div>
-                    <div class="public-home-steps">
-                        <div class="public-home-step">
-                            <div class="public-home-step-index">01</div>
-                            <div><strong>Rolünü seç</strong><span>Oyuncu, scout, kulüp, menajer veya antrenör olarak doğru giriş yolunu aç.</span></div>
-                        </div>
-                        <div class="public-home-step">
-                            <div class="public-home-step-index">02</div>
-                            <div><strong>Sisteme gir</strong><span>Video, profil, ihtiyaç veya ilan üzerinden sistemin aktif akışına bağlan.</span></div>
-                        </div>
-                        <div class="public-home-step">
-                            <div class="public-home-step-index">03</div>
-                            <div><strong>Sonuca yaklaş</strong><span>Scout ilgisi, görünürlük, eşleşme ve teklif akışını aynı ağda ilerlet.</span></div>
-                        </div>
-                    </div>
-                    <div class="public-home-actions">
-                        <button type="button" class="public-home-link" onclick="openRegisterModal()"><i class="fas fa-user-plus"></i><span>Hemen Başla</span></button>
-                    </div>
-                </article>
-
-                <article class="public-home-card" id="publicLiveOpportunitiesCard">
-                    <div class="public-home-eyebrow">Canlı Fırsatlar</div>
-                    <h3 class="public-home-title">Bugün sistemde gerçekten açılan kapılar</h3>
-                    <div class="public-home-summary">Static tanıtım yerine public kullanıcıya doğrudan aktif alanları göster. Böylece platformun yaşayan tarafı ilk bakışta anlaşılır.</div>
-                    <div class="public-home-opps">
-                        <div class="public-home-opp">
-                            <div><strong>Kulüp ihtiyaçları</strong><span>Bugün takımların aradığı pozisyonları ve açık kadro ihtiyaçlarını incele.</span></div>
-                        </div>
-                        <div class="public-home-opp">
-                            <div><strong>İlan ve fırsatlar</strong><span>Oyuncu, menajer ve antrenör tarafındaki açık hareketleri tek yerden gör.</span></div>
-                        </div>
-                        <div class="public-home-opp">
-                            <div><strong>Transfer akışı</strong><span>Boşta, sözleşmeli ve kulüp arayan oyuncu havuzuna hızlı geçiş yap.</span></div>
-                        </div>
-                    </div>
-                    <div class="public-home-actions">
-                        <a class="public-home-link" href="./club-needs-board.html"><i class="fas fa-list-check"></i><span>İhtiyaçları Aç</span></a>
-                        <a class="public-home-link" href="./discover-opportunities.html"><i class="fas fa-bolt"></i><span>Fırsatları Gör</span></a>
-                        <a class="public-home-link" href="./professional-players.html?transfer_category=free&player_view=quick"><i class="fas fa-arrow-right"></i><span>Oyuncu Havuzunu Aç</span></a>
-                    </div>
-                </article>
             </section>
 
             <section class="scout-entry-strip" id="scoutEntryStrip" aria-label="Scout girisi">
@@ -15738,6 +15703,7 @@
             const playerOnlyGrid = document.getElementById('playerOnlyGrid');
             const homeInsightGrid = document.querySelector('.home-insight-grid');
             const belowCardsGrid = document.querySelector('.below-cards-grid');
+            const ideaNewsContainer = document.querySelector('.idea-news-container');
             const scoutRadarCard = document.getElementById('scoutRadarCard');
             const homeNeedsCard = document.getElementById('homeNeedsCard');
             const clubSystemFitCard = document.getElementById('clubSystemFitCard');
@@ -15745,7 +15711,6 @@
             const playerOfWeekCard = document.getElementById('playerOfWeekCard');
             const weeklyTrendsCard = document.getElementById('weeklyTrendsCard');
             const risingStarsCard = document.getElementById('risingStarsCard');
-            const publicHomeGrid = document.getElementById('publicHomeGrid');
             const dataStatusStrip = document.getElementById('dataStatusStrip');
             const homeDataPanel = document.querySelector('.home-data-center-panel');
 
@@ -15818,6 +15783,11 @@
 
             if (homeInsightGrid) {
                 homeInsightGrid.style.display = (isPublicSession || isScoutSession || isClubSession || isManagerSession || isCoachSession) ? 'grid' : 'none';
+                homeInsightGrid.classList.toggle('is-public', isPublicSession);
+            }
+
+            if (ideaNewsContainer) {
+                ideaNewsContainer.classList.toggle('is-public', isPublicSession);
             }
 
             if (scoutRadarCard) {
@@ -15836,11 +15806,6 @@
                 lawInsightCard.style.display = isPublicSession ? 'none' : '';
             }
 
-            if (publicHomeGrid) {
-                publicHomeGrid.hidden = !isPublicSession;
-                publicHomeGrid.style.display = isPublicSession ? 'grid' : 'none';
-            }
-
             if (dataStatusStrip) {
                 dataStatusStrip.style.display = isPublicSession ? 'none' : '';
             }
@@ -15851,10 +15816,11 @@
 
             if (belowCardsGrid) {
                 belowCardsGrid.style.display = (isPublicSession || isScoutSession || isClubSession || isManagerSession || isCoachSession) ? 'grid' : 'none';
+                belowCardsGrid.classList.toggle('is-public', isPublicSession);
             }
 
             if (playerOfWeekCard) {
-                playerOfWeekCard.style.display = isScoutSession || isClubSession || isManagerSession ? '' : 'none';
+                playerOfWeekCard.style.display = isPublicSession || isScoutSession || isClubSession || isManagerSession ? '' : 'none';
             }
 
             if (weeklyTrendsCard) {
