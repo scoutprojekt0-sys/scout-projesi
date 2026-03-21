@@ -146,16 +146,17 @@
     .row:last-child { border-bottom: 0; }
     .muted { color: var(--muted); }
     .ok { color: #34d399; font-size: 12px; min-height: 16px; margin-top: 8px; font-weight: 700; }
-    .review-shell { display: grid; gap: 14px; }
+    .review-shell { display: grid; gap: 16px; }
     .review-form {
       display: grid;
-      gap: 12px;
-      padding: 14px;
-      border-radius: 16px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--line);
+      gap: 14px;
+      padding: 18px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(15,23,42,.18) 100%);
+      border: 1px solid rgba(96,165,250,.16);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 18px 30px rgba(2,6,23,.18);
     }
-    .review-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .review-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .review-field { display: grid; gap: 6px; }
     .review-field label {
       font-size: 11px;
@@ -165,22 +166,34 @@
       letter-spacing: .1em;
     }
     .review-field select, .review-field textarea {
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 10px 12px;
+      border: 1px solid rgba(148,163,184,.18);
+      border-radius: 14px;
+      padding: 12px 13px;
       font-size: 13px;
-      background: rgba(255,255,255,.04);
+      background: linear-gradient(180deg, rgba(7,17,28,.92) 0%, rgba(15,23,42,.88) 100%);
       color: var(--ink);
       font-family: inherit;
     }
-    .review-field textarea { min-height: 96px; resize: vertical; }
-    .review-list { display: grid; gap: 10px; }
-    .review-item {
-      padding: 14px;
-      border-radius: 16px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.04);
+    .review-field select:focus, .review-field textarea:focus {
+      outline: none;
+      border-color: rgba(96,165,250,.42);
+      box-shadow: 0 0 0 4px rgba(59,130,246,.14);
     }
+    .review-field textarea { min-height: 96px; resize: vertical; }
+    .review-list { display: grid; gap: 14px; }
+    .review-summary-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+    .review-summary-card { padding:14px 15px; border-radius:18px; border:1px solid rgba(96,165,250,.14); background:linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%); }
+    .review-summary-label { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.12em; color:#9bb5cb; margin-bottom:8px; }
+    .review-summary-value { font-size:26px; font-weight:900; color:#f8fbff; }
+    .review-item {
+      position: relative;
+      padding: 18px;
+      border-radius: 20px;
+      border: 1px solid rgba(96,165,250,.14);
+      background: linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%);
+      box-shadow: 0 18px 32px rgba(2,6,23,.16);
+    }
+    .review-item::before { content:""; position:absolute; inset:0 auto 0 0; width:4px; border-radius:20px 0 0 20px; background:linear-gradient(180deg,#ff7e22 0%,#60a5fa 100%); }
     .review-head {
       display: flex;
       justify-content: space-between;
@@ -189,21 +202,21 @@
       margin-bottom: 8px;
     }
     .review-author { display: grid; gap: 4px; }
-    .review-author strong { font-size: 14px; color: #f5fbff; }
+    .review-author strong { font-size: 15px; color: #f5fbff; }
     .review-author span, .review-note, .review-empty, .review-meta {
       font-size: 12px;
       color: var(--muted);
       line-height: 1.6;
     }
-    .review-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 10px; }
+    .review-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 14px; }
     .review-pill {
       display: inline-flex;
       align-items: center;
-      min-height: 24px;
-      padding: 0 10px;
+      min-height: 28px;
+      padding: 0 11px;
       border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(148,163,184,.16);
+      background: rgba(255,255,255,.06);
       color: #dbeafe;
       font-size: 10px;
       font-weight: 800;
@@ -213,16 +226,17 @@
     .review-pill.sentiment-olumlu { color: #bbf7d0; }
     .review-pill.sentiment-notr { color: #bfdbfe; }
     .review-pill.sentiment-dikkat { color: #fde68a; }
-    .review-body { color: #e2e8f0; font-size: 13px; line-height: 1.65; }
+    .review-body { color: #e2e8f0; font-size: 14px; line-height: 1.72; }
     .review-reply {
-      margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: rgba(96,165,250,.08);
-      border: 1px solid rgba(96,165,250,.18);
+      margin-top: 12px;
+      padding: 14px 15px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(11,59,138,.18) 0%, rgba(15,23,42,.16) 100%);
+      border: 1px solid rgba(96,165,250,.2);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
     }
     @media (max-width:900px) {
-      .layout, .form-grid, .review-form-grid { grid-template-columns: 1fr; }
+      .layout, .form-grid, .review-form-grid, .review-summary-grid { grid-template-columns: 1fr; }
     }
     @media (max-width:768px) {
       .wrap { padding: 14px 10px 18px; }
@@ -288,6 +302,11 @@
     <div class="card" id="coachReviewsCard" style="margin-top:12px;">
       <h2 class="section-title">Profil Yorumları</h2>
       <div class="review-shell">
+        <div class="review-summary-grid" id="coachReviewSummary">
+          <div class="review-summary-card"><div class="review-summary-label">Toplam</div><div class="review-summary-value">0</div></div>
+          <div class="review-summary-card"><div class="review-summary-label">Olumlu Oran</div><div class="review-summary-value">%0</div></div>
+          <div class="review-summary-card"><div class="review-summary-label">Guven Skoru</div><div class="review-summary-value">0/10</div></div>
+        </div>
         <div class="review-form" id="coachReviewFormCard">
           <div class="review-note" id="coachReviewFormNote">Antrenörün teknik iletişimi, oyuncu geliştirme yaklaşımı ve süreç yönetimi hakkında yorum yaz.</div>
           <div class="review-form-grid">
@@ -488,8 +507,20 @@
 
     function renderCoachProfileReviews(items) {
       const root = document.getElementById('coachReviewList');
+      const summary = document.getElementById('coachReviewSummary');
       if (!root) return;
       const rows = Array.isArray(items) ? items : [];
+      if (summary) {
+        const total = rows.length;
+        const positive = rows.filter((row) => row?.sentiment === 'olumlu').length;
+        const positiveRate = total ? Math.round((positive / total) * 100) : 0;
+        const score = total ? Math.min(10, Math.max(1, ((positive * 10) + ((total - positive) * 5)) / (total * 10) * 10)).toFixed(1) : '0.0';
+        summary.innerHTML = `
+          <div class="review-summary-card"><div class="review-summary-label">Toplam</div><div class="review-summary-value">${total}</div></div>
+          <div class="review-summary-card"><div class="review-summary-label">Olumlu Oran</div><div class="review-summary-value">%${positiveRate}</div></div>
+          <div class="review-summary-card"><div class="review-summary-label">Guven Skoru</div><div class="review-summary-value">${score}/10</div></div>
+        `;
+      }
       if (!rows.length) {
         root.innerHTML = '<div class="review-empty">Bu antrenor profili icin henuz yayinlanmis yorum yok.</div>';
         return;

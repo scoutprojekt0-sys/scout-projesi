@@ -298,24 +298,26 @@
 
         .review-card {
             background: #FFFFFF;
-            border-radius: 12px;
-            padding: 28px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 18px 36px rgba(15, 23, 42, 0.08);
             margin-top: 20px;
+            border: 1px solid #E2E8F0;
         }
 
         .review-shell {
             display: grid;
-            gap: 14px;
+            gap: 16px;
         }
 
         .review-form {
             display: grid;
-            gap: 12px;
-            padding: 14px;
-            border-radius: 10px;
-            background: #F8FAFC;
-            border: 1px solid #E0E7FF;
+            gap: 14px;
+            padding: 18px;
+            border-radius: 16px;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+            border: 1px solid #dbe7ff;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
         }
 
         .review-grid {
@@ -337,11 +339,50 @@
             gap: 10px;
         }
 
+        .review-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .review-summary-card {
+            padding: 14px 15px;
+            border-radius: 14px;
+            border: 1px solid #dbe7ff;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        }
+
+        .review-summary-label {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            color: #64748B;
+            margin-bottom: 8px;
+        }
+
+        .review-summary-value {
+            font-size: 26px;
+            font-weight: 900;
+            color: #1F2937;
+        }
+
         .review-item {
-            padding: 14px;
-            border-radius: 10px;
-            border: 1px solid #E0E7FF;
-            background: #F8FAFC;
+            position: relative;
+            padding: 18px;
+            border-radius: 16px;
+            border: 1px solid #dbe7ff;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+            box-shadow: 0 14px 24px rgba(15, 23, 42, 0.05);
+        }
+
+        .review-item::before {
+            content: "";
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 4px;
+            border-radius: 16px 0 0 16px;
+            background: linear-gradient(180deg, #3B82F6 0%, #10B981 100%);
         }
 
         .review-head {
@@ -358,7 +399,7 @@
         }
 
         .review-author strong {
-            font-size: 14px;
+            font-size: 15px;
             color: #1F2937;
         }
 
@@ -375,16 +416,16 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin: 8px 0 10px;
+            margin: 12px 0 14px;
         }
 
         .review-pill {
             display: inline-flex;
             align-items: center;
-            min-height: 24px;
-            padding: 0 10px;
+            min-height: 28px;
+            padding: 0 11px;
             border-radius: 999px;
-            border: 1px solid #E0E7FF;
+            border: 1px solid #dbe7ff;
             background: #FFFFFF;
             color: #1D4ED8;
             font-size: 10px;
@@ -400,15 +441,16 @@
         .review-body {
             color: #1F2937;
             font-size: 14px;
-            line-height: 1.65;
+            line-height: 1.72;
         }
 
         .review-reply {
-            margin-top: 10px;
-            padding: 10px 12px;
-            border-radius: 8px;
+            margin-top: 12px;
+            padding: 14px 15px;
+            border-radius: 12px;
             background: #EFF6FF;
             border: 1px solid #BFDBFE;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
         }
 
         @media (max-width: 768px) {
@@ -421,6 +463,10 @@
             }
 
             .review-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .review-summary-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -692,6 +738,11 @@
             </div>
             <p class="form-subtitle" style="margin-bottom:18px;">Hukuki surec yonetimi, iletisim kalitesi ve profesyonel destek deneyimi burada gorunur.</p>
             <div class="review-shell">
+                <div class="review-summary-grid" id="lawyerReviewSummary">
+                    <div class="review-summary-card"><div class="review-summary-label">Toplam</div><div class="review-summary-value">0</div></div>
+                    <div class="review-summary-card"><div class="review-summary-label">Olumlu Oran</div><div class="review-summary-value">%0</div></div>
+                    <div class="review-summary-card"><div class="review-summary-label">Guven Skoru</div><div class="review-summary-value">0/10</div></div>
+                </div>
                 <div class="review-form" id="lawyerReviewFormCard">
                     <div class="review-note" id="lawyerReviewFormNote">Avukatla ilgili hukuki surec deneyimini ve calisma yorumunu yaz.</div>
                     <div class="review-grid">
@@ -789,8 +840,20 @@
 
         function renderLawyerProfileReviews(items) {
             const root = document.getElementById('lawyerReviewList');
+            const summary = document.getElementById('lawyerReviewSummary');
             if (!root) return;
             const rows = Array.isArray(items) ? items : [];
+            if (summary) {
+                const total = rows.length;
+                const positive = rows.filter((row) => row?.sentiment === 'olumlu').length;
+                const positiveRate = total ? Math.round((positive / total) * 100) : 0;
+                const score = total ? Math.min(10, Math.max(1, ((positive * 10) + ((total - positive) * 5)) / (total * 10) * 10)).toFixed(1) : '0.0';
+                summary.innerHTML = `
+                    <div class="review-summary-card"><div class="review-summary-label">Toplam</div><div class="review-summary-value">${total}</div></div>
+                    <div class="review-summary-card"><div class="review-summary-label">Olumlu Oran</div><div class="review-summary-value">%${positiveRate}</div></div>
+                    <div class="review-summary-card"><div class="review-summary-label">Guven Skoru</div><div class="review-summary-value">${score}/10</div></div>
+                `;
+            }
             if (!rows.length) {
                 root.innerHTML = '<div class="review-empty">Bu avukat profili icin henuz yayinlanmis yorum yok.</div>';
                 return;
@@ -977,10 +1040,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
 
 
 

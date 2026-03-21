@@ -814,16 +814,18 @@
 
         .review-shell {
             display: grid;
-            gap: 16px;
+            gap: 18px;
         }
 
         .review-form {
             display: grid;
-            gap: 12px;
-            padding: 16px;
-            border-radius: 18px;
-            background: rgba(255,255,255,.04);
-            border: 1px solid rgba(148,163,184,.14);
+            gap: 14px;
+            padding: 18px;
+            border-radius: 22px;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(15,23,42,.22) 100%);
+            border: 1px solid rgba(96,165,250,.16);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 18px 32px rgba(2,6,23,.18);
         }
 
         .review-form-grid {
@@ -848,12 +850,19 @@
         .review-field select,
         .review-field textarea {
             width: 100%;
-            padding: 12px 14px;
-            border-radius: 14px;
+            padding: 13px 14px;
+            border-radius: 16px;
             border: 1px solid rgba(148,163,184,.18);
-            background: rgba(7, 17, 28, 0.78);
+            background: linear-gradient(180deg, rgba(7,17,28,.92) 0%, rgba(15,23,42,.88) 100%);
             color: #eef6ff;
             font: inherit;
+        }
+
+        .review-field select:focus,
+        .review-field textarea:focus {
+            outline: none;
+            border-color: rgba(96,165,250,.42);
+            box-shadow: 0 0 0 4px rgba(59,130,246,.14);
         }
 
         .review-field textarea {
@@ -871,14 +880,55 @@
 
         .review-list {
             display: grid;
+            gap: 14px;
+        }
+
+        .review-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 12px;
         }
 
-        .review-item {
-            padding: 16px;
+        .review-summary-card {
+            padding: 14px 15px;
             border-radius: 18px;
-            border: 1px solid rgba(148,163,184,.14);
-            background: linear-gradient(180deg, rgba(255,255,255,.04) 0%, rgba(15,23,42,.18) 100%);
+            border: 1px solid rgba(96,165,250,.14);
+            background: linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%);
+        }
+
+        .review-summary-label {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            color: #9bb5cb;
+            margin-bottom: 8px;
+        }
+
+        .review-summary-value {
+            font-size: 26px;
+            font-weight: 900;
+            color: #f8fbff;
+        }
+
+        .review-item {
+            position: relative;
+            padding: 18px;
+            border-radius: 22px;
+            border: 1px solid rgba(96,165,250,.14);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.2) 100%);
+            box-shadow: 0 20px 36px rgba(2,6,23,.16);
+        }
+
+        .review-item::before {
+            content: "";
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 4px;
+            border-radius: 22px 0 0 22px;
+            background: linear-gradient(180deg, #ff7e22 0%, #60a5fa 100%);
+            opacity: .9;
         }
 
         .review-head {
@@ -896,7 +946,7 @@
 
         .review-author strong {
             color: #f5fbff;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         .review-author span {
@@ -908,17 +958,17 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin: 10px 0 12px;
+            margin: 12px 0 14px;
         }
 
         .review-pill {
             display: inline-flex;
             align-items: center;
-            min-height: 26px;
-            padding: 0 10px;
+            min-height: 28px;
+            padding: 0 11px;
             border-radius: 999px;
             border: 1px solid rgba(148,163,184,.16);
-            background: rgba(255,255,255,.05);
+            background: rgba(255,255,255,.06);
             color: #dbeafe;
             font-size: 10px;
             font-weight: 800;
@@ -944,15 +994,16 @@
         .review-body {
             color: #dbeafe;
             font-size: 14px;
-            line-height: 1.65;
+            line-height: 1.72;
         }
 
         .review-reply {
             margin-top: 12px;
-            padding: 12px 14px;
-            border-radius: 14px;
-            background: rgba(11, 59, 138, 0.16);
-            border: 1px solid rgba(96, 165, 250, 0.18);
+            padding: 14px 15px;
+            border-radius: 16px;
+            background: linear-gradient(180deg, rgba(11,59,138,.18) 0%, rgba(15,23,42,.16) 100%);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
         }
 
         .achievement-item {
@@ -1549,6 +1600,10 @@
                 grid-template-columns: 1fr;
             }
 
+            .review-summary-grid {
+                grid-template-columns: 1fr;
+            }
+
             .mobile-accordion-card {
                 padding: 0;
                 overflow: hidden;
@@ -1758,6 +1813,11 @@
                 <div class="card" id="profileReviewsCard">
                     <h3 class="card-title">Profil Yorumlari</h3>
                     <div class="review-shell">
+                        <div class="review-summary-grid" id="profileReviewSummary">
+                            <div class="review-summary-card"><div class="review-summary-label">Toplam</div><div class="review-summary-value">0</div></div>
+                            <div class="review-summary-card"><div class="review-summary-label">Olumlu Oran</div><div class="review-summary-value">%0</div></div>
+                            <div class="review-summary-card"><div class="review-summary-label">Guven Skoru</div><div class="review-summary-value">0/10</div></div>
+                        </div>
                         <div class="review-form" id="profileReviewFormCard">
                             <div class="review-note" id="profileReviewFormNote">Bu oyuncuyla ilgili gozlemini, birlikte calisma baglamini ve kisa degerlendirmeyi yaz.</div>
                             <div class="review-form-grid">
@@ -2169,8 +2229,20 @@
 
         function renderProfileReviews(items) {
             const list = document.getElementById('profileReviewList');
+            const summary = document.getElementById('profileReviewSummary');
             if (!list) return;
             const rows = Array.isArray(items) ? items : [];
+            if (summary) {
+                const total = rows.length;
+                const positive = rows.filter((row) => row?.sentiment === 'olumlu').length;
+                const positiveRate = total ? Math.round((positive / total) * 100) : 0;
+                const score = total ? Math.min(10, Math.max(1, ((positive * 10) + ((total - positive) * 5)) / (total * 10) * 10)).toFixed(1) : '0.0';
+                summary.innerHTML = `
+                    <div class="review-summary-card"><div class="review-summary-label">Toplam</div><div class="review-summary-value">${total}</div></div>
+                    <div class="review-summary-card"><div class="review-summary-label">Olumlu Oran</div><div class="review-summary-value">%${positiveRate}</div></div>
+                    <div class="review-summary-card"><div class="review-summary-label">Guven Skoru</div><div class="review-summary-value">${score}/10</div></div>
+                `;
+            }
             if (!rows.length) {
                 list.innerHTML = '<div class="review-empty">Bu profilde henuz yayinlanmis yorum yok.</div>';
                 return;
