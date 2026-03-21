@@ -1006,6 +1006,112 @@
             box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
         }
 
+        .coach-eval-card {
+            display: grid;
+            gap: 16px;
+        }
+
+        .coach-eval-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .coach-eval-kicker {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            color: #9bb5cb;
+            margin-bottom: 6px;
+        }
+
+        .coach-eval-summary {
+            color: #c8daef;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .coach-eval-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 34px;
+            padding: 0 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,126,34,.24);
+            background: rgba(255,255,255,.05);
+            color: #f8fbff;
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .coach-eval-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .coach-eval-item {
+            display: grid;
+            gap: 8px;
+            padding: 14px;
+            border-radius: 18px;
+            border: 1px solid rgba(96,165,250,.14);
+            background: linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%);
+        }
+
+        .coach-eval-item-top {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .coach-eval-item-label {
+            color: #dbeafe;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .coach-eval-item-value {
+            color: #f8fbff;
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .coach-eval-bar {
+            height: 6px;
+            border-radius: 999px;
+            overflow: hidden;
+            background: rgba(255,255,255,.08);
+        }
+
+        .coach-eval-fill {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #60a5fa 0%, #ff7e22 100%);
+        }
+
+        .coach-eval-note {
+            color: #9bb5cb;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .coach-eval-footer {
+            color: #9bb5cb;
+            font-size: 12px;
+            line-height: 1.7;
+            padding: 14px 16px;
+            border-radius: 18px;
+            border: 1px solid rgba(96,165,250,.14);
+            background: rgba(255,255,255,.04);
+        }
+
         .achievement-item {
             padding: 16px;
             background: rgba(255,255,255,.04);
@@ -1799,6 +1905,20 @@
                         </table>
                     </div>
                 </div>
+                <div class="card" id="coachPositionEvaluationCard" style="display:none;">
+                    <h3 class="card-title">Pozisyon Bazli Degerlendirme</h3>
+                    <div class="coach-eval-card">
+                        <div class="coach-eval-head">
+                            <div>
+                                <div class="coach-eval-kicker">Antrenor Gorunumu</div>
+                                <div class="coach-eval-summary" id="coachEvalSummary">Pozisyona göre teknik okuma hazırlanıyor.</div>
+                            </div>
+                            <div class="coach-eval-badge" id="coachEvalBadge"><i class="fas fa-clipboard-check"></i><span>Hazirlaniyor</span></div>
+                        </div>
+                        <div class="coach-eval-grid" id="coachEvalGrid"></div>
+                        <div class="coach-eval-footer" id="coachEvalFooter">Pozisyona göre ilk teknik yorum burada görünür.</div>
+                    </div>
+                </div>
                 <div class="card" id="achievements">
                     <h3 class="card-title">Basarilar</h3>
                     <div id="achievementList" style="display:grid;gap:10px;"></div>
@@ -2558,6 +2678,119 @@
             setText('contractOptionValue', data?.contract_option || '1 yil');
         }
 
+        function getProfileViewerRole() {
+            try {
+                const user = JSON.parse(localStorage.getItem('nextscout_user') || '{}');
+                return (user?.role || localStorage.getItem('nextscout_role') || localStorage.getItem('userRole') || '')
+                    .toString()
+                    .trim()
+                    .toLowerCase();
+            } catch (error) {
+                return (localStorage.getItem('nextscout_role') || localStorage.getItem('userRole') || '')
+                    .toString()
+                    .trim()
+                    .toLowerCase();
+            }
+        }
+
+        function isCoachViewerRole(role) {
+            return role === 'coach' || role === 'antrenor';
+        }
+
+        function normalizeProfilePositionKey(value) {
+            return (value || '')
+                .toString()
+                .trim()
+                .toLocaleLowerCase('tr-TR')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '');
+        }
+
+        function buildCoachEvaluationTemplate(position) {
+            const key = normalizeProfilePositionKey(position);
+            if (/forvet|santrafor|wing|kanat|guard|pivot/.test(key)) {
+                return {
+                    badge: 'Hucum Rolu',
+                    summary: 'Bu oyuncu hücum rolünde bitiricilik, alan kullanımı ve geçiş aksiyonları üzerinden okunmalı.',
+                    footer: 'Antrenör notu: son vuruş kalitesi ile topsuz koşu disiplinini birlikte değerlendirmek daha doğru karar verir.',
+                    items: [
+                        { label: 'Bitiricilik', value: 86, note: 'Ceza sahası içi karar kalitesi ve son vuruş.' },
+                        { label: 'Alan Kullanimi', value: 82, note: 'Savunma arkası koşu ve boş alan sezgisi.' },
+                        { label: 'Pres Disiplini', value: 74, note: 'Ön alan baskısında devamlılık seviyesi.' },
+                        { label: 'Geçiş Etkisi', value: 84, note: 'Top kazanımı sonrası hızlı hücum katkısı.' },
+                    ],
+                };
+            }
+            if (/orta saha|midfield|10 numara|8 numara|6 numara|playmaker/.test(key)) {
+                return {
+                    badge: 'Merkez Rolu',
+                    summary: 'Bu oyuncu merkez oyunda yön verme, tempo ayarı ve bağlantı oyunu üzerinden değerlendirilir.',
+                    footer: 'Antrenör notu: pas yönü seçimi ile savunma geçişindeki reaksiyonu birlikte izlemek gerekir.',
+                    items: [
+                        { label: 'Oyun Gorusu', value: 85, note: 'Oyun yönü değişimi ve pas açısı üretimi.' },
+                        { label: 'Tempo Kontrolu', value: 80, note: 'Atak hızını doğru yükseltip düşürebilme.' },
+                        { label: 'Pres Cikisi', value: 77, note: 'Baskı altında çözüm üretme becerisi.' },
+                        { label: 'Gecis Savunmasi', value: 72, note: 'Top kaybı sonrası ilk reaksiyon kalitesi.' },
+                    ],
+                };
+            }
+            if (/bek|stoper|defans|savunma|center back|full back/.test(key)) {
+                return {
+                    badge: 'Savunma Rolu',
+                    summary: 'Bu oyuncu savunma rolünde yer alma, birebir dayanıklılık ve geçiş savunması üzerinden okunmalı.',
+                    footer: 'Antrenör notu: çizgi savunması ve geri koşu temposu birlikte bakıldığında daha net sonuç verir.',
+                    items: [
+                        { label: 'Yer Alma', value: 84, note: 'Savunma çizgisinde pozisyon alma doğruluğu.' },
+                        { label: '1v1 Dayaniklilik', value: 79, note: 'Birebir savunmada direnç seviyesi.' },
+                        { label: 'Geri Kosu', value: 76, note: 'Geçiş anında toparlanma hızı.' },
+                        { label: 'Pasla Cikis', value: 70, note: 'İlk pas kalitesi ve baskıdan çıkış.' },
+                    ],
+                };
+            }
+            return {
+                badge: 'Genel Teknik Okuma',
+                summary: 'Bu oyuncu için pozisyon bilgisine göre ilk teknik değerlendirme dört temel başlık altında sunulur.',
+                footer: 'Antrenör notu: maç içi rol netleştikçe bu teknik okuma daha güçlü hale gelir.',
+                items: [
+                    { label: 'Ilk Kontrol', value: 78, note: 'İlk temas sonrası oyuna devam edebilme.' },
+                    { label: 'Karar Hizi', value: 74, note: 'Topla ve topsuz karar anı kalitesi.' },
+                    { label: 'Fizik Sureklilik', value: 76, note: '90 dakika içindeki direnç seviyesi.' },
+                    { label: 'Taktik Uyum', value: 72, note: 'Rol disiplini ve görev tekrarı.' },
+                ],
+            };
+        }
+
+        function renderCoachPositionEvaluation(data) {
+            const card = document.getElementById('coachPositionEvaluationCard');
+            const summary = document.getElementById('coachEvalSummary');
+            const badge = document.getElementById('coachEvalBadge');
+            const grid = document.getElementById('coachEvalGrid');
+            const footer = document.getElementById('coachEvalFooter');
+            if (!card || !summary || !badge || !grid || !footer) return;
+
+            const role = getProfileViewerRole();
+            if (!isCoachViewerRole(role)) {
+                card.style.display = 'none';
+                return;
+            }
+
+            const template = buildCoachEvaluationTemplate(data?.position || data?.primary_position || data?.role_position || '');
+            summary.textContent = template.summary;
+            badge.innerHTML = `<i class="fas fa-clipboard-check"></i><span>${esc(template.badge)}</span>`;
+            footer.textContent = template.footer;
+            grid.innerHTML = template.items.map((item) => `
+                <article class="coach-eval-item">
+                    <div class="coach-eval-item-top">
+                        <div class="coach-eval-item-label">${esc(item.label)}</div>
+                        <div class="coach-eval-item-value">%${esc(String(item.value))}</div>
+                    </div>
+                    <div class="coach-eval-bar"><span class="coach-eval-fill" style="width:${esc(String(item.value))}%"></span></div>
+                    <div class="coach-eval-note">${esc(item.note)}</div>
+                </article>
+            `).join('');
+            card.style.display = '';
+        }
+
         function renderLocalProfile() {
             document.body.classList.add('square-ui');
             const savedProfile = localStorage.getItem('playerProfile');
@@ -2605,6 +2838,7 @@
                         timeline_events: data.timeline_events || []
                     });
                     renderProfileStatistics(data);
+                    renderCoachPositionEvaluation(data);
                     renderAdvancedPanels(data, 'Local Profil');
                 } catch (e) {
                     console.error('Profile parse hatasi:', e);
@@ -2615,6 +2849,7 @@
             if (!savedProfile) updateHeroEditorial({ name: sessionUser?.name || 'Oyuncu', sport: 'oyuncu profili' });
             if (!savedProfile) updateHeroMarketPanel(0, 'Local profilde piyasa verisi bulunamadi.');
             if (!savedProfile) renderProfileShowcase({});
+            if (!savedProfile) renderCoachPositionEvaluation({});
             if (!savedProfile) renderAdvancedPanels({}, 'Local Profil');
         }
 
@@ -2907,6 +3142,11 @@
                 rating,
                 minutes: payload?.stats?.latest?.minutes_played || statsSummary.minutes || 0,
                 overall_rating: rating
+            });
+            renderCoachPositionEvaluation({
+                position,
+                primary_position: profile.position || card.position || '',
+                sport: profile.sport || profile.branch || 'futbol'
             });
 
             if (card.profile_photo_url) setHeroImage(card.profile_photo_url);

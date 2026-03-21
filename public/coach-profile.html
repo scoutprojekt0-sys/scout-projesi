@@ -235,8 +235,52 @@
       border: 1px solid rgba(96,165,250,.2);
       box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
     }
+    .notes-shell { display:grid; gap:16px; }
+    .notes-form {
+      display:grid;
+      gap:14px;
+      padding:18px;
+      border-radius:20px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(15,23,42,.18) 100%);
+      border: 1px solid rgba(96,165,250,.16);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 18px 30px rgba(2,6,23,.18);
+    }
+    .notes-summary-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+    .notes-summary-card { padding:14px 15px; border-radius:18px; border:1px solid rgba(96,165,250,.14); background:linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%); }
+    .notes-summary-label { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.12em; color:#9bb5cb; margin-bottom:8px; }
+    .notes-summary-value { font-size:26px; font-weight:900; color:#f8fbff; }
+    .notes-list { display:grid; gap:14px; }
+    .note-item {
+      position:relative;
+      padding:18px;
+      border-radius:20px;
+      border:1px solid rgba(96,165,250,.14);
+      background: linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%);
+      box-shadow: 0 18px 32px rgba(2,6,23,.16);
+    }
+    .note-item::before { content:""; position:absolute; inset:0 auto 0 0; width:4px; border-radius:20px 0 0 20px; background:linear-gradient(180deg,#60a5fa 0%,#ff7e22 100%); }
+    .note-head { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:10px; }
+    .note-player { display:grid; gap:4px; }
+    .note-player strong { color:#f5fbff; font-size:15px; }
+    .note-player span, .note-meta, .note-empty { color:var(--muted); font-size:12px; line-height:1.6; }
+    .note-tags { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 14px; }
+    .note-pill {
+      display:inline-flex;
+      align-items:center;
+      min-height:28px;
+      padding:0 11px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,.16);
+      background:rgba(255,255,255,.06);
+      color:#dbeafe;
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .note-body { color:#e2e8f0; font-size:14px; line-height:1.72; }
     @media (max-width:900px) {
-      .layout, .form-grid, .review-form-grid, .review-summary-grid { grid-template-columns: 1fr; }
+      .layout, .form-grid, .review-form-grid, .review-summary-grid, .notes-summary-grid { grid-template-columns: 1fr; }
     }
     @media (max-width:768px) {
       .wrap { padding: 14px 10px 18px; }
@@ -339,10 +383,34 @@
         <div class="review-list" id="coachReviewList"></div>
       </div>
     </div>
+
+    <div class="card" id="coachNotesCard" style="margin-top:12px;">
+      <h2 class="section-title">Teknik Not Defteri</h2>
+      <div class="notes-shell">
+        <div class="notes-summary-grid" id="coachNotesSummary">
+          <div class="notes-summary-card"><div class="notes-summary-label">Toplam Not</div><div class="notes-summary-value">0</div></div>
+          <div class="notes-summary-card"><div class="notes-summary-label">İzlenecek</div><div class="notes-summary-value">0</div></div>
+          <div class="notes-summary-card"><div class="notes-summary-label">Son Etiket</div><div class="notes-summary-value">-</div></div>
+        </div>
+        <div class="notes-form">
+          <div class="review-note">Oyuncu bazlı teknik gözlem notunu kısa, karar odaklı ve tekrar okunabilir biçimde tut.</div>
+          <div class="form-grid">
+            <div class="field"><label class="label" for="coachNotePlayer">Oyuncu</label><input class="input" id="coachNotePlayer" placeholder="Oyuncu adı"></div>
+            <div class="field"><label class="label" for="coachNotePosition">Pozisyon</label><input class="input" id="coachNotePosition" placeholder="Forvet / Orta saha / Bek"></div>
+            <div class="field"><label class="label" for="coachNoteTag">Etiket</label><select class="select" id="coachNoteTag"><option value="izlenecek">İzlenecek</option><option value="tekrar-bak">Tekrar Bak</option><option value="gelisim-var">Gelişim Var</option><option value="hazir">Hazır</option></select></div>
+            <div class="field"><label class="label" for="coachNoteFocus">Odak</label><select class="select" id="coachNoteFocus"><option value="teknik">Teknik</option><option value="taktik">Taktik</option><option value="fizik">Fizik</option><option value="zihinsel">Zihinsel</option></select></div>
+            <div class="field full"><label class="label" for="coachNoteBody">Not</label><textarea class="textarea" id="coachNoteBody" placeholder="İlk kontrol, pres disiplini, oyun görüşü, geçiş savunması veya antrenman davranışı ile ilgili kısa teknik not..."></textarea></div>
+          </div>
+          <div class="act"><button class="btn btn-primary" type="button" id="saveCoachNoteBtn"><i class="fas fa-notes-medical"></i><span>Notu Kaydet</span></button></div>
+        </div>
+        <div class="notes-list" id="coachNotesList"></div>
+      </div>
+    </div>
   </div>
 
   <script>
     const KEY = 'nextscout_coach_profile';
+    const NOTES_KEY = 'nextscout_coach_notes';
 
     function getApiBaseUrl() {
       const params = new URLSearchParams(window.location.search);
@@ -428,6 +496,20 @@
       }
     }
 
+    function loadCoachNotes() {
+      try {
+        const raw = localStorage.getItem(NOTES_KEY);
+        const rows = raw ? JSON.parse(raw) : [];
+        return Array.isArray(rows) ? rows : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveCoachNotes(rows) {
+      localStorage.setItem(NOTES_KEY, JSON.stringify((Array.isArray(rows) ? rows : []).slice(0, 200)));
+    }
+
     function saveProfile(profile) {
       localStorage.setItem(KEY, JSON.stringify(profile));
     }
@@ -461,6 +543,74 @@
       document.getElementById('sumBranch').textContent = profile.branch || '-';
       document.getElementById('sumCountry').textContent = profile.country || '-';
       document.getElementById('sumCity').textContent = profile.city || '-';
+    }
+
+    function renderCoachNotes() {
+      const rows = loadCoachNotes();
+      const list = document.getElementById('coachNotesList');
+      const summary = document.getElementById('coachNotesSummary');
+      if (!list || !summary) return;
+
+      const watchCount = rows.filter((row) => row?.tag === 'izlenecek').length;
+      const lastTag = rows[0]?.tag || '-';
+      summary.innerHTML = `
+        <div class="notes-summary-card"><div class="notes-summary-label">Toplam Not</div><div class="notes-summary-value">${rows.length}</div></div>
+        <div class="notes-summary-card"><div class="notes-summary-label">İzlenecek</div><div class="notes-summary-value">${watchCount}</div></div>
+        <div class="notes-summary-card"><div class="notes-summary-label">Son Etiket</div><div class="notes-summary-value">${esc(lastTag)}</div></div>
+      `;
+
+      if (!rows.length) {
+        list.innerHTML = '<div class="note-empty">Henüz teknik not yok. İlk oyuncu notunu yukarıdan ekle.</div>';
+        return;
+      }
+
+      list.innerHTML = rows.map((row) => `
+        <article class="note-item">
+          <div class="note-head">
+            <div class="note-player">
+              <strong>${esc(row.player || 'Oyuncu')}</strong>
+              <span>${esc(row.position || 'Pozisyon yok')}</span>
+            </div>
+            <div class="note-meta">${esc(row.created_at || '-')}</div>
+          </div>
+          <div class="note-tags">
+            <span class="note-pill">${esc(row.tag || '-')}</span>
+            <span class="note-pill">${esc(row.focus || '-')}</span>
+          </div>
+          <div class="note-body">${esc(row.body || '')}</div>
+        </article>
+      `).join('');
+    }
+
+    function submitCoachNote() {
+      const player = document.getElementById('coachNotePlayer');
+      const position = document.getElementById('coachNotePosition');
+      const tag = document.getElementById('coachNoteTag');
+      const focus = document.getElementById('coachNoteFocus');
+      const body = document.getElementById('coachNoteBody');
+      if (!player || !position || !tag || !focus || !body) return;
+
+      const note = {
+        player: String(player.value || '').trim(),
+        position: String(position.value || '').trim(),
+        tag: String(tag.value || '').trim(),
+        focus: String(focus.value || '').trim(),
+        body: String(body.value || '').trim(),
+        created_at: new Date().toLocaleString('tr-TR'),
+      };
+
+      if (!note.player || !note.body || note.body.length < 8) {
+        alert('Oyuncu adı ve en az 8 karakterlik not gerekli.');
+        return;
+      }
+
+      const rows = loadCoachNotes();
+      rows.unshift(note);
+      saveCoachNotes(rows);
+      body.value = '';
+      player.value = '';
+      position.value = '';
+      renderCoachNotes();
     }
 
     async function loadBackendProfile() {
@@ -643,6 +793,7 @@
       renderSummary(profile);
       updateCoachReviewVisibility();
       loadCoachProfileReviews();
+      renderCoachNotes();
     }
 
     document.getElementById('coachForm')?.addEventListener('submit', async function (e) {
@@ -695,6 +846,8 @@
       document.getElementById('photoInput').value = '';
       try { await saveBackendProfile(profile); } catch (error) {}
     });
+
+    document.getElementById('saveCoachNoteBtn')?.addEventListener('click', submitCoachNote);
 
     init();
   </script>
