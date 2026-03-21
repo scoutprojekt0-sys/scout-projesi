@@ -3156,6 +3156,181 @@
             margin-top: 8px;
         }
 
+        .negotiation-spotlight {
+            margin-top: 16px;
+            display: none;
+        }
+
+        .negotiation-spotlight-card {
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+            border: 1px solid rgba(96, 165, 250, 0.18);
+            border-radius: 6px;
+            background:
+                radial-gradient(circle at 84% 16%, rgba(249, 115, 22, 0.2), transparent 24%),
+                radial-gradient(circle at 14% 18%, rgba(96, 165, 250, 0.18), transparent 22%),
+                linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            box-shadow: 0 22px 40px rgba(8, 19, 29, 0.32);
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(260px, 0.72fr);
+            gap: 14px;
+            align-items: stretch;
+            min-height: 220px;
+        }
+
+        .negotiation-spotlight-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
+        }
+
+        .negotiation-spotlight-copy,
+        .negotiation-spotlight-side {
+            position: relative;
+            z-index: 1;
+        }
+
+        .negotiation-spotlight-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 32px;
+            padding: 0 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #dbeafe;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .negotiation-spotlight-title {
+            margin: 12px 0 8px;
+            font-size: clamp(24px, 2.6vw, 32px);
+            line-height: 1.04;
+            color: #f8fbff;
+        }
+
+        .negotiation-spotlight-summary {
+            max-width: 640px;
+            color: #9bb5cb;
+            line-height: 1.68;
+            font-size: 14px;
+        }
+
+        .negotiation-spotlight-points {
+            margin: 14px 0 0;
+            padding: 0;
+            list-style: none;
+            display: grid;
+            gap: 8px;
+        }
+
+        .negotiation-spotlight-points li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #dbeafe;
+            font-size: 14px;
+        }
+
+        .negotiation-spotlight-points i {
+            color: #fdba74;
+        }
+
+        .negotiation-spotlight-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: auto;
+            padding-top: 14px;
+        }
+
+        .negotiation-spotlight-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 46px;
+            padding: 0 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 126, 34, 0.5);
+            background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 800;
+            text-decoration: none;
+            box-shadow: 0 16px 28px rgba(8, 19, 29, 0.24);
+        }
+
+        .negotiation-spotlight-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 46px;
+            padding: 0 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(96, 165, 250, 0.22);
+            background: rgba(255, 255, 255, 0.05);
+            color: #dbeafe;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .negotiation-spotlight-side {
+            display: grid;
+            gap: 10px;
+        }
+
+        .negotiation-spotlight-stat {
+            padding: 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.14);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .negotiation-spotlight-stat-label {
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #9bb5cb;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .negotiation-spotlight-stat-value {
+            font-size: 28px;
+            line-height: 1;
+            font-weight: 900;
+            color: #f8fbff;
+            margin-bottom: 4px;
+        }
+
+        .negotiation-spotlight-stat-note {
+            color: #c7d8ea;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+        .negotiation-spotlight-card {
+            grid-template-columns: 1fr;
+            padding: 18px;
+            border-radius: 6px;
+            min-height: 220px;
+        }
+
+            .negotiation-spotlight-title {
+                font-size: 26px;
+            }
+        }
+
         .homepage-visibility-card {
             margin-top: 16px;
             position: relative;
@@ -7964,7 +8139,7 @@
                     <button type="button" class="nav-dropdown-item" onclick="openLiveScoutSection('scorecard')">
                         <i class="fas fa-id-card"></i> Scout Skor Kartı
                     </button>
-                    <button type="button" class="nav-dropdown-item" onclick="openLiveScoutSection('negotiation')">
+                    <button type="button" class="nav-dropdown-item" id="negotiationRoomNavItem" onclick="openLiveScoutSection('negotiation')">
                         <i class="fas fa-handshake"></i> Teklif Pazarlık Odası
                     </button>
                     <button type="button" class="nav-dropdown-item" onclick="openLiveScoutSection('weekly')">
@@ -9319,6 +9494,37 @@
                     </article>
                 </div>
             </div>
+
+            <section class="negotiation-spotlight" id="negotiationSpotlight" hidden>
+                <article class="negotiation-spotlight-card">
+                    <div class="negotiation-spotlight-copy">
+                        <div class="negotiation-spotlight-kicker"><i class="fas fa-handshake"></i><span id="negotiationSpotlightKicker">Teklif Akışı</span></div>
+                        <h3 class="negotiation-spotlight-title" id="negotiationSpotlightTitle">Pazarlık Kontrol Odası</h3>
+                        <div class="negotiation-spotlight-summary" id="negotiationSpotlightSummary">Teklifleri, karşı teklifleri ve karar akışını tek ekranda görün.</div>
+                        <ul class="negotiation-spotlight-points" id="negotiationSpotlightPoints">
+                            <li><i class="fas fa-check-circle"></i><span>Teklif geçmişini tek yerde oku</span></li>
+                            <li><i class="fas fa-check-circle"></i><span>Karşı teklifleri kaybetmeden yönet</span></li>
+                            <li><i class="fas fa-check-circle"></i><span>Süreci daha hızlı kapat</span></li>
+                        </ul>
+                        <div class="negotiation-spotlight-actions">
+                            <a class="negotiation-spotlight-btn" id="negotiationSpotlightCta" href="./teklif-pazarlik-odasi.html"><i class="fas fa-arrow-right"></i><span>Pazarlığı Aç</span></a>
+                            <a class="negotiation-spotlight-link" href="./notifications.html"><i class="fas fa-bell"></i><span>Bildirimleri Gör</span></a>
+                        </div>
+                    </div>
+                    <div class="negotiation-spotlight-side">
+                        <div class="negotiation-spotlight-stat">
+                            <div class="negotiation-spotlight-stat-label">Aktif Oda</div>
+                            <div class="negotiation-spotlight-stat-value">Canlı</div>
+                            <div class="negotiation-spotlight-stat-note" id="negotiationSpotlightStatOne">Karar sürecini tek ekrana indir.</div>
+                        </div>
+                        <div class="negotiation-spotlight-stat">
+                            <div class="negotiation-spotlight-stat-label">Ana Fayda</div>
+                            <div class="negotiation-spotlight-stat-value" id="negotiationSpotlightStatTwo">Kontrol</div>
+                            <div class="negotiation-spotlight-stat-note" id="negotiationSpotlightStatThree">Rolüne göre özelleşen teklif görünümü.</div>
+                        </div>
+                    </div>
+                </article>
+            </section>
 
             <section class="market-analysis-panel" id="marketAnalysisPanel">
                 <div class="market-analysis-left">
@@ -14926,6 +15132,14 @@
 
         function openLiveScoutSection(section) {
             if (!requireAuthForFeature()) return;
+            if (section === 'negotiation') {
+                const role = getSessionRole();
+                const allowedRoles = new Set(['manager', 'menajer', 'team', 'club', 'kulup', 'player', 'lawyer']);
+                if (!allowedRoles.has(role)) {
+                    showToast?.('Bu oda sadece oyuncu, kulup, menajer ve avukat hesaplari icin acik.');
+                    return;
+                }
+            }
             const routes = {
                 matches: 'scout-live-matches.html',
                 scorecard: 'scout-skor-karti.html',
@@ -14959,6 +15173,164 @@
         function isPlayerRole(role) {
             const normalizedRole = (role || '').toString().trim().toLowerCase();
             return normalizedRole === 'player' || normalizedRole === 'oyuncu';
+        }
+
+        function syncNegotiationRoomNavVisibility(role) {
+            const item = document.getElementById('negotiationRoomNavItem');
+            if (!item) return;
+            const normalizedRole = (role || '').toString().trim().toLowerCase();
+            const allowedRoles = new Set(['manager', 'menajer', 'team', 'club', 'kulup', 'player', 'lawyer']);
+            item.style.display = allowedRoles.has(normalizedRole) ? '' : 'none';
+        }
+
+        function syncNegotiationSpotlight(role) {
+            const root = document.getElementById('negotiationSpotlight');
+            const kicker = document.getElementById('negotiationSpotlightKicker');
+            const title = document.getElementById('negotiationSpotlightTitle');
+            const summary = document.getElementById('negotiationSpotlightSummary');
+            const points = document.getElementById('negotiationSpotlightPoints');
+            const cta = document.getElementById('negotiationSpotlightCta');
+            const statOne = document.getElementById('negotiationSpotlightStatOne');
+            const statTwo = document.getElementById('negotiationSpotlightStatTwo');
+            const statThree = document.getElementById('negotiationSpotlightStatThree');
+            if (!root) return;
+
+            const normalizedRole = (role || '').toString().trim().toLowerCase();
+            let currentUser = null;
+            try {
+                currentUser = JSON.parse(localStorage.getItem('nextscout_user') || 'null');
+            } catch (error) {
+                currentUser = null;
+            }
+            const currentUserId = Number(currentUser?.id || 0);
+            const copyByRole = {
+                team: {
+                    kicker: 'Kulup Pazarligi',
+                    title: 'Transfer Karar Masasi',
+                    summary: 'Gelen teklifleri, karsi teklifleri ve son durumu tek ekranda yonet.',
+                    points: [
+                        'Tum teklifleri tek akista topla',
+                        'Karsi teklifleri ve son rakami kaybetme',
+                        'Karar surecini yonetim tarafina daha hizli tasima'
+                    ],
+                    cta: 'Teklifleri Yonet',
+                    statTwo: 'Hiz',
+                    statThree: 'Kulup icin acik gorusmeleri tek yerde topla.',
+                    statOne: 'Scout, menajer ve oyuncu akislarini ayni odada gor.',
+                    href: currentUserId ? `./teklif-pazarlik-odasi.html?club_id=${encodeURIComponent(currentUserId)}` : './teklif-pazarlik-odasi.html'
+                },
+                club: {
+                    kicker: 'Kulup Pazarligi',
+                    title: 'Transfer Karar Masasi',
+                    summary: 'Gelen teklifleri, karsi teklifleri ve son durumu tek ekranda yonet.',
+                    points: [
+                        'Tum teklifleri tek akista topla',
+                        'Karsi teklifleri ve son rakami kaybetme',
+                        'Karar surecini yonetim tarafina daha hizli tasima'
+                    ],
+                    cta: 'Teklifleri Yonet',
+                    statTwo: 'Hiz',
+                    statThree: 'Kulup icin acik gorusmeleri tek yerde topla.',
+                    statOne: 'Scout, menajer ve oyuncu akislarini ayni odada gor.',
+                    href: currentUserId ? `./teklif-pazarlik-odasi.html?club_id=${encodeURIComponent(currentUserId)}` : './teklif-pazarlik-odasi.html'
+                },
+                kulup: {
+                    kicker: 'Kulup Pazarligi',
+                    title: 'Transfer Karar Masasi',
+                    summary: 'Gelen teklifleri, karsi teklifleri ve son durumu tek ekranda yonet.',
+                    points: [
+                        'Tum teklifleri tek akista topla',
+                        'Karsi teklifleri ve son rakami kaybetme',
+                        'Karar surecini yonetim tarafina daha hizli tasima'
+                    ],
+                    cta: 'Teklifleri Yonet',
+                    statTwo: 'Hiz',
+                    statThree: 'Kulup icin acik gorusmeleri tek yerde topla.',
+                    statOne: 'Scout, menajer ve oyuncu akislarini ayni odada gor.',
+                    href: currentUserId ? `./teklif-pazarlik-odasi.html?club_id=${encodeURIComponent(currentUserId)}` : './teklif-pazarlik-odasi.html'
+                },
+                manager: {
+                    kicker: 'Menajer Pazarligi',
+                    title: 'Pazarlik Kontrol Odasi',
+                    summary: 'Oyuncularin adina teklifleri karsilastir, pazarlik gucunu tek yerde topla.',
+                    points: [
+                        'Portfoydeki oyuncular icin acik gorusmeleri hizla tara',
+                        'Karsi teklifleri kayitli ve okunur tut',
+                        'Karar verirken teklif gucunu kaybetme'
+                    ],
+                    cta: 'Pazarligi Ac',
+                    statTwo: 'Guc',
+                    statThree: 'Menajer tarafinda pazarlik hafizasini kaybetme.',
+                    statOne: 'Portfoye giren her teklif kaydi ayni odada toplanir.',
+                    href: './teklif-pazarlik-odasi.html?verified_only=1'
+                },
+                menajer: {
+                    kicker: 'Menajer Pazarligi',
+                    title: 'Pazarlik Kontrol Odasi',
+                    summary: 'Oyuncularin adina teklifleri karsilastir, pazarlik gucunu tek yerde topla.',
+                    points: [
+                        'Portfoydeki oyuncular icin acik gorusmeleri hizla tara',
+                        'Karsi teklifleri kayitli ve okunur tut',
+                        'Karar verirken teklif gucunu kaybetme'
+                    ],
+                    cta: 'Pazarligi Ac',
+                    statTwo: 'Guc',
+                    statThree: 'Menajer tarafinda pazarlik hafizasini kaybetme.',
+                    statOne: 'Portfoye giren her teklif kaydi ayni odada toplanir.',
+                    href: './teklif-pazarlik-odasi.html?verified_only=1'
+                },
+                player: {
+                    kicker: 'Oyuncu Teklifleri',
+                    title: 'Kariyer Teklif Masasi',
+                    summary: 'Sana gelen teklifleri seffaf gor, sureci adim adim takip et.',
+                    points: [
+                        'Sana gelen teklifleri net bicimde gor',
+                        'Karsi teklif ve son durum akisini kacirma',
+                        'Kariyer kararini daha guvenli ver'
+                    ],
+                    cta: 'Tekliflerimi Gor',
+                    statTwo: 'Guven',
+                    statThree: 'Kariyer surecini daha seffaf takip et.',
+                    statOne: 'Sana gelen kulup ve menajer akislarini tek yerde gor.',
+                    href: currentUserId ? `./teklif-pazarlik-odasi.html?player_id=${encodeURIComponent(currentUserId)}` : './teklif-pazarlik-odasi.html'
+                },
+                lawyer: {
+                    kicker: 'Hukuki Inceleme',
+                    title: 'Hukuki Inceleme Odasi',
+                    summary: 'Teklif akisini, mutabakat seviyesini ve kayit gecmisini tek yerde incele.',
+                    points: [
+                        'Gorusme gecmisini tek ekranda topla',
+                        'Mutabakat seviyesini daha net takip et',
+                        'Sozlesme ve uyusmazlik surecine hazir kal'
+                    ],
+                    cta: 'Sureci Incele',
+                    statTwo: 'Kayit',
+                    statThree: 'Hukuki yorum icin temiz bir teklif akisi sunar.',
+                    statOne: 'Kulup, menajer ve oyuncu akisini tek dosya gibi izle.',
+                    href: './teklif-pazarlik-odasi.html?verified_only=1'
+                }
+            };
+
+            const copy = copyByRole[normalizedRole];
+            if (!copy) {
+                root.hidden = true;
+                root.style.display = 'none';
+                return;
+            }
+
+            root.hidden = false;
+            root.style.display = 'block';
+            if (kicker) kicker.textContent = copy.kicker;
+            if (title) title.textContent = copy.title;
+            if (summary) summary.textContent = copy.summary;
+            if (cta) cta.innerHTML = `<i class="fas fa-arrow-right"></i><span>${copy.cta}</span>`;
+            if (cta && copy.href) cta.href = copy.href;
+            if (statOne) statOne.textContent = copy.statOne;
+            if (statTwo) statTwo.textContent = copy.statTwo;
+            if (statThree) statThree.textContent = copy.statThree;
+            if (points) {
+                points.innerHTML = copy.points.map((item) => `<li><i class="fas fa-check-circle"></i><span>${item}</span></li>`).join('');
+            }
         }
 
         const HOMEPAGE_SYSTEM_LABELS = {
@@ -15106,6 +15478,7 @@
             const isClubSession = normalizedRole === 'club' || normalizedRole === 'team' || normalizedRole === 'kulup' || normalizedRole === 'klup';
             const isManagerSession = normalizedRole === 'manager' || normalizedRole === 'menajer' || normalizedRole === 'menejer';
             const isCoachSession = normalizedRole === 'coach' || normalizedRole === 'antrenor';
+            const isLawyerSession = normalizedRole === 'lawyer' || normalizedRole === 'avukat';
             const isPublicSession = !role;
             const marketAnalysisPanel = document.getElementById('marketAnalysisPanel');
             const scoutEntryStrip = document.getElementById('scoutEntryStrip');
@@ -15131,6 +15504,8 @@
             const weeklyTrendsCard = document.getElementById('weeklyTrendsCard');
             const risingStarsCard = document.getElementById('risingStarsCard');
 
+            syncNegotiationRoomNavVisibility(normalizedRole);
+            syncNegotiationSpotlight(normalizedRole);
             updateClubSystemHomepageCard();
 
             if (marketAnalysisPanel) {

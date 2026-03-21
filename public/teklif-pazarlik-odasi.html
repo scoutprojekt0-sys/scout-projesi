@@ -3,54 +3,230 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teklif Pazarlık Odası</title>
-    <meta name="description" content="NextScout teklif pazarlik odasi sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
-    <meta name="robots" content="index,follow">
-    <link rel="canonical" href="https://nextscout.pro/teklif-pazarlik-odasi.html">
-    <meta property="og:type" content="website">
-    <meta property="og:locale" content="tr_TR">
-    <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="Teklif Pazarlık Odası">
-    <meta property="og:description" content="NextScout teklif pazarlik odasi sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
-    <meta property="og:url" content="https://nextscout.pro/teklif-pazarlik-odasi.html">
-    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Teklif Pazarlık Odası">
-    <meta name="twitter:description" content="NextScout teklif pazarlik odasi sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
-    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
-    <meta name="theme-color" content="#0B3B8A">
+  <title>Teklif Pazarlik Odasi</title>
+  <meta name="theme-color" content="#08131d">
+  <link rel="stylesheet" href="assets/css/mobile-unified.css">
+  <link rel="stylesheet" href="assets/css/mobile-polish.css">
   <style>
-    body{font-family:Segoe UI,Tahoma,sans-serif;background:#f8fafc;color:#1f2937;margin:0}
-    .wrap{max-width:980px;margin:0 auto;padding:24px}
-    .top{display:flex;justify-content:space-between;align-items:center}
-    a{color:#2563eb;text-decoration:none}
-    .card{background:#fff;border:1px solid #dbeafe;border-radius:12px;padding:16px;margin-top:14px}
-    .row{display:flex;justify-content:space-between;gap:10px;padding:10px;border:1px solid #e2e8f0;border-radius:10px;margin-top:8px}
+    :root { --bg:#08131d; --surface:linear-gradient(180deg, rgba(18,41,61,.98) 0%, rgba(15,31,46,.98) 100%); --surface-soft:rgba(255,255,255,.05); --border:rgba(96,165,250,.18); --text:#f5fbff; --muted:#9bb5cb; --accent:#ff7e22; --accent-strong:#ff5a1f; --positive:#86efac; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Segoe UI,Tahoma,sans-serif; color:var(--text); background:radial-gradient(circle at 12% 10%, rgba(37,99,235,.22) 0%, transparent 28%), radial-gradient(circle at 86% 0%, rgba(255,126,34,.18) 0%, transparent 22%), var(--bg); }
+    a { color:inherit; text-decoration:none; }
+    .wrap { max-width:1240px; margin:0 auto; padding:28px 24px 48px; }
+    .top { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:18px; }
+    .hero,.card,.room-panel,.auth-gate { background:var(--surface); border:1px solid var(--border); box-shadow:0 22px 40px rgba(8,19,29,.32); }
+    .hero { position:relative; overflow:hidden; flex:1; padding:28px; padding-right:170px; border-radius:24px; }
+    .hero::before { content:""; position:absolute; inset:0 0 auto 0; height:4px; background:linear-gradient(90deg, var(--accent-strong) 0%, var(--accent) 58%, #60a5fa 100%); }
+    .hero-home-corner { position:absolute; top:18px; right:18px; z-index:2; }
+    .hero h1 { margin:0 0 10px; font-size:clamp(28px,4vw,42px); line-height:1.04; }
+    .hero p,.card p,.room-muted,.detail-stat-note,.timeline-time,.room-flash,.empty-state,.row-label span { color:var(--muted); line-height:1.68; font-size:13px; }
+    .hero p { max-width:760px; margin:0; font-size:14px; line-height:1.74; }
+    .hero-meta,.filter-bar,.auth-gate-actions,.hero-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    .hero-role-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+    .hero-topline { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
+    .hero-status-card { min-width:220px; padding:14px 16px; border-radius:18px; border:1px solid rgba(148,163,184,.14); background:rgba(255,255,255,.05); }
+    .hero-status-label { font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+    .hero-status-value { font-size:18px; font-weight:900; color:#f8fbff; line-height:1.1; }
+    .hero-status-note { margin-top:6px; color:#dbeafe; font-size:12px; line-height:1.6; }
+    .pill,.filter-chip,.status-chip,.detail-kicker,.hero-role-badge,.detail-status-badge { display:inline-flex; align-items:center; justify-content:center; border-radius:999px; font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+    .pill,.filter-chip,.detail-kicker,.hero-role-badge { min-height:34px; padding:0 12px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.06); color:#d9ebff; }
+    .status-chip { min-height:28px; padding:0 10px; background:rgba(134,239,172,.12); border:1px solid rgba(134,239,172,.2); color:#bbf7d0; }
+    .detail-status-badge { min-height:30px; padding:0 12px; border:1px solid rgba(255,126,34,.24); background:rgba(255,126,34,.12); color:#fed7aa; }
+    .home-btn-global,.action-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:0 16px; border-radius:14px; border:1px solid rgba(96,165,250,.2); background:rgba(255,255,255,.05); color:#f5fbff; font-size:13px; font-weight:800; cursor:pointer; }
+    .home-btn-global,.action-btn.primary { border-color:rgba(255,126,34,.45); background:linear-gradient(135deg, var(--accent-strong) 0%, var(--accent) 100%); color:#fff; }
+    .action-btn.success { border-color:rgba(134,239,172,.26); background:rgba(134,239,172,.12); color:#d1fae5; }
+    .action-btn.danger { border-color:rgba(248,113,113,.28); background:rgba(248,113,113,.12); color:#fecaca; }
+    .layout { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; margin-top:20px; }
+    .card,.room-panel { border-radius:22px; padding:22px; }
+    .card h3,.room-panel-head h3,.action-card h4 { margin:0; color:#f8fbff; }
+    .card-head,.room-panel-head,.timeline-top { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .summary-grid,.action-stack,.detail-shell,.timeline,.offer-list,.action-grid,.btn-row { display:grid; gap:12px; }
+    .summary-item,.action-card,.detail-stat,.timeline-item,.row { border-radius:16px; border:1px solid rgba(148,163,184,.12); background:var(--surface-soft); }
+    .summary-item,.detail-stat,.action-card,.timeline-item,.detail-hero,.empty-state { padding:16px; }
+    .summary-item small,.detail-stat-label { display:block; margin-bottom:8px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; font-size:11px; font-weight:800; }
+    .summary-item strong,.detail-stat-value { font-size:24px; font-weight:900; line-height:1.06; color:#f8fbff; }
+    .summary-item.emphasis strong { color:var(--positive); }
+    .room-workspace { display:grid; grid-template-columns:minmax(300px,.9fr) minmax(0,1.2fr) minmax(290px,.82fr); gap:20px; margin-top:20px; }
+    .row { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .row.is-clickable { cursor:pointer; transition:transform .18s ease,border-color .18s ease,background .18s ease; }
+    .row.is-clickable:hover { transform:translateY(-1px); border-color:rgba(255,126,34,.28); background:rgba(255,255,255,.07); }
+    .row.is-active { border-color:rgba(255,126,34,.4); background:linear-gradient(180deg, rgba(255,126,34,.12) 0%, rgba(255,255,255,.05) 100%); box-shadow:inset 0 0 0 1px rgba(255,126,34,.16); }
+    .row-label { display:flex; flex-direction:column; gap:4px; text-align:left; }
+    .row-label strong,.timeline-type { color:#f8fbff; font-weight:800; }
+    .row-topline { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .row-status-dot { width:10px; height:10px; border-radius:999px; flex:0 0 auto; }
+    .row-status-dot.is-pending { background:#60a5fa; box-shadow:0 0 0 4px rgba(96,165,250,.14); }
+    .row-status-dot.is-verified,
+    .row-status-dot.is-accepted { background:#86efac; box-shadow:0 0 0 4px rgba(134,239,172,.14); }
+    .row-status-dot.is-countered { background:#fb923c; box-shadow:0 0 0 4px rgba(251,146,60,.14); }
+    .row-status-dot.is-rejected { background:#f87171; box-shadow:0 0 0 4px rgba(248,113,113,.14); }
+    .row-value { font-size:24px; font-weight:900; color:#fff; white-space:nowrap; }
+    .detail-hero { border-radius:18px; border:1px solid rgba(148,163,184,.14); background:rgba(255,255,255,.05); }
+    .detail-title { margin:12px 0 8px; font-size:28px; line-height:1.04; }
+    .detail-summary,.timeline-text { color:#dbeafe; line-height:1.7; font-size:14px; }
+    .deal-progress { margin-top:14px; padding:14px; border-radius:16px; border:1px solid rgba(148,163,184,.12); background:rgba(255,255,255,.04); }
+    .deal-progress-top { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:10px; }
+    .deal-progress-label { font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+    .deal-progress-value { font-size:20px; font-weight:900; color:#f8fbff; }
+    .deal-progress-bar { position:relative; height:10px; border-radius:999px; background:rgba(255,255,255,.08); overflow:hidden; }
+    .deal-progress-fill { position:absolute; inset:0 auto 0 0; border-radius:999px; background:linear-gradient(90deg, #60a5fa 0%, #ff7e22 100%); }
+    .deal-progress-note { margin-top:10px; color:#dbeafe; font-size:12px; line-height:1.65; }
+    .detail-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .action-grid input,.action-grid textarea { width:100%; min-height:46px; padding:12px 14px; border-radius:14px; border:1px solid rgba(96,165,250,.2); background:rgba(7,18,36,.78); color:#f5fbff; font:inherit; }
+    .action-grid textarea { min-height:108px; resize:vertical; }
+    .action-grid input::placeholder,.action-grid textarea::placeholder { color:var(--muted); }
+    .action-grid input:focus,.action-grid textarea:focus { outline:none; border-color:rgba(255,126,34,.5); box-shadow:0 0 0 3px rgba(255,126,34,.12); }
+    .auth-gate { max-width:760px; margin:64px auto; padding:28px; border-radius:24px; }
+    @media (max-width:980px) { .room-workspace { grid-template-columns:1fr; } }
+    @media (max-width:860px) { .wrap { padding:18px 14px 32px; } .top,.layout,.hero-topline { display:grid; grid-template-columns:1fr; } .hero,.card,.room-panel,.auth-gate { padding:16px; border-radius:18px; } .hero { padding-right:16px; padding-top:74px; } .hero-home-corner { top:16px; right:16px; } .detail-grid { grid-template-columns:1fr; } }
   </style>
-    <link rel="stylesheet" href="assets/css/mobile-unified.css">
-    <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
 <body>
-  <div class="wrap">
-    <div class="top"><h1>Teklif Pazarlık Odası</h1><a class="home-btn-global" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a></div>
-    <div class="card">
-      <div class="row"><span>Kulüp A teklifi</span><strong>€120.000</strong></div>
-      <div class="row"><span>Karşı teklif</span><strong>€150.000</strong></div>
-      <div class="row"><span>Son teklif</span><strong>€135.000</strong></div>
+  <section class="auth-gate" id="authGate" hidden>
+    <h2>Bu oda sinirli erisimle acilir</h2>
+    <p id="authGateText">Teklif pazarlik odasi sadece ilgili roller icin gorunur.</p>
+    <div class="auth-gate-actions">
     </div>
-    <div class="card">Bu oda MENAJER-kulüp-oyuncu teklif sürecini tek ekranda takip etmek için hazırlanmıştır.</div>
+  </section>
+
+  <div class="wrap">
+    <div class="top">
+      <div class="hero">
+        <a class="home-btn-global hero-home-corner" href="index.html">Ana Sayfa</a>
+        <div class="hero-topline">
+          <div>
+            <div class="hero-role-row">
+              <span class="hero-role-badge" id="heroRoleBadge">Rol</span>
+              <span class="detail-status-badge" id="heroActionBadge">Son Aksiyon: Bekleniyor</span>
+            </div>
+            <h1 id="heroTitle">Teklif Pazarlik Odasi</h1>
+            <p id="heroSummary">Kulup, menajer ve oyuncu arasindaki teklif surecini tek akis icinde takip edin. Son teklif, karsi teklif ve mutabakat seviyesini bu odada net bicimde yonetin.</p>
+          </div>
+          <div class="hero-status-card">
+            <div class="hero-status-label">Son Guncelleme</div>
+            <div class="hero-status-value" id="heroUpdateActor">Bekleniyor</div>
+            <div class="hero-status-note" id="heroUpdateNote">Pazarlik akisi yuklenince son hareket burada gorunur.</div>
+          </div>
+        </div>
+        <div class="hero-meta">
+          <span class="pill">Canli Muzakere</span>
+          <span class="pill">Kulup - Menajer - Oyuncu</span>
+          <span class="pill">Tek Ekran Akisi</span>
+        </div>
+        <div class="filter-bar" id="activeFilters"></div>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div class="card">
+        <h3>Oda Ozeti</h3>
+        <div class="summary-grid">
+          <div class="summary-item"><small>Durum</small><strong id="summaryStatus">Muzakere Bekleniyor</strong></div>
+          <div class="summary-item emphasis"><small>Ortalama Guven</small><strong id="summaryConfidence">%0</strong></div>
+          <div class="summary-item"><small>Toplam Kayit</small><strong id="summaryCount">0</strong></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <h3>Oda Durumu</h3>
+          <span class="status-chip" id="roomStatus">Veri bekleniyor</span>
+        </div>
+        <p id="roomSummaryCopy">Secili teklif ile ilgili aksiyonlar ve son hareketler bu panelden yonetilir.</p>
+      </div>
+    </div>
+
+    <section class="room-workspace">
+      <article class="room-panel">
+        <div class="room-panel-head">
+          <h3>Teklif Listesi</h3>
+          <span class="room-muted" id="offerCountMeta">0 kayit</span>
+        </div>
+        <div class="offer-list" id="offerList"><div class="empty-state">Teklif akisi yukleniyor.</div></div>
+      </article>
+
+      <article class="room-panel">
+        <div class="room-panel-head">
+          <h3>Secili Pazarlik</h3>
+          <span class="room-muted" id="detailMeta">Detay bekleniyor</span>
+        </div>
+        <div class="detail-shell" id="detailShell"><div class="empty-state">Bir teklif secildiginde detay ve aksiyon akisi burada gorunur.</div></div>
+      </article>
+
+      <article class="room-panel">
+        <div class="room-panel-head">
+          <h3>Aksiyonlar</h3>
+          <span class="room-muted">Hizli islem</span>
+        </div>
+        <div class="action-stack">
+          <section class="action-card">
+            <h4>Durum Karari</h4>
+            <div class="btn-row">
+              <button type="button" class="action-btn success" id="acceptOfferBtn">Teklifi Kabul Et</button>
+              <button type="button" class="action-btn danger" id="rejectOfferBtn">Reddet</button>
+            </div>
+          </section>
+          <section class="action-card">
+            <h4>Karsi Teklif Gir</h4>
+            <div class="action-grid">
+              <input type="number" id="counterOfferInput" placeholder="Yeni rakam gir">
+              <textarea id="counterOfferNote" placeholder="Kisa not veya pazarlik gerekcesi yaz"></textarea>
+              <button type="button" class="action-btn primary" id="submitCounterOfferBtn">Karsi Teklif Gonder</button>
+            </div>
+          </section>
+          <section class="action-card">
+            <h4>Hizli Not</h4>
+            <div class="action-grid">
+              <textarea id="roomNoteInput" placeholder="Gorusme notu, karar notu veya yonlendirme ekle"></textarea>
+              <button type="button" class="action-btn" id="saveRoomNoteBtn">Notu Kaydet</button>
+            </div>
+          </section>
+        </div>
+        <div class="room-flash" id="roomFlash"></div>
+      </article>
+    </section>
   </div>
-    <script src="assets/js/core-stability.js"></script>
-    <script src="assets/js/mobile-professional.js" defer></script>
+
+  <script src="assets/js/core-stability.js"></script>
+  <script src="assets/js/mobile-professional.js" defer></script>
+  <script>
+    const apiBase = `${window.location.origin}/api`;
+    const query = new URLSearchParams(window.location.search);
+    const allowedRoles = new Set(['manager','menajer','team','club','kulup','player','lawyer']);
+    const roomState = { offers: [], selectedId: null };
+
+    function roomStorageKey(id) { return `nextscout_negotiation_room_${id}`; }
+    function loadRoomOverlay(id) { try { const raw = localStorage.getItem(roomStorageKey(id)); if (!raw) return { status:null, counterFee:null, note:'', history:[] }; const parsed = JSON.parse(raw); return { status:parsed?.status || null, counterFee:parsed?.counterFee ?? null, note:parsed?.note || '', history:Array.isArray(parsed?.history) ? parsed.history : [] }; } catch (_) { return { status:null, counterFee:null, note:'', history:[] }; } }
+    function saveRoomOverlay(id, overlay) { localStorage.setItem(roomStorageKey(id), JSON.stringify(overlay)); }
+    function formatMoney(value, currency) { const amount = Number(value || 0); const safeCurrency = (currency || 'EUR').toUpperCase(); if (!Number.isFinite(amount) || amount <= 0) return safeCurrency; try { return new Intl.NumberFormat('tr-TR', { style:'currency', currency:safeCurrency, maximumFractionDigits:0 }).format(amount); } catch (_) { return `${safeCurrency} ${amount.toLocaleString('tr-TR')}`; } }
+    function transferTypeLabel(type) { const key = String(type || '').toLowerCase(); if (key === 'loan') return 'Kiralik teklif'; if (key === 'free') return 'Bonservissiz gecis'; if (key === 'end_of_loan') return 'Kiralik donusu'; if (key === 'permanent') return 'Kalici transfer'; return 'Transfer kaydi'; }
+    function verificationLabel(status) { const key = String(status || '').toLowerCase(); if (key === 'verified') return 'Dogrulandi'; if (key === 'pending') return 'Incelemede'; if (key === 'accepted') return 'Kabul edildi'; if (key === 'rejected') return 'Reddedildi'; if (key === 'countered') return 'Karsi teklif verildi'; return 'Kayit alindi'; }
+    function normalizeRole(value) { return String(value || '').trim().toLowerCase(); }
+    function prettyRole(role) { const key = normalizeRole(role); if (key === 'team' || key === 'club' || key === 'kulup') return 'Kulup'; if (key === 'manager' || key === 'menajer') return 'Menajer'; if (key === 'player') return 'Oyuncu'; if (key === 'lawyer') return 'Avukat'; return 'Kullanici'; }
+    function getStoredUser() { const candidates = ['nextscout_user','user','currentUser']; for (const key of candidates) { try { const raw = localStorage.getItem(key); if (!raw) continue; const parsed = JSON.parse(raw); if (parsed && typeof parsed === 'object') return parsed; } catch (_) {} } return null; }
+    function applyRoleHeroCopy() { const user = getStoredUser(); const role = normalizeRole(user?.role); const heroTitle = document.getElementById('heroTitle'); const heroSummary = document.getElementById('heroSummary'); const heroRoleBadge = document.getElementById('heroRoleBadge'); const copy = { team:['Transfer Karar Masasi','Kulubun icin gelen teklifleri, karsi teklifleri ve son mutabakat seviyesini tek ekranda yonet.','Kulup'], club:['Transfer Karar Masasi','Kulubun icin gelen teklifleri, karsi teklifleri ve son mutabakat seviyesini tek ekranda yonet.','Kulup'], kulup:['Transfer Karar Masasi','Kulubun icin gelen teklifleri, karsi teklifleri ve son mutabakat seviyesini tek ekranda yonet.','Kulup'], manager:['Pazarlik Kontrol Odasi','Oyuncularin adina teklifleri karsilastir, pazarlik gucunu ve sureci tek yerde topla.','Menajer'], menajer:['Pazarlik Kontrol Odasi','Oyuncularin adina teklifleri karsilastir, pazarlik gucunu ve sureci tek yerde topla.','Menajer'], player:['Kariyer Teklif Masasi','Sana gelen teklifleri seffaf gor, son rakami ve karar akislarini buradan takip et.','Oyuncu'], lawyer:['Hukuki Inceleme Odasi','Teklif akisini, mutabakat seviyesini ve kayit gecmisini hukuki gozle degerlendir.','Avukat'] }; const selected = copy[role]; if (selected) { if (heroTitle) heroTitle.textContent = selected[0]; if (heroSummary) heroSummary.textContent = selected[1]; if (heroRoleBadge) heroRoleBadge.textContent = selected[2]; } }
+    function updateHeroStatusCard(item) { const actor = document.getElementById('heroUpdateActor'); const note = document.getElementById('heroUpdateNote'); const actionBadge = document.getElementById('heroActionBadge'); if (!actor || !note || !actionBadge) return; if (!item) { actor.textContent = 'Bekleniyor'; note.textContent = 'Pazarlik akisi yuklenince son hareket burada gorunur.'; actionBadge.textContent = 'Son Aksiyon: Bekleniyor'; return; } const updater = item?.negotiation_updater?.name || item?.negotiationUpdater?.name || 'Sistem'; const at = item?.negotiation_updated_at || item?.updated_at || item?.transfer_date; const statusLabel = verificationLabel(getEffectiveStatus(item)); actor.textContent = updater; note.textContent = `${statusLabel} • ${formatTimestamp(at)}`; actionBadge.textContent = `Son Aksiyon: ${statusLabel}`; }
+    function readRoomFilters() { const filters = {}; const clubId = query.get('club_id'); const playerId = query.get('player_id'); const transferType = query.get('transfer_type'); const verifiedOnly = query.get('verified_only'); if (clubId) filters.club_id = clubId; if (playerId) filters.player_id = playerId; if (transferType) filters.transfer_type = transferType; if (verifiedOnly === '1' || verifiedOnly === 'true') filters.verified_only = '1'; return filters; }
+    function renderActiveFilters(filters) { const root = document.getElementById('activeFilters'); if (!root) return; const chips = []; if (filters.club_id) chips.push(`Kulup ID: ${filters.club_id}`); if (filters.player_id) chips.push(`Oyuncu ID: ${filters.player_id}`); if (filters.transfer_type) chips.push(`Tip: ${transferTypeLabel(filters.transfer_type)}`); if (filters.verified_only) chips.push('Sadece dogrulanmis'); root.innerHTML = chips.length ? chips.map((label) => `<span class="filter-chip">${label}</span>`).join('') : '<span class="filter-chip">Tum transfer kayitlari</span>'; }
+    function buildTransferUrl(filters) { const params = new URLSearchParams({ per_page:'8' }); Object.entries(filters).forEach(([key, value]) => { if (value !== undefined && value !== null && String(value).trim() !== '') params.set(key, String(value)); }); return `${apiBase}/transfers?${params.toString()}`; }
+    function enforceRoleGate() { const gate = document.getElementById('authGate'); const page = document.querySelector('.wrap'); const gateText = document.getElementById('authGateText'); const token = localStorage.getItem('nextscout_token'); const user = getStoredUser(); const role = normalizeRole(user?.role); if (!token || !user) { if (gate) gate.hidden = false; if (page) page.hidden = true; if (gateText) gateText.textContent = 'Bu alan sadece giris yapmis oyuncu, kulup, menajer ve avukat hesaplari icin acilir.'; return false; } if (!allowedRoles.has(role)) { if (gate) gate.hidden = false; if (page) page.hidden = true; if (gateText) gateText.textContent = `Rolun bu odayi gormek icin uygun degil. Mevcut rol: ${role || 'tanimsiz'}.`; return false; } if (gate) gate.hidden = true; if (page) page.hidden = false; return true; }
+    function getAuthHeaders() { const token = localStorage.getItem('nextscout_token') || ''; return token ? { Accept:'application/json', Authorization:`Bearer ${token}` } : { Accept:'application/json' }; }
+    function getEffectiveStatus(item) { return item?.negotiation_status || item?.verification_status || 'pending'; }
+    function getEffectiveFee(item) { return item?.counter_fee ?? item?.fee ?? null; }
+    function formatTimestamp(value) { try { return new Date(value).toLocaleString('tr-TR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }); } catch (_) { return value || '-'; } }
+    function renderOfferRow(item) { const playerName = item?.player?.name || item?.player_name || 'Oyuncu'; const fromClub = item?.from_club?.name || item?.fromClub?.name || item?.from_club_name || 'Mevcut kulup'; const toClub = item?.to_club?.name || item?.toClub?.name || item?.to_club_name || 'Yeni kulup'; const fee = formatMoney(getEffectiveFee(item), item?.currency); const rawStatus = String(getEffectiveStatus(item) || 'pending').toLowerCase(); const status = verificationLabel(rawStatus); const activeClass = Number(item?.id) === Number(roomState.selectedId) ? ' is-active' : ''; return `<button type="button" class="row is-clickable${activeClass}" data-offer-id="${item.id}"><div class="row-label"><div class="row-topline"><span class="row-status-dot is-${rawStatus}"></span><strong>${playerName}</strong></div><span>${fromClub} -> ${toClub} • ${transferTypeLabel(item?.transfer_type)} • ${status}</span></div><div class="row-value">${fee}</div></button>`; }
+    function buildBaseHistory(item) { const actor = item?.created_by ? `Kaydi olusturan #${item.created_by}` : 'Sistem'; const base = [{ type:'Ilk Kayit', text:`${actor} bu transfer kaydini olusturdu. Baslangic rakami ${formatMoney(item?.fee, item?.currency)}.`, at:item?.transfer_date || new Date().toISOString() }]; const rawNotes = String(item?.notes || '').split('\n').map((line) => line.trim()).filter(Boolean); const noteHistory = rawNotes.map((line) => ({ type:'Oda Gecmisi', text:line.replace(/^\[[^\]]+\]\s*/, ''), at:(line.match(/^\[([^\]]+)\]/)?.[1] || item?.negotiation_updated_at || item?.updated_at || new Date().toISOString()) })); return [...base, ...noteHistory]; }
+    function calculateDealProgress(item) { const baseFee = Number(item?.fee || 0); const currentFee = Number(getEffectiveFee(item) || 0); const status = String(getEffectiveStatus(item) || '').toLowerCase(); if (status === 'accepted') return { percent: 100, note: 'Taraflar mutabakata ulasmis gorunuyor.' }; if (status === 'rejected') return { percent: 18, note: 'Surec durdurulmus veya teklif reddedilmis durumda.' }; if (!baseFee || !currentFee) return { percent: 42, note: 'Yeterli rakam olmadigi icin yaklasik ilerleme gosteriliyor.' }; const ratio = Math.min(1, Math.max(0, currentFee / Math.max(baseFee, 1))); const percent = Math.round(35 + ratio * 55); const note = currentFee >= baseFee ? 'Taraflar rakamsal olarak ortak noktaya yaklasiyor.' : 'Karsi taraf hala ilk rakamin altinda, pazarlik alanı acik.'; return { percent, note }; }
+    function getSelectedOffer() { return roomState.offers.find((item) => Number(item?.id) === Number(roomState.selectedId)) || null; }
+    function renderDetail(item) { const detailShell = document.getElementById('detailShell'); const detailMeta = document.getElementById('detailMeta'); const roomSummaryCopy = document.getElementById('roomSummaryCopy'); updateHeroStatusCard(item); if (!detailShell) return; if (!item) { detailShell.innerHTML = '<div class="empty-state">Bir teklif secildiginde detay ve aksiyon akisi burada gorunur.</div>'; if (detailMeta) detailMeta.textContent = 'Detay bekleniyor'; return; } const playerName = item?.player?.name || item?.player_name || 'Oyuncu'; const fromClub = item?.from_club?.name || item?.fromClub?.name || item?.from_club_name || 'Mevcut kulup'; const toClub = item?.to_club?.name || item?.toClub?.name || item?.to_club_name || 'Yeni kulup'; const status = verificationLabel(getEffectiveStatus(item)); const amount = formatMoney(getEffectiveFee(item), item?.currency); const confidence = `%${Math.round(Number(item?.confidence_score || 0) * 100)}`; const noteText = item?.negotiation_notes || ''; const history = buildBaseHistory(item); const progress = calculateDealProgress(item); if (detailMeta) detailMeta.textContent = `${playerName} • ${status}`; if (roomSummaryCopy) roomSummaryCopy.textContent = `${playerName} icin secili akista ${status.toLowerCase()} durumu gorunuyor. Aksiyon panelinden aninda guncelleyebilirsin.`; detailShell.innerHTML = `<div class="detail-hero"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;"><span class="detail-kicker">${transferTypeLabel(item?.transfer_type)}</span><span class="detail-status-badge">${status}</span></div><h3 class="detail-title">${playerName}</h3><div class="detail-summary">${fromClub} -> ${toClub} akisi icin son gorunen rakam ${amount}. Pazarlik gecmisi ve notlar asagida.</div><div class="deal-progress"><div class="deal-progress-top"><span class="deal-progress-label">Anlasmaya Yakinlik</span><span class="deal-progress-value">%${progress.percent}</span></div><div class="deal-progress-bar"><div class="deal-progress-fill" style="width:${progress.percent}%;"></div></div><div class="deal-progress-note">${progress.note}</div></div></div><div class="detail-grid"><div class="detail-stat"><div class="detail-stat-label">Durum</div><div class="detail-stat-value">${status}</div><div class="detail-stat-note">Secili teklifin anlik oda durumu.</div></div><div class="detail-stat"><div class="detail-stat-label">Son Rakam</div><div class="detail-stat-value">${amount}</div><div class="detail-stat-note">Karsi teklif girildiyse son rakam buna gore guncellenir.</div></div><div class="detail-stat"><div class="detail-stat-label">Guven Skoru</div><div class="detail-stat-value">${confidence}</div><div class="detail-stat-note">Veri kaydinin guven seviyesi.</div></div><div class="detail-stat"><div class="detail-stat-label">Son Not</div><div class="detail-stat-value">${noteText ? 'Var' : 'Yok'}</div><div class="detail-stat-note">${noteText || 'Bu teklif icin henuz oda notu yazilmadi.'}</div></div></div><div><div class="room-panel-head"><h3>Islem Gecmisi</h3><span class="room-muted">${history.length} hareket</span></div><div class="timeline">${history.map((entry) => `<div class="timeline-item"><div class="timeline-top"><span class="timeline-type">${entry.type}</span><span class="timeline-time">${formatTimestamp(entry.at)}</span></div><div class="timeline-text">${entry.text}</div></div>`).join('')}</div></div>`; const noteInput = document.getElementById('roomNoteInput'); const counterInput = document.getElementById('counterOfferInput'); const counterNoteInput = document.getElementById('counterOfferNote'); if (noteInput) noteInput.value = item?.negotiation_notes || ''; if (counterInput) counterInput.value = item?.counter_fee ?? ''; if (counterNoteInput) counterNoteInput.value = ''; }
+    function updateSummaryCards() { const roomStatus = document.getElementById('roomStatus'); const summaryStatus = document.getElementById('summaryStatus'); const summaryConfidence = document.getElementById('summaryConfidence'); const summaryCount = document.getElementById('summaryCount'); const offerCountMeta = document.getElementById('offerCountMeta'); const active = roomState.offers.length; const avgConfidence = roomState.offers.reduce((sum, item) => sum + Number(item?.confidence_score || 0), 0) / Math.max(active, 1); const accepted = roomState.offers.filter((item) => getEffectiveStatus(item) === 'accepted').length; const countered = roomState.offers.filter((item) => getEffectiveStatus(item) === 'countered').length; if (roomStatus) roomStatus.textContent = active ? 'Aktif oda' : 'Veri bekleniyor'; if (summaryStatus) summaryStatus.textContent = accepted > 0 ? `${accepted} teklif kapanisa yakin` : countered > 0 ? `${countered} teklif pazarlikta` : 'Muzakere akisi aktif'; if (summaryConfidence) summaryConfidence.textContent = `%${Math.round(avgConfidence * 100)}`; if (summaryCount) summaryCount.textContent = String(active); if (offerCountMeta) offerCountMeta.textContent = `${active} kayit`; }
+    function bindOfferListClicks() { document.querySelectorAll('[data-offer-id]').forEach((button) => { button.addEventListener('click', () => { roomState.selectedId = Number(button.getAttribute('data-offer-id')); renderOffers(); renderDetail(getSelectedOffer()); }); }); }
+    function renderOffers() { const offerList = document.getElementById('offerList'); if (!offerList) return; if (!roomState.offers.length) { offerList.innerHTML = '<div class="empty-state">Henuz acik teklif kaydi bulunmuyor.</div>'; return; } offerList.innerHTML = roomState.offers.map(renderOfferRow).join(''); bindOfferListClicks(); updateSummaryCards(); }
+    function flashRoom(message) { const root = document.getElementById('roomFlash'); if (!root) return; root.textContent = message; window.clearTimeout(flashRoom._timer); flashRoom._timer = window.setTimeout(() => { root.textContent = ''; }, 2600); }
+    async function sendRoomAction(item, payload) { const response = await fetch(`${apiBase}/transfers/${item.id}/room-action`, { method:'POST', headers:{ ...getAuthHeaders(), 'Content-Type':'application/json' }, body:JSON.stringify(payload) }); const result = await response.json().catch(() => ({})); if (!response.ok || !result?.ok || !result?.data) { throw new Error(result?.message || 'Pazarlik odasi guncellenemedi.'); } const updated = result.data; roomState.offers = roomState.offers.map((entry) => Number(entry?.id) === Number(updated?.id) ? updated : entry); renderOffers(); renderDetail(getSelectedOffer()); return updated; }
+    function bindActionPanel() { const acceptBtn = document.getElementById('acceptOfferBtn'); const rejectBtn = document.getElementById('rejectOfferBtn'); const counterBtn = document.getElementById('submitCounterOfferBtn'); const saveNoteBtn = document.getElementById('saveRoomNoteBtn'); if (acceptBtn) { acceptBtn.addEventListener('click', async () => { const item = getSelectedOffer(); if (!item) return flashRoom('Once bir teklif sec.'); try { await sendRoomAction(item, { action:'accept' }); flashRoom('Teklif backend uzerinde kabul edildi.'); } catch (error) { flashRoom(error.message || 'Kabul islemi basarisiz.'); } }); } if (rejectBtn) { rejectBtn.addEventListener('click', async () => { const item = getSelectedOffer(); if (!item) return flashRoom('Once bir teklif sec.'); try { await sendRoomAction(item, { action:'reject' }); flashRoom('Teklif backend uzerinde reddedildi.'); } catch (error) { flashRoom(error.message || 'Red islemi basarisiz.'); } }); } if (counterBtn) { counterBtn.addEventListener('click', async () => { const item = getSelectedOffer(); const counterInput = document.getElementById('counterOfferInput'); const counterNoteInput = document.getElementById('counterOfferNote'); const amount = Number(counterInput?.value || 0); if (!item) return flashRoom('Once bir teklif sec.'); if (!Number.isFinite(amount) || amount <= 0) return flashRoom('Gecerli bir karsi teklif rakami gir.'); try { await sendRoomAction(item, { action:'counter', counter_fee:amount, note:(counterNoteInput?.value || '').trim() }); flashRoom('Karsi teklif backend uzerinde kaydedildi.'); } catch (error) { flashRoom(error.message || 'Karsi teklif kaydedilemedi.'); } }); } if (saveNoteBtn) { saveNoteBtn.addEventListener('click', async () => { const item = getSelectedOffer(); const roomNoteInput = document.getElementById('roomNoteInput'); const note = (roomNoteInput?.value || '').trim(); if (!item) return flashRoom('Once bir teklif sec.'); try { await sendRoomAction(item, { action:'note', note }); flashRoom(note ? 'Not backend uzerinde kaydedildi.' : 'Bos not gonderilemedi.'); } catch (error) { flashRoom(error.message || 'Not kaydedilemedi.'); } }); } }
+    function setFallbackState(message) { const offerList = document.getElementById('offerList'); const roomStatus = document.getElementById('roomStatus'); const summaryStatus = document.getElementById('summaryStatus'); const summaryConfidence = document.getElementById('summaryConfidence'); const summaryCount = document.getElementById('summaryCount'); const detailShell = document.getElementById('detailShell'); const offerCountMeta = document.getElementById('offerCountMeta'); if (offerList) offerList.innerHTML = `<div class="empty-state">${message}</div>`; if (detailShell) detailShell.innerHTML = '<div class="empty-state">Aktif pazarlik verisi gelmedigi icin detay alani bos kaldi.</div>'; if (roomStatus) roomStatus.textContent = 'Demo mod'; if (summaryStatus) summaryStatus.textContent = 'Canli veri baglanamadi'; if (summaryConfidence) summaryConfidence.textContent = '%0'; if (summaryCount) summaryCount.textContent = '0'; if (offerCountMeta) offerCountMeta.textContent = '0 kayit'; }
+    async function loadNegotiationRoom() { if (!enforceRoleGate()) return; applyRoleHeroCopy(); const filters = readRoomFilters(); renderActiveFilters(filters); bindActionPanel(); try { const response = await fetch(buildTransferUrl(filters), { headers:getAuthHeaders() }); const payload = await response.json().catch(() => ({})); const rows = Array.isArray(payload?.data?.data) ? payload.data.data : (Array.isArray(payload?.data) ? payload.data : []); if (!response.ok || !rows.length) { setFallbackState('Henuz acik teklif kaydi bulunmuyor.'); return; } roomState.offers = rows; roomState.selectedId = rows[0]?.id || null; renderOffers(); renderDetail(getSelectedOffer()); } catch (_) { setFallbackState('Teklif verisi su an yuklenemedi. Lutfen daha sonra tekrar dene.'); } }
+    loadNegotiationRoom();
+  </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-

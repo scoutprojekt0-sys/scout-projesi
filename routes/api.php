@@ -104,6 +104,7 @@ Route::prefix('transfers')->group(function () {
     Route::get('/{id}', [PlayerTransferController::class, 'show']);
     Route::get('/player/{playerId}/timeline', [PlayerTransferController::class, 'timeline']);
     Route::post('/', [PlayerTransferController::class, 'store'])->middleware('auth:sanctum');
+    Route::post('/{id}/room-action', [PlayerTransferController::class, 'roomAction'])->middleware('auth:sanctum');
 });
 
 // Player Career Timeline endpoints

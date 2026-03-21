@@ -15,6 +15,7 @@ class PlayerTransfer extends Model
         'from_club_id',
         'to_club_id',
         'fee',
+        'counter_fee',
         'currency',
         'transfer_date',
         'transfer_type',
@@ -25,17 +26,23 @@ class PlayerTransfer extends Model
         'confidence_score',
         'verification_status',
         'notes',
+        'negotiation_status',
+        'negotiation_notes',
         'created_by',
         'verified_by',
+        'negotiation_updated_by',
         'verified_at',
+        'negotiation_updated_at',
     ];
 
     protected $casts = [
         'fee' => 'decimal:2',
+        'counter_fee' => 'decimal:2',
         'confidence_score' => 'decimal:2',
         'transfer_date' => 'date',
         'contract_until' => 'date',
         'verified_at' => 'datetime',
+        'negotiation_updated_at' => 'datetime',
     ];
 
     public function player()
@@ -61,6 +68,11 @@ class PlayerTransfer extends Model
     public function verifier()
     {
         return $this->belongsTo(User::class, 'verified_by');
+    }
+
+    public function negotiationUpdater()
+    {
+        return $this->belongsTo(User::class, 'negotiation_updated_by');
     }
 
     public function scopeVerified($query)

@@ -7,6 +7,7 @@ use App\Models\DataAuditLog;
 use App\Models\ModerationQueue;
 use App\Models\PlayerTransfer;
 use App\Services\ScoutAttributionService;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -22,7 +23,7 @@ class PlayerTransferController extends Controller
     public function index(Request $request): JsonResponse
     {
         $query = PlayerTransfer::query()
-            ->with(['player:id,name', 'fromClub:id,name', 'toClub:id,name'])
+            ->with(['player:id,name', 'fromClub:id,name', 'toClub:id,name', 'negotiationUpdater:id,name,role'])
             ->orderBy('transfer_date', 'desc');
 
         if ($request->has('player_id')) {
@@ -122,6 +123,74 @@ class PlayerTransferController extends Controller
         ], 201);
     }
 
+    public function roomAction(Request $request, int $id): JsonResponse
+    {
+        $user = $request->user();
+        $role = strtolower((string) ($user?->role ?? ''));
+        $allowedRoles = ['manager', 'menajer', 'team', 'club', 'kulup', 'player', 'lawyer'];
+
+        if (!$user || !in_array($role, $allowedRoles, true)) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Bu aksiyon icin yetkiniz yok.',
+            ], 403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'action' => ['required', Rule::in(['accept', 'reject', 'counter', 'note'])],
+            'counter_fee' => ['nullable', 'numeric', 'min:0'],
+            'note' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $transfer = PlayerTransfer::with(['player:id,name', 'fromClub:id,name', 'toClub:id,name', 'negotiationUpdater:id,name,role'])->findOrFail($id);
+        $payload = $validator->validated();
+        $action = $payload['action'];
+        $note = trim((string) ($payload['note'] ?? ''));
+        $historyEntry = '['.Carbon::now()->toDateTimeString()."] {$role}: ";
+
+        if ($action === 'accept') {
+            $transfer->negotiation_status = 'accepted';
+            $historyEntry .= 'teklif kabul edildi.';
+        } elseif ($action === 'reject') {
+            $transfer->negotiation_status = 'rejected';
+            $historyEntry .= 'teklif reddedildi.';
+        } elseif ($action === 'counter') {
+            $transfer->negotiation_status = 'countered';
+            $transfer->counter_fee = $payload['counter_fee'] ?? null;
+            $historyEntry .= 'karsi teklif verildi';
+            if ($transfer->counter_fee !== null) {
+                $historyEntry .= ' ('.$transfer->counter_fee.' '.$transfer->currency.')';
+            }
+            $historyEntry .= '.';
+        } else {
+            $historyEntry .= 'oda notu eklendi.';
+        }
+
+        if ($note !== '') {
+            $historyEntry .= ' Not: '.$note;
+            $transfer->negotiation_notes = trim((string) ($transfer->negotiation_notes ? $transfer->negotiation_notes."\n" : '').$note);
+        }
+
+        $transfer->notes = trim((string) ($transfer->notes ? $transfer->notes."\n" : '').$historyEntry);
+        $transfer->negotiation_updated_by = $user->id;
+        $transfer->negotiation_updated_at = now();
+        $transfer->save();
+
+        return response()->json([
+            'ok' => true,
+            'message' => 'Pazarlik odasi guncellendi.',
+            'data' => $transfer->fresh()->load(['player:id,name', 'fromClub:id,name', 'toClub:id,name', 'negotiationUpdater:id,name,role']),
+        ]);
+    }
+
     public function show(int $id): JsonResponse
     {
         $transfer = PlayerTransfer::with([
@@ -129,7 +198,8 @@ class PlayerTransferController extends Controller
             'fromClub:id,name',
             'toClub:id,name',
             'creator:id,name,email',
-            'verifier:id,name,email'
+            'verifier:id,name,email',
+            'negotiationUpdater:id,name,role',
         ])->findOrFail($id);
 
         return response()->json([
