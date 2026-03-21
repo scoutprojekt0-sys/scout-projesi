@@ -296,12 +296,131 @@
             gap: 24px;
         }
 
+        .review-card {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .review-shell {
+            display: grid;
+            gap: 14px;
+        }
+
+        .review-form {
+            display: grid;
+            gap: 12px;
+            padding: 14px;
+            border-radius: 10px;
+            background: #F8FAFC;
+            border: 1px solid #E0E7FF;
+        }
+
+        .review-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .review-label {
+            display: block;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .review-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .review-item {
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #E0E7FF;
+            background: #F8FAFC;
+        }
+
+        .review-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .review-author {
+            display: grid;
+            gap: 4px;
+        }
+
+        .review-author strong {
+            font-size: 14px;
+            color: #1F2937;
+        }
+
+        .review-author span,
+        .review-note,
+        .review-empty,
+        .review-meta {
+            font-size: 12px;
+            color: #64748B;
+            line-height: 1.6;
+        }
+
+        .review-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 8px 0 10px;
+        }
+
+        .review-pill {
+            display: inline-flex;
+            align-items: center;
+            min-height: 24px;
+            padding: 0 10px;
+            border-radius: 999px;
+            border: 1px solid #E0E7FF;
+            background: #FFFFFF;
+            color: #1D4ED8;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .review-pill.sentiment-olumlu { color: #15803D; }
+        .review-pill.sentiment-notr { color: #1D4ED8; }
+        .review-pill.sentiment-dikkat { color: #B45309; }
+
+        .review-body {
+            color: #1F2937;
+            font-size: 14px;
+            line-height: 1.65;
+        }
+
+        .review-reply {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: #EFF6FF;
+            border: 1px solid #BFDBFE;
+        }
+
         @media (max-width: 768px) {
             .two-column-grid {
                 grid-template-columns: 1fr;
             }
 
             .service-types-grid, .contract-types-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .review-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -566,9 +685,223 @@
                 </button>
             </form>
         </div>
+        <div class="review-card" id="lawyerReviewsCard">
+            <div class="form-title" style="font-size:22px; margin-bottom:8px;">
+                <i class="fas fa-comments"></i>
+                Profil Yorumlari
+            </div>
+            <p class="form-subtitle" style="margin-bottom:18px;">Hukuki surec yonetimi, iletisim kalitesi ve profesyonel destek deneyimi burada gorunur.</p>
+            <div class="review-shell">
+                <div class="review-form" id="lawyerReviewFormCard">
+                    <div class="review-note" id="lawyerReviewFormNote">Avukatla ilgili hukuki surec deneyimini ve calisma yorumunu yaz.</div>
+                    <div class="review-grid">
+                        <div>
+                            <label class="review-label" for="lawyerReviewRelationshipType">Iliski</label>
+                            <select class="form-select" id="lawyerReviewRelationshipType">
+                                <option value="temsil_sureci">Temsil sureci</option>
+                                <option value="kulup_sureci">Kulup sureci</option>
+                                <option value="birlikte_calistik">Birlikte calistik</option>
+                                <option value="teknik_ekip">Teknik ekip</option>
+                                <option value="izledim">Izledim</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="review-label" for="lawyerReviewSentiment">Ton</label>
+                            <select class="form-select" id="lawyerReviewSentiment">
+                                <option value="olumlu">Olumlu</option>
+                                <option value="notr">Notr</option>
+                                <option value="dikkat">Dikkat</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="review-label" for="lawyerReviewBody">Yorum</label>
+                        <textarea class="form-textarea" id="lawyerReviewBody" placeholder="Surec hizi, sozlesme netligi veya iletisim disiplini hakkinda not..."></textarea>
+                    </div>
+                    <button type="button" class="submit-btn" style="margin-top:0;" onclick="submitLawyerProfileReview()">Yorumu Gonder</button>
+                </div>
+                <div class="review-note" id="lawyerReviewGate">Yorum yazmak icin giris yapman gerekiyor.</div>
+                <div class="review-list" id="lawyerReviewList"></div>
+            </div>
+        </div>
     </div>
 
     <script>
+        function getApiBaseUrl() {
+            const params = new URLSearchParams(window.location.search);
+            const fromQuery = (params.get('api_base') || '').trim();
+            if (fromQuery) return fromQuery.replace(/\/$/, '');
+            if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+            return '/api';
+        }
+
+        function getCurrentAuthUserFromStorage() {
+            try {
+                const raw = localStorage.getItem('nextscout_user');
+                const user = raw ? JSON.parse(raw) : null;
+                return user && typeof user === 'object' ? user : null;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function getToken() {
+            return (localStorage.getItem('nextscout_token') || '').trim();
+        }
+
+        function getLawyerReviewTargetId() {
+            const params = new URLSearchParams(window.location.search);
+            const raw = params.get('user_id');
+            const authUser = getCurrentAuthUserFromStorage();
+            const id = raw ? Number(raw) : Number(authUser?.id || 0);
+            return Number.isFinite(id) ? id : null;
+        }
+
+        function esc(value) {
+            return (value || '').toString()
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function formatReviewDate(value) {
+            if (!value) return '-';
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return '-';
+            return date.toLocaleDateString('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        function reviewLabelMap() {
+            return {
+                birlikte_calistik: 'Birlikte calistik',
+                rakiptik: 'Rakiptik',
+                izledim: 'Izledim',
+                temsil_sureci: 'Temsil sureci',
+                kulup_sureci: 'Kulup sureci',
+                teknik_ekip: 'Teknik ekip',
+                olumlu: 'Olumlu',
+                notr: 'Notr',
+                dikkat: 'Dikkat',
+            };
+        }
+
+        function renderLawyerProfileReviews(items) {
+            const root = document.getElementById('lawyerReviewList');
+            if (!root) return;
+            const rows = Array.isArray(items) ? items : [];
+            if (!rows.length) {
+                root.innerHTML = '<div class="review-empty">Bu avukat profili icin henuz yayinlanmis yorum yok.</div>';
+                return;
+            }
+
+            const labels = reviewLabelMap();
+            root.innerHTML = rows.map((review) => `
+                <article class="review-item">
+                    <div class="review-head">
+                        <div class="review-author">
+                            <strong>${esc(review?.author_name || 'Kullanici')}</strong>
+                            <span>${esc(review?.author_role || 'rol belirtilmedi')}</span>
+                        </div>
+                        <div class="review-meta">${esc(formatReviewDate(review?.created_at))}</div>
+                    </div>
+                    <div class="review-tags">
+                        <span class="review-pill">${esc(labels[review?.relationship_type] || review?.relationship_type || '-')}</span>
+                        <span class="review-pill sentiment-${esc(review?.sentiment || 'notr')}">${esc(labels[review?.sentiment] || review?.sentiment || '-')}</span>
+                    </div>
+                    <div class="review-body">${esc(review?.body || '')}</div>
+                    ${review?.reply?.body ? `
+                        <div class="review-reply">
+                            <div class="review-meta">${esc(review?.reply?.author_name || 'Profil sahibi')} yaniti</div>
+                            <div class="review-body">${esc(review.reply.body)}</div>
+                        </div>
+                    ` : ''}
+                </article>
+            `).join('');
+        }
+
+        async function loadLawyerProfileReviews() {
+            const targetId = getLawyerReviewTargetId();
+            const root = document.getElementById('lawyerReviewList');
+            if (!targetId || !root) return;
+
+            root.innerHTML = '<div class="review-empty">Yorumlar yukleniyor...</div>';
+            try {
+                const res = await fetch(`${getApiBaseUrl()}/profiles/${encodeURIComponent(targetId)}/reviews`, {
+                    headers: { 'Accept': 'application/json' },
+                });
+                const data = await res.json().catch(() => null);
+                const items = Array.isArray(data?.data?.data)
+                    ? data.data.data
+                    : Array.isArray(data?.data?.items)
+                    ? data.data.items
+                    : Array.isArray(data?.data)
+                    ? data.data
+                    : [];
+                renderLawyerProfileReviews(items);
+            } catch (error) {
+                root.innerHTML = '<div class="review-empty">Yorumlar su an alinamiyor.</div>';
+            }
+        }
+
+        async function submitLawyerProfileReview() {
+            const authUser = getCurrentAuthUserFromStorage();
+            const token = getToken();
+            const targetId = getLawyerReviewTargetId();
+            const relationship = document.getElementById('lawyerReviewRelationshipType');
+            const sentiment = document.getElementById('lawyerReviewSentiment');
+            const body = document.getElementById('lawyerReviewBody');
+
+            if (!authUser || !token) {
+                alert('Yorum yazmak icin giris yapmalisin.');
+                return;
+            }
+
+            if (!targetId || !relationship || !sentiment || !body) return;
+
+            const payload = {
+                relationship_type: relationship.value,
+                sentiment: sentiment.value,
+                body: String(body.value || '').trim(),
+            };
+
+            if (payload.body.length < 10) {
+                alert('Yorum en az 10 karakter olmali.');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${getApiBaseUrl()}/profiles/${encodeURIComponent(targetId)}/reviews`, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(payload),
+                });
+                const data = await res.json().catch(() => null);
+                if (!res.ok || !data?.ok) throw new Error(data?.message || 'Yorum kaydedilemedi');
+                body.value = '';
+                alert(data?.message || 'Yorum kaydedildi.');
+                await loadLawyerProfileReviews();
+            } catch (error) {
+                alert(error?.message || 'Yorum kaydedilemedi.');
+            }
+        }
+
+        function updateLawyerReviewVisibility() {
+            const authUser = getCurrentAuthUserFromStorage();
+            const targetId = getLawyerReviewTargetId();
+            const authId = authUser?.id ? Number(authUser.id) : null;
+            const isOwnProfile = Number.isFinite(targetId) && Number.isFinite(authId) && targetId === authId;
+            const formCard = document.getElementById('lawyerReviewFormCard');
+            const gate = document.getElementById('lawyerReviewGate');
+            if (formCard) formCard.style.display = !isOwnProfile && authUser ? '' : 'none';
+            if (gate) gate.style.display = !isOwnProfile && !authUser ? '' : 'none';
+        }
+
         // Hizmet Turleri Toggle
         function toggleService(btn, type) {
             btn.classList.toggle('active');
@@ -637,14 +970,13 @@
         });
 
         document.getElementById('profilePhotoPreview').src = 'https://via.placeholder.com/76x76?text=Foto';
+        updateLawyerReviewVisibility();
+        loadLawyerProfileReviews();
     </script>
     <script src="assets/js/core-stability.js"></script>
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
 
 
 

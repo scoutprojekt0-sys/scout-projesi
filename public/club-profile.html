@@ -119,10 +119,31 @@
     .mini-table{width:100%;border-collapse:collapse;font-size:13px}
     .mini-table th,.mini-table td{border:1px solid var(--line);padding:8px;text-align:left}
     .mini-table th{background:rgba(255,255,255,.04);color:#dbeafe}
+    .review-shell{display:grid;gap:14px}
+    .review-form{display:grid;gap:12px;padding:14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+    .review-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .review-field{display:grid;gap:6px}
+    .review-field label{font-size:11px;font-weight:800;color:#cbd5e1;text-transform:uppercase;letter-spacing:.1em}
+    .review-field select,.review-field textarea{border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13px;background:rgba(255,255,255,.04);color:#f8fafc}
+    .review-field textarea{min-height:96px;resize:vertical}
+    .review-list{display:grid;gap:10px}
+    .review-item{padding:14px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.04)}
+    .review-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}
+    .review-author{display:grid;gap:4px}
+    .review-author strong{font-size:14px;color:#f5fbff}
+    .review-author span,.review-note,.review-empty,.review-meta{font-size:12px;color:var(--muted);line-height:1.6}
+    .review-tags{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 10px}
+    .review-pill{display:inline-flex;align-items:center;min-height:24px;padding:0 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:#dbeafe;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .review-pill.sentiment-olumlu{color:#bbf7d0}
+    .review-pill.sentiment-notr{color:#bfdbfe}
+    .review-pill.sentiment-dikkat{color:#fde68a}
+    .review-body{color:#e2e8f0;font-size:13px;line-height:1.65}
+    .review-reply{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.18)}
 
     @media (max-width:900px){
       .layout{grid-template-columns:1fr}
       .form-grid{grid-template-columns:1fr}
+      .review-form-grid{grid-template-columns:1fr}
     }
     @media (max-width:768px){
       .wrap{padding:10px 10px 18px}
@@ -288,6 +309,42 @@
           <a class="btn btn-primary" id="systemScoutLink" href="professional-players.html?visibility_role=club">Sisteme Uygun Oyunculari Gor</a>
         </div>
       </div>
+      <div class="card" id="clubReviewsCard">
+        <h2 class="section-title">Profil Yorumlari</h2>
+        <div class="review-shell">
+          <div class="review-form" id="clubReviewFormCard">
+            <div class="review-note" id="clubReviewFormNote">Kulubun profesyonel yapisi, iletisim duzeni veya surec deneyimi hakkinda yorum yaz.</div>
+            <div class="review-form-grid">
+              <div class="review-field">
+                <label for="clubReviewRelationshipType">Iliski</label>
+                <select id="clubReviewRelationshipType">
+                  <option value="kulup_sureci">Kulup sureci</option>
+                  <option value="birlikte_calistik">Birlikte calistik</option>
+                  <option value="teknik_ekip">Teknik ekip</option>
+                  <option value="izledim">Izledim</option>
+                  <option value="temsil_sureci">Temsil sureci</option>
+                  <option value="rakiptik">Rakiptik</option>
+                </select>
+              </div>
+              <div class="review-field">
+                <label for="clubReviewSentiment">Ton</label>
+                <select id="clubReviewSentiment">
+                  <option value="olumlu">Olumlu</option>
+                  <option value="notr">Notr</option>
+                  <option value="dikkat">Dikkat</option>
+                </select>
+              </div>
+            </div>
+            <div class="review-field">
+              <label for="clubReviewBody">Yorum</label>
+              <textarea id="clubReviewBody" placeholder="Kulubun calisma bicimi, tesis duzeni veya transfer sureci hakkinda not..."></textarea>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="submitClubProfileReview()">Yorumu Gonder</button>
+          </div>
+          <div class="review-note" id="clubReviewGate">Yorum yazmak icin giris yapman gerekiyor.</div>
+          <div class="review-list" id="clubReviewList"></div>
+        </div>
+      </div>
     </div>
     </section>
 
@@ -353,6 +410,16 @@
       };
     }
 
+    function getCurrentAuthUserFromStorage() {
+      try {
+        const raw = localStorage.getItem('nextscout_user');
+        const user = raw ? JSON.parse(raw) : null;
+        return user && typeof user === 'object' ? user : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
     function formatMoney(value) {
       const num = Number(value || 0);
       return new Intl.NumberFormat('tr-TR').format(num) + ' EUR';
@@ -365,6 +432,148 @@
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
+    }
+
+    function getClubReviewTargetId() {
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get('user_id');
+      const id = raw ? Number(raw) : currentUserId;
+      return Number.isFinite(id) ? id : null;
+    }
+
+    function formatReviewDate(value) {
+      if (!value) return '-';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '-';
+      return date.toLocaleDateString('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function profileReviewLabels() {
+      return {
+        birlikte_calistik: 'Birlikte calistik',
+        rakiptik: 'Rakiptik',
+        izledim: 'Izledim',
+        temsil_sureci: 'Temsil sureci',
+        kulup_sureci: 'Kulup sureci',
+        teknik_ekip: 'Teknik ekip',
+        olumlu: 'Olumlu',
+        notr: 'Notr',
+        dikkat: 'Dikkat',
+      };
+    }
+
+    function renderClubProfileReviews(items) {
+      const root = document.getElementById('clubReviewList');
+      if (!root) return;
+      const rows = Array.isArray(items) ? items : [];
+      if (!rows.length) {
+        root.innerHTML = '<div class="review-empty">Bu kulup icin henuz yayinlanmis yorum yok.</div>';
+        return;
+      }
+
+      const labels = profileReviewLabels();
+      root.innerHTML = rows.map((review) => `
+        <article class="review-item">
+          <div class="review-head">
+            <div class="review-author">
+              <strong>${esc(review?.author_name || 'Kullanici')}</strong>
+              <span>${esc(review?.author_role || 'rol belirtilmedi')}</span>
+            </div>
+            <div class="review-meta">${esc(formatReviewDate(review?.created_at))}</div>
+          </div>
+          <div class="review-tags">
+            <span class="review-pill">${esc(labels[review?.relationship_type] || review?.relationship_type || '-')}</span>
+            <span class="review-pill sentiment-${esc(review?.sentiment || 'notr')}">${esc(labels[review?.sentiment] || review?.sentiment || '-')}</span>
+          </div>
+          <div class="review-body">${esc(review?.body || '')}</div>
+          ${review?.reply?.body ? `
+            <div class="review-reply">
+              <div class="review-meta">${esc(review?.reply?.author_name || 'Kulup sahibi')} yaniti</div>
+              <div class="review-body">${esc(review.reply.body)}</div>
+            </div>
+          ` : ''}
+        </article>
+      `).join('');
+    }
+
+    async function loadClubProfileReviews() {
+      const targetId = getClubReviewTargetId();
+      const root = document.getElementById('clubReviewList');
+      if (!targetId || !root) return;
+
+      root.innerHTML = '<div class="review-empty">Yorumlar yukleniyor...</div>';
+      try {
+        const res = await fetch(`${getApiBaseUrl()}/profiles/${encodeURIComponent(targetId)}/reviews`, {
+          headers: { 'Accept': 'application/json' },
+        });
+        const data = await res.json().catch(() => null);
+        const items = Array.isArray(data?.data?.data)
+          ? data.data.data
+          : Array.isArray(data?.data?.items)
+          ? data.data.items
+          : Array.isArray(data?.data)
+          ? data.data
+          : [];
+        renderClubProfileReviews(items);
+      } catch (error) {
+        root.innerHTML = '<div class="review-empty">Yorumlar su an alinamiyor.</div>';
+      }
+    }
+
+    async function submitClubProfileReview() {
+      const authUser = getCurrentAuthUserFromStorage();
+      const token = getToken();
+      const targetId = getClubReviewTargetId();
+      const relationship = document.getElementById('clubReviewRelationshipType');
+      const sentiment = document.getElementById('clubReviewSentiment');
+      const body = document.getElementById('clubReviewBody');
+
+      if (!authUser || !token) {
+        alert('Yorum yazmak icin giris yapmalisin.');
+        return;
+      }
+
+      if (!targetId || !relationship || !sentiment || !body) return;
+      const payload = {
+        relationship_type: relationship.value,
+        sentiment: sentiment.value,
+        body: String(body.value || '').trim(),
+      };
+
+      if (payload.body.length < 10) {
+        alert('Yorum en az 10 karakter olmali.');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${getApiBaseUrl()}/profiles/${encodeURIComponent(targetId)}/reviews`, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data?.ok) throw new Error(data?.message || 'Yorum kaydedilemedi');
+        body.value = '';
+        alert(data?.message || 'Yorum kaydedildi.');
+        await loadClubProfileReviews();
+      } catch (error) {
+        alert(error?.message || 'Yorum kaydedilemedi.');
+      }
+    }
+
+    function updateClubReviewVisibility() {
+      const authUser = getCurrentAuthUserFromStorage();
+      const targetId = getClubReviewTargetId();
+      const authId = authUser?.id ? Number(authUser.id) : null;
+      const isOwnProfile = Number.isFinite(targetId) && Number.isFinite(authId) && targetId === authId;
+      const formCard = document.getElementById('clubReviewFormCard');
+      const gate = document.getElementById('clubReviewGate');
+      if (formCard) formCard.style.display = !isOwnProfile && authUser ? '' : 'none';
+      if (gate) gate.style.display = !isOwnProfile && !authUser ? '' : 'none';
     }
 
     function bindTabs() {
@@ -711,6 +920,8 @@
       saveProfileLocal(profile);
       bindTabs();
       bind();
+      updateClubReviewVisibility();
+      loadClubProfileReviews();
     }
 
     function applyTurkishTextFixes() {

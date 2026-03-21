@@ -812,6 +812,149 @@
             letter-spacing: -0.02em;
         }
 
+        .review-shell {
+            display: grid;
+            gap: 16px;
+        }
+
+        .review-form {
+            display: grid;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 18px;
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(148,163,184,.14);
+        }
+
+        .review-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .review-field {
+            display: grid;
+            gap: 6px;
+        }
+
+        .review-field label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #9bb5cb;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+        }
+
+        .review-field select,
+        .review-field textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(148,163,184,.18);
+            background: rgba(7, 17, 28, 0.78);
+            color: #eef6ff;
+            font: inherit;
+        }
+
+        .review-field textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .review-note,
+        .review-empty,
+        .review-meta {
+            color: #9bb5cb;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .review-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .review-item {
+            padding: 16px;
+            border-radius: 18px;
+            border: 1px solid rgba(148,163,184,.14);
+            background: linear-gradient(180deg, rgba(255,255,255,.04) 0%, rgba(15,23,42,.18) 100%);
+        }
+
+        .review-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .review-author {
+            display: grid;
+            gap: 4px;
+        }
+
+        .review-author strong {
+            color: #f5fbff;
+            font-size: 14px;
+        }
+
+        .review-author span {
+            color: #8fb5d8;
+            font-size: 12px;
+        }
+
+        .review-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 10px 0 12px;
+        }
+
+        .review-pill {
+            display: inline-flex;
+            align-items: center;
+            min-height: 26px;
+            padding: 0 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(148,163,184,.16);
+            background: rgba(255,255,255,.05);
+            color: #dbeafe;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .review-pill.sentiment-olumlu {
+            border-color: rgba(74, 222, 128, 0.22);
+            color: #bbf7d0;
+        }
+
+        .review-pill.sentiment-notr {
+            border-color: rgba(96, 165, 250, 0.22);
+            color: #bfdbfe;
+        }
+
+        .review-pill.sentiment-dikkat {
+            border-color: rgba(251, 191, 36, 0.22);
+            color: #fde68a;
+        }
+
+        .review-body {
+            color: #dbeafe;
+            font-size: 14px;
+            line-height: 1.65;
+        }
+
+        .review-reply {
+            margin-top: 12px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: rgba(11, 59, 138, 0.16);
+            border: 1px solid rgba(96, 165, 250, 0.18);
+        }
+
         .achievement-item {
             padding: 16px;
             background: rgba(255,255,255,.04);
@@ -1402,6 +1545,10 @@
                 border-radius: 12px;
             }
 
+            .review-form-grid {
+                grid-template-columns: 1fr;
+            }
+
             .mobile-accordion-card {
                 padding: 0;
                 overflow: hidden;
@@ -1606,6 +1753,42 @@
                     <div class="stats-list">
                         <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;" onclick="sendMessageToProfile()">Mesaj Gonder</button>
                         <button class="btn btn-secondary" style="width: 100%;" onclick="contactManagerFromProfile()">MENAJER ile Gorus</button>
+                    </div>
+                </div>
+                <div class="card" id="profileReviewsCard">
+                    <h3 class="card-title">Profil Yorumlari</h3>
+                    <div class="review-shell">
+                        <div class="review-form" id="profileReviewFormCard">
+                            <div class="review-note" id="profileReviewFormNote">Bu oyuncuyla ilgili gozlemini, birlikte calisma baglamini ve kisa degerlendirmeyi yaz.</div>
+                            <div class="review-form-grid">
+                                <div class="review-field">
+                                    <label for="reviewRelationshipType">Iliski</label>
+                                    <select id="reviewRelationshipType">
+                                        <option value="izledim">Izledim</option>
+                                        <option value="birlikte_calistik">Birlikte calistik</option>
+                                        <option value="rakiptik">Rakiptik</option>
+                                        <option value="temsil_sureci">Temsil sureci</option>
+                                        <option value="kulup_sureci">Kulup sureci</option>
+                                        <option value="teknik_ekip">Teknik ekip</option>
+                                    </select>
+                                </div>
+                                <div class="review-field">
+                                    <label for="reviewSentiment">Ton</label>
+                                    <select id="reviewSentiment">
+                                        <option value="olumlu">Olumlu</option>
+                                        <option value="notr">Notr</option>
+                                        <option value="dikkat">Dikkat</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="review-field">
+                                <label for="reviewBody">Yorum</label>
+                                <textarea id="reviewBody" placeholder="Oyuncunun guclu yonleri, oyun karakteri veya dikkat notu..."></textarea>
+                            </div>
+                            <button class="btn btn-primary" type="button" onclick="submitProfileReview()">Yorumu Gonder</button>
+                        </div>
+                        <div class="review-note" id="profileReviewGate">Yorum yazmak icin giris yapman gerekiyor.</div>
+                        <div class="review-list" id="profileReviewList"></div>
                     </div>
                 </div>
             </div>
@@ -1956,6 +2139,140 @@
             sendMessageToProfile('MENAJER ile gorusme');
         }
 
+        function getProfileReviewTargetId() {
+            const params = new URLSearchParams(window.location.search);
+            const raw = params.get('user_id');
+            const id = raw ? Number(raw) : null;
+            return Number.isFinite(id) ? id : null;
+        }
+
+        function formatReviewDate(value) {
+            if (!value) return '-';
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return '-';
+            return date.toLocaleDateString('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        function prettyReviewLabelMap() {
+            return {
+                birlikte_calistik: 'Birlikte calistik',
+                rakiptik: 'Rakiptik',
+                izledim: 'Izledim',
+                temsil_sureci: 'Temsil sureci',
+                kulup_sureci: 'Kulup sureci',
+                teknik_ekip: 'Teknik ekip',
+                olumlu: 'Olumlu',
+                notr: 'Notr',
+                dikkat: 'Dikkat',
+            };
+        }
+
+        function renderProfileReviews(items) {
+            const list = document.getElementById('profileReviewList');
+            if (!list) return;
+            const rows = Array.isArray(items) ? items : [];
+            if (!rows.length) {
+                list.innerHTML = '<div class="review-empty">Bu profilde henuz yayinlanmis yorum yok.</div>';
+                return;
+            }
+
+            const labels = prettyReviewLabelMap();
+            list.innerHTML = rows.map((review) => `
+                <article class="review-item">
+                    <div class="review-head">
+                        <div class="review-author">
+                            <strong>${esc(review?.author_name || 'Kullanici')}</strong>
+                            <span>${esc(review?.author_role || 'rol belirtilmedi')}</span>
+                        </div>
+                        <div class="review-meta">${esc(formatReviewDate(review?.created_at))}</div>
+                    </div>
+                    <div class="review-tags">
+                        <span class="review-pill">${esc(labels[review?.relationship_type] || review?.relationship_type || '-')}</span>
+                        <span class="review-pill sentiment-${esc(review?.sentiment || 'notr')}">${esc(labels[review?.sentiment] || review?.sentiment || '-')}</span>
+                    </div>
+                    <div class="review-body">${esc(review?.body || '')}</div>
+                    ${review?.reply?.body ? `
+                        <div class="review-reply">
+                            <div class="review-meta">${esc(review?.reply?.author_name || 'Profil sahibi')} yaniti</div>
+                            <div class="review-body">${esc(review.reply.body)}</div>
+                        </div>
+                    ` : ''}
+                </article>
+            `).join('');
+        }
+
+        async function loadProfileReviews() {
+            const targetId = getProfileReviewTargetId();
+            const list = document.getElementById('profileReviewList');
+            if (!targetId || !list) return;
+
+            list.innerHTML = '<div class="review-empty">Yorumlar yukleniyor...</div>';
+            try {
+                const res = await fetch(`${getApiBaseUrl()}/profiles/${encodeURIComponent(targetId)}/reviews`, {
+                    headers: { Accept: 'application/json' },
+                });
+                const data = await res.json().catch(() => null);
+                const items = Array.isArray(data?.data?.data)
+                    ? data.data.data
+                    : Array.isArray(data?.data?.items)
+                    ? data.data.items
+                    : Array.isArray(data?.data)
+                    ? data.data
+                    : [];
+                renderProfileReviews(items);
+            } catch (error) {
+                list.innerHTML = '<div class="review-empty">Yorumlar su an alinamiyor.</div>';
+            }
+        }
+
+        async function submitProfileReview() {
+            const authUser = getCurrentAuthUserFromStorage();
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            const targetId = getProfileReviewTargetId();
+            const relationshipType = document.getElementById('reviewRelationshipType');
+            const sentiment = document.getElementById('reviewSentiment');
+            const body = document.getElementById('reviewBody');
+
+            if (!authUser || !token) {
+                nsAlert('Yorum yazmak icin giris yapmalisin.');
+                return;
+            }
+
+            if (!targetId || !relationshipType || !sentiment || !body) return;
+
+            const payload = {
+                relationship_type: relationshipType.value,
+                sentiment: sentiment.value,
+                body: String(body.value || '').trim(),
+            };
+
+            if (payload.body.length < 10) {
+                nsAlert('Yorum en az 10 karakter olmali.');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${getApiBaseUrl()}/profiles/${encodeURIComponent(targetId)}/reviews`, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(payload),
+                });
+                const data = await res.json().catch(() => null);
+                if (!res.ok || !data?.ok) {
+                    throw new Error(data?.message || 'Yorum kaydedilemedi');
+                }
+                body.value = '';
+                nsAlert(data?.message || 'Yorum kaydedildi.');
+                await loadProfileReviews();
+            } catch (error) {
+                nsAlert(error?.message || 'Yorum kaydedilemedi.');
+            }
+        }
+
         function updateProfileActionVisibility() {
             const params = new URLSearchParams(window.location.search);
             const viewedUserIdRaw = params.get('user_id');
@@ -1967,8 +2284,12 @@
 
             const heroActions = document.getElementById('profileHeroActions');
             const contactCard = document.getElementById('profileContactCard');
+            const reviewFormCard = document.getElementById('profileReviewFormCard');
+            const reviewGate = document.getElementById('profileReviewGate');
             if (heroActions) heroActions.style.display = isOwnProfile ? 'none' : '';
             if (contactCard) contactCard.style.display = isOwnProfile ? 'none' : '';
+            if (reviewFormCard) reviewFormCard.style.display = !isOwnProfile && sessionUser ? '' : 'none';
+            if (reviewGate) reviewGate.style.display = !isOwnProfile && !sessionUser ? '' : 'none';
         }
 
         function renderTabs() {
@@ -2535,6 +2856,7 @@
             const params = new URLSearchParams(window.location.search);
             const userId = params.get('user_id');
             updateProfileActionVisibility();
+            loadProfileReviews();
 
             if (!userId) {
                 renderLocalProfile();

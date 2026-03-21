@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Antrenor Dashboard | NextScout</title>
-  <meta name="description" content="Scout paneli: kesif listeleri, canlı akis ve teknik degerlendirme sureclerini takip edin.">
+  <title>Antrenör Profili | NextScout</title>
+  <meta name="description" content="Antrenör paneli: keşif listeleri, canlı akış ve teknik değerlendirme süreçlerini takip edin.">
   <meta name="robots" content="noindex,follow">
   <link rel="canonical" href="https://nextscout.pro/coach-dashboard.html">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="tr_TR">
   <meta property="og:site_name" content="NextScout">
-  <meta property="og:title" content="Antrenor Dashboard | NextScout">
-  <meta property="og:description" content="Scout paneli: kesif listeleri, canlı akis ve teknik degerlendirme sureclerini takip edin.">
+  <meta property="og:title" content="Antrenör Profili | NextScout">
+  <meta property="og:description" content="Antrenör paneli: keşif listeleri, canlı akış ve teknik değerlendirme süreçlerini takip edin.">
   <meta property="og:url" content="https://nextscout.pro/coach-dashboard.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
@@ -474,7 +474,7 @@
 </head>
 <body>
     <div class="top-navbar">
-    <div class="navbar-left"><div class="logo">NextScout Antrenor</div></div>
+    <div class="navbar-left"><div class="logo">NextScout Antrenor Profili</div></div>
       <div class="navbar-right">
       <button class="btn-small success" onclick="openCoachNeedModal()"><i class="fas fa-plus-circle"></i><span>İlan Ver</span></button>
       <button class="btn-small success" onclick="openTrialPublishModal()"><i class="fas fa-calendar-check"></i><span>Deneme/Idman Ilani</span></button>
@@ -493,7 +493,7 @@
         <ul class="sidebar-menu">
           <li class="sidebar-item active" onclick="openPlayerSearchModal()"><i class="fas fa-magnifying-glass"></i><span>Oyuncu Ara</span></li>
           <li class="sidebar-item" onclick="window.location.href='ai-discovery.html'"><i class="fas fa-flask"></i><span>AI Discovery</span></li>
-          <li class="sidebar-item" onclick="openScoutProfile()"><i class="fas fa-user"></i><span>Profilim</span></li>
+          <li class="sidebar-item" onclick="openScoutProfile()"><i class="fas fa-user"></i><span>Antrenor Profili</span></li>
           <li class="sidebar-item" onclick="openWatchlist()"><i class="fas fa-list-check"></i><span>Takip Listem</span></li>
           <li class="sidebar-item" onclick="openTrialCenter()"><i class="fas fa-calendar-check"></i><span>Deneme & Idmanlar</span></li>
         <li class="sidebar-item" onclick="window.location.href='live-watch-demand.html'"><i class="fas fa-location-crosshairs"></i><span>Canlı İzleme Talebi</span></li>
@@ -508,7 +508,7 @@
 
     <div class="content">
       <div class="welcome-card">
-          <h1>Antrenor Dashboard</h1>
+          <h1>Antrenor Profili</h1>
         <p>Oyuncu izle, analiz et ve takip listene ekle.</p>
       </div>
 
@@ -1013,7 +1013,7 @@
 
     function openWatchlist() { window.location.href = 'scout-watchlist.html'; }
     function openTrialCenter() { window.location.href = 'trial-center.html?view=coach'; }
-    function openScoutProfile() { window.location.href = 'scout-profile.html'; }
+    function openScoutProfile() { window.location.href = 'coach-profile.html'; }
     function openPerformance() { window.location.href = 'statistics.html'; }
     function openScoutReports() { window.location.href = 'scout-reports.html'; }
     function openMessages() { window.location.href = 'notifications.html'; }
@@ -1566,22 +1566,31 @@
     }
 
     function applyTurkishTextFixesFinal() {
-document.title = 'Antrenor Dashboard | NextScout';
+document.title = 'Antrenör Profili | NextScout';
 
       const setText = (selector, text) => {
         const el = document.querySelector(selector);
         if (el) el.textContent = text;
       };
 
-setText('.navbar-left .logo', 'NextScout Antrenor');
+setText('.navbar-left .logo', 'NextScout Antrenör Profili');
+      setText('.navbar-right button[onclick="openScoutProfile()"] span', 'Antrenör Profili');
+      setText('.sidebar-item[onclick="openScoutProfile()"] span', 'Antrenör Profili');
       setText('.sidebar-item:nth-of-type(4) span', 'Deneme & \u0130dmanlar');
       setText('.sidebar-item:nth-of-type(5) span', 'Canl\u0131 \u0130zleme Talebi');
       setText('.sidebar-item:nth-of-type(6) span', '\u0130statistikler');
       setText('.sidebar-item:nth-of-type(7) span', 'Scout Raporlar\u0131');
       setText('.sidebar-item:nth-of-type(8) span', 'Mesajlar\u0131m');
       setText('.sidebar-item:nth-of-type(10) span', 'Yard\u0131m');
-setText('.content h1', 'Antrenor Dashboard');
+setText('.content h1', 'Antrenör Profili');
       setText('.quick-report-result', 'Hen\u00fcz rapor kayd\u0131 yok.');
+      setText('.navbar-left .logo', 'NextScout Antrenör Profili');
+      setText('.navbar-right button[onclick="openCoachNeedModal()"] span', 'İlan Ver');
+      setText('.navbar-right button[onclick="openTrialPublishModal()"] span', 'Deneme/İdman İlanı');
+      setText('.navbar-right button[onclick="openLiveScoutModal()"] span', 'Canlı Scout Başlat');
+      setText('.navbar-right button[onclick="openScoutProfile()"] span', 'Antrenör Profili');
+      setText('.sidebar-item[onclick="openScoutProfile()"] span', 'Antrenör Profili');
+      setText('.content h1', 'Antrenör Profili');
 
       document.querySelectorAll('label').forEach((label) => {
         const value = (label.textContent || '').trim();
@@ -1617,7 +1626,6 @@ setText('.content h1', 'Antrenor Dashboard');
     }
 
     async function init() {
-      applyTurkishTextFixes();
       applyTurkishTextFixesFinal();
       const grid = document.getElementById('playersGrid');
       grid.innerHTML = '<div style="padding:18px;border:1px solid #475569;border-radius:10px;background:#1f2937;color:#cbd5e1;">Oyuncular yukleniyor...</div>';
