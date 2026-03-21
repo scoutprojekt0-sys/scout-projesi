@@ -250,6 +250,15 @@
     .notes-summary-label { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.12em; color:#9bb5cb; margin-bottom:8px; }
     .notes-summary-value { font-size:26px; font-weight:900; color:#f8fbff; }
     .notes-list { display:grid; gap:14px; }
+    .notes-toolbar {
+      display:grid;
+      grid-template-columns:2fr 1fr 1fr;
+      gap:12px;
+      padding:14px 16px;
+      border-radius:18px;
+      border:1px solid rgba(148,163,184,.14);
+      background:rgba(15,23,42,.24);
+    }
     .note-item {
       position:relative;
       padding:18px;
@@ -364,7 +373,7 @@
       line-height:1.6;
     }
     @media (max-width:900px) {
-      .layout, .form-grid, .review-form-grid, .review-summary-grid, .notes-summary-grid { grid-template-columns: 1fr; }
+      .layout, .form-grid, .review-form-grid, .review-summary-grid, .notes-summary-grid, .notes-toolbar { grid-template-columns: 1fr; }
     }
     @media (max-width:768px) {
       .wrap { padding: 14px 10px 18px; }
@@ -495,6 +504,11 @@
             <div class="field full"><label class="label" for="coachNoteBody">Not</label><textarea class="textarea" id="coachNoteBody" placeholder="İlk kontrol, pres disiplini, oyun görüşü, geçiş savunması veya antrenman davranışı ile ilgili kısa teknik not..."></textarea></div>
           </div>
           <div class="act"><button class="btn btn-primary" type="button" id="saveCoachNoteBtn"><i class="fas fa-notes-medical"></i><span>Notu Kaydet</span></button></div>
+        </div>
+        <div class="notes-toolbar">
+          <div class="field"><label class="label" for="coachNotesSearch">Notlarda Ara</label><input class="input" id="coachNotesSearch" placeholder="Oyuncu, pozisyon veya not..."></div>
+          <div class="field"><label class="label" for="coachNotesTagFilter">Etiket</label><select class="select" id="coachNotesTagFilter"><option value="">Tum Etiketler</option><option value="izlenecek">İzlenecek</option><option value="tekrar-bak">Tekrar Bak</option><option value="gelisim-var">Gelişim Var</option><option value="hazir">Hazır</option></select></div>
+          <div class="field"><label class="label" for="coachNotesFocusFilter">Odak</label><select class="select" id="coachNotesFocusFilter"><option value="">Tum Odaklar</option><option value="teknik">Teknik</option><option value="taktik">Taktik</option><option value="fizik">Fizik</option><option value="zihinsel">Zihinsel</option></select></div>
         </div>
         <div class="notes-list" id="coachNotesList"></div>
       </div>
@@ -813,6 +827,16 @@
       const list = document.getElementById('coachNotesList');
       const summary = document.getElementById('coachNotesSummary');
       if (!list || !summary) return;
+      const searchValue = String(document.getElementById('coachNotesSearch')?.value || '').trim().toLowerCase();
+      const tagValue = String(document.getElementById('coachNotesTagFilter')?.value || '').trim().toLowerCase();
+      const focusValue = String(document.getElementById('coachNotesFocusFilter')?.value || '').trim().toLowerCase();
+      const filteredRows = rows.filter((row) => {
+        const haystack = `${row?.player || ''} ${row?.position || ''} ${row?.body || ''}`.toLowerCase();
+        const searchMatch = !searchValue || haystack.includes(searchValue);
+        const tagMatch = !tagValue || String(row?.tag || '').toLowerCase() === tagValue;
+        const focusMatch = !focusValue || String(row?.focus || '').toLowerCase() === focusValue;
+        return searchMatch && tagMatch && focusMatch;
+      });
 
       const watchCount = rows.filter((row) => row?.tag === 'izlenecek').length;
       const lastTag = rows[0]?.tag || '-';
@@ -827,7 +851,12 @@
         return;
       }
 
-      list.innerHTML = rows.map((row) => `
+      if (!filteredRows.length) {
+        list.innerHTML = '<div class="note-empty">Bu filtreyle eslesen not bulunamadi.</div>';
+        return;
+      }
+
+      list.innerHTML = filteredRows.map((row) => `
         <article class="note-item">
           <div class="note-head">
             <div class="note-player">
@@ -1210,6 +1239,9 @@
     document.getElementById('saveCoachClipBtn')?.addEventListener('click', submitCoachClip);
     document.getElementById('coachClipUrl')?.addEventListener('input', renderCoachClipPreview);
     document.getElementById('markCoachClipMomentBtn')?.addEventListener('click', markCoachClipMoment);
+    document.getElementById('coachNotesSearch')?.addEventListener('input', renderCoachNotes);
+    document.getElementById('coachNotesTagFilter')?.addEventListener('change', renderCoachNotes);
+    document.getElementById('coachNotesFocusFilter')?.addEventListener('change', renderCoachNotes);
 
     init();
   </script>
