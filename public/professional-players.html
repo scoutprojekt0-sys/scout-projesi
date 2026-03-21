@@ -727,6 +727,24 @@
         grid-template-columns: 1fr;
       }
 
+      .player-kpi-grid,
+      .player-info {
+        grid-template-columns: 1fr;
+      }
+
+      .player-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .player-header-row,
+      .player-avatar-top,
+      .player-avatar-bottom,
+      .player-footnote {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
       .sponsored-list {
         display: flex;
         overflow-x: auto;
@@ -1363,6 +1381,196 @@
       color: #e2e8f0;
     }
 
+    .player-card {
+      position: relative;
+      border-radius: 22px;
+      overflow: hidden;
+    }
+
+    .player-card::after {
+      content: "";
+      position: absolute;
+      inset: auto 18px 0 18px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,126,34,.42) 50%, transparent 100%);
+      opacity: .7;
+    }
+
+    .player-avatar {
+      position: relative;
+      height: 228px;
+      padding: 18px;
+      align-items: stretch;
+      justify-content: space-between;
+      flex-direction: column;
+      background:
+        radial-gradient(circle at 84% 18%, rgba(251, 191, 36, 0.28), transparent 20%),
+        radial-gradient(circle at 12% 16%, rgba(96, 165, 250, 0.26), transparent 24%),
+        linear-gradient(135deg, #0f2740 0%, #12293d 38%, #1a2236 100%);
+      border-bottom: 1px solid rgba(96, 165, 250, 0.18);
+      overflow: hidden;
+    }
+
+    .player-avatar::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(115deg, rgba(255,255,255,.05) 0%, transparent 34%),
+        linear-gradient(160deg, transparent 45%, rgba(255,126,34,.12) 100%);
+      pointer-events: none;
+    }
+
+    .player-avatar-top,
+    .player-avatar-bottom {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .player-avatar-mark {
+      position: relative;
+      z-index: 1;
+      align-self: flex-end;
+      font-size: 72px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.06em;
+      color: rgba(255,255,255,.92);
+      text-shadow: 0 18px 34px rgba(2, 6, 23, 0.28);
+    }
+
+    .player-hero-chip,
+    .player-value-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(10px);
+    }
+
+    .player-hero-chip {
+      background: rgba(8, 19, 29, 0.36);
+      color: #d9ebff;
+    }
+
+    .player-value-chip {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.18), rgba(249, 115, 22, 0.18));
+      color: #fff2c4;
+      border-color: rgba(251, 191, 36, 0.24);
+      box-shadow: 0 16px 28px rgba(15, 23, 42, 0.22);
+    }
+
+    .player-content {
+      padding: 18px;
+      gap: 14px;
+    }
+
+    .player-header-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .player-name {
+      font-size: 24px;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .player-position {
+      margin-bottom: 0;
+      font-size: 11px;
+      letter-spacing: .16em;
+    }
+
+    .player-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .player-kpi {
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      background: linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(15,23,42,.22) 100%);
+      min-height: 86px;
+    }
+
+    .player-kpi-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: #8fb5d8;
+      margin-bottom: 8px;
+      font-weight: 800;
+    }
+
+    .player-kpi-value {
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 900;
+      color: #f8fbff;
+      margin-bottom: 4px;
+    }
+
+    .player-kpi-sub {
+      font-size: 11px;
+      color: #9bb5cb;
+      font-weight: 700;
+    }
+
+    .player-info {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 0;
+    }
+
+    .info-item {
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,.14);
+      background: rgba(255,255,255,.04);
+      min-height: 74px;
+    }
+
+    .player-rating {
+      display: none;
+    }
+
+    .player-footnote {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 11px;
+      color: #9bb5cb;
+      margin-top: -2px;
+    }
+
+    .player-actions {
+      gap: 10px;
+    }
+
+    .player-actions button {
+      min-height: 44px;
+      border-radius: 12px;
+    }
+
     .player-actions .compare-btn {
       background: linear-gradient(135deg, #1e40af, #2563eb);
       border-color: rgba(96, 165, 250, 0.34);
@@ -1495,6 +1703,136 @@
         background: rgba(2, 6, 20, 0.78) !important;
       }
     </style>
+    <style>
+      .hero {
+        padding: 28px !important;
+        border-radius: 24px !important;
+        margin-bottom: 24px !important;
+      }
+      .hero p {
+        max-width: 760px;
+        line-height: 1.72;
+      }
+      .hero-actions {
+        margin-top: 18px;
+      }
+      .seo-market-intro {
+        padding: 24px !important;
+        border-radius: 22px !important;
+        margin-bottom: 20px !important;
+        border: 1px solid rgba(96, 165, 250, 0.2) !important;
+        box-shadow:
+          0 22px 40px rgba(8, 19, 29, 0.32),
+          inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+      }
+      .seo-market-intro h2 {
+        font-size: 20px !important;
+        margin-bottom: 10px !important;
+      }
+      .filters {
+        padding: 22px !important;
+        border-radius: 22px !important;
+        gap: 16px !important;
+        margin-bottom: 22px !important;
+      }
+      .filter {
+        gap: 8px !important;
+      }
+      .filter label {
+        font-size: 11px !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .filter input,
+      .filter select {
+        min-height: 46px !important;
+        padding: 11px 14px !important;
+        border-radius: 14px !important;
+        transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease !important;
+      }
+      .filter input:focus,
+      .filter select:focus {
+        border-color: rgba(255, 126, 34, 0.55) !important;
+        box-shadow: 0 0 0 3px rgba(255, 126, 34, 0.14) !important;
+        transform: translateY(-1px);
+        outline: none !important;
+      }
+      .filter-tools {
+        gap: 10px !important;
+      }
+      .filter-tools button {
+        min-height: 44px;
+        padding: 10px 14px !important;
+        border-radius: 14px !important;
+        font-weight: 800 !important;
+      }
+      .results-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 18px !important;
+        padding: 12px 16px;
+        border-radius: 16px;
+        background: rgba(9, 21, 33, 0.78);
+        border: 1px solid rgba(96, 165, 250, 0.16);
+      }
+      .players-grid {
+        gap: 18px !important;
+      }
+      .player-card {
+        border-radius: 24px !important;
+        overflow: hidden;
+      }
+      .compare-bar {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px 18px !important;
+        border-radius: 20px !important;
+        border: 1px solid rgba(96, 165, 250, 0.16) !important;
+        box-shadow:
+          0 18px 36px rgba(8, 19, 29, 0.34),
+          0 0 0 1px rgba(255, 255, 255, 0.02) inset !important;
+      }
+      .compare-list {
+        font-size: 13px !important;
+        line-height: 1.6;
+      }
+      .pagination {
+        margin-top: 26px !important;
+        gap: 10px !important;
+      }
+      .pagination button {
+        min-width: 44px !important;
+        height: 44px !important;
+        border-radius: 14px !important;
+        font-weight: 800 !important;
+      }
+      @media (max-width: 768px) {
+        .hero,
+        .seo-market-intro,
+        .filters {
+          padding: 16px !important;
+          border-radius: 18px !important;
+        }
+        .results-meta,
+        .compare-bar {
+          padding: 12px !important;
+          border-radius: 16px !important;
+        }
+        .compare-bar {
+          align-items: stretch;
+        }
+        .pagination button {
+          min-width: 40px !important;
+          height: 40px !important;
+        }
+      }
+    </style>
 </head>
 <body>
 <header class="topbar">
@@ -1503,15 +1841,15 @@
         <a class="home-btn-global" href="./index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #ff7e22;background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;box-shadow:0 16px 28px rgba(255,90,31,0.28);">Ana Sayfa</a>
     </div>
 </header>
-<section class="seo-market-intro" aria-label="Oyuncu havuzu aÃ§Ä±klama">
+<section class="seo-market-intro" aria-label="Oyuncu havuzu aciklama">
   <h2>Yapay zeka destekli scout arama ve oyuncu kesfi</h2>
-        <p>NextScout oyuncu havuzu; pozisyon, yaÅŸ, form, lig seviyesi ve performans odaklÄ± filtrelerle profesyonel futbolcularÄ± daha hÄ±zlÄ± keÅŸfetmek iÃ§in hazÄ±rlandÄ±. Scout ekipleri, kulÃ¼p yÃ¶neticileri ve menajerler aradÄ±klarÄ± oyuncu profiline gÃ¶re listeleme yapabilir, transfer odaklÄ± oyuncu takibini tek merkezden yÃ¼rÃ¼tebilir.</p>
+        <p>NextScout oyuncu havuzu; pozisyon, yas, form, lig seviyesi ve performans odakli filtrelerle profesyonel futbolculari daha hizli kesfetmek icin hazirlandi. Scout ekipleri, kulup yoneticileri ve menajerler aradiklari oyuncu profiline gore listeleme yapabilir, transfer odakli oyuncu takibini tek merkezden yurutebilir.</p>
 </section>
 <div class="market-wrapper">
     <aside class="market-ad-panel">
       <div class="market-ad-content">
-        <strong>Reklam AlanÄ±</strong>
-        Transfer SponsorluÄŸu
+        <strong>Reklam Alani</strong>
+        Transfer Sponsororlugu
       </div>
     </aside>
 
@@ -1566,44 +1904,44 @@
         }
 
         if (playerView === 'discover' || playerView === 'explore') {
-          pageTitle.innerHTML = '<i class="fa-solid fa-compass"></i> OyuncularÄ± KeÅŸfet';
-          pageDescription.textContent = 'Pozisyon, form ve gÃ¶rÃ¼nÃ¼rlÃ¼k sinyallerine gÃ¶re Ã¶ne Ã§Ä±kan oyuncularÄ± tek akÄ±ÅŸta incele.';
-          document.title = 'OyuncularÄ± KeÅŸfet | NextScout';
+          pageTitle.innerHTML = '<i class="fa-solid fa-compass"></i> Oyunculari Kesfet';
+          pageDescription.textContent = 'Pozisyon, form ve gorunurluk sinyallerine gore one cikan oyunculari tek akista incele.';
+          document.title = 'Oyunculari Kesfet | NextScout';
           return;
         }
         if (transfer === 'contracted') {
           pageTitle.innerHTML = '<i class="fa-solid fa-magnifying-glass-chart"></i> Yapay Zeka Destekli Scout Arama';
-          pageDescription.textContent = 'SÃ¶zleÅŸmesi devam eden sporcularÄ± pozisyon, yaÅŸ, form, performans ve transfer kategorisine gÃ¶re filtreleyerek tek ekranda inceleyin.';
-          document.title = 'SÃ¶zleÅŸmeli Futbolcular | NextScout';
+          pageDescription.textContent = 'Sozlesmesi devam eden sporculari pozisyon, yas, form, performans ve transfer kategorisine gore filtreleyerek tek ekranda inceleyin.';
+          document.title = 'Sozlesmeli Futbolcular | NextScout';
           return;
         }
         if (transfer === 'free') {
-          pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> BoÅŸtaki Sporcular';
-          pageDescription.textContent = 'KulÃ¼bÃ¼ olmayan ve transfer iÃ§in uygun durumdaki sporcularÄ± pozisyon, yaÅŸ, form ve performans filtreleriyle hÄ±zlÄ±ca gÃ¶rÃ¼ntÃ¼leyin.';
-          document.title = 'BoÅŸtaki Futbolcular | NextScout';
+          pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Bostaki Sporcular';
+          pageDescription.textContent = 'Kulubu olmayan ve transfer icin uygun durumdaki sporculari pozisyon, yas, form ve performans filtreleriyle hizlica goruntuleyin.';
+          document.title = 'Bostaki Futbolcular | NextScout';
           return;
         }
         if (transfer === 'seeking') {
-          pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> KulÃ¼p Arayan Sporcular';
-          pageDescription.textContent = 'Yeni kulÃ¼p arayan sporcularÄ± performans, yaÅŸ, pozisyon ve transfer durumu kriterlerine gÃ¶re listeleyin.';
-          document.title = 'KulÃ¼p Arayan Futbolcular | NextScout';
+          pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Kulup Arayan Sporcular';
+          pageDescription.textContent = 'Yeni kulup arayan sporculari performans, yas, pozisyon ve transfer durumu kriterlerine gore listeleyin.';
+          document.title = 'Kulup Arayan Futbolcular | NextScout';
           return;
         }
         if (radar === 'new') {
-          pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Yeni EÅŸleÅŸenler';
-          pageDescription.textContent = 'Scout radarÄ±nda yeni eÅŸleÅŸen oyuncularÄ± gÃ¼ncel performans, pozisyon ve kulÃ¼p uyum sinyalleriyle inceleyin.';
-          document.title = 'Yeni EÅŸleÅŸenler | NextScout';
+          pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Yeni Eslesenler';
+          pageDescription.textContent = 'Scout radarinda yeni eslesen oyunculari guncel performans, pozisyon ve kulup uyum sinyalleriyle inceleyin.';
+          document.title = 'Yeni Eslesenler | NextScout';
           return;
         }
         if (radar === 'rising') {
-          pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> YÃ¼kselenler';
-          pageDescription.textContent = 'YÃ¼kseliÅŸ trendine giren oyuncularÄ± form, gÃ¶rÃ¼nÃ¼rlÃ¼k ve performans ivmesine gÃ¶re takip edin.';
-          document.title = 'YÃ¼kselenler | NextScout';
+          pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Yukselenler';
+          pageDescription.textContent = 'Yukselis trendine giren oyunculari form, gorunurluk ve performans ivmesine gore takip edin.';
+          document.title = 'Yukselenler | NextScout';
           return;
         }
         if (radar === 'hidden') {
           pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Gizli Yetenekler';
-          pageDescription.textContent = 'HenÃ¼z yeterince Ã¶ne Ã§Ä±kmamÄ±ÅŸ ama radar sinyali veren gizli yetenekleri keÅŸfedin.';
+          pageDescription.textContent = 'Henuz yeterince one cikmamis ama radar sinyali veren gizli yetenekleri kesfedin.';
           document.title = 'Gizli Yetenekler | NextScout';
         }
       })();
@@ -1611,13 +1949,13 @@
 
     <section class="sponsored-section">
       <div class="sponsored-head">
-        <div class="sponsored-title">âš¡ Ãœcretli Kendini TanÄ±tan Oyuncular</div>
+        <div class="sponsored-title">Ucretli Kendini Tanitan Oyuncular</div>
         <div class="sponsored-sub">Sponsorlu vitrin profilleri</div>
       </div>
       <div class="sponsored-list" id="sponsoredList">
         <article class="sponsored-card">
-                <div class="sponsored-card-name">Vitrin yÃ¼kleniyor...</div>
-                <div class="sponsored-card-line">Ãœcretli tanÄ±tÄ±m kartlarÄ± getiriliyor.</div>
+                <div class="sponsored-card-name">Vitrin yukleniyor...</div>
+                <div class="sponsored-card-line">Ucretli tanitim kartlari getiriliyor.</div>
           <span class="sponsored-tag">Sponsorlu</span>
         </article>
       </div>
@@ -1626,9 +1964,9 @@
     <!-- Filters -->
     <div class="filters">
       <div class="filter">
-        <label>BranÅŸ</label>
+        <label>Brans</label>
         <select id="sportFilter">
-          <option value="">TÃ¼mÃ¼</option>
+          <option value="">Tumu</option>
           <option value="futbol">Futbol</option>
           <option value="basketbol">Basketbol</option>
           <option value="voleybol">Voleybol</option>
@@ -1638,7 +1976,7 @@
       <div class="filter">
         <label>Pozisyon</label>
         <select id="positionFilter">
-          <option value="">TÃ¼mÃ¼</option>
+          <option value="">Tumu</option>
           <option value="kaleci">Kaleci</option>
           <option value="defans">Defans</option>
           <option value="ortasaha">Orta Saha</option>
@@ -1649,15 +1987,15 @@
       <div class="filter">
         <label>Lig</label>
         <select id="leagueFilter">
-          <option value="">TÃ¼mÃ¼</option>
-          <option value="super">SÃ¼per Lig</option>
+          <option value="">Tumu</option>
+          <option value="super">Super Lig</option>
           <option value="1lig">1. Lig</option>
           <option value="avrupa">Avrupa Ligleri</option>
         </select>
       </div>
 
       <div class="filter">
-        <label>YaÅŸ AralÄ±ÄŸÄ±</label>
+        <label>Yas Araligi</label>
         <input type="text" id="ageFilter" placeholder="18-30">
       </div>
 
@@ -1666,23 +2004,23 @@
         <input type="number" id="ratingFilter" placeholder="7.0" min="0" max="10" step="0.1">
       </div>
       <div class="filter">
-                <label>Piyasa DeÄŸeri Min (â‚¬)</label>
+                <label>Piyasa Degeri Min (EUR)</label>
         <input type="number" id="marketMinFilter" placeholder="500000" min="0" step="1000">
       </div>
       <div class="filter">
-                <label>SÃ¶zleÅŸme</label>
+                <label>Sozlesme</label>
         <select id="contractFilter">
           <option value="">Tum Durumlar</option>
-                    <option value="active">SÃ¶zleÅŸmeli</option>
+                    <option value="active">Sozlesmeli</option>
           <option value="free">Bosta</option>
         </select>
       </div>
       <div class="filter">
-                <label>GÃ¼ven Skoru (Min)</label>
+                <label>Guven Skoru (Min)</label>
         <input type="number" id="qualityMinFilter" placeholder="60" min="0" max="100" step="5">
       </div>
       <div class="filter">
-        <label>AI Sistem SeÃ§ici</label>
+        <label>AI Sistem Secici</label>
         <select id="systemFilter">
           <option value="">Sistem secilmedi</option>
           <option value="gegenpressing">Gegenpressing | 4-3-3 Ofansif</option>
@@ -1692,41 +2030,41 @@
         </select>
       </div>
       <div class="filter">
-        <label>SÄ±ralama</label>
+        <label>Siralama</label>
         <select id="sortFilter">
-          <option value="compatibility_desc">AI Uyumluluk (YÃ¼ksekten)</option>
-                    <option value="rating_desc">Rating (YÃ¼ksekten)</option>
+          <option value="compatibility_desc">AI Uyumluluk (Yuksekten)</option>
+                    <option value="rating_desc">Rating (Yuksekten)</option>
           <option value="rating_asc">Rating (Dusukten)</option>
-                    <option value="value_desc">Piyasa DeÄŸeri (YÃ¼ksekten)</option>
-                    <option value="updated_desc">Son GÃ¼ncelleme</option>
-                    <option value="age_asc">YaÅŸ (GenÃ§ten)</option>
-                    <option value="age_desc">YaÅŸ (BÃ¼yÃ¼kten)</option>
+                    <option value="value_desc">Piyasa Degeri (Yuksekten)</option>
+                    <option value="updated_desc">Son Guncelleme</option>
+                    <option value="age_asc">Yas (Gencten)</option>
+                    <option value="age_desc">Yas (Buyukten)</option>
           <option value="name_asc">Isim (A-Z)</option>
         </select>
       </div>
       <div class="filter">
-        <label>Filtre AraÃ§larÄ±</label>
+        <label>Filtre Araclari</label>
         <div class="filter-tools">
           <button id="savePresetBtn" type="button">Preset Kaydet</button>
-                <button id="loadPresetBtn" type="button">Preset YÃ¼kle</button>
-          <button id="resetFilterBtn" type="button">SÄ±fÄ±rla</button>
+                <button id="loadPresetBtn" type="button">Preset Yukle</button>
+          <button id="resetFilterBtn" type="button">Sifirla</button>
         </div>
       </div>
     </div>
-      <div class="results-meta" id="resultsMeta">SonuÃ§ hazÄ±rlanÄ±yor...</div>
+      <div class="results-meta" id="resultsMeta">Sonuc hazirlaniyor...</div>
 
     <!-- Players Grid -->
     <div class="players-grid" id="playersGrid">
-      <!-- Dinamik oyuncular yÃ¼klenecek -->
+      <!-- Dinamik oyuncular yuklenecek -->
     </div>
     <div class="compare-bar">
-            <div class="compare-list" id="compareList">KarÅŸÄ±laÅŸtÄ±rma seÃ§imi yok</div>
-      <button class="btn" id="openCompareBtn" type="button">KarÅŸÄ±laÅŸtÄ±r</button>
+            <div class="compare-list" id="compareList">Karsilastirma secimi yok</div>
+      <button class="btn" id="openCompareBtn" type="button">Karsilastir</button>
     </div>
 
     <!-- Pagination -->
     <div class="pagination" id="pagination">
-      <button id="prevPageBtn" type="button">Ã–nceki</button>
+      <button id="prevPageBtn" type="button">Onceki</button>
       <div id="pageNumbers"></div>
       <button id="nextPageBtn" type="button">Sonraki</button>
     </div>
@@ -1735,8 +2073,8 @@
 
     <aside class="market-ad-panel">
       <div class="market-ad-content">
-        <strong>Reklam AlanÄ±</strong>
-        Scout KampanyasÄ±
+        <strong>Reklam Alani</strong>
+        Scout Kampanyasi
       </div>
     </aside>
   </div>
@@ -1744,7 +2082,7 @@
   <div class="compare-modal" id="compareModal" onclick="if(event.target===this) closeCompareModal()">
     <div class="compare-card">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
-                    <strong style="font-size:16px;color:#1e3a8a;">Oyuncu KarÅŸÄ±laÅŸtÄ±rma</strong>
+                    <strong style="font-size:16px;color:#1e3a8a;">Oyuncu Karsilastirma</strong>
         <button class="btn" type="button" onclick="closeCompareModal()">Kapat</button>
       </div>
       <div id="compareContent">Oyuncu seciniz.</div>
@@ -1816,14 +2154,14 @@
       ],
       basketbol: [
         { value: "guard", label: "Guard" },
-        { value: "short-forward", label: "KÄ±sa Forvet" },
+        { value: "short-forward", label: "Kisa Forvet" },
         { value: "power-forward", label: "Uzun Forvet" },
         { value: "pivot", label: "Pivot" }
       ],
       voleybol: [
-        { value: "pasor", label: "PasÃ¶r" },
-        { value: "pasor-caprazi", label: "PasÃ¶r Ã‡aprazÄ±" },
-        { value: "smaÃ§Ã¶r", label: "SmaÃ§Ã¶r" },
+        { value: "pasor", label: "Pasor" },
+        { value: "pasor-caprazi", label: "Pasor Caprazi" },
+        { value: "smacor", label: "Smacor" },
         { value: "orta-oyuncu", label: "Orta Oyuncu" },
         { value: "libero", label: "Libero" }
       ]
@@ -1868,7 +2206,7 @@
       const selectedSport = String(sportFilter?.value || "").trim().toLowerCase();
       const currentValue = String(positionFilter.value || "").trim().toLowerCase();
       const options = SPORT_POSITION_OPTIONS[selectedSport] || SPORT_POSITION_OPTIONS.futbol;
-      positionFilter.innerHTML = ['<option value="">TÃ¼mÃ¼</option>']
+      positionFilter.innerHTML = ['<option value="">Tumu</option>']
         .concat(options.map((option) => `<option value="${option.value}">${option.label}</option>`))
         .join("");
       if (options.some((option) => option.value === currentValue)) {
@@ -2007,7 +2345,7 @@
         sponsoredList.innerHTML = `
           <article class="sponsored-card">
             <div class="sponsored-card-name">Sponsorlu profil yok</div>
-                    <div class="sponsored-card-line">HenÃ¼z Ã¼cretli vitrin kaydÄ± bulunmuyor.</div>
+                    <div class="sponsored-card-line">Henuz ucretli vitrin kaydi bulunmuyor.</div>
             <span class="sponsored-tag">Bos</span>
           </article>
         `;
@@ -2044,12 +2382,12 @@
         name: "Serdar Aziz",
         position: "Defans",
         age: 28,
-        league: "SÃ¼per Lig",
-        club: "FenerbahÃ§e",
+        league: "Super Lig",
+        club: "Fenerbahce",
         sport: "futbol",
         rating: 8.5,
         height: 185,
-        nationality: "TÃ¼rkiye",
+        nationality: "Turkiye",
         contract_status: "active",
         seeking_club: false,
         radar_new: true,
@@ -2058,15 +2396,15 @@
       },
       {
         id: 2,
-        name: "Okay YokuÅŸlu",
+        name: "Okay Yokuslu",
         position: "Orta Saha",
         age: 27,
-        league: "SÃ¼per Lig",
+        league: "Super Lig",
         club: "Trabzonspor",
         sport: "futbol",
         rating: 8.3,
         height: 188,
-        nationality: "TÃ¼rkiye",
+        nationality: "Turkiye",
         contract_status: "active",
         seeking_club: false,
         radar_new: false,
@@ -2075,15 +2413,15 @@
       },
       {
         id: 3,
-        name: "Kerem AktÃ¼rkoÄŸlu",
+        name: "Kerem Akturkoglu",
         position: "Forvet",
         age: 26,
-        league: "SÃ¼per Lig",
+        league: "Super Lig",
         club: "Galatasaray",
         sport: "futbol",
         rating: 8.7,
         height: 183,
-        nationality: "TÃ¼rkiye",
+        nationality: "Turkiye",
         contract_status: "active",
         seeking_club: true,
         radar_new: true,
@@ -2092,7 +2430,7 @@
       },
       {
         id: 4,
-        name: "Altay BayÄ±ndÄ±r",
+        name: "Altay Bayindir",
         position: "Kaleci",
         age: 24,
         league: "Avrupa Ligleri",
@@ -2100,7 +2438,7 @@
         sport: "futbol",
         rating: 8.2,
         height: 195,
-        nationality: "TÃ¼rkiye",
+        nationality: "Turkiye",
         contract_status: "active",
         seeking_club: false,
         radar_new: false,
@@ -2117,7 +2455,7 @@
         sport: "futbol",
         rating: 8.4,
         height: 189,
-        nationality: "TÃ¼rkiye",
+        nationality: "Turkiye",
         contract_status: "active",
         seeking_club: true,
         radar_new: false,
@@ -2126,15 +2464,15 @@
       },
       {
         id: 6,
-        name: "Burak YÄ±lmaz",
+        name: "Burak Yilmaz",
         position: "Forvet",
         age: 36,
-        league: "SÃ¼per Lig",
+        league: "Super Lig",
         club: "Trabzonspor",
         sport: "futbol",
         rating: 8.6,
         height: 186,
-        nationality: "TÃ¼rkiye",
+        nationality: "Turkiye",
         contract_status: "free",
         seeking_club: true,
         radar_new: true,
@@ -2146,12 +2484,12 @@
         name: "Mert Can",
         position: "Guard",
         age: 23,
-        league: "TÃ¼rkiye Basketbol Ligi",
+        league: "Turkiye Basketbol Ligi",
         club: "Anadolu Efes",
         sport: "basketbol",
         rating: 8.1,
         height: 192,
-        nationality: "TÃ¼rkiye",
+        nationality: "Turkiye",
         contract_status: "active",
         seeking_club: false,
         radar_new: true,
@@ -2160,15 +2498,15 @@
       },
       {
         id: 8,
-        name: "Ege TunÃ§",
+        name: "Ege Tunc",
         position: "Pivot",
         age: 25,
-        league: "TÃ¼rkiye Basketbol Ligi",
-        club: "FenerbahÃ§e Beko",
+        league: "Turkiye Basketbol Ligi",
+        club: "Fenerbahce Beko",
         sport: "basketbol",
         rating: 8.4,
         height: 208,
-        nationality: "TÃ¼rkiye",
+        nationality: "Turkiye",
         contract_status: "active",
         seeking_club: true,
         radar_new: false,
@@ -2177,15 +2515,15 @@
       },
       {
         id: 9,
-        name: "AslÄ± Deniz",
-        position: "SmaÃ§Ã¶r",
+        name: "Asli Deniz",
+        position: "Smacor",
         age: 22,
         league: "Sultanlar Ligi",
-        club: "EczacÄ±baÅŸÄ±",
+        club: "Eczacibasi",
         sport: "voleybol",
         rating: 8.6,
         height: 186,
-        nationality: "TÃ¼rkiye",
+        nationality: "Turkiye",
         contract_status: "free",
         seeking_club: true,
         radar_new: true,
@@ -2195,14 +2533,14 @@
       {
         id: 10,
         name: "Zeynep Aras",
-        position: "PasÃ¶r",
+        position: "Pasor",
         age: 24,
         league: "Sultanlar Ligi",
-        club: "VakÄ±fBank",
+        club: "VakifBank",
         sport: "voleybol",
         rating: 8.2,
         height: 179,
-        nationality: "TÃ¼rkiye",
+        nationality: "Turkiye",
         contract_status: "active",
         seeking_club: false,
         radar_new: false,
@@ -2215,88 +2553,61 @@
 
     function getVisibilityBadgeMeta(level, role = "") {
       if (role === "club") {
-        if (level === "featured") return { label: "Ã–ne Ã‡Ä±kan Aday", tone: "featured" };
-        if (level === "ready") return { label: "Vitrine HazÄ±r", tone: "ready" };
+        if (level === "featured") return { label: "One Cikan Aday", tone: "featured" };
+        if (level === "ready") return { label: "Vitrine Hazir", tone: "ready" };
         if (level === "active") return { label: "Aktif Profil", tone: "active" };
       }
       if (role === "manager") {
-        if (level === "featured") return { label: "GÃ¼Ã§lÃ¼ PortfÃ¶y AdayÄ±", tone: "featured" };
-        if (level === "ready") return { label: "PortfÃ¶ye HazÄ±r", tone: "ready" };
+        if (level === "featured") return { label: "Guclu Portfoy Adayi", tone: "featured" };
+        if (level === "ready") return { label: "Portfoye Hazir", tone: "ready" };
         if (level === "active") return { label: "Temas Edilebilir", tone: "active" };
       }
       if (role === "coach") {
-        if (level === "featured") return { label: "Ã–ncelikli GÃ¶zlem", tone: "featured" };
-        if (level === "ready") return { label: "Ä°zlemeye HazÄ±r", tone: "ready" };
-        if (level === "active") return { label: "GÃ¼ncel Profil", tone: "active" };
+        if (level === "featured") return { label: "Oncelikli Gozlem", tone: "featured" };
+        if (level === "ready") return { label: "Izlemeye Hazir", tone: "ready" };
+        if (level === "active") return { label: "Guncel Profil", tone: "active" };
       }
-      if (level === "featured") return { label: "Ã–ne Ã‡Ä±kan", tone: "featured" };
-      if (level === "ready") return { label: "Vitrine HazÄ±r", tone: "ready" };
+      if (level === "featured") return { label: "One Cikan", tone: "featured" };
+      if (level === "ready") return { label: "Vitrine Hazir", tone: "ready" };
       if (level === "active") return { label: "Aktif", tone: "active" };
       return { label: "Standart", tone: "active" };
     }
 
-    function renderPlayers(players) {
-      if (!players.length) {
-        playersGrid.innerHTML = '<div class="player-card" style="padding:16px;">Oyuncu bulunamadÄ±.</div>';
-        return;
-      }
-      const visibilityRole = getVisibilityRoleFromQuery();
-      playersGrid.innerHTML = players.map(player => `
-        <div class="player-card">
-          <div class="player-avatar">âš½</div>
-          <div class="player-content">
-            <div class="player-name">${player.name}</div>
-            <div class="player-position">${player.position}</div>
-            <div style="margin-top:8px;display:inline-flex;align-items:center;gap:6px;width:max-content;padding:6px 10px;border:1px solid rgba(99,102,241,.22);background:rgba(99,102,241,.08);color:#3730a3;font-size:11px;font-weight:800;border-radius:999px;">
-              ${player.visibility_level === 'featured' ? 'Ã–ne Ã‡Ä±kan' : player.visibility_level === 'ready' ? 'Vitrine HazÄ±r' : player.visibility_level === 'active' ? 'Aktif' : 'Standart'}
-            </div>
+    function getPlayerInitials(name) {
+      return String(name || "OY")
+        .split(" ")
+        .map((part) => (part || "").charAt(0))
+        .join("")
+        .slice(0, 2)
+        .toUpperCase() || "OY";
+    }
 
-            <div class="player-info">
-              <div class="info-item">
-                <span class="info-label">YaÅŸ</span>
-                <span class="info-value">${player.age}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Boy</span>
-                <span class="info-value">${player.height}cm</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">BranÅŸ</span>
-                <span class="info-value" style="font-size: 12px; text-transform: capitalize;">${player.sport || '-'}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Lig</span>
-                <span class="info-value" style="font-size: 12px;">${player.league}</span>
-              </div>
-              <div class="info-item">
-                    <span class="info-label">KULÃœP</span>
-                <span class="info-value" style="font-size: 12px;">${player.club}</span>
-              </div>
-            </div>
+    function formatCompactMoney(value) {
+      const amount = Number(value || 0);
+      if (!amount) return "Deger yok";
+      if (amount >= 1000000) return `EUR ${(amount / 1000000).toFixed(1)}M`;
+      if (amount >= 1000) return `EUR ${(amount / 1000).toFixed(0)}K`;
+      return `EUR ${amount}`;
+    }
 
-            <div class="player-rating">
-              <span class="rating-stars">â˜…â˜…â˜…â˜…â˜…</span>
-              <span class="rating-value">${player.rating}/10</span>
-            </div>
-            <div style="font-size:11px;opacity:.65;margin-top:6px;">
-                Kaynak: ${player.data_source || 'Sistem'} â€¢ GÃ¼ven: ${player.quality_score || 0}
-              ${player.updated_at ? ` â€¢ ${new Date(player.updated_at).toLocaleDateString('tr-TR')}` : ""}
-            </div>
+    function formatPlayerDate(value) {
+      if (!value) return "Bugun guncellenmedi";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "Bugun guncellenmedi";
+      return date.toLocaleDateString("tr-TR");
+    }
 
-            <div class="player-actions">
-              <button onclick="viewProfile(${player.id})">Profil</button>
-              <button onclick="addToFavorite(${player.id})">â¤ï¸</button>
-              <button class="compare-btn" onclick="toggleCompare(${player.id})">âš– KarÅŸÄ±laÅŸtÄ±r</button>
-              <button onclick="contact(${player.id})">Ä°letiÅŸim</button>
-            </div>
-          </div>
-        </div>
-      `).join("");
+    function getScoutSignal(player) {
+      const quality = Number(player?.quality_score || 0);
+      if (quality >= 85) return "Elite dogrulama";
+      if (quality >= 70) return "Guclu sinyal";
+      if (quality >= 55) return "Takip edilmeli";
+      return "Gelisim izleniyor";
     }
 
     function renderPlayers(players) {
       if (!players.length) {
-        playersGrid.innerHTML = '<div class="player-card" style="padding:16px;">Oyuncu bulunamadÄ±.</div>';
+        playersGrid.innerHTML = '<div class="player-card" style="padding:16px;">Oyuncu bulunamadi.</div>';
         return;
       }
       const visibilityRole = getVisibilityRoleFromQuery();
@@ -2304,20 +2615,57 @@
       playersGrid.innerHTML = players.map((player) => {
         const badge = getVisibilityBadgeMeta(player.visibility_level, visibilityRole);
         const compatibility = player.system_compatibility || (activeSystem ? getSystemCompatibility(player, activeSystem.key) : null);
+        const marketValue = formatCompactMoney(player.market_value);
+        const scoutSignal = getScoutSignal(player);
+        const formScore = Math.max(0, Math.min(100, Math.round(Number(player.rating || 0) * 10)));
+        const qualityScore = Math.max(0, Math.min(100, Math.round(Number(player.quality_score || 0))));
+        const fitScore = compatibility ? Math.max(0, Math.min(100, Math.round(Number(compatibility.score || 0)))) : 0;
         return `
         <div class="player-card">
-          <div class="player-avatar">âš½</div>
+          <div class="player-avatar">
+            <div class="player-avatar-top">
+              <span class="player-hero-chip">${(player.sport || "futbol").toUpperCase()}</span>
+              <span class="player-value-chip">${marketValue}</span>
+            </div>
+            <div class="player-avatar-mark">${getPlayerInitials(player.name)}</div>
+            <div class="player-avatar-bottom">
+              <span class="player-hero-chip">${player.club || "Kulup bilgisi yok"}</span>
+              <span class="player-hero-chip">${player.nationality || "Ulke yok"}</span>
+            </div>
+          </div>
           <div class="player-content">
-            <div class="player-name">${player.name}</div>
-            <div class="player-position">${player.position}</div>
-            <div class="player-visibility-badge is-${badge.tone}">
-              <span class="player-visibility-badge-dot"></span>
-              <span>${badge.label}</span>
+            <div class="player-header-row">
+              <div>
+                <div class="player-name">${player.name}</div>
+                <div class="player-position">${player.position}</div>
+              </div>
+              <div class="player-visibility-badge is-${badge.tone}">
+                <span class="player-visibility-badge-dot"></span>
+                <span>${badge.label}</span>
+              </div>
+            </div>
+
+            <div class="player-kpi-grid">
+              <div class="player-kpi">
+                <div class="player-kpi-label">Genel Rating</div>
+                <div class="player-kpi-value">${player.rating || 0}</div>
+                <div class="player-kpi-sub">10 uzerinden form puani</div>
+              </div>
+              <div class="player-kpi">
+                <div class="player-kpi-label">Scout Guveni</div>
+                <div class="player-kpi-value">%${qualityScore}</div>
+                <div class="player-kpi-sub">${scoutSignal}</div>
+              </div>
+              <div class="player-kpi">
+                <div class="player-kpi-label">Sistem Uyumu</div>
+                <div class="player-kpi-value">${compatibility ? `%${fitScore}` : "-"}</div>
+                <div class="player-kpi-sub">${compatibility ? compatibility.shape : "AI secimi bekleniyor"}</div>
+              </div>
             </div>
 
             <div class="player-info">
               <div class="info-item">
-                <span class="info-label">YaÅŸ</span>
+                <span class="info-label">Yas</span>
                 <span class="info-value">${player.age}</span>
               </div>
               <div class="info-item">
@@ -2325,7 +2673,7 @@
                 <span class="info-value">${player.height}cm</span>
               </div>
               <div class="info-item">
-                <span class="info-label">BranÅŸ</span>
+                <span class="info-label">Brans</span>
                 <span class="info-value" style="font-size: 12px; text-transform: capitalize;">${player.sport || '-'}</span>
               </div>
               <div class="info-item">
@@ -2333,14 +2681,21 @@
                 <span class="info-value" style="font-size: 12px;">${player.league}</span>
               </div>
               <div class="info-item">
-                <span class="info-label">KULÃœP</span>
+                <span class="info-label">Kulup</span>
                 <span class="info-value" style="font-size: 12px;">${player.club}</span>
               </div>
-            </div>
-
-            <div class="player-rating">
-              <span class="rating-stars">â˜…â˜…â˜…â˜…â˜…</span>
-              <span class="rating-value">${player.rating}/10</span>
+              <div class="info-item">
+                <span class="info-label">Form</span>
+                <span class="info-value">%${formScore}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Piyasa</span>
+                <span class="info-value" style="font-size: 12px;">${marketValue}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Kaynak</span>
+                <span class="info-value" style="font-size: 12px;">${player.data_source || 'Sistem'}</span>
+              </div>
             </div>
             ${compatibility ? `
             <div class="system-fit-card">
@@ -2359,16 +2714,16 @@
                 ${compatibility.strengths.map((item) => `<span class="system-fit-tag">${item}</span>`).join("")}
               </div>
             </div>` : ""}
-            <div style="font-size:11px;opacity:.65;margin-top:6px;">
-              Kaynak: ${player.data_source || 'Sistem'} â€¢ GÃ¼ven: ${player.quality_score || 0}
-              ${player.updated_at ? ` â€¢ ${new Date(player.updated_at).toLocaleDateString('tr-TR')}` : ""}
+            <div class="player-footnote">
+              <span>Kaynak: ${player.data_source || 'Sistem'} • Guven: ${player.quality_score || 0}</span>
+              <span>Son guncelleme: ${formatPlayerDate(player.updated_at)}</span>
             </div>
 
             <div class="player-actions">
               <button onclick="viewProfile(${player.id})">Profil</button>
-              <button onclick="addToFavorite(${player.id})">â¤ï¸</button>
-              <button class="compare-btn" onclick="toggleCompare(${player.id})">âš– KarÅŸÄ±laÅŸtÄ±r</button>
-              <button onclick="contact(${player.id})">Ä°letiÅŸim</button>
+              <button onclick="addToFavorite(${player.id})">Favori</button>
+              <button class="compare-btn" onclick="toggleCompare(${player.id})">Karsilastir</button>
+              <button onclick="contact(${player.id})">Iletisim</button>
             </div>
           </div>
         </div>
@@ -2747,8 +3102,8 @@
       if (resultsMeta) {
         const localCount = filtered.length;
         const eliteMatches = activeSystem ? filtered.filter((p) => Number(p.system_compatibility?.score || 0) >= 85).length : 0;
-        const systemText = activeSystem ? ` â€¢ Sistem: ${activeSystem.label} (${eliteMatches} guclu eslesme)` : "";
-        resultsMeta.textContent = `Toplam ${serverTotal || localCount} oyuncu â€¢ Sayfa: ${serverPage}/${serverLastPage}${systemText} â€¢ Son gÃ¼ncelleme: ${new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}`;
+        const systemText = activeSystem ? ` • Sistem: ${activeSystem.label} (${eliteMatches} guclu eslesme)` : "";
+        resultsMeta.textContent = `Toplam ${serverTotal || localCount} oyuncu • Sayfa: ${serverPage}/${serverLastPage}${systemText} • Son guncelleme: ${new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}`;
       }
       renderPlayers(filtered);
       revealContextResults();
@@ -2758,85 +3113,85 @@
       if (role === "club" && level === "active") {
         return {
           title: '<i class="fa-solid fa-signal"></i> Aktif Profil',
-          description: "KulÃ¼p aÃ§Ä±sÄ±ndan yakÄ±n dÃ¶nemde hareket gÃ¶steren ve daha sÄ±cak aday olarak okunan oyuncular burada listelenir.",
+          description: "Kulup acisindan yakin donemde hareket gosteren ve daha sicak aday olarak okunan oyuncular burada listelenir.",
           documentTitle: "Aktif Profil | NextScout",
         };
       }
       if (role === "club" && level === "ready") {
         return {
-          title: '<i class="fa-solid fa-id-card"></i> Vitrine HazÄ±r',
-          description: "KulÃ¼bÃ¼n iÃ§in temel detaylarÄ± net, daha gÃ¼venli ve daha okunabilir oyuncularÄ± tek alanda ayÄ±r.",
-          documentTitle: "Vitrine HazÄ±r Oyuncular | NextScout",
+          title: '<i class="fa-solid fa-id-card"></i> Vitrine Hazir',
+          description: "Kulubun icin temel detaylari net, daha guvenli ve daha okunabilir oyunculari tek alanda ayir.",
+          documentTitle: "Vitrine Hazir Oyuncular | NextScout",
         };
       }
       if (role === "club" && level === "featured") {
         return {
-          title: '<i class="fa-solid fa-star"></i> Ã–ne Ã‡Ä±kan Aday',
-          description: "Hem aktif hem gÃ¼Ã§lÃ¼ profile sahip oyuncularÄ± kulÃ¼p kÄ±sa listesi iÃ§in daha net gÃ¶rÃ¼ntÃ¼le.",
-          documentTitle: "Ã–ne Ã‡Ä±kan Adaylar | NextScout",
+          title: '<i class="fa-solid fa-star"></i> One Cikan Aday',
+          description: "Hem aktif hem guclu profile sahip oyunculari kulup kisa listesi icin daha net goruntule.",
+          documentTitle: "One Cikan Adaylar | NextScout",
         };
       }
       if (role === "manager" && level === "active") {
         return {
           title: '<i class="fa-solid fa-handshake"></i> Temas Edilebilir',
-          description: "Menajer tarafÄ±nda ilk temas kurmaya uygun, aktif ve daha sÄ±cak gÃ¶rÃ¼nen oyuncular burada aÃ§Ä±lÄ±r.",
+          description: "Menajer tarafinda ilk temas kurmaya uygun, aktif ve daha sicak gorunen oyuncular burada acilir.",
           documentTitle: "Temas Edilebilir Oyuncular | NextScout",
         };
       }
       if (role === "manager" && level === "ready") {
         return {
-          title: '<i class="fa-solid fa-briefcase"></i> PortfÃ¶ye HazÄ±r',
-          description: "PortfÃ¶ye alÄ±nabilecek kadar net, dÃ¼zenli ve temsil edilmeye uygun oyuncularÄ± bu listede ayÄ±r.",
-          documentTitle: "PortfÃ¶ye HazÄ±r Oyuncular | NextScout",
+          title: '<i class="fa-solid fa-briefcase"></i> Portfoye Hazir',
+          description: "Portfoye alinabilecek kadar net, duzenli ve temsil edilmeye uygun oyunculari bu listede ayir.",
+          documentTitle: "Portfoye Hazir Oyuncular | NextScout",
         };
       }
       if (role === "manager" && level === "featured") {
         return {
-          title: '<i class="fa-solid fa-star"></i> GÃ¼Ã§lÃ¼ PortfÃ¶y AdayÄ±',
-          description: "Hem aktif hem gÃ¶rÃ¼nÃ¼rlÃ¼ÄŸÃ¼ yÃ¼ksek oyuncularÄ± menajer Ã¶nceliÄŸiyle burada Ã¶ne al.",
-          documentTitle: "GÃ¼Ã§lÃ¼ PortfÃ¶y AdaylarÄ± | NextScout",
+          title: '<i class="fa-solid fa-star"></i> Guclu Portfoy Adayi',
+          description: "Hem aktif hem gorunurlugu yuksek oyunculari menajer onceligiyle burada one al.",
+          documentTitle: "Guclu Portfoy Adaylari | NextScout",
         };
       }
       if (role === "coach" && level === "active") {
         return {
-          title: '<i class="fa-solid fa-signal"></i> GÃ¼ncel Profil',
-          description: "AntrenÃ¶r iÃ§in taze veri taÅŸÄ±yan ve yakÄ±n dÃ¶nemde aktif kalmÄ±ÅŸ oyuncular burada aÃ§Ä±lÄ±r.",
-          documentTitle: "GÃ¼ncel Profiller | NextScout",
+          title: '<i class="fa-solid fa-signal"></i> Guncel Profil',
+          description: "Antrenor icin taze veri tasiyan ve yakin donemde aktif kalmis oyuncular burada acilir.",
+          documentTitle: "Guncel Profiller | NextScout",
         };
       }
       if (role === "coach" && level === "ready") {
         return {
-          title: '<i class="fa-solid fa-clipboard-list"></i> Ä°zlemeye HazÄ±r',
-          description: "Temel saha ve profil detaylarÄ± net olan oyuncularÄ± teknik gÃ¶zlem iÃ§in burada ayÄ±r.",
-          documentTitle: "Ä°zlemeye HazÄ±r Oyuncular | NextScout",
+          title: '<i class="fa-solid fa-clipboard-list"></i> Izlemeye Hazir',
+          description: "Temel saha ve profil detaylari net olan oyunculari teknik gozlem icin burada ayir.",
+          documentTitle: "Izlemeye Hazir Oyuncular | NextScout",
         };
       }
       if (role === "coach" && level === "featured") {
         return {
-          title: '<i class="fa-solid fa-binoculars"></i> Ã–ncelikli GÃ¶zlem',
-          description: "Hem aktif hem gÃ¼Ã§lÃ¼ profile sahip oyuncularÄ± teknik ekip iÃ§in Ã¶ncelikli gÃ¶zlem listesinde gÃ¶rÃ¼ntÃ¼le.",
-          documentTitle: "Ã–ncelikli GÃ¶zlem AdaylarÄ± | NextScout",
+          title: '<i class="fa-solid fa-binoculars"></i> Oncelikli Gozlem',
+          description: "Hem aktif hem guclu profile sahip oyunculari teknik ekip icin oncelikli gozlem listesinde goruntule.",
+          documentTitle: "Oncelikli Gozlem Adaylari | NextScout",
         };
       }
       if (level === "active") {
         return {
           title: '<i class="fa-solid fa-signal"></i> Aktif Oyuncular',
-          description: "Son 15 gÃ¼n hareket gÃ¶steren veya yakÄ±n dÃ¶nemde gÃ¼ncellenmiÅŸ oyuncularÄ± tek akÄ±ÅŸta inceleyin.",
+          description: "Son 15 gun hareket gosteren veya yakin donemde guncellenmis oyunculari tek akista inceleyin.",
           documentTitle: "Aktif Oyuncular | NextScout",
         };
       }
       if (level === "ready") {
         return {
-          title: '<i class="fa-solid fa-id-card"></i> Vitrine HazÄ±r Oyuncular',
-          description: "Temel profil detaylarÄ± tamamlanmÄ±ÅŸ ve daha okunur durumda olan oyuncularÄ± burada ayÄ±rÄ±n.",
-          documentTitle: "Vitrine HazÄ±r Oyuncular | NextScout",
+          title: '<i class="fa-solid fa-id-card"></i> Vitrine Hazir Oyuncular',
+          description: "Temel profil detaylari tamamlanmis ve daha okunur durumda olan oyunculari burada ayirin.",
+          documentTitle: "Vitrine Hazir Oyuncular | NextScout",
         };
       }
       if (level === "featured") {
         return {
-          title: '<i class="fa-solid fa-star"></i> Ã–ne Ã‡Ä±kan Oyuncular',
-          description: "Hem aktif hem de profil gÃ¼cÃ¼ yÃ¼ksek olan oyuncularÄ± daha gÃ¼Ã§lÃ¼ vitrin seviyesiyle gÃ¶rÃ¼ntÃ¼leyin.",
-          documentTitle: "Ã–ne Ã‡Ä±kan Oyuncular | NextScout",
+          title: '<i class="fa-solid fa-star"></i> One Cikan Oyuncular',
+          description: "Hem aktif hem de profil gucu yuksek olan oyunculari daha guclu vitrin seviyesiyle goruntuleyin.",
+          documentTitle: "One Cikan Oyuncular | NextScout",
         };
       }
       return null;
@@ -2846,22 +3201,22 @@
       if (role === "club") {
         return {
           title: '<i class="fa-solid fa-magnifying-glass-chart"></i> Yapay Zeka Destekli Scout Arama',
-          description: "KulÃ¼p aÃ§Ä±sÄ±ndan aktif, vitrine hazÄ±r ve Ã¶ne Ã§Ä±kan adaylarÄ± aynÄ± havuzda inceleyin.",
+          description: "Kulup acisindan aktif, vitrine hazir ve one cikan adaylari ayni havuzda inceleyin.",
           documentTitle: "Yapay Zeka Destekli Scout Arama | NextScout",
         };
       }
       if (role === "manager") {
         return {
-          title: '<i class="fa-solid fa-briefcase"></i> PortfÃ¶y Havuzu',
-          description: "Menajer tarafÄ±nda temas edilebilir, portfÃ¶ye hazÄ±r ve gÃ¼Ã§lÃ¼ adaylarÄ± tek listede gÃ¶rÃ¼n.",
-          documentTitle: "PortfÃ¶y Havuzu | NextScout",
+          title: '<i class="fa-solid fa-briefcase"></i> Portfoy Havuzu',
+          description: "Menajer tarafinda temas edilebilir, portfoye hazir ve guclu adaylari tek listede gorun.",
+          documentTitle: "Portfoy Havuzu | NextScout",
         };
       }
       if (role === "coach") {
         return {
-          title: '<i class="fa-solid fa-clipboard-list"></i> Ä°zleme Havuzu',
-          description: "Teknik ekip iÃ§in gÃ¼ncel, izlemeye hazÄ±r ve Ã¶ncelikli gÃ¶zlem adaylarÄ±nÄ± aynÄ± akÄ±ÅŸta gÃ¶rÃ¼ntÃ¼leyin.",
-          documentTitle: "Ä°zleme Havuzu | NextScout",
+          title: '<i class="fa-solid fa-clipboard-list"></i> Izleme Havuzu',
+          description: "Teknik ekip icin guncel, izlemeye hazir ve oncelikli gozlem adaylarini ayni akista goruntuleyin.",
+          documentTitle: "Izleme Havuzu | NextScout",
         };
       }
       return null;
@@ -2930,12 +3285,12 @@
       });
 
       localStorage.setItem(key, JSON.stringify(current.slice(0, 500)));
-      nsAlert(`âœ… ${player.name} favorilere eklendi`);
+      nsAlert(`${player.name} favorilere eklendi`);
     }
 
     function contact(id) {
       const player = allPlayers.find(p => p.id === id);
-      nsAlert(`${player.name} ile iletiÅŸime geÃ§iyorsunuz...`);
+      nsAlert(`${player.name} ile iletisime geciyorsunuz...`);
     }
 
     function toggleCompare(id) {
@@ -2955,7 +3310,7 @@
         .map((id) => allPlayers.find((p) => Number(p.id) === Number(id)))
         .filter(Boolean);
       if (!selected.length) {
-    compareList.textContent = "KarÅŸÄ±laÅŸtÄ±rma seÃ§imi yok";
+    compareList.textContent = "Karsilastirma secimi yok";
         return;
       }
       compareList.innerHTML = selected.map((p) => `<span class="compare-chip">${p.name}</span>`).join("");
@@ -2966,10 +3321,10 @@
         .map((id) => allPlayers.find((p) => Number(p.id) === Number(id)))
         .filter(Boolean);
       if (selected.length < 2) {
-    nsAlert("KarÅŸÄ±laÅŸtÄ±rma iÃ§in en az 2 oyuncu seÃ§.");
+    nsAlert("Karsilastirma icin en az 2 oyuncu sec.");
         return;
       }
-    compareContent.innerHTML = "KarÅŸÄ±laÅŸtÄ±rma verisi yÃ¼kleniyor...";
+    compareContent.innerHTML = "Karsilastirma verisi yukleniyor...";
       let rows = buildComparisonFromSelected(selected);
       try {
         const apiRows = await fetchComparisonFromApi(selected.map((p) => Number(p.id)));
@@ -3031,9 +3386,9 @@
             <tr><td>Pozisyon</td><td>${esc(a.position || "-")}</td><td>${esc(b.position || "-")}</td></tr>
                     <tr><td>YaÅŸ</td><td>${esc(a.age || "-")}</td><td>${esc(b.age || "-")}</td></tr>
             <tr><td>Boy</td><td>${esc(a.height || "-")} cm</td><td>${esc(b.height || "-")} cm</td></tr>
-                    <tr><td>KULÃœP</td><td>${esc(a.club || "-")}</td><td>${esc(b.club || "-")}</td></tr>
+                    <tr><td>Kulup</td><td>${esc(a.club || "-")}</td><td>${esc(b.club || "-")}</td></tr>
             <tr><td>Rating</td><td>${esc(a.rating || "-")}</td><td>${esc(b.rating || "-")}</td></tr>
-                    <tr><td>Piyasa DeÄŸeri</td><td>${esc(a.market || "-")}</td><td>${esc(b.market || "-")}</td></tr>
+                    <tr><td>Piyasa Degeri</td><td>${esc(a.market || "-")}</td><td>${esc(b.market || "-")}</td></tr>
           </tbody>
         </table>
       `;
@@ -3060,7 +3415,7 @@
         body: JSON.stringify({ player_ids: ids }),
       });
       const data = await res.json().catch(() => ({}));
-    if (!res.ok || !data?.ok) throw new Error(data?.message || "KarÅŸÄ±laÅŸtÄ±rma verisi alÄ±namadÄ±");
+    if (!res.ok || !data?.ok) throw new Error(data?.message || "Karsilastirma verisi alinamadi");
       const players = Array.isArray(data?.data?.players) ? data.data.players : [];
       return players.map(normalizeComparePlayer).filter((p) => p.id);
     }
@@ -3149,40 +3504,40 @@
         document.title = visibilityRoleCopy.documentTitle;
       } else if (playerView === "discover" || playerView === "explore") {
         document.body.classList.remove("contracted-cards-only");
-        if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-compass"></i> OyuncularÄ± KeÅŸfet';
-        if (pageDescription) pageDescription.textContent = "Pozisyon, form ve gÃ¶rÃ¼nÃ¼rlÃ¼k sinyallerine gÃ¶re Ã¶ne Ã§Ä±kan oyuncularÄ± tek akÄ±ÅŸta incele.";
-        document.title = "OyuncularÄ± KeÅŸfet | NextScout";
+        if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-compass"></i> Oyunculari Kesfet';
+        if (pageDescription) pageDescription.textContent = "Pozisyon, form ve gorunurluk sinyallerine gore one cikan oyunculari tek akista incele.";
+        document.title = "Oyunculari Kesfet | NextScout";
       } else if (transferCategory === "contracted") {
         document.body.classList.add("contracted-cards-only");
         if (sportFilter) sportFilter.value = "futbol";
         if (contractFilter) contractFilter.value = "active";
         if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-magnifying-glass-chart"></i> Yapay Zeka Destekli Scout Arama';
-        if (pageDescription) pageDescription.textContent = "SÃ¶zleÅŸmesi devam eden sporcularÄ± pozisyon, yaÅŸ, form, performans ve transfer kategorisine gÃ¶re filtreleyerek tek ekranda inceleyin.";
-        document.title = "SÃ¶zleÅŸmeli Futbolcular | NextScout";
+        if (pageDescription) pageDescription.textContent = "Sozlesmesi devam eden sporculari pozisyon, yas, form, performans ve transfer kategorisine gore filtreleyerek tek ekranda inceleyin.";
+        document.title = "Sozlesmeli Futbolcular | NextScout";
       } else if (transferCategory === "free") {
         document.body.classList.add("contracted-cards-only");
         if (sportFilter) sportFilter.value = "futbol";
         if (contractFilter) contractFilter.value = "free";
-        if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> BoÅŸtaki Sporcular';
-        if (pageDescription) pageDescription.textContent = "KulÃ¼bÃ¼ olmayan ve transfer iÃ§in uygun durumdaki sporcularÄ± pozisyon, yaÅŸ, form ve performans filtreleriyle hÄ±zlÄ±ca gÃ¶rÃ¼ntÃ¼leyin.";
-        document.title = "BoÅŸtaki Futbolcular | NextScout";
+        if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Bostaki Sporcular';
+        if (pageDescription) pageDescription.textContent = "Kulubu olmayan ve transfer icin uygun durumdaki sporculari pozisyon, yas, form ve performans filtreleriyle hizlica goruntuleyin.";
+        document.title = "Bostaki Futbolcular | NextScout";
       } else if (transferCategory === "seeking") {
         document.body.classList.add("contracted-cards-only");
         if (sportFilter) sportFilter.value = "futbol";
-        if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> KulÃ¼p Arayan Sporcular';
-        if (pageDescription) pageDescription.textContent = "Yeni kulÃ¼p arayan sporcularÄ± performans, yaÅŸ, pozisyon ve transfer durumu kriterlerine gÃ¶re listeleyin.";
-        document.title = "KulÃ¼p Arayan Futbolcular | NextScout";
+        if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Kulup Arayan Sporcular';
+        if (pageDescription) pageDescription.textContent = "Yeni kulup arayan sporculari performans, yas, pozisyon ve transfer durumu kriterlerine gore listeleyin.";
+        document.title = "Kulup Arayan Futbolcular | NextScout";
       } else if (scoutCategory === "new") {
-        if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Yeni EÅŸleÅŸenler';
-        if (pageDescription) pageDescription.textContent = "Scout radarÄ±nda yeni eÅŸleÅŸen oyuncularÄ± gÃ¼ncel performans, pozisyon ve kulÃ¼p uyum sinyalleriyle inceleyin.";
-        document.title = "Yeni EÅŸleÅŸenler | NextScout";
+        if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Yeni Eslesenler';
+        if (pageDescription) pageDescription.textContent = "Scout radarinda yeni eslesen oyunculari guncel performans, pozisyon ve kulup uyum sinyalleriyle inceleyin.";
+        document.title = "Yeni Eslesenler | NextScout";
       } else if (scoutCategory === "rising") {
-        if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> YÃ¼kselenler';
-        if (pageDescription) pageDescription.textContent = "YÃ¼kseliÅŸ trendine giren oyuncularÄ± form, gÃ¶rÃ¼nÃ¼rlÃ¼k ve performans ivmesine gÃ¶re takip edin.";
-        document.title = "YÃ¼kselenler | NextScout";
+        if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Yukselenler';
+        if (pageDescription) pageDescription.textContent = "Yukselis trendine giren oyunculari form, gorunurluk ve performans ivmesine gore takip edin.";
+        document.title = "Yukselenler | NextScout";
       } else if (scoutCategory === "hidden") {
         if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Gizli Yetenekler';
-        if (pageDescription) pageDescription.textContent = "HenÃ¼z yeterince Ã¶ne Ã§Ä±kmamÄ±ÅŸ ama radar sinyali veren gizli yetenekleri keÅŸfedin.";
+        if (pageDescription) pageDescription.textContent = "Henuz yeterince one cikmamis ama radar sinyali veren gizli yetenekleri kesfedin.";
         document.title = "Gizli Yetenekler | NextScout";
       }
     }
@@ -3194,17 +3549,17 @@
         const text = intro.querySelector('p');
         if (heading) heading.textContent = 'Yapay zeka destekli scout arama ve oyuncu kesfi';
         if (text) {
-          text.textContent = 'NextScout oyuncu havuzu; pozisyon, yaÅŸ, form, lig seviyesi ve performans odaklÄ± filtrelerle profesyonel futbolcularÄ± daha hÄ±zlÄ± keÅŸfetmek iÃ§in hazÄ±rlandÄ±. Scout ekipleri, kulÃ¼p yÃ¶neticileri ve menajerler aradÄ±klarÄ± oyuncu profiline gÃ¶re listeleme yapabilir, transfer odaklÄ± oyuncu takibini tek merkezden yÃ¼rÃ¼tebilir.';
+          text.textContent = 'NextScout oyuncu havuzu; pozisyon, yas, form, lig seviyesi ve performans odakli filtrelerle profesyonel futbolculari daha hizli kesfetmek icin hazirlandi. Scout ekipleri, kulup yoneticileri ve menajerler aradiklari oyuncu profiline gore listeleme yapabilir, transfer odakli oyuncu takibini tek merkezden yurutebilir.';
         }
       }
 
       document.querySelectorAll('.market-ad-content strong').forEach((node) => {
-        node.textContent = 'Reklam AlanÄ±';
+        node.textContent = 'Reklam Alani';
       });
 
       const compareContent = document.getElementById('compareContent');
       if (compareContent && /seciniz/i.test(compareContent.textContent || '')) {
-        compareContent.textContent = 'Oyuncu seÃ§iniz.';
+        compareContent.textContent = 'Oyuncu seciniz.';
       }
 
       const heroTitle = document.getElementById('pageTitle');
@@ -3231,35 +3586,46 @@
         heroTitle.innerHTML = visibilityRoleCopy.title;
         heroDescription.textContent = visibilityRoleCopy.description;
       } else if (heroTitle && heroDescription && playerView === 'explore') {
-        heroTitle.innerHTML = '<i class="fa-solid fa-compass"></i> OyuncularÄ± KeÅŸfet';
-        heroDescription.textContent = 'Pozisyon, form ve gÃ¶rÃ¼nÃ¼rlÃ¼k sinyallerine gÃ¶re Ã¶ne Ã§Ä±kan oyuncularÄ± tek akÄ±ÅŸta incele.';
+        heroTitle.innerHTML = '<i class="fa-solid fa-compass"></i> Oyunculari Kesfet';
+        heroDescription.textContent = 'Pozisyon, form ve gorunurluk sinyallerine gore one cikan oyunculari tek akista incele.';
       } else if (heroTitle && heroDescription) {
         if (transferCategory === 'contracted') {
           heroTitle.innerHTML = '<i class="fa-solid fa-magnifying-glass-chart"></i> Yapay Zeka Destekli Scout Arama';
-          heroDescription.textContent = 'SÃ¶zleÅŸmesi devam eden sporcularÄ± pozisyon, yaÅŸ, form, performans ve transfer kategorisine gÃ¶re filtreleyerek tek ekranda inceleyin.';
+          heroDescription.textContent = 'Sozlesmesi devam eden sporculari pozisyon, yas, form, performans ve transfer kategorisine gore filtreleyerek tek ekranda inceleyin.';
         } else if (transferCategory === 'free') {
-          heroTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> BoÅŸtaki Sporcular';
-          heroDescription.textContent = 'KulÃ¼bÃ¼ olmayan ve transfer iÃ§in uygun durumdaki sporcularÄ± pozisyon, yaÅŸ, form ve performans filtreleriyle hÄ±zlÄ±ca gÃ¶rÃ¼ntÃ¼leyin.';
+          heroTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Bostaki Sporcular';
+          heroDescription.textContent = 'Kulubu olmayan ve transfer icin uygun durumdaki sporculari pozisyon, yas, form ve performans filtreleriyle hizlica goruntuleyin.';
         } else if (transferCategory === 'seeking') {
-          heroTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> KulÃ¼p Arayan Sporcular';
-          heroDescription.textContent = 'Yeni kulÃ¼p arayan sporcularÄ± performans, yaÅŸ, pozisyon ve transfer durumu kriterlerine gÃ¶re listeleyin.';
+          heroTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Kulup Arayan Sporcular';
+          heroDescription.textContent = 'Yeni kulup arayan sporculari performans, yas, pozisyon ve transfer durumu kriterlerine gore listeleyin.';
         } else if (scoutCategory === 'new') {
-          heroTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Yeni EÅŸleÅŸenler';
-          heroDescription.textContent = 'Scout radarÄ±nda yeni eÅŸleÅŸen oyuncularÄ± gÃ¼ncel performans, pozisyon ve kulÃ¼p uyum sinyalleriyle inceleyin.';
+          heroTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Yeni Eslesenler';
+          heroDescription.textContent = 'Scout radarinda yeni eslesen oyunculari guncel performans, pozisyon ve kulup uyum sinyalleriyle inceleyin.';
         } else if (scoutCategory === 'rising') {
-          heroTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> YÃ¼kselenler';
-          heroDescription.textContent = 'YÃ¼kseliÅŸ trendine giren oyuncularÄ± form, gÃ¶rÃ¼nÃ¼rlÃ¼k ve performans ivmesine gÃ¶re takip edin.';
+          heroTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Yukselenler';
+          heroDescription.textContent = 'Yukselis trendine giren oyunculari form, gorunurluk ve performans ivmesine gore takip edin.';
         } else if (scoutCategory === 'hidden') {
           heroTitle.innerHTML = '<i class="fa-solid fa-newspaper"></i> Gizli Yetenekler';
-          heroDescription.textContent = 'HenÃ¼z yeterince Ã¶ne Ã§Ä±kmamÄ±ÅŸ ama radar sinyali veren gizli yetenekleri keÅŸfedin.';
+          heroDescription.textContent = 'Henuz yeterince one cikmamis ama radar sinyali veren gizli yetenekleri kesfedin.';
         }
       }
 
       if (compareContent && compareContent.querySelector('.compare-table')) {
         compareContent.innerHTML = compareContent.innerHTML
-          .replaceAll('YaÃ…Å¸', 'YaÅŸ')
-          .replaceAll('KULÃƒÅ“P', 'KulÃ¼p')
-          .replaceAll('Piyasa DeÃ„Å¸eri', 'Piyasa DeÄŸeri');
+          .replaceAll('YaÃ…Å¸', 'Yas')
+          .replaceAll('YaÅŸ', 'Yas')
+          .replaceAll('KULÃƒÅ“P', 'Kulup')
+          .replaceAll('KulÃ¼p', 'Kulup')
+          .replaceAll('Piyasa DeÃ„Å¸eri', 'Piyasa Degeri')
+          .replaceAll('Ä°letiÅŸim', 'Iletisim')
+          .replaceAll('KarÅŸÄ±laÅŸtÄ±r', 'Karsilastir')
+          .replaceAll('Ã–ne', 'One')
+          .replaceAll('HazÄ±r', 'Hazir')
+          .replaceAll('GÃ¼ncel', 'Guncel')
+          .replaceAll('GÃ¶zlem', 'Gozlem')
+          .replaceAll('PortfÃ¶y', 'Portfoy')
+          .replaceAll('TÃ¼rkiye', 'Turkiye')
+          .replaceAll('SÃ¼per', 'Super');
       }
     }
 

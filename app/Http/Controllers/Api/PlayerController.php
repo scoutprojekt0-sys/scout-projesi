@@ -8,6 +8,7 @@ use App\Support\ProfileReviewData;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -211,6 +212,134 @@ class PlayerController extends Controller
             'ok' => true,
             'message' => 'Oyuncu profili guncellendi.',
             'data' => $updated,
+        ]);
+    }
+
+    public function publicProfile(int $id): JsonResponse
+    {
+        $player = DB::table('users')
+            ->leftJoin('player_profiles as pp', 'pp.user_id', '=', 'users.id')
+            ->where('users.id', $id)
+            ->where('users.role', 'player')
+            ->select([
+                'users.id',
+                'users.name',
+                'users.city',
+                'users.country',
+                'users.age',
+                'users.position as user_position',
+                'users.photo_url',
+                'users.rating as user_rating',
+                'users.confidence_score',
+                'pp.birth_year',
+                'pp.position',
+                'pp.dominant_foot',
+                'pp.height_cm',
+                'pp.weight_kg',
+                'pp.current_team',
+                'pp.bio',
+            ])
+            ->first();
+
+        if (! $player) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Oyuncu bulunamadi.',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $statsRows = collect();
+        if (Schema::hasTable('player_statistics')) {
+            $statsRows = DB::table('player_statistics')
+                ->where('user_id', $id)
+                ->orderByDesc('season')
+                ->orderByDesc('id')
+                ->get([
+                    'season',
+                    'league',
+                    'matches_played',
+                    'matches_started',
+                    'matches_benched',
+                    'goals',
+                    'assists',
+                    'minutes_played',
+                    'avg_rating',
+                ]);
+        }
+
+        $latest = $statsRows->first();
+        $summary = [
+            'matches' => (int) $statsRows->sum('matches_played'),
+            'goals' => (int) $statsRows->sum('goals'),
+            'assists' => (int) $statsRows->sum('assists'),
+            'minutes' => (int) $statsRows->sum('minutes_played'),
+            'rating' => $latest?->avg_rating !== null ? (float) $latest->avg_rating : (float) ($player->user_rating ?? 0),
+        ];
+
+        $position = $player->position ?: $player->user_position ?: 'Oyuncu';
+        $age = $player->age;
+        if (! $age && $player->birth_year) {
+            $age = (int) now()->format('Y') - (int) $player->birth_year;
+        }
+
+        return response()->json([
+            'ok' => true,
+            'data' => [
+                'user' => [
+                    'id' => (int) $player->id,
+                    'name' => (string) $player->name,
+                ],
+                'profile' => [
+                    'sport' => 'futbol',
+                    'branch' => 'futbol',
+                    'position' => (string) $position,
+                    'age' => $age !== null ? (int) $age : null,
+                    'height_cm' => $player->height_cm ? (int) $player->height_cm : null,
+                    'weight_kg' => $player->weight_kg ? (int) $player->weight_kg : null,
+                    'current_club' => (string) ($player->current_team ?? '-'),
+                    'club_name' => (string) ($player->current_team ?? '-'),
+                    'bio' => (string) ($player->bio ?? ''),
+                    'dominant_foot' => $player->dominant_foot,
+                    'nationality' => (string) ($player->country ?? ''),
+                    'city' => (string) ($player->city ?? ''),
+                ],
+                'card' => [
+                    'id' => (int) $player->id,
+                    'position' => (string) $position,
+                    'age' => $age !== null ? (int) $age : null,
+                    'height' => $player->height_cm ? ((int) $player->height_cm).'cm' : '-',
+                    'overall_rating' => $summary['rating'],
+                    'matches_played' => $summary['matches'],
+                    'goals' => $summary['goals'],
+                    'assists' => $summary['assists'],
+                    'nationality' => (string) ($player->country ?? ''),
+                    'profile_photo_url' => (string) ($player->photo_url ?? ''),
+                    'confidence_score' => $player->confidence_score !== null ? (float) $player->confidence_score : null,
+                ],
+                'stats' => [
+                    'summary' => $summary,
+                    'latest' => $latest ? [
+                        'season' => $latest->season,
+                        'league' => $latest->league,
+                        'matches_played' => (int) ($latest->matches_played ?? 0),
+                        'minutes_played' => (int) ($latest->minutes_played ?? 0),
+                        'goals' => (int) ($latest->goals ?? 0),
+                        'assists' => (int) ($latest->assists ?? 0),
+                        'rating' => $latest->avg_rating !== null ? (float) $latest->avg_rating : $summary['rating'],
+                    ] : null,
+                    'history' => $statsRows->map(fn ($row) => [
+                        'season' => $row->season,
+                        'league' => $row->league,
+                        'matches_played' => (int) ($row->matches_played ?? 0),
+                        'matches_started' => (int) ($row->matches_started ?? 0),
+                        'matches_benched' => (int) ($row->matches_benched ?? 0),
+                        'minutes_played' => (int) ($row->minutes_played ?? 0),
+                        'goals' => (int) ($row->goals ?? 0),
+                        'assists' => (int) ($row->assists ?? 0),
+                        'avg_rating' => $row->avg_rating !== null ? (float) $row->avg_rating : null,
+                    ])->values(),
+                ],
+            ],
         ]);
     }
 }

@@ -36,17 +36,21 @@
 
         body {
             font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f3f4f6;
-            color: #1f2937;
+            background:
+                radial-gradient(circle at 12% 10%, rgba(30, 64, 175, 0.22), transparent 24%),
+                radial-gradient(circle at 88% 0%, rgba(249, 115, 22, 0.16), transparent 20%),
+                linear-gradient(180deg, #07111c 0%, #0c1724 100%);
+            color: #dbeafe;
         }
 
         .header-nav {
-            background: white;
+            background: linear-gradient(180deg, rgba(10, 24, 39, 0.96) 0%, rgba(15, 31, 46, 0.96) 100%);
             padding: 16px 20px;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid rgba(96, 165, 250, 0.14);
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 18px 40px rgba(2, 6, 23, 0.26);
         }
 
         .nav-content {
@@ -104,19 +108,20 @@
         .back-btn {
             display: inline-block;
             padding: 10px 16px;
-            background: #f3f4f6;
-            color: #667eea;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
+            background: rgba(255,255,255,.05);
+            color: #dbeafe;
+            border: 1px solid rgba(148,163,184,.16);
+            border-radius: 12px;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .back-btn:hover {
-            background: #667eea;
+            background: rgba(255,255,255,.08);
             color: white;
+            border-color: rgba(255,126,34,.35);
         }
 
         .container {
@@ -127,29 +132,69 @@
 
         /* HERO SECTION */
         .hero-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 20px;
-            padding: 60px 40px;
+            position: relative;
+            background:
+                linear-gradient(135deg, rgba(10, 24, 39, 0.98) 0%, rgba(18, 41, 61, 0.96) 52%, rgba(16, 24, 39, 0.98) 100%);
+            border: 1px solid rgba(96, 165, 250, 0.18);
+            border-radius: 28px;
+            padding: 34px;
             color: white;
-            margin-bottom: 40px;
+            margin-bottom: 32px;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            align-items: center;
-            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.2);
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 28px;
+            align-items: stretch;
+            box-shadow: 0 28px 70px rgba(2, 6, 23, 0.34);
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(120deg, rgba(255,255,255,.05) 0%, transparent 28%),
+                radial-gradient(circle at 78% 20%, rgba(251, 191, 36, 0.16), transparent 20%),
+                radial-gradient(circle at 18% 12%, rgba(96, 165, 250, 0.18), transparent 24%);
+            pointer-events: none;
         }
 
         .hero-image {
             width: 100%;
-            height: 350px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
+            height: 100%;
+            min-height: 420px;
+            background:
+                linear-gradient(160deg, rgba(15, 23, 42, 0.14), rgba(15, 23, 42, 0.4)),
+                linear-gradient(135deg, rgba(30,64,175,.22) 0%, rgba(14,165,233,.16) 58%, rgba(249,115,22,.14) 100%);
+            border-radius: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 120px;
-            border: 4px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             overflow: hidden;
+            position: relative;
+        }
+
+        .hero-image::after {
+            content: "";
+            position: absolute;
+            inset: auto 0 0 0;
+            height: 38%;
+            background: linear-gradient(180deg, transparent 0%, rgba(7, 17, 28, 0.82) 100%);
+            pointer-events: none;
+        }
+
+        .hero-image::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                repeating-linear-gradient(128deg, rgba(255,255,255,.04) 0, rgba(255,255,255,.04) 2px, transparent 2px, transparent 30px),
+                linear-gradient(120deg, rgba(255,255,255,.06) 0%, transparent 32%);
+            mix-blend-mode: screen;
+            opacity: .45;
+            pointer-events: none;
         }
 
         .hero-image img {
@@ -158,46 +203,119 @@
             object-fit: cover;
         }
 
-        .hero-info h1 {
-            font-size: 48px;
-            margin-bottom: 10px;
+        .hero-image-overlay {
+            position: absolute;
+            inset: 18px;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+
+        .hero-image-topline,
+        .hero-image-bottomline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .hero-editorial-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 34px;
+            padding: 0 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,.12);
+            background: rgba(8, 19, 29, 0.34);
+            color: #eef6ff;
+            font-size: 11px;
             font-weight: 800;
-            letter-spacing: -1px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            backdrop-filter: blur(12px);
+        }
+
+        .hero-player-number {
+            align-self: flex-end;
+            font-size: 108px;
+            line-height: 1;
+            font-weight: 900;
+            color: rgba(255,255,255,.14);
+            letter-spacing: -0.08em;
+            text-shadow: 0 18px 36px rgba(2, 6, 23, 0.24);
+        }
+
+        .hero-identity-block {
+            display: grid;
+            gap: 6px;
+        }
+
+        .hero-identity-name {
+            font-size: 18px;
+            font-weight: 800;
+            color: #f8fbff;
+        }
+
+        .hero-identity-sub {
+            font-size: 12px;
+            color: #9bb5cb;
+        }
+
+        .hero-info {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .hero-info h1 {
+            font-size: 52px;
+            margin-bottom: 0;
+            font-weight: 800;
+            letter-spacing: -1.6px;
         }
 
         .hero-position {
-            font-size: 20px;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 30px;
+            font-size: 13px;
+            color: #9fd0ff;
+            margin-bottom: 0;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 0.28em;
         }
 
         .hero-stats {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 0;
         }
 
         .stat-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 10px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(15, 23, 42, 0.22) 100%);
+            padding: 16px;
+            border-radius: 18px;
             backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.14);
         }
 
         .stat-value {
-            font-size: 24px;
+            font-size: 30px;
             font-weight: 800;
             display: block;
         }
 
         .stat-label {
-            font-size: 12px;
-            opacity: 0.8;
-            margin-top: 5px;
+            font-size: 11px;
+            color: #9bb5cb;
+            margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
         }
 
         .hero-actions {
@@ -208,9 +326,9 @@
 
         .btn {
             padding: 12px 20px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
+            border: 1px solid rgba(148,163,184,.18);
+            border-radius: 14px;
+            font-weight: 800;
             cursor: pointer;
             transition: all 0.2s;
             font-size: 14px;
@@ -219,51 +337,338 @@
         }
 
         .btn-primary {
-            background: white;
-            color: #667eea;
+            background: linear-gradient(135deg, #ff7e22 0%, #ef5d0d 100%);
+            color: #fff;
+            border-color: rgba(255,126,34,.45);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 16px 28px rgba(239, 93, 13, 0.24);
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.06);
             color: white;
-            border: 1px solid white;
+            border: 1px solid rgba(148,163,184,.16);
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255,126,34,.35);
         }
 
 
         /* RATING */
         .rating-box {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 14px;
+            border-radius: 20px;
             backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.14);
+        }
+
+        .rating-main,
+        .hero-market-box {
+            border-radius: 18px;
+            padding: 18px;
+            min-height: 132px;
+        }
+
+        .rating-main {
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.34) 0%, rgba(15, 23, 42, 0.14) 100%);
+        }
+
+        .hero-market-box {
+            background: linear-gradient(180deg, rgba(251, 191, 36, 0.12) 0%, rgba(249, 115, 22, 0.1) 100%);
+            border: 1px solid rgba(251, 191, 36, 0.18);
         }
 
         .rating-stars {
             font-size: 24px;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            color: #fbbf24;
         }
 
         .rating-text {
             font-size: 14px;
             font-weight: 600;
+            color: #e5eef8;
+        }
+
+        .hero-box-label {
+            font-size: 11px;
+            color: #9bb5cb;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .hero-box-value {
+            font-size: 36px;
+            line-height: 1;
+            font-weight: 900;
+            color: #f8fbff;
+            margin-bottom: 10px;
+        }
+
+        .hero-box-sub {
+            font-size: 12px;
+            color: #c8daef;
+            line-height: 1.5;
+        }
+
+        .hero-tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 0;
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 36px;
+            padding: 0 14px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            border: 1px solid rgba(255,255,255,.14);
+            background: rgba(255,255,255,.08);
+            color: #eef6ff;
+        }
+
+        .profile-showcase {
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.8fr);
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .showcase-card {
+            background: linear-gradient(180deg, rgba(10, 24, 39, 0.96) 0%, rgba(15, 31, 46, 0.96) 100%);
+            border: 1px solid rgba(96, 165, 250, 0.16);
+            border-radius: 24px;
+            padding: 18px;
+            box-shadow: 0 24px 54px rgba(2, 6, 23, 0.26);
+        }
+
+        .showcase-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .showcase-title {
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #dbeafe;
+        }
+
+        .showcase-sub {
+            font-size: 12px;
+            color: #8fb5d8;
+        }
+
+        .showcase-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .showcase-table th,
+        .showcase-table td {
+            padding: 11px 10px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+            text-align: left;
+        }
+
+        .showcase-table th {
+            font-size: 10px;
+            color: #8fb5d8;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            font-weight: 800;
+        }
+
+        .showcase-table td {
+            color: #f8fbff;
+        }
+
+        .match-cell {
+            display: grid;
+            gap: 4px;
+        }
+
+        .match-cell strong {
+            color: #f8fbff;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .match-cell span {
+            color: #8fb5d8;
+            font-size: 11px;
+        }
+
+        .showcase-table .match-score {
+            font-weight: 900;
+            color: #fde047;
+        }
+
+        .showcase-table .match-status {
+            display: inline-flex;
+            align-items: center;
+            min-height: 28px;
+            padding: 0 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(148,163,184,.14);
+            background: rgba(255,255,255,.04);
+            color: #dbeafe;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .match-meta-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+            color: #9bb5cb;
+            font-size: 11px;
+        }
+
+        .match-event-pill {
+            display: inline-flex;
+            align-items: center;
+            min-height: 24px;
+            padding: 0 8px;
+            border-radius: 999px;
+            background: rgba(255,126,34,.12);
+            border: 1px solid rgba(255,126,34,.18);
+            color: #ffd5b5;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .showcase-table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .showcase-panel-stack {
+            display: grid;
+            gap: 18px;
+        }
+
+        .market-showcase-card {
+            background:
+                radial-gradient(circle at 86% 18%, rgba(251, 191, 36, 0.18), transparent 22%),
+                linear-gradient(180deg, rgba(10, 24, 39, 0.98) 0%, rgba(24, 24, 35, 0.98) 100%);
+        }
+
+        .market-value-number {
+            font-size: 48px;
+            line-height: 1;
+            font-weight: 900;
+            color: #fde047;
+            margin: 6px 0 12px;
+        }
+
+        .market-meta-line {
+            font-size: 12px;
+            color: #9bb5cb;
+            margin-bottom: 16px;
+        }
+
+        .market-sparkline {
+            height: 118px;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.14);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,.03) 0%, rgba(255,255,255,.01) 100%),
+                repeating-linear-gradient(to right, rgba(148,163,184,.08) 0, rgba(148,163,184,.08) 1px, transparent 1px, transparent 56px),
+                repeating-linear-gradient(to bottom, rgba(148,163,184,.07) 0, rgba(148,163,184,.07) 1px, transparent 1px, transparent 34px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .market-sparkline svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .market-sparkline polyline {
+            fill: none;
+            stroke: #fde047;
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 0 10px rgba(253, 224, 71, 0.28));
+        }
+
+        .market-sparkline .spark-fill {
+            fill: rgba(253, 224, 71, 0.12);
+            stroke: none;
+        }
+
+        .showcase-stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .showcase-stat {
+            padding: 16px;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.14);
+            background: linear-gradient(180deg, rgba(255,255,255,.04) 0%, rgba(15,23,42,.18) 100%);
+        }
+
+        .showcase-stat .k {
+            font-size: 11px;
+            color: #8fb5d8;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            margin-bottom: 8px;
+        }
+
+        .showcase-stat .v {
+            font-size: 34px;
+            line-height: 1;
+            font-weight: 900;
+            color: #f8fbff;
+            margin-bottom: 6px;
+        }
+
+        .showcase-stat .d {
+            font-size: 12px;
+            color: #9bb5cb;
         }
 
         /* GALERI B-LoMo */
         .section-title {
             font-size: 28px;
             font-weight: 800;
-            color: #1f2937;
-            margin-bottom: 30px;
+            color: #f5fbff;
+            margin-bottom: 22px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -277,18 +682,19 @@
         }
 
         .gallery-item {
-            background: white;
-            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(10, 24, 39, 0.96) 0%, rgba(15, 31, 46, 0.96) 100%);
+            border-radius: 18px;
             overflow: hidden;
             height: 200px;
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(96, 165, 250, 0.16);
+            box-shadow: 0 20px 40px rgba(2, 6, 23, 0.22);
         }
 
         .gallery-item:hover {
             transform: translateY(-8px);
-            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.2);
+            box-shadow: 0 18px 36px rgba(2, 6, 23, 0.32);
         }
 
         .gallery-item img {
@@ -300,12 +706,12 @@
         .gallery-item-empty {
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0f2740 0%, #12293d 48%, #1a2236 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 40px;
-            color: white;
+            color: #e5eef8;
         }
 
         /* VIDEO B-LoMo */
@@ -317,39 +723,41 @@
         }
 
         .video-card {
-            background: white;
-            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(10, 24, 39, 0.96) 0%, rgba(15, 31, 46, 0.96) 100%);
+            border-radius: 18px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(96, 165, 250, 0.16);
+            box-shadow: 0 20px 40px rgba(2, 6, 23, 0.22);
             transition: all 0.3s;
         }
 
         .video-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.2);
+            box-shadow: 0 18px 36px rgba(2, 6, 23, 0.32);
         }
 
         .video-thumbnail {
             width: 100%;
             height: 160px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0f2740 0%, #12293d 48%, #1a2236 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 50px;
-            color: white;
+            color: #f8fbff;
             position: relative;
         }
 
         .play-btn {
             width: 60px;
             height: 60px;
-            background: white;
+            background: linear-gradient(135deg, #ff7e22 0%, #ef5d0d 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
+            color: #fff;
             transition: all 0.2s;
         }
 
@@ -364,12 +772,12 @@
         .video-title {
             font-size: 14px;
             font-weight: 700;
-            color: #1f2937;
+            color: #f5fbff;
             margin-bottom: 8px;
         }
 
         .video-link {
-            color: #667eea;
+            color: #9fd0ff;
             font-size: 12px;
             text-decoration: none;
             font-weight: 600;
@@ -384,45 +792,50 @@
         .details-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 40px;
+            gap: 18px;
+            margin-bottom: 32px;
         }
 
         .card {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            background: linear-gradient(180deg, rgba(10, 24, 39, 0.96) 0%, rgba(15, 31, 46, 0.96) 100%);
+            border-radius: 24px;
+            padding: 22px;
+            border: 1px solid rgba(96, 165, 250, 0.16);
+            box-shadow: 0 24px 54px rgba(2, 6, 23, 0.26);
         }
 
         .card-title {
             font-size: 18px;
             font-weight: 800;
-            color: #1f2937;
-            margin-bottom: 20px;
+            color: #f5fbff;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
         }
 
         .achievement-item {
             padding: 16px;
-            background: #f9fafb;
-            border-left: 4px solid #667eea;
-            border-radius: 8px;
+            background: rgba(255,255,255,.04);
+            border-left: 4px solid #ff7e22;
+            border-radius: 14px;
             margin-bottom: 12px;
+            border-top: 1px solid rgba(148,163,184,.12);
+            border-right: 1px solid rgba(148,163,184,.08);
+            border-bottom: 1px solid rgba(148,163,184,.08);
         }
 
         .achievement-title {
             font-weight: 700;
-            color: #1f2937;
+            color: #f5fbff;
             margin-bottom: 4px;
         }
 
         .achievement-text {
             font-size: 12px;
-            color: #6b7280;
+            color: #9bb5cb;
         }
 
         .bio-text {
-            color: #6b7280;
+            color: #c8daef;
             line-height: 1.8;
             font-size: 15px;
         }
@@ -436,30 +849,31 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px;
-            background: #f9fafb;
-            border-radius: 8px;
+            padding: 14px 16px;
+            background: rgba(255,255,255,.04);
+            border-radius: 14px;
+            border: 1px solid rgba(148,163,184,.12);
         }
 
         .stats-label {
             font-size: 14px;
-            color: #6b7280;
+            color: #9bb5cb;
             font-weight: 600;
         }
 
         .stats-value {
             font-size: 18px;
             font-weight: 800;
-            color: #667eea;
+            color: #f5fbff;
         }
 
         .data-meta {
             margin: 0 0 16px;
             font-size: 12px;
-            color: #475569;
-            background: #e2e8f0;
-            border: 1px solid #cbd5e1;
-            border-radius: 10px;
+            color: #9bb5cb;
+            background: rgba(255,255,255,.05);
+            border: 1px solid rgba(148,163,184,.14);
+            border-radius: 14px;
             padding: 8px 10px;
         }
 
@@ -471,19 +885,19 @@
         }
 
         .profile-tab {
-            border: 1px solid #cbd5e1;
-            background: #fff;
-            color: #334155;
+            border: 1px solid rgba(148,163,184,.14);
+            background: rgba(255,255,255,.04);
+            color: #c8daef;
             border-radius: 999px;
-            padding: 7px 12px;
+            padding: 9px 14px;
             font-size: 12px;
             font-weight: 700;
             cursor: pointer;
         }
 
         .profile-tab.active {
-            background: #667eea;
-            border-color: #667eea;
+            background: linear-gradient(135deg, #ff7e22 0%, #ef5d0d 100%);
+            border-color: rgba(255,126,34,.5);
             color: #fff;
         }
 
@@ -506,14 +920,15 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
-            background: #fff;
-            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(10, 24, 39, 0.96) 0%, rgba(15, 31, 46, 0.96) 100%);
+            border-radius: 18px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+            border: 1px solid rgba(96, 165, 250, 0.16);
+            box-shadow: 0 24px 54px rgba(2, 6, 23, 0.26);
         }
 
         .transfer-table th, .transfer-table td {
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid rgba(148,163,184,.12);
             padding: 10px;
             text-align: left;
         }
@@ -875,6 +1290,14 @@
                 padding: 40px 20px;
             }
 
+            .rating-box {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-showcase {
+                grid-template-columns: 1fr;
+            }
+
             .details-grid {
                 grid-template-columns: 1fr;
             }
@@ -943,6 +1366,19 @@
 
             .hero-info h1 {
                 font-size: 28px;
+            }
+
+            .hero-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-tag-row,
+            .hero-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .showcase-stat-grid {
+                grid-template-columns: 1fr;
             }
 
             .gallery-grid {
@@ -1018,15 +1454,31 @@
     <div class="container">
         <!-- HERO SECTION -->
         <div class="hero-section">
-            <div class="hero-image" id="heroImage">?</div>
+            <div class="hero-image" id="heroImage">
+                <div class="hero-image-overlay">
+                    <div class="hero-image-topline">
+                        <span class="hero-editorial-chip" id="heroSportChip">Oyuncu Profili</span>
+                        <span class="hero-editorial-chip" id="heroCountryChip">Scout Vitrini</span>
+                    </div>
+                    <div class="hero-player-number" id="heroPlayerNumber">07</div>
+                    <div class="hero-image-bottomline">
+                        <div class="hero-identity-block">
+                            <div class="hero-identity-name" id="heroIdentityName">Ahmet Yilmaz</div>
+                            <div class="hero-identity-sub" id="heroIdentitySub">Elite scout profili</div>
+                        </div>
+                        <span class="hero-editorial-chip" id="heroClubChip">Kulup bilgisi bekleniyor</span>
+                    </div>
+                </div>
+                ?
+            </div>
             
             <div class="hero-info">
                 <h1 id="playerName">Ahmet Yilmaz</h1>
                 <div class="hero-position" id="playerPosition">Forvet</div>
-                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
-                    <span id="contractStatusBadge" style="background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.3); padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700;">Sozlesmeli</span>
-                    <span id="seekingClubBadge" style="background:rgba(16,185,129,.2); border:1px solid rgba(16,185,129,.45); padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700;">KULUP Aramiyor</span>
-                    <span id="currentClubBadge" style="background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700;">KULUP: -</span>
+                <div class="hero-tag-row">
+                    <span class="hero-tag" id="contractStatusBadge">Sozlesmeli</span>
+                    <span class="hero-tag" id="seekingClubBadge">KULUP Aramiyor</span>
+                    <span class="hero-tag" id="currentClubBadge">KULUP: -</span>
                 </div>
 
                 <div class="hero-stats">
@@ -1045,8 +1497,15 @@
                 </div>
 
                 <div class="rating-box">
-                    <div class="rating-stars">?????</div>
-                    <div class="rating-text" id="ratingText">4.8/10 - Scoutlar Tarafindan Degerlendirildi</div>
+                    <div class="rating-main">
+                        <div class="rating-stars">★★★★★</div>
+                        <div class="rating-text" id="ratingText">4.8/10 - Scoutlar Tarafindan Degerlendirildi</div>
+                    </div>
+                    <div class="hero-market-box">
+                        <span class="hero-box-label">Piyasa Gorunumu</span>
+                        <div class="hero-box-value" id="heroMarketValue">Deger yok</div>
+                        <div class="hero-box-sub" id="heroMarketSummary">Son piyasa verisi geldikce burada guncellenir.</div>
+                    </div>
                 </div>
 
                 <div class="hero-actions" id="profileHeroActions" style="margin-top: 20px;">
@@ -1067,6 +1526,44 @@
         </div>
 
         <section class="tab-panel active" data-tab-panel="overview">
+            <div class="profile-showcase">
+                <div class="showcase-card">
+                    <div class="showcase-head">
+                        <div>
+                            <div class="showcase-title">Mac Gorunumu</div>
+                            <div class="showcase-sub">Son performans ve kariyer akisindan one cikan satirlar</div>
+                        </div>
+                    </div>
+                    <table class="showcase-table">
+                        <thead>
+                            <tr>
+                                <th>Tarih</th>
+                                <th>Rakip / Akis</th>
+                                <th>Skor</th>
+                                <th>Analiz</th>
+                            </tr>
+                        </thead>
+                        <tbody id="profileShowcaseRows"></tbody>
+                    </table>
+                </div>
+                <div class="showcase-panel-stack">
+                    <div class="showcase-card market-showcase-card">
+                        <div class="showcase-title">Market Value</div>
+                        <div class="market-value-number" id="profileShowcaseMarketValue">EUR 0</div>
+                        <div class="market-meta-line" id="profileShowcaseMarketMeta">Piyasa verisi bekleniyor.</div>
+                        <div class="market-sparkline" id="profileShowcaseSparkline"></div>
+                    </div>
+                    <div class="showcase-card">
+                        <div class="showcase-head">
+                            <div>
+                                <div class="showcase-title">Statistics Applied</div>
+                                <div class="showcase-sub">Scout kararini hizlandiran ozet sinyaller</div>
+                            </div>
+                        </div>
+                        <div class="showcase-stat-grid" id="profileShowcaseStats"></div>
+                    </div>
+                </div>
+            </div>
             <div class="details-grid">
                 <div class="card">
                     <h3 class="card-title">Hakkinda</h3>
@@ -1289,7 +1786,8 @@
             if (!url) return;
             const heroImage = document.getElementById('heroImage');
             if (!heroImage) return;
-            heroImage.textContent = '';
+            const overlay = heroImage.querySelector('.hero-image-overlay');
+            heroImage.innerHTML = '';
             const img = document.createElement('img');
             img.src = url;
             img.style.width = '100%';
@@ -1297,6 +1795,17 @@
             img.style.objectFit = 'cover';
             img.style.borderRadius = '16px';
             heroImage.appendChild(img);
+            if (overlay) heroImage.appendChild(overlay);
+        }
+
+        function updateHeroEditorial(data) {
+            setText('heroSportChip', (data?.sport || 'oyuncu profili').toString().toUpperCase());
+            setText('heroCountryChip', data?.nationality || 'Scout Vitrini');
+            setText('heroIdentityName', data?.name || 'Oyuncu');
+            setText('heroIdentitySub', data?.position ? `${data.position} • Premium profil` : 'Elite scout profili');
+            setText('heroClubChip', data?.club ? `Kulup: ${data.club}` : 'Kulup bilgisi bekleniyor');
+            const numSeed = Number(data?.id || 7) % 99 || 7;
+            setText('heroPlayerNumber', String(numSeed).padStart(2, '0'));
         }
 
         function esc(value) {
@@ -1683,6 +2192,25 @@
                     setText('contractStatusBadge', data.contract_status === 'free' ? 'Bosta' : 'Sozlesmeli');
                     setText('seekingClubBadge', data.seeking_club ? 'KULUP Ariyor' : 'KULUP Aramiyor');
                     setText('currentClubBadge', `KULUP: ${data.current_club || '-'}`);
+                    updateHeroEditorial({
+                        id: data.id || 7,
+                        name: sessionUser?.name || data.name || 'Oyuncu',
+                        position: data.position || 'Oyuncu',
+                        sport: data.sport || 'oyuncu profili',
+                        nationality: data.nationality || 'Turkiye',
+                        club: data.current_club || '-'
+                    });
+                    updateHeroMarketPanel(data.market_value || 0, 'Local profilde kayitli piyasa verisi gosteriliyor.');
+                    renderProfileShowcase({
+                        rating: data.rating || 0,
+                        matches: data.matches || 0,
+                        goals: data.goals || 0,
+                        assists: data.assists || 0,
+                        market_value: data.market_value || 0,
+                        stats_history: data.stats_history || [],
+                        market_history: data.market_history || [],
+                        timeline_events: data.timeline_events || []
+                    });
                     renderProfileStatistics(data);
                     renderAdvancedPanels(data, 'Local Profil');
                 } catch (e) {
@@ -1691,6 +2219,9 @@
             }
 
             if (savedPhoto) setHeroImage(savedPhoto);
+            if (!savedProfile) updateHeroEditorial({ name: sessionUser?.name || 'Oyuncu', sport: 'oyuncu profili' });
+            if (!savedProfile) updateHeroMarketPanel(0, 'Local profilde piyasa verisi bulunamadi.');
+            if (!savedProfile) renderProfileShowcase({});
             if (!savedProfile) renderAdvancedPanels({}, 'Local Profil');
         }
 
@@ -1733,6 +2264,134 @@
                 title: row?.title || 'Video',
                 url: row?.video_url || row?.url || '#',
             }));
+        }
+
+        function formatProfileMoney(value) {
+            const normalized = Number(String(value || '').replace(/[^\d.-]/g, ''));
+            if (!normalized) return 'Deger yok';
+            if (normalized >= 1000000) return `EUR ${(normalized / 1000000).toFixed(1)}M`;
+            if (normalized >= 1000) return `EUR ${(normalized / 1000).toFixed(0)}K`;
+            return `EUR ${normalized}`;
+        }
+
+        function updateHeroMarketPanel(currentValue, note) {
+            setText('heroMarketValue', formatProfileMoney(currentValue));
+            setText('heroMarketSummary', note || 'Son piyasa verisi geldikce burada guncellenir.');
+        }
+
+        function parseMarketValue(value) {
+            return Number(String(value || '').replace(/[^\d.-]/g, '')) || 0;
+        }
+
+        function buildSparklineSvg(values) {
+            const safeValues = values.filter((value) => Number.isFinite(value) && value >= 0);
+            const points = safeValues.length ? safeValues : [12, 22, 18, 34, 28, 46];
+            const width = 320;
+            const height = 118;
+            const padding = 12;
+            const min = Math.min(...points);
+            const max = Math.max(...points);
+            const range = Math.max(1, max - min);
+            const chartHeight = height - padding * 2;
+            const chartWidth = width - padding * 2;
+            const coords = points.map((value, index) => {
+                const x = padding + (chartWidth * index) / Math.max(1, points.length - 1);
+                const y = height - padding - ((value - min) / range) * chartHeight;
+                return `${x},${y}`;
+            });
+            const fillPath = `${padding},${height - padding} ${coords.join(' ')} ${width - padding},${height - padding}`;
+            return `
+                <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" aria-hidden="true">
+                    <polygon class="spark-fill" points="${fillPath}"></polygon>
+                    <polyline points="${coords.join(' ')}"></polyline>
+                </svg>
+            `;
+        }
+
+        function renderProfileShowcase(data) {
+            const rowsRoot = document.getElementById('profileShowcaseRows');
+            const statsRoot = document.getElementById('profileShowcaseStats');
+            const marketValueRoot = document.getElementById('profileShowcaseMarketValue');
+            const marketMetaRoot = document.getElementById('profileShowcaseMarketMeta');
+            const sparklineRoot = document.getElementById('profileShowcaseSparkline');
+            if (!rowsRoot || !statsRoot || !marketValueRoot || !marketMetaRoot || !sparklineRoot) return;
+
+            const statsHistoryRows = Array.isArray(data?.stats_history) && data.stats_history.length
+                ? data.stats_history.slice(0, 4).map((row, index) => ({
+                    period: row?.season || `Sezon ${index + 1}`,
+                    match: row?.league || 'Lig verisi',
+                    opponent: `${row?.matches_played || 0} mac • ${row?.matches_started || 0} ilk 11`,
+                    minute: `${row?.minutes_played || 0} dk`,
+                    event: row?.goals ? 'Gol' : (row?.assists ? 'Asist' : 'Form'),
+                    score: `${row?.goals || 0} / ${row?.assists || 0}`,
+                    detail: `Rating ${row?.avg_rating ?? '-'} • Bench ${row?.matches_benched || 0}`,
+                    status: index === 0 ? 'Canli' : 'Arsiv'
+                }))
+                : [];
+
+            const timelineRows = statsHistoryRows.length
+                ? statsHistoryRows
+                : Array.isArray(data?.timeline_events) && data.timeline_events.length
+                ? data.timeline_events.slice(0, 4).map((row, index) => ({
+                    period: row?.date || row?.season || `Hafta ${index + 1}`,
+                    match: row?.title || 'Scout kaydi',
+                    opponent: row?.opponent || `Rakip ${index + 1}`,
+                    minute: row?.minute || `${90 - (index * 15)}'`,
+                    event: row?.event || (index === 0 ? 'Gol Etkisi' : index === 1 ? 'Asist Zinciri' : 'Scout Notu'),
+                    score: row?.score || `${Math.max(0, Number(data?.goals || 0) - index)} / ${Math.max(0, Number(data?.assists || 0) + index)}`,
+                    detail: row?.text || '-',
+                    status: index === 0 ? 'Canli' : 'Arsiv'
+                }))
+                : [
+                    { period: '24 Apr', match: 'Scout Radar • Ana Ekip', opponent: 'vs Elite XI', minute: "88'", event: 'Gol Etkisi', score: `${data?.goals || 2} / ${data?.assists || 1}`, detail: 'Son mac etkisi ve performans cikisi', status: 'Canli' },
+                    { period: '19 Apr', match: 'Lig Analizi • Son 90dk', opponent: 'vs Kuzey Akademi', minute: "71'", event: 'Asist', score: `${Math.max(1, Number(data?.goals || 1) - 1)} / ${data?.assists || 0}`, detail: 'Bitiricilik ve gecis oyunu verisi', status: 'Takip' },
+                    { period: '12 Apr', match: 'Scout Notu • Gelisim', opponent: 'Hazirlik Maci', minute: "64'", event: 'Radar', score: `${data?.matches || 0} mac`, detail: 'Kulup ve scout kaynaklariyla eslesti', status: 'Dogrulandi' },
+                    { period: '05 Apr', match: 'Profil Vitrini • Acildi', opponent: 'Public Feed', minute: "Full", event: 'Vitrin', score: `${data?.rating || 0}/10`, detail: 'Yuksek gorunurluk moduna alindi', status: 'Yayinda' }
+                ];
+
+            rowsRoot.innerHTML = timelineRows.map((row) => `
+                <tr>
+                    <td>${esc(row.period || '-')}</td>
+                    <td>
+                        <div class="match-cell">
+                            <strong>${esc(row.match || '-')}</strong>
+                            <span>${esc(row.opponent || '-')}</span>
+                        </div>
+                    </td>
+                    <td class="match-score">${esc(row.score || '-')}</td>
+                    <td>
+                        <div>${esc(row.detail || '-')}</div>
+                        <div class="match-meta-line">
+                            <span class="match-status">${esc(row.status || '-')}</span>
+                            <span>${esc(row.minute || '-')}</span>
+                            <span class="match-event-pill">${esc(row.event || '-')}</span>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            const marketHistory = Array.isArray(data?.market_history) ? data.market_history : [];
+            const marketValues = marketHistory.map((row) => parseMarketValue(row?.value || row?.market_value || 0)).filter((value) => value > 0);
+            const currentMarket = marketValues[0] || parseMarketValue(data?.market_value || 0);
+            marketValueRoot.textContent = formatProfileMoney(currentMarket);
+            marketMetaRoot.textContent = marketHistory[0]?.date
+                ? `Son update: ${marketHistory[0].date}`
+                : 'Piyasa verisi sinirli, ilk sinyaller gosteriliyor.';
+            sparklineRoot.innerHTML = buildSparklineSvg(marketValues);
+
+            const stats = [
+                { key: 'Rating', value: data?.rating || 0, detail: 'Genel performans' },
+                { key: 'Mac', value: data?.matches || 0, detail: 'Toplam gorunum' },
+                { key: 'Gol / Sayi', value: data?.goals || data?.points || 0, detail: 'Bitiricilik etkisi' },
+                { key: 'Asist', value: data?.assists || 0, detail: 'Oyun baglantisi' }
+            ];
+            statsRoot.innerHTML = stats.map((item) => `
+                <div class="showcase-stat">
+                    <div class="k">${esc(item.key)}</div>
+                    <div class="v">${esc(String(item.value))}</div>
+                    <div class="d">${esc(item.detail)}</div>
+                </div>
+            `).join('');
         }
 
         function mapGallery(rows) {
@@ -1813,6 +2472,7 @@
             const contractStatus = profile.contract_status === 'free' ? 'Bosta' : 'Sozlesmeli';
             const seekingClub = profile.seeking_club ? 'KULUP Ariyor' : 'KULUP Aramiyor';
             const currentClub = profile.current_club || profile.club_name || '-';
+            const latestMarketValue = extras?.market_history?.[0]?.value || profile.current_market_value || card.market_value || 0;
 
             setText('playerName', user.name || 'Oyuncu');
             setText('playerPosition', String(position).toUpperCase());
@@ -1827,6 +2487,25 @@
             setText('contractStatusBadge', contractStatus);
             setText('seekingClubBadge', seekingClub);
             setText('currentClubBadge', `KULUP: ${currentClub}`);
+            updateHeroEditorial({
+                id: user.id || profile.user_id || card.id || 7,
+                name: user.name || 'Oyuncu',
+                position,
+                sport: profile.sport || profile.branch || 'oyuncu profili',
+                nationality: profile.nationality || card.nationality || 'Scout Vitrini',
+                club: currentClub
+            });
+            updateHeroMarketPanel(latestMarketValue, latestMarketValue ? `Son gorunen piyasa verisi: ${latestMarketValue}` : 'Bu oyuncu icin piyasa verisi sinirli.');
+            renderProfileShowcase({
+                rating,
+                matches,
+                goals,
+                assists,
+                market_value: latestMarketValue,
+                stats_history: payload?.stats?.history || [],
+                market_history: extras?.market_history || [],
+                timeline_events: extras?.timeline_events || []
+            });
             renderProfileStatistics({
                 sport: profile.sport || profile.branch || 'futbol',
                 matches,

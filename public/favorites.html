@@ -4,313 +4,440 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Favorilerim - NextScout</title>
-    <meta name="description" content="NextScout favorites sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
-    <meta name="robots" content="index,follow">
-    <link rel="canonical" href="https://nextscout.pro/favorites.html">
-    <meta property="og:type" content="website">
-    <meta property="og:locale" content="tr_TR">
-    <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="Favorilerim - NextScout">
-    <meta property="og:description" content="NextScout favorites sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
-    <meta property="og:url" content="https://nextscout.pro/favorites.html">
-    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Favorilerim - NextScout">
-    <meta name="twitter:description" content="NextScout favorites sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
-    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
-    <meta name="theme-color" content="#0B3B8A">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <style>
     :root {
-      --bg: #08131d;
-      --card: #0f1f2e;
-      --line: #2b4660;
-      --line-soft: #3f5f80;
-      --text: #f5fbff;
-      --muted: #9bb5cb;
-      --primary: #60a5fa;
+      --bg: #081421;
+      --panel: rgba(10, 24, 39, 0.94);
+      --panel-soft: rgba(15, 34, 53, 0.86);
+      --line: rgba(148, 163, 184, 0.18);
+      --text: #edf4ff;
+      --muted: #95a8c4;
+      --accent: #ff7e22;
+      --accent-strong: #ef5d0d;
+      --chip: rgba(219, 234, 254, 0.08);
       --danger: #dc2626;
-      --cta: #ff5a1f;
-      --cta-2: #ff7e22;
-      --shadow: 0 18px 36px rgba(8,19,29,.34);
+      --shadow: 0 22px 50px rgba(0, 0, 0, 0.28);
     }
-    * { box-sizing: border-box; }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: Inter, Segoe UI, Arial, sans-serif;
-      min-height:100vh;
+      font-family: "Manrope", sans-serif;
       background:
-        radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
-        radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
-        var(--bg);
+        radial-gradient(circle at top left, rgba(255, 126, 34, 0.18), transparent 32%),
+        radial-gradient(circle at top right, rgba(96, 165, 250, 0.12), transparent 26%),
+        linear-gradient(180deg, #07111c 0%, #0a1624 100%);
       color: var(--text);
-      background-repeat:no-repeat;
-      background-size:cover;
-      background-attachment:fixed;
+      min-height: 100vh;
     }
+
     .wrap {
-      max-width: 1100px;
+      width: min(1180px, calc(100% - 28px));
       margin: 0 auto;
-      padding: 24px 16px;
+      padding: 28px 0 44px;
     }
+
     .header {
-      position:relative;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
-      gap: 10px;
+      gap: 14px;
       margin-bottom: 18px;
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
-      padding: 22px 24px;
-      box-shadow: var(--shadow);
-      overflow:hidden;
     }
-    .header::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--cta) 0%,var(--cta-2) 55%,#60a5fa 100%)}
+
     .title {
       margin: 0;
-      font-size: 30px;
+      font-size: clamp(28px, 4vw, 38px);
       font-weight: 800;
-      font-family:Poppins,Inter,sans-serif;
-      color: #dbeafe;
+      letter-spacing: -0.03em;
     }
+
     .sub {
-      margin-top: 5px;
+      margin-top: 8px;
       color: var(--muted);
       font-size: 14px;
+      max-width: 780px;
     }
+
     .close-btn {
-      width: 42px;
-      height: 42px;
-      border: 1px solid rgba(255,126,34,.45);
-      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
-      color: #16325c;
-      padding: 0;
-      border-radius: 12px;
-      font-weight: 900;
-      text-decoration: none;
+      width: 46px;
+      height: 46px;
+      border: 1px solid var(--line);
+      background: rgba(15, 34, 53, 0.76);
+      color: var(--text);
+      border-radius: 14px;
       cursor: pointer;
-      font-size: 18px;
+      font-size: 24px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      line-height: 1;
-      box-shadow: 0 12px 24px rgba(8,19,29,.24);
+      box-shadow: var(--shadow);
     }
-    .btn {
-      border: 1px solid rgba(255,126,34,.45);
-      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
-      color: #16325c;
-      padding: 10px 14px;
-      border-radius: 12px;
-      font-weight: 800;
-      text-decoration: none;
-      cursor: pointer;
+
+    .toolbar,
+    .quick-lists,
+    .summary-bar {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .count {
       font-size: 13px;
+      color: var(--muted);
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .toolbar-input,
+    .toolbar-select {
+      min-height: 44px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 126, 34, 0.22);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      padding: 0 14px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .toolbar-input {
+      min-width: 220px;
+    }
+
+    .toolbar-select {
+      min-width: 190px;
+    }
+
+    .toolbar-select option {
+      color: #081421;
+    }
+
+    .btn {
+      min-height: 44px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 126, 34, 0.28);
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+      color: #fff;
+      padding: 0 14px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
-      justify-content:center;
-      gap: 7px;
-      line-height:1;
-      box-shadow:0 12px 24px rgba(8,19,29,.24);
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
     }
-    .btn:hover{border-color:rgba(255,126,34,.6)}
-    .btn-primary{background:linear-gradient(135deg,var(--cta) 0%,var(--cta-2) 100%);border-color:rgba(255,126,34,.6);color:#fff;box-shadow:0 16px 28px rgba(255,90,31,.28)}
-    .toolbar {
-      position:relative;
-      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
-      border: 1px solid var(--line);
-      border-radius: 18px;
+
+    .btn.btn-danger {
+      background: linear-gradient(135deg, #b91c1c 0%, var(--danger) 100%);
+      border-color: rgba(248, 113, 113, 0.28);
+    }
+
+    .summary-bar {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .summary-card {
       padding: 14px 16px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(8, 20, 33, 0.18) 100%);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+    }
+
+    .summary-card strong {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+
+    .summary-card span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .quick-lists {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
+      padding: 12px;
+      margin-bottom: 16px;
+    }
+
+    .quick-chip {
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: var(--panel-soft);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 10px 14px;
+      display: inline-flex;
       align-items: center;
-      margin-bottom: 14px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-    .toolbar::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--cta) 0%,var(--cta-2) 55%,#60a5fa 100%)}
-    .count {
-      color: var(--muted);
-      font-size: 13px;
+      gap: 8px;
       font-weight: 700;
+      cursor: pointer;
     }
-    .btn-danger {
-      color: #fff;
-      border-color: rgba(220,38,38,.35);
-      background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%);
+
+    .quick-chip strong {
+      color: #9cc6ff;
+      font-size: 12px;
     }
+
+    .quick-chip.active {
+      background: linear-gradient(135deg, rgba(255, 126, 34, 0.22) 0%, rgba(255, 126, 34, 0.08) 100%);
+      border-color: rgba(255, 126, 34, 0.38);
+      color: #fff3e8;
+    }
+
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
     }
+
     .card {
-      position:relative;
-      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: 18px;
-      overflow: hidden;
+      border-radius: 24px;
       box-shadow: var(--shadow);
+      overflow: hidden;
     }
-    .card::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--cta) 0%,var(--cta-2) 55%,#60a5fa 100%)}
-    .card-photo {
-      height: 136px;
+
+    .card-head {
       display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 18px 0;
+    }
+
+    .card-photo {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255, 126, 34, 0.22) 0%, rgba(59, 130, 246, 0.24) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #16325c 0%, #1d4f91 100%);
-      border-bottom: 1px solid var(--line);
-      color: #dbeafe;
-      font-size: 42px;
+      font-size: 22px;
       font-weight: 800;
-      letter-spacing: 1px;
+      color: #fff;
     }
+
     .content {
-      padding: 12px;
+      padding: 16px 18px 18px;
     }
+
     .top {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-    .name {
-      font-size: 16px;
-      font-weight: 800;
-      margin: 0;
-      color: #f8fafc;
-    }
-    .pos-tag {
-      font-size: 10px;
-      font-weight: 700;
-      color: #dbeafe;
-      border: 1px solid rgba(255,126,34,.32);
-      background: rgba(255,126,34,.08);
-      border-radius: 999px;
-      padding: 3px 8px;
-      white-space: nowrap;
-    }
-    .meta {
-      color: #94a3b8;
-      font-size: 12px;
+      gap: 10px;
       margin-bottom: 8px;
     }
+
+    .name {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.15;
+    }
+
+    .pos-tag,
+    .list-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .pos-tag {
+      background: rgba(59, 130, 246, 0.16);
+      color: #bdddff;
+      border: 1px solid rgba(59, 130, 246, 0.26);
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
     .stats {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 10px;
+      gap: 8px;
+      margin-bottom: 14px;
     }
+
     .chip {
-      font-size: 10px;
-      color: #dbeafe;
-      background: rgba(255,126,34,.08);
-      border: 1px solid rgba(255,126,34,.28);
-      border-radius: 8px;
-      padding: 2px 6px;
+      min-height: 30px;
+      border-radius: 999px;
+      padding: 0 12px;
+      display: inline-flex;
+      align-items: center;
+      background: var(--chip);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      color: #d7e7ff;
+      font-size: 12px;
       font-weight: 700;
     }
-    .actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
+
+    .list-badge {
+      background: rgba(255, 126, 34, 0.14);
+      border: 1px solid rgba(255, 126, 34, 0.24);
+      color: #ffd6b5;
     }
+
+    .assign-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
     .actions button {
-      flex: 1;
-      border: 1px solid rgba(255,126,34,.45);
-      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
-      color: #16325c;
-      padding: 8px 10px;
-      border-radius: 12px;
-      font-size: 12px;
+      min-height: 42px;
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(219, 234, 254, 0.04) 100%);
+      color: var(--text);
+      font-size: 13px;
       font-weight: 800;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 8px;
     }
+
     .actions .remove {
       background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%);
-      color: #fff;
-      border-color: rgba(220,38,38,.35);
+      border-color: rgba(248, 113, 113, 0.24);
     }
+
     .empty {
       border: 1px dashed var(--line);
-      border-radius: 18px;
-      padding: 26px;
+      border-radius: 22px;
+      padding: 36px 20px;
       text-align: center;
       color: var(--muted);
-      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
-      font-weight: 600;
-      box-shadow:var(--shadow);
-    }
-    .auth-gate {
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
-      padding: 28px;
-      text-align: center;
+      background: var(--panel);
       box-shadow: var(--shadow);
-      margin-top: 10px;
+      font-weight: 700;
     }
-    .auth-gate h2 { margin: 0; font-size: 24px; color: #dbeafe; }
-    .auth-gate p { margin: 10px 0 0; color: var(--muted); }
-    .auth-actions {
-      margin-top: 16px;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .auth-actions .btn { min-width: 130px; text-align: center; }
-    @media (max-width: 768px) {
-      .wrap { padding: 12px 10px 18px; }
-      .header {
-        flex-direction: column;
-        align-items: flex-start;
+
+    @media (max-width: 900px) {
+      .summary-bar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
-      .title { font-size: 23px; }
-      .sub { font-size: 12px; }
+    }
+
+    @media (max-width: 720px) {
+      .wrap {
+        width: min(100% - 20px, 100%);
+        padding-top: 18px;
+      }
+
       .toolbar {
-        padding: 10px;
-        gap: 8px;
+        align-items: stretch;
       }
-      .btn {
-        padding: 9px 12px;
+
+      .toolbar-group,
+      .assign-row,
+      .actions {
+        grid-template-columns: 1fr;
       }
-      .grid { grid-template-columns: 1fr; }
-      .actions { display: grid; grid-template-columns: 1fr 1fr; }
+
+      .toolbar-group {
+        width: 100%;
+      }
+
+      .toolbar-input,
+      .toolbar-select,
+      .btn,
+      .actions button {
+        width: 100%;
+      }
     }
-    @media (max-width: 480px) {
-      .actions { grid-template-columns: 1fr; }
-      .btn { width: 100%; justify-content: center; }
-      .header .btn { width: auto; }
+
+    @media (max-width: 520px) {
+      .summary-bar {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
-    <link rel="stylesheet" href="assets/css/mobile-unified.css">
-    <link rel="stylesheet" href="assets/css/mobile-polish.css">
+  <link rel="stylesheet" href="assets/css/mobile-unified.css">
+  <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
 <body>
   <div class="wrap">
     <div class="header">
       <div>
         <h1 class="title">Favorilerim</h1>
-        <div class="sub">Favoriye ekledigin oyuncular burada listelenir.</div>
+        <div class="sub">Favorilerini listelere ayir, hizli erisim sagla ve tum rollerde ayni mantikla yonet.</div>
       </div>
-      <button type="button" class="close-btn" onclick="goBackFromFavorites()" aria-label="Kapat" title="Kapat">×</button>
+      <button type="button" class="close-btn" onclick="goBackFromFavorites()" aria-label="Kapat" title="Kapat">x</button>
     </div>
 
-    <div class="toolbar">
-      <span class="count" id="countText">0 oyuncu</span>
-      <button class="btn btn-danger" id="clearBtn"><i class="fas fa-trash"></i><span>T�m�n� Temizle</span></button>
+    <div class="toolbar" id="toolbar">
+      <span class="count" id="countText">0 kayit</span>
+      <div class="toolbar-group">
+        <input type="text" class="toolbar-input" id="newListName" placeholder="Orn: Izmir U19">
+        <button type="button" class="btn" id="createListBtn"><i class="fas fa-plus"></i><span>Liste Olustur</span></button>
+      </div>
+      <div class="toolbar-group">
+        <select class="toolbar-select" id="listFilter">
+          <option value="all">Tum Favoriler</option>
+        </select>
+        <button type="button" class="btn btn-danger" id="clearBtn"><i class="fas fa-trash"></i><span>Tumunu Temizle</span></button>
+      </div>
     </div>
 
+    <div class="summary-bar" id="summaryBar"></div>
+    <div class="quick-lists" id="quickLists"></div>
     <div id="list"></div>
     <div id="authGate" style="display:none;"></div>
   </div>
@@ -329,10 +456,10 @@
       clubs: 'Favori Kulupler'
     };
     const VIEW_SUBS = {
-      players: 'Favoriye ekledigin oyuncular burada listelenir.',
-      managers: 'Favoriye ekledigin menajerler burada listelenir.',
-      scouts: 'Favoriye ekledigin scoutlar burada listelenir.',
-      clubs: 'Favoriye ekledigin kulupler burada listelenir.'
+      players: 'Favoriye ekledigin oyunculari listelere ayir, transfer ya da takip odakli klasorler olustur.',
+      managers: 'Favoriye ekledigin menajerleri listelere ayir ve hizli erisim sagla.',
+      scouts: 'Favoriye ekledigin scoutlari listelere ayir ve hizli erisim sagla.',
+      clubs: 'Favoriye ekledigin kulupleri listelere ayir ve hizli erisim sagla.'
     };
 
     function getFavoritesView() {
@@ -345,24 +472,38 @@
       }
     }
 
-    function getFavoritesStorageKey() {
-      const view = getFavoritesView();
+    function getFavoritesStorageKey(view) {
       const map = {
-        players: 'nextscout_favorite_players',
-        managers: 'nextscout_favorite_managers',
-        scouts: 'nextscout_favorite_scouts',
-        clubs: 'nextscout_favorite_clubs'
+        players: 'nextscout_favorites',
+        managers: 'nextscout_manager_favorites',
+        scouts: 'nextscout_scout_favorites',
+        clubs: 'nextscout_club_favorites'
       };
-      return map[view] || 'nextscout_favorite_players';
+      return map[view] || 'nextscout_favorites';
     }
 
-    const KEY = getFavoritesStorageKey();
-    const listEl = document.getElementById('list');
+    const view = getFavoritesView();
+    const FAVORITES_KEY = getFavoritesStorageKey(view);
+    const LISTS_KEY = `nextscout_favorite_lists_${view}`;
+    const ASSIGNMENTS_KEY = `nextscout_favorite_list_assignments_${view}`;
+
     const countText = document.getElementById('countText');
+    const listEl = document.getElementById('list');
+    const summaryBar = document.getElementById('summaryBar');
+    const quickLists = document.getElementById('quickLists');
+    const listFilter = document.getElementById('listFilter');
     const clearBtn = document.getElementById('clearBtn');
-    const authGate = document.getElementById('authGate');
-    const toolbarEl = document.querySelector('.toolbar');
-    const dashboardBtn = document.getElementById('dashboardBtn');
+    const createListBtn = document.getElementById('createListBtn');
+    const newListNameInput = document.getElementById('newListName');
+    let activeListId = 'all';
+
+    function safeAlert(message) {
+      if (typeof window.nsAlert === 'function') {
+        window.nsAlert(message);
+        return;
+      }
+      window.alert(message);
+    }
 
     function goBackFromFavorites() {
       if (window.history.length > 1) {
@@ -372,212 +513,272 @@
       window.location.href = 'index.html';
     }
 
-    function getUserRole() {
-      const roleRaw = (localStorage.getItem('nextscout_user_role') || '').trim().toLowerCase();
-      if (roleRaw) return roleRaw;
+    function getApiBaseUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = (params.get('api_base') || '').trim();
+      if (fromQuery) return fromQuery.replace(/\/$/, '');
+      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      return '/api';
+    }
+
+    function loadJson(key, fallback) {
       try {
-        const raw = localStorage.getItem('nextscout_user');
-        const user = raw ? JSON.parse(raw) : null;
-        return String(user?.role || '').trim().toLowerCase();
+        const raw = localStorage.getItem(key);
+        const parsed = raw ? JSON.parse(raw) : fallback;
+        if (Array.isArray(fallback)) return Array.isArray(parsed) ? parsed : fallback;
+        return parsed && typeof parsed === 'object' ? parsed : fallback;
       } catch (error) {
-        return '';
+        return fallback;
       }
     }
 
-    function getDashboardHref(role) {
-      const normalized = String(role || '').trim().toLowerCase();
-      if (normalized === 'manager') return 'manager-dashboard.html';
-      if (normalized === 'team' || normalized === 'club') return 'team-dashboard.html';
-      if (normalized === 'coach') return 'coach-dashboard.html';
-      if (normalized === 'scout') return 'scout-dashboard.html';
-      return 'player-dashboard.html';
-    }
-
-    function isAuthenticated() {
-      const token = (localStorage.getItem('nextscout_token') || '').trim();
-      const userRaw = (localStorage.getItem('nextscout_user') || '').trim();
-      return Boolean(token || userRaw);
-    }
-
-    function showAuthGate() {
-      if (toolbarEl) toolbarEl.style.display = 'none';
-      listEl.style.display = 'none';
-      authGate.style.display = 'block';
-      authGate.innerHTML = `
-        <div class="auth-gate">
-          <h2>Favorileri G�rmek I�in �ye Ol</h2>
-          <p>Favori oyuncu, ilan ve takip listesini g�rmek i�in �nce giris yapmalisin.</p>
-          <div class="auth-actions">
-            <a class="btn" href="#" onclick="goLogin();return false;">Giris Yap</a>
-            <a class="btn" href="#" onclick="goRegister();return false;">�ye Ol</a>
-          </div>
-        </div>
-      `;
-    }
-
-    function goLogin() {
-      localStorage.setItem('nextscout_open_login', '1');
-      window.location.href = 'index.html';
-    }
-
-    function goRegister() {
-      localStorage.setItem('nextscout_open_register', '1');
-      window.location.href = 'index.html';
+    function saveJson(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
     }
 
     function loadFavorites() {
-      try {
-        const raw = localStorage.getItem(KEY);
-        const data = raw ? JSON.parse(raw) : [];
-        return Array.isArray(data) ? data : [];
-      } catch {
-        return [];
-      }
+      return loadJson(FAVORITES_KEY, []);
     }
 
     function saveFavorites(items) {
-      localStorage.setItem(KEY, JSON.stringify(items));
+      saveJson(FAVORITES_KEY, items);
     }
 
-    function render() {
-      const items = loadFavorites();
-      const view = getFavoritesView();
-      const label = VIEW_LABELS[view] || 'oyuncu';
-      countText.textContent = `${items.length} ${label}`;
+    function loadLists() {
+      return loadJson(LISTS_KEY, []);
+    }
 
-      if (!items.length) {
-        listEl.innerHTML = `<div class="empty">Henuz favori ${label} eklenmedi.</div>`;
+    function saveLists(items) {
+      saveJson(LISTS_KEY, items);
+    }
+
+    function loadAssignments() {
+      return loadJson(ASSIGNMENTS_KEY, {});
+    }
+
+    function saveAssignments(items) {
+      saveJson(ASSIGNMENTS_KEY, items);
+    }
+
+    function normalizeListName(value) {
+      return String(value || '').trim().replace(/\s+/g, ' ');
+    }
+
+    function getListName(listId) {
+      if (!listId) return '';
+      const found = loadLists().find((entry) => String(entry.id) === String(listId));
+      return found ? found.name : '';
+    }
+
+    function getRenderedFavorites() {
+      const assignments = loadAssignments();
+      return loadFavorites().map((item) => {
+        const listId = assignments[String(item.id)] || item.listId || '';
+        return {
+          ...item,
+          listId,
+          listName: getListName(listId)
+        };
+      });
+    }
+
+    function createList(name) {
+      const normalized = normalizeListName(name);
+      if (!normalized) {
+        safeAlert('Liste ismi gir.');
+        return;
+      }
+      const lists = loadLists();
+      if (lists.some((entry) => entry.name.toLowerCase() === normalized.toLowerCase())) {
+        safeAlert('Bu isimde bir liste zaten var.');
+        return;
+      }
+      const newList = {
+        id: `list_${Date.now()}`,
+        name: normalized,
+        createdAt: new Date().toISOString()
+      };
+      lists.unshift(newList);
+      saveLists(lists);
+      activeListId = newList.id;
+      newListNameInput.value = '';
+      render();
+    }
+
+    function setFavoriteList(id, listId) {
+      const assignments = loadAssignments();
+      if (listId) assignments[String(id)] = listId;
+      else delete assignments[String(id)];
+      saveAssignments(assignments);
+      render();
+    }
+
+    function removeFavorite(id) {
+      const nextItems = loadFavorites().filter((entry) => String(entry.id) !== String(id));
+      const assignments = loadAssignments();
+      delete assignments[String(id)];
+      saveFavorites(nextItems);
+      saveAssignments(assignments);
+      render();
+    }
+
+    function contactFavorite(id) {
+      const item = getRenderedFavorites().find((entry) => String(entry.id) === String(id));
+      if (!item) return;
+      safeAlert(`${item.name} ile iletisim baslatiliyor...`);
+    }
+
+    function applyPresentation() {
+      document.title = `${VIEW_TITLES[view] || 'Favorilerim'} - NextScout`;
+      const title = document.querySelector('.title');
+      if (title) title.textContent = VIEW_TITLES[view] || 'Favorilerim';
+      const sub = document.querySelector('.sub');
+      if (sub) sub.textContent = VIEW_SUBS[view] || 'Favorilerini listelere ayir ve hizli erisim sagla.';
+    }
+
+    function renderSummary(allItems) {
+      const lists = loadLists();
+      const assignedCount = allItems.filter((entry) => entry.listId).length;
+      const summaryItems = [
+        { value: allItems.length, label: 'Toplam favori' },
+        { value: lists.length, label: 'Olusturulan liste' },
+        { value: assignedCount, label: 'Listeye alinan' },
+        { value: allItems.length - assignedCount, label: 'Hizli karar bekleyen' }
+      ];
+      summaryBar.innerHTML = summaryItems.map((item) => `
+        <div class="summary-card">
+          <strong>${item.value}</strong>
+          <span>${item.label}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderFilterOptions(allItems) {
+      const lists = loadLists();
+      listFilter.innerHTML = [
+        '<option value="all">Tum Favoriler</option>',
+        '<option value="unlisted">Listeye Ayrilmayanlar</option>',
+        ...lists.map((entry) => `<option value="${entry.id}">${entry.name}</option>`)
+      ].join('');
+
+      if (
+        activeListId !== 'all' &&
+        activeListId !== 'unlisted' &&
+        !lists.some((entry) => String(entry.id) === String(activeListId))
+      ) {
+        activeListId = 'all';
+      }
+
+      listFilter.value = activeListId;
+      countText.textContent = `${allItems.length} ${VIEW_LABELS[view] || 'kayit'}`;
+    }
+
+    function renderQuickLists(allItems) {
+      const lists = loadLists();
+      const quickItems = [
+        { id: 'all', name: 'Tum Favoriler', count: allItems.length },
+        { id: 'unlisted', name: 'Listeye Ayrilmayanlar', count: allItems.filter((entry) => !entry.listId).length },
+        ...lists.map((entry) => ({
+          id: entry.id,
+          name: entry.name,
+          count: allItems.filter((item) => String(item.listId) === String(entry.id)).length
+        }))
+      ];
+
+      quickLists.innerHTML = quickItems.map((item) => `
+        <button type="button" class="quick-chip ${activeListId === item.id ? 'active' : ''}" data-list-id="${item.id}">
+          <span>${item.name}</span>
+          <strong>${item.count}</strong>
+        </button>
+      `).join('');
+
+      quickLists.querySelectorAll('[data-list-id]').forEach((button) => {
+        button.addEventListener('click', () => {
+          activeListId = button.getAttribute('data-list-id') || 'all';
+          render();
+        });
+      });
+    }
+
+    function filterFavorites(items) {
+      if (activeListId === 'all') return items;
+      if (activeListId === 'unlisted') return items.filter((entry) => !entry.listId);
+      return items.filter((entry) => String(entry.listId) === String(activeListId));
+    }
+
+    function buildAssignOptions(selectedId) {
+      return [
+        '<option value="">Liste Sec</option>',
+        ...loadLists().map((entry) => `<option value="${entry.id}" ${String(selectedId) === String(entry.id) ? 'selected' : ''}>${entry.name}</option>`)
+      ].join('');
+    }
+
+    function getInitials(name) {
+      return ((name || 'O').split(' ').map((part) => part[0] || '').join('').slice(0, 2) || 'OY').toUpperCase();
+    }
+
+    function renderFavorites() {
+      const allItems = getRenderedFavorites();
+      const filteredItems = filterFavorites(allItems);
+
+      renderSummary(allItems);
+      renderFilterOptions(allItems);
+      renderQuickLists(allItems);
+
+      if (!filteredItems.length) {
+        listEl.innerHTML = `<div class="empty">${activeListId === 'all' ? 'Henuz favori kaydi yok.' : 'Bu listede henuz kayit yok.'}</div>`;
         return;
       }
 
       listEl.innerHTML = `
         <div class="grid">
-          ${items.map(p => `
+          ${filteredItems.map((item) => `
             <div class="card">
-              <div class="card-photo">${((p.name || 'O').split(' ').map(s => s[0] || '').join('').slice(0,2) || 'OY').toUpperCase()}</div>
-              <div class="content">
-                <div class="top">
-                  <h3 class="name">${p.name || '-'}</h3>
-                  <span class="pos-tag">${p.position || '-'}</span>
+              <div class="card-head">
+                <div class="card-photo">${getInitials(item.name)}</div>
+                <div>
+                  <div class="top">
+                    <h3 class="name">${item.name || '-'}</h3>
+                    <span class="pos-tag">${item.position || item.role || '-'}</span>
+                  </div>
+                  <div class="meta">${item.club || item.organization || '-'} • ${item.league || item.city || '-'}</div>
                 </div>
-                <div class="meta">${p.club || '-'} � ${p.league || '-'}</div>
+              </div>
+              <div class="content">
                 <div class="stats">
-                  <span class="chip">Yas ${p.age || '-'}</span>
-                  <span class="chip">Boy ${p.height || '-'} cm</span>
-                  <span class="chip">Favori ${p.rating || 0}</span>
+                  <span class="chip">Yas ${item.age || '-'}</span>
+                  <span class="chip">Boy ${item.height || '-'}</span>
+                  <span class="chip">Favori ${item.rating || 0}</span>
+                  ${item.listName ? `<span class="list-badge">${item.listName}</span>` : ''}
+                </div>
+                <div class="assign-row">
+                  <select class="toolbar-select" data-assign-id="${item.id}">
+                    ${buildAssignOptions(item.listId)}
+                  </select>
+                  <button type="button" class="btn" data-save-id="${item.id}">
+                    <i class="fas fa-layer-group"></i><span>Listeye Kaydet</span>
+                  </button>
                 </div>
                 <div class="actions">
-                  <button onclick="contact('${p.id}')"><i class="fas fa-comments"></i> Iletisim</button>
-                  <button class="remove" onclick="removeFav('${p.id}')"><i class="fas fa-xmark"></i> Kaldir</button>
+                  <button type="button" onclick="contactFavorite('${item.id}')"><i class="fas fa-comments"></i> Iletisim</button>
+                  <button type="button" class="remove" onclick="removeFavorite('${item.id}')"><i class="fas fa-xmark"></i> Kaldir</button>
                 </div>
               </div>
             </div>
           `).join('')}
         </div>
       `;
-    }
 
-    function removeFav(id) {
-      const items = loadFavorites().filter(x => String(x.id) !== String(id));
-      saveFavorites(items);
-      render();
-    }
-
-    function contact(id) {
-      const item = loadFavorites().find(x => String(x.id) === String(id));
-      if (!item) return;
-      nsAlert(`${item.name} ile iletisim baslatiliyor...`);
-    }
-
-    clearBtn.addEventListener('click', () => {
-      if (!confirm('T�m favorileri silmek istedigine emin misin?')) return;
-      saveFavorites([]);
-      render();
-    });
-
-    if (!isAuthenticated()) {
-      showAuthGate();
-    } else {
-      render();
-    }
-    function showAuthGateFixed() {
-      if (toolbarEl) toolbarEl.style.display = 'none';
-      listEl.style.display = 'none';
-      authGate.style.display = 'block';
-      authGate.innerHTML = `
-        <div class="auth-gate">
-          <h2>Favorileri Görmek İçin Üye Ol</h2>
-          <p>Favori oyuncu, ilan ve takip listesini görmek için önce giriş yapmalısın.</p>
-          <div class="auth-actions">
-            <a class="btn" href="#" onclick="goLogin();return false;">Giriş Yap</a>
-            <a class="btn" href="#" onclick="goRegister();return false;">Üye Ol</a>
-          </div>
-        </div>
-      `;
-    }
-
-    function applyTurkishTextFixes() {
-      document.title = 'Favorilerim - NextScout';
-      const sub = document.querySelector('.sub');
-      if (sub) sub.textContent = 'Favoriye eklediğin oyuncular burada listelenir.';
-      const clearSpan = document.querySelector('#clearBtn span');
-      if (clearSpan) clearSpan.textContent = 'Tümünü Temizle';
-      if (dashboardBtn) dashboardBtn.setAttribute('href', getDashboardHref(getUserRole()));
-    }
-
-    function applyFavoritesViewPresentation() {
-      const view = getFavoritesView();
-      document.title = `${VIEW_TITLES[view] || 'Favorilerim'} - NextScout`;
-      const title = document.querySelector('.title');
-      if (title) title.textContent = VIEW_TITLES[view] || 'Favorilerim';
-      const sub = document.querySelector('.sub');
-      if (sub) sub.textContent = VIEW_SUBS[view] || 'Favoriye ekledigin oyuncular burada listelenir.';
-      const clearSpan = document.querySelector('#clearBtn span');
-      if (clearSpan) clearSpan.textContent = 'Tumunu Temizle';
-    }
-
-    contact = function(id) {
-      const item = loadFavorites().find(x => String(x.id) === String(id));
-      if (!item) return;
-      nsAlert(`${item.name} ile iletişim başlatılıyor...`);
-    };
-
-    const freshClearBtn = clearBtn ? clearBtn.cloneNode(true) : null;
-    if (freshClearBtn && clearBtn?.parentNode) {
-      clearBtn.parentNode.replaceChild(freshClearBtn, clearBtn);
-      freshClearBtn.onclick = () => {
-        if (!confirm('Tüm favorileri silmek istediğine emin misin?')) return;
-        saveFavorites([]);
-        render();
-      };
-    }
-
-    applyTurkishTextFixes();
-    applyFavoritesViewPresentation();
-    isAuthenticated = function() { return true; };
-    showAuthGate = function() {
-      if (toolbarEl) toolbarEl.style.display = '';
-      listEl.style.display = '';
-      if (authGate) authGate.style.display = 'none';
-    };
-    showAuthGateFixed = function() {
-      if (toolbarEl) toolbarEl.style.display = '';
-      listEl.style.display = '';
-      if (authGate) authGate.style.display = 'none';
-    };
-    if (authGate) authGate.style.display = 'none';
-    render();
-
-    function getApiBaseUrl() {
-      const query = new URLSearchParams(window.location.search);
-      const fromQuery = (query.get('api_base') || '').trim();
-      if (fromQuery) return fromQuery.replace(/\/$/, '');
-      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
-      return '/api';
+      listEl.querySelectorAll('[data-save-id]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const favoriteId = button.getAttribute('data-save-id');
+          const select = listEl.querySelector(`[data-assign-id="${favoriteId}"]`);
+          setFavoriteList(favoriteId, select ? select.value : '');
+        });
+      });
     }
 
     function getLeaderboardRole() {
-      const view = getFavoritesView();
       const map = {
         players: 'player',
         managers: 'manager',
@@ -602,9 +803,8 @@
 
     async function loadFavoritesLeaderboard() {
       try {
-        const apiBase = getApiBaseUrl();
-        const role = getLeaderboardRole();
-        const response = await fetch(`${apiBase}/public/favorites/leaderboard?role=${encodeURIComponent(role)}&limit=24`, {
+        if (loadFavorites().length) return;
+        const response = await fetch(`${getApiBaseUrl()}/public/favorites/leaderboard?role=${encodeURIComponent(getLeaderboardRole())}&limit=24`, {
           headers: { Accept: 'application/json' }
         });
         if (!response.ok) return;
@@ -616,9 +816,38 @@
       } catch (error) {}
     }
 
+    function render() {
+      renderFavorites();
+    }
+
+    createListBtn.addEventListener('click', () => createList(newListNameInput.value));
+    newListNameInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        createList(newListNameInput.value);
+      }
+    });
+    listFilter.addEventListener('change', () => {
+      activeListId = listFilter.value || 'all';
+      render();
+    });
+    clearBtn.addEventListener('click', () => {
+      if (!window.confirm('Tum favorileri silmek istedigine emin misin?')) return;
+      saveFavorites([]);
+      saveAssignments({});
+      activeListId = 'all';
+      render();
+    });
+
+    window.goBackFromFavorites = goBackFromFavorites;
+    window.removeFavorite = removeFavorite;
+    window.contactFavorite = contactFavorite;
+
+    applyPresentation();
+    render();
     loadFavoritesLeaderboard();
   </script>
-    <script src="assets/js/core-stability.js"></script>
-    <script src="assets/js/mobile-professional.js" defer></script>
+  <script src="assets/js/core-stability.js"></script>
+  <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
