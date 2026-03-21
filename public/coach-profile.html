@@ -533,6 +533,11 @@
           </div>
           <div class="act"><button class="btn btn-primary" type="button" id="saveCoachClipBtn"><i class="fas fa-film"></i><span>Klibi Kaydet</span></button></div>
         </div>
+        <div class="notes-toolbar">
+          <div class="field"><label class="label" for="coachClipsSearch">Kliplerde Ara</label><input class="input" id="coachClipsSearch" placeholder="Oyuncu, link veya not..."></div>
+          <div class="field"><label class="label" for="coachClipsStampFilter">Zaman</label><input class="input" id="coachClipsStampFilter" placeholder="12:34"></div>
+          <div class="field"><label class="label" for="coachClipsSort">Siralama</label><select class="select" id="coachClipsSort"><option value="newest">En Yeni</option><option value="oldest">En Eski</option></select></div>
+        </div>
         <div class="notes-list" id="coachClipsList"></div>
       </div>
     </div>
@@ -910,6 +915,17 @@
       const list = document.getElementById('coachClipsList');
       const summary = document.getElementById('coachClipsSummary');
       if (!list || !summary) return;
+      const searchValue = String(document.getElementById('coachClipsSearch')?.value || '').trim().toLowerCase();
+      const stampValue = String(document.getElementById('coachClipsStampFilter')?.value || '').trim().toLowerCase();
+      const sortValue = String(document.getElementById('coachClipsSort')?.value || 'newest').trim().toLowerCase();
+      const filteredRows = rows
+        .filter((row) => {
+          const haystack = `${row?.player || ''} ${row?.url || ''} ${row?.body || ''}`.toLowerCase();
+          const searchMatch = !searchValue || haystack.includes(searchValue);
+          const stampMatch = !stampValue || String(row?.stamp || '').toLowerCase().includes(stampValue);
+          return searchMatch && stampMatch;
+        })
+        .sort((a, b) => sortValue === 'oldest' ? String(a?.created_at || '').localeCompare(String(b?.created_at || '')) : String(b?.created_at || '').localeCompare(String(a?.created_at || '')));
 
       const lastPlayer = rows[0]?.player || '-';
       const lastStamp = rows[0]?.stamp || '-';
@@ -924,7 +940,12 @@
         return;
       }
 
-      list.innerHTML = rows.map((row) => `
+      if (!filteredRows.length) {
+        list.innerHTML = '<div class="clip-empty">Bu filtreyle eslesen klip bulunamadi.</div>';
+        return;
+      }
+
+      list.innerHTML = filteredRows.map((row) => `
         <article class="clip-item" role="button" tabindex="0" data-url="${esc(row.url || '')}" data-stamp="${esc(row.stamp || '')}" aria-label="Klipi ${esc(row.stamp || '-') } anindan ac">
           <div class="clip-head">
             <div class="clip-title">
@@ -1242,6 +1263,9 @@
     document.getElementById('coachNotesSearch')?.addEventListener('input', renderCoachNotes);
     document.getElementById('coachNotesTagFilter')?.addEventListener('change', renderCoachNotes);
     document.getElementById('coachNotesFocusFilter')?.addEventListener('change', renderCoachNotes);
+    document.getElementById('coachClipsSearch')?.addEventListener('input', renderCoachClips);
+    document.getElementById('coachClipsStampFilter')?.addEventListener('input', renderCoachClips);
+    document.getElementById('coachClipsSort')?.addEventListener('change', renderCoachClips);
 
     init();
   </script>
