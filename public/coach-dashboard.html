@@ -347,6 +347,38 @@
       color: var(--muted);
       font-size: 14px;
     }
+    .hero { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    .hero-kicker {
+      display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; padding: 8px 12px; border-radius: 999px;
+      background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(96, 165, 250, 0.25); color: #dbeafe; font-size: 11px; font-weight: 800;
+      letter-spacing: 0.12em; text-transform: uppercase;
+    }
+    .hero-title { margin: 0; max-width: 720px; font: 800 clamp(2rem, 3vw, 3rem)/1.02 Inter, sans-serif; letter-spacing: -0.03em; color: var(--ink); }
+    .hero-sub { margin: 14px 0 0; max-width: 740px; color: var(--muted); font-size: 14px; line-height: 1.7; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .hero-points { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; font-size: 12px; font-weight: 800; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--line); color: #dbeafe; }
+    .hero-side {
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-side::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+    }
+    .panel-title { font-size: 17px; font-weight: 800; margin-bottom: 10px; color: #dbeafe; }
+    .panel-sub { color: var(--muted); font-size: 14px; margin-bottom: 12px; }
+    .status-stack { display: grid; gap: 12px; }
+    .status-row { display: flex; justify-content: space-between; gap: 10px; padding: 14px; border: 1px solid var(--line); background: rgba(255, 255, 255, 0.04); }
+    .status-row span:first-child { color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 
     .stat-card {
       border-radius: 16px;
@@ -413,6 +445,38 @@
       color: #dbeafe;
     }
 
+    .workspace-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .workspace-tab {
+      appearance: none;
+      border: 1px solid rgba(96, 165, 250, 0.24);
+      background: rgba(59, 130, 246, 0.10);
+      color: #dbeafe;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background .2s ease, border-color .2s ease, transform .2s ease, color .2s ease;
+    }
+
+    .workspace-tab:hover {
+      background: rgba(59, 130, 246, 0.18);
+      border-color: rgba(96, 165, 250, 0.38);
+      transform: translateY(-1px);
+    }
+
+    .workspace-tab.active {
+      background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
+      border-color: rgba(255, 126, 34, 0.62);
+      color: #fff;
+      box-shadow: 0 14px 24px rgba(255, 90, 31, 0.22);
+    }
+
     .player-card {
       background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
       border: 1px solid var(--line);
@@ -474,9 +538,11 @@
       .search-section,
       .results-section,
       .quick-report-section,
-      .welcome-card {
+      .welcome-card,
+      .hero-side {
         border-radius: 14px;
       }
+      .hero { grid-template-columns: 1fr; }
 
       .need-modal {
         border-radius: 14px 14px 0 0;
@@ -519,7 +585,6 @@
       <button class="btn-small success" onclick="openTrialPublishModal()"><i class="fas fa-calendar-check"></i><span>Deneme/Idman Ilani</span></button>
       <button class="btn-small primary" onclick="openLiveScoutModal()"><i class="fas fa-tower-broadcast"></i><span>Canlı Scout Baslat</span></button>
       <button class="btn-small secondary" onclick="openScoutProfile()"><i class="fas fa-user-check"></i><span>Public Görünüm</span></button>
-      <button class="btn-small secondary" onclick="window.location.href='index.html?success_story=submit#homeStep3'"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></button>
       <button class="btn-small home-btn-global" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255, 126, 34, 0.6);background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 16px 28px rgba(255,90,31,0.28);" onclick="window.location.href='index.html'"><i class="fas fa-house"></i><span>Ana Sayfa</span></button>
       <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Çıkış</span></button>
       </div>
@@ -533,10 +598,9 @@
           <li class="sidebar-item active" onclick="openPlayerSearchModal()"><i class="fas fa-magnifying-glass"></i><span>Oyuncu Ara</span></li>
           <li class="sidebar-item" onclick="window.location.href='ai-discovery.html'"><i class="fas fa-flask"></i><span>AI Discovery</span></li>
           <li class="sidebar-item" onclick="openScoutProfile()"><i class="fas fa-user"></i><span>Antrenor Profili</span></li>
-          <li class="sidebar-item" onclick="openWatchlist()"><i class="fas fa-list-check"></i><span>Takip Listem</span></li>
           <li class="sidebar-item" onclick="openCoachWorkspace('reviews')"><i class="fas fa-comments"></i><span>Profil Yorumları</span></li>
-          <li class="sidebar-item" onclick="openTrialCenter()"><i class="fas fa-calendar-check"></i><span>Deneme & Idmanlar</span></li>
-        <li class="sidebar-item" onclick="window.location.href='live-watch-demand.html'"><i class="fas fa-location-crosshairs"></i><span>Canlı İzleme Talebi</span></li>
+          <li class="sidebar-item" onclick="openCoachSuccessStoryModal()"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></li>
+          <li class="sidebar-item" onclick="window.location.href='live-watch-demand.html'"><i class="fas fa-location-crosshairs"></i><span>Canlı İzleme Talebi</span></li>
         <li class="sidebar-item" onclick="openPerformance()"><i class="fas fa-chart-line"></i><span>Istatistikler</span></li>
         <li class="sidebar-item" onclick="openScoutReports()"><i class="fas fa-file-lines"></i><span>Scout Raporları</span></li>
           <li class="sidebar-item" onclick="openMessages()"><i class="fas fa-comments"></i><span>Mesajlarim</span></li>
@@ -547,13 +611,40 @@
     </aside>
 
     <div class="content">
-      <div class="welcome-card">
-        <h1>Antrenor operasyonunu buradan yonet.</h1>
-        <p>Oyuncu izle, analiz et ve takip listene ekle.</p>
-      </div>
+      <section class="hero" id="overview">
+        <div class="welcome-card">
+          <div class="hero-kicker">
+            <i class="fas fa-bullseye"></i>
+                <span>Crowdsourced antranör</span>
+          </div>
+          <h2 class="hero-title">Antrenor operasyonunu buradan yonet.</h2>
+          <p class="hero-sub">Oyuncu izle, analiz et ve takip listene ekle.</p>
+          <div class="hero-actions">
+            <button class="btn-small primary" type="button" onclick="openCoachTalentModal()"><i class="fas fa-video"></i><span>Yetenek Bildir</span></button>
+            <button class="btn-small secondary" type="button" onclick="openCoachOpportunityArea('needs')"><i class="fas fa-calendar-check"></i><span>Antranör Firsat Alani</span></button>
+            <button class="btn-small secondary" type="button" onclick="openCoachMarketPulse()"><i class="fas fa-chart-line"></i><span>Market Pulse</span></button>
+            <button class="btn-small secondary" type="button" onclick="openCoachWorkspace('notes')"><i class="fas fa-briefcase"></i><span>Antrenör Çalışma Alanı</span></button>
+            <button class="btn-small secondary" type="button" onclick="openCoachReportsHub('watchlist')"><i class="fas fa-bookmark"></i><span>Scout Watchlist & Raporlar</span></button>
+          </div>
+          <div class="hero-points">
+            <span class="pill"><i class="fas fa-circle-check"></i><span>Dogrulanan gozlemler karar gucunu artirir</span></span>
+            <span class="pill"><i class="fas fa-handshake-angle"></i><span>Trial akislarini tek yerden takip et</span></span>
+          </div>
+        </div>
+        <aside class="hero-side">
+          <h3 class="panel-title">Antrenor Durumu</h3>
+          <p class="panel-sub">Guncel kullanici ve panel sinyalleri tek alanda.</p>
+          <div class="status-stack">
+            <div class="status-row"><span>Kullanici</span><strong id="coachHeroUser">Misafir</strong></div>
+            <div class="status-row"><span>Rol</span><strong id="coachHeroRole">Coach</strong></div>
+            <div class="status-row"><span>Baglanti</span><strong id="coachHeroApi">Bekleniyor</strong></div>
+            <div class="status-row"><span>Odak</span><strong id="coachHeroFocus">Oyuncu izleme</strong></div>
+          </div>
+        </aside>
+      </section>
 
-      <div class="market-pulse-overlay flyout-overlay" id="coachWorkspaceOverlay" onclick="closeCoachWorkspace()"></div>
-      <section class="market-pulse market-pulse-flyout tips-flyout" id="coachWorkspaceCard">
+      <div class="need-modal-overlay" id="coachWorkspaceModal" onclick="if(event.target.id==='coachWorkspaceModal'){closeCoachWorkspace();}">
+      <section class="need-modal live-modal" id="coachWorkspaceCard" onclick="event.stopPropagation()">
         <div class="tips-flyout-card">
         <div class="market-pulse-head tips-flyout-head">
           <div>
@@ -567,7 +658,6 @@
           </div>
         </div>
         <div class="workspace-tabs" style="margin-bottom:14px;">
-          <button class="workspace-tab" type="button" data-coach-workspace-tab="reviews" onclick="openCoachWorkspace('reviews')">Profil Yorumlari</button>
           <button class="workspace-tab active" type="button" data-coach-workspace-tab="notes" onclick="openCoachWorkspace('notes')">Teknik Not Defteri</button>
           <button class="workspace-tab" type="button" data-coach-workspace-tab="clips" onclick="openCoachWorkspace('clips')">Klip Isaretleme</button>
           <button class="workspace-tab" type="button" data-coach-workspace-tab="evaluations" onclick="openCoachWorkspace('evaluations')">Kaydedilmis Degerlendirmeler</button>
@@ -662,15 +752,8 @@
         </div>
       </section>
 
-      <div class="quick-stats">
-        <div class="stat-card"><div class="stat-card-value" id="statPool">0</div><div class="stat-card-label">Oyuncu Havuzu</div></div>
-        <div class="stat-card"><div class="stat-card-value" id="statFiltered">0</div><div class="stat-card-label">Filtre Sonucu</div></div>
-        <div class="stat-card"><div class="stat-card-value" id="statWatch">0</div><div class="stat-card-label">Takip Listem</div></div>
-        <div class="stat-card"><div class="stat-card-value" id="statAvg">0.0</div><div class="stat-card-label">Ortalama Rating</div></div>
-      </div>
-
-      <div class="market-pulse-overlay flyout-overlay" id="coachMarketPulseOverlay" onclick="closeCoachMarketPulse()"></div>
-      <section class="market-pulse market-pulse-flyout tips-flyout" id="coachMarketPulseCard">
+      <div class="need-modal-overlay" id="coachMarketPulseModal" onclick="if(event.target.id==='coachMarketPulseModal'){closeCoachMarketPulse();}">
+      <section class="need-modal live-modal" id="coachMarketPulseCard" onclick="event.stopPropagation()">
         <div class="tips-flyout-card">
         <div class="market-pulse-head tips-flyout-head">
           <div>
@@ -692,13 +775,15 @@
         </div>
         </div>
       </section>
-      <div class="market-pulse-overlay flyout-overlay" id="coachOpportunityOverlay" onclick="closeCoachOpportunityArea()"></div>
-      <section class="market-pulse market-pulse-flyout tips-flyout" id="coachOpportunityCard">
+      </div>
+      </div>
+      <div class="need-modal-overlay" id="coachOpportunityModal" onclick="if(event.target.id==='coachOpportunityModal'){closeCoachOpportunityArea();}">
+      <section class="need-modal live-modal" id="coachOpportunityCard" onclick="event.stopPropagation()">
         <div class="tips-flyout-card">
         <div class="market-pulse-head tips-flyout-head">
           <div>
             <div class="sidebar-title">Firsat Alani</div>
-            <h2 id="coachOpportunityTitle" style="margin:0 0 6px 0;font-size:18px;color:#f8fafc;">Kulup Ihtiyaclari</h2>
+            <h2 id="coachOpportunityTitle" style="margin:0 0 6px 0;font-size:18px;color:#f8fafc;">Antranör Firsat Alani</h2>
             <div class="market-pulse-copy" id="coachOpportunitySummary">Acik kulup arayislarini ve deneme akisini tek panelde ac.</div>
           </div>
           <div class="market-pulse-tools tips-flyout-tools">
@@ -717,34 +802,7 @@
         <div class="market-pulse-list" id="coachOpportunityEventsList" hidden><div class="empty">Deneme ve idmanlar yukleniyor...</div></div>
         </div>
       </section>
-      <div class="quick-report-section">
-        <h2 style="margin-bottom:14px;font-size:18px;font-weight:800;color:#e5e7eb;">Mac Sonu Anlik Rapor</h2>
-        <div class="quick-report-grid">
-          <div class="form-group"><label>Mac Basligi</label><input type="text" id="quickReportTitle" placeholder="U19 Hazirlik Maci"></div>
-          <div class="form-group"><label>Oyuncu Adi</label><input type="text" id="quickReportPlayerName" placeholder="Ali Yilmaz"></div>
-          <div class="form-group"><label>Pozisyon</label><input type="text" id="quickReportPosition" placeholder="Sol Bek"></div>
-          <div class="form-group"><label>Oyuncu ID (ops.)</label><input type="number" id="quickReportPlayerId" placeholder="123"></div>
-          <div class="form-group"><label>Puan (1-100)</label><input type="number" id="quickReportRating" min="1" max="100" value="75"></div>
-          <div class="form-group">
-            <label>Oneri</label>
-            <select id="quickReportRecommendation">
-              <option value="recommended">Recommended</option>
-              <option value="highly_recommended">Highly Recommended</option>
-              <option value="neutral">Neutral</option>
-              <option value="not_recommended">Not Recommended</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group" style="margin-bottom:10px;">
-          <label>Kisa Teknik Not</label>
-          <textarea id="quickReportNote" style="min-height:80px;" placeholder="Kisa analiz notu..."></textarea>
-        </div>
-        <div style="display:flex; gap:10px; align-items:center;">
-          <button class="btn-small primary" type="button" onclick="saveQuickScoutReport()">Raporu Kaydet</button>
-          <div class="quick-report-result" id="quickReportResult">Henuz rapor kaydi yok.</div>
-        </div>
       </div>
-
       <div class="search-section">
         <h2 style="margin-bottom:20px;font-size:18px;font-weight:800;color:#e5e7eb;">Oyuncu Filtresi</h2>
         <div class="search-grid">
@@ -777,6 +835,101 @@
         <div class="need-modal-actions">
           <button class="btn-small secondary" type="button" onclick="closeCoachNeedModal()">Iptal</button>
           <button class="btn-small success" type="submit">Kaydet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="need-modal-overlay" id="coachTalentModal" onclick="if(event.target.id==='coachTalentModal'){closeCoachTalentModal();}">
+    <div class="need-modal live-modal" onclick="event.stopPropagation()">
+      <div class="need-modal-head">
+        <h3>Yetenek Bildir</h3>
+        <button class="btn-small secondary" type="button" onclick="closeCoachTalentModal()">Kapat</button>
+      </div>
+      <div class="need-modal-body">
+        <p style="margin:0 0 4px 0;color:#9ca3af;font-size:14px;">Izledigin oyuncu icin hizli teknik bildirim veya mac sonu anlik rapor gir.</p>
+        <div class="quick-report-grid" style="margin-bottom:0;">
+          <div class="form-group"><label>Mac Basligi</label><input type="text" id="quickReportTitle" placeholder="U19 Hazirlik Maci"></div>
+          <div class="form-group"><label>Oyuncu Adi</label><input type="text" id="quickReportPlayerName" placeholder="Ali Yilmaz"></div>
+          <div class="form-group"><label>Pozisyon</label><input type="text" id="quickReportPosition" placeholder="Sol Bek"></div>
+          <div class="form-group"><label>Oyuncu ID (ops.)</label><input type="number" id="quickReportPlayerId" placeholder="123"></div>
+          <div class="form-group"><label>Puan (1-100)</label><input type="number" id="quickReportRating" min="1" max="100" value="75"></div>
+          <div class="form-group">
+            <label>Oneri</label>
+            <select id="quickReportRecommendation">
+              <option value="recommended">Recommended</option>
+              <option value="highly_recommended">Highly Recommended</option>
+              <option value="neutral">Neutral</option>
+              <option value="not_recommended">Not Recommended</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Kisa Teknik Not</label>
+          <textarea id="quickReportNote" style="min-height:80px;" placeholder="Kisa analiz notu..."></textarea>
+        </div>
+        <div class="quick-report-result" id="quickReportResult">Henuz rapor kaydi yok.</div>
+      </div>
+      <div class="need-modal-actions">
+        <button class="btn-small secondary" type="button" onclick="closeCoachTalentModal()">Iptal</button>
+        <button class="btn-small primary" type="button" onclick="saveQuickScoutReport()">Raporu Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="need-modal-overlay" id="coachReportsHubModal" onclick="if(event.target.id==='coachReportsHubModal'){closeCoachReportsHub();}">
+    <div class="need-modal live-modal" onclick="event.stopPropagation()">
+      <div class="need-modal-head">
+        <h3>Scout Watchlist & Raporlar</h3>
+        <button class="btn-small secondary" type="button" onclick="closeCoachReportsHub()">Kapat</button>
+      </div>
+      <div class="need-modal-body">
+        <div class="workspace-tabs" style="margin-bottom:14px;">
+          <button class="workspace-tab active" type="button" data-coach-reports-tab="watchlist" onclick="openCoachReportsHub('watchlist')">Scout Watchlist</button>
+          <button class="workspace-tab" type="button" data-coach-reports-tab="reports" onclick="openCoachReportsHub('reports')">Scout Raporlari</button>
+        </div>
+        <div id="coachReportsHubWatchlist">
+          <div class="quick-report-result" style="margin-bottom:12px;">Takip ettigin oyunculara hizli ulas.</div>
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <button class="btn-small secondary" type="button" onclick="window.location.href='scout-watchlist.html'">Scout Watchlist Ac</button>
+          </div>
+        </div>
+        <div id="coachReportsHubReports" hidden>
+          <div class="quick-report-result" style="margin-bottom:12px;">Kaydedilen scout raporlarini tek yerden ac.</div>
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <button class="btn-small secondary" type="button" onclick="window.location.href='scout-reports.html'">Scout Raporlarini Ac</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="need-modal-overlay" id="coachSuccessStoryModal" onclick="if(event.target.id==='coachSuccessStoryModal'){closeCoachSuccessStoryModal();}">
+    <div class="need-modal live-modal" onclick="event.stopPropagation()">
+      <div class="need-modal-head">
+        <h3>Basari Hikayesi Gonder</h3>
+        <button class="btn-small secondary" type="button" onclick="closeCoachSuccessStoryModal()">Kapat</button>
+      </div>
+      <form id="coachSuccessStoryForm">
+        <div class="need-modal-body">
+          <input type="text" name="full_name" placeholder="Ad Soyad" required maxlength="150">
+          <div class="live-grid">
+            <select name="sport" required>
+              <option value="">Spor Sec</option>
+              <option value="Futbol">Futbol</option>
+              <option value="Basketbol">Basketbol</option>
+              <option value="Voleybol">Voleybol</option>
+            </select>
+            <input type="text" name="old_club" placeholder="Eski Kulup" maxlength="160">
+          </div>
+          <input type="text" name="new_club" placeholder="Yeni Kulup" maxlength="160" required>
+          <textarea name="story_text" placeholder="Basari hikayeni yaz..." required maxlength="1200"></textarea>
+          <input type="url" name="image_url" placeholder="Gorsel linki (opsiyonel)">
+          <div class="quick-report-result" id="coachSuccessStoryResult">Hikayen admin onayindan sonra yayinlanir.</div>
+        </div>
+        <div class="need-modal-actions">
+          <button class="btn-small secondary" type="button" onclick="closeCoachSuccessStoryModal()">Vazgec</button>
+          <button class="btn-small primary" type="submit">Gonder</button>
         </div>
       </form>
     </div>
@@ -933,6 +1086,102 @@
       return (localStorage.getItem('nextscout_token') || '').trim();
     }
 
+    function openCoachTalentModal() {
+      const modal = document.getElementById('coachTalentModal');
+      if (modal) modal.classList.add('show');
+    }
+
+    function closeCoachTalentModal() {
+      const modal = document.getElementById('coachTalentModal');
+      if (modal) modal.classList.remove('show');
+    }
+
+    function openCoachReportsHub(type = 'watchlist') {
+      const modal = document.getElementById('coachReportsHubModal');
+      const watchlist = document.getElementById('coachReportsHubWatchlist');
+      const reports = document.getElementById('coachReportsHubReports');
+      const tabs = Array.from(document.querySelectorAll('[data-coach-reports-tab]'));
+      const activeType = type === 'reports' ? 'reports' : 'watchlist';
+      if (!modal || !watchlist || !reports) return;
+      watchlist.hidden = activeType !== 'watchlist';
+      reports.hidden = activeType !== 'reports';
+      tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.coachReportsTab === activeType));
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCoachReportsHub() {
+      document.getElementById('coachReportsHubModal')?.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    function openCoachSuccessStoryModal() {
+      const modal = document.getElementById('coachSuccessStoryModal');
+      if (!modal) return;
+      try {
+        const userRaw = localStorage.getItem('nextscout_user');
+        const user = userRaw ? JSON.parse(userRaw) : null;
+        const input = document.querySelector('#coachSuccessStoryForm input[name="full_name"]');
+        if (input && !input.value && user?.name) input.value = String(user.name);
+      } catch (error) {}
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCoachSuccessStoryModal() {
+      document.getElementById('coachSuccessStoryModal')?.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    async function submitCoachSuccessStoryForm(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const root = document.getElementById('coachSuccessStoryResult');
+      const token = getToken();
+      if (!token) {
+        if (root) root.textContent = 'Hikaye gondermek icin giris yapman gerekiyor.';
+        return;
+      }
+
+      const formData = new FormData(form);
+      const payload = {
+        full_name: (formData.get('full_name') || '').toString().trim(),
+        sport: (formData.get('sport') || '').toString().trim(),
+        old_club: (formData.get('old_club') || '').toString().trim(),
+        new_club: (formData.get('new_club') || '').toString().trim(),
+        story_text: (formData.get('story_text') || '').toString().trim(),
+        image_url: (formData.get('image_url') || '').toString().trim(),
+      };
+
+      if (!payload.full_name || !payload.sport || !payload.new_club || !payload.story_text) {
+        if (root) root.textContent = 'Ad, spor, yeni kulup ve hikaye zorunlu.';
+        return;
+      }
+
+      try {
+        const response = await fetch(`${getApiBaseUrl()}/success-stories`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || !result?.ok) {
+          throw new Error(result?.message || 'Hikaye gonderilemedi.');
+        }
+        if (root) root.textContent = 'Hikayen alindi. Admin onayindan sonra yayinlanacak.';
+        window.nsNotify?.success ? window.nsNotify.success('Hikayen alindi. Admin onayindan sonra yayinlanacak.') : null;
+        form.reset();
+        closeCoachSuccessStoryModal();
+      } catch (error) {
+        if (root) root.textContent = error?.message || 'Hikaye gonderilemedi.';
+        window.nsNotify?.error ? window.nsNotify.error(error?.message || 'Hikaye gonderilemedi.') : nsnsAlert(error?.message || 'Hikaye gonderilemedi.');
+      }
+    }
+
     async function coachMarketPulseGet() {
       const response = await fetch(`${getApiBaseUrl()}/market/live-feed?_t=${Date.now()}`, {
         headers: { Accept: 'application/json' },
@@ -981,15 +1230,13 @@
     }
 
     function openCoachMarketPulse() {
-      document.getElementById('coachMarketPulseCard')?.classList.add('active');
-      document.getElementById('coachMarketPulseOverlay')?.classList.add('active');
+      document.getElementById('coachMarketPulseModal')?.classList.add('show');
       document.body.style.overflow = 'hidden';
       loadCoachMarketPulse();
     }
 
     function closeCoachMarketPulse() {
-      document.getElementById('coachMarketPulseCard')?.classList.remove('active');
-      document.getElementById('coachMarketPulseOverlay')?.classList.remove('active');
+      document.getElementById('coachMarketPulseModal')?.classList.remove('show');
       document.body.style.overflow = '';
     }
 
@@ -997,7 +1244,7 @@
 
     function openCoachOpportunityArea(type = 'needs') {
       const card = document.getElementById('coachOpportunityCard');
-      const overlay = document.getElementById('coachOpportunityOverlay');
+      const modal = document.getElementById('coachOpportunityModal');
       const title = document.getElementById('coachOpportunityTitle');
       const summary = document.getElementById('coachOpportunitySummary');
       const status = document.getElementById('coachOpportunityStatus');
@@ -1005,11 +1252,11 @@
       const needs = document.getElementById('coachOpportunityNeedsList');
       const events = document.getElementById('coachOpportunityEventsList');
       const tabs = Array.from(document.querySelectorAll('[data-coach-opportunity-tab]'));
-      if (!card || !overlay || !title || !summary || !status || !refresh || !needs || !events) return;
+      if (!card || !modal || !title || !summary || !status || !refresh || !needs || !events) return;
 
       const map = {
         needs: {
-          title: 'Kulup Ihtiyaclari',
+          title: 'Antranör Firsat Alani',
           summary: 'Acik kulup arayislarini antrenor ekranindan hizlica tara.'
         },
         events: {
@@ -1027,15 +1274,13 @@
       needs.hidden = activeCoachOpportunityTab !== 'needs';
       events.hidden = activeCoachOpportunityTab !== 'events';
       tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.coachOpportunityTab === activeCoachOpportunityTab));
-      card.classList.add('active');
-      overlay.classList.add('active');
+      modal.classList.add('show');
       document.body.style.overflow = 'hidden';
       loadCoachOpportunityArea(activeCoachOpportunityTab);
     }
 
     function closeCoachOpportunityArea() {
-      document.getElementById('coachOpportunityCard')?.classList.remove('active');
-      document.getElementById('coachOpportunityOverlay')?.classList.remove('active');
+      document.getElementById('coachOpportunityModal')?.classList.remove('show');
       document.body.style.overflow = '';
     }
 
@@ -1596,21 +1841,16 @@
 
     function openCoachWorkspace(type) {
       const card = document.getElementById('coachWorkspaceCard');
-      const overlay = document.getElementById('coachWorkspaceOverlay');
+      const modal = document.getElementById('coachWorkspaceModal');
       const title = document.getElementById('coachWorkspaceTitle');
       const summary = document.getElementById('coachWorkspaceSummary');
-      const reviews = document.getElementById('coachWorkspaceReviews');
       const notes = document.getElementById('coachWorkspaceNotes');
       const clips = document.getElementById('coachWorkspaceClips');
       const evaluations = document.getElementById('coachWorkspaceEvaluations');
       const tabs = Array.from(document.querySelectorAll('[data-coach-workspace-tab]'));
-      if (!card || !overlay || !title || !summary || !reviews || !notes || !clips || !evaluations) return;
+      if (!card || !modal || !title || !summary || !notes || !clips || !evaluations) return;
 
       const contentMap = {
-        reviews: {
-          title: 'Profil Yorumlari',
-          summary: 'Antrenor hakkindaki geri bildirimleri bu alanda takip edebilirsin.',
-        },
         notes: {
           title: 'Antrenor Calisma Alani',
           summary: 'Oyuncu bazli teknik gozlem ve kisa karar notlarini buradan yoneteceksin.',
@@ -1629,24 +1869,20 @@
       const selected = contentMap[activeType];
       title.textContent = selected.title;
       summary.textContent = selected.summary;
-      reviews.style.display = activeType === 'reviews' ? 'block' : 'none';
       notes.style.display = activeType === 'notes' ? 'block' : 'none';
       clips.style.display = activeType === 'clips' ? 'block' : 'none';
       evaluations.style.display = activeType === 'evaluations' ? 'block' : 'none';
       tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.coachWorkspaceTab === activeType));
-      card.classList.add('active');
-      overlay.classList.add('active');
+      modal.classList.add('show');
       document.body.style.overflow = 'hidden';
 
-      if (activeType === 'reviews') loadDashboardCoachReviews();
       if (activeType === 'notes') renderDashboardCoachNotes();
       if (activeType === 'clips') renderDashboardCoachClips();
       if (activeType === 'evaluations') renderDashboardCoachEvaluations();
     }
 
     function closeCoachWorkspace() {
-      document.getElementById('coachWorkspaceCard')?.classList.remove('active');
-      document.getElementById('coachWorkspaceOverlay')?.classList.remove('active');
+      document.getElementById('coachWorkspaceModal')?.classList.remove('show');
       document.body.style.overflow = '';
     }
 
@@ -2163,6 +2399,7 @@
         document.getElementById('quickReportRating').value = '75';
         document.getElementById('quickReportRecommendation').value = 'recommended';
         document.getElementById('quickReportNote').value = '';
+        closeCoachTalentModal();
       } catch (error) {
         if (root) root.textContent = error?.message || 'Rapor kaydedilemedi.';
       }
@@ -2531,16 +2768,16 @@ setText('.content h1', 'Antrenör Profili');
       setText('.navbar-right button[onclick="openScoutProfile()"] span', 'Antrenör Profili');
 
       setText('.sidebar-item[onclick="openScoutProfile()"] span', 'Antrenör Profili');
-      setText('.sidebar-item[onclick="openWatchlist()"] span', 'Scout Watchlist');
-      setText('.sidebar-item[onclick="openCoachWorkspace(\'reviews\')"] span', 'Profil Yorumları');
       setText('.sidebar-item[onclick="openCoachWorkspace(\'notes\')"] span', 'Antrenor Calisma Alani');
-      setText('.sidebar-item[onclick="openTrialCenter()"] span', 'Deneme & İdmanlar');
       setText('.sidebar-item[onclick="window.location.href=\'live-watch-demand.html\'"] span', 'Canlı İzleme Talebi');
       setText('.sidebar-item[onclick="openPerformance()"] span', 'İstatistikler');
-      setText('.sidebar-item[onclick="openScoutReports()"] span', 'Scout Raporları');
       setText('.sidebar-item[onclick="openMessages()"] span', 'Mesajlarım');
       setText('.sidebar-item[onclick="openSettings()"] span', 'Ayarlar');
       setText('.sidebar-item[onclick="openHelp()"] span', 'Yardım');
+      const watchlistMenu = document.querySelector('.sidebar-item[onclick="openWatchlist()"]');
+      if (watchlistMenu) watchlistMenu.style.display = 'none';
+      const reportsMenu = document.querySelector('.sidebar-item[onclick="openScoutReports()"]');
+      if (reportsMenu) reportsMenu.style.display = 'none';
 
       setText('.content h1', 'Antrenör Profili');
       setText('.quick-report-result', 'Henüz rapor kaydı yok.');
@@ -2579,6 +2816,13 @@ setText('.content h1', 'Antrenör Profili');
 
     async function init() {
       applyTurkishTextFixesFinal();
+      const authUser = getCurrentAuthUserFromStorage();
+      const coachHeroUser = document.getElementById('coachHeroUser');
+      const coachHeroRole = document.getElementById('coachHeroRole');
+      const coachHeroApi = document.getElementById('coachHeroApi');
+      if (coachHeroUser && authUser?.name) coachHeroUser.textContent = String(authUser.name);
+      if (coachHeroRole && authUser?.role) coachHeroRole.textContent = String(authUser.role);
+      if (coachHeroApi) coachHeroApi.textContent = 'Baglaniyor';
       loadCoachMarketPulse();
       setInterval(loadCoachMarketPulse, 30000);
       const grid = document.getElementById('playersGrid');
@@ -2586,8 +2830,10 @@ setText('.content h1', 'Antrenör Profili');
 
       try {
         allPlayers = await loadPlayersFromApi();
+        if (coachHeroApi) coachHeroApi.textContent = 'API baglandi';
       } catch (error) {
         allPlayers = getFallbackPlayers();
+        if (coachHeroApi) coachHeroApi.textContent = 'Yerel yedek';
       }
 
       try {
@@ -2613,6 +2859,7 @@ setText('.content h1', 'Antrenör Profili');
       document.getElementById('coachDashboardClipSearch')?.addEventListener('input', renderDashboardCoachClips);
       document.getElementById('coachDashboardEvalSearch')?.addEventListener('input', renderDashboardCoachEvaluations);
       document.getElementById('coachDashboardEvalMinScore')?.addEventListener('input', renderDashboardCoachEvaluations);
+      document.getElementById('coachSuccessStoryForm')?.addEventListener('submit', submitCoachSuccessStoryForm);
     }
 
     window.addEventListener('DOMContentLoaded', init);

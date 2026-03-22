@@ -162,6 +162,20 @@
         .welcome-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 12px rgba(102,126,234,0.15); }
         .welcome-card h1 { font-size: 28px; margin-bottom: 10px; font-weight: 800; letter-spacing: .2px; }
         .welcome-card p { margin: 0; opacity: 0.95; font-size: 14px; font-weight: 500; }
+        .hero { display:grid; grid-template-columns:1fr; gap:16px; margin-bottom:18px; }
+        .hero-kicker { display:inline-flex; align-items:center; gap:8px; margin-bottom:12px; padding:8px 12px; border-radius:999px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.18); color:#eef2ff; font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+        .hero-title { margin:0; max-width:720px; font:800 clamp(2rem, 3vw, 3rem)/1.02 Inter, sans-serif; letter-spacing:-0.03em; color:#fff; }
+        .hero-sub { margin:14px 0 0; max-width:740px; color:rgba(255,255,255,0.82); font-size:14px; line-height:1.7; }
+        .hero-points { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+        .pill { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; font-size:12px; font-weight:800; background:rgba(255,255,255,0.10); border:1px solid rgba(255,255,255,0.14); color:#eef2ff; }
+        .hero-side { background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid rgba(148,163,184,.18); border-radius:18px; padding:18px; box-shadow:0 16px 30px rgba(8,19,29,.28); position:relative; overflow:hidden; }
+        .hero-side::before { content:""; position:absolute; inset:0 0 auto 0; height:4px; background:linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%); }
+        .panel-title { font-size:17px; font-weight:800; margin-bottom:10px; color:#dbeafe; }
+        .panel-sub { color:#9bb5cb; font-size:14px; margin-bottom:12px; }
+        .status-stack { display:grid; gap:12px; }
+        .status-row { display:flex; justify-content:space-between; gap:10px; padding:14px; border:1px solid rgba(148,163,184,.16); background:rgba(255,255,255,.04); }
+        .status-row span:first-child { color:#9bb5cb; font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+        .status-row strong { color:#f8fafc; font-size:14px; font-weight:800; }
         .quick-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
         .market-pulse-overlay { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.72); z-index: 2100; display: none; }
         .market-pulse-overlay.active { display: block; }
@@ -849,15 +863,34 @@
         </aside>
 
         <div class="content">
-            <div class="welcome-card">
+            <section class="hero">
+                <div class="welcome-card">
+                    <div class="hero-kicker">
+                        <i class="fas fa-bullseye"></i>
+                        <span>Crowdsourced Kulup</span>
+                    </div>
+                    <h2 class="hero-title">Kulup operasyonunu buradan yonet.</h2>
+                    <p class="hero-sub">Oyuncu ara, profilleri incele, transfer teklifi gonder ve ihtiyaclarini tek panelden yonet.</p>
+                    <div class="hero-points">
+                        <span class="pill"><i class="fas fa-circle-check"></i><span>Dogrulanan oyuncu akisi karar hizini artirir</span></span>
+                        <span class="pill"><i class="fas fa-handshake-angle"></i><span>Deneme ve teklif surecini tek yerden takip et</span></span>
+                    </div>
+                </div>
+                <aside class="hero-side">
+                    <h3 class="panel-title">Kulup Durumu</h3>
+                    <p class="panel-sub">Guncel kullanici ve panel sinyalleri tek alanda.</p>
+                    <div class="status-stack">
+                        <div class="status-row"><span>Kullanici</span><strong id="teamHeroUser">Misafir</strong></div>
+                        <div class="status-row"><span>Rol</span><strong id="teamHeroRole">Club</strong></div>
+                        <div class="status-row"><span>Baglanti</span><strong id="teamHeroApi">Bekleniyor</strong></div>
+                        <div class="status-row"><span>Odak</span><strong id="teamHeroFocus">Oyuncu izleme</strong></div>
+                    </div>
+                </aside>
+            </section>
+            <div class="welcome-card" style="display:none;">
                 <h1>Kulup operasyonunu buradan yonet.</h1>
                 <p>Oyuncu ara, profilleri incele ve transfer teklifi gönder.</p>
             </div>
-                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
-                    <button class="market-pulse-launch" type="button" onclick="openTeamMarketPulse()"><i class="fas fa-bolt"></i><span>Market Pulse</span></button>
-                    <button class="market-pulse-launch" type="button" onclick="openTeamOpportunityArea('needs')"><i class="fas fa-bullseye"></i><span>Firsat Alani</span></button>
-                </div>
-
             <div class="group-section">
                 <div class="group-head">
                     <div>
@@ -2840,6 +2873,14 @@
             loadTeamMarketPulse();
             setInterval(loadTeamMarketPulse, 30000);
             window.NextScoutGrowth?.bindAutoTelemetry(document);
+            let authUser = null;
+            try { authUser = JSON.parse(localStorage.getItem('nextscout_user') || '{}'); } catch (error) { authUser = null; }
+            const teamHeroUser = document.getElementById('teamHeroUser');
+            const teamHeroRole = document.getElementById('teamHeroRole');
+            const teamHeroApi = document.getElementById('teamHeroApi');
+            if (teamHeroUser && authUser?.name) teamHeroUser.textContent = String(authUser.name);
+            if (teamHeroRole && authUser?.role) teamHeroRole.textContent = String(authUser.role);
+            if (teamHeroApi) teamHeroApi.textContent = 'Baglaniyor';
             try {
                 await fetchClubOffers();
             } catch (error) {}
@@ -2853,8 +2894,10 @@
             grid.innerHTML = '<div style="padding:18px;border:1px solid #e5e7eb;border-radius:10px;background:#f9fafb;color:#6b7280;">Oyuncular yukleniyor...</div>';
             try {
                 allPlayers = await loadPlayersFromApi();
+                if (teamHeroApi) teamHeroApi.textContent = 'API baglandi';
             } catch (error) {
                 allPlayers = getFallbackPlayers();
+                if (teamHeroApi) teamHeroApi.textContent = 'Yerel yedek';
             }
             syncTeamPositionOptions();
             filteredPlayers = allPlayers.slice();
