@@ -26,6 +26,7 @@ use App\Http\Controllers\Api\LegacyCompatibilityController;
 use App\Http\Controllers\Api\LiveMatchController;
 use App\Http\Controllers\Api\LocalizationController;
 use App\Http\Controllers\Api\MediaController;
+use App\Http\Controllers\Api\MarketTerminalController;
 use App\Http\Controllers\Api\ModerationController;
 use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\NotificationController;
@@ -233,6 +234,7 @@ Route::get('/public/favorites/leaderboard', [FavoriteController::class, 'publicL
 Route::get('/public/new-professionals', [DiscoveryController::class, 'newProfessionals']);
 Route::get('/public/turkiye-heatmap', [DiscoveryController::class, 'publicTurkeyHeatmap']);
 Route::get('/public/live-watch-heatmap', [WatchDemandController::class, 'publicHeatmap']);
+Route::get('/market/live-feed', [MarketTerminalController::class, 'liveFeed']);
 Route::get('/public/players/quality-summary', [LegacyCompatibilityController::class, 'publicPlayersQualitySummary']);
 Route::get('/community-events', [LegacyCompatibilityController::class, 'communityEventsIndex']);
 Route::get('/community-events/{id}', [LegacyCompatibilityController::class, 'communityEventsShow']);

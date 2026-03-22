@@ -3,45 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Platform Akışı | NextScout</title>
+    <title>Borsa Terminali | NextScout</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         :root {
-            --bg: #091521;
-            --panel: #12293d;
-            --panel-2: #0f1f2e;
-            --line: rgba(96, 165, 250, 0.18);
-            --text: #f8fafc;
-            --muted: rgba(226, 232, 240, 0.78);
-            --accent: #ff7e22;
-            --accent-2: #60a5fa;
+            --bg: #06111b;
+            --panel: #0d1d2c;
+            --panel-2: #10263a;
+            --line: rgba(148, 163, 184, 0.18);
+            --line-strong: rgba(148, 163, 184, 0.28);
+            --text: #edf4ff;
+            --muted: rgba(216, 227, 242, 0.76);
+            --green: #2dd4bf;
+            --amber: #fbbf24;
+            --blue: #38bdf8;
+            --red: #fb7185;
+            --shadow: 0 22px 80px rgba(0, 0, 0, 0.34);
         }
 
         * { box-sizing: border-box; }
 
         body {
             margin: 0;
-            font-family: "Segoe UI", Arial, sans-serif;
-            background:
-                radial-gradient(circle at top left, rgba(255, 126, 34, 0.14), transparent 28%),
-                radial-gradient(circle at top right, rgba(96, 165, 250, 0.14), transparent 32%),
-                linear-gradient(180deg, var(--bg) 0%, #08121b 100%);
+            font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
             color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), transparent 28%),
+                radial-gradient(circle at top right, rgba(45, 212, 191, 0.12), transparent 24%),
+                linear-gradient(180deg, #07131d 0%, #040b12 100%);
             min-height: 100vh;
         }
 
         .shell {
-            width: min(1240px, calc(100% - 32px));
+            width: min(1440px, calc(100% - 28px));
             margin: 0 auto;
-            padding: 28px 0 40px;
+            padding: 18px 0 28px;
+        }
+
+        .topbar,
+        .ticker,
+        .terminal,
+        .panel {
+            border: 1px solid var(--line);
+            background: linear-gradient(180deg, rgba(13, 29, 44, 0.94) 0%, rgba(8, 18, 28, 0.96) 100%);
+            box-shadow: var(--shadow);
         }
 
         .topbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
-            margin-bottom: 22px;
+            gap: 18px;
+            padding: 16px 18px;
         }
 
         .brand {
@@ -50,284 +63,508 @@
         }
 
         .eyebrow {
+            color: var(--amber);
             font-size: 11px;
             font-weight: 800;
-            letter-spacing: 0.16em;
+            letter-spacing: 0.18em;
             text-transform: uppercase;
-            color: #fb923c;
         }
 
         h1 {
             margin: 0;
-            font-size: 34px;
+            font-size: 32px;
             line-height: 1.05;
         }
 
         .sub {
             color: var(--muted);
-            font-size: 14px;
+            font-size: 13px;
             line-height: 1.6;
             max-width: 760px;
         }
 
-        .actions {
+        .top-actions {
             display: flex;
+            align-items: center;
             gap: 10px;
             flex-wrap: wrap;
         }
 
-        .btn {
+        .signal,
+        .action {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 11px 14px;
+            padding: 10px 12px;
             border: 1px solid var(--line);
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.03);
             color: var(--text);
             text-decoration: none;
             font-size: 12px;
-            font-weight: 800;
+            font-weight: 700;
         }
 
-        .btn.primary {
-            border-color: rgba(251, 146, 60, 0.28);
-            background: rgba(249, 115, 22, 0.08);
+        .signal strong {
+            color: var(--green);
+            font-size: 14px;
         }
 
-        .hero {
-            border: 1px solid #2b4660;
-            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
-            padding: 24px;
-            position: relative;
+        .ticker {
+            margin-top: 14px;
             overflow: hidden;
+            position: relative;
         }
 
-        .hero::before,
-        .panel::before {
-            content: "";
-            position: absolute;
-            inset: 0 0 auto 0;
-            height: 4px;
-            background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
-        }
-
-        .hero-grid {
-            display: grid;
-            grid-template-columns: 1.3fr .9fr;
-            gap: 18px;
-            margin-top: 18px;
-        }
-
-        .hero-stream {
-            display: grid;
+        .ticker-track {
+            display: flex;
             gap: 12px;
+            min-width: max-content;
+            padding: 12px 14px;
+            animation: ticker-scroll 48s linear infinite;
         }
 
-        .stream-item {
-            display: grid;
-            grid-template-columns: 72px minmax(0, 1fr);
-            gap: 12px;
-            padding: 12px;
-            border: 1px solid var(--line);
-            background: rgba(255,255,255,0.04);
+        .ticker:hover .ticker-track {
+            animation-play-state: paused;
         }
 
-        .stream-time {
+        .ticker-item {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            padding: 8px;
-            background: rgba(249, 115, 22, 0.12);
-            border: 1px solid rgba(251, 146, 60, 0.2);
-            color: #fde68a;
-            font-size: 11px;
-            font-weight: 800;
+            gap: 12px;
+            padding: 10px 14px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.025);
+            min-width: 320px;
         }
 
-        .stream-title {
+        .ticker-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            flex: 0 0 auto;
+        }
+
+        .ticker-dot.up { background: var(--green); box-shadow: 0 0 18px rgba(45, 212, 191, 0.45); }
+        .ticker-dot.watch { background: var(--amber); box-shadow: 0 0 18px rgba(251, 191, 36, 0.42); }
+        .ticker-dot.info { background: var(--blue); box-shadow: 0 0 18px rgba(56, 189, 248, 0.45); }
+        .ticker-dot.neutral { background: rgba(226, 232, 240, 0.7); }
+        .ticker-dot.hot { background: var(--red); box-shadow: 0 0 18px rgba(251, 113, 133, 0.45); }
+
+        .ticker-main {
+            display: grid;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .ticker-line {
+            font-size: 13px;
+            line-height: 1.45;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ticker-meta {
+            font-family: "IBM Plex Mono", Consolas, monospace;
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 0.04em;
+        }
+
+        .terminal {
+            margin-top: 14px;
+            padding: 18px;
+        }
+
+        .terminal-grid {
+            display: grid;
+            grid-template-columns: 1.45fr 0.95fr;
+            gap: 14px;
+        }
+
+        .board,
+        .stats,
+        .panel {
+            min-width: 0;
+        }
+
+        .section-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .section-copy {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .pulse {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border: 1px solid rgba(45, 212, 191, 0.18);
+            background: rgba(45, 212, 191, 0.08);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #9ce7dc;
+        }
+
+        .pulse::before {
+            content: "";
+            width: 9px;
+            height: 9px;
+            border-radius: 999px;
+            background: var(--green);
+            box-shadow: 0 0 14px rgba(45, 212, 191, 0.55);
+        }
+
+        .flow-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .flow-item {
+            display: grid;
+            grid-template-columns: 72px minmax(0, 1fr) auto;
+            gap: 12px;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.025);
+        }
+
+        .flow-badge {
+            display: grid;
+            gap: 8px;
+            justify-items: start;
+        }
+
+        .flow-time,
+        .flow-tag {
+            font-family: "IBM Plex Mono", Consolas, monospace;
+            font-size: 11px;
+            padding: 4px 6px;
+            border: 1px solid var(--line);
+            color: var(--muted);
+        }
+
+        .flow-tag.up { color: #9ce7dc; border-color: rgba(45, 212, 191, 0.22); }
+        .flow-tag.watch { color: #fde68a; border-color: rgba(251, 191, 36, 0.22); }
+        .flow-tag.info { color: #bae6fd; border-color: rgba(56, 189, 248, 0.22); }
+        .flow-tag.hot { color: #fecdd3; border-color: rgba(251, 113, 133, 0.22); }
+
+        .flow-headline {
             font-size: 14px;
             font-weight: 800;
             line-height: 1.45;
         }
 
-        .stream-copy {
+        .flow-copy {
             margin-top: 4px;
+            color: var(--muted);
             font-size: 12px;
             line-height: 1.55;
-            color: var(--muted);
         }
 
-        .hero-side {
-            display: grid;
-            gap: 12px;
+        .flow-copy strong {
+            color: var(--text);
         }
 
-        .hero-stat {
+        .metric-box {
+            min-width: 108px;
+            padding: 10px;
             border: 1px solid var(--line);
-            background: rgba(255,255,255,0.04);
-            padding: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            text-align: right;
         }
 
-        .hero-stat .k {
-            font-size: 11px;
+        .metric-label {
+            color: var(--muted);
+            font-size: 10px;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: #93c5fd;
+        }
+
+        .metric-value {
+            margin-top: 6px;
+            font-family: "IBM Plex Mono", Consolas, monospace;
+            font-size: 24px;
             font-weight: 800;
         }
 
-        .hero-stat .v {
+        .metric-delta {
+            margin-top: 4px;
+            font-family: "IBM Plex Mono", Consolas, monospace;
+            font-size: 11px;
+        }
+
+        .metric-delta.up,
+        .metric-value.up { color: var(--green); }
+        .metric-delta.watch,
+        .metric-value.watch { color: var(--amber); }
+        .metric-delta.info,
+        .metric-value.info { color: var(--blue); }
+        .metric-delta.hot,
+        .metric-value.hot { color: var(--red); }
+
+        .market-stats {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .market-stat {
+            padding: 12px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .market-stat-label {
+            color: var(--muted);
+            font-size: 11px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .market-stat-value {
             margin-top: 8px;
-            font-size: 26px;
+            font-family: "IBM Plex Mono", Consolas, monospace;
+            font-size: 28px;
             font-weight: 800;
         }
 
-        .grid {
+        .market-stat-copy {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .bottom-grid {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 18px;
-            margin-top: 20px;
+            gap: 14px;
+            margin-top: 14px;
         }
 
         .panel {
-            position: relative;
-            border: 1px solid #2b4660;
-            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
-            padding: 22px;
-            min-height: 300px;
+            padding: 16px;
         }
 
-        .panel h2 {
-            margin: 8px 0 0;
-            font-size: 22px;
-            line-height: 1.15;
-        }
-
-        .panel-copy {
-            margin-top: 10px;
-            font-size: 13px;
-            line-height: 1.6;
-            color: var(--muted);
-        }
-
-        .stack {
+        .mini-list {
             display: grid;
             gap: 10px;
-            margin-top: 16px;
+            margin-top: 12px;
         }
 
-        .stack-item {
-            padding: 12px;
+        .mini-item {
+            display: grid;
+            gap: 4px;
+            padding: 11px;
             border: 1px solid var(--line);
-            background: rgba(255,255,255,0.04);
+            background: rgba(255, 255, 255, 0.025);
         }
 
-        .stack-item strong {
-            display: block;
+        .mini-item strong {
             font-size: 13px;
-            line-height: 1.4;
+            line-height: 1.45;
         }
 
-        .stack-item span {
-            display: block;
-            margin-top: 5px;
+        .mini-item span {
             color: var(--muted);
             font-size: 12px;
             line-height: 1.55;
         }
 
-        .empty {
-            padding: 14px;
-            border: 1px dashed rgba(148, 163, 184, 0.28);
+        .sector-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .sector-item {
+            display: grid;
+            grid-template-columns: 120px minmax(0, 1fr) 52px;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sector-name,
+        .sector-value {
+            font-family: "IBM Plex Mono", Consolas, monospace;
+            font-size: 12px;
+        }
+
+        .sector-bar {
+            position: relative;
+            height: 10px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.03);
+            overflow: hidden;
+        }
+
+        .sector-fill {
+            position: absolute;
+            inset: 0 auto 0 0;
+            background: linear-gradient(90deg, rgba(45, 212, 191, 0.9), rgba(56, 189, 248, 0.9));
+        }
+
+        .terminal-empty {
+            padding: 16px;
+            border: 1px dashed var(--line-strong);
             color: var(--muted);
             font-size: 12px;
         }
 
-        @media (max-width: 980px) {
-            .hero-grid,
-            .grid {
+        @keyframes ticker-scroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        @media (max-width: 1080px) {
+            .terminal-grid,
+            .bottom-grid {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .shell {
+                width: min(100%, calc(100% - 18px));
+            }
+
+            .topbar {
+                padding: 14px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            .market-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .flow-item {
+                grid-template-columns: 1fr;
+            }
+
+            .metric-box {
+                text-align: left;
+            }
+
+            .ticker-item {
+                min-width: 280px;
             }
         }
     </style>
 </head>
 <body>
 <div class="shell">
-    <div class="topbar">
+    <section class="topbar">
         <div class="brand">
-            <div class="eyebrow">Canlı Akış</div>
-            <h1>Platform Akışı</h1>
-            <div class="sub">Kulüp ihtiyaçları, yeni maç ve etkinlik kayıtları, güncellenen oyuncu vitrinleri ve karar verici hareketleri tek akışta toplanır.</div>
+            <div class="eyebrow">Canli Piyasa Ekrani</div>
+            <h1>NextScout Borsa Terminali</h1>
+            <div class="sub">Oyuncu videolari, favori patlamalari, trial davetleri ve canli takip pencereleri tek terminal akisinda gorunur. Standart landing page gibi degil, islem masasi gibi calisir.</div>
         </div>
-        <div class="actions">
-            <a class="btn" href="./index.html"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
-            <a class="btn primary" href="./professional-players.html?player_view=explore"><i class="fas fa-user-group"></i><span>Oyuncuları Aç</span></a>
+        <div class="top-actions">
+            <div class="signal"><i class="fas fa-wave-square"></i><span>Sistem</span><strong id="terminalStatus">AKTIF</strong></div>
+            <a class="action" href="./index.html"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
+            <a class="action" href="./professional-players.html?player_view=explore"><i class="fas fa-user-group"></i><span>Piyasa Listesi</span></a>
         </div>
-    </div>
+    </section>
 
-    <section class="hero">
-        <div class="eyebrow">Şu An Platformda</div>
-        <h2 style="margin:8px 0 0;font-size:28px;">Canlı Haber Akışı</h2>
-        <div class="panel-copy">Bu alan açık ihtiyaç, etkinlik ve güncellenen profil hareketlerinden kısa haber başlıkları üretir.</div>
-        <div class="hero-grid">
-            <div class="hero-stream" id="liveNewsStream"></div>
-            <div class="hero-side">
-                <article class="hero-stat">
-                    <div class="k">Açık İhtiyaç</div>
-                    <div class="v" id="statNeeds">0</div>
-                </article>
-                <article class="hero-stat">
-                    <div class="k">Etkinlik Akışı</div>
-                    <div class="v" id="statEvents">0</div>
-                </article>
-                <article class="hero-stat">
-                    <div class="k">Güncellenen Profil</div>
-                    <div class="v" id="statPlayers">0</div>
-                </article>
+    <section class="ticker">
+        <div class="ticker-track" id="tickerTrack">
+            <div class="ticker-item">
+                <span class="ticker-dot info"></span>
+                <div class="ticker-main">
+                    <div class="ticker-line">Canli terminal verisi yukleniyor</div>
+                    <div class="ticker-meta">NEXTSCOUT MARKET</div>
+                </div>
             </div>
         </div>
     </section>
 
-    <section class="grid">
-        <article class="panel">
-            <div class="eyebrow">Kulüp İhtiyaçları</div>
-            <h2>Yeni Talepler</h2>
-            <div class="panel-copy">Kulüplerin son açtığı pozisyon ve ihtiyaç kayıtları.</div>
-            <div class="stack" id="needsStack"></div>
-        </article>
-        <article class="panel">
-            <div class="eyebrow">Maç ve Etkinlikler</div>
-            <h2>Yeni Kayıtlar</h2>
-            <div class="panel-copy">Deneme, idman ve maç başlıklarının son akışı.</div>
-            <div class="stack" id="eventsStack"></div>
-        </article>
-        <article class="panel">
-            <div class="eyebrow">Oyuncu Hareketi</div>
-            <h2>Güncellenen Profiller</h2>
-            <div class="panel-copy">Son güncellenen oyuncu vitrinleri ve yükselen profil hareketleri.</div>
-            <div class="stack" id="playersStack"></div>
-        </article>
+    <section class="terminal">
+        <div class="terminal-grid">
+            <div class="board">
+                <div class="section-head">
+                    <div>
+                        <div class="eyebrow">Canli Akis</div>
+                        <h2 class="section-title">Piyasa Bandı</h2>
+                        <div class="section-copy">Her satir bir hareket. Video yukleme, favori patlamasi, trial baskisi ve acik mac pencereleri tek akista toplanir.</div>
+                    </div>
+                    <div class="pulse">Live Feed</div>
+                </div>
+                <div class="flow-list" id="flowList">
+                    <div class="terminal-empty">Canli akis hazirlaniyor.</div>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="section-head">
+                    <div>
+                        <div class="eyebrow">Piyasa Ozeti</div>
+                        <h2 class="section-title">Bugun</h2>
+                        <div class="section-copy" id="generatedAtLabel">Son durum cekiliyor.</div>
+                    </div>
+                </div>
+                <div class="market-stats" id="marketStats">
+                    <article class="market-stat">
+                        <div class="market-stat-label">Acik Firsat</div>
+                        <div class="market-stat-value">0</div>
+                        <div class="market-stat-copy">Canli veri bekleniyor.</div>
+                    </article>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-grid">
+            <article class="panel">
+                <div class="eyebrow">Video Yukselisleri</div>
+                <h3 class="section-title" style="font-size:20px;">Ilgi Endeksi</h3>
+                <div class="mini-list" id="videoLeaders">
+                    <div class="terminal-empty">Video akisi bekleniyor.</div>
+                </div>
+            </article>
+
+            <article class="panel">
+                <div class="eyebrow">Favori Hareketi</div>
+                <h3 class="section-title" style="font-size:20px;">Sicak Oyuncular</h3>
+                <div class="mini-list" id="favoriteMovers">
+                    <div class="terminal-empty">Favori akisi bekleniyor.</div>
+                </div>
+            </article>
+
+            <article class="panel">
+                <div class="eyebrow">Pozisyon Baskisi</div>
+                <h3 class="section-title" style="font-size:20px;">Sektor Isisi</h3>
+                <div class="sector-list" id="sectorList">
+                    <div class="terminal-empty">Sektor verisi bekleniyor.</div>
+                </div>
+            </article>
+        </div>
     </section>
 </div>
 
 <script>
     const API_BASE_URL = `${window.location.origin}/api`;
 
-    function resolveList(payload) {
-        const list = payload && Array.isArray(payload.data) ? payload.data : payload;
-        return Array.isArray(list) ? list : [];
-    }
-
-    async function fetchJsonSafe(url) {
-        const response = await fetch(url, {
-            headers: { 'Accept': 'application/json' },
-            credentials: 'same-origin'
-        });
-        if (!response.ok) throw new Error(`Request failed: ${response.status}`);
-        return response.json();
-    }
-
-    function escapeHtml(value) {
+    function esc(value) {
         return String(value ?? '')
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
@@ -336,140 +573,215 @@
             .replace(/'/g, '&#39;');
     }
 
-    function formatTime(value) {
-        if (!value) return 'Bugün';
-        const parsed = new Date(value);
-        if (Number.isNaN(parsed.getTime())) return 'Bugün';
-        return parsed.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+    async function fetchJson(url) {
+        const response = await fetch(url, {
+            headers: { Accept: 'application/json' },
+            cache: 'no-store',
+            credentials: 'same-origin',
+        });
+        if (!response.ok) {
+            throw new Error(`Request failed: ${response.status}`);
+        }
+        return response.json();
     }
 
-    function renderStream(items) {
-        const root = document.getElementById('liveNewsStream');
+    function formatClock(value) {
+        if (!value) return 'Simdi';
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return 'Simdi';
+        return date.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function renderTicker(items) {
+        const root = document.getElementById('tickerTrack');
         if (!root) return;
+
         if (!items.length) {
-            root.innerHTML = '<div class="empty">Canlı akış için veri bekleniyor.</div>';
+            root.innerHTML = `
+                <div class="ticker-item">
+                    <span class="ticker-dot neutral"></span>
+                    <div class="ticker-main">
+                        <div class="ticker-line">Canli bant icin veri bekleniyor</div>
+                        <div class="ticker-meta">NEXTSCOUT MARKET</div>
+                    </div>
+                </div>
+            `;
             return;
         }
+
+        const markup = items.map((item) => `
+            <div class="ticker-item">
+                <span class="ticker-dot ${esc(item.tone || 'neutral')}"></span>
+                <div class="ticker-main">
+                    <div class="ticker-line">${esc(item.player_name || 'Oyuncu')} (${esc(item.position || 'Oyuncu')}): ${esc(item.headline || '')} -> ${esc(item.detail || '')}</div>
+                    <div class="ticker-meta">${esc(item.badge || 'FLOW')} ${esc(item.market_time || formatClock(item.event_time))}</div>
+                </div>
+            </div>
+        `).join('');
+
+        root.innerHTML = markup + markup;
+    }
+
+    function renderFlow(items) {
+        const root = document.getElementById('flowList');
+        if (!root) return;
+
+        if (!items.length) {
+            root.innerHTML = '<div class="terminal-empty">Akis satiri bulunamadi.</div>';
+            return;
+        }
+
         root.innerHTML = items.map((item) => `
-            <article class="stream-item">
-                <div class="stream-time">${escapeHtml(item.time)}</div>
+            <article class="flow-item">
+                <div class="flow-badge">
+                    <div class="flow-time">${esc(item.market_time || formatClock(item.event_time))}</div>
+                    <div class="flow-tag ${esc(item.tone || 'neutral')}">${esc(item.badge || 'FLOW')}</div>
+                </div>
                 <div>
-                    <div class="stream-title">${escapeHtml(item.title)}</div>
-                    <div class="stream-copy">${escapeHtml(item.copy)}</div>
+                    <div class="flow-headline">${esc(item.player_name || 'Oyuncu')} (${esc(item.position || 'Oyuncu')}): ${esc(item.headline || '')}</div>
+                    <div class="flow-copy"><strong>${esc(item.detail || '')}</strong> • Sicaklik: ${esc(item.heat_label || 'Izleniyor')}</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">${esc(item.metric_label || 'METRIK')}</div>
+                    <div class="metric-value ${esc(item.tone || 'neutral')}">${esc(item.metric_value ?? 0)}</div>
+                    <div class="metric-delta ${esc(item.tone || 'neutral')}">${Number(item.change_percent || 0) > 0 ? '+' : ''}${esc(item.change_percent ?? 0)}%</div>
                 </div>
             </article>
         `).join('');
     }
 
-    function renderStack(id, items, formatter) {
+    function renderStats(summary) {
+        const root = document.getElementById('marketStats');
+        if (!root) return;
+
+        const cards = [
+            {
+                label: 'Acik Firsat',
+                value: summary.open_opportunities || 0,
+                copy: 'Su anda platform genelinde acik pozisyon ve ihtiyac.',
+            },
+            {
+                label: 'Video Yukleme',
+                value: summary.videos_today || 0,
+                copy: 'Bugun sisteme dusen yeni antrenman veya mac videolari.',
+            },
+            {
+                label: 'Favori Akisi',
+                value: summary.favorites_today || 0,
+                copy: 'Bugun olusan yeni favori hareketi.',
+            },
+            {
+                label: 'Trial Baskisi',
+                value: summary.trial_invites_today || 0,
+                copy: 'Bugun acilan trial veya deneme odakli piyasa hareketi.',
+            },
+            {
+                label: 'Canli Pencere',
+                value: summary.public_match_windows || 0,
+                copy: 'Acik izleme icin gorunen mac penceresi.',
+            },
+        ];
+
+        root.innerHTML = cards.map((card) => `
+            <article class="market-stat">
+                <div class="market-stat-label">${esc(card.label)}</div>
+                <div class="market-stat-value">${esc(card.value)}</div>
+                <div class="market-stat-copy">${esc(card.copy)}</div>
+            </article>
+        `).join('');
+    }
+
+    function renderMiniList(id, items, formatter, emptyText) {
         const root = document.getElementById(id);
         if (!root) return;
         if (!items.length) {
-            root.innerHTML = '<div class="empty">Bu bölüm için veri bekleniyor.</div>';
+            root.innerHTML = `<div class="terminal-empty">${esc(emptyText)}</div>`;
             return;
         }
         root.innerHTML = items.map(formatter).join('');
     }
 
-    async function renderPlatformFlow() {
-        const fallbackNeeds = [];
-        const fallbackEvents = [];
-        const fallbackPlayers = [];
+    function renderSectors(items) {
+        const root = document.getElementById('sectorList');
+        if (!root) return;
+
+        if (!items.length) {
+            root.innerHTML = '<div class="terminal-empty">Pozisyon baskisi verisi olusmadi.</div>';
+            return;
+        }
+
+        const maxValue = Math.max(...items.map((item) => Number(item.count || 0)), 1);
+        root.innerHTML = items.map((item) => {
+            const width = Math.max(6, Math.round((Number(item.count || 0) / maxValue) * 100));
+            return `
+                <div class="sector-item">
+                    <div class="sector-name">${esc(item.position || 'Oyuncu')}</div>
+                    <div class="sector-bar"><div class="sector-fill" style="width:${width}%"></div></div>
+                    <div class="sector-value">${esc(item.count || 0)}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    async function renderTerminal() {
+        const statusEl = document.getElementById('terminalStatus');
+        const generatedAtEl = document.getElementById('generatedAtLabel');
 
         try {
-            const [needsPayload, managerPayload, coachPayload, eventsPayload, playersPayload] = await Promise.all([
-                fetchJsonSafe(`${API_BASE_URL}/club-needs?limit=20`),
-                fetchJsonSafe(`${API_BASE_URL}/discovery/manager-needs`),
-                fetchJsonSafe(`${API_BASE_URL}/discovery/coach-needs`),
-                fetchJsonSafe(`${API_BASE_URL}/community-events?trial_only=1`),
-                fetchJsonSafe(`${API_BASE_URL}/public/players?limit=20&sort=updated_desc`)
-            ]);
+            if (statusEl) statusEl.textContent = 'SENKRON';
+            const payload = await fetchJson(`${API_BASE_URL}/market/live-feed?_t=${Date.now()}`);
+            const data = payload?.data || {};
 
-            const needs = resolveList(needsPayload).filter(Boolean);
-            const managerNeeds = resolveList(managerPayload).filter(Boolean);
-            const coachNeeds = resolveList(coachPayload).filter(Boolean);
-            const events = resolveList(eventsPayload).filter(Boolean);
-            const players = resolveList(playersPayload).filter(Boolean);
+            renderTicker(Array.isArray(data.ticker) ? data.ticker : []);
+            renderFlow(Array.isArray(data.ticker) ? data.ticker : []);
+            renderStats(data.summary || {});
 
-            document.getElementById('statNeeds').textContent = String(needs.length + managerNeeds.length + coachNeeds.length);
-            document.getElementById('statEvents').textContent = String(events.length);
-            document.getElementById('statPlayers').textContent = String(players.length);
+            renderMiniList(
+                'videoLeaders',
+                Array.isArray(data.top_videos) ? data.top_videos : [],
+                (item) => `
+                    <article class="mini-item">
+                        <strong>${esc(item.player_name || 'Oyuncu')} • ${esc(item.position || 'Oyuncu')}</strong>
+                        <span>${esc(item.headline || '')} • ${esc(item.detail || '')}</span>
+                    </article>
+                `,
+                'Video liderleri olusmadi.'
+            );
 
-            const stream = [];
+            renderMiniList(
+                'favoriteMovers',
+                Array.isArray(data.favorite_movers) ? data.favorite_movers : [],
+                (item) => `
+                    <article class="mini-item">
+                        <strong>${esc(item.player_name || 'Oyuncu')} • ${esc(item.position || 'Oyuncu')}</strong>
+                        <span>${esc(item.headline || '')} • ${esc(item.detail || '')}</span>
+                    </article>
+                `,
+                'Favori hareketi olusmadi.'
+            );
 
-            const need = needs[0];
-            if (need) {
-                stream.push({
-                    time: formatTime(need.updated_at || need.created_at),
-                    title: `${(need.club_name || need.club || 'Bir kulüp')} yeni ihtiyaç açtı`,
-                    copy: `${(need.position || need.position_name || 'Oyuncu')} pozisyonu için yeni talep listelendi.`
-                });
+            renderSectors(Array.isArray(data.sectors) ? data.sectors : []);
+
+            if (generatedAtEl) {
+                generatedAtEl.textContent = `Guncelleme: ${formatClock(data.generated_at)}`;
             }
-
-            const event = events[0];
-            if (event) {
-                stream.push({
-                    time: formatTime(event.date ? `${event.date} ${event.time || ''}` : event.created_at),
-                    title: (event.title || event.name || 'Yeni etkinlik kaydı'),
-                    copy: `${(event.venue || event.facility || event.field || 'Saha bilgisi')} için yeni akış açıldı.`
-                });
-            }
-
-            const player = players[0];
-            if (player) {
-                stream.push({
-                    time: formatTime(player.updated_at || player.created_at),
-                    title: `${(player.name || player.full_name || 'Bir oyuncu')} vitrini güncellendi`,
-                    copy: `${(player.city || player.location || 'Platform')} içindeki profil hareketi yükselen akışa düştü.`
-                });
-            }
-
-            const decision = managerNeeds[0] || coachNeeds[0];
-            if (decision) {
-                stream.push({
-                    time: formatTime(decision.updated_at || decision.created_at),
-                    title: `${(decision.author_name || decision.manager_name || decision.coach_name || 'Karar verici')} yeni tarama açtı`,
-                    copy: `${(decision.position || decision.specialty || 'Oyuncu taraması')} için yeni değerlendirme akışı görünür oldu.`
-                });
-            }
-
-            renderStream(stream);
-
-            renderStack('needsStack', needs.slice(0, 5), (row) => `
-                <article class="stack-item">
-                    <strong>${escapeHtml((row.club_name || row.club || 'Kulüp'))}</strong>
-                    <span>${escapeHtml((row.position || row.position_name || 'Oyuncu'))} ihtiyacı açtı.</span>
-                </article>
-            `);
-
-            renderStack('eventsStack', events.slice(0, 5), (row) => `
-                <article class="stack-item">
-                    <strong>${escapeHtml((row.title || row.name || 'Etkinlik'))}</strong>
-                    <span>${escapeHtml((row.venue || row.facility || row.field || 'Saha bilgisi'))} • ${(row.date || '')} ${(row.time || '')}</span>
-                </article>
-            `);
-
-            renderStack('playersStack', players.slice(0, 5), (row) => `
-                <article class="stack-item">
-                    <strong>${escapeHtml((row.name || row.full_name || 'Oyuncu'))}</strong>
-                    <span>${escapeHtml((row.city || row.location || 'Konum yok'))} • ${(row.position || row.primary_position || 'Pozisyon bilgisi yok')}</span>
-                </article>
-            `);
-            return;
+            if (statusEl) statusEl.textContent = 'CANLI';
         } catch (error) {
-            document.getElementById('statNeeds').textContent = '0';
-            document.getElementById('statEvents').textContent = '0';
-            document.getElementById('statPlayers').textContent = '0';
-            renderStream([
-                { time: 'Şimdi', title: 'Canlı akış hazırlanıyor', copy: 'API bağlantısı hazır olduğunda ihtiyaç, etkinlik ve oyuncu hareketi burada listelenecek.' }
-            ]);
-            renderStack('needsStack', fallbackNeeds, () => '');
-            renderStack('eventsStack', fallbackEvents, () => '');
-            renderStack('playersStack', fallbackPlayers, () => '');
+            if (statusEl) statusEl.textContent = 'BEKLEME';
+            if (generatedAtEl) generatedAtEl.textContent = 'Canli veri alinamadi. Terminal yedek bekleme modunda.';
+            renderTicker([]);
+            renderFlow([]);
+            renderStats({});
+            renderMiniList('videoLeaders', [], () => '', 'Video liderleri yuklenemedi.');
+            renderMiniList('favoriteMovers', [], () => '', 'Favori hareketi yuklenemedi.');
+            renderSectors([]);
         }
     }
 
-    document.addEventListener('DOMContentLoaded', renderPlatformFlow);
+    document.addEventListener('DOMContentLoaded', () => {
+        renderTerminal();
+        setInterval(renderTerminal, 30000);
+    });
 </script>
 </body>
 </html>

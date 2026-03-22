@@ -187,6 +187,33 @@
         .welcome-card p { margin: 0; opacity: 0.96; font-size: 14px; }
 
         .quick-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .market-pulse-overlay { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.72); z-index: 2100; display: none; }
+        .market-pulse-overlay.active { display: block; }
+        .market-pulse-flyout { position: fixed; left: 50%; top: 7vh; transform: translateX(-50%); width: min(980px, calc(100vw - 28px)); max-height: 86vh; overflow: auto; z-index: 2110; display: none; border-radius: 14px; }
+        .market-pulse-flyout.active { display: block; }
+        .market-pulse { background: var(--panel); border: 1px solid var(--line); padding: 16px; position: relative; box-shadow: 0 30px 80px rgba(2, 6, 23, 0.42); }
+        .market-pulse::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, #2dd4bf 0%, #fbbf24 50%, #38bdf8 100%); }
+        .market-pulse-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+        .market-pulse-copy { color: var(--muted); font-size: 13px; line-height: 1.6; margin-top: 6px; }
+        .market-pulse-tools { display: flex; align-items: center; gap: 10px; }
+        .market-pulse-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid rgba(96, 165, 250, 0.22); background: rgba(56, 189, 248, 0.08); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #bae6fd; }
+        .market-pulse-close { width: 40px; height: 40px; border: 1px solid var(--line); background: rgba(255,255,255,.04); color: #dbeafe; cursor: pointer; border-radius: 10px; }
+        .market-pulse-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 14px; }
+        .market-pulse-list, .market-pulse-side { display: grid; gap: 10px; min-width: 0; }
+        .market-pulse-item { display: grid; grid-template-columns: 56px minmax(0,1fr) auto; gap: 10px; align-items: center; padding: 12px; border: 1px solid var(--line); background: var(--panel-soft); border-radius: 10px; }
+        .market-pulse-time, .market-pulse-tag { display: inline-flex; align-items: center; justify-content: center; min-width: 48px; padding: 5px 6px; border: 1px solid var(--line); font-size: 11px; color: var(--muted); font-family: Consolas, monospace; }
+        .market-pulse-tag.up { color: #99f6e4; } .market-pulse-tag.watch { color: #fde68a; } .market-pulse-tag.info { color: #bae6fd; } .market-pulse-tag.hot { color: #fecdd3; }
+        .market-pulse-line { font-size: 13px; line-height: 1.45; color: #f5fbff; }
+        .market-pulse-sub { margin-top: 4px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+        .market-pulse-metric { min-width: 90px; padding: 10px; border: 1px solid var(--line); background: rgba(255,255,255,.04); text-align: right; border-radius: 10px; }
+        .market-pulse-metric span { display: block; color: var(--muted); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+        .market-pulse-metric strong { display: block; margin-top: 6px; font-size: 24px; color: #f5fbff; }
+        .market-pulse-metric em { display: block; margin-top: 4px; font: 700 11px/1.2 Consolas, monospace; color: #2dd4bf; font-style: normal; }
+        .market-pulse-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+        .market-pulse-stat { padding: 12px; border: 1px solid var(--line); background: var(--panel-soft); border-radius: 10px; }
+        .market-pulse-stat-label { color: var(--muted); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+        .market-pulse-stat-value { margin-top: 8px; font-size: 24px; color: #f5fbff; font-weight: 800; }
+        .market-pulse-link, .market-pulse-launch { display: inline-flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border: 1px solid var(--line); color: #dbeafe; text-decoration: none; border-radius: 10px; background: rgba(45, 212, 191, 0.12); }
         .stat-card {
             background: var(--panel);
             border-radius: 12px;
@@ -623,6 +650,7 @@
             .search-grid { grid-template-columns: 1fr; }
             .players-grid { grid-template-columns: 1fr; gap: 12px; }
             .quick-stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .market-pulse-grid { grid-template-columns: 1fr; }
             .need-grid { grid-template-columns: 1fr; }
             .offer-score-grid { grid-template-columns: 1fr; }
 
@@ -736,6 +764,7 @@
             .quick-stats {
                 grid-template-columns: 1fr;
             }
+            .market-pulse-flyout { top: 10px; width: calc(100vw - 14px); max-height: calc(100vh - 20px); }
             .sidebar-menu {
                 grid-template-columns: 1fr;
             }
@@ -987,9 +1016,6 @@
                     <li class="sidebar-item" onclick="openAnsweredApplications()"><i class="fas fa-circle-check"></i><span>YanÄ±tlanan BaÅŸvurular</span></li>
                     <li class="sidebar-item" onclick="openFavorites()"><i class="fas fa-star"></i><span>Favorilerim</span></li>
                     <li class="sidebar-item" onclick="openWatchlist()"><i class="fas fa-list-check"></i><span>Takip Listem</span></li>
-                    <li class="sidebar-item" onclick="openManagerWorkspace('notes')"><i class="fas fa-notes-medical"></i><span>Teknik Not Defteri</span></li>
-                    <li class="sidebar-item" onclick="openManagerWorkspace('clips')"><i class="fas fa-film"></i><span>Klip Isaretleme</span></li>
-                    <li class="sidebar-item" onclick="openManagerWorkspace('evaluations')"><i class="fas fa-clipboard-list"></i><span>Degerlendirmeler</span></li>
                     <li class="sidebar-item" onclick="window.location.href='ai-discovery.html'"><i class="fas fa-flask"></i><span>AI Discovery</span></li>
                     <li class="sidebar-item" onclick="window.location.href='manager-needs.html'"><i class="fas fa-thumbtack"></i><span>AradÄ±ÄŸÄ±m Oyuncular</span></li>
                     <li class="sidebar-item" onclick="window.location.href='live-watch-demand.html'"><i class="fas fa-location-crosshairs"></i><span>CanlÄ± Ä°zleme Talebi</span></li>
@@ -1002,8 +1028,13 @@
 
         <div class="content">
             <div class="welcome-card">
-                <h1>Manager Dashboard</h1>
+                <h1>Manager operasyonunu buradan yonet.</h1>
                 <p>Oyuncu ara, profil incele, baÅŸvuru gÃ¶nder ve favori listeni yonet.</p>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
+                    <button class="market-pulse-launch" type="button" onclick="openManagerMarketPulse()"><i class="fas fa-chart-line"></i><span>Market Pulse</span></button>
+                    <button class="market-pulse-launch" type="button" onclick="openManagerOpportunityArea('needs')"><i class="fas fa-bullseye"></i><span>Firsat Alani</span></button>
+                    <button class="market-pulse-launch" type="button" onclick="openManagerWorkspace('notes')"><i class="fas fa-briefcase"></i><span>Menajer Calisma Alani</span></button>
+                </div>
             </div>
 
             <div class="need-section">
@@ -1046,6 +1077,50 @@
                 <div class="stat-card"><div class="stat-card-value" id="statFavorites">0</div><div class="stat-card-label">Favori Oyuncu</div></div>
                 <div class="stat-card"><div class="stat-card-value" id="statApplications">0</div><div class="stat-card-label">Gonderilen BaÅŸvuru</div></div>
             </div>
+            <div class="market-pulse-overlay" id="managerMarketPulseOverlay" onclick="closeManagerMarketPulse()"></div>
+            <section class="market-pulse market-pulse-flyout" id="managerMarketPulseCard">
+                <div class="market-pulse-head">
+                    <div>
+                        <div class="sidebar-title">Market Pulse</div>
+                        <h2 style="margin:0 0 6px 0;font-size:18px;color:#e5e7eb;">Canli Piyasa Ozeti</h2>
+                        <div class="market-pulse-copy">Manager icin video ilgisi, favori sicakligi ve trial baskisini tek panelde toplar.</div>
+                    </div>
+                    <div class="market-pulse-tools">
+                        <div class="market-pulse-badge" id="managerMarketPulseStatus"><i class="fas fa-signal"></i><span>Yukleniyor</span></div>
+                        <button class="market-pulse-close" type="button" onclick="closeManagerMarketPulse()"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="market-pulse-grid">
+                    <div class="market-pulse-list" id="managerMarketPulseList"><div class="need-item">Market pulse verisi yukleniyor...</div></div>
+                    <div class="market-pulse-side">
+                        <div class="market-pulse-stats" id="managerMarketPulseStats"></div>
+                        <a class="market-pulse-link" href="platform-akisi.html"><span><i class="fas fa-chart-line"></i> Terminali Ac</span><i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </section>
+            <div class="market-pulse-overlay" id="managerOpportunityOverlay" onclick="closeManagerOpportunityArea()"></div>
+            <section class="market-pulse market-pulse-flyout" id="managerOpportunityCard">
+                <div class="market-pulse-head">
+                    <div>
+                        <div class="sidebar-title">Firsat Alani</div>
+                        <h2 id="managerOpportunityTitle" style="margin:0 0 6px 0;font-size:18px;color:#e5e7eb;">Kulup Ihtiyaclari</h2>
+                        <div class="market-pulse-copy" id="managerOpportunitySummary">Acik kulup arayislarini ve deneme akisini tek panelde izle.</div>
+                    </div>
+                    <div class="market-pulse-tools">
+                        <div class="market-pulse-badge" id="managerOpportunityStatus"><i class="fas fa-signal"></i><span>Yukleniyor</span></div>
+                        <button class="market-pulse-close" type="button" onclick="closeManagerOpportunityArea()"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="workspace-tabs" style="margin-bottom:14px;">
+                    <button class="workspace-tab active" type="button" data-manager-opportunity-tab="needs" onclick="openManagerOpportunityArea('needs')">Kulup Ihtiyaclari</button>
+                    <button class="workspace-tab" type="button" data-manager-opportunity-tab="events" onclick="openManagerOpportunityArea('events')">Deneme ve Idmanlar</button>
+                </div>
+                <div class="form-actions" style="margin-bottom:14px;">
+                    <button class="btn-small secondary" type="button" id="managerOpportunityRefreshBtn" onclick="loadManagerOpportunityArea('needs')"><i class="fas fa-arrows-rotate"></i><span>Yenile</span></button>
+                </div>
+                <div class="market-pulse-list" id="managerOpportunityNeedsList"><div class="need-item">Kulup ihtiyaclari yukleniyor...</div></div>
+                <div class="market-pulse-list" id="managerOpportunityEventsList" hidden><div class="need-item">Deneme ve idmanlar yukleniyor...</div></div>
+            </section>
 
             <section class="ai-video-lab" data-ai-video-lab>
                 <div class="ai-video-lab-head">
@@ -1134,7 +1209,7 @@
             <div class="search-section" id="managerWorkspace">
                 <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px;">
                     <div>
-                        <h2 id="managerWorkspaceTitle" style="margin-bottom:8px;font-size:18px;font-weight:800;color:#e5e7eb;">Manager Teknik Workspace</h2>
+                        <h2 id="managerWorkspaceTitle" style="margin-bottom:8px;font-size:18px;font-weight:800;color:#e5e7eb;">Menajer Calisma Alani</h2>
                         <p id="managerWorkspaceSummary" style="margin:0;color:#9bb5cb;font-size:13px;line-height:1.6;">Oyuncu bazli not, klip ve kaydedilmis degerlendirmeleri bu panelden yonet.</p>
                     </div>
                     <a class="btn-small secondary" href="player-profile.html"><i class="fas fa-up-right-from-square"></i><span>Oyuncu Profiline Git</span></a>
@@ -1386,6 +1461,113 @@
             return (localStorage.getItem('nextscout_token') || '').trim();
         }
 
+        async function managerMarketPulseGet() {
+            const apiBase = getApiBaseUrl();
+            const response = await fetch(`${apiBase}/market/live-feed?_t=${Date.now()}`, {
+                headers: { Accept: 'application/json' },
+                cache: 'no-store',
+                credentials: 'same-origin',
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok || payload?.ok === false) throw new Error(payload?.message || 'Market pulse yuklenemedi.');
+            return payload;
+        }
+
+        function renderManagerMarketPulse(payload) {
+            const root = document.getElementById('managerMarketPulseList');
+            const statsRoot = document.getElementById('managerMarketPulseStats');
+            const statusRoot = document.getElementById('managerMarketPulseStatus');
+            if (!root || !statsRoot || !statusRoot) return;
+            const ticker = Array.isArray(payload?.data?.ticker) ? payload.data.ticker.slice(0, 3) : [];
+            const summary = payload?.data?.summary || {};
+            root.innerHTML = ticker.length ? ticker.map((item) => `
+                <article class="market-pulse-item">
+                    <div><div class="market-pulse-time">${escapeHtml(item.market_time || 'Simdi')}</div><div class="market-pulse-tag ${escapeHtml(item.tone || 'neutral')}">${escapeHtml(item.badge || 'FLOW')}</div></div>
+                    <div><div class="market-pulse-line"><strong>${escapeHtml(item.player_name || 'Oyuncu')}</strong> (${escapeHtml(item.position || 'Oyuncu')})</div><div class="market-pulse-sub">${escapeHtml(item.headline || '')} -> ${escapeHtml(item.detail || '')}</div></div>
+                    <div class="market-pulse-metric"><span>${escapeHtml(item.metric_label || 'Metrik')}</span><strong>${escapeHtml(item.metric_value ?? 0)}</strong><em>${Number(item.change_percent || 0) > 0 ? '+' : ''}${escapeHtml(item.change_percent ?? 0)}%</em></div>
+                </article>
+            `).join('') : '<div class="need-item">Canli piyasa sinyali olusmadi.</div>';
+            statsRoot.innerHTML = [
+                ['Acik Firsat', summary.open_opportunities || 0],
+                ['Video', summary.videos_today || 0],
+                ['Favori', summary.favorites_today || 0],
+                ['Trial', summary.trial_invites_today || 0],
+            ].map(([label, value]) => `<article class="market-pulse-stat"><div class="market-pulse-stat-label">${escapeHtml(label)}</div><div class="market-pulse-stat-value">${escapeHtml(value)}</div></article>`).join('');
+            statusRoot.innerHTML = '<i class="fas fa-signal"></i><span>Canli</span>';
+        }
+
+        async function loadManagerMarketPulse() {
+            const root = document.getElementById('managerMarketPulseList');
+            const statusRoot = document.getElementById('managerMarketPulseStatus');
+            if (!root || !statusRoot) return;
+            try {
+                statusRoot.innerHTML = '<i class="fas fa-signal"></i><span>Senkron</span>';
+                renderManagerMarketPulse(await managerMarketPulseGet());
+            } catch (error) {
+                statusRoot.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span>Beklemede</span>';
+                root.innerHTML = '<div class="need-item">Market pulse su an yuklenemedi.</div>';
+            }
+        }
+
+        function openManagerMarketPulse() {
+            document.getElementById('managerMarketPulseCard')?.classList.add('active');
+            document.getElementById('managerMarketPulseOverlay')?.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            loadManagerMarketPulse();
+        }
+
+        function closeManagerMarketPulse() {
+            document.getElementById('managerMarketPulseCard')?.classList.remove('active');
+            document.getElementById('managerMarketPulseOverlay')?.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        let activeManagerOpportunityTab = 'needs';
+
+        function openManagerOpportunityArea(type = 'needs') {
+            const card = document.getElementById('managerOpportunityCard');
+            const overlay = document.getElementById('managerOpportunityOverlay');
+            const title = document.getElementById('managerOpportunityTitle');
+            const summary = document.getElementById('managerOpportunitySummary');
+            const status = document.getElementById('managerOpportunityStatus');
+            const refresh = document.getElementById('managerOpportunityRefreshBtn');
+            const needs = document.getElementById('managerOpportunityNeedsList');
+            const events = document.getElementById('managerOpportunityEventsList');
+            const tabs = Array.from(document.querySelectorAll('[data-manager-opportunity-tab]'));
+            if (!card || !overlay || !title || !summary || !status || !refresh || !needs || !events) return;
+
+            const map = {
+                needs: {
+                    title: 'Kulup Ihtiyaclari',
+                    summary: 'Acik kulup arayislarini menajer ekranindan hizlica tara.'
+                },
+                events: {
+                    title: 'Deneme ve Idmanlar',
+                    summary: 'Acik deneme ve idman duyurularini tek panelden izle.'
+                }
+            };
+
+            activeManagerOpportunityTab = map[type] ? type : 'needs';
+            const selected = map[activeManagerOpportunityTab];
+            title.textContent = selected.title;
+            summary.textContent = selected.summary;
+            status.innerHTML = '<i class="fas fa-signal"></i><span>Hazirlaniyor</span>';
+            refresh.setAttribute('onclick', `loadManagerOpportunityArea('${activeManagerOpportunityTab}')`);
+            needs.hidden = activeManagerOpportunityTab !== 'needs';
+            events.hidden = activeManagerOpportunityTab !== 'events';
+            tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.managerOpportunityTab === activeManagerOpportunityTab));
+            card.classList.add('active');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            loadManagerOpportunityArea(activeManagerOpportunityTab);
+        }
+
+        function closeManagerOpportunityArea() {
+            document.getElementById('managerOpportunityCard')?.classList.remove('active');
+            document.getElementById('managerOpportunityOverlay')?.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
         function getAuthHeadersJson() {
             const token = getAuthToken();
             if (!token) return null;
@@ -1406,6 +1588,59 @@
                 throw new Error(payload?.message || `HTTP ${response.status}`);
             }
             return payload?.data ?? payload;
+        }
+
+        function renderManagerOpportunityNeeds(rows) {
+            const root = document.getElementById('managerOpportunityNeedsList');
+            const status = document.getElementById('managerOpportunityStatus');
+            if (!root || activeManagerOpportunityTab !== 'needs') return;
+            if (!Array.isArray(rows) || !rows.length) {
+                root.innerHTML = '<div class="need-item">Acik kulup ihtiyaci yok.</div>';
+                if (status) status.innerHTML = '<i class="fas fa-bullseye"></i><span>Bos</span>';
+                return;
+            }
+            root.innerHTML = rows.slice(0, 8).map((item) => `
+                <article class="need-item">
+                    <div class="need-item-title">${escapeHtml(item.title || item.position || 'Kulup ihtiyaci')}</div>
+                    <div class="need-item-meta">${escapeHtml(item.team_name || 'Kulup')} · ${escapeHtml(item.city || 'Sehir yok')} · ${escapeHtml(item.position || '-')}</div>
+                </article>
+            `).join('');
+            if (status) status.innerHTML = `<i class="fas fa-bullseye"></i><span>${rows.slice(0, 8).length} kayit</span>`;
+        }
+
+        function renderManagerOpportunityEvents(rows) {
+            const root = document.getElementById('managerOpportunityEventsList');
+            const status = document.getElementById('managerOpportunityStatus');
+            if (!root || activeManagerOpportunityTab !== 'events') return;
+            if (!Array.isArray(rows) || !rows.length) {
+                root.innerHTML = '<div class="need-item">Acik deneme veya idman bulunmuyor.</div>';
+                if (status) status.innerHTML = '<i class="fas fa-calendar"></i><span>Bos</span>';
+                return;
+            }
+            root.innerHTML = rows.slice(0, 8).map((item) => `
+                <article class="need-item">
+                    <div class="need-item-title">${escapeHtml(item.title || 'Etkinlik')}</div>
+                    <div class="need-item-meta">${escapeHtml(item.organizer?.club_name || item.organizer?.name || 'Organizator')} · ${escapeHtml(item.city || 'Sehir yok')} · ${escapeHtml(item.event_type || 'event')}</div>
+                </article>
+            `).join('');
+            if (status) status.innerHTML = `<i class="fas fa-calendar"></i><span>${rows.slice(0, 8).length} kayit</span>`;
+        }
+
+        async function loadManagerOpportunityArea(type = 'needs') {
+            const status = document.getElementById('managerOpportunityStatus');
+            const root = document.getElementById(type === 'events' ? 'managerOpportunityEventsList' : 'managerOpportunityNeedsList');
+            if (status) status.innerHTML = '<i class="fas fa-signal"></i><span>Senkron</span>';
+            if (root) root.innerHTML = '<div class="need-item">Yukleniyor...</div>';
+            try {
+                if (type === 'events') {
+                    renderManagerOpportunityEvents(await managerApiGet('/community-events'));
+                } else {
+                    renderManagerOpportunityNeeds(await managerApiGet('/club-needs'));
+                }
+            } catch (error) {
+                if (status) status.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span>Hata</span>';
+                if (root) root.innerHTML = `<div class="need-item">${type === 'events' ? 'Deneme ve idmanlar' : 'Kulup ihtiyaclari'} su an yuklenemedi.</div>`;
+            }
         }
 
         async function managerApiPost(path, body) {
@@ -1466,7 +1701,7 @@
 
             const map = {
                 notes: {
-                    title: 'Manager Teknik Not Defteri',
+                    title: 'Menajer Calisma Alani',
                     summary: 'Oyuncu bazli menajer notlarini kalici olarak burada tutarsin.',
                 },
                 clips: {
@@ -2189,6 +2424,8 @@
         }
 
         async function init() {
+            loadManagerMarketPulse();
+            setInterval(loadManagerMarketPulse, 30000);
             const grid = document.getElementById('playersGrid');
             grid.innerHTML = '<div style="padding:18px;border:1px solid #475569;border-radius:10px;background:#1f2937;color:#cbd5e1;">Oyuncular yukleniyor...</div>';
             try {

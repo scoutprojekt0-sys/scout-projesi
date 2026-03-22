@@ -163,6 +163,33 @@
         .welcome-card h1 { font-size: 28px; margin-bottom: 10px; font-weight: 800; letter-spacing: .2px; }
         .welcome-card p { margin: 0; opacity: 0.95; font-size: 14px; font-weight: 500; }
         .quick-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
+        .market-pulse-overlay { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.72); z-index: 2100; display: none; }
+        .market-pulse-overlay.active { display: block; }
+        .market-pulse-flyout { position: fixed; left: 50%; top: 7vh; transform: translateX(-50%); width: min(980px, calc(100vw - 28px)); max-height: 86vh; overflow: auto; z-index: 2110; display: none; }
+        .market-pulse-flyout.active { display: block; }
+        .market-pulse { background: #fff; border: 1px solid #e5e7eb; padding: 16px; position: relative; border-radius: 12px; box-shadow: 0 30px 80px rgba(2, 6, 23, 0.26); }
+        .market-pulse::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, #2dd4bf 0%, #fbbf24 50%, #38bdf8 100%); }
+        .market-pulse-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+        .market-pulse-copy { color: #6b7280; font-size: 13px; line-height: 1.6; margin-top: 6px; }
+        .market-pulse-tools { display: flex; align-items: center; gap: 10px; }
+        .market-pulse-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid rgba(79, 70, 229, 0.18); background: rgba(79, 70, 229, 0.08); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #3730a3; border-radius: 10px; }
+        .market-pulse-close { width: 40px; height: 40px; border: 1px solid #e5e7eb; background: #fff; color: #374151; cursor: pointer; border-radius: 10px; }
+        .market-pulse-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 14px; }
+        .market-pulse-list, .market-pulse-side { display: grid; gap: 10px; min-width: 0; }
+        .market-pulse-item { display: grid; grid-template-columns: 56px minmax(0,1fr) auto; gap: 10px; align-items: center; padding: 12px; border: 1px solid #e5e7eb; background: #f8fafc; border-radius: 10px; }
+        .market-pulse-time, .market-pulse-tag { display: inline-flex; align-items: center; justify-content: center; min-width: 48px; padding: 5px 6px; border: 1px solid #e5e7eb; font-size: 11px; color: #6b7280; font-family: Consolas, monospace; background: #fff; }
+        .market-pulse-tag.up { color: #0f766e; } .market-pulse-tag.watch { color: #b45309; } .market-pulse-tag.info { color: #0369a1; } .market-pulse-tag.hot { color: #be123c; }
+        .market-pulse-line { font-size: 13px; line-height: 1.45; color: #111827; }
+        .market-pulse-sub { margin-top: 4px; color: #6b7280; font-size: 12px; line-height: 1.55; }
+        .market-pulse-metric { min-width: 90px; padding: 10px; border: 1px solid #e5e7eb; background: #fff; text-align: right; border-radius: 10px; }
+        .market-pulse-metric span { display: block; color: #6b7280; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+        .market-pulse-metric strong { display: block; margin-top: 6px; font-size: 24px; color: #111827; }
+        .market-pulse-metric em { display: block; margin-top: 4px; font: 700 11px/1.2 Consolas, monospace; color: #0f766e; font-style: normal; }
+        .market-pulse-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+        .market-pulse-stat { padding: 12px; border: 1px solid #e5e7eb; background: #f8fafc; border-radius: 10px; }
+        .market-pulse-stat-label { color: #6b7280; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+        .market-pulse-stat-value { margin-top: 8px; font-size: 24px; color: #111827; font-weight: 800; }
+        .market-pulse-link, .market-pulse-launch { display: inline-flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border: 1px solid #c7d2fe; color: #3730a3; text-decoration: none; border-radius: 10px; background: rgba(79, 70, 229, 0.08); }
         .stat-card { background: white; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-top: 3px solid #667eea; }
         .stat-card-value { font-size: 28px; font-weight: bold; color: #667eea; margin-bottom: 8px; }
         .stat-card-label { font-size: 13px; color: #9ca3af; text-transform: uppercase; }
@@ -515,6 +542,7 @@
             .search-grid { grid-template-columns: 1fr; }
             .players-grid { grid-template-columns: 1fr; }
             .quick-stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .market-pulse-grid { grid-template-columns: 1fr; }
             .club-actions { justify-content: stretch; }
             .club-actions .btn-small { width: 100%; }
             .group-head { flex-direction: column; align-items: stretch; }
@@ -594,6 +622,7 @@
         @media (max-width: 480px) {
             .navbar-right { grid-template-columns: 1fr; }
             .quick-stats { grid-template-columns: 1fr; }
+            .market-pulse-flyout { top: 10px; width: calc(100vw - 14px); max-height: calc(100vh - 20px); }
             .transfer-summary-grid { grid-template-columns: 1fr; }
             .compare-toolbar > div:last-child { grid-template-columns: 1fr; }
             .btn-small { font-size: 11px; min-height: 40px; }
@@ -821,9 +850,13 @@
 
         <div class="content">
             <div class="welcome-card">
-                <h1>KULÜP Dashboard</h1>
+                <h1>Kulup operasyonunu buradan yonet.</h1>
                 <p>Oyuncu ara, profilleri incele ve transfer teklifi gönder.</p>
             </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
+                    <button class="market-pulse-launch" type="button" onclick="openTeamMarketPulse()"><i class="fas fa-bolt"></i><span>Market Pulse</span></button>
+                    <button class="market-pulse-launch" type="button" onclick="openTeamOpportunityArea('needs')"><i class="fas fa-bullseye"></i><span>Firsat Alani</span></button>
+                </div>
 
             <div class="group-section">
                 <div class="group-head">
@@ -858,6 +891,50 @@
                 <div class="stat-card"><div class="stat-card-value" id="statOffersSent">0</div><div class="stat-card-label">Gonderilen Teklif</div></div>
                 <div class="stat-card"><div class="stat-card-value" id="statAverageRating">0.0</div><div class="stat-card-label">Ortalama Rating</div></div>
                 <div class="stat-card"><div class="stat-card-value" id="statProfileCompletion">0%</div><div class="stat-card-label">Profil Tamamlama</div></div>
+            <div class="market-pulse-overlay" id="teamMarketPulseOverlay" onclick="closeTeamMarketPulse()"></div>
+            <section class="market-pulse market-pulse-flyout" id="teamMarketPulseCard">
+                <div class="market-pulse-head">
+                    <div>
+                        <div class="sidebar-title">Market Pulse</div>
+                        <h2 style="margin:0 0 6px 0;font-size:18px;color:#111827;">Canli Piyasa Ozeti</h2>
+                        <div class="market-pulse-copy">Kulup icin sicak oyuncu hareketi, favori artisi ve trial baskisini tek panelde ac.</div>
+                    </div>
+                    <div class="market-pulse-tools">
+                        <div class="market-pulse-badge" id="teamMarketPulseStatus"><i class="fas fa-signal"></i><span>Yukleniyor</span></div>
+                        <button class="market-pulse-close" type="button" onclick="closeTeamMarketPulse()"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="market-pulse-grid">
+                    <div class="market-pulse-list" id="teamMarketPulseList"><div class="empty">Market pulse verisi yukleniyor...</div></div>
+                    <div class="market-pulse-side">
+                        <div class="market-pulse-stats" id="teamMarketPulseStats"></div>
+                        <a class="market-pulse-link" href="platform-akisi.html"><span><i class="fas fa-chart-line"></i> Terminali Ac</span><i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </section>
+            <div class="market-pulse-overlay" id="teamOpportunityOverlay" onclick="closeTeamOpportunityArea()"></div>
+            <section class="market-pulse market-pulse-flyout" id="teamOpportunityCard">
+                <div class="market-pulse-head">
+                    <div>
+                        <div class="sidebar-title">Firsat Alani</div>
+                        <h2 id="teamOpportunityTitle" style="margin:0 0 6px 0;font-size:18px;color:#111827;">Kulup Ihtiyaclari</h2>
+                        <div class="market-pulse-copy" id="teamOpportunitySummary">Acik kulup arayislarini ve deneme akisini tek panelde izle.</div>
+                    </div>
+                    <div class="market-pulse-tools">
+                        <div class="market-pulse-badge" id="teamOpportunityStatus"><i class="fas fa-signal"></i><span>Yukleniyor</span></div>
+                        <button class="market-pulse-close" type="button" onclick="closeTeamOpportunityArea()"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="workspace-tabs" style="margin-bottom:14px;">
+                    <button class="workspace-tab active" type="button" data-team-opportunity-tab="needs" onclick="openTeamOpportunityArea('needs')">Kulup Ihtiyaclari</button>
+                    <button class="workspace-tab" type="button" data-team-opportunity-tab="events" onclick="openTeamOpportunityArea('events')">Deneme ve Idmanlar</button>
+                </div>
+                <div class="form-actions" style="margin-bottom:14px;">
+                    <button class="btn-small secondary" type="button" id="teamOpportunityRefreshBtn" onclick="loadTeamOpportunityArea('needs')"><i class="fas fa-arrows-rotate"></i><span>Yenile</span></button>
+                </div>
+                <div class="market-pulse-list" id="teamOpportunityNeedsList"><div class="empty">Kulup ihtiyaclari yukleniyor...</div></div>
+                <div class="market-pulse-list" id="teamOpportunityEventsList" hidden><div class="empty">Deneme ve idmanlar yukleniyor...</div></div>
+            </section>
             </div>
 
             <section class="ai-video-lab" data-ai-video-lab>
@@ -1440,6 +1517,175 @@
                         latest_outgoing: [],
                     });
                 }
+            }
+        }
+
+        async function teamMarketPulseGet() {
+            const response = await fetch(`${getApiBaseUrl()}/market/live-feed?_t=${Date.now()}`, {
+                headers: { Accept: 'application/json' },
+                cache: 'no-store',
+                credentials: 'same-origin',
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok || payload?.ok === false) throw new Error(payload?.message || 'Market pulse yuklenemedi.');
+            return payload;
+        }
+
+        function renderTeamMarketPulse(payload) {
+            const root = document.getElementById('teamMarketPulseList');
+            const statsRoot = document.getElementById('teamMarketPulseStats');
+            const statusRoot = document.getElementById('teamMarketPulseStatus');
+            if (!root || !statsRoot || !statusRoot) return;
+            const ticker = Array.isArray(payload?.data?.ticker) ? payload.data.ticker.slice(0, 3) : [];
+            const summary = payload?.data?.summary || {};
+            root.innerHTML = ticker.length ? ticker.map((item) => `
+                <article class="market-pulse-item">
+                    <div><div class="market-pulse-time">${escapeHtml(item.market_time || 'Simdi')}</div><div class="market-pulse-tag ${escapeHtml(item.tone || 'neutral')}">${escapeHtml(item.badge || 'FLOW')}</div></div>
+                    <div><div class="market-pulse-line"><strong>${escapeHtml(item.player_name || 'Oyuncu')}</strong> (${escapeHtml(item.position || 'Oyuncu')})</div><div class="market-pulse-sub">${escapeHtml(item.headline || '')} -> ${escapeHtml(item.detail || '')}</div></div>
+                    <div class="market-pulse-metric"><span>${escapeHtml(item.metric_label || 'Metrik')}</span><strong>${escapeHtml(item.metric_value ?? 0)}</strong><em>${Number(item.change_percent || 0) > 0 ? '+' : ''}${escapeHtml(item.change_percent ?? 0)}%</em></div>
+                </article>
+            `).join('') : '<div class="empty">Canli piyasa sinyali olusmadi.</div>';
+            statsRoot.innerHTML = [
+                ['Acik Firsat', summary.open_opportunities || 0],
+                ['Video', summary.videos_today || 0],
+                ['Favori', summary.favorites_today || 0],
+                ['Trial', summary.trial_invites_today || 0],
+            ].map(([label, value]) => `<article class="market-pulse-stat"><div class="market-pulse-stat-label">${escapeHtml(label)}</div><div class="market-pulse-stat-value">${escapeHtml(value)}</div></article>`).join('');
+            statusRoot.innerHTML = '<i class="fas fa-signal"></i><span>Canli</span>';
+        }
+
+        async function loadTeamMarketPulse() {
+            const root = document.getElementById('teamMarketPulseList');
+            const statusRoot = document.getElementById('teamMarketPulseStatus');
+            if (!root || !statusRoot) return;
+            try {
+                statusRoot.innerHTML = '<i class="fas fa-signal"></i><span>Senkron</span>';
+                renderTeamMarketPulse(await teamMarketPulseGet());
+            } catch (error) {
+                statusRoot.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span>Beklemede</span>';
+                root.innerHTML = '<div class="empty">Market pulse su an yuklenemedi.</div>';
+            }
+        }
+
+        function openTeamMarketPulse() {
+            document.getElementById('teamMarketPulseCard')?.classList.add('active');
+            document.getElementById('teamMarketPulseOverlay')?.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            loadTeamMarketPulse();
+        }
+
+        function closeTeamMarketPulse() {
+            document.getElementById('teamMarketPulseCard')?.classList.remove('active');
+            document.getElementById('teamMarketPulseOverlay')?.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        let activeTeamOpportunityTab = 'needs';
+
+        function openTeamOpportunityArea(type = 'needs') {
+            const card = document.getElementById('teamOpportunityCard');
+            const overlay = document.getElementById('teamOpportunityOverlay');
+            const title = document.getElementById('teamOpportunityTitle');
+            const summary = document.getElementById('teamOpportunitySummary');
+            const status = document.getElementById('teamOpportunityStatus');
+            const refresh = document.getElementById('teamOpportunityRefreshBtn');
+            const needs = document.getElementById('teamOpportunityNeedsList');
+            const events = document.getElementById('teamOpportunityEventsList');
+            const tabs = Array.from(document.querySelectorAll('[data-team-opportunity-tab]'));
+            if (!card || !overlay || !title || !summary || !status || !refresh || !needs || !events) return;
+
+            const map = {
+                needs: {
+                    title: 'Kulup Ihtiyaclari',
+                    summary: 'Acik kulup arayislarini kulup ekranindan tek panelde izle.'
+                },
+                events: {
+                    title: 'Deneme ve Idmanlar',
+                    summary: 'Acik deneme ve idman duyurularini tek panelden tara.'
+                }
+            };
+
+            activeTeamOpportunityTab = map[type] ? type : 'needs';
+            const selected = map[activeTeamOpportunityTab];
+            title.textContent = selected.title;
+            summary.textContent = selected.summary;
+            status.innerHTML = '<i class="fas fa-signal"></i><span>Hazirlaniyor</span>';
+            refresh.setAttribute('onclick', `loadTeamOpportunityArea('${activeTeamOpportunityTab}')`);
+            needs.hidden = activeTeamOpportunityTab !== 'needs';
+            events.hidden = activeTeamOpportunityTab !== 'events';
+            tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.teamOpportunityTab === activeTeamOpportunityTab));
+            card.classList.add('active');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            loadTeamOpportunityArea(activeTeamOpportunityTab);
+        }
+
+        function closeTeamOpportunityArea() {
+            document.getElementById('teamOpportunityCard')?.classList.remove('active');
+            document.getElementById('teamOpportunityOverlay')?.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        async function teamOpportunityGet(path) {
+            const headers = getAuthHeaders(false) || { Accept: 'application/json' };
+            const response = await fetch(`${getApiBaseUrl()}${path}`, { headers });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok || payload?.ok === false) throw new Error(payload?.message || 'Firsat verisi yuklenemedi.');
+            return payload.data ?? payload;
+        }
+
+        function renderTeamOpportunityNeeds(rows) {
+            const root = document.getElementById('teamOpportunityNeedsList');
+            const status = document.getElementById('teamOpportunityStatus');
+            if (!root || activeTeamOpportunityTab !== 'needs') return;
+            if (!Array.isArray(rows) || !rows.length) {
+                root.innerHTML = '<div class="empty">Acik kulup ihtiyaci yok.</div>';
+                if (status) status.innerHTML = '<i class="fas fa-bullseye"></i><span>Bos</span>';
+                return;
+            }
+            root.innerHTML = rows.slice(0, 8).map((item) => `
+                <article class="market-pulse-item">
+                    <div><div class="market-pulse-time">${escapeHtml(item.city || 'Sehir yok')}</div><div class="market-pulse-tag neutral">${escapeHtml(item.status || 'open')}</div></div>
+                    <div><div class="market-pulse-line"><strong>${escapeHtml(item.team_name || 'Kulup')}</strong></div><div class="market-pulse-sub">${escapeHtml(item.title || item.position || 'Kulup ihtiyaci')}</div></div>
+                    <div class="market-pulse-metric"><span>Pozisyon</span><strong>${escapeHtml(item.position || '-')}</strong><em>${escapeHtml(item.age_min ?? '-')} - ${escapeHtml(item.age_max ?? '-')}</em></div>
+                </article>
+            `).join('');
+            if (status) status.innerHTML = `<i class="fas fa-bullseye"></i><span>${rows.slice(0, 8).length} kayit</span>`;
+        }
+
+        function renderTeamOpportunityEvents(rows) {
+            const root = document.getElementById('teamOpportunityEventsList');
+            const status = document.getElementById('teamOpportunityStatus');
+            if (!root || activeTeamOpportunityTab !== 'events') return;
+            if (!Array.isArray(rows) || !rows.length) {
+                root.innerHTML = '<div class="empty">Acik deneme veya idman bulunmuyor.</div>';
+                if (status) status.innerHTML = '<i class="fas fa-calendar"></i><span>Bos</span>';
+                return;
+            }
+            root.innerHTML = rows.slice(0, 8).map((item) => `
+                <article class="market-pulse-item">
+                    <div><div class="market-pulse-time">${escapeHtml(item.city || 'Sehir yok')}</div><div class="market-pulse-tag positive">${escapeHtml(item.event_type || 'event')}</div></div>
+                    <div><div class="market-pulse-line"><strong>${escapeHtml(item.organizer?.club_name || item.organizer?.name || 'Organizator')}</strong></div><div class="market-pulse-sub">${escapeHtml(item.title || 'Etkinlik')}</div></div>
+                    <div class="market-pulse-metric"><span>Mekan</span><strong>${escapeHtml(item.venue || '-')}</strong><em>${formatDate(item.event_date)}</em></div>
+                </article>
+            `).join('');
+            if (status) status.innerHTML = `<i class="fas fa-calendar"></i><span>${rows.slice(0, 8).length} kayit</span>`;
+        }
+
+        async function loadTeamOpportunityArea(type = 'needs') {
+            const status = document.getElementById('teamOpportunityStatus');
+            const root = document.getElementById(type === 'events' ? 'teamOpportunityEventsList' : 'teamOpportunityNeedsList');
+            if (status) status.innerHTML = '<i class="fas fa-signal"></i><span>Senkron</span>';
+            if (root) root.innerHTML = '<div class="empty">Yukleniyor...</div>';
+            try {
+                if (type === 'events') {
+                    renderTeamOpportunityEvents(await teamOpportunityGet('/community-events'));
+                } else {
+                    renderTeamOpportunityNeeds(await teamOpportunityGet('/club-needs'));
+                }
+            } catch (error) {
+                if (status) status.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span>Hata</span>';
+                if (root) root.innerHTML = `<div class="empty">${type === 'events' ? 'Deneme ve idmanlar' : 'Kulup ihtiyaclari'} su an yuklenemedi.</div>`;
             }
         }
 
@@ -2591,6 +2837,8 @@
         }
 
         async function init() {
+            loadTeamMarketPulse();
+            setInterval(loadTeamMarketPulse, 30000);
             window.NextScoutGrowth?.bindAutoTelemetry(document);
             try {
                 await fetchClubOffers();
@@ -2662,6 +2910,10 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+
+
+
+
 
 
 

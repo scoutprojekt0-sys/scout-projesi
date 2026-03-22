@@ -9617,7 +9617,6 @@
                         }
 
                         function applyStarterVisibility() {
-                            const role = readRole();
                             const hasSession = Boolean((localStorage.getItem('nextscout_token') || '').trim() || (localStorage.getItem('nextscout_user') || '').trim());
                             if (starterContent) starterContent.style.display = 'none';
                             if (clubCard) clubCard.style.display = 'none';
@@ -9628,27 +9627,8 @@
                             if (coachTipCard) coachTipCard.style.display = 'none';
                             if (roleTipGrid) roleTipGrid.style.display = 'none';
 
-                            if (hasSession && (role === 'team' || role === 'kulup' || role === 'club')) {
-                                card.style.display = 'grid';
-                                if (clubCard) clubCard.style.display = 'grid';
-                                if (roleTipGrid) roleTipGrid.style.display = 'contents';
-                                if (clubTipCard) clubTipCard.style.display = 'grid';
-                                return;
-                            }
-
-                            if (hasSession && (role === 'manager' || role === 'menajer')) {
-                                card.style.display = 'grid';
-                                if (managerCard) managerCard.style.display = 'grid';
-                                if (roleTipGrid) roleTipGrid.style.display = 'contents';
-                                if (managerTipCard) managerTipCard.style.display = 'grid';
-                                return;
-                            }
-
-                            if (hasSession && (role === 'coach' || role === 'antrenor')) {
-                                card.style.display = 'grid';
-                                if (coachCard) coachCard.style.display = 'grid';
-                                if (roleTipGrid) roleTipGrid.style.display = 'contents';
-                                if (coachTipCard) coachTipCard.style.display = 'grid';
+                            if (hasSession) {
+                                card.style.display = 'none';
                                 return;
                             }
 
@@ -16061,6 +16041,10 @@
             const risingStarsCard = document.getElementById('risingStarsCard');
             const dataStatusStrip = document.getElementById('dataStatusStrip');
             const homeDataPanel = document.querySelector('.home-data-center-panel');
+            const liveNewsCard = document.getElementById('liveNewsCard');
+            const platformSummaryCard = document.getElementById('platformSummaryCard');
+            const successStoriesPanel = document.getElementById('homeStep3');
+            const desktopSupportGrid = document.querySelector('.desktop-support-grid');
             const coachHomeFlow = document.getElementById('coachHomeFlow');
             const coachHomeFlowPrimary = document.getElementById('coachHomeFlowPrimary');
             const coachHomeFlowSecondary = document.getElementById('coachHomeFlowSecondary');
@@ -16117,7 +16101,7 @@
             }
 
             if (starterRoleCard) {
-                const shouldShowStarterRoleCard = isPublicSession || isClubSession || isManagerSession;
+                const shouldShowStarterRoleCard = isPublicSession;
                 starterRoleCard.hidden = !shouldShowStarterRoleCard;
                 starterRoleCard.style.display = shouldShowStarterRoleCard ? '' : 'none';
             }
@@ -16222,9 +16206,27 @@
                 risingStarsCard.style.display = (isPublicSession || isScoutSession || isClubSession || isManagerSession || isCoachSession) ? '' : 'none';
             }
 
+            if (liveNewsCard) {
+                liveNewsCard.style.display = isScoutSession ? 'none' : '';
+            }
+
+            if (platformSummaryCard) {
+                platformSummaryCard.style.display = isScoutSession ? 'none' : platformSummaryCard.style.display;
+            }
+
+            if (playerOfWeekCard && isScoutSession) {
+                playerOfWeekCard.style.display = 'none';
+            }
+
+            if (successStoriesPanel) {
+                successStoriesPanel.style.display = '';
+            }
+
+            if (desktopSupportGrid) {
+                desktopSupportGrid.style.display = '';
+            }
+
             if (isCoachSession) {
-                const liveNewsCard = document.getElementById('liveNewsCard');
-                const platformSummaryCard = document.getElementById('platformSummaryCard');
                 if (liveNewsCard) {
                     liveNewsCard.hidden = true;
                     liveNewsCard.style.display = 'none';

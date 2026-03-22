@@ -333,9 +333,9 @@
     }
     .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 18px; }
     .stat {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--line);
-      border-radius: 0;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--line);
+        border-radius: 0;
       padding: 18px;
       box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28);
       position: relative;
@@ -351,6 +351,274 @@
     .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
     .stat-value, .money { margin-top: 12px; font: 800 28px/1 Inter, sans-serif; letter-spacing: -0.02em; color: var(--ink); }
     .stat-foot { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .market-pulse {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .market-pulse-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(6, 17, 27, 0.74);
+      z-index: 2100;
+      display: none;
+    }
+    .market-pulse-overlay.active { display: block; }
+    .market-pulse-flyout {
+      position: fixed;
+      left: 50%;
+      top: 7vh;
+      transform: translateX(-50%);
+      width: min(980px, calc(100vw - 28px));
+      max-height: 86vh;
+      overflow: auto;
+      z-index: 2110;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.42);
+      display: none;
+      margin-bottom: 0;
+    }
+    .market-pulse-flyout.active { display: block; }
+    .market-pulse::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, #2dd4bf 0%, #fbbf24 50%, #38bdf8 100%);
+    }
+    .market-pulse-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .market-pulse-copy {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+      margin-top: 6px;
+      max-width: 760px;
+    }
+    .market-pulse-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid rgba(96, 165, 250, 0.22);
+      background: rgba(56, 189, 248, 0.08);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #bae6fd;
+      white-space: nowrap;
+    }
+    .market-pulse-tools {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .market-pulse-close {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      color: #dbeafe;
+      cursor: pointer;
+    }
+    .market-pulse-grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+    .market-pulse-list {
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+    }
+    .market-pulse-item {
+      display: grid;
+      grid-template-columns: 56px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .market-pulse-time,
+    .market-pulse-tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 48px;
+      padding: 5px 6px;
+      border: 1px solid var(--line);
+      font-size: 11px;
+      color: var(--muted);
+      font-family: Consolas, monospace;
+    }
+    .market-pulse-tag.up { color: #99f6e4; border-color: rgba(45, 212, 191, 0.24); }
+    .market-pulse-tag.watch { color: #fde68a; border-color: rgba(251, 191, 36, 0.24); }
+    .market-pulse-tag.info { color: #bae6fd; border-color: rgba(56, 189, 248, 0.24); }
+    .market-pulse-tag.hot { color: #fecdd3; border-color: rgba(251, 113, 133, 0.24); }
+    .market-pulse-line {
+      font-size: 13px;
+      line-height: 1.45;
+      color: #f5fbff;
+    }
+    .market-pulse-line strong { color: #ffffff; }
+    .market-pulse-sub {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .market-pulse-metric {
+      min-width: 90px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      text-align: right;
+    }
+    .market-pulse-metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .market-pulse-metric strong {
+      display: block;
+      margin-top: 6px;
+      font: 800 24px/1 Inter, sans-serif;
+      color: #f5fbff;
+    }
+    .market-pulse-metric em {
+      display: block;
+      margin-top: 4px;
+      font: 700 11px/1.2 Consolas, monospace;
+      color: #2dd4bf;
+      font-style: normal;
+    }
+    .market-pulse-side {
+      display: grid;
+      gap: 10px;
+    }
+    .market-pulse-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .market-pulse-stat {
+      padding: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .market-pulse-stat-label {
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .market-pulse-stat-value {
+      margin-top: 8px;
+      font: 800 24px/1 Inter, sans-serif;
+      color: #f5fbff;
+    }
+    .market-pulse-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      color: #dbeafe;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .market-pulse-launch {
+      background: rgba(45, 212, 191, 0.12);
+      color: #ccfbf1;
+      border-color: rgba(45, 212, 191, 0.24);
+    }
+    .flyout-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(6, 17, 27, 0.74);
+      z-index: 2100;
+      display: none;
+    }
+    .flyout-overlay.active { display: block; }
+    .tips-flyout {
+      position: fixed;
+      left: 50%;
+      top: 7vh;
+      transform: translateX(-50%);
+      width: min(920px, calc(100vw - 28px));
+      max-height: 86vh;
+      overflow: auto;
+      z-index: 2110;
+      display: none;
+    }
+    .tips-flyout.active { display: block; }
+    .tips-flyout-card {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      padding: 16px;
+      position: relative;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.42);
+    }
+    .tips-flyout-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, #60a5fa 0%, #ff7e22 100%);
+    }
+    .tips-flyout-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .tips-flyout-tools {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .tips-flyout-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid rgba(96, 165, 250, 0.22);
+      background: rgba(59, 130, 246, 0.12);
+      color: #dbeafe;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .tips-flyout-close {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: #dbeafe;
+      cursor: pointer;
+    }
     .layout-grid, .layout { display: grid; grid-template-columns: 1.1fr 1fr; gap: 14px; }
     .card-head, .row-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
     .card-head { margin-bottom: 16px; }
@@ -517,14 +785,15 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
-    @media (max-width: 1180px) {
+      @media (max-width: 1180px) {
       .main-container, .hero, .layout, .layout-grid { grid-template-columns: 1fr; }
       .sidebar { position: static; top: auto; }
       .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .market-pulse-grid { grid-template-columns: 1fr; }
       .analysis-layout,
       .analysis-summary-grid,
       .workspace-metrics { grid-template-columns: 1fr; }
-    }
+      }
     @media (max-width: 760px) {
       .header { padding: 14px 12px; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
       .header-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
@@ -534,6 +803,16 @@
       .hero-panel, .hero-side, .card, .panel, .stat { padding: 16px; border-radius: 0; }
       .grid-4, .form-grid, .footer-links { grid-template-columns: 1fr; }
       .btn, .hero-actions .btn, .form-actions .btn { width: 100%; }
+      .market-pulse-flyout {
+        top: 10px;
+        width: calc(100vw - 14px);
+        max-height: calc(100vh - 20px);
+      }
+      .tips-flyout {
+        top: 10px;
+        width: calc(100vw - 14px);
+        max-height: calc(100vh - 20px);
+      }
     }
     @media (max-width: 560px) {
       .sidebar-menu { grid-template-columns: 1fr; }
@@ -545,10 +824,11 @@
     .sidebar-note,
     .welcome,
     .panel,
-    .hero-side,
-    .stat,
-    .status-row,
-    .tip-item,
+      .hero-side,
+      .stat,
+      .market-pulse,
+      .status-row,
+      .tip-item,
     .reward-item,
     .leader-item,
     .point-item,
@@ -605,12 +885,6 @@
         <a class="sidebar-item active" href="#overview"><i class="fas fa-house"></i><span>Dashboard</span></a>
         <a class="sidebar-item" href="ai-discovery.html"><i class="fas fa-flask"></i><span>AI Discovery</span></a>
         <a class="sidebar-item" href="#submit"><i class="fas fa-video"></i><span>Yetenek Bildir</span></a>
-        <a class="sidebar-item" href="#tips"><i class="fas fa-list-check"></i><span>Ihbarlarim</span></a>
-        <a class="sidebar-item" href="#workspace" onclick="openScoutWorkspace('notes')"><i class="fas fa-notes-medical"></i><span>Teknik Not Defteri</span></a>
-        <a class="sidebar-item" href="#workspace" onclick="openScoutWorkspace('clips')"><i class="fas fa-film"></i><span>Klip Isaretleme</span></a>
-        <a class="sidebar-item" href="#workspace" onclick="openScoutWorkspace('evaluations')"><i class="fas fa-clipboard-list"></i><span>Degerlendirmeler</span></a>
-        <a class="sidebar-item" href="#rewards"><i class="fas fa-trophy"></i><span>Odullerim</span></a>
-        <a class="sidebar-item" href="#leaderboard"><i class="fas fa-ranking-star"></i><span>Liderlik</span></a>
         <a class="sidebar-item" href="scout-watchlist.html"><i class="fas fa-bookmark"></i><span>Takip Listem</span></a>
         <a class="sidebar-item" href="scout-reports.html"><i class="fas fa-file-lines"></i><span>Scout Raporlari</span></a>
         <a class="sidebar-item" href="scout-profile.html"><i class="fas fa-user-check"></i><span>Scout Profili</span></a>
@@ -635,25 +909,36 @@
             <i class="fas fa-bullseye"></i>
             <span>Crowdsourced Scout</span>
           </div>
-          <h2 class="hero-title">Mahallendeki yetenegi sisteme sok, dogru kesiflerden puan ve odul kazan.</h2>
-          <p class="hero-sub" id="heroGreeting">
-            Scout hesabinla oyuncu bildir, dogrulanan ihbarlari takip et ve profesyonel surece donusen kesiflerde kendi etkini gor.
-          </p>
-          <div class="hero-actions">
-            <button class="btn btn-primary" type="button" onclick="scrollToBlock('submit')">
-              <i class="fas fa-video"></i>
-              Yetenek Bildir
-            </button>
-            <a class="btn btn-secondary" href="scout-watchlist.html">
-              <i class="fas fa-bookmark"></i>
-              Watchlist Ac
-            </a>
-          </div>
-          <div class="hero-points">
-            <span class="pill"><i class="fas fa-circle-check"></i><span>Dogrulanan kesif puan kazandirir</span></span>
-            <span class="pill"><i class="fas fa-handshake-angle"></i><span>Trial ve imza adimlari odul baglar</span></span>
-            <span class="pill"><i class="fas fa-ranking-star"></i><span>Lider tabloda yuksel</span></span>
-          </div>
+            <h2 class="hero-title">Scout operasyonunu buradan yonet.</h2>
+            <p class="hero-sub" id="heroGreeting">
+              Scout akisinda once oyuncu bildir, sonra ihbarlarini ve market hareketini yonet.
+            </p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" type="button" onclick="scrollToBlock('submit')">
+                <i class="fas fa-video"></i>
+                Yetenek Bildir
+              </button>
+              <a class="btn btn-secondary" href="#status-area" onclick="openScoutStatusArea('tips', event)">
+                <i class="fas fa-signal"></i>
+                Scout Durum Alani
+              </a>
+              <button class="btn btn-secondary market-pulse-launch" type="button" onclick="openMarketPulsePanel()">
+                <i class="fas fa-chart-line"></i>
+                Market Pulse
+              </button>
+              <button class="btn btn-secondary" type="button" onclick="openScoutOpportunityArea('needs')">
+                <i class="fas fa-bullseye"></i>
+                Scout Firsat Alani
+              </button>
+              <button class="btn btn-secondary" type="button" onclick="openScoutWorkspace('notes')">
+                <i class="fas fa-briefcase"></i>
+                Scout Calisma Alani
+              </button>
+            </div>
+            <div class="hero-points">
+              <span class="pill"><i class="fas fa-circle-check"></i><span>Dogrulanan kesif puan kazandirir</span></span>
+              <span class="pill"><i class="fas fa-handshake-angle"></i><span>Trial adimlari odul baglar</span></span>
+            </div>
         </div>
 
         <aside class="panel hero-side">
@@ -689,6 +974,114 @@
           <div class="stat-value" id="statAccuracy">%0</div>
           <div class="stat-foot">Dogru sinyal kalitesi</div>
         </article>
+      </section>
+
+      <div class="market-pulse-overlay" id="marketPulseOverlay" onclick="closeMarketPulsePanel()"></div>
+      <section class="market-pulse market-pulse-flyout" id="marketPulseCard">
+        <div class="market-pulse-head">
+          <div>
+            <div class="eyebrow">Market Pulse</div>
+            <h3 class="panel-title" style="margin:0;">Canli Piyasa Ozeti</h3>
+            <div class="market-pulse-copy">Scout ekranini bozmadan son video hareketi, favori sicakligi ve trial baskisini tek kartta toplar.</div>
+          </div>
+          <div class="market-pulse-tools">
+            <div class="market-pulse-badge" id="marketPulseStatus"><i class="fas fa-signal"></i><span>Yukleniyor</span></div>
+            <button class="market-pulse-close" type="button" onclick="closeMarketPulsePanel()" aria-label="Market Pulse kapat">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <div class="market-pulse-grid">
+          <div class="market-pulse-list" id="marketPulseList">
+            <div class="empty">Market pulse verisi yukleniyor...</div>
+          </div>
+          <div class="market-pulse-side">
+            <div class="market-pulse-stats" id="marketPulseStats">
+              <article class="market-pulse-stat">
+                <div class="market-pulse-stat-label">Acik Firsat</div>
+                <div class="market-pulse-stat-value">0</div>
+              </article>
+            </div>
+            <a class="market-pulse-link" href="platform-akisi.html">
+              <span><i class="fas fa-chart-line"></i> Terminali Ac</span>
+              <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <div class="flyout-overlay" id="scoutStatusOverlay" onclick="closeScoutStatusArea()"></div>
+      <section class="tips-flyout" id="scoutStatusFlyout">
+        <div class="tips-flyout-card">
+          <div class="tips-flyout-head">
+            <div>
+              <div class="eyebrow">Scout Durum Alani</div>
+              <h3 class="panel-title" id="scoutStatusTitle" style="margin:0;">Ihbarlarim</h3>
+              <div class="market-pulse-copy" id="scoutStatusSummary">Kendi gonderdigin scout tiplerin son durumunu scroll etmeden ac.</div>
+            </div>
+            <div class="tips-flyout-tools">
+              <div class="tips-flyout-badge" id="scoutStatusBadge"><i class="fas fa-signal"></i><span>Hazirlaniyor</span></div>
+              <button class="tips-flyout-close" type="button" onclick="closeScoutStatusArea()" aria-label="Scout durum alanini kapat">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <div class="workspace-tabs" style="margin-bottom:14px;">
+            <button class="workspace-tab active" type="button" data-status-tab="tips" onclick="openScoutStatusArea('tips')">Ihbarlarim</button>
+            <button class="workspace-tab" type="button" data-status-tab="rewards" onclick="openScoutStatusArea('rewards')">Odullerim</button>
+            <button class="workspace-tab" type="button" data-status-tab="leaderboard" onclick="openScoutStatusArea('leaderboard')">Liderlik</button>
+          </div>
+          <div class="form-actions" style="margin-bottom:14px;">
+            <button class="btn btn-secondary" type="button" id="scoutStatusRefreshBtn" onclick="loadTips()">
+              <i class="fas fa-arrows-rotate"></i>
+              Yenile
+            </button>
+          </div>
+          <div class="list" id="scoutTipsFlyoutList">
+            <div class="empty">Ihbarlar yukleniyor...</div>
+          </div>
+          <div class="list" id="scoutRewardsFlyoutList" hidden>
+            <div class="empty">Oduller yukleniyor...</div>
+          </div>
+          <div class="list" id="scoutLeaderboardFlyoutList" hidden>
+            <div class="empty">Liderlik tablosu yukleniyor...</div>
+          </div>
+        </div>
+      </section>
+
+      <div class="flyout-overlay" id="scoutOpportunityOverlay" onclick="closeScoutOpportunityArea()"></div>
+      <section class="tips-flyout" id="scoutOpportunityFlyout">
+        <div class="tips-flyout-card">
+          <div class="tips-flyout-head">
+            <div>
+              <div class="eyebrow">Scout Firsat Alani</div>
+              <h3 class="panel-title" id="scoutOpportunityTitle" style="margin:0;">Kulup Ihtiyaclari</h3>
+              <div class="market-pulse-copy" id="scoutOpportunitySummary">Kulup arayislarini ve deneme akisini tek panelde izle.</div>
+            </div>
+            <div class="tips-flyout-tools">
+              <div class="tips-flyout-badge" id="scoutOpportunityBadge"><i class="fas fa-signal"></i><span>Hazirlaniyor</span></div>
+              <button class="tips-flyout-close" type="button" onclick="closeScoutOpportunityArea()" aria-label="Scout firsat alanini kapat">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <div class="workspace-tabs" style="margin-bottom:14px;">
+            <button class="workspace-tab active" type="button" data-opportunity-tab="needs" onclick="openScoutOpportunityArea('needs')">Kulup Ihtiyaclari</button>
+            <button class="workspace-tab" type="button" data-opportunity-tab="events" onclick="openScoutOpportunityArea('events')">Deneme ve Idmanlar</button>
+          </div>
+          <div class="form-actions" style="margin-bottom:14px;">
+            <button class="btn btn-secondary" type="button" id="scoutOpportunityRefreshBtn" onclick="loadScoutOpportunityArea('needs')">
+              <i class="fas fa-arrows-rotate"></i>
+              Yenile
+            </button>
+          </div>
+          <div class="list" id="scoutOpportunityNeedsList">
+            <div class="empty">Kulup ihtiyaclari yukleniyor...</div>
+          </div>
+          <div class="list" id="scoutOpportunityEventsList" hidden>
+            <div class="empty">Deneme ve idmanlar yukleniyor...</div>
+          </div>
+        </div>
       </section>
 
       <section class="ai-video-lab" data-ai-video-lab>
@@ -902,60 +1295,28 @@
             </div>
           </article>
 
-          <article class="panel" id="tips">
-            <div class="card-head">
-              <div class="card-copy">
-                <h2>Son Ihbarlarim</h2>
-                <p>Kendi gonderdigin scout tiplerin son durumu. Oncelikle son 6 kayit listelenir.</p>
-              </div>
-              <button class="btn btn-secondary" type="button" onclick="loadTips()">
-                <i class="fas fa-arrows-rotate"></i>
-                Yenile
-              </button>
-            </div>
-            <div class="list" id="tipsList">
-              <div class="empty">Ihbarlar yukleniyor...</div>
-            </div>
-          </article>
         </div>
 
-        <div class="stack">
-          <article class="panel" id="rewards">
-            <div class="card-head">
-              <div class="card-copy">
-                <h2>Odullerim</h2>
-                <p>Trial, imza veya verified transfer gibi asamalardan dogan oduller burada listelenir.</p>
-              </div>
-            </div>
-            <div class="list" id="rewardsList">
-              <div class="empty">Oduller yukleniyor...</div>
-            </div>
-          </article>
-
-          <article class="panel" id="leaderboard">
-            <div class="card-head">
-              <div class="card-copy">
-                <h2>Scout Liderlik Tablosu</h2>
-                <p>Puan bazli yukselen scoutlari ve kendi yerini karsilastir.</p>
-              </div>
-            </div>
-            <div class="list" id="leaderboardList">
-              <div class="empty">Liderlik tablosu yukleniyor...</div>
-            </div>
-          </article>
-        </div>
       </section>
 
-      <section class="panel" id="workspace">
-        <div class="card-head">
-          <div class="card-copy">
-            <h2 id="workspaceTitle">Scout Teknik Workspace</h2>
-            <p id="workspaceSummary">Oyuncu bazli not, klip ve kaydedilmis degerlendirmeleri tek panelden yonet.</p>
+      <div class="flyout-overlay" id="scoutWorkspaceOverlay" onclick="closeScoutWorkspace()"></div>
+      <section class="tips-flyout" id="workspace">
+        <div class="tips-flyout-card">
+        <div class="tips-flyout-head">
+          <div>
+            <div class="eyebrow">Scout Calisma Alani</div>
+            <h2 class="panel-title" id="workspaceTitle" style="margin:0;">Scout Calisma Alani</h2>
+            <p class="market-pulse-copy" id="workspaceSummary">Oyuncu bazli not, klip ve kaydedilmis degerlendirmeleri tek panelden yonet.</p>
           </div>
-          <a class="btn btn-secondary" href="player-profile.html">
-            <i class="fas fa-up-right-from-square"></i>
-            Oyuncu Profiline Git
-          </a>
+          <div class="tips-flyout-tools">
+            <a class="btn btn-secondary" href="player-profile.html">
+              <i class="fas fa-up-right-from-square"></i>
+              Oyuncu Profiline Git
+            </a>
+            <button class="tips-flyout-close" type="button" onclick="closeScoutWorkspace()" aria-label="Workspace kapat">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
         </div>
 
         <div class="workspace-tabs">
@@ -1060,6 +1421,7 @@
             <div class="empty">Degerlendirmeler yukleniyor...</div>
           </div>
         </section>
+        </div>
       </section>
 
       <section class="layout-grid" style="margin-top:18px;">
@@ -1167,6 +1529,11 @@
       if (node) node.textContent = text;
     }
 
+    function setHtmlIfExists(id, html) {
+      const node = document.getElementById(id);
+      if (node) node.innerHTML = html;
+    }
+
     function showNotice(message, type) {
       const node = document.getElementById('formNotice');
       if (!node) return;
@@ -1176,6 +1543,144 @@
 
     function scrollToBlock(id) {
       document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function openScoutStatusArea(type = 'tips', event) {
+      if (event?.preventDefault) event.preventDefault();
+      const panel = document.getElementById('scoutStatusFlyout');
+      const overlay = document.getElementById('scoutStatusOverlay');
+      const title = document.getElementById('scoutStatusTitle');
+      const summary = document.getElementById('scoutStatusSummary');
+      const badge = document.getElementById('scoutStatusBadge');
+      const refreshBtn = document.getElementById('scoutStatusRefreshBtn');
+      const tips = document.getElementById('scoutTipsFlyoutList');
+      const rewards = document.getElementById('scoutRewardsFlyoutList');
+      const leaderboard = document.getElementById('scoutLeaderboardFlyoutList');
+      const tabs = Array.from(document.querySelectorAll('[data-status-tab]'));
+      if (!panel || !overlay || !title || !summary || !badge || !refreshBtn || !tips || !rewards || !leaderboard) return;
+
+      const map = {
+        tips: {
+          title: 'Ihbarlarim',
+          summary: 'Kendi gonderdigin scout tiplerin son durumunu scroll etmeden ac.',
+          badge: '<i class="fas fa-list-check"></i><span>Ihbarlar</span>',
+          refresh: 'loadTips()'
+        },
+        rewards: {
+          title: 'Odullerim',
+          summary: 'Trial, imza veya dogrulanan sureclerden dogan reward akisini burada ac.',
+          badge: '<i class="fas fa-trophy"></i><span>Oduller</span>',
+          refresh: 'loadRewards()'
+        },
+        leaderboard: {
+          title: 'Liderlik',
+          summary: 'Puan bazli yukselen scoutlari ve kendi konumunu scroll etmeden ac.',
+          badge: '<i class="fas fa-ranking-star"></i><span>Liderlik</span>',
+          refresh: 'loadLeaderboard()'
+        }
+      };
+
+      const selected = map[type] || map.tips;
+      panel.classList.add('active');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      title.textContent = selected.title;
+      summary.textContent = selected.summary;
+      badge.innerHTML = selected.badge;
+      refreshBtn.setAttribute('onclick', selected.refresh);
+      tips.hidden = type !== 'tips';
+      rewards.hidden = type !== 'rewards';
+      leaderboard.hidden = type !== 'leaderboard';
+      tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.statusTab === type));
+
+      if (type === 'tips') loadTips();
+      if (type === 'rewards') loadRewards();
+      if (type === 'leaderboard') loadLeaderboard();
+    }
+
+    function closeScoutStatusArea() {
+      const panel = document.getElementById('scoutStatusFlyout');
+      const overlay = document.getElementById('scoutStatusOverlay');
+      if (panel) panel.classList.remove('active');
+      if (overlay) overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function openScoutTipsPanel(event) { openScoutStatusArea('tips', event); }
+    function closeScoutTipsPanel() { closeScoutStatusArea(); }
+    function openScoutRewardsPanel(event) { openScoutStatusArea('rewards', event); }
+    function closeScoutRewardsPanel() { closeScoutStatusArea(); }
+    function openScoutLeaderboardPanel(event) { openScoutStatusArea('leaderboard', event); }
+    function closeScoutLeaderboardPanel() { closeScoutStatusArea(); }
+
+    let activeScoutOpportunityTab = 'needs';
+
+    function openScoutOpportunityArea(type = 'needs', event) {
+      if (event?.preventDefault) event.preventDefault();
+      const panel = document.getElementById('scoutOpportunityFlyout');
+      const overlay = document.getElementById('scoutOpportunityOverlay');
+      const title = document.getElementById('scoutOpportunityTitle');
+      const summary = document.getElementById('scoutOpportunitySummary');
+      const badge = document.getElementById('scoutOpportunityBadge');
+      const refreshBtn = document.getElementById('scoutOpportunityRefreshBtn');
+      const needs = document.getElementById('scoutOpportunityNeedsList');
+      const events = document.getElementById('scoutOpportunityEventsList');
+      const tabs = Array.from(document.querySelectorAll('[data-opportunity-tab]'));
+      if (!panel || !overlay || !title || !summary || !badge || !refreshBtn || !needs || !events) return;
+
+      const config = {
+        needs: {
+          title: 'Kulup Ihtiyaclari',
+          summary: 'Bugun hangi kulubun hangi pozisyonu aradigini tek akista takip et.',
+        },
+        events: {
+          title: 'Deneme ve Idmanlar',
+          summary: 'Acik deneme ve idman duyurularini tek panelden tara.',
+        }
+      };
+
+      activeScoutOpportunityTab = config[type] ? type : 'needs';
+      const selected = config[activeScoutOpportunityTab];
+
+      title.textContent = selected.title;
+      summary.textContent = selected.summary;
+      badge.innerHTML = '<i class="fas fa-signal"></i><span>Hazirlaniyor</span>';
+      refreshBtn.setAttribute('onclick', `loadScoutOpportunityArea('${activeScoutOpportunityTab}')`);
+      needs.hidden = activeScoutOpportunityTab !== 'needs';
+      events.hidden = activeScoutOpportunityTab !== 'events';
+      tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.opportunityTab === activeScoutOpportunityTab));
+
+      panel.classList.add('active');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      loadScoutOpportunityArea(activeScoutOpportunityTab);
+    }
+
+    function closeScoutOpportunityArea() {
+      const panel = document.getElementById('scoutOpportunityFlyout');
+      const overlay = document.getElementById('scoutOpportunityOverlay');
+      if (panel) panel.classList.remove('active');
+      if (overlay) overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function openMarketPulsePanel(event) {
+      if (event?.preventDefault) event.preventDefault();
+      const card = document.getElementById('marketPulseCard');
+      const overlay = document.getElementById('marketPulseOverlay');
+      if (!card || !overlay) return;
+      card.classList.add('active');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      loadMarketPulseCard();
+    }
+
+    function closeMarketPulsePanel() {
+      const card = document.getElementById('marketPulseCard');
+      const overlay = document.getElementById('marketPulseOverlay');
+      if (card) card.classList.remove('active');
+      if (overlay) overlay.classList.remove('active');
+      document.body.style.overflow = '';
     }
 
     async function apiGet(path) {
@@ -1192,6 +1697,19 @@
         throw new Error(data.message || 'Veri alinmadi.');
       }
       return data.data ?? data;
+    }
+
+    async function marketPulseGet() {
+      const response = await fetch(`${API_BASE_URL}/market/live-feed?_t=${Date.now()}`, {
+        headers: { 'Accept': 'application/json' },
+        cache: 'no-store',
+        credentials: 'same-origin'
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.ok === false) {
+        throw new Error(data.message || 'Market pulse verisi alinamadi.');
+      }
+      return data;
     }
 
     async function apiPost(path, payload) {
@@ -1247,17 +1765,19 @@
     }
 
     function openScoutWorkspace(type) {
+      const panel = document.getElementById('workspace');
+      const overlay = document.getElementById('scoutWorkspaceOverlay');
       const title = document.getElementById('workspaceTitle');
       const summary = document.getElementById('workspaceSummary');
       const notes = document.getElementById('workspaceNotes');
       const clips = document.getElementById('workspaceClips');
       const evaluations = document.getElementById('workspaceEvaluations');
       const tabs = Array.from(document.querySelectorAll('[data-workspace-tab]'));
-      if (!title || !summary || !notes || !clips || !evaluations) return;
+      if (!panel || !overlay || !title || !summary || !notes || !clips || !evaluations) return;
 
       const contentMap = {
         notes: {
-          title: 'Scout Teknik Not Defteri',
+          title: 'Scout Calisma Alani',
           summary: 'Oyuncu bazli teknik gozlem ve kisa karar notlarini burada kalici olarak tutarsin.',
         },
         clips: {
@@ -1271,6 +1791,9 @@
       };
 
       const selected = contentMap[type] || contentMap.notes;
+      panel.classList.add('active');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
       title.textContent = selected.title;
       summary.textContent = selected.summary;
       notes.hidden = type !== 'notes';
@@ -1281,6 +1804,14 @@
       if (type === 'notes') renderScoutWorkspaceNotes();
       if (type === 'clips') renderScoutWorkspaceClips();
       if (type === 'evaluations') renderScoutWorkspaceEvaluations();
+    }
+
+    function closeScoutWorkspace() {
+      const panel = document.getElementById('workspace');
+      const overlay = document.getElementById('scoutWorkspaceOverlay');
+      if (panel) panel.classList.remove('active');
+      if (overlay) overlay.classList.remove('active');
+      document.body.style.overflow = '';
     }
 
     async function renderScoutWorkspaceNotes() {
@@ -1505,17 +2036,22 @@
     }
 
     function renderTips(payload) {
-      const rows = Array.isArray(payload?.data) ? payload.data.slice(0, 6) : [];
-      const root = document.getElementById('tipsList');
-      if (!rows.length) {
-        root.innerHTML = '<div class="empty">Henuz scout tip gondermedin.</div>';
-        return;
-      }
+        const rows = Array.isArray(payload?.data) ? payload.data.slice(0, 6) : [];
+        const roots = [document.getElementById('scoutTipsFlyoutList')].filter(Boolean);
+        const status = document.getElementById('scoutTipsStatus');
+        if (!roots.length) return;
+        if (!rows.length) {
+          roots.forEach((root) => {
+            root.innerHTML = '<div class="empty">Henuz scout tip gondermedin.</div>';
+          });
+          if (status) status.innerHTML = '<i class="fas fa-list-check"></i><span>Bos</span>';
+          return;
+        }
 
-      root.innerHTML = rows.map((tip) => {
-        const video = tip.video_clip?.video_url || tip.video_clip?.title ? 'Video bagli' : 'Video yok';
-        const statusKey = String(tip.status || 'pending').toLowerCase();
-        return `
+        const html = rows.map((tip) => {
+          const video = tip.video_clip?.video_url || tip.video_clip?.title ? 'Video bagli' : 'Video yok';
+          const statusKey = String(tip.status || 'pending').toLowerCase();
+          return `
           <article class="tip-item">
             <div class="row-top">
               <div>
@@ -1530,23 +2066,32 @@
               <span><i class="fas fa-camera"></i> ${video}</span>
               <span><i class="fas fa-calendar"></i> ${formatDate(tip.created_at)}</span>
             </div>
-          </article>
-        `;
-      }).join('');
-    }
-
-    function renderRewards(payload) {
-      const rows = Array.isArray(payload?.data) ? payload.data.slice(0, 6) : [];
-      const root = document.getElementById('rewardsList');
-      if (!rows.length) {
-        root.innerHTML = '<div class="empty">Henuz reward kaydi yok.</div>';
-        return;
+            </article>
+          `;
+        }).join('');
+        roots.forEach((root) => {
+          root.innerHTML = html;
+        });
+        if (status) status.innerHTML = '<i class="fas fa-list-check"></i><span>Hazir</span>';
       }
 
-      root.innerHTML = rows.map((reward) => {
-        const statusKey = String(reward.status || 'pending').toLowerCase();
-        return `
-          <article class="reward-item">
+    function renderRewards(payload) {
+        const rows = Array.isArray(payload?.data) ? payload.data.slice(0, 6) : [];
+        const roots = [document.getElementById('scoutRewardsFlyoutList')].filter(Boolean);
+        const status = document.getElementById('scoutRewardsStatus');
+        if (!roots.length) return;
+        if (!rows.length) {
+          roots.forEach((root) => {
+            root.innerHTML = '<div class="empty">Henuz reward kaydi yok.</div>';
+          });
+          if (status) status.innerHTML = '<i class="fas fa-trophy"></i><span>Bos</span>';
+          return;
+        }
+
+        const html = rows.map((reward) => {
+          const statusKey = String(reward.status || 'pending').toLowerCase();
+          return `
+            <article class="reward-item">
             <div class="row-top">
               <div>
                 <div class="row-title">${escapeHtml(reward.scout_tip?.player_name || 'Scout reward')}</div>
@@ -1559,38 +2104,114 @@
               <span><i class="fas fa-flag-checkered"></i> ${escapeHtml(reward.scout_tip?.status || '-')}</span>
               <span><i class="fas fa-calendar"></i> ${formatDate(reward.created_at)}</span>
             </div>
-          </article>
-        `;
-      }).join('');
-    }
-
-    function renderLeaderboard(rows) {
-      const list = Array.isArray(rows) ? rows.slice(0, 8) : [];
-      const root = document.getElementById('leaderboardList');
-      if (!list.length) {
-        root.innerHTML = '<div class="empty">Liderlik tablosu bos.</div>';
-        return;
+            </article>
+          `;
+        }).join('');
+        roots.forEach((root) => {
+          root.innerHTML = html;
+        });
+        if (status) status.innerHTML = '<i class="fas fa-trophy"></i><span>Hazir</span>';
       }
 
-      root.innerHTML = list.map((item, index) => `
-        <article class="leader-item">
-          <div class="leader-rank">#${index + 1}</div>
-          <div>
+    function renderLeaderboard(rows) {
+        const list = Array.isArray(rows) ? rows.slice(0, 8) : [];
+        const roots = [document.getElementById('scoutLeaderboardFlyoutList')].filter(Boolean);
+        const status = document.getElementById('scoutLeaderboardStatus');
+        if (!roots.length) return;
+        if (!list.length) {
+          roots.forEach((root) => {
+            root.innerHTML = '<div class="empty">Liderlik tablosu bos.</div>';
+          });
+          if (status) status.innerHTML = '<i class="fas fa-ranking-star"></i><span>Bos</span>';
+          return;
+        }
+
+        const html = list.map((item, index) => `
+          <article class="leader-item">
+            <div class="leader-rank">#${index + 1}</div>
+            <div>
             <div class="row-title">${escapeHtml(item.name || 'Scout')}</div>
             <div class="row-copy">${escapeHtml(item.city || 'Sehir yok')} · ${escapeHtml(item.scout_rank || 'Rank yok')}</div>
           </div>
           <div class="leader-points">
             ${Number(item.scout_points || 0).toLocaleString('tr-TR')}
             <span>Scout Puani</span>
-          </div>
-        </article>
-      `).join('');
-    }
+            </div>
+          </article>
+        `).join('');
+        roots.forEach((root) => {
+          root.innerHTML = html;
+        });
+        if (status) status.innerHTML = '<i class="fas fa-ranking-star"></i><span>Hazir</span>';
+      }
 
-    async function loadScoreboard() {
-      const payload = await apiGet('/scout-scoreboard/me');
-      renderScoreboard(payload);
-    }
+      function renderMarketPulseCard(payload) {
+        const root = document.getElementById('marketPulseList');
+        const statsRoot = document.getElementById('marketPulseStats');
+        const statusRoot = document.getElementById('marketPulseStatus');
+        if (!root || !statsRoot || !statusRoot) return;
+
+        const ticker = Array.isArray(payload?.data?.ticker) ? payload.data.ticker.slice(0, 3) : [];
+        const summary = payload?.data?.summary || {};
+
+        if (!ticker.length) {
+          root.innerHTML = '<div class="empty">Canli piyasa sinyali olusmadi.</div>';
+        } else {
+          root.innerHTML = ticker.map((item) => `
+            <article class="market-pulse-item">
+              <div>
+                <div class="market-pulse-time">${escapeHtml(item.market_time || 'Simdi')}</div>
+                <div class="market-pulse-tag ${escapeHtml(item.tone || 'neutral')}">${escapeHtml(item.badge || 'FLOW')}</div>
+              </div>
+              <div>
+                <div class="market-pulse-line"><strong>${escapeHtml(item.player_name || 'Oyuncu')}</strong> (${escapeHtml(item.position || 'Oyuncu')})</div>
+                <div class="market-pulse-sub">${escapeHtml(item.headline || '')} -> ${escapeHtml(item.detail || '')}</div>
+              </div>
+              <div class="market-pulse-metric">
+                <span>${escapeHtml(item.metric_label || 'Metrik')}</span>
+                <strong>${escapeHtml(item.metric_value ?? 0)}</strong>
+                <em>${Number(item.change_percent || 0) > 0 ? '+' : ''}${escapeHtml(item.change_percent ?? 0)}%</em>
+              </div>
+            </article>
+          `).join('');
+        }
+
+        const cards = [
+          { label: 'Acik Firsat', value: summary.open_opportunities || 0 },
+          { label: 'Video', value: summary.videos_today || 0 },
+          { label: 'Favori', value: summary.favorites_today || 0 },
+          { label: 'Trial', value: summary.trial_invites_today || 0 }
+        ];
+
+        statsRoot.innerHTML = cards.map((card) => `
+          <article class="market-pulse-stat">
+            <div class="market-pulse-stat-label">${escapeHtml(card.label)}</div>
+            <div class="market-pulse-stat-value">${escapeHtml(card.value)}</div>
+          </article>
+        `).join('');
+
+        statusRoot.innerHTML = '<i class="fas fa-signal"></i><span>Canli</span>';
+      }
+
+      async function loadMarketPulseCard() {
+        const root = document.getElementById('marketPulseList');
+        const statusRoot = document.getElementById('marketPulseStatus');
+        if (!root || !statusRoot) return;
+
+        try {
+          statusRoot.innerHTML = '<i class="fas fa-signal"></i><span>Senkron</span>';
+          const payload = await marketPulseGet();
+          renderMarketPulseCard(payload);
+        } catch (error) {
+          statusRoot.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span>Beklemede</span>';
+          root.innerHTML = '<div class="empty">Market pulse su an yuklenemedi. Terminal ekranindan tekrar deneyebilirsin.</div>';
+        }
+      }
+
+      async function loadScoreboard() {
+        const payload = await apiGet('/scout-scoreboard/me');
+        renderScoreboard(payload);
+      }
 
     async function loadTips() {
       const payload = await apiGet('/scout-tips/my?per_page=6');
@@ -1605,6 +2226,93 @@
     async function loadLeaderboard() {
       const payload = await apiGet('/scout-scoreboard/leaderboard');
       renderLeaderboard(payload);
+    }
+
+    function renderScoutClubNeeds(payload) {
+      const root = document.getElementById('scoutOpportunityNeedsList');
+      const badge = document.getElementById('scoutOpportunityBadge');
+      const rows = Array.isArray(payload?.data) ? payload.data.slice(0, 8) : [];
+      if (!root || activeScoutOpportunityTab !== 'needs') return;
+
+      if (!rows.length) {
+        root.innerHTML = '<div class="empty">Acik kulup ihtiyaci yok.</div>';
+        if (badge) badge.innerHTML = '<i class="fas fa-bullseye"></i><span>Bos</span>';
+        return;
+      }
+
+      root.innerHTML = rows.map((item) => `
+        <article class="point-item">
+          <div class="row-top">
+            <div>
+              <div class="row-title">${escapeHtml(item.title || item.position || 'Kulup ihtiyaci')}</div>
+              <div class="row-copy">${escapeHtml(item.team_name || 'Kulup')} · ${escapeHtml(item.city || 'Sehir yok')}</div>
+            </div>
+            <span class="badge screened">${escapeHtml(item.status || 'open')}</span>
+          </div>
+          <div class="row-meta">
+            <span><i class="fas fa-bullseye"></i> ${escapeHtml(item.position || '-')}</span>
+            <span><i class="fas fa-user-clock"></i> ${escapeHtml(item.age_min ?? '-')} - ${escapeHtml(item.age_max ?? '-')}</span>
+            <span><i class="fas fa-calendar"></i> ${formatDate(item.created_at)}</span>
+          </div>
+        </article>
+      `).join('');
+
+      if (badge) badge.innerHTML = `<i class="fas fa-bullseye"></i><span>${rows.length} kayit</span>`;
+    }
+
+    function renderScoutCommunityEvents(payload) {
+      const root = document.getElementById('scoutOpportunityEventsList');
+      const badge = document.getElementById('scoutOpportunityBadge');
+      const rows = Array.isArray(payload?.data) ? payload.data.slice(0, 8) : [];
+      if (!root || activeScoutOpportunityTab !== 'events') return;
+
+      if (!rows.length) {
+        root.innerHTML = '<div class="empty">Acik deneme veya idman bulunmuyor.</div>';
+        if (badge) badge.innerHTML = '<i class="fas fa-calendar"></i><span>Bos</span>';
+        return;
+      }
+
+      root.innerHTML = rows.map((item) => `
+        <article class="point-item">
+          <div class="row-top">
+            <div>
+              <div class="row-title">${escapeHtml(item.title || 'Etkinlik')}</div>
+              <div class="row-copy">${escapeHtml(item.organizer?.club_name || item.organizer?.name || 'Organizator')} · ${escapeHtml(item.city || 'Sehir yok')}</div>
+            </div>
+            <span class="badge approved">${escapeHtml(item.event_type || 'event')}</span>
+          </div>
+          <div class="row-meta">
+            <span><i class="fas fa-location-dot"></i> ${escapeHtml(item.venue || '-')}</span>
+            <span><i class="fas fa-user-group"></i> ${escapeHtml(item.organizer?.role || '-')}</span>
+            <span><i class="fas fa-calendar"></i> ${formatDate(item.event_date)}</span>
+          </div>
+        </article>
+      `).join('');
+
+      if (badge) badge.innerHTML = `<i class="fas fa-calendar"></i><span>${rows.length} kayit</span>`;
+    }
+
+    async function loadScoutOpportunityArea(type = 'needs') {
+      const badge = document.getElementById('scoutOpportunityBadge');
+      const root = document.getElementById(type === 'events' ? 'scoutOpportunityEventsList' : 'scoutOpportunityNeedsList');
+      if (badge) badge.innerHTML = '<i class="fas fa-signal"></i><span>Senkron</span>';
+      if (root) root.innerHTML = '<div class="empty">Yukleniyor...</div>';
+
+      try {
+        if (type === 'events') {
+          const payload = await apiGet('/community-events');
+          renderScoutCommunityEvents(payload);
+          return;
+        }
+
+        const payload = await apiGet('/club-needs');
+        renderScoutClubNeeds(payload);
+      } catch (error) {
+        if (badge) badge.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span>Hata</span>';
+        if (root) {
+          root.innerHTML = `<div class="empty">${type === 'events' ? 'Deneme ve idmanlar' : 'Kulup ihtiyaclari'} su an yuklenemedi.</div>`;
+        }
+      }
     }
 
     function renderVideoOptions(rows) {
@@ -1799,7 +2507,7 @@
     async function init() {
       const user = getUser();
       if (user?.name) {
-        document.getElementById('heroGreeting').textContent = `${user.name}, bugun yerelde gordugun yetenekleri sisteme sokabilir, puanini ve reward akisini tek panelden takip edebilirsin.`;
+        document.getElementById('heroGreeting').textContent = `${user.name}, bugun yeni oyuncu bildirip ihbar ve market akisina hizli gecis yapabilirsin.`;
         document.getElementById('statusUser').textContent = user.name;
       }
       if (user?.role) {
@@ -1814,15 +2522,20 @@
       document.getElementById('scoutWorkspaceEvalSearch')?.addEventListener('input', renderScoutWorkspaceEvaluations);
       document.getElementById('scoutWorkspaceEvalMinScore')?.addEventListener('input', renderScoutWorkspaceEvaluations);
 
+      loadMarketPulseCard();
+      setInterval(loadMarketPulseCard, 30000);
+
       if (!getToken()) {
         setStatusApi('Login gerekli');
-        document.getElementById('tipsList').innerHTML = '<div class="empty">Bu paneli kullanmak icin once giris yapman gerekiyor.</div>';
-        document.getElementById('pointsList').innerHTML = '<div class="empty">Giris yaptiktan sonra puan hareketlerin burada gorunur.</div>';
-        document.getElementById('rewardsList').innerHTML = '<div class="empty">Giris yaptiktan sonra reward kayitlarin burada gorunur.</div>';
-        document.getElementById('leaderboardList').innerHTML = '<div class="empty">Giris yaptiginda liderlik tablosu yuklenir.</div>';
-        document.getElementById('scoutWorkspaceNotesList').innerHTML = '<div class="empty">Giris yaptiginda teknik notlar burada gorunur.</div>';
-        document.getElementById('scoutWorkspaceClipsList').innerHTML = '<div class="empty">Giris yaptiginda klip notlari burada gorunur.</div>';
-        document.getElementById('scoutWorkspaceEvaluationsList').innerHTML = '<div class="empty">Giris yaptiginda kaydedilmis degerlendirmeler burada gorunur.</div>';
+        setHtmlIfExists('scoutTipsFlyoutList', '<div class="empty">Giris yaptiginda ihbarlarin burada gorunur.</div>');
+        setHtmlIfExists('pointsList', '<div class="empty">Giris yaptiktan sonra puan hareketlerin burada gorunur.</div>');
+        setHtmlIfExists('scoutRewardsFlyoutList', '<div class="empty">Giris yaptiginda odullerin burada gorunur.</div>');
+        setHtmlIfExists('scoutLeaderboardFlyoutList', '<div class="empty">Giris yaptiginda liderlik burada gorunur.</div>');
+        setHtmlIfExists('scoutOpportunityNeedsList', '<div class="empty">Giris yaptiginda kulup ihtiyaclari burada gorunur.</div>');
+        setHtmlIfExists('scoutOpportunityEventsList', '<div class="empty">Giris yaptiginda deneme ve idmanlar burada gorunur.</div>');
+        setHtmlIfExists('scoutWorkspaceNotesList', '<div class="empty">Giris yaptiginda teknik notlar burada gorunur.</div>');
+        setHtmlIfExists('scoutWorkspaceClipsList', '<div class="empty">Giris yaptiginda klip notlari burada gorunur.</div>');
+        setHtmlIfExists('scoutWorkspaceEvaluationsList', '<div class="empty">Giris yaptiginda kaydedilmis degerlendirmeler burada gorunur.</div>');
         renderVideoOptions([]);
         return;
       }
@@ -1836,17 +2549,23 @@
         setStatusApi('API baglandi');
       } catch (error) {
         setStatusApi('Baglanti hatasi');
-        document.getElementById('tipsList').innerHTML = `<div class="empty">${escapeHtml(error.message || 'Veri alinamadi.')}</div>`;
-        document.getElementById('pointsList').innerHTML = '<div class="empty">Puan hareketleri yuklenemedi.</div>';
-        document.getElementById('rewardsList').innerHTML = '<div class="empty">Oduller yuklenemedi.</div>';
-        document.getElementById('leaderboardList').innerHTML = '<div class="empty">Liderlik tablosu yuklenemedi.</div>';
-        document.getElementById('scoutWorkspaceNotesList').innerHTML = '<div class="empty">Teknik notlar yuklenemedi.</div>';
-        document.getElementById('scoutWorkspaceClipsList').innerHTML = '<div class="empty">Klip notlari yuklenemedi.</div>';
-        document.getElementById('scoutWorkspaceEvaluationsList').innerHTML = '<div class="empty">Degerlendirmeler yuklenemedi.</div>';
+        setHtmlIfExists('scoutTipsFlyoutList', '<div class="empty">Ihbarlar su an yuklenemedi.</div>');
+        setHtmlIfExists('pointsList', '<div class="empty">Puan hareketleri yuklenemedi.</div>');
+        setHtmlIfExists('scoutRewardsFlyoutList', '<div class="empty">Oduller su an yuklenemedi.</div>');
+        setHtmlIfExists('scoutLeaderboardFlyoutList', '<div class="empty">Liderlik su an yuklenemedi.</div>');
+        setHtmlIfExists('scoutWorkspaceNotesList', '<div class="empty">Teknik notlar yuklenemedi.</div>');
+        setHtmlIfExists('scoutWorkspaceClipsList', '<div class="empty">Klip notlari yuklenemedi.</div>');
+        setHtmlIfExists('scoutWorkspaceEvaluationsList', '<div class="empty">Degerlendirmeler yuklenemedi.</div>');
         renderVideoOptions([]);
       }
 
       const hash = String(window.location.hash || '').replace('#', '').trim();
+      if (hash === 'market-pulse') openMarketPulsePanel();
+      if (hash === 'tips') openScoutTipsPanel();
+      if (hash === 'rewards') openScoutRewardsPanel();
+      if (hash === 'leaderboard') openScoutLeaderboardPanel();
+      if (hash === 'opportunity-needs') openScoutOpportunityArea('needs');
+      if (hash === 'opportunity-events') openScoutOpportunityArea('events');
       if (hash === 'workspace-notes') openScoutWorkspace('notes');
       if (hash === 'workspace-clips') openScoutWorkspace('clips');
       if (hash === 'workspace-evaluations') openScoutWorkspace('evaluations');
