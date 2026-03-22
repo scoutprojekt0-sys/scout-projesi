@@ -189,6 +189,7 @@
         .hero-kicker { display:inline-flex; align-items:center; gap:8px; margin-bottom:12px; padding:8px 12px; border-radius:999px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.18); color:#eef2ff; font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
         .hero-title { margin:0; max-width:720px; font:800 clamp(2rem, 3vw, 3rem)/1.02 Inter, sans-serif; letter-spacing:-0.03em; color:#fff; }
         .hero-sub { margin:14px 0 0; max-width:740px; color:rgba(255,255,255,0.82); font-size:14px; line-height:1.7; }
+        .hero-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
         .hero-points { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
         .pill { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; font-size:12px; font-weight:800; background:rgba(255,255,255,0.10); border:1px solid rgba(255,255,255,0.14); color:#eef2ff; }
         .hero-side { background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid rgba(148,163,184,.18); border-radius:18px; padding:18px; box-shadow:0 16px 30px rgba(8,19,29,.28); position:relative; overflow:hidden; }
@@ -199,6 +200,38 @@
         .status-row { display:flex; justify-content:space-between; gap:10px; padding:14px; border:1px solid rgba(148,163,184,.16); background:rgba(255,255,255,.04); }
         .status-row span:first-child { color:#9bb5cb; font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
         .status-row strong { color:#f8fafc; font-size:14px; font-weight:800; }
+        .tip-modal-overlay { display:none; position:fixed; inset:0; z-index:2400; background:rgba(2,6,23,.72); align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(4px); }
+        .tip-modal-overlay.show { display:flex; }
+        .tip-modal { width:min(980px, 100%); max-height:88vh; overflow:auto; background:#0f1f2e; border:1px solid rgba(148,163,184,.18); border-radius:18px; box-shadow:0 30px 80px rgba(2,6,23,.45); color:#e2e8f0; }
+        .tip-modal-header { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:18px 20px; border-bottom:1px solid rgba(148,163,184,.16); }
+        .tip-modal-title { font-size:20px; font-weight:800; color:#f8fafc; }
+        .tip-modal-body { padding:20px; }
+        .tip-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; }
+        .tip-field { display:grid; gap:6px; }
+        .tip-field.full { grid-column:1 / -1; }
+        .tip-field label { color:#cbd5e1; font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; }
+        .tip-field input, .tip-field select, .tip-field textarea { width:100%; padding:11px 12px; border-radius:12px; border:1px solid rgba(148,163,184,.22); background:rgba(255,255,255,.05); color:#f8fafc; }
+        .tip-field textarea { min-height:110px; resize:vertical; }
+        .tip-preview { display:grid; grid-template-columns:120px minmax(0,1fr); gap:12px; padding:12px; margin-top:10px; border-radius:14px; border:1px solid rgba(148,163,184,.16); background:rgba(255,255,255,.04); }
+        .tip-preview img { width:120px; height:72px; object-fit:cover; border-radius:10px; background:#08131d; }
+        .tip-preview-title { font-size:14px; font-weight:800; color:#f8fafc; }
+        .tip-preview-meta { display:flex; flex-wrap:wrap; gap:10px; margin-top:8px; font-size:12px; color:#9bb5cb; }
+        .tip-preview-link { display:inline-flex; align-items:center; gap:8px; margin-top:10px; color:#ffb38a; text-decoration:none; font-size:12px; font-weight:700; }
+        .tip-actions { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:16px; }
+        .tip-lab-chip { display:inline-flex; align-items:center; gap:8px; padding:9px 12px; border-radius:999px; border:1px solid rgba(255,126,34,.35); background:rgba(255,126,34,.12); color:#ffd3bd; font-size:12px; font-weight:800; }
+        .tip-notice { margin-top:14px; min-height:20px; font-size:13px; font-weight:700; }
+        .tip-notice.ok { color:#34d399; }
+        .tip-notice.bad { color:#fca5a5; }
+        .tip-analysis { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:18px; }
+        .tip-panel { border:1px solid rgba(148,163,184,.16); border-radius:14px; background:rgba(255,255,255,.04); padding:14px; }
+        .tip-panel h3 { margin:0 0 6px; font-size:14px; color:#f8fafc; }
+        .tip-panel p { margin:0 0 12px; font-size:12px; color:#9bb5cb; }
+        .tip-summary-grid { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; }
+        .tip-mini { border:1px solid rgba(148,163,184,.14); border-radius:12px; padding:12px; background:rgba(15,23,42,.42); }
+        .tip-mini strong { display:block; font-size:18px; color:#f8fafc; }
+        .tip-mini span { display:block; margin-top:6px; font-size:11px; color:#9bb5cb; text-transform:uppercase; letter-spacing:.08em; }
+        .tip-events { display:grid; gap:10px; }
+        .tip-empty { color:#9bb5cb; font-size:12px; border:1px dashed rgba(148,163,184,.18); border-radius:12px; padding:14px; }
 
         .quick-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
         .market-pulse-overlay { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.72); z-index: 2100; display: none; }
@@ -1025,6 +1058,7 @@
                 <div class="sidebar-title">MENU</div>
                 <ul class="sidebar-menu">
                     <li class="sidebar-item active" onclick="location.reload()"><i class="fas fa-magnifying-glass"></i><span>Oyuncu Ara</span></li>
+                    <li class="sidebar-item" onclick="openManagerTalentTipModal()"><i class="fas fa-video"></i><span>Yetenek Bildir</span></li>
                     <li class="sidebar-item" onclick="openManagerProfile()"><i class="fas fa-user"></i><span>Profilim</span></li>
                     <li class="sidebar-item" onclick="openSentApplications()"><i class="fas fa-paper-plane"></i><span>Gönderilen Başvurular</span></li>
                     <li class="sidebar-item" onclick="openAnsweredApplications()"><i class="fas fa-circle-check"></i><span>Yanıtlanan Başvurular</span></li>
@@ -1049,6 +1083,9 @@
                     </div>
                     <h2 class="hero-title">Manager operasyonunu buradan yonet.</h2>
                     <p class="hero-sub">Oyuncu ara, profil incele, basvuru gonder ve iliski agini tek panelden yonet.</p>
+                    <div class="hero-actions">
+                        <button class="btn-small primary" type="button" onclick="openManagerTalentTipModal()"><i class="fas fa-video"></i><span>Yetenek Bildir</span></button>
+                    </div>
                     <div class="hero-points">
                         <span class="pill"><i class="fas fa-circle-check"></i><span>Dogrulanan oyuncu akisi karar hizini artirir</span></span>
                         <span class="pill"><i class="fas fa-handshake-angle"></i><span>Teklif ve gorusme surecini tek yerden takip et</span></span>
@@ -1436,6 +1473,115 @@
         </div>
     </div>
 
+    <div class="tip-modal-overlay" id="managerTalentTipOverlay" onclick="if (event.target.id === 'managerTalentTipOverlay') closeManagerTalentTipModal();">
+        <div class="tip-modal">
+            <div class="tip-modal-header">
+                <div class="tip-modal-title">Yetenek Bildir</div>
+                <button class="btn-small secondary" type="button" onclick="closeManagerTalentTipModal()">Kapat</button>
+            </div>
+            <div class="tip-modal-body">
+                <form id="managerTalentTipForm">
+                    <div class="tip-grid">
+                        <div class="tip-field">
+                            <label for="managerAnalysisVideoClipId">Analiz Videosu</label>
+                            <select id="managerAnalysisVideoClipId" name="analysis_video_clip_id" onchange="updateManagerSelectedVideoPreview()">
+                                <option value="">Videolar yukleniyor...</option>
+                            </select>
+                            <div class="tip-preview" id="managerSelectedVideoPreview" hidden>
+                                <img id="managerSelectedVideoThumb" alt="Video thumbnail">
+                                <div>
+                                    <div class="tip-preview-title" id="managerSelectedVideoTitle">Video secilmedi</div>
+                                    <div class="tip-preview-meta">
+                                        <span id="managerSelectedVideoDate">Tarih: -</span>
+                                        <span id="managerSelectedVideoDuration">Sure: -</span>
+                                        <span id="managerSelectedVideoPlatform">Platform: -</span>
+                                    </div>
+                                    <a class="tip-preview-link" id="managerSelectedVideoLink" href="#" target="_blank" rel="noopener noreferrer">
+                                        <i class="fas fa-up-right-from-square"></i>
+                                        <span>Videoyu Ac</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tip-field">
+                            <label for="managerAnalysisTargetPlayerId">Analiz Oyuncu ID</label>
+                            <input id="managerAnalysisTargetPlayerId" name="analysis_target_player_id" type="number" min="1" placeholder="42">
+                        </div>
+                        <div class="tip-field">
+                            <label for="managerSourceType">Kaynak Tipi</label>
+                            <select id="managerSourceType" name="source_type">
+                                <option value="new_player">Yeni oyuncu</option>
+                                <option value="existing_player">Mevcut oyuncu</option>
+                            </select>
+                        </div>
+                        <div class="tip-field">
+                            <label for="managerTipPlayerName">Oyuncu Adi</label>
+                            <input id="managerTipPlayerName" name="player_name" placeholder="Oyuncu adi soyadi" required>
+                        </div>
+                        <div class="tip-field">
+                            <label for="managerTipCity">Sehir</label>
+                            <input id="managerTipCity" name="city" placeholder="Istanbul" required>
+                        </div>
+                        <div class="tip-field">
+                            <label for="managerTipPosition">Pozisyon</label>
+                            <input id="managerTipPosition" name="position" placeholder="10 numara / Sol bek">
+                        </div>
+                        <div class="tip-field">
+                            <label for="managerTipBirthYear">Dogum Yili</label>
+                            <input id="managerTipBirthYear" name="birth_year" type="number" min="1990" max="2026" placeholder="2008">
+                        </div>
+                        <div class="tip-field">
+                            <label for="managerTipTeamName">Takim / Okul</label>
+                            <input id="managerTipTeamName" name="team_name" placeholder="Mahalle Takimi / Okul">
+                        </div>
+                        <div class="tip-field">
+                            <label for="managerCompetitionLevel">Mac Seviyesi</label>
+                            <input id="managerCompetitionLevel" name="competition_level" placeholder="U17, Amator, okul maci">
+                        </div>
+                        <div class="tip-field">
+                            <label for="managerGuardianConsentStatus">Veli Onayi</label>
+                            <select id="managerGuardianConsentStatus" name="guardian_consent_status">
+                                <option value="not_required">Gerekmiyor</option>
+                                <option value="pending">Bekleniyor</option>
+                                <option value="received">Alindi</option>
+                                <option value="rejected">Reddedildi</option>
+                            </select>
+                        </div>
+                        <div class="tip-field full">
+                            <label for="managerTipDescription">Scout Notu</label>
+                            <textarea id="managerTipDescription" name="description" placeholder="Oyuncunun dikkat ceken ozellikleri, mac baglami ve neden bildirildigi..." required></textarea>
+                        </div>
+                    </div>
+                    <div class="tip-actions">
+                        <button class="btn-small primary" type="submit"><i class="fas fa-paper-plane"></i><span>Scout Tipe Bagla</span></button>
+                        <button class="btn-small secondary" type="button" onclick="startManagerVideoAnalysis()"><i class="fas fa-microchip"></i><span>Sadece Analiz Et</span></button>
+                        <span class="tip-lab-chip"><i class="fas fa-flask"></i><span>AI Lab</span></span>
+                        <button class="btn-small secondary" type="button" onclick="document.getElementById('managerTalentTipForm').reset(); updateManagerSelectedVideoPreview();"><i class="fas fa-rotate-left"></i><span>Formu Temizle</span></button>
+                    </div>
+                    <div class="tip-notice" id="managerTipFormNotice"></div>
+                </form>
+                <div class="tip-analysis">
+                    <div class="tip-panel">
+                        <h3>Analiz Ozeti</h3>
+                        <p>Baslatilan son video analizinin ozet metrikleri burada gorunur.</p>
+                        <div class="tip-summary-grid" id="managerAnalysisSummaryGrid">
+                            <div class="tip-mini"><strong>-</strong><span>Pass</span></div>
+                            <div class="tip-mini"><strong>-</strong><span>Cross</span></div>
+                            <div class="tip-mini"><strong>-</strong><span>Speed</span></div>
+                        </div>
+                    </div>
+                    <div class="tip-panel">
+                        <h3>Analiz Eventleri</h3>
+                        <p>Secilen video icin tespit edilen aksiyonlar burada listelenir.</p>
+                        <div class="tip-events" id="managerAnalysisEventsList">
+                            <div class="tip-empty">Henuz analiz eventi yok.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="applications-modal-overlay" id="applicationsModalOverlay" onclick="if(event.target.id==='applicationsModalOverlay') closeApplicationsModal()">
         <div class="applications-modal">
             <div class="applications-modal-head">
@@ -1451,6 +1597,7 @@
         let favoriteState = [];
         let allPlayers = [];
         let filteredPlayers = [];
+        let managerCachedScoutVideos = [];
 
         function getApiBaseUrl() {
             if (window.NextScoutApi && typeof window.NextScoutApi.base === 'function') {
@@ -1488,6 +1635,14 @@
 
         function saveApplications(items) {
             applicationState = Array.isArray(items) ? items : [];
+        }
+
+        function getStoredManagerUser() {
+            try {
+                return JSON.parse(localStorage.getItem('nextscout_user') || '{}');
+            } catch (error) {
+                return {};
+            }
         }
 
         function getAuthToken() {
@@ -2446,6 +2601,195 @@
             calculateOfferScore();
         }
 
+        function formatTipDate(value) {
+            if (!value) return '-';
+            const date = new Date(value);
+            return Number.isNaN(date.getTime()) ? '-' : date.toLocaleDateString('tr-TR');
+        }
+
+        function showManagerTipNotice(message, type) {
+            const notice = document.getElementById('managerTipFormNotice');
+            if (!notice) return;
+            notice.textContent = message || '';
+            notice.className = `tip-notice${type ? ` ${type}` : ''}`;
+        }
+
+        function renderManagerVideoOptions(rows) {
+            const select = document.getElementById('managerAnalysisVideoClipId');
+            if (!select) return;
+            const videos = Array.isArray(rows) ? rows : [];
+            managerCachedScoutVideos = videos;
+            if (!videos.length) {
+                select.innerHTML = '<option value="">Analiz icin uygun video bulunamadi</option>';
+                updateManagerSelectedVideoPreview();
+                return;
+            }
+            select.innerHTML = ['<option value="">Video sec</option>']
+                .concat(videos.map((video) => {
+                    const title = escapeHtml(video.title || `Video #${video.id}`);
+                    const duration = video.duration_seconds ? ` - ${video.duration_seconds}s` : '';
+                    return `<option value="${video.id}">${title}${duration}</option>`;
+                }))
+                .join('');
+            updateManagerSelectedVideoPreview();
+        }
+
+        async function loadManagerTipVideos() {
+            const user = getStoredManagerUser();
+            if (!user?.id || !getAuthToken()) {
+                renderManagerVideoOptions([]);
+                return;
+            }
+            try {
+                const payload = await managerApiGet(`/users/${user.id}/videos`);
+                renderManagerVideoOptions(payload?.data || payload);
+            } catch (error) {
+                renderManagerVideoOptions([]);
+            }
+        }
+
+        function updateManagerSelectedVideoPreview() {
+            const select = document.getElementById('managerAnalysisVideoClipId');
+            const preview = document.getElementById('managerSelectedVideoPreview');
+            const title = document.getElementById('managerSelectedVideoTitle');
+            const date = document.getElementById('managerSelectedVideoDate');
+            const duration = document.getElementById('managerSelectedVideoDuration');
+            const platform = document.getElementById('managerSelectedVideoPlatform');
+            const thumb = document.getElementById('managerSelectedVideoThumb');
+            const link = document.getElementById('managerSelectedVideoLink');
+            if (!select || !preview || !title || !date || !duration || !platform || !thumb || !link) return;
+            const selectedId = Number(select.value || 0);
+            const selectedVideo = managerCachedScoutVideos.find((video) => Number(video.id) === selectedId);
+            if (!selectedVideo) {
+                preview.hidden = true;
+                return;
+            }
+            preview.hidden = false;
+            title.textContent = selectedVideo.title || `Video #${selectedVideo.id}`;
+            date.textContent = `Tarih: ${formatTipDate(selectedVideo.match_date)}`;
+            duration.textContent = `Sure: ${selectedVideo.duration_seconds ? `${selectedVideo.duration_seconds}s` : '-'}`;
+            platform.textContent = `Platform: ${selectedVideo.platform || '-'}`;
+            thumb.src = selectedVideo.thumbnail_url || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="72"%3E%3Crect width="120" height="72" fill="%230f1f2e"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%239bb5cb" font-size="12"%3EVideo%3C/text%3E%3C/svg%3E';
+            link.href = selectedVideo.video_url || '#';
+            link.style.pointerEvents = selectedVideo.video_url ? 'auto' : 'none';
+            link.style.opacity = selectedVideo.video_url ? '1' : '0.5';
+        }
+
+        function renderManagerAnalysisSummary(summary) {
+            const root = document.getElementById('managerAnalysisSummaryGrid');
+            if (!root) return;
+            if (!summary) {
+                root.innerHTML = '<div class="tip-mini"><strong>-</strong><span>Pass</span></div><div class="tip-mini"><strong>-</strong><span>Cross</span></div><div class="tip-mini"><strong>-</strong><span>Speed</span></div>';
+                return;
+            }
+            root.innerHTML = `
+                <div class="tip-mini"><strong>${Number(summary.successful_passes || 0)}</strong><span>Basarili Pass</span></div>
+                <div class="tip-mini"><strong>${Number(summary.successful_crosses || 0)}</strong><span>Basarili Cross</span></div>
+                <div class="tip-mini"><strong>${Number(summary.speed_score || 0)}</strong><span>Speed Score</span></div>
+                <div class="tip-mini"><strong>${Number(summary.dribbles || 0)}</strong><span>Dribble</span></div>
+                <div class="tip-mini"><strong>${Number(summary.shots || 0)}</strong><span>Shot</span></div>
+                <div class="tip-mini"><strong>${Number(summary.movement_score || 0)}</strong><span>Movement</span></div>
+            `;
+        }
+
+        function renderManagerAnalysisEvents(events) {
+            const root = document.getElementById('managerAnalysisEventsList');
+            if (!root) return;
+            const rows = Array.isArray(events) ? events.slice(0, 6) : [];
+            if (!rows.length) {
+                root.innerHTML = '<div class="tip-empty">Henuz analiz eventi yok.</div>';
+                return;
+            }
+            root.innerHTML = rows.map((event) => `
+                <article class="tip-panel">
+                    <h3>${escapeHtml(String(event.event_type || '').toUpperCase())}</h3>
+                    <p>${escapeHtml(event.payload?.successful ? 'Basarili aksiyon' : 'Tespit edilen aksiyon')}</p>
+                    <div class="tip-preview-meta">
+                        <span><i class="fas fa-film"></i> ${Number(event.start_second || 0)}s - ${Number(event.end_second || 0)}s</span>
+                        <span><i class="fas fa-signal"></i> %${Number(event.confidence || 0)}</span>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        async function startManagerVideoAnalysis(options = {}) {
+            const videoClipId = Number(document.getElementById('managerAnalysisVideoClipId')?.value || 0);
+            const targetPlayerId = Number(document.getElementById('managerAnalysisTargetPlayerId')?.value || 0) || null;
+            const silent = Boolean(options.silent);
+            if (!videoClipId) {
+                if (!silent) showManagerTipNotice('Video analizi icin once bir video sec.', 'bad');
+                return;
+            }
+            try {
+                const analysis = await managerApiPost('/video-analyses/start', {
+                    video_clip_id: videoClipId,
+                    target_player_id: targetPlayerId,
+                    analysis_type: 'scout_mvp'
+                });
+                renderManagerAnalysisSummary(analysis.summary || {});
+                const events = await managerApiGet(`/video-analyses/${analysis.id}/events`);
+                renderManagerAnalysisEvents(events);
+                if (!silent) showManagerTipNotice('Video analizi tamamlandi. Event ve ozetler guncellendi.', 'ok');
+            } catch (error) {
+                renderManagerAnalysisSummary(null);
+                renderManagerAnalysisEvents([]);
+                if (!silent) showManagerTipNotice(error.message || 'Video analizi baslatilamadi.', 'bad');
+                throw error;
+            }
+        }
+
+        async function submitManagerTalentTip(event) {
+            event.preventDefault();
+            const form = document.getElementById('managerTalentTipForm');
+            if (!form) return;
+            const formData = new FormData(form);
+            const payload = {
+                source_type: String(formData.get('source_type') || 'new_player'),
+                player_name: String(formData.get('player_name') || '').trim(),
+                city: String(formData.get('city') || '').trim(),
+                position: String(formData.get('position') || '').trim() || null,
+                birth_year: formData.get('birth_year') ? Number(formData.get('birth_year')) : null,
+                team_name: String(formData.get('team_name') || '').trim() || null,
+                competition_level: String(formData.get('competition_level') || '').trim() || null,
+                guardian_consent_status: String(formData.get('guardian_consent_status') || 'not_required'),
+                description: String(formData.get('description') || '').trim()
+            };
+            if (!payload.player_name || !payload.city || !payload.description) {
+                showManagerTipNotice('Oyuncu adi, sehir ve scout notu zorunlu.', 'bad');
+                return;
+            }
+            if (payload.description.length < 30) {
+                showManagerTipNotice('Scout notu en az 30 karakter olmali.', 'bad');
+                return;
+            }
+            try {
+                await managerApiPost('/scout-tips', payload);
+                const selectedVideoId = Number(document.getElementById('managerAnalysisVideoClipId')?.value || 0);
+                if (selectedVideoId) {
+                    await startManagerVideoAnalysis({ silent: true });
+                    showManagerTipNotice('Scout tipe baglandi ve secilen video icin analiz baslatildi.', 'ok');
+                } else {
+                    showManagerTipNotice('Scout tipe baglandi. Moderasyon sirasina alindi.', 'ok');
+                }
+                form.reset();
+                updateManagerSelectedVideoPreview();
+            } catch (error) {
+                showManagerTipNotice(error.message || 'Scout tip gonderilemedi.', 'bad');
+            }
+        }
+
+        async function openManagerTalentTipModal() {
+            document.getElementById('managerTalentTipOverlay')?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            showManagerTipNotice('', '');
+            await loadManagerTipVideos();
+        }
+
+        function closeManagerTalentTipModal() {
+            document.getElementById('managerTalentTipOverlay')?.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
         function logout() {
             localStorage.removeItem('nextscout_token');
             localStorage.removeItem('nextscout_user');
@@ -2459,6 +2803,7 @@
         async function init() {
             loadManagerMarketPulse();
             setInterval(loadManagerMarketPulse, 30000);
+            document.getElementById('managerTalentTipForm')?.addEventListener('submit', submitManagerTalentTip);
             let authUser = null;
             try { authUser = JSON.parse(localStorage.getItem('nextscout_user') || '{}'); } catch (error) { authUser = null; }
             const managerHeroUser = document.getElementById('managerHeroUser');
