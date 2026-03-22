@@ -163,7 +163,6 @@
   </div>
 
   <script>
-    const KEY = 'nextscout_scout_watchlist';
     const API_BASE = (function() {
       const p = new URLSearchParams(window.location.search);
       const fromQuery = (p.get('api_base') || '').trim();
@@ -175,15 +174,6 @@
     function authToken() {
       return (localStorage.getItem('nextscout_token') || '').trim();
     }
-
-    function loadItemsLocal(){
-      try {
-        const parsed = JSON.parse(localStorage.getItem(KEY) || '[]');
-        return Array.isArray(parsed) ? parsed : [];
-      } catch { return []; }
-    }
-
-    function saveItemsLocal(items){ localStorage.setItem(KEY, JSON.stringify(Array.isArray(items) ? items : [])); }
 
     async function loadItemsFromApi() {
       const token = authToken();
@@ -244,34 +234,38 @@
 
     async function removeItem(id){
       const token = authToken();
-      if (token && token !== 'local-session-token') {
-        try {
-          const response = await fetch(`${API_BASE}/favorites/${encodeURIComponent(id)}/toggle`, {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          rows = await loadItemsFromApi();
-          render();
-          return;
-        } catch (error) {
-          nsAlert(`API hatasi: ${error.message}`);
-          return;
-        }
+      if (!token || token === 'local-session-token') {
+        nsAlert('Takip listesini guncellemek icin aktif oturum gerekli.');
+        return;
       }
-      rows = rows.filter((x) => Number(x.id) !== Number(id));
-      saveItemsLocal(rows);
-      render();
+      try {
+        const response = await fetch(`${API_BASE}/favorites/${encodeURIComponent(id)}/toggle`, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        rows = await loadItemsFromApi();
+        render();
+      } catch (error) {
+        nsAlert(`API hatasi: ${error.message}`);
+      }
     }
 
     async function init() {
+      const token = authToken();
+      if (!token || token === 'local-session-token') {
+        rows = [];
+        render();
+        return;
+      }
+
       try {
         rows = await loadItemsFromApi();
       } catch (error) {
-        rows = loadItemsLocal();
+        rows = [];
       }
       render();
     }

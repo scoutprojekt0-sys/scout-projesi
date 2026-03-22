@@ -145,12 +145,31 @@
     .review-pill.sentiment-dikkat{color:#fde68a}
     .review-body{color:#e2e8f0;font-size:14px;line-height:1.72}
     .review-reply{margin-top:12px;padding:14px 15px;border-radius:16px;background:linear-gradient(180deg, rgba(11,59,138,.18) 0%, rgba(15,23,42,.16) 100%);border:1px solid rgba(96,165,250,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+    .workspace-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+    .workspace-tab{
+      border:1px solid var(--line);background:rgba(255,255,255,.04);color:#e2e8f0;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;
+    }
+    .workspace-tab.active{background:linear-gradient(135deg,var(--cta) 0%,var(--cta-2) 100%);border-color:rgba(255,126,34,.6);color:#fff}
+    .workspace-panel{display:none}
+    .workspace-panel.active{display:block}
+    .workspace-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
+    .workspace-metric{padding:14px 15px;border-radius:18px;border:1px solid rgba(96,165,250,.14);background:linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%)}
+    .workspace-metric-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#9bb5cb;margin-bottom:8px}
+    .workspace-metric-value{font-size:26px;font-weight:900;color:#f8fbff}
+    .workspace-list{display:grid;gap:12px}
+    .workspace-item{padding:16px;border-radius:18px;border:1px solid rgba(96,165,250,.14);background:linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%)}
+    .workspace-item-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}
+    .workspace-item-title{font-size:15px;font-weight:800;color:#f5fbff}
+    .workspace-item-meta{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0;color:var(--muted);font-size:12px}
+    .workspace-item-body{color:#e2e8f0;font-size:14px;line-height:1.68}
+    .workspace-empty{font-size:12px;color:var(--muted);line-height:1.6}
 
     @media (max-width:900px){
       .layout{grid-template-columns:1fr}
       .form-grid{grid-template-columns:1fr}
       .review-form-grid{grid-template-columns:1fr}
       .review-summary-grid{grid-template-columns:1fr}
+      .workspace-metrics{grid-template-columns:1fr}
     }
     @media (max-width:768px){
       .wrap{padding:10px 10px 18px}
@@ -192,6 +211,7 @@
       <button class="profile-tab" type="button" data-tab="finance">Finans</button>
       <button class="profile-tab" type="button" data-tab="recruitment">Kadro/İhtiyaç</button>
       <button class="profile-tab" type="button" data-tab="plan">Transfer Plani</button>
+      <button class="profile-tab" type="button" data-tab="workspace">Teknik Workspace</button>
     </div>
 
     <section class="tab-panel active" data-tab-panel="overview">
@@ -386,12 +406,64 @@
         </table>
       </div>
     </section>
+    <section class="tab-panel" data-tab-panel="workspace">
+      <div class="card">
+        <h2 class="section-title" id="clubWorkspaceTitle">Kulup Teknik Workspace</h2>
+        <div class="muted" id="clubWorkspaceSummary" style="margin-bottom:12px;">Oyuncu bazli not, klip ve kaydedilmis degerlendirmeleri bu alanda yonet.</div>
+        <div class="workspace-tabs">
+          <button class="workspace-tab active" type="button" data-club-workspace-tab="notes" onclick="openClubWorkspace('notes')">Teknik Not Defteri</button>
+          <button class="workspace-tab" type="button" data-club-workspace-tab="clips" onclick="openClubWorkspace('clips')">Klip Isaretleme</button>
+          <button class="workspace-tab" type="button" data-club-workspace-tab="evaluations" onclick="openClubWorkspace('evaluations')">Kaydedilmis Degerlendirmeler</button>
+        </div>
+        <section class="workspace-panel active" id="clubWorkspaceNotes">
+          <div class="form-grid">
+            <div class="field"><label class="label">Oyuncu Adi</label><input class="input" id="clubWorkspaceNotePlayer" type="text" placeholder="Oyuncu adi"></div>
+            <div class="field"><label class="label">Oyuncu ID</label><input class="input" id="clubWorkspaceNotePlayerId" type="number" min="1" placeholder="Opsiyonel"></div>
+            <div class="field"><label class="label">Pozisyon</label><input class="input" id="clubWorkspaceNotePosition" type="text" placeholder="Stoper / Forvet"></div>
+            <div class="field"><label class="label">Etiket</label><select class="select" id="clubWorkspaceNoteTag"><option value="izlenecek">Izlenecek</option><option value="tekrar-bak">Tekrar Bak</option><option value="shortlist">Shortlist</option><option value="hazir">Hazir</option></select></div>
+            <div class="field"><label class="label">Odak</label><select class="select" id="clubWorkspaceNoteFocus"><option value="teknik">Teknik</option><option value="taktik">Taktik</option><option value="fizik">Fizik</option><option value="zihinsel">Zihinsel</option></select></div>
+            <div class="field full"><label class="label">Not</label><textarea class="textarea" id="clubWorkspaceNoteBody" placeholder="Oyuncu icin kisa kulup notu..."></textarea></div>
+          </div>
+          <div class="act">
+            <button type="button" class="btn btn-primary" id="clubWorkspaceNoteSubmit">Notu Kaydet</button>
+            <input class="input" id="clubWorkspaceNoteSearch" type="text" placeholder="Oyuncu, etiket veya not ara...">
+          </div>
+          <div class="workspace-list" id="clubWorkspaceNotesList" style="margin-top:14px;"><div class="workspace-empty">Teknik notlar yukleniyor...</div></div>
+        </section>
+        <section class="workspace-panel" id="clubWorkspaceClips">
+          <div class="form-grid">
+            <div class="field"><label class="label">Oyuncu Adi</label><input class="input" id="clubWorkspaceClipPlayer" type="text" placeholder="Oyuncu adi"></div>
+            <div class="field"><label class="label">Oyuncu ID</label><input class="input" id="clubWorkspaceClipPlayerId" type="number" min="1" placeholder="Opsiyonel"></div>
+            <div class="field full"><label class="label">Video Linki</label><input class="input" id="clubWorkspaceClipUrl" type="url" placeholder="https://..."></div>
+            <div class="field"><label class="label">Dakika</label><input class="input" id="clubWorkspaceClipMinute" type="number" min="0" max="180" placeholder="12"></div>
+            <div class="field"><label class="label">Saniye</label><input class="input" id="clubWorkspaceClipSecond" type="number" min="0" max="59" placeholder="34"></div>
+            <div class="field full"><label class="label">Klip Notu</label><textarea class="textarea" id="clubWorkspaceClipBody" placeholder="Bu sahnede dikkat ceken nokta..."></textarea></div>
+          </div>
+          <div class="act">
+            <button type="button" class="btn btn-primary" id="clubWorkspaceClipSubmit">Klibi Kaydet</button>
+            <input class="input" id="clubWorkspaceClipSearch" type="text" placeholder="Oyuncu, link veya not ara...">
+          </div>
+          <div class="workspace-list" id="clubWorkspaceClipsList" style="margin-top:14px;"><div class="workspace-empty">Klip notlari yukleniyor...</div></div>
+        </section>
+        <section class="workspace-panel" id="clubWorkspaceEvaluations">
+          <div class="workspace-metrics">
+            <div class="workspace-metric"><div class="workspace-metric-label">Toplam</div><div class="workspace-metric-value" id="clubEvalTotal">0</div></div>
+            <div class="workspace-metric"><div class="workspace-metric-label">Son Oyuncu</div><div class="workspace-metric-value" id="clubEvalLastPlayer">-</div></div>
+            <div class="workspace-metric"><div class="workspace-metric-label">Son Kayit</div><div class="workspace-metric-value" id="clubEvalLastDate">-</div></div>
+          </div>
+          <div class="act">
+            <input class="input" id="clubWorkspaceEvalSearch" type="text" placeholder="Oyuncu, pozisyon veya karar notu ara...">
+            <input class="input" id="clubWorkspaceEvalMinScore" type="number" min="0" max="100" placeholder="Min. ortalama">
+          </div>
+          <div class="workspace-list" id="clubWorkspaceEvaluationsList" style="margin-top:14px;"><div class="workspace-empty">Degerlendirmeler yukleniyor...</div></div>
+        </section>
+      </div>
+    </section>
   </div>
 
   <script src="assets/js/site-core.js"></script>
   <script src="assets/js/growth-upgrade.js"></script>
   <script>
-    const CLUB_KEY = 'nextscout_club_profile';
     const SYSTEM_LABELS = {
       gegenpressing: 'Gegenpressing | 4-3-3 Ofansif',
       park_the_bus: 'Park the Bus | 5-4-1 Savunma',
@@ -589,6 +661,255 @@
       }
     }
 
+    async function clubApiGet(path) {
+      const headers = authHeaders();
+      if (!headers) throw new Error('Oturum bulunamadi.');
+      const response = await fetch(`${getApiBaseUrl()}${path}`, { headers });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data?.ok === false) {
+        throw new Error(data?.message || 'Veri alinamadi.');
+      }
+      return data?.data ?? data;
+    }
+
+    async function clubApiPost(path, payload) {
+      const headers = authHeaders();
+      if (!headers) throw new Error('Oturum bulunamadi.');
+      const response = await fetch(`${getApiBaseUrl()}${path}`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data?.ok === false) {
+        const firstError = data?.errors ? Object.values(data.errors)?.[0]?.[0] : '';
+        throw new Error(firstError || data?.message || 'Islem basarisiz.');
+      }
+      return data?.data ?? data;
+    }
+
+    async function fetchClubWorkspaceNotes(search) {
+      const params = new URLSearchParams({ per_page: '100' });
+      if (search) params.set('search', search);
+      const payload = await clubApiGet(`/coach/player-notes?${params.toString()}`);
+      return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
+    }
+
+    async function fetchClubWorkspaceClips(search) {
+      const params = new URLSearchParams({ per_page: '100' });
+      if (search) params.set('search', search);
+      const payload = await clubApiGet(`/coach/player-clips?${params.toString()}`);
+      return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
+    }
+
+    async function fetchClubWorkspaceEvaluations(search) {
+      const params = new URLSearchParams({ per_page: '100' });
+      if (search) params.set('search', search);
+      const payload = await clubApiGet(`/coach/player-evaluations?${params.toString()}`);
+      return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
+    }
+
+    function openClubWorkspace(type) {
+      const title = document.getElementById('clubWorkspaceTitle');
+      const summary = document.getElementById('clubWorkspaceSummary');
+      const notes = document.getElementById('clubWorkspaceNotes');
+      const clips = document.getElementById('clubWorkspaceClips');
+      const evaluations = document.getElementById('clubWorkspaceEvaluations');
+      const tabs = Array.from(document.querySelectorAll('[data-club-workspace-tab]'));
+      if (!title || !summary || !notes || !clips || !evaluations) return;
+
+      const content = {
+        notes: {
+          title: 'Kulup Teknik Not Defteri',
+          summary: 'Oyuncu bazli kulup gozuyle teknik ve karar notlarini burada tutarsin.',
+        },
+        clips: {
+          title: 'Kulup Klip Isaretleme',
+          summary: 'Izlenen sahneleri zaman damgasi ve kisa yorumla kaydedersin.',
+        },
+        evaluations: {
+          title: 'Kaydedilmis Degerlendirmeler',
+          summary: 'Oyuncu profillerinde kaydedilen degerlendirmeleri toplu olarak gorursun.',
+        },
+      };
+
+      const selected = content[type] || content.notes;
+      title.textContent = selected.title;
+      summary.textContent = selected.summary;
+      notes.classList.toggle('active', type === 'notes');
+      clips.classList.toggle('active', type === 'clips');
+      evaluations.classList.toggle('active', type === 'evaluations');
+      tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.clubWorkspaceTab === type));
+
+      if (type === 'notes') renderClubWorkspaceNotes();
+      if (type === 'clips') renderClubWorkspaceClips();
+      if (type === 'evaluations') renderClubWorkspaceEvaluations();
+    }
+
+    async function renderClubWorkspaceNotes() {
+      const root = document.getElementById('clubWorkspaceNotesList');
+      const search = String(document.getElementById('clubWorkspaceNoteSearch')?.value || '').trim().toLowerCase();
+      if (!root) return;
+      root.innerHTML = '<div class="workspace-empty">Teknik notlar yukleniyor...</div>';
+      try {
+        const rows = await fetchClubWorkspaceNotes(search);
+        if (!rows.length) {
+          root.innerHTML = '<div class="workspace-empty">Kayitli teknik not bulunmuyor.</div>';
+          return;
+        }
+        root.innerHTML = rows.map((row) => `
+          <div class="workspace-item">
+            <div class="workspace-item-head">
+              <div class="workspace-item-title">${esc(row.player || '-')}</div>
+              <div class="chip">${esc(row.tag || 'Not')}</div>
+            </div>
+            <div class="workspace-item-body">${esc(row.body || '')}</div>
+            <div class="workspace-item-meta">
+              <span>Pozisyon: ${esc(row.position || '-')}</span>
+              <span>Odak: ${esc(row.focus || '-')}</span>
+              <span>Tarih: ${esc(formatReviewDate(row.created_at))}</span>
+            </div>
+          </div>
+        `).join('');
+      } catch (error) {
+        root.innerHTML = `<div class="workspace-empty">${esc(error.message || 'Teknik notlar alinamadi.')}</div>`;
+      }
+    }
+
+    async function submitClubWorkspaceNote() {
+      const playerName = String(document.getElementById('clubWorkspaceNotePlayer')?.value || '').trim();
+      const playerUserId = Number(document.getElementById('clubWorkspaceNotePlayerId')?.value || 0) || null;
+      const position = String(document.getElementById('clubWorkspaceNotePosition')?.value || '').trim();
+      const tag = String(document.getElementById('clubWorkspaceNoteTag')?.value || '').trim();
+      const focus = String(document.getElementById('clubWorkspaceNoteFocus')?.value || '').trim();
+      const body = String(document.getElementById('clubWorkspaceNoteBody')?.value || '').trim();
+      if (!playerName || body.length < 8) {
+        alert('Oyuncu adi ve en az 8 karakter not gerekli.');
+        return;
+      }
+      try {
+        await clubApiPost('/coach/player-notes', {
+          player_user_id: playerUserId,
+          player_name: playerName,
+          position: position || null,
+          tag: tag || null,
+          focus: focus || null,
+          body,
+        });
+        document.getElementById('clubWorkspaceNotePlayer').value = '';
+        document.getElementById('clubWorkspaceNotePlayerId').value = '';
+        document.getElementById('clubWorkspaceNotePosition').value = '';
+        document.getElementById('clubWorkspaceNoteBody').value = '';
+        await renderClubWorkspaceNotes();
+        alert('Kulup notu kaydedildi.');
+      } catch (error) {
+        alert(error.message || 'Kulup notu kaydedilemedi.');
+      }
+    }
+
+    async function renderClubWorkspaceClips() {
+      const root = document.getElementById('clubWorkspaceClipsList');
+      const search = String(document.getElementById('clubWorkspaceClipSearch')?.value || '').trim().toLowerCase();
+      if (!root) return;
+      root.innerHTML = '<div class="workspace-empty">Klip notlari yukleniyor...</div>';
+      try {
+        const rows = await fetchClubWorkspaceClips(search);
+        if (!rows.length) {
+          root.innerHTML = '<div class="workspace-empty">Kayitli klip notu bulunmuyor.</div>';
+          return;
+        }
+        root.innerHTML = rows.map((row) => `
+          <div class="workspace-item">
+            <div class="workspace-item-head">
+              <div class="workspace-item-title">${esc(row.player || '-')}</div>
+              <a class="btn btn-secondary" href="${esc(row.url || '#')}" target="_blank" rel="noopener noreferrer">Videoyu Ac</a>
+            </div>
+            <div class="workspace-item-body">${esc(row.body || '')}</div>
+            <div class="workspace-item-meta">
+              <span>Zaman: ${esc(row.stamp || '00:00')}</span>
+              <span>Tarih: ${esc(formatReviewDate(row.created_at))}</span>
+            </div>
+          </div>
+        `).join('');
+      } catch (error) {
+        root.innerHTML = `<div class="workspace-empty">${esc(error.message || 'Klip notlari alinamadi.')}</div>`;
+      }
+    }
+
+    async function submitClubWorkspaceClip() {
+      const playerName = String(document.getElementById('clubWorkspaceClipPlayer')?.value || '').trim();
+      const playerUserId = Number(document.getElementById('clubWorkspaceClipPlayerId')?.value || 0) || null;
+      const videoUrl = String(document.getElementById('clubWorkspaceClipUrl')?.value || '').trim();
+      const minuteMark = Math.max(0, Number(document.getElementById('clubWorkspaceClipMinute')?.value || 0));
+      const secondMark = Math.max(0, Math.min(59, Number(document.getElementById('clubWorkspaceClipSecond')?.value || 0)));
+      const body = String(document.getElementById('clubWorkspaceClipBody')?.value || '').trim();
+      if (!playerName || !videoUrl || body.length < 8) {
+        alert('Oyuncu, video linki ve en az 8 karakter klip notu gerekli.');
+        return;
+      }
+      try {
+        await clubApiPost('/coach/player-clips', {
+          player_user_id: playerUserId,
+          player_name: playerName,
+          video_url: videoUrl,
+          minute_mark: minuteMark,
+          second_mark: secondMark,
+          body,
+        });
+        document.getElementById('clubWorkspaceClipPlayer').value = '';
+        document.getElementById('clubWorkspaceClipPlayerId').value = '';
+        document.getElementById('clubWorkspaceClipUrl').value = '';
+        document.getElementById('clubWorkspaceClipMinute').value = '';
+        document.getElementById('clubWorkspaceClipSecond').value = '';
+        document.getElementById('clubWorkspaceClipBody').value = '';
+        await renderClubWorkspaceClips();
+        alert('Kulup klip notu kaydedildi.');
+      } catch (error) {
+        alert(error.message || 'Kulup klip notu kaydedilemedi.');
+      }
+    }
+
+    async function renderClubWorkspaceEvaluations() {
+      const root = document.getElementById('clubWorkspaceEvaluationsList');
+      const total = document.getElementById('clubEvalTotal');
+      const lastPlayer = document.getElementById('clubEvalLastPlayer');
+      const lastDate = document.getElementById('clubEvalLastDate');
+      const search = String(document.getElementById('clubWorkspaceEvalSearch')?.value || '').trim().toLowerCase();
+      const minScore = Math.max(0, Number(document.getElementById('clubWorkspaceEvalMinScore')?.value || 0));
+      if (!root || !total || !lastPlayer || !lastDate) return;
+      root.innerHTML = '<div class="workspace-empty">Degerlendirmeler yukleniyor...</div>';
+      try {
+        let rows = await fetchClubWorkspaceEvaluations(search);
+        rows = rows.filter((row) => Number(row.average || 0) >= minScore);
+        total.textContent = String(rows.length);
+        lastPlayer.textContent = rows[0]?.player_name || '-';
+        lastDate.textContent = rows[0]?.saved_at || '-';
+        if (!rows.length) {
+          root.innerHTML = '<div class="workspace-empty">Kayitli degerlendirme bulunmuyor.</div>';
+          return;
+        }
+        root.innerHTML = rows.map((row) => `
+          <div class="workspace-item">
+            <div class="workspace-item-head">
+              <div class="workspace-item-title">${esc(row.player_name || '-')}</div>
+              <div class="chip">${Number(row.average || 0).toLocaleString('tr-TR')}</div>
+            </div>
+            <div class="workspace-item-body">${esc(row.decision_note || 'Karar notu yok.')}</div>
+            <div class="workspace-item-meta">
+              <span>Pozisyon: ${esc(row.position || '-')}</span>
+              <span>Metrik: ${Array.isArray(row.scores) ? row.scores.length : 0}</span>
+              <span>Kayit: ${esc(row.saved_at || '-')}</span>
+            </div>
+          </div>
+        `).join('');
+      } catch (error) {
+        total.textContent = '0';
+        lastPlayer.textContent = '-';
+        lastDate.textContent = '-';
+        root.innerHTML = `<div class="workspace-empty">${esc(error.message || 'Degerlendirmeler alinamadi.')}</div>`;
+      }
+    }
+
     function updateClubReviewVisibility() {
       const authUser = getCurrentAuthUserFromStorage();
       const targetId = getClubReviewTargetId();
@@ -708,21 +1029,6 @@
         facilities: profile.facilities || '',
         notes: profile.notes || '',
       });
-    }
-
-    function loadProfileLocal() {
-      try {
-        const raw = localStorage.getItem(CLUB_KEY);
-        if (!raw) return getDefaultProfile();
-        const parsed = JSON.parse(raw);
-        return Object.assign(getDefaultProfile(), parsed || {});
-      } catch (error) {
-        return getDefaultProfile();
-      }
-    }
-
-    function saveProfileLocal(data) {
-      localStorage.setItem(CLUB_KEY, JSON.stringify(data));
     }
 
     function profileFromApi(user, team) {
@@ -888,6 +1194,13 @@
       const form = document.getElementById('clubForm');
       const saveMsg = document.getElementById('saveMsg');
 
+      document.getElementById('clubWorkspaceNoteSubmit')?.addEventListener('click', submitClubWorkspaceNote);
+      document.getElementById('clubWorkspaceClipSubmit')?.addEventListener('click', submitClubWorkspaceClip);
+      document.getElementById('clubWorkspaceNoteSearch')?.addEventListener('input', renderClubWorkspaceNotes);
+      document.getElementById('clubWorkspaceClipSearch')?.addEventListener('input', renderClubWorkspaceClips);
+      document.getElementById('clubWorkspaceEvalSearch')?.addEventListener('input', renderClubWorkspaceEvaluations);
+      document.getElementById('clubWorkspaceEvalMinScore')?.addEventListener('input', renderClubWorkspaceEvaluations);
+
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const data = readForm();
@@ -910,17 +1223,27 @@
           backendSaved = false;
         }
 
-        saveProfileLocal(data);
+        if (!backendSaved) {
+          saveMsg.textContent = 'Kulup profili backend kaydedilemedi.';
+          setTimeout(() => { saveMsg.textContent = ''; }, 2200);
+          return;
+        }
+
         renderSummary(data);
-        saveMsg.textContent = backendSaved ? "KULÜP profili backend'e kaydedildi." : 'Kaydedildi (local). Backend baglantisi yok.';
+        saveMsg.textContent = "Kulup profili backend'e kaydedildi.";
         window.NextScoutGrowth?.track('club_profile_saved', { club: (data.clubName || '').slice(0, 40) });
         setTimeout(() => { saveMsg.textContent = ''; }, 2200);
       });
 
-      document.getElementById('resetBtn')?.addEventListener('click', () => {
+      document.getElementById('resetBtn')?.addEventListener('click', async () => {
         const defaults = getDefaultProfile();
+        const backendSaved = await saveProfileBackend(defaults).catch(() => false);
+        if (!backendSaved) {
+          saveMsg.textContent = 'Kulup profili backend sifirlanamadi.';
+          setTimeout(() => { saveMsg.textContent = ''; }, 2000);
+          return;
+        }
         setForm(defaults);
-        saveProfileLocal(defaults);
         renderSummary(defaults);
         saveMsg.textContent = 'Profil varsayilan degerlere dondu.';
         setTimeout(() => { saveMsg.textContent = ''; }, 2000);
@@ -928,7 +1251,7 @@
     }
 
     async function init() {
-      let profile = loadProfileLocal();
+      let profile = getDefaultProfile();
       try {
         const remote = await fetchMeAndTeam();
         if (remote?.user) {
@@ -941,11 +1264,17 @@
       ensureClubProfileSelectOptions();
       setForm(profile);
       renderSummary(profile);
-      saveProfileLocal(profile);
       bindTabs();
       bind();
       updateClubReviewVisibility();
       loadClubProfileReviews();
+      if (getToken()) {
+        await renderClubWorkspaceNotes();
+      } else {
+        document.getElementById('clubWorkspaceNotesList').innerHTML = '<div class="workspace-empty">Giris yaptiginda teknik notlar burada gorunur.</div>';
+        document.getElementById('clubWorkspaceClipsList').innerHTML = '<div class="workspace-empty">Giris yaptiginda klip notlari burada gorunur.</div>';
+        document.getElementById('clubWorkspaceEvaluationsList').innerHTML = '<div class="workspace-empty">Giris yaptiginda kaydedilmis degerlendirmeler burada gorunur.</div>';
+      }
     }
 
     function applyTurkishTextFixes() {

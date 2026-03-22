@@ -981,7 +981,15 @@
 
     <script>
         let currentGalleryIndex = 0;
-        const galleryImages = new Array(6);
+        let currentUserId = null;
+        let currentProfilePhotoUrl = '';
+        let currentProfilePhotoMediaId = null;
+        let pendingPhotoFile = null;
+        let pendingPhotoDelete = false;
+        const removedMediaIds = new Set();
+        const removedVideoIds = new Set();
+        const galleryImages = new Array(6).fill(null);
+        let videos = [];
 
         function syncSportStatsFields() {
             const sport = document.getElementById('sportSelect')?.value || 'futbol';
@@ -1003,14 +1011,125 @@
             return params.get('api_base') || 'http://localhost:8000/api';
         }
 
-        function getAuthHeaders() {
-            const headers = {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            };
+        function getAuthHeaders(options = {}) {
+            const headers = { Accept: 'application/json' };
             const token = (localStorage.getItem('nextscout_token') || '').trim();
             if (token) headers.Authorization = `Bearer ${token}`;
+            if (options.json !== false) headers['Content-Type'] = 'application/json';
             return headers;
+        }
+
+        async function fetchJsonSafe(url, options = {}) {
+            const response = await fetch(url, options);
+            const payload = await response.json().catch(() => null);
+            if (!response.ok) {
+                throw new Error(payload?.message || 'API istegi basarisiz oldu.');
+            }
+            return payload;
+        }
+
+        function extractRows(payload) {
+            if (Array.isArray(payload?.data?.data)) return payload.data.data;
+            if (Array.isArray(payload?.data)) return payload.data;
+            return [];
+        }
+
+        function inferVideoPlatform(url) {
+            const normalized = String(url || '').toLowerCase();
+            if (normalized.includes('youtube.com') || normalized.includes('youtu.be')) return 'youtube';
+            if (normalized.includes('vimeo.com')) return 'vimeo';
+            return 'custom';
+        }
+
+        function readFileAsDataUrl(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (event) => resolve(event?.target?.result || '');
+                reader.onerror = () => reject(new Error('Dosya onizlemesi olusturulamadi.'));
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function renderPhotoPreview(url) {
+            const preview = document.getElementById('photoPreview');
+            preview.innerHTML = url
+                ? `<img src="${url}" style="width: 100%; height: 100%; object-fit: cover;">`
+                : 'TOP';
+        }
+
+        function renderGallery() {
+            const items = document.querySelectorAll('.gallery-item');
+            items.forEach((item, index) => {
+                const media = galleryImages[index];
+                item.innerHTML = media?.url
+                    ? `<img src="${media.url}" style="width: 100%; height: 100%; object-fit: cover;">`
+                    : '+';
+            });
+        }
+
+        function normalizeMediaItem(media) {
+            if (!media?.url) return null;
+            return {
+                id: media.id || null,
+                url: media.url,
+                title: media.title || '',
+                file: null,
+            };
+        }
+
+        function renderVideos() {
+            const videosList = document.getElementById('videosList');
+            videosList.innerHTML = videos.map((video, index) => `
+                <div class="video-item">
+                    <div class="video-info">
+                        <div class="video-title">Video: ${video.title}</div>
+                        <div class="video-url">${video.url}</div>
+                    </div>
+                    <button type="button" class="remove-btn" onclick="removeVideo(${index})">Sil</button>
+                </div>
+            `).join('');
+        }
+
+        async function uploadMediaFile(file, title) {
+            const formData = new FormData();
+            formData.append('file', file);
+            if (title) formData.append('title', title);
+            const payload = await fetchJsonSafe(`${getApiBaseUrl()}/media`, {
+                method: 'POST',
+                headers: getAuthHeaders({ json: false }),
+                body: formData,
+            });
+            return payload?.data || null;
+        }
+
+        async function deleteMediaItem(id) {
+            if (!id) return;
+            await fetchJsonSafe(`${getApiBaseUrl()}/media/${encodeURIComponent(id)}`, {
+                method: 'DELETE',
+                headers: getAuthHeaders(),
+            });
+        }
+
+        async function createVideoClip(video) {
+            const payload = await fetchJsonSafe(`${getApiBaseUrl()}/videos`, {
+                method: 'POST',
+                headers: getAuthHeaders(),
+                body: JSON.stringify({
+                    title: video.title,
+                    description: video.description || null,
+                    video_url: video.url,
+                    platform: inferVideoPlatform(video.url),
+                }),
+            });
+            return payload?.data || null;
+        }
+
+        async function deleteVideoClip(id) {
+            if (!id) return;
+            await fetchJsonSafe(`${getApiBaseUrl()}/videos/${encodeURIComponent(id)}`, {
+                method: 'DELETE',
+                headers: getAuthHeaders(),
+            });
         }
 
         async function resolveCurrentUserId() {
@@ -1043,17 +1162,12 @@
 
         uploadZone.addEventListener('click', () => photoInput.click());
 
-        photoInput.addEventListener('change', (e) => {
+        photoInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    const preview = document.getElementById('photoPreview');
-                    preview.innerHTML = `<img src="${event.target.result}" style="width: 100%; height: 100%; object-fit: cover;">`;
-                    localStorage.setItem('playerPhoto', event.target.result);
-                };
-                reader.readAsDataURL(file);
-            }
+            if (!file) return;
+            pendingPhotoFile = file;
+            pendingPhotoDelete = false;
+            renderPhotoPreview(await readFileAsDataUrl(file));
         });
 
         function handleDragOver(e) {
@@ -1076,9 +1190,10 @@
         }
 
         function removePhoto() {
-            document.getElementById('photoPreview').innerHTML = 'TOP';
             photoInput.value = '';
-            localStorage.removeItem('playerPhoto');
+            pendingPhotoFile = null;
+            pendingPhotoDelete = true;
+            renderPhotoPreview('');
         }
 
         // Galeri fotografi yukle
@@ -1089,28 +1204,29 @@
             galleryInput.click();
         }
 
-        galleryInput.addEventListener('change', (e) => {
+        galleryInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    galleryImages[currentGalleryIndex] = event.target.result;
-                    const items = document.querySelectorAll('.gallery-item');
-                    items[currentGalleryIndex].innerHTML = `<img src="${event.target.result}" style="width: 100%; height: 100%; object-fit: cover;">`;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+            if (!file) return;
 
-        // Video yönetimi
-        let videos = [];
+            const existing = galleryImages[currentGalleryIndex];
+            if (existing?.id) removedMediaIds.add(existing.id);
+
+            galleryImages[currentGalleryIndex] = {
+                id: null,
+                file,
+                url: await readFileAsDataUrl(file),
+                title: file.name || `gallery-${currentGalleryIndex + 1}`,
+            };
+            renderGallery();
+            galleryInput.value = '';
+        });
 
         function addVideo() {
             const title = document.getElementById('videoTitleInput').value;
             const url = document.getElementById('videoUrlInput').value;
 
             if (title && url) {
-                videos.push({ title, url });
+                videos.push({ id: null, title, url });
                 document.getElementById('videoTitleInput').value = '';
                 document.getElementById('videoUrlInput').value = '';
                 renderVideos();
@@ -1118,25 +1234,19 @@
         }
 
         function removeVideo(index) {
-            videos.splice(index, 1);
+            const [removed] = videos.splice(index, 1);
+            if (removed?.id) removedVideoIds.add(removed.id);
             renderVideos();
-        }
-
-        function renderVideos() {
-            const videosList = document.getElementById('videosList');
-            videosList.innerHTML = videos.map((video, index) => `
-                <div class="video-item">
-                    <div class="video-info">
-                        <div class="video-title">Video: ${video.title}</div>
-                        <div class="video-url">${video.url}</div>
-                    </div>
-                    <button type="button" class="remove-btn" onclick="removeVideo(${index})">Sil</button>
-                </div>
-            `).join('');
         }
 
         // Profil Kaydet
         async function saveProfile() {
+            currentUserId = currentUserId || await resolveCurrentUserId();
+            if (!currentUserId) {
+                nsAlert('Profili kaydetmek icin once giris yapmalisin.');
+                return;
+            }
+
             const sport = document.getElementById('sportSelect').value;
             const baseProfileData = {
                 name: document.getElementById('nameInput').value,
@@ -1152,8 +1262,6 @@
                 matches: document.getElementById('matchesInput').value,
                 minutes: document.getElementById('minutesInput').value,
                 rating: document.getElementById('ratingInput').value,
-                galleryImages: galleryImages,
-                videos: videos
             };
 
             const profileData = {
@@ -1177,61 +1285,124 @@
                 profileData.assists = document.getElementById('assistsInput').value;
             }
 
-            localStorage.setItem('playerProfile', JSON.stringify(profileData));
-            localStorage.setItem('playerGallery', JSON.stringify(galleryImages));
-            localStorage.setItem('playerVideos', JSON.stringify(videos));
-
-            // Dashboard ve profilde ayni isim gorunsun
             try {
-                const currentUserRaw = localStorage.getItem('nextscout_user');
-                const currentUser = currentUserRaw ? JSON.parse(currentUserRaw) : {};
-                const mergedUser = {
-                    ...currentUser,
-                    name: profileData.name || currentUser.name || 'Oyuncu',
-                    role: currentUser.role || 'player',
-                    email: currentUser.email || '',
-                };
-                localStorage.setItem('nextscout_user', JSON.stringify(mergedUser));
-            } catch (e) {
-                // ignore parse errors
-            }
-
-            // API-FIRST: oyuncu profili backend'e de yaz
-            const userId = await resolveCurrentUserId();
-            if (userId) {
-                try {
-                    const nowYear = new Date().getFullYear();
-                    const ageNum = Number(profileData.age || 0);
-                    const birthYear = ageNum > 0 ? (nowYear - ageNum) : null;
-                    const dominantFoot = (profileData.position || '').toLowerCase().includes('sol') ? 'left' : 'right';
-
-                    const payload = {
-                        name: (profileData.name || '').toString().trim(),
-                        position: (profileData.position || '').toString().trim(),
-                        birth_year: birthYear,
-                        dominant_foot: dominantFoot,
-                        height_cm: Number(profileData.height || 0) || null,
-                        current_team: (profileData.current_club || '').toString().trim() || null,
-                        bio: (profileData.bio || '').toString().trim() || null,
-                    };
-
-                    await fetch(`${getApiBaseUrl()}/players/${encodeURIComponent(userId)}`, {
-                        method: 'PUT',
-                        headers: getAuthHeaders(),
-                        body: JSON.stringify(payload),
-                    });
-                } catch (e) {
-                    // API hatasinda local kayit devam eder
+                for (const mediaId of Array.from(removedMediaIds)) {
+                    await deleteMediaItem(mediaId);
+                    removedMediaIds.delete(mediaId);
                 }
-            }
 
-            nsAlert('Profil basariyla kaydedildi!');
-            window.location.href = 'player-dashboard.html';
+                if (pendingPhotoDelete && currentProfilePhotoMediaId && !pendingPhotoFile) {
+                    await deleteMediaItem(currentProfilePhotoMediaId);
+                    currentProfilePhotoMediaId = null;
+                    currentProfilePhotoUrl = '';
+                }
+
+                if (pendingPhotoFile) {
+                    const uploadedPhoto = await uploadMediaFile(pendingPhotoFile, 'player-profile-photo');
+                    if (currentProfilePhotoMediaId && currentProfilePhotoMediaId !== uploadedPhoto?.id) {
+                        await deleteMediaItem(currentProfilePhotoMediaId);
+                    }
+                    currentProfilePhotoMediaId = uploadedPhoto?.id || null;
+                    currentProfilePhotoUrl = uploadedPhoto?.url || '';
+                    pendingPhotoFile = null;
+                    pendingPhotoDelete = false;
+                }
+
+                for (let index = 0; index < galleryImages.length; index += 1) {
+                    const item = galleryImages[index];
+                    if (!item?.file) continue;
+                    const uploadedMedia = await uploadMediaFile(item.file, item.title || `player-gallery-${index + 1}`);
+                    galleryImages[index] = normalizeMediaItem(uploadedMedia);
+                }
+
+                for (const videoId of Array.from(removedVideoIds)) {
+                    await deleteVideoClip(videoId);
+                    removedVideoIds.delete(videoId);
+                }
+
+                for (let index = 0; index < videos.length; index += 1) {
+                    const video = videos[index];
+                    if (video?.id) continue;
+                    const createdVideo = await createVideoClip(video);
+                    videos[index] = {
+                        id: createdVideo?.id || null,
+                        title: createdVideo?.title || video.title,
+                        url: createdVideo?.video_url || video.url,
+                    };
+                }
+
+                const nowYear = new Date().getFullYear();
+                const ageNum = Number(profileData.age || 0);
+                const birthYear = ageNum > 0 ? (nowYear - ageNum) : null;
+                const dominantFoot = (profileData.position || '').toLowerCase().includes('sol') ? 'left' : 'right';
+
+                const payload = {
+                    name: (profileData.name || '').toString().trim(),
+                    age: ageNum || null,
+                    rating: Number(profileData.rating || 0) || null,
+                    photo_url: currentProfilePhotoUrl || null,
+                    position: (profileData.position || '').toString().trim() || null,
+                    birth_year: birthYear,
+                    dominant_foot: dominantFoot,
+                    height_cm: Number(profileData.height || 0) || null,
+                    current_team: (profileData.current_club || '').toString().trim() || null,
+                    bio: (profileData.bio || '').toString().trim() || null,
+                };
+
+                await fetchJsonSafe(`${getApiBaseUrl()}/players/${encodeURIComponent(currentUserId)}`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(payload),
+                });
+
+                try {
+                    const currentUserRaw = localStorage.getItem('nextscout_user');
+                    const currentUser = currentUserRaw ? JSON.parse(currentUserRaw) : {};
+                    localStorage.setItem('nextscout_user', JSON.stringify({
+                        ...currentUser,
+                        id: currentUserId,
+                        name: payload.name || currentUser.name || 'Oyuncu',
+                        photo_url: payload.photo_url || currentUser.photo_url || '',
+                        role: currentUser.role || 'player',
+                        email: currentUser.email || '',
+                    }));
+                } catch (e) {}
+
+                nsAlert('Profil basariyla kaydedildi!');
+                window.location.href = 'player-dashboard.html';
+            } catch (error) {
+                nsAlert(error?.message || 'Profil kaydedilirken bir hata olustu.');
+            }
         }
 
-        // Sayfa yuklenirken verileri geri yukle
-        window.addEventListener('load', () => {
-            const savedProfile = localStorage.getItem('playerProfile');
+        function populateProfileForm(data) {
+            document.getElementById('nameInput').value = data.name || '';
+            document.getElementById('positionSelect').value = data.position || data.user_position || 'Forvet';
+            document.getElementById('genderSelect').value = data.gender || 'bay';
+            document.getElementById('sportSelect').value = data.sport || 'futbol';
+            document.getElementById('ageInput').value = data.age || (data.birth_year ? new Date().getFullYear() - Number(data.birth_year) : '24');
+            document.getElementById('heightInput').value = data.height_cm || data.height || '180';
+            document.getElementById('contractStatusSelect').value = data.contract_status || 'active';
+            document.getElementById('seekingClubSelect').value = data.seeking_club ? 'true' : 'false';
+            document.getElementById('currentClubInput').value = data.current_team || data.current_club || '';
+            document.getElementById('bioInput').value = data.bio || '';
+            document.getElementById('matchesInput').value = data.matches || '0';
+            document.getElementById('minutesInput').value = data.minutes || '0';
+            document.getElementById('goalsInput').value = data.goals || '0';
+            document.getElementById('assistsInput').value = data.assists || '0';
+            document.getElementById('ratingInput').value = data.rating || data.user_rating || '0';
+            document.getElementById('pointsInput').value = data.points || data.goals || '0';
+            document.getElementById('reboundsInput').value = data.rebounds || '0';
+            document.getElementById('basketAssistsInput').value = data.assists || '0';
+            document.getElementById('volleyballPointsInput').value = data.points || data.goals || '0';
+            document.getElementById('acesInput').value = data.aces || data.assists || '0';
+            document.getElementById('blocksInput').value = data.blocks || '0';
+            document.getElementById('setsInput').value = data.sets || '0';
+            syncSportStatsFields();
+        }
+
+        async function loadProfileEditorData() {
+            currentUserId = await resolveCurrentUserId();
             let sessionUser = null;
             try {
                 const rawUser = localStorage.getItem('nextscout_user');
@@ -1244,65 +1415,64 @@
                 document.getElementById('nameInput').value = sessionUser.name;
             }
 
-            if (savedProfile) {
-                const data = JSON.parse(savedProfile);
-                document.getElementById('nameInput').value = data.name || sessionUser?.name || '';
-                document.getElementById('positionSelect').value = data.position || 'Forvet';
-                document.getElementById('genderSelect').value = data.gender || 'bay';
-                document.getElementById('sportSelect').value = data.sport || 'futbol';
-                document.getElementById('ageInput').value = data.age || '24';
-                document.getElementById('heightInput').value = data.height || '180';
-                document.getElementById('contractStatusSelect').value = data.contract_status || 'active';
-                document.getElementById('seekingClubSelect').value = data.seeking_club ? 'true' : 'false';
-                document.getElementById('currentClubInput').value = data.current_club || '';
-                document.getElementById('bioInput').value = data.bio || '';
-                document.getElementById('matchesInput').value = data.matches || '0';
-                document.getElementById('minutesInput').value = data.minutes || '0';
-                document.getElementById('goalsInput').value = data.goals || '0';
-                document.getElementById('assistsInput').value = data.assists || '0';
-                document.getElementById('ratingInput').value = data.rating || '0';
-                document.getElementById('pointsInput').value = data.points || data.goals || '0';
-                document.getElementById('reboundsInput').value = data.rebounds || '0';
-                document.getElementById('basketAssistsInput').value = data.assists || '0';
-                document.getElementById('volleyballPointsInput').value = data.points || data.goals || '0';
-                document.getElementById('acesInput').value = data.aces || data.assists || '0';
-                document.getElementById('blocksInput').value = data.blocks || '0';
-                document.getElementById('setsInput').value = data.sets || '0';
-            }
-
-            syncSportStatsFields();
-            document.getElementById('sportSelect').addEventListener('change', syncSportStatsFields);
-
-            const savedGallery = localStorage.getItem('playerGallery');
-            if (savedGallery) {
-                const images = JSON.parse(savedGallery);
-                const items = document.querySelectorAll('.gallery-item');
-                images.forEach((img, index) => {
-                    if (img) {
-                        galleryImages[index] = img;
-                        items[index].innerHTML = `<img src="${img}" style="width: 100%; height: 100%; object-fit: cover;">`;
-                    }
-                });
-            }
-
-            const savedVideos = localStorage.getItem('playerVideos');
-            if (savedVideos) {
-                videos = JSON.parse(savedVideos);
+            if (!currentUserId) {
+                syncSportStatsFields();
+                renderGallery();
                 renderVideos();
+                renderPhotoPreview('');
+                return;
             }
 
-            const savedPhoto = localStorage.getItem('playerPhoto');
-            if (savedPhoto) {
-                const preview = document.getElementById('photoPreview');
-                preview.innerHTML = `<img src="${savedPhoto}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            try {
+                const [privatePayload, publicPayload, mediaPayload, videoPayload] = await Promise.all([
+                    fetchJsonSafe(`${getApiBaseUrl()}/players/${encodeURIComponent(currentUserId)}`, { headers: getAuthHeaders() }),
+                    fetchJsonSafe(`${getApiBaseUrl()}/public/players/${encodeURIComponent(currentUserId)}/profile`, { headers: getAuthHeaders() }),
+                    fetchJsonSafe(`${getApiBaseUrl()}/users/${encodeURIComponent(currentUserId)}/media?type=image&per_page=12`, { headers: getAuthHeaders() }),
+                    fetchJsonSafe(`${getApiBaseUrl()}/users/${encodeURIComponent(currentUserId)}/videos`, { headers: getAuthHeaders() }),
+                ]);
+
+                const privateData = privatePayload?.data || {};
+                const publicData = publicPayload?.data || {};
+                populateProfileForm({ ...privateData, ...publicData, name: privateData.name || publicData.name || sessionUser?.name || '' });
+
+                currentProfilePhotoUrl = privateData.photo_url || publicData.photo_url || '';
+                renderPhotoPreview(currentProfilePhotoUrl);
+
+                const imageRows = extractRows(mediaPayload).filter((row) => row?.type === 'image');
+                const photoMedia = imageRows.find((row) => row?.url === currentProfilePhotoUrl) || null;
+                currentProfilePhotoMediaId = photoMedia?.id || null;
+
+                const galleryRows = imageRows.filter((row) => row?.id !== currentProfilePhotoMediaId).slice(0, galleryImages.length);
+                galleryImages.fill(null);
+                galleryRows.forEach((row, index) => {
+                    galleryImages[index] = normalizeMediaItem(row);
+                });
+                renderGallery();
+
+                videos = extractRows(videoPayload).map((row) => ({
+                    id: row.id,
+                    title: row.title || 'Video',
+                    url: row.video_url || '',
+                }));
+                renderVideos();
+            } catch (error) {
+                syncSportStatsFields();
+                renderGallery();
+                renderVideos();
+                renderPhotoPreview('');
+                nsAlert(error?.message || 'Profil verileri yuklenemedi.');
             }
+        }
+
+        window.addEventListener('load', () => {
+            document.getElementById('sportSelect').addEventListener('change', syncSportStatsFields);
+            loadProfileEditorData();
         });
     </script>
     <script src="assets/js/core-stability.js"></script>
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
 
 
 

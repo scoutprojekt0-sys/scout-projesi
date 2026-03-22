@@ -196,7 +196,6 @@
   </div>
 
   <script>
-    const LOCAL_KEY = 'nextscout_lawyer_profiles';
     let allItems = [];
     let visibleItems = [];
 
@@ -223,15 +222,8 @@
         .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
     }
 
-    function loadLocal() {
-      try {
-        const parsed = JSON.parse(localStorage.getItem(LOCAL_KEY) || '[]');
-        return Array.isArray(parsed) ? parsed : [];
-      } catch { return []; }
-    }
-
     async function loadRemote() {
-      const res = await fetch(`${getApiBaseUrl()}/public/lawyers`, { headers: { Accept: 'application/json' } });
+      const res = await fetch(`${getApiBaseUrl()}/lawyers`, { headers: { Accept: 'application/json' } });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const payload = await res.json();
       const rows = Array.isArray(payload?.data?.data) ? payload.data.data : (Array.isArray(payload?.data) ? payload.data : []);
@@ -239,40 +231,6 @@
         id: Number(r.id) || 0,
         user_id: Number(r.user_id) || 0,
         name: r?.user?.name || 'Avukat',
-        specialization: r.specialization || '-',
-        years_experience: Number(r.years_experience || 0),
-        office_name: r.office_name || '-',
-        office_phone: r.office_phone || '',
-        office_email: r.office_email || '',
-        bio: r.bio || '',
-        is_verified: !!r.is_verified,
-      }));
-    }
-
-    async function loadLawyerUsers() {
-      const res = await fetch(`${getApiBaseUrl()}/users?role=lawyer&per_page=200`, { headers: { Accept: 'application/json' } });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const payload = await res.json();
-      const rows = Array.isArray(payload?.data?.data) ? payload.data.data : [];
-      return rows.map((u) => ({
-        id: Number(u.id) ? Number(u.id) + 1000000 : 0,
-        user_id: Number(u.id) || 0,
-        name: u.name || 'Avukat',
-        specialization: '-',
-        years_experience: 0,
-        office_name: '-',
-        office_phone: u.phone || '',
-        office_email: u.email || '',
-        bio: '',
-        is_verified: false,
-      }));
-    }
-
-    function normalizeLocal(rows){
-      return rows.map((r, i) => ({
-        id: Number(r.id) || (i + 1),
-        user_id: Number(r.user_id) || 0,
-        name: r.name || 'Avukat',
         specialization: r.specialization || '-',
         years_experience: Number(r.years_experience || 0),
         office_name: r.office_name || '-',
@@ -381,21 +339,11 @@
       }
       const dashboardBtn = document.getElementById('dashboardBtn');
       if (dashboardBtn) dashboardBtn.href = getDashboardHref();
-      const local = normalizeLocal(loadLocal());
-      allItems = local;
       try {
         const remote = await loadRemote();
-        const users = await loadLawyerUsers();
-        const merged = [...remote, ...users, ...local];
-        const seen = new Set();
-        allItems = merged.filter((x) => {
-          const key = `${Number(x.user_id) || 0}|${(x.office_email || '').toLowerCase()}|${(x.name || '').toLowerCase()}`;
-          if (seen.has(key)) return false;
-          seen.add(key);
-          return true;
-        });
+        allItems = remote;
       } catch (error) {
-        // local fallback
+        allItems = [];
       }
       visibleItems = allItems.slice();
       bind();
@@ -412,7 +360,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
 
 
 

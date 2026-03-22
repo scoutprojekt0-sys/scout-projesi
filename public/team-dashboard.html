@@ -1248,10 +1248,6 @@
     <script src="assets/js/site-core.js"></script>
     <script src="assets/js/growth-upgrade.js"></script>
     <script>
-        const OFFERS_KEY = 'nextscout_team_offers';
-        const CLUB_NEEDS_KEY = 'nextscout_club_needs_notes';
-        const CLUB_PROMOS_KEY = 'nextscout_paid_club_promos';
-        const CLUB_GROUP_PLAYERS_KEY = 'nextscout_club_group_players';
         const TACTICAL_SYSTEMS = {
             gegenpressing: {
                 label: 'Gegenpressing',
@@ -1308,6 +1304,8 @@
         let lastComparePayload = null;
         let searchDebounceTimer = null;
         let activeTeamGroup = 'u9';
+        let clubOffers = [];
+        let clubInternalPlayers = [];
         let editingClubPlayerId = null;
 
         function getApiBaseUrl() {
@@ -1445,12 +1443,120 @@
             }
         }
 
+        function getAuthHeaders(includeJson = true) {
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            if (!token || token === 'local-session-token') return null;
+            const headers = {
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+            };
+            if (includeJson) headers['Content-Type'] = 'application/json';
+            return headers;
+        }
+
         function getOffers() {
-            try { return JSON.parse(localStorage.getItem(OFFERS_KEY) || '[]'); } catch (error) { return []; }
+            return Array.isArray(clubOffers) ? clubOffers : [];
         }
 
         function saveOffers(offers) {
-            localStorage.setItem(OFFERS_KEY, JSON.stringify(Array.isArray(offers) ? offers : []));
+            clubOffers = Array.isArray(offers) ? offers : [];
+        }
+
+        async function fetchClubOffers() {
+            const headers = getAuthHeaders(false);
+            if (!headers) {
+                saveOffers([]);
+                return getOffers();
+            }
+
+            const response = await fetch(`${getApiBaseUrl()}/club/offers`, { headers });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok || payload?.ok === false) {
+                throw new Error(payload?.message || 'Kulup teklifleri yuklenemedi.');
+            }
+
+            const rows = Array.isArray(payload?.data?.data) ? payload.data.data : [];
+            saveOffers(rows);
+            return rows;
+        }
+
+        async function createClubOffer(payload) {
+            const headers = getAuthHeaders(true);
+            if (!headers) throw new Error('Teklif gondermek icin aktif oturum gerekli.');
+
+            const response = await fetch(`${getApiBaseUrl()}/club/offers`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(payload),
+                });
+            const body = await response.json().catch(() => ({}));
+            if (!response.ok || body?.ok === false) {
+                throw new Error(body?.message || 'Teklif kaydedilemedi.');
+            }
+            return body?.data || null;
+        }
+
+        async function fetchClubInternalPlayers() {
+            const headers = getAuthHeaders(false);
+            if (!headers) {
+                clubInternalPlayers = loadClubInternalPlayersCache();
+                return clubInternalPlayers;
+            }
+
+            const response = await fetch(`${getApiBaseUrl()}/club/internal-players`, { headers });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok || payload?.ok === false) {
+                throw new Error(payload?.message || 'Kulup ici oyuncu listesi yuklenemedi.');
+            }
+
+            clubInternalPlayers = Array.isArray(payload?.data?.data) ? payload.data.data : [];
+            return clubInternalPlayers;
+        }
+
+        async function persistClubInternalPlayer(payload, playerId) {
+            const headers = getAuthHeaders(true);
+            if (!headers) throw new Error('Kulup ici profil kaydetmek icin aktif oturum gerekli.');
+
+            const response = await fetch(`${getApiBaseUrl()}/club/internal-players${playerId ? `/${encodeURIComponent(playerId)}` : ''}`, {
+                method: playerId ? 'PUT' : 'POST',
+                headers,
+                body: JSON.stringify(payload),
+            });
+            const body = await response.json().catch(() => ({}));
+            if (!response.ok || body?.ok === false) {
+                throw new Error(body?.message || 'Kulup ici profil kaydedilemedi.');
+            }
+            return body?.data || null;
+        }
+
+        async function deleteClubInternalPlayerApi(playerId) {
+            const headers = getAuthHeaders(false);
+            if (!headers) throw new Error('Kulup ici profil silmek icin aktif oturum gerekli.');
+
+            const response = await fetch(`${getApiBaseUrl()}/club/internal-players/${encodeURIComponent(playerId)}`, {
+                method: 'DELETE',
+                headers,
+            });
+            const body = await response.json().catch(() => ({}));
+            if (!response.ok || body?.ok === false) {
+                throw new Error(body?.message || 'Kulup ici profil silinemedi.');
+            }
+        }
+
+        async function createClubPromo(payload) {
+            const headers = getAuthHeaders(true);
+            if (!headers) throw new Error('Kulup tanitimi yayinlamak icin aktif oturum gerekli.');
+
+            const response = await fetch(`${getApiBaseUrl()}/club/promos`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(payload),
+            });
+            const body = await response.json().catch(() => ({}));
+            if (!response.ok || body?.ok === false) {
+                throw new Error(body?.message || 'Kulup tanitimi kaydedilemedi.');
+            }
+            return body?.data || null;
         }
 
         function updateStats() {
@@ -1514,15 +1620,7 @@
         }
 
         function getClubPreferredSystem() {
-            try {
-                const raw = localStorage.getItem('nextscout_club_profile');
-                if (!raw) return '';
-                const parsed = JSON.parse(raw);
-                const value = String(parsed?.preferredSystem || '').trim();
-                return TACTICAL_SYSTEMS[value] ? value : '';
-            } catch (error) {
-                return '';
-            }
+            return '';
         }
 
         function syncTeamSystemFromClubProfile() {
@@ -1831,6 +1929,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                         Accept: 'application/json',
+                        ...(getAuthHeaders(false) || {}),
                     },
                     body: JSON.stringify({ player_ids: selectedCompareIds }),
                 });
@@ -1926,7 +2025,7 @@
             }
 
             renderPlayers(filteredPlayers);
-            updateStats();
+                updateStats();
         }
 
         function openPlayerProfile(playerId) {
@@ -1934,7 +2033,7 @@
             window.location.href = `player-profile.html?user_id=${encodeURIComponent(playerId)}`;
         }
 
-        function sendOffer(playerId) {
+        async function sendOffer(playerId) {
             const player = allPlayers.find((p) => Number(p.id) === Number(playerId));
             if (!player) { window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.'); return; }
 
@@ -1944,19 +2043,20 @@
             if (!amount || amount <= 0) { window.nsNotify?.error ? window.nsNotify.error('Gecerli tutar gir.') : nsnsAlert('Gecerli tutar gir.'); return; }
 
             const note = prompt('Kisa not (opsiyonel):', '') || '';
-            const offers = getOffers();
-            offers.unshift({
-                id: Date.now(),
-                player_id: player.id,
-                player_name: player.name,
-                amount,
-                note: note.trim(),
-                created_at: new Date().toISOString(),
-                status: 'sent',
-            });
-            saveOffers(offers.slice(0, 500));
-            updateStats();
-            window.nsNotify?.success ? window.nsNotify.success(`Teklif gönderildi: ${player.name}`) : nsnsAlert(`Teklif gönderildi: ${player.name}`);
+            try {
+                const created = await createClubOffer({
+                    target_player_user_id: Number(player.id) || null,
+                    player_name: player.name,
+                    amount_eur: amount,
+                    status: 'sent',
+                    note: note.trim(),
+                });
+                saveOffers([created, ...getOffers()].slice(0, 500));
+                updateStats();
+                window.nsNotify?.success ? window.nsNotify.success(`Teklif gönderildi: ${player.name}`) : nsnsAlert(`Teklif gönderildi: ${player.name}`);
+            } catch (error) {
+                window.nsNotify?.error ? window.nsNotify.error(error.message || 'Teklif gonderilemedi.') : nsnsAlert(error.message || 'Teklif gonderilemedi.');
+            }
         }
 
         function openScoutReports() { window.location.href = 'scout-reports.html'; }
@@ -2014,16 +2114,7 @@
                 return;
             }
 
-            let items = [];
-            try {
-                const parsed = JSON.parse(localStorage.getItem(CLUB_NEEDS_KEY) || '[]');
-                items = Array.isArray(parsed) ? parsed : [];
-            } catch (error) {
-                items = [];
-            }
-
             const newItem = {
-                id: Date.now(),
                 club_name: (function() {
                     try {
                         const user = JSON.parse(localStorage.getItem('nextscout_user') || '{}');
@@ -2033,28 +2124,31 @@
                     }
                 })(),
                 note,
-                created_at: new Date().toISOString(),
             };
-            items.unshift(newItem);
-            localStorage.setItem(CLUB_NEEDS_KEY, JSON.stringify(items.slice(0, 200)));
             window.NextScoutGrowth?.track('club_need_note_publish', { note_len: note.length });
 
             try {
                 const apiBase = getApiBaseUrl();
-                await fetch(`${apiBase}/club-needs`, {
+                const response = await fetch(`${apiBase}/opportunities`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         Accept: 'application/json',
                     },
                     body: JSON.stringify({
-                        club_name: newItem.club_name,
+                        title: `${newItem.club_name} Oyuncu Ihtiyaci`,
                         position: 'Belirtilmedi',
-                        priority: 'medium',
-                        note: newItem.note,
+                        city: '',
+                        details: newItem.note,
+                        status: 'open',
                     }),
                 });
-            } catch (error) {}
+                const body = await response.json().catch(() => ({}));
+                if (!response.ok || body?.ok === false) throw new Error(body?.message || 'Ihtiyac notu kaydedilemedi.');
+            } catch (error) {
+                if (msg) msg.textContent = error.message || 'Ihtiyac notu kaydedilemedi.';
+                return;
+            }
 
             if (textarea) textarea.value = '';
             if (msg) msg.textContent = 'Not gönderildi (API + yerel).';
@@ -2151,77 +2245,45 @@
                 readFileAsDataUrl(image2File),
             ]);
 
-            let promos = [];
             try {
-                const parsed = JSON.parse(localStorage.getItem(CLUB_PROMOS_KEY) || '[]');
-                promos = Array.isArray(parsed) ? parsed : [];
+                const created = await createClubPromo({
+                    club_name: name,
+                    notes,
+                    video_url: videoUrl || null,
+                    images: [image1, image2].filter(Boolean).slice(0, 2),
+                    paid: true,
+                });
+
+                window.NextScoutGrowth?.track('club_promo_publish', { club: name.slice(0, 40) });
+                if (msg) msg.textContent = 'KULÜP tanitimi ödeme onayi ile anasayfada yayına alindi.';
+                setTimeout(() => toggleClubPromoPanel(false), 700);
             } catch (error) {
-                promos = [];
+                if (msg) msg.textContent = error.message || 'KULUP tanitimi kaydedilemedi.';
             }
-
-            const safeName = name.toLowerCase();
-            const filtered = promos.filter((item) => (item?.club_name || '').toString().trim().toLowerCase() !== safeName);
-            filtered.unshift({
-                id: Date.now(),
-                club_name: name,
-                notes,
-                video_url: videoUrl,
-                images: [image1, image2].filter(Boolean).slice(0, 2),
-                paid: true,
-                created_at: new Date().toISOString(),
-            });
-
-            localStorage.setItem(CLUB_PROMOS_KEY, JSON.stringify(filtered.slice(0, 100)));
-            window.NextScoutGrowth?.track('club_promo_publish', { club: name.slice(0, 40) });
-            if (msg) msg.textContent = 'KULÜP tanitimi ödeme onayi ile anasayfada yayına alindi.';
-            setTimeout(() => toggleClubPromoPanel(false), 700);
         }
 
         async function publishTrialEventApi(payload) {
             const apiBase = getApiBaseUrl();
-            const token = (localStorage.getItem('nextscout_token') || '').trim();
-            const persistLocal = () => {
-                const rows = JSON.parse(localStorage.getItem('nextscout_trial_events') || '[]');
-                rows.unshift({
-                    id: Date.now(),
-                    type: payload.event_type === 'trial_day' ? 'trial' : (payload.event_type === 'training_session' ? 'training' : 'match'),
+            const headers = getAuthHeaders(true);
+            if (!headers) throw new Error('Ilan yayina almak icin aktif oturum gerekli.');
+
+            const response = await fetch(`${apiBase}/opportunities`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({
                     title: payload.title,
-                    date: payload.event_date.slice(0, 10),
-                    time: payload.event_date.slice(11, 16),
-                    city: payload.city,
-                    venue: payload.venue,
-                    owner: 'KULÜP Yetkilisi',
-                    owner_role: 'club',
-                    club_name: 'KULÜP',
-                    status: 'registration_open',
-                });
-                localStorage.setItem('nextscout_trial_events', JSON.stringify(rows));
-                return rows[0];
-            };
+                    position: payload.position_need || payload.sport_type || 'Belirtilmedi',
+                    city: payload.city || '',
+                    details: `${payload.venue || ''} | ${payload.event_date || ''} | ${payload.description || ''}`.trim(),
+                    status: 'open',
+                }),
+            });
 
-            if (!token || token === 'local-session-token') {
-                return persistLocal();
+            const body = await response.json().catch(() => ({}));
+            if (!response.ok || body?.ok === false) {
+                throw new Error(body?.message || 'Ilan yayina alinamadi.');
             }
-
-            try {
-                const response = await fetch(`${apiBase}/community-events`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json',
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify(payload),
-                });
-
-                const body = await response.json().catch(() => ({}));
-                if (!response.ok || body?.ok === false) {
-                    return persistLocal();
-                }
-                return body?.data || null;
-            } catch (error) {
-                return persistLocal();
-            }
+            return body?.data || null;
         }
 
         function toggleTrialPublishPanel(forceState) {
@@ -2273,7 +2335,7 @@
         function renderTeamGroupRoster() {
             const root = document.getElementById('teamGroupRoster');
             if (!root) return;
-            const rows = JSON.parse(localStorage.getItem(CLUB_GROUP_PLAYERS_KEY) || '[]')
+            const rows = clubInternalPlayers
                 .filter((row) => row.group === activeTeamGroup && row.profile_type === 'internal_profile');
 
             if (!rows.length) {
@@ -2304,7 +2366,7 @@
         }
 
         function editClubPlayerProfile(playerId) {
-            const rows = JSON.parse(localStorage.getItem(CLUB_GROUP_PLAYERS_KEY) || '[]');
+            const rows = clubInternalPlayers.slice();
             const row = rows.find((item) => Number(item.id) === Number(playerId));
             if (!row) return;
 
@@ -2331,11 +2393,14 @@
             togglePlayerRegisterPanel(true);
         }
 
-        function deleteClubPlayerProfile(playerId) {
-            const rows = JSON.parse(localStorage.getItem(CLUB_GROUP_PLAYERS_KEY) || '[]')
-                .filter((item) => Number(item.id) !== Number(playerId));
-            localStorage.setItem(CLUB_GROUP_PLAYERS_KEY, JSON.stringify(rows));
-            renderTeamGroupRoster();
+        async function deleteClubPlayerProfile(playerId) {
+            try {
+                await deleteClubInternalPlayerApi(playerId);
+                clubInternalPlayers = clubInternalPlayers.filter((item) => Number(item.id) !== Number(playerId));
+                renderTeamGroupRoster();
+            } catch (error) {
+                window.nsNotify?.error ? window.nsNotify.error(error.message || 'Profil silinemedi.') : nsnsAlert(error.message || 'Profil silinemedi.');
+            }
         }
 
         function togglePlayerRegisterPanel(forceState) {
@@ -2361,7 +2426,7 @@
             if (!shouldOpen) editingClubPlayerId = null;
         }
 
-        function saveClubPlayerRegistration() {
+        async function saveClubPlayerRegistration() {
             const group = document.getElementById('registerGroupSelect')?.value || activeTeamGroup;
             const name = (document.getElementById('registerPlayerName')?.value || '').trim();
             const gender = document.getElementById('registerGender')?.value || 'erkek';
@@ -2388,9 +2453,7 @@
                 return;
             }
 
-            const rows = JSON.parse(localStorage.getItem(CLUB_GROUP_PLAYERS_KEY) || '[]');
             const payload = {
-                id: editingClubPlayerId || Date.now(),
                 profile_type: 'internal_profile',
                 visibility: 'club_only',
                 group,
@@ -2415,25 +2478,30 @@
                 savedAt: new Date().toISOString()
             };
 
-            const nextRows = editingClubPlayerId
-                ? rows.map((item) => Number(item.id) === Number(editingClubPlayerId) ? payload : item)
-                : [payload, ...rows];
-            localStorage.setItem(CLUB_GROUP_PLAYERS_KEY, JSON.stringify(nextRows));
+            try {
+                const saved = await persistClubInternalPlayer(payload, editingClubPlayerId);
+                if (editingClubPlayerId) {
+                    clubInternalPlayers = clubInternalPlayers.map((item) => Number(item.id) === Number(editingClubPlayerId) ? saved : item);
+                } else {
+                    clubInternalPlayers = [saved, ...clubInternalPlayers];
+                }
+                if (msg) msg.textContent = editingClubPlayerId ? `${name} profili guncellendi.` : `${name} icin kulup ici profil olusturuldu.`;
+                setActiveTeamGroup(group);
+                renderTeamGroupRoster();
+                editingClubPlayerId = null;
 
-            if (msg) msg.textContent = editingClubPlayerId ? `${name} profili guncellendi.` : `${name} icin kulup ici profil olusturuldu.`;
-            setActiveTeamGroup(group);
-            renderTeamGroupRoster();
-            editingClubPlayerId = null;
+                ['registerPlayerName', 'registerBirthYear', 'registerAge', 'registerHeight', 'registerShirtNumber', 'registerContact', 'registerBio', 'registerPlayerNote', 'registerMatches', 'registerMinutes', 'registerGoals', 'registerAssists', 'registerRating'].forEach((id) => {
+                    const input = document.getElementById(id);
+                    if (input) input.value = '';
+                });
 
-            ['registerPlayerName', 'registerBirthYear', 'registerAge', 'registerHeight', 'registerShirtNumber', 'registerContact', 'registerBio', 'registerPlayerNote', 'registerMatches', 'registerMinutes', 'registerGoals', 'registerAssists', 'registerRating'].forEach((id) => {
-                const input = document.getElementById(id);
-                if (input) input.value = '';
-            });
-
-            setTimeout(() => {
-                if (msg) msg.textContent = '';
-                togglePlayerRegisterPanel(false);
-            }, 900);
+                setTimeout(() => {
+                    if (msg) msg.textContent = '';
+                    togglePlayerRegisterPanel(false);
+                }, 900);
+            } catch (error) {
+                if (msg) msg.textContent = error.message || 'Kulup ici profil kaydedilemedi.';
+            }
         }
 
         function closeAllTopPanels() {
@@ -2456,19 +2524,10 @@
         }
 
         function pushLocalNotification(title, message) {
-            try {
-                const key = 'nextscout_local_notifications';
-                const rows = JSON.parse(localStorage.getItem(key) || '[]');
-                rows.unshift({
-                    id: Date.now(),
-                    title,
-                    message,
-                    type: 'trial_event',
-                    created_at: new Date().toISOString(),
-                    read: false,
-                });
-                localStorage.setItem(key, JSON.stringify(rows.slice(0, 300)));
-            } catch (error) {}
+            const text = [title, message].filter(Boolean).join(': ');
+            if (text) {
+                window.nsNotify?.info ? window.nsNotify.info(text) : null;
+            }
         }
 
         function publishTrialEvent() {
@@ -2533,6 +2592,14 @@
 
         async function init() {
             window.NextScoutGrowth?.bindAutoTelemetry(document);
+            try {
+                await fetchClubOffers();
+            } catch (error) {}
+            try {
+                await fetchClubInternalPlayers();
+            } catch (error) {
+                clubInternalPlayers = [];
+            }
             setActiveTeamGroup(activeTeamGroup);
             const grid = document.getElementById('playersGrid');
             grid.innerHTML = '<div style="padding:18px;border:1px solid #e5e7eb;border-radius:10px;background:#f9fafb;color:#6b7280;">Oyuncular yukleniyor...</div>';

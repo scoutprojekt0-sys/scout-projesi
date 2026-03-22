@@ -440,7 +440,6 @@
   </div>
 
   <script>
-    const KEY = 'nextscout_coach_profile';
     const NOTES_KEY = 'nextscout_coach_notes';
     const CLIPS_KEY = 'nextscout_coach_clips';
     let coachClipPlayerState = { type: 'none', video: null };
@@ -519,178 +518,8 @@
       return { name:'Antrenor', experience:'', branch:'Futbol', country:'Turkiye', city:'', phone:'', bio:'', photo:'' };
     }
 
-    function loadProfile() {
-      try {
-        const raw = localStorage.getItem(KEY);
-        if (!raw) return defaults();
-        return Object.assign(defaults(), JSON.parse(raw) || {});
-      } catch (error) {
-        return defaults();
-      }
-    }
-
-    function loadCoachNotes() {
-      try {
-        const raw = localStorage.getItem(NOTES_KEY);
-        const rows = raw ? JSON.parse(raw) : [];
-        return Array.isArray(rows) ? rows : [];
-      } catch (error) {
-        return [];
-      }
-    }
-
-    function saveCoachNotes(rows) {
-      localStorage.setItem(NOTES_KEY, JSON.stringify((Array.isArray(rows) ? rows : []).slice(0, 200)));
-    }
-
-    function loadCoachClips() {
-      try {
-        const raw = localStorage.getItem(CLIPS_KEY);
-        const rows = raw ? JSON.parse(raw) : [];
-        return Array.isArray(rows) ? rows : [];
-      } catch (error) {
-        return [];
-      }
-    }
-
-    function saveCoachClips(rows) {
-      localStorage.setItem(CLIPS_KEY, JSON.stringify((Array.isArray(rows) ? rows : []).slice(0, 200)));
-    }
-
-    function stampToSeconds(value) {
-      const parts = String(value || '').split(':').map((part) => Number(part));
-      if (parts.some((part) => !Number.isFinite(part) || part < 0)) return 0;
-      if (parts.length === 2) return (parts[0] * 60) + parts[1];
-      if (parts.length === 3) return (parts[0] * 3600) + (parts[1] * 60) + parts[2];
-      return 0;
-    }
-
-    function buildTimedClipUrl(rawUrl, stamp) {
-      const source = String(rawUrl || '').trim();
-      if (!source) return '';
-      const seconds = stampToSeconds(stamp);
-
-      try {
-        const url = new URL(source);
-        const host = (url.hostname || '').toLowerCase();
-        const isYoutube = host.includes('youtube.com') || host.includes('youtu.be');
-        if (!isYoutube || !seconds) return url.toString();
-        url.searchParams.set('t', String(seconds));
-        return url.toString();
-      } catch (error) {
-        if (!seconds) return source;
-        if (/youtu\.be|youtube\.com/i.test(source)) {
-          const joiner = source.includes('?') ? '&' : '?';
-          return `${source}${joiner}t=${seconds}`;
-        }
-        return source;
-      }
-    }
-
-    function openCoachClip(rawUrl, stamp) {
-      const target = buildTimedClipUrl(rawUrl, stamp);
-      if (!target) return;
-      window.open(target, '_blank', 'noopener,noreferrer');
-    }
-
-    function buildCoachPlayerProfileHref(playerName, position) {
-      const params = new URLSearchParams();
-      if (playerName) params.set('player_name', String(playerName).trim());
-      if (position) params.set('position', String(position).trim());
-      return `player-profile.html?${params.toString()}`;
-    }
-
-    function getCoachClipElements() {
-      return {
-        url: document.getElementById('coachClipUrl'),
-        minute: document.getElementById('coachClipMinute'),
-        second: document.getElementById('coachClipSecond'),
-        frame: document.getElementById('coachClipPreviewFrame'),
-        note: document.getElementById('coachClipPreviewNote'),
-      };
-    }
-
-    function parseYouTubeId(rawUrl) {
-      try {
-        const url = new URL(String(rawUrl || '').trim());
-        const host = (url.hostname || '').toLowerCase();
-        if (host.includes('youtu.be')) return url.pathname.replace(/\//g, '') || '';
-        if (host.includes('youtube.com')) return url.searchParams.get('v') || '';
-      } catch (error) {
-        return '';
-      }
-      return '';
-    }
-
-    function isDirectVideoUrl(rawUrl) {
-      return /\.(mp4|webm|ogg)(\?|#|$)/i.test(String(rawUrl || '').trim());
-    }
-
-    function setCoachClipTime(seconds) {
-      const { minute, second } = getCoachClipElements();
-      const total = Math.max(0, Number(seconds || 0));
-      if (minute) minute.value = String(Math.floor(total / 60));
-      if (second) second.value = String(Math.floor(total % 60)).padStart(2, '0');
-    }
-
-    function renderCoachClipPreview() {
-      const { url, frame, note } = getCoachClipElements();
-      if (!url || !frame || !note) return;
-
-      const source = String(url.value || '').trim();
-      coachClipPlayerState = { type: 'none', video: null };
-
-      if (!source) {
-        frame.innerHTML = '<div class="clip-preview-empty">Video linkini yapistir. Destekleniyorsa player burada acilir ve <strong>Bu Ani Isaretle</strong> ile zaman otomatik dolar.</div>';
-        note.textContent = 'YouTube ve dogrudan video dosyalarinda otomatik zaman alma aktif olur. Diger linklerde manuel dakika ve saniye ile devam edebilirsin.';
-        return;
-      }
-
-      const youtubeId = parseYouTubeId(source);
-      if (youtubeId) {
-        const embedUrl = `https://www.youtube.com/embed/${youtubeId}?rel=0&modestbranding=1`;
-        frame.innerHTML = `<iframe src="${esc(embedUrl)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Klip onizleme"></iframe>`;
-        note.textContent = 'YouTube onizleme acildi. Zamani tam otomatik okuyamayiz; izledigin ani tek tusla mevcut manual alanlara hizla doldurmak icin dakika ve saniyeyi yine kontrol et.';
-        coachClipPlayerState = { type: 'youtube', video: null };
-        return;
-      }
-
-      if (isDirectVideoUrl(source)) {
-        frame.innerHTML = `<video id="coachClipVideoPreview" src="${esc(source)}" controls preload="metadata"></video>`;
-        const video = frame.querySelector('#coachClipVideoPreview');
-        coachClipPlayerState = { type: 'video', video };
-        note.textContent = 'Video onizleme acildi. Oynatirken Bu Ani Isaretle butonu mevcut saniyeyi otomatik yazar.';
-        return;
-      }
-
-      frame.innerHTML = '<div class="clip-preview-empty">Bu linkte yerlesik onizleme acilmiyor. Manuel dakika ve saniye ile devam edebilirsin.</div>';
-      note.textContent = 'Desteklenmeyen baglanti. Dakika ve saniyeyi manuel girip klibi kaydet.';
-    }
-
-    function markCoachClipMoment() {
-      const { url } = getCoachClipElements();
-      const source = String(url?.value || '').trim();
-      if (!source) {
-        alert('Once bir video linki gir.');
-        return;
-      }
-
-      if (coachClipPlayerState.type === 'video' && coachClipPlayerState.video) {
-        setCoachClipTime(coachClipPlayerState.video.currentTime || 0);
-        return;
-      }
-
-      if (coachClipPlayerState.type === 'youtube') {
-        alert('YouTube onizlemede zamani tarayici icinden tam okuyamiyoruz. Izledigin saniyeyi manuel alanlarda duzenleyebilirsin.');
-        return;
-      }
-
-      alert('Bu linkte otomatik zaman alma desteklenmiyor. Manuel dakika ve saniye ile devam et.');
-    }
-
-    function saveProfile(profile) {
-      localStorage.setItem(KEY, JSON.stringify(profile));
-    }
+    let coachNotesState = [];
+    let coachClipsState = [];
 
     function setForm(profile) {
       document.getElementById('name').value = profile.name || '';
@@ -775,7 +604,7 @@
       `).join('');
     }
 
-    function submitCoachNote() {
+    async function submitCoachNote() {
       const player = document.getElementById('coachNotePlayer');
       const position = document.getElementById('coachNotePosition');
       const tag = document.getElementById('coachNoteTag');
@@ -784,26 +613,28 @@
       if (!player || !position || !tag || !focus || !body) return;
 
       const note = {
-        player: String(player.value || '').trim(),
+        player_name: String(player.value || '').trim(),
         position: String(position.value || '').trim(),
         tag: String(tag.value || '').trim(),
         focus: String(focus.value || '').trim(),
         body: String(body.value || '').trim(),
-        created_at: new Date().toLocaleString('tr-TR'),
       };
 
-      if (!note.player || !note.body || note.body.length < 8) {
+      if (!note.player_name || !note.body || note.body.length < 8) {
         alert('Oyuncu adÄ± ve en az 8 karakterlik not gerekli.');
         return;
       }
 
-      const rows = loadCoachNotes();
-      rows.unshift(note);
-      saveCoachNotes(rows);
-      body.value = '';
-      player.value = '';
-      position.value = '';
-      renderCoachNotes();
+      try {
+        const created = await createCoachNote(note);
+        coachNotesState = [created || Object.assign({ player: note.player_name, created_at: new Date().toISOString() }, note), ...loadCoachNotes()];
+        body.value = '';
+        player.value = '';
+        position.value = '';
+        renderCoachNotes();
+      } catch (error) {
+        alert(error.message || 'Teknik not kaydedilemedi.');
+      }
     }
 
     function renderCoachClips() {
@@ -858,7 +689,7 @@
       `).join('');
     }
 
-    function submitCoachClip() {
+    async function submitCoachClip() {
       const player = document.getElementById('coachClipPlayer');
       const url = document.getElementById('coachClipUrl');
       const minute = document.getElementById('coachClipMinute');
@@ -869,28 +700,39 @@
       const minuteValue = Math.max(0, Number(minute.value || 0));
       const secondValue = Math.max(0, Math.min(59, Number(second.value || 0)));
       const clip = {
-        player: String(player.value || '').trim(),
-        url: String(url.value || '').trim(),
-        stamp: `${String(minuteValue).padStart(2, '0')}:${String(secondValue).padStart(2, '0')}`,
+        player_name: String(player.value || '').trim(),
+        video_url: String(url.value || '').trim(),
+        minute_mark: minuteValue,
+        second_mark: secondValue,
         body: String(body.value || '').trim(),
-        created_at: new Date().toLocaleString('tr-TR'),
       };
 
-      if (!clip.player || !clip.url || !clip.body || clip.body.length < 8) {
+      if (!clip.player_name || !clip.video_url || !clip.body || clip.body.length < 8) {
         alert('Oyuncu, video linki ve en az 8 karakterlik klip notu gerekli.');
         return;
       }
 
-      const rows = loadCoachClips();
-      rows.unshift(clip);
-      saveCoachClips(rows);
-      player.value = '';
-      url.value = '';
-      minute.value = '';
-      second.value = '';
-      body.value = '';
-      renderCoachClips();
-      renderCoachClipPreview();
+      try {
+        const created = await createCoachClip(clip);
+        coachClipsState = [created || {
+          player: clip.player_name,
+          url: clip.video_url,
+          minute_mark: minuteValue,
+          second_mark: secondValue,
+          stamp: `${String(minuteValue).padStart(2, '0')}:${String(secondValue).padStart(2, '0')}`,
+          body: clip.body,
+          created_at: new Date().toISOString(),
+        }, ...loadCoachClips()];
+        player.value = '';
+        url.value = '';
+        minute.value = '';
+        second.value = '';
+        body.value = '';
+        renderCoachClips();
+        renderCoachClipPreview();
+      } catch (error) {
+        alert(error.message || 'Klip notu kaydedilemedi.');
+      }
     }
 
     function bindCoachClipInteractions() {
@@ -1156,15 +998,20 @@
       if (gate) gate.style.display = !isOwnProfile && !authUser ? '' : 'none';
     }
 
-    let profile = loadProfile();
+    let profile = defaults();
 
     async function init() {
       applyCoachTextPolish();
       const remote = await loadBackendProfile();
       if (remote) {
         profile = Object.assign(profile, remote);
-        saveProfile(profile);
       }
+      try {
+        await fetchCoachNotes();
+      } catch (error) {}
+      try {
+        await fetchCoachClips();
+      } catch (error) {}
       setForm(profile);
       renderSummary(profile);
       updateCoachReviewVisibility();
@@ -1183,22 +1030,27 @@
         return;
       }
 
-      let backendSaved = false;
-      try {
-        backendSaved = await saveBackendProfile(profile);
-      } catch (error) {
-        backendSaved = false;
+      const backendSaved = await saveBackendProfile(profile).catch(() => false);
+      if (!backendSaved) {
+        document.getElementById('saveMsg').textContent = 'Profil backend kaydedilemedi.';
+        setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 1800);
+        return;
       }
 
-      saveProfile(profile);
       renderSummary(profile);
-      document.getElementById('saveMsg').textContent = backendSaved ? 'Profil backend kaydedildi.' : 'Profil local kaydedildi.';
+      document.getElementById('saveMsg').textContent = 'Profil backend kaydedildi.';
       setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 1800);
     });
 
-    document.getElementById('resetBtn')?.addEventListener('click', function () {
-      profile = defaults();
-      saveProfile(profile);
+    document.getElementById('resetBtn')?.addEventListener('click', async function () {
+      const resetProfile = defaults();
+      const backendSaved = await saveBackendProfile(resetProfile).catch(() => false);
+      if (!backendSaved) {
+        document.getElementById('saveMsg').textContent = 'Profil backend sifirlanamadi.';
+        setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 1500);
+        return;
+      }
+      profile = resetProfile;
       setForm(profile);
       renderSummary(profile);
       document.getElementById('saveMsg').textContent = 'Profil sifirlandi.';
@@ -1210,20 +1062,32 @@
       if (!file) return;
       const reader = new FileReader();
       reader.onload = async function (evt) {
+        const previousPhoto = profile.photo || '';
         profile.photo = String((evt.target && evt.target.result) || '');
         document.getElementById('photoPreview').src = profile.photo || 'https://via.placeholder.com/120x120?text=Coach';
-        saveProfile(profile);
-        try { await saveBackendProfile(profile); } catch (error) {}
+        const backendSaved = await saveBackendProfile(profile).catch(() => false);
+        if (!backendSaved) {
+          profile.photo = previousPhoto;
+          document.getElementById('photoPreview').src = previousPhoto || 'https://via.placeholder.com/120x120?text=Coach';
+          document.getElementById('saveMsg').textContent = 'Fotograf backend kaydedilemedi.';
+          setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 1800);
+        }
       };
       reader.readAsDataURL(file);
     });
 
     document.getElementById('clearPhotoBtn')?.addEventListener('click', async function () {
+      const previousPhoto = profile.photo || '';
       profile.photo = '';
-      saveProfile(profile);
       document.getElementById('photoPreview').src = 'https://via.placeholder.com/120x120?text=Coach';
       document.getElementById('photoInput').value = '';
-      try { await saveBackendProfile(profile); } catch (error) {}
+      const backendSaved = await saveBackendProfile(profile).catch(() => false);
+      if (!backendSaved) {
+        profile.photo = previousPhoto;
+        document.getElementById('photoPreview').src = previousPhoto || 'https://via.placeholder.com/120x120?text=Coach';
+        document.getElementById('saveMsg').textContent = 'Fotograf backend silinemedi.';
+        setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 1800);
+      }
     });
 
     document.getElementById('saveCoachNoteBtn')?.addEventListener('click', submitCoachNote);

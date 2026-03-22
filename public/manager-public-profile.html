@@ -70,15 +70,6 @@
   </div>
 
   <script>
-    const KEY = 'nextscout_manager_profile';
-    function loadLocal(){
-      try {
-        const raw = localStorage.getItem(KEY);
-        if(!raw) return null;
-        return JSON.parse(raw);
-      } catch { return null; }
-    }
-
     function getApiBaseUrl() {
       const params = new URLSearchParams(window.location.search);
       const fromQuery = (params.get('api_base') || '').trim();
@@ -103,7 +94,7 @@
     }
 
     async function fetchPublicProfileById(userId) {
-      const res = await fetch(`${getApiBaseUrl()}/public/staff/${encodeURIComponent(userId)}/profile`, {
+      const res = await fetch(`${getApiBaseUrl()}/staff/${encodeURIComponent(userId)}`, {
         headers: { Accept: 'application/json' },
       });
       if (!res.ok) return null;
@@ -150,7 +141,7 @@
       }
 
       if (!profile) {
-        profile = loadLocal() || {};
+        profile = {};
       }
       render(profile);
     }
@@ -161,8 +152,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
 
 
 

@@ -472,12 +472,58 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
+    .workspace-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .workspace-tab {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      color: #dbeafe;
+      padding: 10px 12px;
+      font: 700 13px/1 Inter, sans-serif;
+      cursor: pointer;
+    }
+    .workspace-tab.active {
+      background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
+      border-color: rgba(255, 126, 34, 0.65);
+      color: #ffffff;
+    }
+    .workspace-panel[hidden] {
+      display: none;
+    }
+    .workspace-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .workspace-metric {
+      padding: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .workspace-metric strong {
+      display: block;
+      font: 800 22px/1 Inter, sans-serif;
+      color: #f5fbff;
+      margin-bottom: 6px;
+    }
+    .workspace-metric span {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
     @media (max-width: 1180px) {
       .main-container, .hero, .layout, .layout-grid { grid-template-columns: 1fr; }
       .sidebar { position: static; top: auto; }
       .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .analysis-layout,
-      .analysis-summary-grid { grid-template-columns: 1fr; }
+      .analysis-summary-grid,
+      .workspace-metrics { grid-template-columns: 1fr; }
     }
     @media (max-width: 760px) {
       .header { padding: 14px 12px; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
@@ -560,6 +606,9 @@
         <a class="sidebar-item" href="ai-discovery.html"><i class="fas fa-flask"></i><span>AI Discovery</span></a>
         <a class="sidebar-item" href="#submit"><i class="fas fa-video"></i><span>Yetenek Bildir</span></a>
         <a class="sidebar-item" href="#tips"><i class="fas fa-list-check"></i><span>Ihbarlarim</span></a>
+        <a class="sidebar-item" href="#workspace" onclick="openScoutWorkspace('notes')"><i class="fas fa-notes-medical"></i><span>Teknik Not Defteri</span></a>
+        <a class="sidebar-item" href="#workspace" onclick="openScoutWorkspace('clips')"><i class="fas fa-film"></i><span>Klip Isaretleme</span></a>
+        <a class="sidebar-item" href="#workspace" onclick="openScoutWorkspace('evaluations')"><i class="fas fa-clipboard-list"></i><span>Degerlendirmeler</span></a>
         <a class="sidebar-item" href="#rewards"><i class="fas fa-trophy"></i><span>Odullerim</span></a>
         <a class="sidebar-item" href="#leaderboard"><i class="fas fa-ranking-star"></i><span>Liderlik</span></a>
         <a class="sidebar-item" href="scout-watchlist.html"><i class="fas fa-bookmark"></i><span>Takip Listem</span></a>
@@ -897,6 +946,122 @@
         </div>
       </section>
 
+      <section class="panel" id="workspace">
+        <div class="card-head">
+          <div class="card-copy">
+            <h2 id="workspaceTitle">Scout Teknik Workspace</h2>
+            <p id="workspaceSummary">Oyuncu bazli not, klip ve kaydedilmis degerlendirmeleri tek panelden yonet.</p>
+          </div>
+          <a class="btn btn-secondary" href="player-profile.html">
+            <i class="fas fa-up-right-from-square"></i>
+            Oyuncu Profiline Git
+          </a>
+        </div>
+
+        <div class="workspace-tabs">
+          <button class="workspace-tab active" type="button" data-workspace-tab="notes" onclick="openScoutWorkspace('notes')">Teknik Not Defteri</button>
+          <button class="workspace-tab" type="button" data-workspace-tab="clips" onclick="openScoutWorkspace('clips')">Klip Isaretleme</button>
+          <button class="workspace-tab" type="button" data-workspace-tab="evaluations" onclick="openScoutWorkspace('evaluations')">Kaydedilmis Degerlendirmeler</button>
+        </div>
+
+        <section class="workspace-panel" id="workspaceNotes">
+          <div class="form-grid">
+            <div class="field">
+              <label for="scoutWorkspaceNotePlayer">Oyuncu Adi</label>
+              <input class="input" id="scoutWorkspaceNotePlayer" type="text" placeholder="Oyuncu adi">
+            </div>
+            <div class="field">
+              <label for="scoutWorkspaceNotePlayerId">Oyuncu ID</label>
+              <input class="input" id="scoutWorkspaceNotePlayerId" type="number" min="1" placeholder="Opsiyonel">
+            </div>
+            <div class="field">
+              <label for="scoutWorkspaceNotePosition">Pozisyon</label>
+              <input class="input" id="scoutWorkspaceNotePosition" type="text" placeholder="Sag bek / 8 numara">
+            </div>
+            <div class="field">
+              <label for="scoutWorkspaceNoteTag">Etiket</label>
+              <select class="select" id="scoutWorkspaceNoteTag">
+                <option value="izlenecek">Izlenecek</option>
+                <option value="tekrar-bak">Tekrar Bak</option>
+                <option value="potansiyel">Potansiyel</option>
+                <option value="hazir">Hazir</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="scoutWorkspaceNoteFocus">Odak</label>
+              <select class="select" id="scoutWorkspaceNoteFocus">
+                <option value="teknik">Teknik</option>
+                <option value="taktik">Taktik</option>
+                <option value="fizik">Fizik</option>
+                <option value="zihinsel">Zihinsel</option>
+              </select>
+            </div>
+          </div>
+          <div class="field" style="margin:12px 0 14px;">
+            <label for="scoutWorkspaceNoteBody">Not</label>
+            <textarea class="textarea" id="scoutWorkspaceNoteBody" placeholder="Oyuncu icin kisa scout notu..."></textarea>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" type="button" id="scoutWorkspaceNoteSubmit"><i class="fas fa-floppy-disk"></i><span>Notu Kaydet</span></button>
+            <input class="input" id="scoutWorkspaceNoteSearch" type="text" placeholder="Oyuncu, etiket veya not ara...">
+          </div>
+          <div class="list" id="scoutWorkspaceNotesList" style="margin-top:14px;">
+            <div class="empty">Teknik notlar yukleniyor...</div>
+          </div>
+        </section>
+
+        <section class="workspace-panel" id="workspaceClips" hidden>
+          <div class="form-grid">
+            <div class="field">
+              <label for="scoutWorkspaceClipPlayer">Oyuncu Adi</label>
+              <input class="input" id="scoutWorkspaceClipPlayer" type="text" placeholder="Oyuncu adi">
+            </div>
+            <div class="field">
+              <label for="scoutWorkspaceClipPlayerId">Oyuncu ID</label>
+              <input class="input" id="scoutWorkspaceClipPlayerId" type="number" min="1" placeholder="Opsiyonel">
+            </div>
+            <div class="field full">
+              <label for="scoutWorkspaceClipUrl">Video Linki</label>
+              <input class="input" id="scoutWorkspaceClipUrl" type="url" placeholder="https://...">
+            </div>
+            <div class="field">
+              <label for="scoutWorkspaceClipMinute">Dakika</label>
+              <input class="input" id="scoutWorkspaceClipMinute" type="number" min="0" max="180" placeholder="12">
+            </div>
+            <div class="field">
+              <label for="scoutWorkspaceClipSecond">Saniye</label>
+              <input class="input" id="scoutWorkspaceClipSecond" type="number" min="0" max="59" placeholder="34">
+            </div>
+          </div>
+          <div class="field" style="margin:12px 0 14px;">
+            <label for="scoutWorkspaceClipBody">Klip Notu</label>
+            <textarea class="textarea" id="scoutWorkspaceClipBody" placeholder="Bu sahnede neden dikkat cekti?"></textarea>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" type="button" id="scoutWorkspaceClipSubmit"><i class="fas fa-film"></i><span>Klibi Kaydet</span></button>
+            <input class="input" id="scoutWorkspaceClipSearch" type="text" placeholder="Oyuncu, link veya not ara...">
+          </div>
+          <div class="list" id="scoutWorkspaceClipsList" style="margin-top:14px;">
+            <div class="empty">Klip notlari yukleniyor...</div>
+          </div>
+        </section>
+
+        <section class="workspace-panel" id="workspaceEvaluations" hidden>
+          <div class="workspace-metrics">
+            <div class="workspace-metric"><strong id="scoutEvalTotal">0</strong><span>Toplam</span></div>
+            <div class="workspace-metric"><strong id="scoutEvalLastPlayer">-</strong><span>Son Oyuncu</span></div>
+            <div class="workspace-metric"><strong id="scoutEvalLastDate">-</strong><span>Son Kayit</span></div>
+          </div>
+          <div class="form-actions">
+            <input class="input" id="scoutWorkspaceEvalSearch" type="text" placeholder="Oyuncu, pozisyon veya karar notu ara...">
+            <input class="input" id="scoutWorkspaceEvalMinScore" type="number" min="0" max="100" placeholder="Min. ortalama">
+          </div>
+          <div class="list" id="scoutWorkspaceEvaluationsList" style="margin-top:14px;">
+            <div class="empty">Degerlendirmeler yukleniyor...</div>
+          </div>
+        </section>
+      </section>
+
       <section class="layout-grid" style="margin-top:18px;">
         <div class="stack">
           <article class="panel">
@@ -1047,6 +1212,258 @@
         throw new Error(firstError || data.message || 'Islem basarisiz.');
       }
       return data.data ?? data;
+    }
+
+    async function fetchScoutNotesWorkspace(search) {
+      const params = new URLSearchParams();
+      params.set('per_page', '100');
+      if (search) params.set('search', search);
+      const payload = await apiGet(`/coach/player-notes?${params.toString()}`);
+      return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
+    }
+
+    async function createScoutNote(payload) {
+      return apiPost('/coach/player-notes', payload);
+    }
+
+    async function fetchScoutClipsWorkspace(search) {
+      const params = new URLSearchParams();
+      params.set('per_page', '100');
+      if (search) params.set('search', search);
+      const payload = await apiGet(`/coach/player-clips?${params.toString()}`);
+      return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
+    }
+
+    async function createScoutClip(payload) {
+      return apiPost('/coach/player-clips', payload);
+    }
+
+    async function fetchScoutEvaluationsWorkspace(search) {
+      const params = new URLSearchParams();
+      params.set('per_page', '100');
+      if (search) params.set('search', search);
+      const payload = await apiGet(`/coach/player-evaluations?${params.toString()}`);
+      return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
+    }
+
+    function openScoutWorkspace(type) {
+      const title = document.getElementById('workspaceTitle');
+      const summary = document.getElementById('workspaceSummary');
+      const notes = document.getElementById('workspaceNotes');
+      const clips = document.getElementById('workspaceClips');
+      const evaluations = document.getElementById('workspaceEvaluations');
+      const tabs = Array.from(document.querySelectorAll('[data-workspace-tab]'));
+      if (!title || !summary || !notes || !clips || !evaluations) return;
+
+      const contentMap = {
+        notes: {
+          title: 'Scout Teknik Not Defteri',
+          summary: 'Oyuncu bazli teknik gozlem ve kisa karar notlarini burada kalici olarak tutarsin.',
+        },
+        clips: {
+          title: 'Scout Klip Isaretleme',
+          summary: 'Videodan yakaladigin sahneleri zaman damgasi ve yorumla kaydedersin.',
+        },
+        evaluations: {
+          title: 'Kaydedilmis Scout Degerlendirmeleri',
+          summary: 'Oyuncu profillerinde kaydettigin teknik degerlendirmeleri toplu olarak izlersin.',
+        },
+      };
+
+      const selected = contentMap[type] || contentMap.notes;
+      title.textContent = selected.title;
+      summary.textContent = selected.summary;
+      notes.hidden = type !== 'notes';
+      clips.hidden = type !== 'clips';
+      evaluations.hidden = type !== 'evaluations';
+      tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.workspaceTab === type));
+
+      if (type === 'notes') renderScoutWorkspaceNotes();
+      if (type === 'clips') renderScoutWorkspaceClips();
+      if (type === 'evaluations') renderScoutWorkspaceEvaluations();
+    }
+
+    async function renderScoutWorkspaceNotes() {
+      const list = document.getElementById('scoutWorkspaceNotesList');
+      const search = String(document.getElementById('scoutWorkspaceNoteSearch')?.value || '').trim().toLowerCase();
+      if (!list) return;
+      list.innerHTML = '<div class="empty">Teknik notlar yukleniyor...</div>';
+
+      try {
+        const rows = await fetchScoutNotesWorkspace(search);
+        if (!rows.length) {
+          list.innerHTML = '<div class="empty">Kayitli teknik not bulunmuyor.</div>';
+          return;
+        }
+
+        list.innerHTML = rows.map((row) => `
+          <article class="tip-item">
+            <div class="row-top">
+              <div>
+                <div class="row-title">${escapeHtml(row.player || '-')}</div>
+                <div class="row-copy">${escapeHtml(row.body || '')}</div>
+              </div>
+              <span class="badge screened">${escapeHtml(row.tag || 'Not')}</span>
+            </div>
+            <div class="row-meta">
+              <span><i class="fas fa-futbol"></i> ${escapeHtml(row.position || '-')}</span>
+              <span><i class="fas fa-crosshairs"></i> ${escapeHtml(row.focus || '-')}</span>
+              <span><i class="fas fa-calendar"></i> ${formatDate(row.created_at)}</span>
+            </div>
+          </article>
+        `).join('');
+      } catch (error) {
+        list.innerHTML = `<div class="empty">${escapeHtml(error.message || 'Teknik notlar alinamadi.')}</div>`;
+      }
+    }
+
+    async function submitScoutWorkspaceNote() {
+      const playerName = String(document.getElementById('scoutWorkspaceNotePlayer')?.value || '').trim();
+      const playerUserId = Number(document.getElementById('scoutWorkspaceNotePlayerId')?.value || 0) || null;
+      const position = String(document.getElementById('scoutWorkspaceNotePosition')?.value || '').trim();
+      const tag = String(document.getElementById('scoutWorkspaceNoteTag')?.value || '').trim();
+      const focus = String(document.getElementById('scoutWorkspaceNoteFocus')?.value || '').trim();
+      const body = String(document.getElementById('scoutWorkspaceNoteBody')?.value || '').trim();
+
+      if (!playerName || body.length < 8) {
+        showNotice('Oyuncu adi ve en az 8 karakter not gerekli.', 'bad');
+        return;
+      }
+
+      try {
+        await createScoutNote({
+          player_user_id: playerUserId,
+          player_name: playerName,
+          position: position || null,
+          tag: tag || null,
+          focus: focus || null,
+          body,
+        });
+        document.getElementById('scoutWorkspaceNotePlayer').value = '';
+        document.getElementById('scoutWorkspaceNotePlayerId').value = '';
+        document.getElementById('scoutWorkspaceNotePosition').value = '';
+        document.getElementById('scoutWorkspaceNoteBody').value = '';
+        showNotice('Scout teknik notu kaydedildi.', 'ok');
+        renderScoutWorkspaceNotes();
+      } catch (error) {
+        showNotice(error.message || 'Scout teknik notu kaydedilemedi.', 'bad');
+      }
+    }
+
+    async function renderScoutWorkspaceClips() {
+      const list = document.getElementById('scoutWorkspaceClipsList');
+      const search = String(document.getElementById('scoutWorkspaceClipSearch')?.value || '').trim().toLowerCase();
+      if (!list) return;
+      list.innerHTML = '<div class="empty">Klip notlari yukleniyor...</div>';
+
+      try {
+        const rows = await fetchScoutClipsWorkspace(search);
+        if (!rows.length) {
+          list.innerHTML = '<div class="empty">Kayitli klip notu bulunmuyor.</div>';
+          return;
+        }
+
+        list.innerHTML = rows.map((row) => `
+          <article class="tip-item">
+            <div class="row-top">
+              <div>
+                <div class="row-title">${escapeHtml(row.player || '-')}</div>
+                <div class="row-copy">${escapeHtml(row.body || '')}</div>
+              </div>
+              <a class="btn btn-secondary" href="${escapeHtml(row.url || '#')}" target="_blank" rel="noopener noreferrer">Videoyu Ac</a>
+            </div>
+            <div class="row-meta">
+              <span><i class="fas fa-film"></i> ${escapeHtml(row.stamp || '00:00')}</span>
+              <span><i class="fas fa-link"></i> ${escapeHtml((row.url || '').slice(0, 48) || '-')}</span>
+              <span><i class="fas fa-calendar"></i> ${formatDate(row.created_at)}</span>
+            </div>
+          </article>
+        `).join('');
+      } catch (error) {
+        list.innerHTML = `<div class="empty">${escapeHtml(error.message || 'Klip notlari alinamadi.')}</div>`;
+      }
+    }
+
+    async function submitScoutWorkspaceClip() {
+      const playerName = String(document.getElementById('scoutWorkspaceClipPlayer')?.value || '').trim();
+      const playerUserId = Number(document.getElementById('scoutWorkspaceClipPlayerId')?.value || 0) || null;
+      const videoUrl = String(document.getElementById('scoutWorkspaceClipUrl')?.value || '').trim();
+      const minuteMark = Math.max(0, Number(document.getElementById('scoutWorkspaceClipMinute')?.value || 0));
+      const secondMark = Math.max(0, Math.min(59, Number(document.getElementById('scoutWorkspaceClipSecond')?.value || 0)));
+      const body = String(document.getElementById('scoutWorkspaceClipBody')?.value || '').trim();
+
+      if (!playerName || !videoUrl || body.length < 8) {
+        showNotice('Oyuncu adi, video linki ve en az 8 karakter klip notu gerekli.', 'bad');
+        return;
+      }
+
+      try {
+        await createScoutClip({
+          player_user_id: playerUserId,
+          player_name: playerName,
+          video_url: videoUrl,
+          minute_mark: minuteMark,
+          second_mark: secondMark,
+          body,
+        });
+        document.getElementById('scoutWorkspaceClipPlayer').value = '';
+        document.getElementById('scoutWorkspaceClipPlayerId').value = '';
+        document.getElementById('scoutWorkspaceClipUrl').value = '';
+        document.getElementById('scoutWorkspaceClipMinute').value = '';
+        document.getElementById('scoutWorkspaceClipSecond').value = '';
+        document.getElementById('scoutWorkspaceClipBody').value = '';
+        showNotice('Scout klip notu kaydedildi.', 'ok');
+        renderScoutWorkspaceClips();
+      } catch (error) {
+        showNotice(error.message || 'Scout klip notu kaydedilemedi.', 'bad');
+      }
+    }
+
+    async function renderScoutWorkspaceEvaluations() {
+      const list = document.getElementById('scoutWorkspaceEvaluationsList');
+      const total = document.getElementById('scoutEvalTotal');
+      const lastPlayer = document.getElementById('scoutEvalLastPlayer');
+      const lastDate = document.getElementById('scoutEvalLastDate');
+      const search = String(document.getElementById('scoutWorkspaceEvalSearch')?.value || '').trim().toLowerCase();
+      const minScore = Math.max(0, Number(document.getElementById('scoutWorkspaceEvalMinScore')?.value || 0));
+      if (!list || !total || !lastPlayer || !lastDate) return;
+      list.innerHTML = '<div class="empty">Degerlendirmeler yukleniyor...</div>';
+
+      try {
+        let rows = await fetchScoutEvaluationsWorkspace(search);
+        rows = rows.filter((row) => Number(row.average || 0) >= minScore);
+        total.textContent = String(rows.length);
+        lastPlayer.textContent = rows[0]?.player_name || '-';
+        lastDate.textContent = rows[0]?.saved_at || '-';
+
+        if (!rows.length) {
+          list.innerHTML = '<div class="empty">Kayitli degerlendirme bulunmuyor.</div>';
+          return;
+        }
+
+        list.innerHTML = rows.map((row) => `
+          <article class="tip-item">
+            <div class="row-top">
+              <div>
+                <div class="row-title">${escapeHtml(row.player_name || '-')}</div>
+                <div class="row-copy">${escapeHtml(row.decision_note || 'Karar notu yok.')}</div>
+              </div>
+              <div class="money">${Number(row.average || 0).toLocaleString('tr-TR')}</div>
+            </div>
+            <div class="row-meta">
+              <span><i class="fas fa-futbol"></i> ${escapeHtml(row.position || '-')}</span>
+              <span><i class="fas fa-list"></i> ${Array.isArray(row.scores) ? row.scores.length : 0} metrik</span>
+              <span><i class="fas fa-calendar"></i> ${escapeHtml(row.saved_at || '-')}</span>
+              <span><i class="fas fa-up-right-from-square"></i> Oyuncu profilinden detay ac</span>
+            </div>
+          </article>
+        `).join('');
+      } catch (error) {
+        total.textContent = '0';
+        lastPlayer.textContent = '-';
+        lastDate.textContent = '-';
+        list.innerHTML = `<div class="empty">${escapeHtml(error.message || 'Degerlendirmeler alinamadi.')}</div>`;
+      }
     }
 
     function renderScoreboard(payload) {
@@ -1390,6 +1807,12 @@
       }
 
       document.getElementById('scoutTipForm')?.addEventListener('submit', submitScoutTip);
+      document.getElementById('scoutWorkspaceNoteSubmit')?.addEventListener('click', submitScoutWorkspaceNote);
+      document.getElementById('scoutWorkspaceClipSubmit')?.addEventListener('click', submitScoutWorkspaceClip);
+      document.getElementById('scoutWorkspaceNoteSearch')?.addEventListener('input', renderScoutWorkspaceNotes);
+      document.getElementById('scoutWorkspaceClipSearch')?.addEventListener('input', renderScoutWorkspaceClips);
+      document.getElementById('scoutWorkspaceEvalSearch')?.addEventListener('input', renderScoutWorkspaceEvaluations);
+      document.getElementById('scoutWorkspaceEvalMinScore')?.addEventListener('input', renderScoutWorkspaceEvaluations);
 
       if (!getToken()) {
         setStatusApi('Login gerekli');
@@ -1397,6 +1820,9 @@
         document.getElementById('pointsList').innerHTML = '<div class="empty">Giris yaptiktan sonra puan hareketlerin burada gorunur.</div>';
         document.getElementById('rewardsList').innerHTML = '<div class="empty">Giris yaptiktan sonra reward kayitlarin burada gorunur.</div>';
         document.getElementById('leaderboardList').innerHTML = '<div class="empty">Giris yaptiginda liderlik tablosu yuklenir.</div>';
+        document.getElementById('scoutWorkspaceNotesList').innerHTML = '<div class="empty">Giris yaptiginda teknik notlar burada gorunur.</div>';
+        document.getElementById('scoutWorkspaceClipsList').innerHTML = '<div class="empty">Giris yaptiginda klip notlari burada gorunur.</div>';
+        document.getElementById('scoutWorkspaceEvaluationsList').innerHTML = '<div class="empty">Giris yaptiginda kaydedilmis degerlendirmeler burada gorunur.</div>';
         renderVideoOptions([]);
         return;
       }
@@ -1406,6 +1832,7 @@
       try {
         await Promise.all([loadScoreboard(), loadTips(), loadRewards(), loadLeaderboard()]);
         await loadMyVideos();
+        await renderScoutWorkspaceNotes();
         setStatusApi('API baglandi');
       } catch (error) {
         setStatusApi('Baglanti hatasi');
@@ -1413,8 +1840,16 @@
         document.getElementById('pointsList').innerHTML = '<div class="empty">Puan hareketleri yuklenemedi.</div>';
         document.getElementById('rewardsList').innerHTML = '<div class="empty">Oduller yuklenemedi.</div>';
         document.getElementById('leaderboardList').innerHTML = '<div class="empty">Liderlik tablosu yuklenemedi.</div>';
+        document.getElementById('scoutWorkspaceNotesList').innerHTML = '<div class="empty">Teknik notlar yuklenemedi.</div>';
+        document.getElementById('scoutWorkspaceClipsList').innerHTML = '<div class="empty">Klip notlari yuklenemedi.</div>';
+        document.getElementById('scoutWorkspaceEvaluationsList').innerHTML = '<div class="empty">Degerlendirmeler yuklenemedi.</div>';
         renderVideoOptions([]);
       }
+
+      const hash = String(window.location.hash || '').replace('#', '').trim();
+      if (hash === 'workspace-notes') openScoutWorkspace('notes');
+      if (hash === 'workspace-clips') openScoutWorkspace('clips');
+      if (hash === 'workspace-evaluations') openScoutWorkspace('evaluations');
     }
 
     init();

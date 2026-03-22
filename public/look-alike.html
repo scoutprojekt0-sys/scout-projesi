@@ -1,22 +1,22 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Benzerini Bul | Futbolcu Benzer Oyuncu Analizi | NextScout</title>
-    <meta name="description" content="Benzer oyuncu analizi ile futbol, basketbol ve voleybol branşlarında referans profillere yakın adayları keşfedin. Scout ekipleri ve kulüpler için hızlı karşılaştırma ekranı.">
+    <meta name="description" content="Benzer oyuncu analizi ile futbol, basketbol ve voleybol branÅŸlarÄ±nda referans profillere yakÄ±n adaylarÄ± keÅŸfedin. Scout ekipleri ve kulÃ¼pler iÃ§in hÄ±zlÄ± karÅŸÄ±laÅŸtÄ±rma ekranÄ±.">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://nextscout.pro/look-alike.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
     <meta property="og:title" content="Benzerini Bul | Futbolcu Benzer Oyuncu Analizi | NextScout">
-    <meta property="og:description" content="Referans oyuncuya en yakin adaylari pozisyon, dominant ayak ve performans metrigine g�re bulun. Scout ve kul�p ekipleri i�in benzer oyuncu kesif araci.">
+    <meta property="og:description" content="Referans oyuncuya en yakin adaylari pozisyon, dominant ayak ve performans metrigine gï¿½re bulun. Scout ve kulï¿½p ekipleri iï¿½in benzer oyuncu kesif araci.">
     <meta property="og:url" content="https://nextscout.pro/look-alike.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Benzerini Bul | Futbolcu Benzer Oyuncu Analizi | NextScout">
-    <meta name="twitter:description" content="Futbol, basketbol ve voleybol i�in benzer oyuncu analizi. Referans profile yakin adaylari hizlica karsilastirin.">
+    <meta name="twitter:description" content="Futbol, basketbol ve voleybol iï¿½in benzer oyuncu analizi. Referans profile yakin adaylari hizlica karsilastirin.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
@@ -106,17 +106,17 @@
                 <select class="control" id="referenceInput"></select>
                 <select class="control" id="positionInput"></select>
                 <select class="control" id="footInput">
-                    <option value="">Dominant Taraf (Tümü)</option>
+                    <option value="">Dominant Taraf (TÃ¼mÃ¼)</option>
                     <option value="Sol">Sol</option>
-                    <option value="Sag">Sağ</option>
+                    <option value="Sag">SaÄŸ</option>
                 </select>
-                <button class="btn primary" id="runSearch"><i class="fa-solid fa-magnifying-glass"></i> Analizi Çalıştır</button>
+                <button class="btn primary" id="runSearch"><i class="fa-solid fa-magnifying-glass"></i> Analizi Ã‡alÄ±ÅŸtÄ±r</button>
             </div>
         </section>
 
-        <section class="seo-intro" aria-label="Benzer oyuncu analizi a�iklamasi">
+        <section class="seo-intro" aria-label="Benzer oyuncu analizi aï¿½iklamasi">
             <h2>Benzer Oyuncu Analizi ile Scout Tarama</h2>
-            <p>NextScout Benzerini Bul ekrani; referans oyuncuya en yakin adaylari spor bransi, pozisyon, dominant taraf ve temel performans metriklerine g�re siralamak i�in hazirlandi. Kul�pler, scout ekipleri ve menajerler bu alani benzer profil arastirmasi, kisa liste hazirlama ve alternatif oyuncu kesfi i�in kullanabilir.</p>
+            <p>NextScout Benzerini Bul ekrani; referans oyuncuya en yakin adaylari spor bransi, pozisyon, dominant taraf ve temel performans metriklerine gï¿½re siralamak iï¿½in hazirlandi. Kulï¿½pler, scout ekipleri ve menajerler bu alani benzer profil arastirmasi, kisa liste hazirlama ve alternatif oyuncu kesfi iï¿½in kullanabilir.</p>
         </section>
 
         <section class="results" id="results"></section>
@@ -126,19 +126,19 @@
         const SPORTS = {
             Futbol: {
                 positions: ['GK', 'CB', 'LB', 'RB', 'DM', 'CM', 'AM', 'LW', 'RW', 'ST'],
-                names: ['Arda Güler', 'Hakan Çalhanoğlu', 'Kenan Yıldız', 'İrfan Can Kahveci', 'Cengiz Ünder', 'Orkun Kökçü', 'Ferdi Kadıoğlu', 'Merih Demiral', 'Çağlar Söyüncü', 'Zeki Çelik', 'Barış Alper Yılmaz', 'Kerem Aktürkoğlu', 'Yunus Akgün', 'Can Uzun', 'Semih Kılıçsoy', 'Ronaldo', 'Messi', 'Mbappe', 'Haaland', 'Vinicius Jr', 'Bellingham', 'De Bruyne', 'Pedri', 'Musiala', 'Saka']
+                names: ['Arda GÃ¼ler', 'Hakan Ã‡alhanoÄŸlu', 'Kenan YÄ±ldÄ±z', 'Ä°rfan Can Kahveci', 'Cengiz Ãœnder', 'Orkun KÃ¶kÃ§Ã¼', 'Ferdi KadÄ±oÄŸlu', 'Merih Demiral', 'Ã‡aÄŸlar SÃ¶yÃ¼ncÃ¼', 'Zeki Ã‡elik', 'BarÄ±ÅŸ Alper YÄ±lmaz', 'Kerem AktÃ¼rkoÄŸlu', 'Yunus AkgÃ¼n', 'Can Uzun', 'Semih KÄ±lÄ±Ã§soy', 'Ronaldo', 'Messi', 'Mbappe', 'Haaland', 'Vinicius Jr', 'Bellingham', 'De Bruyne', 'Pedri', 'Musiala', 'Saka']
             },
             Basketbol: {
                 positions: ['PG', 'SG', 'SF', 'PF', 'C'],
                 names: ['Alperen Sengun', 'Cedi Osman', 'Furkan Korkmaz', 'Shane Larkin', 'Scottie Wilbekin', 'LeBron James', 'Stephen Curry', 'Kevin Durant', 'Nikola Jokic', 'Luka Doncic', 'Giannis Antetokounmpo', 'Jayson Tatum', 'Devin Booker', 'Ja Morant', 'Kawhi Leonard', 'Damian Lillard', 'Joel Embiid', 'Anthony Davis', 'Jimmy Butler', 'Kyrie Irving', 'Jaylen Brown', 'Tyrese Haliburton', 'Donovan Mitchell', 'Trae Young', 'Brunson']
             },
             Voleybol: {
-                positions: ['Pasör', 'Smaçör', 'Orta Oyuncu', 'Libero', 'Çapraz'],
-                names: ['Ebrar Karakurt', 'Melissa Vargas', 'Zehra Güneş', 'Hande Baladın', 'Simge Aköz', 'Meliha Diken', 'Cansu Özbay', 'Eda Erdem', 'Ayça Aykaç', 'Naz Aydemir', 'Gabi Guimaraes', 'Paola Egonu', 'Zhu Ting', 'Kelsey Robinson', 'Jordan Larson', 'Brankica Mihajlovic', 'Tijana Boskovic', 'Kim Yeon-koung', 'Alessia Orro', 'Monica De Gennaro', 'Ana Cristina', 'Isabelle Haak', 'Maja Ognjenovic', 'Myrtha', 'Nika Daalderop']
+                positions: ['PasÃ¶r', 'SmaÃ§Ã¶r', 'Orta Oyuncu', 'Libero', 'Ã‡apraz'],
+                names: ['Ebrar Karakurt', 'Melissa Vargas', 'Zehra GÃ¼neÅŸ', 'Hande BaladÄ±n', 'Simge AkÃ¶z', 'Meliha Diken', 'Cansu Ã–zbay', 'Eda Erdem', 'AyÃ§a AykaÃ§', 'Naz Aydemir', 'Gabi Guimaraes', 'Paola Egonu', 'Zhu Ting', 'Kelsey Robinson', 'Jordan Larson', 'Brankica Mihajlovic', 'Tijana Boskovic', 'Kim Yeon-koung', 'Alessia Orro', 'Monica De Gennaro', 'Ana Cristina', 'Isabelle Haak', 'Maja Ognjenovic', 'Myrtha', 'Nika Daalderop']
             }
         };
 
-        const CITIES = ['İstanbul', 'Ankara', 'İzmir', 'Bursa', 'Antalya', 'Trabzon', 'Konya', 'Adana', 'Samsun', 'Kayseri'];
+        const CITIES = ['Ä°stanbul', 'Ankara', 'Ä°zmir', 'Bursa', 'Antalya', 'Trabzon', 'Konya', 'Adana', 'Samsun', 'Kayseri'];
 
         function buildProPlayers(sportName) {
             const { names, positions } = SPORTS[sportName];
@@ -151,7 +151,7 @@
                     sport: sportName,
                     name: `${baseName}${suffix}`,
                     position: positions[i % positions.length],
-                    foot: i % 3 === 0 ? 'Sol' : 'Sağ',
+                    foot: i % 3 === 0 ? 'Sol' : 'SaÄŸ',
                     speed: 70 + ((i * 7) % 28),
                     technique: 72 + ((i * 5) % 26),
                     physical: 68 + ((i * 9) % 30)
@@ -170,7 +170,7 @@
                     name: `${sportName} Aday ${i + 1}`,
                     city: CITIES[i % CITIES.length],
                     position: positions[i % positions.length],
-                    foot: i % 2 === 0 ? 'Sağ' : 'Sol',
+                    foot: i % 2 === 0 ? 'SaÄŸ' : 'Sol',
                     speed: 65 + ((i * 6) % 30),
                     technique: 66 + ((i * 8) % 28),
                     physical: 64 + ((i * 10) % 30)
@@ -238,7 +238,7 @@
                 name: (player?.name || 'Oyuncu').toString(),
                 city: (player?.city || player?.club || 'Bilinmiyor').toString(),
                 position: (player?.position || (SPORTS[sport]?.positions?.[0] || 'ST')).toString(),
-                foot: ((player?.dominant_foot || player?.preferred_foot || 'Sağ').toString().toLowerCase().includes('sol')) ? 'Sol' : 'Sağ',
+                foot: ((player?.dominant_foot || player?.preferred_foot || 'SaÄŸ').toString().toLowerCase().includes('sol')) ? 'Sol' : 'SaÄŸ',
                 speed: Math.max(60, Math.min(98, Math.round(62 + rating * 3.1))),
                 technique: Math.max(60, Math.min(98, Math.round(60 + rating * 3.5 + (market > 0 ? 4 : 0)))),
                 physical: Math.max(60, Math.min(98, Math.round(64 + ((30 - Math.max(16, age)) * 0.8)))),
@@ -258,7 +258,7 @@
                 name: (player?.name || 'Oyuncu').toString(),
                 city: (profile?.city || profile?.current_team || 'Bilinmiyor').toString(),
                 position: (profile?.position || SPORTS[sport]?.positions?.[0] || 'ST').toString(),
-                foot: ((profile?.dominant_foot || 'Sağ').toString().toLowerCase().includes('left') || (profile?.dominant_foot || '').toString().toLowerCase().includes('sol')) ? 'Sol' : 'Sağ',
+                foot: ((profile?.dominant_foot || 'SaÄŸ').toString().toLowerCase().includes('left') || (profile?.dominant_foot || '').toString().toLowerCase().includes('sol')) ? 'Sol' : 'SaÄŸ',
                 speed: Math.max(60, Math.min(98, Math.round(62 + rating * 3.1))),
                 technique: Math.max(60, Math.min(98, Math.round(60 + rating * 3.3 + (market > 0 ? 4 : 0)))),
                 physical: Math.max(60, Math.min(98, Math.round(64 + ((30 - Math.max(16, age)) * 0.8)))),
@@ -326,28 +326,34 @@
             return 'Futbol';
         }
 
-        function buildSelfReference() {
+        async function buildSelfReference() {
             try {
-                const userRaw = localStorage.getItem('nextscout_user');
-                const profileRaw = localStorage.getItem('playerProfile');
-                const user = userRaw ? JSON.parse(userRaw) : {};
-                const profile = profileRaw ? JSON.parse(profileRaw) : {};
+                const currentUserId = await resolveCurrentUserId();
+                if (!currentUserId) return null;
 
-                const name = (user?.name || profile?.name || '').toString().trim();
+                const [profilePayload, statsPayload] = await Promise.all([
+                    fetchAuthedJsonSafe(`${getApiBaseUrl()}/players/${encodeURIComponent(currentUserId)}`),
+                    fetchAuthedJsonSafe(`${getApiBaseUrl()}/players/${encodeURIComponent(currentUserId)}/statistics`),
+                ]);
+
+                const profile = profilePayload?.data || {};
+                const stats = Array.isArray(statsPayload?.data) ? statsPayload.data[0] || {} : {};
+                const name = (profile?.name || '').toString().trim();
                 if (!name) return null;
 
-                const sport = normalizeSport(profile?.sport);
+                const sport = normalizeSport(profile?.sport || 'futbol');
                 const positions = SPORTS[sport]?.positions || SPORTS.Futbol.positions;
-                const requestedPosition = (profile?.position || '').toString().trim().toUpperCase();
+                const requestedPosition = (profile?.position || profile?.user_position || '').toString().trim().toUpperCase();
                 const position = positions.includes(requestedPosition) ? requestedPosition : positions[0];
-                const foot = ((profile?.foot || profile?.dominant_foot || 'Sağ').toString().toLowerCase().includes('sol')) ? 'Sol' : 'Sağ';
+                const dominantFoot = (profile?.dominant_foot || 'right').toString().toLowerCase();
+                const foot = dominantFoot.includes('left') || dominantFoot.includes('sol') ? 'Sol' : 'Sag';
 
-                const rating = Number(profile?.rating || 4.8);
-                const goals = Number(profile?.goals || 8);
-                const assists = Number(profile?.assists || 4);
+                const rating = Number(profile?.rating || stats?.avg_rating || 4.8);
+                const goals = Number(stats?.goals || 8);
+                const assists = Number(stats?.assists || 4);
                 const speed = Math.max(60, Math.min(97, Math.round(66 + (rating * 3.2))));
                 const technique = Math.max(60, Math.min(97, Math.round(64 + (goals * 1.4) + (assists * 1.1))));
-                const physical = Math.max(60, Math.min(97, Math.round(63 + (Number(profile?.height || 180) - 165) * 0.65)));
+                const physical = Math.max(60, Math.min(97, Math.round(63 + (Number(profile?.height_cm || 180) - 165) * 0.65)));
 
                 return {
                     id: 'self-profile',
@@ -385,7 +391,7 @@
             const sport = document.getElementById('sportInput').value;
             const positionInput = document.getElementById('positionInput');
             const opts = SPORTS[sport].positions;
-            positionInput.innerHTML = `<option value="">Pozisyon (Tümü)</option>${opts.map((p) => `<option value="${p}">${p}</option>`).join('')}`;
+            positionInput.innerHTML = `<option value="">Pozisyon (TÃ¼mÃ¼)</option>${opts.map((p) => `<option value="${p}">${p}</option>`).join('')}`;
         }
 
         function getSelectedReference() {
@@ -405,7 +411,7 @@
         function render(data, refName) {
             const root = document.getElementById('results');
             if (!data.length) {
-                root.innerHTML = '<article class="card"><strong>Sonuç bulunamadı.</strong><div class="meta">Filtreleri gevşetip tekrar dene.</div></article>';
+                root.innerHTML = '<article class="card"><strong>SonuÃ§ bulunamadÄ±.</strong><div class="meta">Filtreleri gevÅŸetip tekrar dene.</div></article>';
                 return;
             }
 
@@ -446,7 +452,7 @@
 
         async function initLookAlike() {
             await hydratePlayersFromApi();
-            SELF_REFERENCE = buildSelfReference();
+            SELF_REFERENCE = await buildSelfReference();
 
             setSportOptions();
             if (SELF_REFERENCE) {
@@ -476,3 +482,4 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+

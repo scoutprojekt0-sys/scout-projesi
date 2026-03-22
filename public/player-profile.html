@@ -2272,34 +2272,6 @@
             }
         }
 
-        function addMessageToLocalBoxes(entry) {
-            const rows = readArrayStorage('nextscout_messages');
-            const uid = `pf-${Date.now()}`;
-            rows.unshift({
-                id: `${uid}-in`,
-                box: 'inbox',
-                from: entry.from,
-                to: entry.to,
-                subject: entry.subject,
-                body: entry.message,
-                read: false,
-                createdAt: entry.created_at,
-            });
-            if ((entry.from || '').toLowerCase() !== (entry.to || '').toLowerCase()) {
-                rows.unshift({
-                    id: `${uid}-out`,
-                    box: 'sent',
-                    from: entry.from,
-                    to: entry.to,
-                    subject: entry.subject,
-                    body: entry.message,
-                    read: true,
-                    createdAt: entry.created_at,
-                });
-            }
-            localStorage.setItem('nextscout_messages', JSON.stringify(rows.slice(0, 800)));
-        }
-
         async function sendMessageToProfile(subjectPreset) {
             const target = getCurrentProfileTarget();
             const authUser = getCurrentAuthUserFromStorage();
@@ -2317,66 +2289,86 @@
                 return;
             }
 
-            const localPayload = {
-                to: target.name,
-                from: fromName,
-                subject: safeSubject,
-                message: safeMessage,
-                created_at: new Date().toISOString(),
-            };
-            addMessageToLocalBoxes(localPayload);
-
             const token = (localStorage.getItem('nextscout_token') || '').trim();
-            if (token && target.id) {
-                try {
-                    await fetch(`${getApiBaseUrl()}/contacts`, {
-                        method: 'POST',
-                        headers: {
-                            Accept: 'application/json',
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${token}`,
-                        },
-                        body: JSON.stringify({
-                            to_user_id: Number(target.id),
-                            subject: safeSubject,
-                            message: safeMessage,
-                        }),
-                    });
-                } catch (e) {}
+            if (!token || !target.id) {
+                nsAlert('Mesaj gondermek icin aktif oturum gerekli.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/messages`, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        to_user_id: Number(target.id),
+                        subject: safeSubject,
+                        message: safeMessage,
+                    }),
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    throw new Error(payload?.message || 'Mesaj gonderilemedi.');
+                }
+
+            } catch (error) {
+                nsAlert(error?.message || 'Mesaj gonderilemedi.');
+                return;
             }
 
             nsAlert(`Mesaj gonderildi: ${target.name}`);
         }
 
-        function addProfileToFavorites() {
+        async function syncFavoriteButtonState() {
             const target = getCurrentProfileTarget();
-            const favorites = readArrayStorage('nextscout_favorite_players');
-            const nameKey = target.name.toLowerCase();
+            const btn = document.getElementById('profileFavoriteBtn');
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            if (!btn || !token || !target.id) return;
 
-            const exists = favorites.some((item) => {
-                const itemId = Number(item?.id);
-                const sameId = target.id && Number.isFinite(itemId) && itemId === target.id;
-                const sameName = (item?.name || '').toString().trim().toLowerCase() === nameKey;
-                return sameId || sameName;
-            });
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/favorites/${encodeURIComponent(target.id)}/check`, {
+                    headers: {
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) return;
+                btn.textContent = payload?.data?.is_favorited ? 'Favorilerde' : 'Favori Ekle';
+            } catch (error) {}
+        }
 
-            if (exists) {
-                nsAlert('Bu profil zaten favorilerde.');
+        async function addProfileToFavorites() {
+            const target = getCurrentProfileTarget();
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            if (!token || !target.id) {
+                nsAlert('Favori islemi icin aktif oturum gerekli.');
                 return;
             }
 
-            favorites.unshift({
-                id: target.id || `local-${Date.now()}`,
-                name: target.name,
-                position: target.position || 'Uye',
-                added_at: new Date().toISOString(),
-                source: 'player-profile',
-            });
-            localStorage.setItem('nextscout_favorite_players', JSON.stringify(favorites.slice(0, 500)));
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/favorites/${encodeURIComponent(target.id)}/toggle`, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    throw new Error(payload?.message || 'Favori islemi tamamlanamadi.');
+                }
 
-            const btn = document.getElementById('profileFavoriteBtn');
-            if (btn) btn.textContent = 'Favorilere Eklendi';
-            nsAlert('Favorilere eklendi.');
+                const btn = document.getElementById('profileFavoriteBtn');
+                const isFavorited = Boolean(payload?.data?.is_favorited);
+                if (btn) btn.textContent = isFavorited ? 'Favorilerde' : 'Favori Ekle';
+                nsAlert(payload?.message || (isFavorited ? 'Favorilere eklendi.' : 'Favorilerden cikarildi.'));
+            } catch (error) {
+                nsAlert(error?.message || 'Favori islemi tamamlanamadi.');
+            }
         }
 
         function contactManagerFromProfile() {
@@ -2546,6 +2538,7 @@
             if (contactCard) contactCard.style.display = isOwnProfile ? 'none' : '';
             if (reviewFormCard) reviewFormCard.style.display = !isOwnProfile && sessionUser ? '' : 'none';
             if (reviewGate) reviewGate.style.display = !isOwnProfile && !sessionUser ? '' : 'none';
+            if (!isOwnProfile) syncFavoriteButtonState();
         }
 
         function renderTabs() {
@@ -2824,26 +2817,50 @@
             };
         }
 
-        function getCoachEvaluationStorageKey(data) {
-            const params = new URLSearchParams(window.location.search);
-            const explicitId = (params.get('user_id') || '').toString().trim();
-            const explicitName = (params.get('player_name') || '').toString().trim();
-            const base = explicitId || String(data?.id || data?.user_id || explicitName || data?.name || 'local-player').trim().toLowerCase();
-            return `nextscout_coach_eval_${base}`;
+        async function fetchSavedCoachEvaluation(data) {
+            const userId = String(data?.id || data?.user_id || '').trim();
+            const playerName = String(data?.name || '').trim();
+            const query = new URLSearchParams();
+            query.set('per_page', '1');
+            if (userId) query.set('player_user_id', userId);
+            else if (playerName) query.set('player_name', playerName);
+            const payload = await fetchJsonSafe(`${getApiBaseUrl()}/coach/player-evaluations?${query.toString()}`, true);
+            const rows = Array.isArray(payload?.data?.data) ? payload.data.data : [];
+            return rows[0] || null;
         }
 
-        function loadSavedCoachEvaluation(data) {
-            try {
-                const raw = localStorage.getItem(getCoachEvaluationStorageKey(data));
-                const parsed = raw ? JSON.parse(raw) : null;
-                return parsed && typeof parsed === 'object' ? parsed : null;
-            } catch (error) {
-                return null;
+        async function createCoachEvaluation(data, payload) {
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            if (!token) throw new Error('Oturum bulunamadi.');
+
+            const response = await fetch(`${getApiBaseUrl()}/coach/player-evaluations`, {
+                method: 'POST',
+                headers: {
+                    ...getAuthHeaders(),
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    player_user_id: data?.id || data?.user_id || null,
+                    player_name: String(data?.name || '').trim() || 'Oyuncu',
+                    position: String(data?.position || data?.primary_position || data?.role_position || '').trim() || null,
+                    decision_note: payload.decision_note || null,
+                    scores: payload.scores || [],
+                }),
+            });
+
+            const responseData = await response.json().catch(() => null);
+            if (!response.ok || !responseData?.ok) {
+                throw new Error(responseData?.message || 'Degerlendirme kaydedilemedi.');
             }
+
+            return responseData.data || null;
         }
 
-        function saveCoachEvaluation(data, payload) {
-            localStorage.setItem(getCoachEvaluationStorageKey(data), JSON.stringify(payload));
+        function loadSavedCoachEvaluation(_data) {
+            return null;
+        }
+
+        function saveCoachEvaluation(_data, _payload) {
         }
 
         function renderCoachEvaluationSaveState(saved) {
@@ -2860,7 +2877,7 @@
             const grid = document.getElementById('coachEvalGrid');
             if (!button || !note || !grid) return;
 
-            button.onclick = function () {
+            button.onclick = async function () {
                 const scores = Array.from(grid.querySelectorAll('[data-coach-eval-input]')).map((input) => ({
                     label: input.getAttribute('data-label') || '',
                     value: Math.max(0, Math.min(100, Number(input.value || 0))),
@@ -2871,8 +2888,14 @@
                     scores,
                     saved_at: new Date().toLocaleString('tr-TR'),
                 };
-                saveCoachEvaluation(data, payload);
-                renderCoachEvaluationSaveState(payload);
+                try {
+                    const saved = await createCoachEvaluation(data, payload);
+                    saveCoachEvaluation(data, saved || payload);
+                    renderCoachEvaluationSaveState(saved || payload);
+                    window.nsNotify?.success ? window.nsNotify.success('Degerlendirme kaydedildi.') : null;
+                } catch (error) {
+                    window.nsNotify?.error ? window.nsNotify.error(error.message || 'Degerlendirme kaydedilemedi.') : null;
+                }
             };
         }
 
@@ -2911,6 +2934,22 @@
             `).join('');
             renderCoachEvaluationSaveState(saved);
             bindCoachEvaluationSave(data);
+            fetchSavedCoachEvaluation(data)
+                .then((serverSaved) => {
+                    if (!serverSaved) return;
+                    saveCoachEvaluation(data, serverSaved);
+                    renderCoachEvaluationSaveState(serverSaved);
+                    const savedItems = Array.isArray(serverSaved.scores) ? serverSaved.scores : [];
+                    if (!savedItems.length) return;
+                    Array.from(grid.querySelectorAll('[data-coach-eval-input]')).forEach((input, index) => {
+                        const value = Number(savedItems[index]?.value ?? input.value);
+                        input.value = String(value);
+                        const article = input.closest('.coach-eval-item');
+                        const fill = article?.querySelector('.coach-eval-fill');
+                        if (fill) fill.style.width = `${Math.max(0, Math.min(100, value))}%`;
+                    });
+                })
+                .catch(() => {});
             Array.from(grid.querySelectorAll('[data-coach-eval-input]')).forEach((input) => {
                 input.addEventListener('input', function () {
                     const article = input.closest('.coach-eval-item');
@@ -2922,72 +2961,13 @@
             card.style.display = '';
         }
 
-        function renderLocalProfile() {
+        function renderProfileUnavailable(message) {
             document.body.classList.add('square-ui');
-            const savedProfile = localStorage.getItem('playerProfile');
-            const savedPhoto = localStorage.getItem('playerPhoto');
-            const sessionUserRaw = localStorage.getItem('nextscout_user');
-            const params = new URLSearchParams(window.location.search);
-            const fallbackName = (params.get('player_name') || '').toString().trim();
-            const fallbackPosition = (params.get('position') || '').toString().trim();
-            let sessionUser = null;
-
-            try { sessionUser = sessionUserRaw ? JSON.parse(sessionUserRaw) : null; } catch (e) { sessionUser = null; }
-
-            setText('playerName', fallbackName || sessionUser?.name || 'Ahmet Yilmaz');
-
-            if (savedProfile) {
-                try {
-                    const data = JSON.parse(savedProfile);
-                    setText('playerPosition', (fallbackPosition || data.position || 'Forvet').toUpperCase());
-                    setText('playerName', fallbackName || sessionUser?.name || data.name || 'Ahmet Yilmaz');
-                    setText('playerAge', data.age || '24');
-                    setText('playerHeight', (data.height || '180') + 'cm');
-                    setText('playerRating', data.rating || '4.8');
-                    setText('ratingText', (data.rating || '4.8') + '/10 - Scoutlar Tarafindan Degerlendirildi');
-                    setText('bioText', data.bio || '');
-                    setText('statMatches', data.matches || '28');
-                    setText('statGoals', data.goals || '15');
-                    setText('statAssists', data.assists || '6');
-                    setText('contractStatusBadge', data.contract_status === 'free' ? 'Bosta' : 'Sozlesmeli');
-                    setText('seekingClubBadge', data.seeking_club ? 'KULUP Ariyor' : 'KULUP Aramiyor');
-                    setText('currentClubBadge', `KULUP: ${data.current_club || '-'}`);
-                    updateHeroEditorial({
-                        id: data.id || 7,
-                        name: fallbackName || sessionUser?.name || data.name || 'Oyuncu',
-                        position: fallbackPosition || data.position || 'Oyuncu',
-                        sport: data.sport || 'oyuncu profili',
-                        nationality: data.nationality || 'Turkiye',
-                        club: data.current_club || '-'
-                    });
-                    updateHeroMarketPanel(data.market_value || 0, 'Local profilde kayitli piyasa verisi gosteriliyor.');
-                    renderProfileShowcase({
-                        rating: data.rating || 0,
-                        matches: data.matches || 0,
-                        goals: data.goals || 0,
-                        assists: data.assists || 0,
-                        market_value: data.market_value || 0,
-                        stats_history: data.stats_history || [],
-                        market_history: data.market_history || [],
-                        timeline_events: data.timeline_events || []
-                    });
-                    renderProfileStatistics(data);
-                    renderCoachPositionEvaluation(data);
-                    renderAdvancedPanels(data, 'Local Profil');
-                } catch (e) {
-                    console.error('Profile parse hatasi:', e);
-                }
+            const content = document.querySelector('.profile-content') || document.querySelector('.profile-container') || document.body;
+            const safe = esc(message || 'Profil verisi su an alinamiyor.');
+            if (content) {
+                content.innerHTML = `<div class="card" style="max-width:760px;margin:32px auto;"><h3 class="card-title">Profil Kullanilamiyor</h3><p>${safe}</p></div>`;
             }
-
-            if (savedPhoto) setHeroImage(savedPhoto);
-            if (!savedProfile) {
-                if (fallbackPosition) setText('playerPosition', fallbackPosition.toUpperCase());
-                updateHeroEditorial({ name: fallbackName || sessionUser?.name || 'Oyuncu', position: fallbackPosition || 'Oyuncu', sport: 'oyuncu profili' });
-            }
-            if (!savedProfile) updateHeroMarketPanel(0, 'Local profilde piyasa verisi bulunamadi.');
-            if (!savedProfile) renderProfileShowcase({});
-            if (!savedProfile) renderCoachPositionEvaluation({});
-            if (!savedProfile) renderAdvancedPanels({}, 'Local Profil');
         }
 
         function getAuthHeaders() {
@@ -3308,7 +3288,7 @@
             loadProfileReviews();
 
             if (!userId) {
-                renderLocalProfile();
+                renderProfileUnavailable('Gecerli bir oyuncu secilmedi.');
                 return;
             }
 
@@ -3323,7 +3303,7 @@
                 renderPublicProfile(data.data, extras);
             } catch (e) {
                 console.error('Public profil yuklenemedi:', e);
-                renderLocalProfile();
+                renderProfileUnavailable('Oyuncu profili sunucudan yuklenemedi.');
             }
         }
 
@@ -3373,13 +3353,5 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
 
 

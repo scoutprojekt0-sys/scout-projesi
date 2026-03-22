@@ -213,7 +213,6 @@
   </div>
 
   <script>
-    const KEY = 'nextscout_scout_profile';
 
     function getApiBaseUrl() {
       const params = new URLSearchParams(window.location.search);
@@ -412,11 +411,6 @@
     }
 
     function defaults(){ return { name:'Scout', experience:'', branch:'Futbol', country:'Türkiye', city:'', phone:'', bio:'', photo:'' }; }
-    function loadProfile(){
-      try { const raw = localStorage.getItem(KEY); if(!raw) return defaults(); return Object.assign(defaults(), JSON.parse(raw) || {}); }
-      catch { return defaults(); }
-    }
-    function saveProfile(p){ localStorage.setItem(KEY, JSON.stringify(p)); }
 
     function setForm(p){
       document.getElementById('name').value = p.name || '';
@@ -491,13 +485,12 @@
       return res.ok;
     }
 
-    let profile = loadProfile();
+    let profile = defaults();
 
     async function init() {
       const remote = await loadBackendProfile();
       if (remote) {
         profile = Object.assign(profile, remote);
-        saveProfile(profile);
       }
       setForm(profile);
       renderSummary(profile);
@@ -510,25 +503,30 @@
       profile = readForm(profile);
       if(!profile.name){ document.getElementById('saveMsg').textContent = 'Isim zorunlu.'; return; }
 
-      let backendSaved = false;
-      try {
-        backendSaved = await saveBackendProfile(profile);
-      } catch (error) {
-        backendSaved = false;
+      const backendSaved = await saveBackendProfile(profile).catch(() => false);
+      if (!backendSaved) {
+        document.getElementById('saveMsg').textContent = 'Profil backend kaydedilemedi.';
+        setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 1800);
+        return;
       }
 
-      saveProfile(profile);
       renderSummary(profile);
-      document.getElementById('saveMsg').textContent = backendSaved ? 'Profil backend kaydedildi.' : 'Profil local kaydedildi.';
+      document.getElementById('saveMsg').textContent = 'Profil backend kaydedildi.';
       setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 1800);
     });
 
-    document.getElementById('resetBtn')?.addEventListener('click', function(){
-      profile = defaults();
-      saveProfile(profile);
+    document.getElementById('resetBtn')?.addEventListener('click', async function(){
+      const resetProfile = defaults();
+      const backendSaved = await saveBackendProfile(resetProfile).catch(() => false);
+      if (!backendSaved) {
+        document.getElementById('saveMsg').textContent = 'Profil backend sifirlanamadi.';
+        setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 1500);
+        return;
+      }
+      profile = resetProfile;
       setForm(profile);
       renderSummary(profile);
-      document.getElementById('saveMsg').textContent = 'Profil sıfırlandi.';
+      document.getElementById('saveMsg').textContent = 'Profil sifirlandi.';
       setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 1500);
     });
 
@@ -537,20 +535,32 @@
       if(!file) return;
       const reader = new FileReader();
       reader.onload = async function(evt){
+        const previousPhoto = profile.photo || '';
         profile.photo = String((evt.target && evt.target.result) || '');
         document.getElementById('photoPreview').src = profile.photo || 'https://via.placeholder.com/120x120?text=Scout';
-        saveProfile(profile);
-        try { await saveBackendProfile(profile); } catch (error) {}
+        const backendSaved = await saveBackendProfile(profile).catch(() => false);
+        if (!backendSaved) {
+          profile.photo = previousPhoto;
+          document.getElementById('photoPreview').src = previousPhoto || 'https://via.placeholder.com/120x120?text=Scout';
+          document.getElementById('saveMsg').textContent = 'Fotograf backend kaydedilemedi.';
+          setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 1800);
+        }
       };
       reader.readAsDataURL(file);
     });
 
     document.getElementById('clearPhotoBtn')?.addEventListener('click', async function(){
+      const previousPhoto = profile.photo || '';
       profile.photo = '';
-      saveProfile(profile);
       document.getElementById('photoPreview').src = 'https://via.placeholder.com/120x120?text=Scout';
       document.getElementById('photoInput').value = '';
-      try { await saveBackendProfile(profile); } catch (error) {}
+      const backendSaved = await saveBackendProfile(profile).catch(() => false);
+      if (!backendSaved) {
+        profile.photo = previousPhoto;
+        document.getElementById('photoPreview').src = previousPhoto || 'https://via.placeholder.com/120x120?text=Scout';
+        document.getElementById('saveMsg').textContent = 'Fotograf backend silinemedi.';
+        setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 1800);
+      }
     });
 
     function applyScoutProfileTextFixes() {

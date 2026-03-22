@@ -1,17 +1,17 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manager Dashboard | NextScout</title>
-    <meta name="description" content="MENAJER paneli: oyuncu portfoyu, teklif yönetimi ve ihtiyaç eslesme akislarini yonetin.">
+    <meta name="description" content="MENAJER paneli: oyuncu portfoyu, teklif yÃ¶netimi ve ihtiyaÃ§ eslesme akislarini yonetin.">
     <meta name="robots" content="noindex,follow">
     <link rel="canonical" href="https://nextscout.pro/manager-dashboard.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
     <meta property="og:title" content="Manager Dashboard | NextScout">
-    <meta property="og:description" content="MENAJER paneli: oyuncu portfoyu, teklif yönetimi ve ihtiyaç eslesme akislarini yonetin.">
+    <meta property="og:description" content="MENAJER paneli: oyuncu portfoyu, teklif yÃ¶netimi ve ihtiyaÃ§ eslesme akislarini yonetin.">
     <meta property="og:url" content="https://nextscout.pro/manager-dashboard.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
@@ -286,6 +286,53 @@
             gap: 8px;
         }
         .smart-manager-cta:hover { filter: brightness(1.06); }
+
+        .workspace-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .workspace-tab {
+            padding: 10px 12px;
+            border: 1px solid var(--ns-line);
+            background: rgba(255, 255, 255, 0.04);
+            color: #dbeafe;
+            font: 700 13px/1 Inter, sans-serif;
+            cursor: pointer;
+        }
+        .workspace-tab.active {
+            background: linear-gradient(135deg, var(--ns-cta) 0%, var(--ns-cta-2) 100%);
+            border-color: rgba(255, 126, 34, 0.6);
+            color: #fff;
+        }
+        .workspace-panel[hidden] {
+            display: none;
+        }
+        .workspace-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .workspace-metric {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--ns-line);
+            padding: 14px;
+        }
+        .workspace-metric strong {
+            display: block;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--ns-text);
+            margin-bottom: 6px;
+        }
+        .workspace-metric span {
+            color: var(--ns-muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
 
         .search-section,
         .results-section,
@@ -907,6 +954,9 @@
             .smart-manager-card {
                 min-height: auto;
             }
+            .workspace-metrics {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
@@ -917,12 +967,12 @@
             <div class="logo">NextScout Manager</div>
         </div>
         <div class="navbar-right">
-            <button class="btn-small success" onclick="openNeedModal()"><i class="fas fa-plus-circle"></i><span>İlan Gir</span></button>
-            <button class="btn-small primary" onclick="window.location.href='manager-needs.html'"><i class="fas fa-list-check"></i><span>İlan Listesi</span></button>
-            <button class="btn-small secondary" onclick="openManagerProfile()"><i class="fas fa-user-check"></i><span>Public Görünüm</span></button>
+            <button class="btn-small success" onclick="openNeedModal()"><i class="fas fa-plus-circle"></i><span>Ä°lan Gir</span></button>
+            <button class="btn-small primary" onclick="window.location.href='manager-needs.html'"><i class="fas fa-list-check"></i><span>Ä°lan Listesi</span></button>
+            <button class="btn-small secondary" onclick="openManagerProfile()"><i class="fas fa-user-check"></i><span>Public GÃ¶rÃ¼nÃ¼m</span></button>
             <button class="btn-small secondary" onclick="window.location.href='index.html?success_story=submit#homeStep3'"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></button>
             <button class="btn-small home-btn" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255, 126, 34, 0.6);background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 16px 28px rgba(255,90,31,0.28);" onclick="window.location.href='index.html'"><i class="fas fa-house"></i><span>Ana Sayfa</span></button>
-            <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Çıkış</span></button>
+            <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Ã‡Ä±kÄ±ÅŸ</span></button>
         </div>
     </div>
 
@@ -933,16 +983,19 @@
                 <ul class="sidebar-menu">
                     <li class="sidebar-item active" onclick="location.reload()"><i class="fas fa-magnifying-glass"></i><span>Oyuncu Ara</span></li>
                     <li class="sidebar-item" onclick="openManagerProfile()"><i class="fas fa-user"></i><span>Profilim</span></li>
-                    <li class="sidebar-item" onclick="openSentApplications()"><i class="fas fa-paper-plane"></i><span>Gönderilen Başvurular</span></li>
-                    <li class="sidebar-item" onclick="openAnsweredApplications()"><i class="fas fa-circle-check"></i><span>Yanıtlanan Başvurular</span></li>
+                    <li class="sidebar-item" onclick="openSentApplications()"><i class="fas fa-paper-plane"></i><span>GÃ¶nderilen BaÅŸvurular</span></li>
+                    <li class="sidebar-item" onclick="openAnsweredApplications()"><i class="fas fa-circle-check"></i><span>YanÄ±tlanan BaÅŸvurular</span></li>
                     <li class="sidebar-item" onclick="openFavorites()"><i class="fas fa-star"></i><span>Favorilerim</span></li>
                     <li class="sidebar-item" onclick="openWatchlist()"><i class="fas fa-list-check"></i><span>Takip Listem</span></li>
+                    <li class="sidebar-item" onclick="openManagerWorkspace('notes')"><i class="fas fa-notes-medical"></i><span>Teknik Not Defteri</span></li>
+                    <li class="sidebar-item" onclick="openManagerWorkspace('clips')"><i class="fas fa-film"></i><span>Klip Isaretleme</span></li>
+                    <li class="sidebar-item" onclick="openManagerWorkspace('evaluations')"><i class="fas fa-clipboard-list"></i><span>Degerlendirmeler</span></li>
                     <li class="sidebar-item" onclick="window.location.href='ai-discovery.html'"><i class="fas fa-flask"></i><span>AI Discovery</span></li>
-                    <li class="sidebar-item" onclick="window.location.href='manager-needs.html'"><i class="fas fa-thumbtack"></i><span>Aradığım Oyuncular</span></li>
-                    <li class="sidebar-item" onclick="window.location.href='live-watch-demand.html'"><i class="fas fa-location-crosshairs"></i><span>Canlı İzleme Talebi</span></li>
-                    <li class="sidebar-item" onclick="openMessages()"><i class="fas fa-comments"></i><span>Mesajlarım</span></li>
+                    <li class="sidebar-item" onclick="window.location.href='manager-needs.html'"><i class="fas fa-thumbtack"></i><span>AradÄ±ÄŸÄ±m Oyuncular</span></li>
+                    <li class="sidebar-item" onclick="window.location.href='live-watch-demand.html'"><i class="fas fa-location-crosshairs"></i><span>CanlÄ± Ä°zleme Talebi</span></li>
+                    <li class="sidebar-item" onclick="openMessages()"><i class="fas fa-comments"></i><span>MesajlarÄ±m</span></li>
                     <li class="sidebar-item" onclick="openSettings()"><i class="fas fa-gear"></i><span>Ayarlar</span></li>
-                    <li class="sidebar-item" onclick="openHelp()"><i class="fas fa-circle-question"></i><span>Yardım</span></li>
+                    <li class="sidebar-item" onclick="openHelp()"><i class="fas fa-circle-question"></i><span>YardÄ±m</span></li>
                 </ul>
             </div>
         </aside>
@@ -950,13 +1003,13 @@
         <div class="content">
             <div class="welcome-card">
                 <h1>Manager Dashboard</h1>
-                <p>Oyuncu ara, profil incele, başvuru gönder ve favori listeni yonet.</p>
+                <p>Oyuncu ara, profil incele, baÅŸvuru gÃ¶nder ve favori listeni yonet.</p>
             </div>
 
             <div class="need-section">
                 <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
-                    <h2 style="font-size:18px;font-weight:800;color:#e5e7eb;">Aradığım Oyuncu İlanları</h2>
-                    <button class="btn-small success" onclick="openNeedModal()">+ Yeni İlan</button>
+                    <h2 style="font-size:18px;font-weight:800;color:#e5e7eb;">AradÄ±ÄŸÄ±m Oyuncu Ä°lanlarÄ±</h2>
+                    <button class="btn-small success" onclick="openNeedModal()">+ Yeni Ä°lan</button>
                 </div>
                 <div class="need-list" id="managerNeedRecent"></div>
             </div>
@@ -973,7 +1026,7 @@
                         <input type="number" id="offerContractClarity" min="0" max="100" value="70">
                     </div>
                     <div class="form-group">
-                        <label>Ödeme Hizi (0-100)</label>
+                        <label>Ã–deme Hizi (0-100)</label>
                         <input type="number" id="offerPaymentSpeed" min="0" max="100" value="70">
                     </div>
                     <div class="form-group">
@@ -991,7 +1044,7 @@
                 <div class="stat-card"><div class="stat-card-value" id="statPool">0</div><div class="stat-card-label">Oyuncu Havuzu</div></div>
                 <div class="stat-card"><div class="stat-card-value" id="statFiltered">0</div><div class="stat-card-label">Filtre Sonucu</div></div>
                 <div class="stat-card"><div class="stat-card-value" id="statFavorites">0</div><div class="stat-card-label">Favori Oyuncu</div></div>
-                <div class="stat-card"><div class="stat-card-value" id="statApplications">0</div><div class="stat-card-label">Gonderilen Başvuru</div></div>
+                <div class="stat-card"><div class="stat-card-value" id="statApplications">0</div><div class="stat-card-label">Gonderilen BaÅŸvuru</div></div>
             </div>
 
             <section class="ai-video-lab" data-ai-video-lab>
@@ -1078,6 +1131,79 @@
                 <div class="ai-video-lab-notice" data-ai-notice></div>
             </section>
 
+            <div class="search-section" id="managerWorkspace">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px;">
+                    <div>
+                        <h2 id="managerWorkspaceTitle" style="margin-bottom:8px;font-size:18px;font-weight:800;color:#e5e7eb;">Manager Teknik Workspace</h2>
+                        <p id="managerWorkspaceSummary" style="margin:0;color:#9bb5cb;font-size:13px;line-height:1.6;">Oyuncu bazli not, klip ve kaydedilmis degerlendirmeleri bu panelden yonet.</p>
+                    </div>
+                    <a class="btn-small secondary" href="player-profile.html"><i class="fas fa-up-right-from-square"></i><span>Oyuncu Profiline Git</span></a>
+                </div>
+
+                <div class="workspace-tabs">
+                    <button class="workspace-tab active" type="button" data-manager-workspace-tab="notes" onclick="openManagerWorkspace('notes')">Teknik Not Defteri</button>
+                    <button class="workspace-tab" type="button" data-manager-workspace-tab="clips" onclick="openManagerWorkspace('clips')">Klip Isaretleme</button>
+                    <button class="workspace-tab" type="button" data-manager-workspace-tab="evaluations" onclick="openManagerWorkspace('evaluations')">Kaydedilmis Degerlendirmeler</button>
+                </div>
+
+                <section class="workspace-panel" id="managerWorkspaceNotes">
+                    <div class="search-grid" style="grid-template-columns:repeat(2, 1fr);">
+                        <div class="form-group"><label>Oyuncu Adi</label><input type="text" id="managerWorkspaceNotePlayer" placeholder="Oyuncu adi"></div>
+                        <div class="form-group"><label>Oyuncu ID</label><input type="number" id="managerWorkspaceNotePlayerId" min="1" placeholder="Opsiyonel"></div>
+                        <div class="form-group"><label>Pozisyon</label><input type="text" id="managerWorkspaceNotePosition" placeholder="Stoper / 8 numara"></div>
+                        <div class="form-group"><label>Etiket</label><select id="managerWorkspaceNoteTag"><option value="izlenecek">Izlenecek</option><option value="tekrar-bak">Tekrar Bak</option><option value="portfoy">Portfoy</option><option value="hazir">Hazir</option></select></div>
+                        <div class="form-group"><label>Odak</label><select id="managerWorkspaceNoteFocus"><option value="teknik">Teknik</option><option value="taktik">Taktik</option><option value="fizik">Fizik</option><option value="zihinsel">Zihinsel</option></select></div>
+                    </div>
+                    <div class="form-group" style="margin:12px 0;">
+                        <label>Not</label>
+                        <input type="text" id="managerWorkspaceNoteBody" placeholder="Oyuncu icin kisa menajer notu">
+                    </div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                        <button class="btn-small primary" type="button" id="managerWorkspaceNoteSubmit">Notu Kaydet</button>
+                        <input type="text" id="managerWorkspaceNoteSearch" placeholder="Oyuncu, etiket veya not ara..." style="flex:1;min-width:240px;">
+                    </div>
+                    <div class="need-list" id="managerWorkspaceNotesList" style="margin-top:14px;">
+                        <div class="need-item">Teknik notlar yukleniyor...</div>
+                    </div>
+                </section>
+
+                <section class="workspace-panel" id="managerWorkspaceClips" hidden>
+                    <div class="search-grid" style="grid-template-columns:repeat(2, 1fr);">
+                        <div class="form-group"><label>Oyuncu Adi</label><input type="text" id="managerWorkspaceClipPlayer" placeholder="Oyuncu adi"></div>
+                        <div class="form-group"><label>Oyuncu ID</label><input type="number" id="managerWorkspaceClipPlayerId" min="1" placeholder="Opsiyonel"></div>
+                        <div class="form-group"><label>Video Linki</label><input type="url" id="managerWorkspaceClipUrl" placeholder="https://..."></div>
+                        <div class="form-group"><label>Dakika</label><input type="number" id="managerWorkspaceClipMinute" min="0" max="180" placeholder="12"></div>
+                        <div class="form-group"><label>Saniye</label><input type="number" id="managerWorkspaceClipSecond" min="0" max="59" placeholder="34"></div>
+                    </div>
+                    <div class="form-group" style="margin:12px 0;">
+                        <label>Klip Notu</label>
+                        <input type="text" id="managerWorkspaceClipBody" placeholder="Bu sahnede dikkat ceken nokta">
+                    </div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                        <button class="btn-small primary" type="button" id="managerWorkspaceClipSubmit">Klibi Kaydet</button>
+                        <input type="text" id="managerWorkspaceClipSearch" placeholder="Oyuncu, link veya not ara..." style="flex:1;min-width:240px;">
+                    </div>
+                    <div class="need-list" id="managerWorkspaceClipsList" style="margin-top:14px;">
+                        <div class="need-item">Klip notlari yukleniyor...</div>
+                    </div>
+                </section>
+
+                <section class="workspace-panel" id="managerWorkspaceEvaluations" hidden>
+                    <div class="workspace-metrics">
+                        <div class="workspace-metric"><strong id="managerEvalTotal">0</strong><span>Toplam</span></div>
+                        <div class="workspace-metric"><strong id="managerEvalLastPlayer">-</strong><span>Son Oyuncu</span></div>
+                        <div class="workspace-metric"><strong id="managerEvalLastDate">-</strong><span>Son Kayit</span></div>
+                    </div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                        <input type="text" id="managerWorkspaceEvalSearch" placeholder="Oyuncu, pozisyon veya karar notu ara..." style="flex:1;min-width:240px;">
+                        <input type="number" id="managerWorkspaceEvalMinScore" min="0" max="100" placeholder="Min. ortalama" style="width:180px;">
+                    </div>
+                    <div class="need-list" id="managerWorkspaceEvaluationsList" style="margin-top:14px;">
+                        <div class="need-item">Degerlendirmeler yukleniyor...</div>
+                    </div>
+                </section>
+            </div>
+
             <div class="search-section">
                 <h2 style="margin-bottom:20px;font-size:18px;font-weight:800;color:#e5e7eb;">Oyuncu Ara</h2>
                 <div class="search-grid">
@@ -1108,7 +1234,7 @@
             </div>
 
             <div class="results-section">
-                <h2 style="margin-bottom:20px;font-size:18px;font-weight:800;color:#e5e7eb;">Arama Sonuçları</h2>
+                <h2 style="margin-bottom:20px;font-size:18px;font-weight:800;color:#e5e7eb;">Arama SonuÃ§larÄ±</h2>
                 <div class="players-grid" id="playersGrid"></div>
             </div>
         </div>
@@ -1213,8 +1339,8 @@
     </div>
 
     <script>
-        const APPLICATIONS_KEY = 'nextscout_manager_applications';
-        const FAVORITES_KEY = 'nextscout_favorite_players';
+        let applicationState = [];
+        let favoriteState = [];
         let allPlayers = [];
         let filteredPlayers = [];
 
@@ -1249,16 +1375,11 @@
         }
 
         function getApplications() {
-            try {
-                const parsed = JSON.parse(localStorage.getItem(APPLICATIONS_KEY) || '[]');
-                return Array.isArray(parsed) ? parsed : [];
-            } catch (error) {
-                return [];
-            }
+            return Array.isArray(applicationState) ? applicationState : [];
         }
 
         function saveApplications(items) {
-            localStorage.setItem(APPLICATIONS_KEY, JSON.stringify(Array.isArray(items) ? items : []));
+            applicationState = Array.isArray(items) ? items : [];
         }
 
         function getAuthToken() {
@@ -1273,6 +1394,270 @@
                 Accept: 'application/json',
                 Authorization: `Bearer ${token}`,
             };
+        }
+
+        async function managerApiGet(path) {
+            const headers = getAuthHeadersJson();
+            if (!headers) throw new Error('Oturum bulunamadi.');
+            const apiBase = getApiBaseUrl();
+            const response = await fetch(`${apiBase}${path}`, { headers });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok || payload?.ok === false) {
+                throw new Error(payload?.message || `HTTP ${response.status}`);
+            }
+            return payload?.data ?? payload;
+        }
+
+        async function managerApiPost(path, body) {
+            const headers = getAuthHeadersJson();
+            if (!headers) throw new Error('Oturum bulunamadi.');
+            const apiBase = getApiBaseUrl();
+            const response = await fetch(`${apiBase}${path}`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(body),
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok || payload?.ok === false) {
+                const firstError = payload?.errors ? Object.values(payload.errors)?.[0]?.[0] : '';
+                throw new Error(firstError || payload?.message || `HTTP ${response.status}`);
+            }
+            return payload?.data ?? payload;
+        }
+
+        async function fetchManagerWorkspaceNotes(search) {
+            const params = new URLSearchParams({ per_page: '100' });
+            if (search) params.set('search', search);
+            const payload = await managerApiGet(`/coach/player-notes?${params.toString()}`);
+            return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
+        }
+
+        async function createManagerWorkspaceNote(body) {
+            return managerApiPost('/coach/player-notes', body);
+        }
+
+        async function fetchManagerWorkspaceClips(search) {
+            const params = new URLSearchParams({ per_page: '100' });
+            if (search) params.set('search', search);
+            const payload = await managerApiGet(`/coach/player-clips?${params.toString()}`);
+            return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
+        }
+
+        async function createManagerWorkspaceClip(body) {
+            return managerApiPost('/coach/player-clips', body);
+        }
+
+        async function fetchManagerWorkspaceEvaluations(search) {
+            const params = new URLSearchParams({ per_page: '100' });
+            if (search) params.set('search', search);
+            const payload = await managerApiGet(`/coach/player-evaluations?${params.toString()}`);
+            return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
+        }
+
+        function openManagerWorkspace(type) {
+            const root = document.getElementById('managerWorkspace');
+            const title = document.getElementById('managerWorkspaceTitle');
+            const summary = document.getElementById('managerWorkspaceSummary');
+            const notes = document.getElementById('managerWorkspaceNotes');
+            const clips = document.getElementById('managerWorkspaceClips');
+            const evaluations = document.getElementById('managerWorkspaceEvaluations');
+            const tabs = Array.from(document.querySelectorAll('[data-manager-workspace-tab]'));
+            if (!root || !title || !summary || !notes || !clips || !evaluations) return;
+
+            const map = {
+                notes: {
+                    title: 'Manager Teknik Not Defteri',
+                    summary: 'Oyuncu bazli menajer notlarini kalici olarak burada tutarsin.',
+                },
+                clips: {
+                    title: 'Manager Klip Isaretleme',
+                    summary: 'Video sahnelerini zaman damgasi ve yorumla kaydedersin.',
+                },
+                evaluations: {
+                    title: 'Kaydedilmis Degerlendirmeler',
+                    summary: 'Oyuncu profillerinde kaydedilen teknik degerlendirmeleri tek listede izlersin.',
+                },
+            };
+
+            const selected = map[type] || map.notes;
+            title.textContent = selected.title;
+            summary.textContent = selected.summary;
+            notes.hidden = type !== 'notes';
+            clips.hidden = type !== 'clips';
+            evaluations.hidden = type !== 'evaluations';
+            tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.managerWorkspaceTab === type));
+
+            if (type === 'notes') renderManagerWorkspaceNotes();
+            if (type === 'clips') renderManagerWorkspaceClips();
+            if (type === 'evaluations') renderManagerWorkspaceEvaluations();
+
+            root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        async function renderManagerWorkspaceNotes() {
+            const root = document.getElementById('managerWorkspaceNotesList');
+            const search = String(document.getElementById('managerWorkspaceNoteSearch')?.value || '').trim().toLowerCase();
+            if (!root) return;
+            root.innerHTML = '<div class="need-item">Teknik notlar yukleniyor...</div>';
+
+            try {
+                const rows = await fetchManagerWorkspaceNotes(search);
+                if (!rows.length) {
+                    root.innerHTML = '<div class="need-item">Kayitli teknik not bulunmuyor.</div>';
+                    return;
+                }
+                root.innerHTML = rows.map((row) => `
+                    <div class="need-item">
+                        <div class="need-item-title">${escapeHtml(row.player || '-')}</div>
+                        <div class="need-item-meta">
+                            <span>Pozisyon: ${escapeHtml(row.position || '-')}</span>
+                            <span>Etiket: ${escapeHtml(row.tag || '-')}</span>
+                            <span>Odak: ${escapeHtml(row.focus || '-')}</span>
+                            <span>Tarih: ${escapeHtml(row.created_at || '-')}</span>
+                        </div>
+                        <div class="application-message">${escapeHtml(row.body || '')}</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                root.innerHTML = `<div class="need-item">${escapeHtml(error.message || 'Teknik notlar alinamadi.')}</div>`;
+            }
+        }
+
+        async function submitManagerWorkspaceNote() {
+            const playerName = String(document.getElementById('managerWorkspaceNotePlayer')?.value || '').trim();
+            const playerUserId = Number(document.getElementById('managerWorkspaceNotePlayerId')?.value || 0) || null;
+            const position = String(document.getElementById('managerWorkspaceNotePosition')?.value || '').trim();
+            const tag = String(document.getElementById('managerWorkspaceNoteTag')?.value || '').trim();
+            const focus = String(document.getElementById('managerWorkspaceNoteFocus')?.value || '').trim();
+            const body = String(document.getElementById('managerWorkspaceNoteBody')?.value || '').trim();
+
+            if (!playerName || body.length < 8) {
+                window.nsNotify?.error ? window.nsNotify.error('Oyuncu adi ve en az 8 karakter not gerekli.') : nsnsAlert('Oyuncu adi ve en az 8 karakter not gerekli.');
+                return;
+            }
+
+            try {
+                await createManagerWorkspaceNote({
+                    player_user_id: playerUserId,
+                    player_name: playerName,
+                    position: position || null,
+                    tag: tag || null,
+                    focus: focus || null,
+                    body,
+                });
+                document.getElementById('managerWorkspaceNotePlayer').value = '';
+                document.getElementById('managerWorkspaceNotePlayerId').value = '';
+                document.getElementById('managerWorkspaceNotePosition').value = '';
+                document.getElementById('managerWorkspaceNoteBody').value = '';
+                await renderManagerWorkspaceNotes();
+                window.nsNotify?.success ? window.nsNotify.success('Manager notu kaydedildi.') : nsnsAlert('Manager notu kaydedildi.');
+            } catch (error) {
+                window.nsNotify?.error ? window.nsNotify.error(error.message || 'Manager notu kaydedilemedi.') : nsnsAlert(error.message || 'Manager notu kaydedilemedi.');
+            }
+        }
+
+        async function renderManagerWorkspaceClips() {
+            const root = document.getElementById('managerWorkspaceClipsList');
+            const search = String(document.getElementById('managerWorkspaceClipSearch')?.value || '').trim().toLowerCase();
+            if (!root) return;
+            root.innerHTML = '<div class="need-item">Klip notlari yukleniyor...</div>';
+
+            try {
+                const rows = await fetchManagerWorkspaceClips(search);
+                if (!rows.length) {
+                    root.innerHTML = '<div class="need-item">Kayitli klip notu bulunmuyor.</div>';
+                    return;
+                }
+                root.innerHTML = rows.map((row) => `
+                    <div class="need-item">
+                        <div class="need-item-title">${escapeHtml(row.player || '-')}</div>
+                        <div class="need-item-meta">
+                            <span>Zaman: ${escapeHtml(row.stamp || '00:00')}</span>
+                            <span>Tarih: ${escapeHtml(row.created_at || '-')}</span>
+                            <span><a href="${escapeHtml(row.url || '#')}" target="_blank" rel="noopener noreferrer" style="color:#bfdbfe;">Videoyu Ac</a></span>
+                        </div>
+                        <div class="application-message">${escapeHtml(row.body || '')}</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                root.innerHTML = `<div class="need-item">${escapeHtml(error.message || 'Klip notlari alinamadi.')}</div>`;
+            }
+        }
+
+        async function submitManagerWorkspaceClip() {
+            const playerName = String(document.getElementById('managerWorkspaceClipPlayer')?.value || '').trim();
+            const playerUserId = Number(document.getElementById('managerWorkspaceClipPlayerId')?.value || 0) || null;
+            const videoUrl = String(document.getElementById('managerWorkspaceClipUrl')?.value || '').trim();
+            const minuteMark = Math.max(0, Number(document.getElementById('managerWorkspaceClipMinute')?.value || 0));
+            const secondMark = Math.max(0, Math.min(59, Number(document.getElementById('managerWorkspaceClipSecond')?.value || 0)));
+            const body = String(document.getElementById('managerWorkspaceClipBody')?.value || '').trim();
+
+            if (!playerName || !videoUrl || body.length < 8) {
+                window.nsNotify?.error ? window.nsNotify.error('Oyuncu, video linki ve en az 8 karakter klip notu gerekli.') : nsnsAlert('Oyuncu, video linki ve en az 8 karakter klip notu gerekli.');
+                return;
+            }
+
+            try {
+                await createManagerWorkspaceClip({
+                    player_user_id: playerUserId,
+                    player_name: playerName,
+                    video_url: videoUrl,
+                    minute_mark: minuteMark,
+                    second_mark: secondMark,
+                    body,
+                });
+                document.getElementById('managerWorkspaceClipPlayer').value = '';
+                document.getElementById('managerWorkspaceClipPlayerId').value = '';
+                document.getElementById('managerWorkspaceClipUrl').value = '';
+                document.getElementById('managerWorkspaceClipMinute').value = '';
+                document.getElementById('managerWorkspaceClipSecond').value = '';
+                document.getElementById('managerWorkspaceClipBody').value = '';
+                await renderManagerWorkspaceClips();
+                window.nsNotify?.success ? window.nsNotify.success('Manager klip notu kaydedildi.') : nsnsAlert('Manager klip notu kaydedildi.');
+            } catch (error) {
+                window.nsNotify?.error ? window.nsNotify.error(error.message || 'Manager klip notu kaydedilemedi.') : nsnsAlert(error.message || 'Manager klip notu kaydedilemedi.');
+            }
+        }
+
+        async function renderManagerWorkspaceEvaluations() {
+            const root = document.getElementById('managerWorkspaceEvaluationsList');
+            const total = document.getElementById('managerEvalTotal');
+            const lastPlayer = document.getElementById('managerEvalLastPlayer');
+            const lastDate = document.getElementById('managerEvalLastDate');
+            const search = String(document.getElementById('managerWorkspaceEvalSearch')?.value || '').trim().toLowerCase();
+            const minScore = Math.max(0, Number(document.getElementById('managerWorkspaceEvalMinScore')?.value || 0));
+            if (!root || !total || !lastPlayer || !lastDate) return;
+            root.innerHTML = '<div class="need-item">Degerlendirmeler yukleniyor...</div>';
+
+            try {
+                let rows = await fetchManagerWorkspaceEvaluations(search);
+                rows = rows.filter((row) => Number(row.average || 0) >= minScore);
+                total.textContent = String(rows.length);
+                lastPlayer.textContent = rows[0]?.player_name || '-';
+                lastDate.textContent = rows[0]?.saved_at || '-';
+
+                if (!rows.length) {
+                    root.innerHTML = '<div class="need-item">Kayitli degerlendirme bulunmuyor.</div>';
+                    return;
+                }
+
+                root.innerHTML = rows.map((row) => `
+                    <div class="need-item">
+                        <div class="need-item-title">${escapeHtml(row.player_name || '-')}</div>
+                        <div class="need-item-meta">
+                            <span>Pozisyon: ${escapeHtml(row.position || '-')}</span>
+                            <span>Ortalama: ${Number(row.average || 0).toLocaleString('tr-TR')}</span>
+                            <span>Kayit: ${escapeHtml(row.saved_at || '-')}</span>
+                        </div>
+                        <div class="application-message">${escapeHtml(row.decision_note || 'Karar notu yok.')}</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                total.textContent = '0';
+                lastPlayer.textContent = '-';
+                lastDate.textContent = '-';
+                root.innerHTML = `<div class="need-item">${escapeHtml(error.message || 'Degerlendirmeler alinamadi.')}</div>`;
+            }
         }
 
         async function fetchContactsSentFromApi() {
@@ -1300,16 +1685,34 @@
         }
 
         function getFavorites() {
-            try {
-                const parsed = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
-                return Array.isArray(parsed) ? parsed : [];
-            } catch (error) {
-                return [];
-            }
+            return Array.isArray(favoriteState) ? favoriteState : [];
         }
 
         function saveFavorites(items) {
-            localStorage.setItem(FAVORITES_KEY, JSON.stringify(Array.isArray(items) ? items : []));
+            favoriteState = Array.isArray(items) ? items : [];
+        }
+
+        async function fetchManagerFavorites() {
+            const headers = getAuthHeadersJson();
+            if (!headers) return [];
+            const apiBase = getApiBaseUrl();
+            const response = await fetch(`${apiBase}/favorites`, { headers });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok || payload?.ok === false) {
+                throw new Error(payload?.message || `HTTP ${response.status}`);
+            }
+            const rows = Array.isArray(payload?.data?.data) ? payload.data.data : [];
+            return rows.map((row) => {
+                const target = row?.target_user || row?.targetUser || {};
+                return {
+                    id: Number(target?.id || row?.target_user_id || 0),
+                    name: target?.name || '-',
+                    position: target?.position || target?.role || '-',
+                    age: target?.age || '-',
+                    rating: Number(target?.rating) || 0,
+                    club: target?.club || target?.city || '-',
+                };
+            }).filter((row) => row.id);
         }
 
         async function fetchManagerNeeds() {
@@ -1324,48 +1727,32 @@
 
         async function saveManagerNeed(row) {
             const apiBase = getApiBaseUrl();
-            const persistLocal = () => {
-                let items = [];
-                try {
-                    const parsed = JSON.parse(localStorage.getItem('nextscout_manager_needs_local') || '[]');
-                    items = Array.isArray(parsed) ? parsed : [];
-                } catch (error) {
-                    items = [];
-                }
-                const local = {
-                    id: Date.now(),
-                    author_name: row?.author_name || 'MENAJER',
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            if (!token) {
+                throw new Error('Oturum bulunamadi.');
+            }
+            const response = await fetch(`${apiBase}/opportunities`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    title: row?.title || 'Menajer ilani',
                     position: row?.position || '',
-                    city: row?.city || '',
                     age_min: row?.age_min || null,
                     age_max: row?.age_max || null,
-                    budget_min: row?.budget_min || null,
-                    budget_max: row?.budget_max || null,
-                    free_only: row?.free_only ?? null,
-                    details: row?.description || row?.note || 'Yeni MENAJER ilani',
-                    created_at: new Date().toISOString(),
-                    source: 'local-manager-need',
-                };
-                items.unshift(local);
-                localStorage.setItem('nextscout_manager_needs_local', JSON.stringify(items.slice(0, 300)));
-                return local;
-            };
-
-            try {
-                const response = await fetch(`${apiBase}/discovery/manager-needs`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json',
-                    },
-                    body: JSON.stringify(row),
-                });
-                if (!response.ok) return persistLocal();
-                const payload = await response.json().catch(() => ({}));
-                return payload?.data || persistLocal();
-            } catch (error) {
-                return persistLocal();
+                    city: row?.city || '',
+                    details: row?.description || row?.note || '',
+                    status: 'open',
+                }),
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(payload?.message || `HTTP ${response.status}`);
             }
+            return payload?.data || null;
         }
 
         function formatMoney(value) {
@@ -1391,28 +1778,28 @@
                 .slice(0, 3);
 
             controlRoot.innerHTML = [
-                `<div class="smart-manager-item"><strong>${poolCount} oyunculuk havuz açık</strong><span>Bugün portföy taramasına hazır aktif oyuncu veri seti masanda duruyor.</span></div>`,
-                `<div class="smart-manager-item"><strong>${favorites.length} favori dosya takipte</strong><span>Öne çıkan oyuncularını favori listenden sıcak tut ve hızlı erişimle yönet.</span></div>`,
-                `<div class="smart-manager-item"><strong>${applications.length} başvuru gönderildi</strong><span>Gönderdiğin temas ve başvuru dosyaları canlı akışta izlenebilir durumda.</span></div>`,
+                `<div class="smart-manager-item"><strong>${poolCount} oyunculuk havuz aÃ§Ä±k</strong><span>BugÃ¼n portfÃ¶y taramasÄ±na hazÄ±r aktif oyuncu veri seti masanda duruyor.</span></div>`,
+                `<div class="smart-manager-item"><strong>${favorites.length} favori dosya takipte</strong><span>Ã–ne Ã§Ä±kan oyuncularÄ±nÄ± favori listenden sÄ±cak tut ve hÄ±zlÄ± eriÅŸimle yÃ¶net.</span></div>`,
+                `<div class="smart-manager-item"><strong>${applications.length} baÅŸvuru gÃ¶nderildi</strong><span>GÃ¶nderdiÄŸin temas ve baÅŸvuru dosyalarÄ± canlÄ± akÄ±ÅŸta izlenebilir durumda.</span></div>`,
             ].join('');
 
             if (!topPlayers.length) {
-                matchesRoot.innerHTML = '<div class="smart-manager-item"><strong>Henüz güçlü eşleşme yok</strong><span>Filtreledikçe ve ilanlar yenilendikçe burası kulüp fırsatlarıyla dolacak.</span></div>';
+                matchesRoot.innerHTML = '<div class="smart-manager-item"><strong>HenÃ¼z gÃ¼Ã§lÃ¼ eÅŸleÅŸme yok</strong><span>FiltreledikÃ§e ve ilanlar yenilendikÃ§e burasÄ± kulÃ¼p fÄ±rsatlarÄ±yla dolacak.</span></div>';
             } else {
                 matchesRoot.innerHTML = topPlayers.map((player, index) => {
                     const budgetBase = 45000 + (index * 15000);
-                    return `<div class="smart-manager-item"><strong>${escapeHtml(player.position || 'Oyuncu')} • ${escapeHtml(player.name || 'Profil')}</strong><span>${escapeHtml(player.club || 'Kulüp bilgisi yok')} çıkışlı bu profil için ${budgetBase.toLocaleString('tr-TR')} TL bandında kulüp ihtiyacı eşleşmesi öne çıkıyor.</span></div>`;
+                    return `<div class="smart-manager-item"><strong>${escapeHtml(player.position || 'Oyuncu')} â€¢ ${escapeHtml(player.name || 'Profil')}</strong><span>${escapeHtml(player.club || 'KulÃ¼p bilgisi yok')} Ã§Ä±kÄ±ÅŸlÄ± bu profil iÃ§in ${budgetBase.toLocaleString('tr-TR')} TL bandÄ±nda kulÃ¼p ihtiyacÄ± eÅŸleÅŸmesi Ã¶ne Ã§Ä±kÄ±yor.</span></div>`;
                 }).join('');
             }
 
             const weakSignals = [
-                !favorites.length ? '<div class="smart-manager-item"><strong>Favori listesi zayıf</strong><span>Karar havuzunu daraltmak için en az 3 güçlü oyuncuyu favoriye al.</span></div>' : '',
-                !applications.length ? '<div class="smart-manager-item"><strong>Başvuru trafiği yok</strong><span>Portföydeki oyuncular için bugün en az bir sıcak temas açman önerilir.</span></div>' : '',
-                filteredCount < 3 ? '<div class="smart-manager-item"><strong>Filtre seti çok dar</strong><span>Daha geniş bir pozisyon ve yaş aralığıyla yeni fırsat alanları açabilirsin.</span></div>' : '',
+                !favorites.length ? '<div class="smart-manager-item"><strong>Favori listesi zayÄ±f</strong><span>Karar havuzunu daraltmak iÃ§in en az 3 gÃ¼Ã§lÃ¼ oyuncuyu favoriye al.</span></div>' : '',
+                !applications.length ? '<div class="smart-manager-item"><strong>BaÅŸvuru trafiÄŸi yok</strong><span>PortfÃ¶ydeki oyuncular iÃ§in bugÃ¼n en az bir sÄ±cak temas aÃ§man Ã¶nerilir.</span></div>' : '',
+                filteredCount < 3 ? '<div class="smart-manager-item"><strong>Filtre seti Ã§ok dar</strong><span>Daha geniÅŸ bir pozisyon ve yaÅŸ aralÄ±ÄŸÄ±yla yeni fÄ±rsat alanlarÄ± aÃ§abilirsin.</span></div>' : '',
             ].filter(Boolean);
             alertsRoot.innerHTML = weakSignals.length
                 ? weakSignals.join('')
-                : '<div class="smart-manager-item"><strong>Portföy dengesi güçlü</strong><span>Favoriler, başvurular ve oyuncu filtreleri bugün sağlıklı seviyede görünüyor.</span></div><div class="smart-manager-item"><strong>Bir sonraki adım net</strong><span>Profilini güncelle ve yeni ilan ekleyerek portföyü daha görünür hale getir.</span></div>';
+                : '<div class="smart-manager-item"><strong>PortfÃ¶y dengesi gÃ¼Ã§lÃ¼</strong><span>Favoriler, baÅŸvurular ve oyuncu filtreleri bugÃ¼n saÄŸlÄ±klÄ± seviyede gÃ¶rÃ¼nÃ¼yor.</span></div><div class="smart-manager-item"><strong>Bir sonraki adÄ±m net</strong><span>Profilini gÃ¼ncelle ve yeni ilan ekleyerek portfÃ¶yÃ¼ daha gÃ¶rÃ¼nÃ¼r hale getir.</span></div>';
 
             const answeredCount = applications.filter((x) => {
                 const status = String(x?.status || '').toLowerCase();
@@ -1420,9 +1807,9 @@
             }).length;
             const pendingCount = Math.max(applications.length - answeredCount, 0);
             flowRoot.innerHTML = [
-                `<div class="smart-manager-item"><strong>${pendingCount} dosya geri dönüş bekliyor</strong><span>Henüz tamamlanmamış görüşme ve temasların aktif takip istiyor.</span></div>`,
-                `<div class="smart-manager-item"><strong>${answeredCount} dosyada cevap var</strong><span>Yanıtlanan başvuruları tekrar açıp teklif potansiyeli olanları öne alabilirsin.</span></div>`,
-                `<div class="smart-manager-item"><strong>${poolCount} oyuncu arasında yeni fırsat var</strong><span>Canlı oyuncu havuzu üzerinden bugün sıcak dosyalara yeniden dönmek için doğru zaman.</span></div>`,
+                `<div class="smart-manager-item"><strong>${pendingCount} dosya geri dÃ¶nÃ¼ÅŸ bekliyor</strong><span>HenÃ¼z tamamlanmamÄ±ÅŸ gÃ¶rÃ¼ÅŸme ve temaslarÄ±n aktif takip istiyor.</span></div>`,
+                `<div class="smart-manager-item"><strong>${answeredCount} dosyada cevap var</strong><span>YanÄ±tlanan baÅŸvurularÄ± tekrar aÃ§Ä±p teklif potansiyeli olanlarÄ± Ã¶ne alabilirsin.</span></div>`,
+                `<div class="smart-manager-item"><strong>${poolCount} oyuncu arasÄ±nda yeni fÄ±rsat var</strong><span>CanlÄ± oyuncu havuzu Ã¼zerinden bugÃ¼n sÄ±cak dosyalara yeniden dÃ¶nmek iÃ§in doÄŸru zaman.</span></div>`,
             ].join('');
         }
 
@@ -1433,15 +1820,10 @@
             try {
                 items = (await fetchManagerNeeds()).slice(0, 4);
             } catch (error) {
-                try {
-                    const parsed = JSON.parse(localStorage.getItem('nextscout_manager_needs_local') || '[]');
-                    items = Array.isArray(parsed) ? parsed.slice(0, 4) : [];
-                } catch (e) {
-                    items = [];
-                }
+                items = [];
             }
             if (!items.length) {
-                root.innerHTML = '<div class="need-item">Henuz ilan yok. "Yeni İlan" ile ilk ilani olustur.</div>';
+                root.innerHTML = '<div class="need-item">Henuz ilan yok. "Yeni Ä°lan" ile ilk ilani olustur.</div>';
                 return;
             }
             root.innerHTML = items.map((item) => {
@@ -1511,10 +1893,10 @@
             grid.innerHTML = players.map((player) => {
                 const rating = Number(player.rating) || 0;
                 const starCount = Math.max(1, Math.min(5, Math.round(rating / 2)));
-                const stars = '★'.repeat(starCount) + '☆'.repeat(5 - starCount);
+                const stars = 'â˜…'.repeat(starCount) + 'â˜†'.repeat(5 - starCount);
                 return `
                 <div class="player-card">
-                    <div class="player-card-image">⚽</div>
+                    <div class="player-card-image">âš½</div>
                     <div class="player-card-content">
                         <div class="player-name">${escapeHtml(player.name || '-')}</div>
                         <div class="player-position">${escapeHtml(player.position || '-')}</div>
@@ -1595,10 +1977,9 @@
         async function sendApplication(playerId) {
             const player = allPlayers.find((p) => Number(p.id) === Number(playerId));
             if (!player) { window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.'); return; }
-            const message = prompt(`${player.name} icin kisa başvuru notu:`, 'Ilgileniyoruz, gorusmek isteriz.');
+            const message = prompt(`${player.name} icin kisa basvuru notu:`, 'Ilgileniyoruz, gorusmek isteriz.');
             if (message === null) return;
 
-            const items = getApplications();
             const draft = {
                 id: Date.now(),
                 player_id: player.id,
@@ -1608,67 +1989,71 @@
                 created_at: new Date().toISOString(),
             };
 
-            let persisted = false;
             try {
                 const headers = getAuthHeadersJson();
-                if (headers) {
-                    const apiBase = getApiBaseUrl();
-                    const response = await fetch(`${apiBase}/contacts`, {
-                        method: 'POST',
-                        headers,
-                        body: JSON.stringify({
-                            to_user_id: Number(player.id),
-                            subject: 'Başvuru',
-                            message: draft.message,
-                        }),
-                    });
-                    if (response.ok) {
-                        const payload = await response.json().catch(() => ({}));
-                        const created = payload?.data || {};
-                        items.unshift({
-                            id: created?.id || draft.id,
-                            player_id: created?.to_user_id || draft.player_id,
-                            player_name: player.name,
-                            message: created?.message || draft.message,
-                            status: created?.status || 'sent',
-                            created_at: created?.created_at || draft.created_at,
-                            source: 'api',
-                        });
-                        persisted = true;
-                    }
+                if (!headers) throw new Error('Oturum bulunamadi.');
+                const apiBase = getApiBaseUrl();
+                const response = await fetch(`${apiBase}/contacts`, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify({
+                        to_user_id: Number(player.id),
+                        subject: 'Basvuru',
+                        message: draft.message,
+                    }),
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    throw new Error(payload?.message || `HTTP ${response.status}`);
                 }
+                const created = payload?.data || {};
+                const items = getApplications();
+                items.unshift({
+                    id: created?.id || draft.id,
+                    player_id: created?.to_user_id || draft.player_id,
+                    player_name: player.name,
+                    message: created?.message || draft.message,
+                    status: created?.status || 'sent',
+                    created_at: created?.created_at || draft.created_at,
+                    source: 'api',
+                });
+                saveApplications(items.slice(0, 500));
+                updateStats();
+                window.nsNotify?.success ? window.nsNotify.success(`Basvuru gonderildi: ${player.name}`) : nsnsAlert(`Basvuru gonderildi: ${player.name}`);
             } catch (error) {
-                persisted = false;
+                window.nsNotify?.error ? window.nsNotify.error(error.message || 'Basvuru gonderilemedi.') : nsnsAlert(error.message || 'Basvuru gonderilemedi.');
             }
-
-            if (!persisted) items.unshift(draft);
-            saveApplications(items.slice(0, 500));
-            updateStats();
-            window.nsNotify?.success ? window.nsNotify.success(`Başvuru gönderildi: ${player.name}`) : nsnsAlert(`Başvuru gönderildi: ${player.name}`);
         }
 
-        function toggleFavorite(playerId) {
+        async function toggleFavorite(playerId) {
             const player = allPlayers.find((p) => Number(p.id) === Number(playerId));
             if (!player) { window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.'); return; }
+            const headers = getAuthHeadersJson();
+            if (!headers) {
+                window.nsNotify?.error ? window.nsNotify.error('Favori icin once giris yap.') : nsnsAlert('Favori icin once giris yap.');
+                return;
+            }
             const items = getFavorites();
             const exists = items.some((x) => Number(x.id) === Number(player.id));
-
-            if (exists) {
-                const next = items.filter((x) => Number(x.id) !== Number(player.id));
-                saveFavorites(next);
-                window.nsNotify?.info ? window.nsNotify.info('Favoriden cikarildi.') : nsnsAlert('Favoriden cikarildi.');
-            } else {
-                items.unshift({
-                    id: player.id,
-                    name: player.name,
-                    position: player.position,
-                    age: player.age,
-                    rating: player.rating,
-                    club: player.club,
-                    saved_at: new Date().toISOString(),
+            try {
+                const apiBase = getApiBaseUrl();
+                const response = await fetch(`${apiBase}/favorites/${encodeURIComponent(player.id)}/toggle`, {
+                    method: 'POST',
+                    headers,
                 });
-                saveFavorites(items.slice(0, 500));
-                window.nsNotify?.success ? window.nsNotify.success('Favorilere eklendi.') : nsnsAlert('Favorilere eklendi.');
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    throw new Error(payload?.message || `HTTP ${response.status}`);
+                }
+                if (exists) {
+                    saveFavorites(items.filter((x) => Number(x.id) !== Number(player.id)));
+                    window.nsNotify?.info ? window.nsNotify.info('Favoriden cikarildi.') : nsnsAlert('Favoriden cikarildi.');
+                } else {
+                    saveFavorites([{ id: player.id, name: player.name, position: player.position, age: player.age, rating: player.rating, club: player.club }, ...items].slice(0, 500));
+                    window.nsNotify?.success ? window.nsNotify.success('Favorilere eklendi.') : nsnsAlert('Favorilere eklendi.');
+                }
+            } catch (error) {
+                window.nsNotify?.error ? window.nsNotify.error(error.message || 'Favori islemi basarisiz.') : nsnsAlert(error.message || 'Favori islemi basarisiz.');
             }
             updateStats();
         }
@@ -1688,7 +2073,7 @@
             titleEl.textContent = title;
 
             if (!Array.isArray(items) || !items.length) {
-                bodyEl.innerHTML = '<div class="application-empty">Bu listede başvuru bulunamadi.</div>';
+                bodyEl.innerHTML = '<div class="application-empty">Bu listede baÅŸvuru bulunamadi.</div>';
             } else {
                 bodyEl.innerHTML = items.map((item) => {
                     const statusRaw = String(item?.status || 'sent').toLowerCase();
@@ -1785,35 +2170,12 @@
             else if (score >= 55) verdict = 'Orta Seviye';
 
             const root = document.getElementById('offerScoreResult');
-            if (root) root.textContent = `Teklif Skoru: ${score}/100 • ${verdict}`;
+            if (root) root.textContent = `Teklif Skoru: ${score}/100 â€¢ ${verdict}`;
 
-            localStorage.setItem('nextscout_offer_score_snapshot', JSON.stringify({
-                budgetTrust,
-                contractClarity,
-                paymentSpeed,
-                projectFit,
-                score,
-                verdict,
-                updated_at: new Date().toISOString(),
-            }));
         }
 
         function loadOfferScoreSnapshot() {
-            try {
-                const raw = localStorage.getItem('nextscout_offer_score_snapshot');
-                const data = raw ? JSON.parse(raw) : null;
-                if (!data) {
-                    calculateOfferScore();
-                    return;
-                }
-                document.getElementById('offerBudgetTrust').value = data.budgetTrust ?? 70;
-                document.getElementById('offerContractClarity').value = data.contractClarity ?? 70;
-                document.getElementById('offerPaymentSpeed').value = data.paymentSpeed ?? 70;
-                document.getElementById('offerProjectFit').value = data.projectFit ?? 70;
-                calculateOfferScore();
-            } catch (error) {
-                calculateOfferScore();
-            }
+            calculateOfferScore();
         }
 
         function logout() {
@@ -1834,10 +2196,29 @@
             } catch (error) {
                 allPlayers = getFallbackPlayers();
             }
+            try {
+                saveFavorites(await fetchManagerFavorites());
+            } catch (error) {
+                saveFavorites([]);
+            }
             filteredPlayers = allPlayers.slice();
             renderPlayers(filteredPlayers);
             updateStats();
+            renderManagerSmartCards();
             await renderRecentNeeds();
+            document.getElementById('managerWorkspaceNoteSubmit')?.addEventListener('click', submitManagerWorkspaceNote);
+            document.getElementById('managerWorkspaceClipSubmit')?.addEventListener('click', submitManagerWorkspaceClip);
+            document.getElementById('managerWorkspaceNoteSearch')?.addEventListener('input', renderManagerWorkspaceNotes);
+            document.getElementById('managerWorkspaceClipSearch')?.addEventListener('input', renderManagerWorkspaceClips);
+            document.getElementById('managerWorkspaceEvalSearch')?.addEventListener('input', renderManagerWorkspaceEvaluations);
+            document.getElementById('managerWorkspaceEvalMinScore')?.addEventListener('input', renderManagerWorkspaceEvaluations);
+            if (getAuthToken()) {
+                await renderManagerWorkspaceNotes();
+            } else {
+                document.getElementById('managerWorkspaceNotesList').innerHTML = '<div class="need-item">Giris yaptiginda teknik notlar burada gorunur.</div>';
+                document.getElementById('managerWorkspaceClipsList').innerHTML = '<div class="need-item">Giris yaptiginda klip notlari burada gorunur.</div>';
+                document.getElementById('managerWorkspaceEvaluationsList').innerHTML = '<div class="need-item">Giris yaptiginda kaydedilmis degerlendirmeler burada gorunur.</div>';
+            }
         }
 
         document.getElementById('managerNeedForm')?.addEventListener('submit', async function(e) {
@@ -1880,9 +2261,9 @@
                 this.reset();
                 closeNeedModal();
                 await renderRecentNeeds();
-                window.nsNotify?.success ? window.nsNotify.success('İlan kaydedildi. Anasayfa ve MENAJER ilan listesinde gorunecek.') : nsnsAlert('İlan kaydedildi. Anasayfa ve MENAJER ilan listesinde gorunecek.');
+                window.nsNotify?.success ? window.nsNotify.success('Ä°lan kaydedildi. Anasayfa ve MENAJER ilan listesinde gorunecek.') : nsnsAlert('Ä°lan kaydedildi. Anasayfa ve MENAJER ilan listesinde gorunecek.');
             } catch (error) {
-                window.nsNotify?.error ? window.nsNotify.error(`İlan kaydedilemedi: ${error.message}`) : nsnsAlert(`İlan kaydedilemedi: ${error.message}`);
+                window.nsNotify?.error ? window.nsNotify.error(`Ä°lan kaydedilemedi: ${error.message}`) : nsnsAlert(`Ä°lan kaydedilemedi: ${error.message}`);
             }
         });
 
@@ -1891,13 +2272,13 @@
             const welcomeTitle = document.querySelector('.welcome-card h1');
             if (welcomeTitle) welcomeTitle.textContent = 'Manager Dashboard';
             const welcomeSub = document.querySelector('.welcome-card p');
-            if (welcomeSub) welcomeSub.textContent = 'Oyuncu ara, profil incele, başvuru gönder ve favori listeni yönet.';
+            if (welcomeSub) welcomeSub.textContent = 'Oyuncu ara, profil incele, baÅŸvuru gÃ¶nder ve favori listeni yÃ¶net.';
             const sidebarMenu = document.querySelector('.sidebar-menu');
             if (sidebarMenu && !sidebarMenu.querySelector('[data-nav="scout-reports"]')) {
                 const reportsItem = document.createElement('li');
                 reportsItem.className = 'sidebar-item';
                 reportsItem.setAttribute('data-nav', 'scout-reports');
-                reportsItem.innerHTML = '<i class="fas fa-file-lines"></i><span>Scout Raporları</span>';
+                reportsItem.innerHTML = '<i class="fas fa-file-lines"></i><span>Scout RaporlarÄ±</span>';
                 reportsItem.onclick = openScoutReports;
                 const helpItem = Array.from(sidebarMenu.querySelectorAll('.sidebar-item')).find((item) => {
                     const label = item.querySelector('span:last-child');
@@ -1909,40 +2290,40 @@
             document.querySelectorAll('.sidebar-item span:last-child').forEach((el) => {
                 let text = el.textContent || '';
                 text = text
-                    .replace('Gonderilen Basvurular', 'Gönderilen Başvurular')
-                    .replace('Yanitlanan Basvurular', 'Yanıtlanan Başvurular')
-                    .replace('Aradigim Oyuncular', 'Aradığım Oyuncular')
-                    .replace('Mesajlarim', 'Mesajlarım')
-                    .replace('Yardim', 'Yardım');
+                    .replace('Gonderilen Basvurular', 'GÃ¶nderilen BaÅŸvurular')
+                    .replace('Yanitlanan Basvurular', 'YanÄ±tlanan BaÅŸvurular')
+                    .replace('Aradigim Oyuncular', 'AradÄ±ÄŸÄ±m Oyuncular')
+                    .replace('Mesajlarim', 'MesajlarÄ±m')
+                    .replace('Yardim', 'YardÄ±m');
                 el.textContent = text;
             });
             document.querySelectorAll('h2').forEach((el) => {
                 let text = el.textContent || '';
                 text = text
-                    .replace('Aradigim Oyuncu Ilanlari', 'Aradığım Oyuncu İlanları')
-                    .replace('Arama Sonuclari', 'Arama Sonuçları');
+                    .replace('Aradigim Oyuncu Ilanlari', 'AradÄ±ÄŸÄ±m Oyuncu Ä°lanlarÄ±')
+                    .replace('Arama Sonuclari', 'Arama SonuÃ§larÄ±');
                 el.textContent = text;
             });
             document.querySelectorAll('.stat-card-label').forEach((el) => {
-                el.textContent = (el.textContent || '').replace('Gonderilen Başvuru', 'Gönderilen Başvuru');
+                el.textContent = (el.textContent || '').replace('Gonderilen BaÅŸvuru', 'GÃ¶nderilen BaÅŸvuru');
             });
             document.querySelectorAll('button, label, option, .need-modal-title, .applications-modal-title, .action-btn span').forEach((el) => {
                 let text = el.textContent || '';
                 text = text
-                    .replace('Basvur', 'Başvur')
-                    .replace('Basvurular', 'Başvurular')
-                    .replace('Iptal', 'İptal')
-                    .replace('Aradigin Oyuncuyu Ekle', 'Aradığın Oyuncuyu Ekle')
-                    .replace('Oyuncu Adi', 'Oyuncu Adı')
-                    .replace('Yas Araligi', 'Yaş Aralığı')
-                    .replace('Yas', 'Yaş')
-                    .replace('Tumu', 'Tümü')
-                    .replace('Butce Guveni', 'Bütçe Güveni')
-                    .replace('Sozlesme Netligi', 'Sözleşme Netliği')
-                    .replace('Odeme Hizi', 'Ödeme Hızı')
+                    .replace('Basvur', 'BaÅŸvur')
+                    .replace('Basvurular', 'BaÅŸvurular')
+                    .replace('Iptal', 'Ä°ptal')
+                    .replace('Aradigin Oyuncuyu Ekle', 'AradÄ±ÄŸÄ±n Oyuncuyu Ekle')
+                    .replace('Oyuncu Adi', 'Oyuncu AdÄ±')
+                    .replace('Yas Araligi', 'YaÅŸ AralÄ±ÄŸÄ±')
+                    .replace('Yas', 'YaÅŸ')
+                    .replace('Tumu', 'TÃ¼mÃ¼')
+                    .replace('Butce Guveni', 'BÃ¼tÃ§e GÃ¼veni')
+                    .replace('Sozlesme Netligi', 'SÃ¶zleÅŸme NetliÄŸi')
+                    .replace('Odeme Hizi', 'Ã–deme HÄ±zÄ±')
                     .replace('Menejer', 'Menajer')
-                    .replace('Menajer Adi', 'Menajer Adı')
-                    .replace('Menajer Soyadi', 'Menajer Soyadı');
+                    .replace('Menajer Adi', 'Menajer AdÄ±')
+                    .replace('Menajer Soyadi', 'Menajer SoyadÄ±');
                 el.textContent = text;
             });
             document.querySelectorAll('input[placeholder], input[value]').forEach((el) => {
@@ -1950,11 +2331,11 @@
                 const value = el.getAttribute('value');
                 if (placeholder) {
                     el.setAttribute('placeholder', placeholder
-                        .replace('Oyuncu adi gir', 'Oyuncu adı gir')
+                        .replace('Oyuncu adi gir', 'Oyuncu adÄ± gir')
                         .replace('Ad Soyad', 'Ad Soyad'));
                 }
                 if (value) {
-                    el.setAttribute('value', value.replace('Ilanda gorunecek isim', 'İlanda görünecek isim'));
+                    el.setAttribute('value', value.replace('Ilanda gorunecek isim', 'Ä°landa gÃ¶rÃ¼necek isim'));
                 }
             });
         }

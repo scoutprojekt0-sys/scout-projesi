@@ -483,9 +483,9 @@
     }
 
     const view = getFavoritesView();
-    const FAVORITES_KEY = getFavoritesStorageKey(view);
     const LISTS_KEY = `nextscout_favorite_lists_${view}`;
     const ASSIGNMENTS_KEY = `nextscout_favorite_list_assignments_${view}`;
+    let favoriteState = [];
 
     const countText = document.getElementById('countText');
     const listEl = document.getElementById('list');
@@ -536,12 +536,23 @@
       localStorage.setItem(key, JSON.stringify(value));
     }
 
+    function getToken() {
+      return (localStorage.getItem('nextscout_token') || '').trim();
+    }
+
+    function getAuthHeaders() {
+      const headers = { Accept: 'application/json' };
+      const token = getToken();
+      if (token) headers.Authorization = `Bearer ${token}`;
+      return headers;
+    }
+
     function loadFavorites() {
-      return loadJson(FAVORITES_KEY, []);
+      return Array.isArray(favoriteState) ? favoriteState : [];
     }
 
     function saveFavorites(items) {
-      saveJson(FAVORITES_KEY, items);
+      favoriteState = Array.isArray(items) ? items : [];
     }
 
     function loadLists() {
@@ -613,7 +624,18 @@
       render();
     }
 
-    function removeFavorite(id) {
+    async function removeFavorite(id) {
+      const item = loadFavorites().find((entry) => String(entry.id) === String(id));
+      if (!item?.targetUserId) return;
+      try {
+        await fetch(`${getApiBaseUrl()}/favorites/${encodeURIComponent(item.targetUserId)}/toggle`, {
+          method: 'POST',
+          headers: getAuthHeaders()
+        });
+      } catch (error) {
+        safeAlert('Favori kaldirilamadi.');
+        return;
+      }
       const nextItems = loadFavorites().filter((entry) => String(entry.id) !== String(id));
       const assignments = loadAssignments();
       delete assignments[String(id)];
@@ -791,6 +813,7 @@
     function mapLeaderboardRow(row) {
       return {
         id: row?.id || '',
+        targetUserId: row?.id || '',
         name: row?.name || '-',
         position: row?.position || row?.role_type || row?.role || '-',
         club: row?.club || row?.organization || row?.name || '-',
@@ -799,6 +822,39 @@
         height: row?.height || row?.experience_years || '-',
         rating: row?.favorites_count || 0
       };
+    }
+
+    function mapFavoriteRow(row) {
+      const target = row?.target_user || row?.targetUser || {};
+      return {
+        id: target?.id || row?.target_user_id || row?.id || '',
+        targetUserId: target?.id || row?.target_user_id || '',
+        name: target?.name || '-',
+        position: target?.position || target?.role || '-',
+        club: target?.club || target?.organization || target?.name || '-',
+        league: target?.league || target?.city || '-',
+        age: target?.age || '-',
+        height: target?.height || '-',
+        rating: target?.rating || 0,
+        role: target?.role || '-',
+        city: target?.city || '-',
+      };
+    }
+
+    async function loadFavoritesFromApi() {
+      if (!getToken()) return false;
+      try {
+        const response = await fetch(`${getApiBaseUrl()}/favorites`, {
+          headers: getAuthHeaders()
+        });
+        if (!response.ok) return false;
+        const payload = await response.json();
+        const rows = Array.isArray(payload?.data?.data) ? payload.data.data : [];
+        saveFavorites(rows.map(mapFavoriteRow));
+        return true;
+      } catch (error) {
+        return false;
+      }
     }
 
     async function loadFavoritesLeaderboard() {
@@ -843,9 +899,16 @@
     window.removeFavorite = removeFavorite;
     window.contactFavorite = contactFavorite;
 
-    applyPresentation();
-    render();
-    loadFavoritesLeaderboard();
+    async function initializeFavoritesPage() {
+      applyPresentation();
+      const loadedFromApi = await loadFavoritesFromApi();
+      render();
+      if (!loadedFromApi) {
+        loadFavoritesLeaderboard();
+      }
+    }
+
+    initializeFavoritesPage();
   </script>
   <script src="assets/js/core-stability.js"></script>
   <script src="assets/js/mobile-professional.js" defer></script>

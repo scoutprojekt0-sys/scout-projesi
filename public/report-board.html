@@ -189,7 +189,6 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'nextscout_scout_reports';
     let allReports = [];
     let activeReportId = '';
 
@@ -203,10 +202,27 @@
       }[char]));
     }
 
-    function loadReports() {
+    function getApiBaseUrl() {
+      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      return `${window.location.origin}/api`;
+    }
+
+    function getAuthHeaders() {
+      const token = (localStorage.getItem('nextscout_token') || '').trim();
+      return token ? { Accept: 'application/json', Authorization: `Bearer ${token}` } : { Accept: 'application/json' };
+    }
+
+    async function loadReports() {
+      const token = (localStorage.getItem('nextscout_token') || '').trim();
+      if (!token) return [];
       try {
-        const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-        return Array.isArray(parsed) ? parsed : [];
+        const response = await fetch(`${getApiBaseUrl()}/scout/player-reports`, {
+          headers: getAuthHeaders()
+        });
+        const payload = await response.json().catch(() => null);
+        if (!response.ok) return [];
+        const rows = Array.isArray(payload?.data?.data) ? payload.data.data : [];
+        return rows;
       } catch (error) {
         return [];
       }
@@ -309,8 +325,8 @@
       renderTable(filtered);
     }
 
-    function init() {
-      allReports = loadReports().sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+    async function init() {
+      allReports = (await loadReports()).sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
       fillPositionFilter(allReports);
       applyFilters();
       document.getElementById('searchInput')?.addEventListener('input', applyFilters);

@@ -194,9 +194,6 @@
     const allowedRoles = new Set(['manager','menajer','team','club','kulup','player','lawyer']);
     const roomState = { offers: [], selectedId: null };
 
-    function roomStorageKey(id) { return `nextscout_negotiation_room_${id}`; }
-    function loadRoomOverlay(id) { try { const raw = localStorage.getItem(roomStorageKey(id)); if (!raw) return { status:null, counterFee:null, note:'', history:[] }; const parsed = JSON.parse(raw); return { status:parsed?.status || null, counterFee:parsed?.counterFee ?? null, note:parsed?.note || '', history:Array.isArray(parsed?.history) ? parsed.history : [] }; } catch (_) { return { status:null, counterFee:null, note:'', history:[] }; } }
-    function saveRoomOverlay(id, overlay) { localStorage.setItem(roomStorageKey(id), JSON.stringify(overlay)); }
     function formatMoney(value, currency) { const amount = Number(value || 0); const safeCurrency = (currency || 'EUR').toUpperCase(); if (!Number.isFinite(amount) || amount <= 0) return safeCurrency; try { return new Intl.NumberFormat('tr-TR', { style:'currency', currency:safeCurrency, maximumFractionDigits:0 }).format(amount); } catch (_) { return `${safeCurrency} ${amount.toLocaleString('tr-TR')}`; } }
     function transferTypeLabel(type) { const key = String(type || '').toLowerCase(); if (key === 'loan') return 'Kiralik teklif'; if (key === 'free') return 'Bonservissiz gecis'; if (key === 'end_of_loan') return 'Kiralik donusu'; if (key === 'permanent') return 'Kalici transfer'; return 'Transfer kaydi'; }
     function verificationLabel(status) { const key = String(status || '').toLowerCase(); if (key === 'verified') return 'Dogrulandi'; if (key === 'pending') return 'Incelemede'; if (key === 'accepted') return 'Kabul edildi'; if (key === 'rejected') return 'Reddedildi'; if (key === 'countered') return 'Karsi teklif verildi'; return 'Kayit alindi'; }

@@ -2250,15 +2250,8 @@
     }
 
     function getClubPreferredSystemFromStorage() {
-      try {
-        const raw = localStorage.getItem('nextscout_club_profile');
-        if (!raw) return "";
-        const parsed = JSON.parse(raw);
-        const value = String(parsed?.preferredSystem || "").trim();
-        return value && TACTICAL_SYSTEMS[value] ? value : "";
-      } catch (error) {
-        return "";
-      }
+      const value = String(localStorage.getItem('nextscout_home_club_system') || "").trim();
+      return value && TACTICAL_SYSTEMS[value] ? value : "";
     }
 
     function syncSystemFilterFromContext() {
@@ -3258,34 +3251,37 @@
       window.location.href = `player-profile.html?user_id=${encodeURIComponent(id)}`;
     }
 
-    function addToFavorite(id) {
+    async function addToFavorite(id) {
       const player = allPlayers.find(p => p.id === id);
       if (!player) return;
-
-      const key = "nextscout_favorite_players";
-      const current = JSON.parse(localStorage.getItem(key) || "[]");
-      const alreadyExists = current.some(p => p.id === player.id);
-
-      if (alreadyExists) {
-        nsAlert(`${player.name} zaten favorilerde.`);
+      const token = (localStorage.getItem("nextscout_token") || "").trim();
+      if (!token) {
+        nsAlert("Favori eklemek icin giris yap.");
         return;
       }
 
-      current.unshift({
-        id: player.id,
-        name: player.name,
-        position: player.position,
-        age: player.age,
-        league: player.league,
-        club: player.club,
-        rating: player.rating,
-        height: player.height,
-        nationality: player.nationality,
-        createdAt: new Date().toISOString()
-      });
+      try {
+        const checkResponse = await fetch(`${getApiBaseUrl()}/favorites/${encodeURIComponent(player.id)}/check`, {
+          headers: { Accept: "application/json", Authorization: `Bearer ${token}` }
+        });
+        const checkPayload = await checkResponse.json().catch(() => null);
+        if (checkResponse.ok && checkPayload?.data?.is_favorited) {
+          nsAlert(`${player.name} zaten favorilerde.`);
+          return;
+        }
 
-      localStorage.setItem(key, JSON.stringify(current.slice(0, 500)));
-      nsAlert(`${player.name} favorilere eklendi`);
+        const response = await fetch(`${getApiBaseUrl()}/favorites/${encodeURIComponent(player.id)}/toggle`, {
+          method: "POST",
+          headers: { Accept: "application/json", Authorization: `Bearer ${token}` }
+        });
+        const payload = await response.json().catch(() => null);
+        if (!response.ok || payload?.ok === false) {
+          throw new Error(payload?.message || "Favori eklenemedi.");
+        }
+        nsAlert(`${player.name} favorilere eklendi`);
+      } catch (error) {
+        nsAlert(error?.message || "Favori eklenemedi.");
+      }
     }
 
     function contact(id) {

@@ -10370,29 +10370,6 @@
             const logoutBtn = document.getElementById('logoutBtn');
             if (!registerBtn || !loginBtn || !profileBtn || !logoutBtn) return;
 
-            // file:// modunda fallback: demo login varsa son kayıtlı kullanıcıyı oturuma al
-            if (window.location.protocol === 'file:' && !userData && demoLogin) {
-                try {
-                    const registered = JSON.parse(localStorage.getItem('nextscout_registered_users') || '[]');
-                    const pending = JSON.parse(localStorage.getItem('nextscout_pending_users') || '[]');
-                    const lastUser = (Array.isArray(registered) && registered[0]) || (Array.isArray(pending) && pending[0]) || null;
-                    if (lastUser) {
-                        const fallbackUser = {
-                            name: lastUser.name || 'Kullanıcı',
-                            email: lastUser.email || '',
-                            role: lastUser.role || 'player',
-                        };
-                        localStorage.setItem('nextscout_user', JSON.stringify(fallbackUser));
-                        if (!token) {
-                            localStorage.setItem('nextscout_token', 'local-session-token');
-                        }
-                        userData = JSON.stringify(fallbackUser);
-                    }
-                } catch (e) {
-                    runtime.error('File mode auth fallback hatası:', e);
-                }
-            }
-
             if (token && userData) {
                 try {
                     const user = JSON.parse(userData);
@@ -11611,45 +11588,15 @@
         function renderPaidClubPromoNamesInline() {
             const root = document.getElementById('clubPromoNamesInline');
             if (!root) return;
-
-            let rows = [];
-            try {
-                const parsed = JSON.parse(localStorage.getItem('nextscout_paid_club_promos') || '[]');
-                rows = Array.isArray(parsed) ? parsed : [];
-            } catch (error) {
-                rows = [];
-            }
-
-            const names = rows
-                .filter((item) => item && item.paid === true)
-                .map((item) => (item?.club_name || '').toString().trim())
-                .filter(Boolean);
-
-            const uniqueNames = [...new Set(names)].slice(0, 14);
-            if (!uniqueNames.length) {
-                root.innerHTML = '<span class="club-promo-name-pill">Henüz ödemeli tanıtım yok</span>';
-                return;
-            }
-
-            root.innerHTML = uniqueNames
-                .map((name) => `<span class="club-promo-name-pill">${esc(name)}</span>`)
-                .join('');
+            root.innerHTML = '<span class="club-promo-name-pill">Henüz ödemeli tanıtım yok</span>';
         }
 
         async function renderClubNeedsInlineList() {
             const root = document.getElementById('clubNeedsInlineList');
             if (!root) return;
 
-            let rows = [];
             const apiPayload = await fetchJsonSafe(`${API_BASE_URL}/club-needs?limit=30`);
-            const apiRows = Array.isArray(apiPayload?.data) ? apiPayload.data : [];
-            try {
-                const parsed = JSON.parse(localStorage.getItem('nextscout_club_needs_notes') || '[]');
-                rows = Array.isArray(parsed) ? parsed : [];
-            } catch (error) {
-                rows = [];
-            }
-            rows = [...apiRows, ...rows];
+            const rows = Array.isArray(apiPayload?.data) ? apiPayload.data : [];
 
             const items = rows
                 .map((item) => ({
@@ -11700,14 +11647,7 @@
                     .map((item) => (item?.club_name || '').toString().trim())
                     .filter(Boolean)
             );
-            const clubCount = uniqueClubs.size || (() => {
-                try {
-                    const localRows = JSON.parse(localStorage.getItem('nextscout_club_needs_notes') || '[]');
-                    return new Set((Array.isArray(localRows) ? localRows : []).map((item) => (item?.club_name || '').toString().trim()).filter(Boolean)).size;
-                } catch (error) {
-                    return 0;
-                }
-            })();
+            const clubCount = uniqueClubs.size;
             const playerCount = players.length || 0;
             const coachCount = Number(coachesPayload?.data?.total)
                 || (Array.isArray(coachesPayload?.data?.data) ? coachesPayload.data.data.length : 0);
@@ -14393,12 +14333,7 @@
             }
 
             if (!rows.length) {
-                try {
-                    const parsed = JSON.parse(localStorage.getItem('nextscout_club_needs_notes') || '[]');
-                    rows = Array.isArray(parsed) ? parsed.filter((row) => row && typeof row === 'object') : [];
-                } catch (error) {
-                    rows = [];
-                }
+                rows = [];
             }
 
             const fallbackRows = [
@@ -14979,21 +14914,8 @@
             }
         }
 
-        function getPlayerLikeStore() {
-            try {
-                const raw = localStorage.getItem('nextscout_player_likes');
-                const parsed = raw ? JSON.parse(raw) : {};
-                return parsed && typeof parsed === 'object' ? parsed : {};
-            } catch (e) {
-                return {};
-            }
-        }
-
         function getPlayerLikeCount(playerName) {
-            const name = (playerName || '').toString().trim().toLowerCase();
-            if (!name) return 0;
-            const store = getPlayerLikeStore();
-            return Number(store[name] || 0);
+            return 0;
         }
 
         async function likeCurrentMobilePlayer() {
@@ -15003,11 +14925,7 @@
                 return;
             }
 
-            const key = target.toLowerCase();
-            const store = getPlayerLikeStore();
-            const next = Number(store[key] || 0) + 1;
-            store[key] = next;
-            localStorage.setItem('nextscout_player_likes', JSON.stringify(store));
+            let next = 1;
 
             const btn = document.getElementById('pcdLikeBtn');
             if (btn) btn.textContent = `Begen (${next})`;
@@ -15025,7 +14943,7 @@
                 if (!token) return;
                 const targetUser = await resolvePublicPlayerByName(target);
                 if (!targetUser?.id) return;
-                await fetch(`${API_BASE_URL}/profile-cards/player/${encodeURIComponent(targetUser.id)}/like`, {
+                const response = await fetch(`${API_BASE_URL}/profile-cards/player/${encodeURIComponent(targetUser.id)}/like`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -15034,6 +14952,9 @@
                     },
                     body: JSON.stringify({ reference: 'mobile-detail-card' }),
                 });
+                if (response.ok) {
+                    next = 2;
+                }
             } catch (e) {}
         }
 
@@ -15581,8 +15502,6 @@
             },
         };
 
-        const CONTACT_MESSAGES_STORAGE_KEY = 'nextscout_contact_messages';
-
         function getActiveApiBaseUrl() {
             return (typeof API_BASE_URL === 'string' && API_BASE_URL.trim())
                 ? API_BASE_URL.trim()
@@ -15611,21 +15530,6 @@
             } catch (error) {
                 // Static fallback content remains active when API is unreachable.
             }
-        }
-
-        function getContactMessages() {
-            try {
-                const rows = JSON.parse(localStorage.getItem(CONTACT_MESSAGES_STORAGE_KEY) || '[]');
-                return Array.isArray(rows) ? rows : [];
-            } catch (error) {
-                return [];
-            }
-        }
-
-        function saveContactMessage(message) {
-            const rows = getContactMessages();
-            rows.unshift(message);
-            localStorage.setItem(CONTACT_MESSAGES_STORAGE_KEY, JSON.stringify(rows));
         }
 
         async function submitContactMessageApi(payload) {
@@ -15669,13 +15573,7 @@
                     form.reset();
                     if (feedback) feedback.textContent = 'Mesajin alındı. Admin paneline gönderildi.';
                 } catch (error) {
-                    // Offline fallback to avoid losing user input intent.
-                    saveContactMessage({
-                        id: Date.now(),
-                        ...payload,
-                        created_at: new Date().toISOString(),
-                    });
-                    if (feedback) feedback.textContent = 'API su an ulasilamiyor. Mesajin yerelde kaydedildi.';
+                    if (feedback) feedback.textContent = `Mesaj gonderilemedi: ${error.message}`;
                 }
             });
         }
@@ -16006,19 +15904,16 @@
             transition_play: 'Gecis Oyunu | 3-4-3 Direkt',
         };
         const HOMEPAGE_BRANCH_STORAGE_KEY = 'nextscout_home_club_system_branch';
+        const HOMEPAGE_SYSTEM_STORAGE_KEY = 'nextscout_home_club_system';
         const HOMEPAGE_BRANCH_LABELS = {
             futbol: 'Futbol',
             basketbol: 'Basketbol',
             voleybol: 'Voleybol',
         };
 
-        function getStoredClubProfile() {
-            try {
-                const raw = localStorage.getItem('nextscout_club_profile');
-                return raw ? JSON.parse(raw) : {};
-            } catch (error) {
-                return {};
-            }
+        function getStoredHomepageSystem() {
+            const raw = (localStorage.getItem(HOMEPAGE_SYSTEM_STORAGE_KEY) || '').toString().trim();
+            return raw || 'gegenpressing';
         }
 
         function normalizeClubBranchValue(value) {
@@ -16049,7 +15944,7 @@
             branchSelect.addEventListener('change', () => {
                 const selectedBranch = normalizeClubBranchValue(branchSelect.value || '');
                 const systemSelect = document.getElementById('clubSystemFitLabel');
-                const currentSystem = (systemSelect?.value || getStoredClubProfile()?.preferredSystem || 'gegenpressing').toString().trim();
+                const currentSystem = (systemSelect?.value || getStoredHomepageSystem() || 'gegenpressing').toString().trim();
                 localStorage.setItem(HOMEPAGE_BRANCH_STORAGE_KEY, selectedBranch);
                 updateClubSystemHomepageCard(currentSystem);
             });
@@ -16063,13 +15958,7 @@
 
             systemSelect.addEventListener('change', () => {
                 const nextSystem = (systemSelect.value || 'gegenpressing').toString().trim();
-                try {
-                    const profile = getStoredClubProfile();
-                    localStorage.setItem('nextscout_club_profile', JSON.stringify({
-                        ...profile,
-                        preferredSystem: nextSystem,
-                    }));
-                } catch (error) {}
+                localStorage.setItem(HOMEPAGE_SYSTEM_STORAGE_KEY, nextSystem);
                 updateClubSystemHomepageCard(nextSystem);
             });
 
@@ -16080,9 +15969,8 @@
             const card = document.getElementById('clubSystemFitCard');
             if (!card) return;
 
-            const profile = getStoredClubProfile();
-            const preferredSystem = (forcedSystem || profile?.preferredSystem || 'gegenpressing').toString().trim();
-            const profileBranch = (profile?.branch || 'Futbol').toString().trim() || 'Futbol';
+            const preferredSystem = (forcedSystem || getStoredHomepageSystem() || 'gegenpressing').toString().trim();
+            const profileBranch = 'Futbol';
             const branchValue = getHomepageSelectedBranch(profileBranch);
             const branch = HOMEPAGE_BRANCH_LABELS[branchValue] || profileBranch;
             const systemLabel = HOMEPAGE_SYSTEM_LABELS[preferredSystem] || 'Sistem secilmedi';
@@ -16646,35 +16534,10 @@
                     const formData = new FormData(this);
                     const data = Object.fromEntries(formData);
 
-                    // Yerel listeye ekle (sayfada avukat kartları fallback olarak görünsün)
-                    try {
-                        const key = 'nextscout_lawyer_profiles';
-                        const current = JSON.parse(localStorage.getItem(key) || '[]');
-                        const safe = {
-                            id: Date.now(),
-                            user_id: 0,
-                            name: (JSON.parse(localStorage.getItem('nextscout_user') || '{}')?.name || 'Avukat').toString(),
-                            license_number: (data.license_number || '').toString().trim(),
-                            specialization: (data.specialization || '').toString().trim(),
-                            years_experience: Number(data.years_experience || 0),
-                            bio: (data.bio || '').toString().trim(),
-                            office_name: (data.office_name || '').toString().trim(),
-                            office_phone: (data.office_phone || '').toString().trim(),
-                            office_email: (data.office_email || '').toString().trim(),
-                            hourly_rate: Number(data.hourly_rate || 0),
-                            contract_fee: Number(data.contract_fee || 0),
-                            is_verified: false,
-                        };
-                        const withoutSame = current.filter((x) => (x?.license_number || '') !== safe.license_number);
-                        withoutSame.unshift(safe);
-                        localStorage.setItem(key, JSON.stringify(withoutSame.slice(0, 500)));
-                    } catch (error) {}
-
-                    // Backend kaydı (token varsa)
                     try {
                         const token = (localStorage.getItem('nextscout_token') || '').trim();
                         if (token) {
-                            await fetch(`${API_BASE_URL}/lawyers/register`, {
+                            const response = await fetch(`${API_BASE_URL}/lawyers/register`, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -16683,8 +16546,17 @@
                                 },
                                 body: JSON.stringify(data),
                             });
+                            if (!response.ok) {
+                                const payload = await response.json().catch(() => ({}));
+                                throw new Error(payload?.message || `HTTP ${response.status}`);
+                            }
+                        } else {
+                            throw new Error('Oturum bulunamadi.');
                         }
-                    } catch (error) {}
+                    } catch (error) {
+                        nsnsAlert(`❌ Profil oluşturulamadı: ${error.message}`);
+                        return;
+                    }
 
                     nsnsAlert('✅ Profil başarıyla oluşturuldu!');
                     closeLawyerProfileModal();
@@ -16762,78 +16634,6 @@
             return 'player-dashboard.html';
         }
 
-        function savePendingUser(user) {
-            try {
-                const storageKey = 'nextscout_pending_users';
-                const current = JSON.parse(localStorage.getItem(storageKey) || '[]');
-                const safeUser = {
-                    name: (user?.name || '').toString().trim(),
-                    email: (user?.email || '').toString().trim().toLowerCase(),
-                    role: (user?.role || 'player').toString().trim().toLowerCase(),
-                    created_at: user?.created_at || new Date().toISOString(),
-                    status: 'pending',
-                };
-
-                if (!safeUser.name || !safeUser.email) return;
-
-                const withoutSameEmail = current.filter((item) => item?.email !== safeUser.email);
-                withoutSameEmail.unshift(safeUser);
-                localStorage.setItem(storageKey, JSON.stringify(withoutSameEmail.slice(0, 200)));
-            } catch (error) {
-                console.error('Pending user kaydedilemedi:', error);
-            }
-        }
-
-        function saveRegisteredUser(user) {
-            try {
-                const storageKey = 'nextscout_registered_users';
-                const current = JSON.parse(localStorage.getItem(storageKey) || '[]');
-                const safeUser = {
-                    name: (user?.name || '').toString().trim(),
-                    email: (user?.email || '').toString().trim().toLowerCase(),
-                    password: (user?.password || '').toString(),
-                    role: (user?.role || 'player').toString().trim().toLowerCase(),
-                    created_at: user?.created_at || new Date().toISOString(),
-                    is_verified: !!user?.is_verified,
-                    email_verified_at: user?.email_verified_at || null,
-                };
-
-                if (!safeUser.name || !safeUser.email || !safeUser.password) return;
-
-                const withoutSameEmail = current.filter((item) => item?.email !== safeUser.email);
-                withoutSameEmail.unshift(safeUser);
-                localStorage.setItem(storageKey, JSON.stringify(withoutSameEmail.slice(0, 500)));
-            } catch (error) {
-                console.error('Registered user kaydedilemedi:', error);
-            }
-        }
-
-        function findRegisteredUser(email, password) {
-            try {
-                const storageKey = 'nextscout_registered_users';
-                const current = JSON.parse(localStorage.getItem(storageKey) || '[]');
-                const targetEmail = (email || '').toString().trim().toLowerCase();
-                const targetPassword = (password || '').toString();
-                return current.find((u) => u?.email === targetEmail && u?.password === targetPassword) || null;
-            } catch (error) {
-                return null;
-            }
-        }
-
-        function loginWithLocalUser(registeredUser) {
-            if (!registeredUser) return false;
-            localStorage.setItem('nextscout_token', 'local-session-token');
-            localStorage.setItem('nextscout_user', JSON.stringify({
-                name: registeredUser.name || 'Kullanıcı',
-                email: registeredUser.email,
-                role: registeredUser.role || 'player',
-            }));
-            localStorage.setItem('nextscout_demo_login', 'true');
-            closeLoginModal();
-            window.location.href = resolveLocalPage(getDashboardByRole(registeredUser.role || 'player', true));
-            return true;
-        }
-
         function showRegisterStatus(message, type = 'error') {
             const el = document.getElementById('registerStatus');
             if (el) {
@@ -16851,83 +16651,10 @@
             }
         }
 
-        function isUserLocallyVerified(user) {
-            return !!user;
-        }
-
-        function buildLocalVerificationToken() {
-            return `lv-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
-        }
-
-        function saveLocalVerificationToken(email, token) {
-            try {
-                const key = 'nextscout_local_verification_tokens';
-                const rows = JSON.parse(localStorage.getItem(key) || '[]');
-                const safeEmail = (email || '').toString().trim().toLowerCase();
-                const safeToken = (token || '').toString().trim();
-                const filtered = (Array.isArray(rows) ? rows : []).filter((r) => (r?.email || '') !== safeEmail);
-                filtered.unshift({ email: safeEmail, token: safeToken, created_at: new Date().toISOString() });
-                localStorage.setItem(key, JSON.stringify(filtered.slice(0, 1000)));
-            } catch (error) {}
-        }
-
-        function consumeLocalVerificationToken(token) {
-            try {
-                const key = 'nextscout_local_verification_tokens';
-                const rows = JSON.parse(localStorage.getItem(key) || '[]');
-                const safeToken = (token || '').toString().trim();
-                const list = Array.isArray(rows) ? rows : [];
-                const matched = list.find((r) => (r?.token || '') === safeToken);
-                if (!matched) return null;
-                const nextRows = list.filter((r) => (r?.token || '') !== safeToken);
-                localStorage.setItem(key, JSON.stringify(nextRows));
-                return (matched?.email || '').toString().trim().toLowerCase();
-            } catch (error) {
-                return null;
-            }
-        }
-
-        function markLocalUserVerifiedByEmail(email) {
-            try {
-                const targetEmail = (email || '').toString().trim().toLowerCase();
-                if (!targetEmail) return false;
-                const key = 'nextscout_registered_users';
-                const rows = JSON.parse(localStorage.getItem(key) || '[]');
-                const list = Array.isArray(rows) ? rows : [];
-                let changed = false;
-                const updated = list.map((u) => {
-                    if ((u?.email || '').toString().trim().toLowerCase() !== targetEmail) return u;
-                    changed = true;
-                    return {
-                        ...u,
-                        is_verified: true,
-                        email_verified_at: new Date().toISOString(),
-                    };
-                });
-                if (changed) localStorage.setItem(key, JSON.stringify(updated));
-                return changed;
-            } catch (error) {
-                return false;
-            }
-        }
-
         async function handleEmailVerificationFromQuery() {
             const params = new URLSearchParams(window.location.search);
             const token = (params.get('verify_email_token') || '').trim();
             if (!token) return;
-
-            if (window.location.protocol === 'file:') {
-                const email = consumeLocalVerificationToken(token);
-                if (!email || !markLocalUserVerifiedByEmail(email)) {
-                    nsnsAlert('Doğrulama linki gecersiz veya suresi dolmus.');
-                } else {
-                    nsnsAlert('E-posta doğrulandi. Artik giriş yapabilirsin.');
-                }
-                params.delete('verify_email_token');
-                const clean = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ''}`;
-                window.history.replaceState({}, '', clean);
-                return;
-            }
 
             try {
                 const response = await fetch(`${API_BASE_URL}/auth/verify-email?token=${encodeURIComponent(token)}`, {
@@ -16953,23 +16680,6 @@
             }
         }
 
-        function emailExistsLocally(email) {
-            try {
-                const targetEmail = (email || '').toString().trim().toLowerCase();
-                if (!targetEmail) return false;
-
-                const registered = JSON.parse(localStorage.getItem('nextscout_registered_users') || '[]');
-                const pending = JSON.parse(localStorage.getItem('nextscout_pending_users') || '[]');
-
-                const inRegistered = Array.isArray(registered) && registered.some((u) => (u?.email || '').toString().trim().toLowerCase() === targetEmail);
-                const inPending = Array.isArray(pending) && pending.some((u) => (u?.email || '').toString().trim().toLowerCase() === targetEmail);
-
-                return inRegistered || inPending;
-            } catch (error) {
-                return false;
-            }
-        }
-
         let marketAnalysisCity = 'istanbul';
         let marketAnalysisTab = 'live';
 
@@ -16988,24 +16698,6 @@
         function getMarketCityLabel(key) {
             const map = { istanbul: 'İstanbul', ankara: 'Ankara', izmir: 'İzmir' };
             return map[key] || (key ? key.charAt(0).toUpperCase() + key.slice(1) : 'Şehir');
-        }
-
-        function getMarketLocalEvents() {
-            try {
-                const rows = JSON.parse(localStorage.getItem('nextscout_trial_events') || '[]');
-                return Array.isArray(rows) ? rows : [];
-            } catch (error) {
-                return [];
-            }
-        }
-
-        function getMarketLocalNeeds() {
-            try {
-                const rows = JSON.parse(localStorage.getItem('nextscout_club_needs_notes') || '[]');
-                return Array.isArray(rows) ? rows : [];
-            } catch (error) {
-                return [];
-            }
         }
 
         function mapMarketEvent(item) {
@@ -17078,7 +16770,7 @@
                 const rows = (window.NextScoutData?.toArray ? window.NextScoutData.toArray(payload?.data ?? payload) : (Array.isArray(payload?.data) ? payload.data : [])).filter(Boolean);
                 return rows.map(mapMarketNeed);
             } catch (error) {
-                return getMarketLocalNeeds().map(mapMarketNeed);
+                return [];
             }
         }
 
@@ -17088,7 +16780,7 @@
                 const rows = Array.isArray(payload?.data?.data) ? payload.data.data : (Array.isArray(payload?.data) ? payload.data : []);
                 return rows.map(mapMarketEvent);
             } catch (error) {
-                return getMarketLocalEvents().map(mapMarketEvent);
+                return [];
             }
         }
 
@@ -17265,84 +16957,53 @@
             loginForm.addEventListener('submit', function(e) {
                 e.preventDefault();
 
-            const formData = new FormData(this);
-            const payload = {
-                email: (formData.get('email') || '').toString().trim(),
-                password: (formData.get('password') || '').toString(),
-            };
+                const formData = new FormData(this);
+                const payload = {
+                    email: (formData.get('email') || '').toString().trim(),
+                    password: (formData.get('password') || '').toString(),
+                };
 
-            console.log('🔐 Giriş denemesi:', { email: payload.email });
-
-            // file:// modunda API çağrısı CORS/network nedeniyle engellenebilir.
-            // Bu durumda üyeyi varsayılan kullanıcı DASHBOARD'una yönlendir.
-            if (window.location.protocol === 'file:') {
                 if (!payload.email || !payload.password) {
                     nsnsAlert('Lütfen email ve şifre girin.');
                     return;
                 }
-                const registeredUser = findRegisteredUser(payload.email, payload.password);
-                if (!registeredUser) {
-                    nsnsAlert('Bu hesap kayıtlı değil veya şifre yanlış. Önce kayıt olmalısın.');
-                    return;
-                }
-                if (!isUserLocallyVerified(registeredUser)) {
-                    nsnsAlert('Hesap doğrulanmadi. E-postana gönderilen linke tiklayip tekrar giriş yap.');
-                    return;
-                }
-                loginWithLocalUser(registeredUser);
-                return;
-            }
 
-            fetch(`${API_BASE_URL}/auth/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            })
-            .then(async (res) => {
-                console.log('📡 API yanıtı:', res.status, res.statusText);
-                const data = await res.json();
-                console.log('📦 Veri:', data);
+                fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                })
+                .then(async (res) => {
+                    const data = await res.json().catch(() => ({}));
+                    if (!res.ok || !data?.ok) {
+                        const msg = data?.message || data?.errors?.email?.[0] || 'Giriş başarısız.';
+                        throw new Error(msg);
+                    }
 
-                if (!res.ok || !data.ok) {
-                    const msg = data?.message || data?.errors?.email?.[0] || 'Giriş başarısız.';
-                    throw new Error(msg);
-                }
+                    const token = data?.data?.token || '';
+                    const user = data?.data?.user || {};
+                    if (!token) {
+                        throw new Error('Oturum tokeni üretilemedi.');
+                    }
 
-                const token = data?.data?.token || '';
-                const user = data?.data?.user || {};
-
-                if (token) {
                     localStorage.setItem('nextscout_token', token);
                     localStorage.setItem('nextscout_user', JSON.stringify(user));
-                    console.log('✅ Token ve kullanıcı bilgisi kaydedildi');
-                }
 
-                const userRole = user?.role || '';
-                closeLoginModal();
-                console.log('➡️ DASHBOARD\'a yönlendiriliyor...');
-
-                const dashboardUrl = getDashboardByRole(userRole, window.location.protocol === 'file:');
-
-                console.log('📍 DASHBOARD URL:', dashboardUrl);
-                                window.location.href = resolveLocalPage(dashboardUrl);
-            })
-            .catch((err) => {
-                console.error('❌ Giriş hatası:', err);
-                const registeredUser = findRegisteredUser(payload.email, payload.password);
-                if (registeredUser) {
-                    loginWithLocalUser(registeredUser);
-                    return;
-                }
-                let errorMsg = err.message;
-                if (err.message === 'Failed to fetch') {
-                    errorMsg = '❌ Server\'a bağlanılamadı!\n\nLütfen kontrol edin:\n1. Laravel server çalışıyor mu? (php artisan serve)\n2. URL doğru mu? ' + API_BASE_URL;
-                }
-
-                nsnsAlert(errorMsg);
-            });
+                    const userRole = user?.role || '';
+                    closeLoginModal();
+                    const dashboardUrl = getDashboardByRole(userRole, window.location.protocol === 'file:');
+                    window.location.href = resolveLocalPage(dashboardUrl);
+                })
+                .catch((err) => {
+                    let errorMsg = err.message;
+                    if (err.message === 'Failed to fetch') {
+                        errorMsg = 'Server\'a bağlanılamadı. Laravel API ayakta olmalı: ' + API_BASE_URL;
+                    }
+                    nsnsAlert(errorMsg);
+                });
             });
         }
 
@@ -17402,32 +17063,6 @@
                 return;
             }
 
-            if (emailExistsLocally(payload.email)) {
-                showRegisterStatus('Bu e-posta ile zaten kayıt var. Lütfen farklı bir e-posta kullanın.');
-                return;
-            }
-
-            saveRegisteredUser(payload);
-            showRegisterStatus('Kayıt oluşturuldu. Şimdi giriş yapabilirsin.', 'success');
-            registerForm.reset();
-            return;
-
-            // file:// modunda demo kayıt akışı
-            if (window.location.protocol === 'file:') {
-                if (!payload.name || !payload.email || !payload.password) {
-                    nsnsAlert('Lütfen gerekli alanları doldurun.');
-                    return;
-                }
-                if (emailExistsLocally(payload.email)) {
-                    nsnsAlert('Bu e-posta ile zaten kayıt var. Lütfen farklı bir e-posta kullanın.');
-                    return;
-                }
-                saveRegisteredUser(payload);
-                closeRegisterModal();
-                nsnsAlert('Kayıt alındı. Artık giriş yapabilirsin.');
-                return;
-            }
-
             fetch(`${API_BASE_URL}/auth/register`, {
                 method: 'POST',
                 headers: {
@@ -17437,42 +17072,23 @@
                 body: JSON.stringify(payload),
             })
             .then(async (res) => {
-                console.log('📡 API yanıtı:', res.status, res.statusText);
-                const data = await res.json();
-                console.log('📦 Veri:', data);
+                const data = await res.json().catch(() => ({}));
 
                 if (!res.ok || !data.ok) {
                     const firstError = data?.errors ? Object.values(data.errors)?.[0]?.[0] : null;
                     const msg = firstError || data?.message || 'Kayıt başarısız.';
                     throw new Error(msg);
                 }
-
-                const registeredUser = data?.data?.user || payload;
-                saveRegisteredUser({
-                    name: registeredUser?.name || payload.name,
-                    email: registeredUser?.email || payload.email,
-                    password: payload.password,
-                    role: registeredUser?.role || payload.role,
-                    created_at: registeredUser?.created_at || new Date().toISOString(),
-                });
-
                 closeRegisterModal();
-                nsnsAlert('Kayıt alındı. Artık giriş yapabilirsin.');
+                registerForm.reset();
+                nsnsAlert(data?.message || 'Kayıt alındı. Artık giriş yapabilirsin.');
             })
             .catch((err) => {
-                console.error('❌ Kayıt hatası:', err);
-                if (!emailExistsLocally(payload.email)) {
-                    saveRegisteredUser(payload);
-                    closeRegisterModal();
-                    nsnsAlert('Kayıt lokal olarak oluşturuldu. Artık giriş yapabilirsin.');
-                    return;
-                }
                 let errorMsg = err.message;
                 if (err.message === 'Failed to fetch') {
-                    errorMsg = '❌ Server\'a bağlanılamadı!\n\nLütfen kontrol edin:\n1. Laravel server çalışıyor mu? (php artisan serve)\n2. URL doğru mu? ' + API_BASE_URL;
+                    errorMsg = 'Server\'a bağlanılamadı. Laravel API ayakta olmalı: ' + API_BASE_URL;
                 }
-
-                nsnsAlert(errorMsg);
+                showRegisterStatus(errorMsg);
             });
         }
 

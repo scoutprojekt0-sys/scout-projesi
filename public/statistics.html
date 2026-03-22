@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>İstatistikler - NextScout</title>
-  <meta name="description" content="Oyuncu istatistikleri, performans özeti ve sistem puanı.">
+  <title>Ä°statistikler - NextScout</title>
+  <meta name="description" content="Oyuncu istatistikleri, performans Ã¶zeti ve sistem puanÄ±.">
   <meta name="theme-color" content="#0B3B8A">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -302,8 +302,8 @@
   <div class="wrap">
     <div class="header">
       <div>
-        <h1 class="title">İstatistikler</h1>
-        <div class="subtitle" id="pageSubtitle">Sezon performansın ve sistem puanın burada görünür.</div>
+        <h1 class="title">Ä°statistikler</h1>
+        <div class="subtitle" id="pageSubtitle">Sezon performansÄ±n ve sistem puanÄ±n burada gÃ¶rÃ¼nÃ¼r.</div>
       </div>
       <div class="actions">
         <a class="btn btn-primary" href="index.html"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
@@ -315,7 +315,7 @@
 
     <div class="main-grid">
       <section class="panel">
-        <h2 class="panel-title">Sistem Performans Puanı</h2>
+        <h2 class="panel-title">Sistem Performans PuanÄ±</h2>
         <div class="score-shell">
           <div class="score-ring" id="scoreRing">
             <div class="score-core">
@@ -328,21 +328,21 @@
       </section>
 
       <section class="panel">
-        <h2 class="panel-title">Detay Dağılım</h2>
+        <h2 class="panel-title">Detay DaÄŸÄ±lÄ±m</h2>
         <div class="score-list" id="detailList"></div>
       </section>
     </div>
 
     <div class="tables">
       <section class="table-card">
-        <h2 class="panel-title">Sezon İstatistik Tablosu</h2>
-        <div class="table-sub">Oyuncunun branşa göre girilen temel sezon verileri ve sistem durumu.</div>
+        <h2 class="panel-title">Sezon Ä°statistik Tablosu</h2>
+        <div class="table-sub">Oyuncunun branÅŸa gÃ¶re girilen temel sezon verileri ve sistem durumu.</div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
                 <th>Metrik</th>
-                <th>Değer</th>
+                <th>DeÄŸer</th>
                 <th>Kaynak</th>
                 <th>Durum</th>
               </tr>
@@ -353,15 +353,15 @@
       </section>
 
       <section class="table-card">
-        <h2 class="panel-title">Doğrulama ve Kaynak</h2>
-        <div class="table-sub">Veri oyuncu girişi olsa bile sistem hangi alanın ne kadar güvenli olduğunu ayrı gösterir.</div>
+        <h2 class="panel-title">DoÄŸrulama ve Kaynak</h2>
+        <div class="table-sub">Veri oyuncu giriÅŸi olsa bile sistem hangi alanÄ±n ne kadar gÃ¼venli olduÄŸunu ayrÄ± gÃ¶sterir.</div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
                 <th>Alan</th>
                 <th>Kaynak</th>
-                <th>Kanıt</th>
+                <th>KanÄ±t</th>
                 <th>Yorum</th>
               </tr>
             </thead>
@@ -371,14 +371,14 @@
       </section>
 
       <section class="table-card">
-        <h2 class="panel-title">Yayın ve Güven Kuralları</h2>
-        <div class="table-sub">Puanı sistem üretir. Oyuncu veri girer ama sistem hepsini aynı ağırlıkta kabul etmez.</div>
+        <h2 class="panel-title">YayÄ±n ve GÃ¼ven KurallarÄ±</h2>
+        <div class="table-sub">PuanÄ± sistem Ã¼retir. Oyuncu veri girer ama sistem hepsini aynÄ± aÄŸÄ±rlÄ±kta kabul etmez.</div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
                 <th>Alan</th>
-                <th>Yayın</th>
+                <th>YayÄ±n</th>
                 <th>Etiket</th>
                 <th>Not</th>
               </tr>
@@ -391,22 +391,39 @@
   </div>
 
   <script>
-    const profileRaw = localStorage.getItem("playerProfile");
-    let profile = {};
-    try {
-      profile = profileRaw ? JSON.parse(profileRaw) : {};
-    } catch (_) {
-      profile = {};
+    function getApiBaseUrl() {
+      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      return `${window.location.origin}/api`;
     }
 
-    const sport = String(profile.sport || profile.branch || "futbol").toLocaleLowerCase("tr-TR");
+    function getAuthHeaders() {
+      const token = (localStorage.getItem('nextscout_token') || '').trim();
+      return token ? { Accept: 'application/json', Authorization: `Bearer ${token}` } : { Accept: 'application/json' };
+    }
+
+    async function resolveCurrentUserId() {
+      try {
+        const raw = localStorage.getItem('nextscout_user');
+        const user = raw ? JSON.parse(raw) : null;
+        if (user?.id) return Number(user.id);
+      } catch (_) {}
+
+      try {
+        const response = await fetch(`${getApiBaseUrl()}/auth/me`, { headers: getAuthHeaders() });
+        const payload = await response.json().catch(() => null);
+        const me = payload?.data?.user || payload?.data || payload?.user || null;
+        return me?.id ? Number(me.id) : null;
+      } catch (_) {
+        return null;
+      }
+    }
 
     function clamp(value, min, max) {
       return Math.max(min, Math.min(max, value));
     }
 
     function pill(text, tone) {
-      return `<span class="pill ${tone || ""}">${text}</span>`;
+      return `<span class="pill ${tone || ''}">${text}</span>`;
     }
 
     function renderRows(targetId, rows) {
@@ -414,187 +431,127 @@
       if (!root) return;
       root.innerHTML = rows.map((row) => `
         <tr>
-          ${row.map((cell) => `<td>${cell}</td>`).join("")}
+          ${row.map((cell) => `<td>${cell}</td>`).join('')}
         </tr>
-      `).join("");
+      `).join('');
     }
 
-    const football = {
-      matches: Number(profile.matches || 28),
-      goals: Number(profile.goals || 15),
-      assists: Number(profile.assists || 6),
-      rating: Number(profile.rating || 4.8),
-      minutes: Number(profile.minutes || 2110)
-    };
+    function buildModel(stats, profile) {
+      const football = {
+        matches: Number(stats.matches_played || 28),
+        goals: Number(stats.goals || 15),
+        assists: Number(stats.assists || 6),
+        rating: Number(stats.avg_rating || profile.rating || 4.8),
+        minutes: Number(stats.minutes_played || 2110)
+      };
 
-    const basketball = {
-      matches: Number(profile.matches || 32),
-      points: Number(profile.points || 18.4),
-      rebounds: Number(profile.rebounds || 7.2),
-      assists: Number(profile.assists || 5.6),
-      minutes: Number(profile.minutes || 29.8)
-    };
+      return {
+        subtitle: 'Sezon performansin ve sistem puanin burada gorunur.',
+        summary: [
+          { label: 'Mac', value: football.matches, delta: '+3 bu ay', tone: 'up' },
+          { label: 'Gol', value: football.goals, delta: '+2 son hafta', tone: 'up' },
+          { label: 'Asist', value: football.assists, delta: '+1 son hafta', tone: 'up' },
+          { label: 'Rating', value: football.rating.toFixed(1), delta: 'stabil', tone: 'mid' }
+        ],
+        scoreParts: [
+          { label: 'Mac Katkisi', text: 'Oynama hacmi', value: clamp(football.matches * 1.4, 0, 25) },
+          { label: 'Sure Katkisi', text: 'Dakika toplami', value: clamp((football.minutes / 90), 0, 25) },
+          { label: 'Cikti Katkisi', text: 'Gol + asist', value: clamp((football.goals * 4) + (football.assists * 3), 0, 30) },
+          { label: 'Form Katkisi', text: 'Rating etkisi', value: clamp(football.rating * 2, 0, 20) }
+        ],
+        details: [
+          ['Toplam Mac', football.matches],
+          ['Toplam Dakika', football.minutes],
+          ['Toplam Gol', football.goals],
+          ['Toplam Asist', football.assists],
+          ['Rating', football.rating.toFixed(1)]
+        ],
+        seasonRows: [
+          ['Mac', football.matches, pill('API', 'verified'), pill('Yayinlandi', 'verified')],
+          ['Dakika', football.minutes, pill('API', 'verified'), pill('Yayinlandi', 'verified')],
+          ['Gol', football.goals, pill('API', 'verified'), pill('Yayinlandi', 'verified')],
+          ['Asist', football.assists, pill('API', 'verified'), pill('Yayinlandi', 'verified')],
+          ['Rating', football.rating.toFixed(1), pill('API', 'verified'), pill('Yayinlandi', 'verified')]
+        ],
+        verificationRows: [
+          ['Mac / Dakika', pill('Sistem', 'verified'), 'Istatistik servisi', 'Canli veri tabanindan gelir'],
+          ['Gol / Asist', pill('Sistem', 'verified'), 'Istatistik servisi', 'Ham veri API tarafinda tutulur'],
+          ['Rating', pill('Sistem Uretimi', 'verified'), 'Ic model', 'Elle puan verilmez']
+        ]
+      };
+    }
 
-    const volleyball = {
-      matches: Number(profile.matches || 24),
-      sets: Number(profile.sets || 88),
-      points: Number(profile.points || 146),
-      aces: Number(profile.aces || 21),
-      blocks: Number(profile.blocks || 18),
-      reception: Number(profile.reception || 62)
-    };
+    function renderModel(model) {
+      const totalScore = Math.round(model.scoreParts.reduce((sum, item) => sum + item.value, 0));
+      const scoreList = document.getElementById('scoreList');
+      const summaryGrid = document.getElementById('summaryGrid');
+      const detailList = document.getElementById('detailList');
+      const scoreNumber = document.getElementById('scoreNumber');
+      const scoreRing = document.getElementById('scoreRing');
+      const subtitle = document.getElementById('pageSubtitle');
 
-    const model = sport === "basketbol"
-      ? {
-          subtitle: "Sezon performansın, sayı üretimin ve oyun katkın burada görünür.",
-          summary: [
-            { label: "Maç", value: basketball.matches, delta: "+4 bu ay", tone: "up" },
-            { label: "Sayı Ort.", value: basketball.points.toFixed(1), delta: "+1.8 son hafta", tone: "up" },
-            { label: "Ribaund", value: basketball.rebounds.toFixed(1), delta: "stabil", tone: "mid" },
-            { label: "Asist", value: basketball.assists.toFixed(1), delta: "+0.7 son hafta", tone: "up" }
-          ],
-          scoreParts: [
-            { label: "Maç Katkısı", text: "Oynama hacmi", value: clamp(basketball.matches * 1.4, 0, 30) },
-            { label: "Süre Katkısı", text: "Dakika ortalaması", value: clamp(basketball.minutes * 1.1, 0, 30) },
-            { label: "Üretim Katkısı", text: "Sayı + asist + ribaund", value: clamp((basketball.points * 1.6) + basketball.assists + basketball.rebounds, 0, 40) }
-          ],
-          details: [
-            ["Toplam Maç", basketball.matches],
-            ["Sayı Ortalaması", basketball.points.toFixed(1)],
-            ["Ribaund Ortalaması", basketball.rebounds.toFixed(1)],
-            ["Asist Ortalaması", basketball.assists.toFixed(1)],
-            ["Dakika Ortalaması", basketball.minutes.toFixed(1)]
-          ],
-          seasonRows: [
-            ["Maç", basketball.matches, pill("Oyuncu Girişi", "self"), pill("Sistem Hesabı", "verified")],
-            ["Sayı Ort.", basketball.points.toFixed(1), pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")],
-            ["Ribaund", basketball.rebounds.toFixed(1), pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")],
-            ["Asist", basketball.assists.toFixed(1), pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")],
-            ["Dakika", basketball.minutes.toFixed(1), pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")]
-          ],
-          verificationRows: [
-            ["Maç / Dakika", pill("Oyuncu Beyanı", "self"), "Varsa video / skor kaydı", "Sistem puanı buna göre hesaplanır"],
-            ["Sayı / Asist", pill("Oyuncu Beyanı", "self"), "İsteğe bağlı belge", "Ham veri görünür, puanı sistem verir"],
-            ["Ribaund", pill("Oyuncu Beyanı", "self"), "İsteğe bağlı belge", "Tek başına güven rozeti üretmez"]
-          ]
-        }
-      : sport === "voleybol"
-        ? {
-            subtitle: "Sezon performansın, set üretimin ve hücum verin burada görünür.",
-            summary: [
-              { label: "Maç", value: volleyball.matches, delta: "+2 bu ay", tone: "up" },
-              { label: "Set", value: volleyball.sets, delta: "aktif sezon", tone: "mid" },
-              { label: "Sayı", value: volleyball.points, delta: "+11 son hafta", tone: "up" },
-              { label: "Ace", value: volleyball.aces, delta: "+3 son hafta", tone: "up" }
-            ],
-            scoreParts: [
-              { label: "Maç Katkısı", text: "Oynama hacmi", value: clamp(volleyball.matches * 1.3, 0, 28) },
-              { label: "Set Katkısı", text: "Sahada kalma süresi", value: clamp(volleyball.sets * 0.34, 0, 32) },
-              { label: "Hücum Katkısı", text: "Sayı + ace + blok", value: clamp((volleyball.points * 0.18) + (volleyball.aces * 1.4) + (volleyball.blocks * 1.2), 0, 40) }
-            ],
-            details: [
-              ["Toplam Maç", volleyball.matches],
-              ["Toplam Set", volleyball.sets],
-              ["Toplam Sayı", volleyball.points],
-              ["Ace", volleyball.aces],
-              ["Blok", volleyball.blocks],
-              ["Manşet %", `%${volleyball.reception}`]
-            ],
-            seasonRows: [
-              ["Maç", volleyball.matches, pill("Oyuncu Girişi", "self"), pill("Sistem Hesabı", "verified")],
-              ["Set", volleyball.sets, pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")],
-              ["Sayı", volleyball.points, pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")],
-              ["Ace", volleyball.aces, pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")],
-              ["Blok", volleyball.blocks, pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")]
-            ],
-            verificationRows: [
-              ["Maç / Set", pill("Oyuncu Beyanı", "self"), "Varsa maç kağıdı", "Sistem puanı buna göre hesaplanır"],
-              ["Sayı / Ace", pill("Oyuncu Beyanı", "self"), "İsteğe bağlı video", "Ham veri görünür, puanı sistem verir"],
-              ["Blok / Manşet", pill("Oyuncu Beyanı", "self"), "İsteğe bağlı belge", "Güven etiketi ayrı tutulur"]
-            ]
-          }
-        : {
-            subtitle: "Sezon performansın ve sistem puanın burada görünür.",
-            summary: [
-              { label: "Maç", value: football.matches, delta: "+3 bu ay", tone: "up" },
-              { label: "Gol", value: football.goals, delta: "+2 son hafta", tone: "up" },
-              { label: "Asist", value: football.assists, delta: "+1 son hafta", tone: "up" },
-              { label: "Rating", value: football.rating.toFixed(1), delta: "stabil", tone: "mid" }
-            ],
-            scoreParts: [
-              { label: "Maç Katkısı", text: "Oynama hacmi", value: clamp(football.matches * 1.4, 0, 25) },
-              { label: "Süre Katkısı", text: "Dakika toplamı", value: clamp((football.minutes / 90), 0, 25) },
-              { label: "Çıktı Katkısı", text: "Gol + asist", value: clamp((football.goals * 4) + (football.assists * 3), 0, 30) },
-              { label: "Form Katkısı", text: "Rating etkisi", value: clamp(football.rating * 2, 0, 20) }
-            ],
-            details: [
-              ["Toplam Maç", football.matches],
-              ["Toplam Dakika", football.minutes],
-              ["Toplam Gol", football.goals],
-              ["Toplam Asist", football.assists],
-              ["Rating", football.rating.toFixed(1)]
-            ],
-            seasonRows: [
-              ["Maç", football.matches, pill("Oyuncu Girişi", "self"), pill("Sistem Hesabı", "verified")],
-              ["Dakika", football.minutes, pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")],
-              ["Gol", football.goals, pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")],
-              ["Asist", football.assists, pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")],
-              ["Rating", football.rating.toFixed(1), pill("Oyuncu Girişi", "self"), pill("Yayınlandı", "verified")]
-            ],
-            verificationRows: [
-              ["Maç / Dakika", pill("Oyuncu Beyanı", "self"), "Varsa maç kağıdı", "Sistem puanı buna göre hesaplanır"],
-              ["Gol / Asist", pill("Oyuncu Beyanı", "self"), "İsteğe bağlı video", "Ham veri görünür, puanı sistem verir"],
-              ["Rating", pill("Sistem Üretimi", "verified"), "İç model", "Elle puan verilmez"]
-            ]
-          };
+      if (subtitle) subtitle.textContent = model.subtitle;
+      if (scoreNumber) scoreNumber.textContent = totalScore;
+      if (scoreRing) scoreRing.style.setProperty('--score-angle', `${Math.round((totalScore / 100) * 360)}deg`);
 
-    const totalScore = Math.round(model.scoreParts.reduce((sum, item) => sum + item.value, 0));
-    const scoreList = document.getElementById("scoreList");
-    const summaryGrid = document.getElementById("summaryGrid");
-    const detailList = document.getElementById("detailList");
-    const scoreNumber = document.getElementById("scoreNumber");
-    const scoreRing = document.getElementById("scoreRing");
-    const subtitle = document.getElementById("pageSubtitle");
+      summaryGrid.innerHTML = model.summary.map((item) => `
+        <article class="card">
+          <div class="label">${item.label}</div>
+          <div class="value">${item.value}</div>
+          <div class="delta ${item.tone}">${item.delta}</div>
+        </article>
+      `).join('');
 
-    if (subtitle) subtitle.textContent = model.subtitle;
-    if (scoreNumber) scoreNumber.textContent = totalScore;
-    if (scoreRing) scoreRing.style.setProperty("--score-angle", `${Math.round((totalScore / 100) * 360)}deg`);
-
-    summaryGrid.innerHTML = model.summary.map((item) => `
-      <article class="card">
-        <div class="label">${item.label}</div>
-        <div class="value">${item.value}</div>
-        <div class="delta ${item.tone}">${item.delta}</div>
-      </article>
-    `).join("");
-
-    scoreList.innerHTML = model.scoreParts.map((item) => `
-      <div class="score-item">
-        <div>
-          <strong>${item.label}</strong>
-          <span>${item.text}</span>
+      scoreList.innerHTML = model.scoreParts.map((item) => `
+        <div class="score-item">
+          <div>
+            <strong>${item.label}</strong>
+            <span>${item.text}</span>
+          </div>
+          <b>${Math.round(item.value)}</b>
         </div>
-        <b>${Math.round(item.value)}</b>
-      </div>
-    `).join("");
+      `).join('');
 
-    detailList.innerHTML = model.details.map((item) => `
-      <div class="score-item">
-        <div>
-          <strong>${item[0]}</strong>
+      detailList.innerHTML = model.details.map((item) => `
+        <div class="score-item">
+          <div><strong>${item[0]}</strong></div>
+          <b>${item[1]}</b>
         </div>
-        <b>${item[1]}</b>
-      </div>
-    `).join("");
+      `).join('');
 
-    renderRows("seasonTable", model.seasonRows);
-    renderRows("verificationTable", model.verificationRows);
-    renderRows("rulesTable", [
-      ["Oyuncu girişi", "Evet", pill("Oyuncu Beyanı", "self"), "Sistem puanı oyuncu verisinden üretilir"],
-      ["Puan alanı", "Hayır", pill("Otomatik", "verified"), "Oyuncu puan girmez, sistem hesaplar"],
-      ["Eksik veri", "Sınırlı", pill("Düşük Güven", "evidence"), "Eksik veri puanı düşürür"],
-      ["Tutarsız veri", "Filtrelenir", pill("Kontrol Gerekir", "evidence"), "Aşırı uç değerler sistemde baskılanır"]
-    ]);
+      renderRows('seasonTable', model.seasonRows);
+      renderRows('verificationTable', model.verificationRows);
+      renderRows('rulesTable', [
+        ['Oyuncu girisi', 'Hayir', pill('Sistem', 'verified'), 'Veri artik backend istatistiklerinden gelir'],
+        ['Puan alani', 'Hayir', pill('Otomatik', 'verified'), 'Oyuncu puan girmez, sistem hesaplar'],
+        ['Eksik veri', 'Sinirli', pill('Dusuk Guven', 'evidence'), 'Eksik veri puani dusurur'],
+        ['Tutarsiz veri', 'Filtrelenir', pill('Kontrol Gerekir', 'evidence'), 'Uc degerler sistemde baskilanir']
+      ]);
+    }
+
+    async function initStatistics() {
+      const userId = await resolveCurrentUserId();
+      let stats = {};
+      let profile = {};
+
+      if (userId) {
+        try {
+          const [statsResponse, profileResponse] = await Promise.all([
+            fetch(`${getApiBaseUrl()}/players/${encodeURIComponent(userId)}/statistics`, { headers: getAuthHeaders() }),
+            fetch(`${getApiBaseUrl()}/players/${encodeURIComponent(userId)}`, { headers: getAuthHeaders() })
+          ]);
+          const statsPayload = await statsResponse.json().catch(() => null);
+          const profilePayload = await profileResponse.json().catch(() => null);
+          stats = Array.isArray(statsPayload?.data) ? statsPayload.data[0] || {} : {};
+          profile = profilePayload?.data || {};
+        } catch (_) {}
+      }
+
+      renderModel(buildModel(stats, profile));
+    }
+
+    initStatistics();
   </script>
 </body>
 </html>
+

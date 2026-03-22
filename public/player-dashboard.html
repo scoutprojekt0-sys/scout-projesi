@@ -950,27 +950,11 @@
         }
 
         function getPlayerLikeCount(playerName) {
-            const key = normalizeText(playerName);
-            if (!key) return 0;
-            try {
-                const raw = localStorage.getItem('nextscout_player_likes');
-                const store = raw ? JSON.parse(raw) : {};
-                return Number(store?.[key] || 0);
-            } catch (e) {
-                return 0;
-            }
+            return 0;
         }
 
         function getIncomingMessageCount(playerName) {
-            const key = normalizeText(playerName);
-            if (!key) return 0;
-            try {
-                const rows = JSON.parse(localStorage.getItem('nextscout_messages') || '[]');
-                if (!Array.isArray(rows)) return 0;
-                return rows.filter((row) => normalizeText(row?.box) === 'inbox' && normalizeText(row?.to) === key).length;
-            } catch (e) {
-                return 0;
-            }
+            return 0;
         }
 
         function readArrayStorage(key) {
@@ -983,45 +967,19 @@
         }
 
         function readLocalBoostPackages() {
-            try {
-                const raw = JSON.parse(localStorage.getItem('nextscout_boost_packages') || '[]');
-                return Array.isArray(raw) ? raw : [];
-            } catch (error) {
-                return [];
-            }
+            return [];
         }
 
         function getProfileViewsCount(playerName) {
-            const key = normalizeText(playerName);
-            const fallback = 1247;
-            if (!key) return fallback;
-            try {
-                const raw = JSON.parse(localStorage.getItem('nextscout_profile_views') || '{}');
-                if (typeof raw === 'number') return raw;
-                if (raw && typeof raw === 'object') return Number(raw[key] || fallback);
-                return fallback;
-            } catch (e) {
-                return fallback;
-            }
+            return 0;
         }
 
         function getVideoCount() {
-            const videos = readArrayStorage('playerVideos');
-            return videos.length || 8;
+            return 0;
         }
 
         function getTransferOfferCount(playerName) {
-            const key = normalizeText(playerName);
-            const rows = readArrayStorage('nextscout_messages');
-            const matches = rows.filter((row) => {
-                const boxOk = normalizeText(row?.box) === 'inbox';
-                const toOk = !key || normalizeText(row?.to) === key;
-                const subject = normalizeText(row?.subject);
-                const body = normalizeText(row?.body);
-                const offerLike = /teklif|transfer|deneme|sozlesme/.test(subject) || /teklif|transfer|deneme|sozlesme/.test(body);
-                return boxOk && toOk && offerLike;
-            });
-            return matches.length || 3;
+            return 0;
         }
 
         async function resolveCurrentUserId() {
@@ -1182,8 +1140,7 @@
         async function loadBoostPackages() {
             const payload = await fetchJsonSafe(`${getApiBaseUrl()}/billing/boost-packages`);
             const packages = Array.isArray(payload?.data) ? payload.data : [];
-            const sourceRows = packages.length ? packages : readLocalBoostPackages();
-            dashboardApiState.boostPackages = sourceRows.filter((item) => item && item.active !== false);
+            dashboardApiState.boostPackages = packages.filter((item) => item && item.active !== false);
             renderBoostPackageOptions();
         }
 
@@ -1255,18 +1212,6 @@
                 if (!res.ok) {
                     throw new Error(body?.message || `HTTP ${res.status}`);
                 }
-
-                try {
-                    localStorage.setItem('nextscout_last_boost_request', JSON.stringify({
-                        name,
-                        position,
-                        city,
-                        summary,
-                        package_id: Number(packageId),
-                        package_name: packageMeta?.name || '',
-                        created_at: new Date().toISOString(),
-                    }));
-                } catch (storageError) {}
 
                 if (body?.data?.payment_page_url) {
                     window.location.href = body.data.payment_page_url;
@@ -1442,6 +1387,74 @@
             document.body.style.overflow = 'hidden';
         }
 
+        function parseScheduleDate(value) {
+            const raw = String(value || '').trim();
+            if (!raw) return null;
+            const direct = new Date(raw);
+            if (!Number.isNaN(direct.getTime())) return direct;
+            const normalized = raw
+                .replace(/[•]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+            const fallback = new Date(normalized);
+            return Number.isNaN(fallback.getTime()) ? null : fallback;
+        }
+
+        async function savePlayerSchedule(schedule, noteText = '') {
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            if (!token || token === 'local-session-token') {
+                throw new Error('Takvim kaydi icin giris yapman gerekiyor.');
+            }
+
+            const matchDate = parseScheduleDate(schedule?.desc);
+            if (!matchDate) {
+                throw new Error('Bu etkinlik icin gecerli tarih bulunamadi.');
+            }
+
+            const payload = {
+                match_title: schedule?.title || 'Etkinlik',
+                team_name: schedule?.organizer || 'NextScout',
+                opponent_name: null,
+                position: schedule?.type === 'join' ? 'trial' : 'reminder',
+                match_date: matchDate.toISOString(),
+                city: schedule?.location || 'Istanbul',
+                district: null,
+                venue: schedule?.location || '',
+                is_public: false,
+                notes: noteText || schedule?.capacity || '',
+            };
+
+            const response = await fetch(`${getApiBaseUrl()}/player/match-schedules`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(payload),
+            });
+            const body = await response.json().catch(() => ({}));
+            if (!response.ok || body?.ok === false) {
+                throw new Error(body?.message || 'Takvim kaydi olusturulamadi.');
+            }
+            return body?.data || null;
+        }
+
+        async function loadUpcomingSchedulesFromApi() {
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            if (!token || token === 'local-session-token') return [];
+
+            const response = await fetch(`${getApiBaseUrl()}/player/match-schedules/my`, {
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const body = await response.json().catch(() => ({}));
+            if (!response.ok || body?.ok === false) return [];
+            return Array.isArray(body?.data) ? body.data : [];
+        }
+
         function openScheduleModal(type) {
             const events = Array.isArray(dashboardApiState.communityEvents) ? dashboardApiState.communityEvents : [];
             const fromApi = type === 'join' ? (events[0] || null) : (events[1] || events[0] || null);
@@ -1525,34 +1538,27 @@
             }
 
             try {
-                const actions = readArrayStorage('nextscout_schedule_actions');
-                actions.unshift({
-                    type: schedule.type,
-                    title: schedule.title,
-                    action: schedule.type === 'join' ? 'join-approved' : 'reminder-set',
-                    at: new Date().toISOString(),
-                });
-                localStorage.setItem('nextscout_schedule_actions', JSON.stringify(actions.slice(0, 200)));
-            } catch (e) {}
+                await savePlayerSchedule(schedule, schedule.type === 'join' ? 'join-approved' : 'reminder-set');
+                await renderUpcomingSchedules();
+            } catch (e) {
+                window.nsNotify?.error ? window.nsNotify.error(e.message || 'Takvim kaydi olusturulamadi.') : nsnsAlert(e.message || 'Takvim kaydi olusturulamadi.');
+                return;
+            }
 
             window.nsNotify?.success ? window.nsNotify.success(schedule.type === 'join' ? 'Katilim onayin alindi.' : 'Hatirlatici olusturuldu.') : nsnsAlert(schedule.type === 'join' ? 'Katilim onayin alindi.' : 'Hatirlatici olusturuldu.');
             closeMetricModal();
         }
 
-        function saveScheduleToCalendar() {
+        async function saveScheduleToCalendar() {
             const schedule = dashboardApiState.selectedSchedule;
             if (!schedule) return;
             try {
-                const items = readArrayStorage('nextscout_calendar_items');
-                items.unshift({
-                    title: schedule.title,
-                    time: schedule.desc,
-                    location: schedule.location,
-                    created_at: new Date().toISOString(),
-                });
-                localStorage.setItem('nextscout_calendar_items', JSON.stringify(items.slice(0, 200)));
-            } catch (e) {}
-            renderUpcomingSchedules();
+                await savePlayerSchedule(schedule, 'calendar-save');
+                await renderUpcomingSchedules();
+            } catch (e) {
+                window.nsNotify?.error ? window.nsNotify.error(e.message || 'Takvime eklenemedi.') : nsnsAlert(e.message || 'Takvime eklenemedi.');
+                return;
+            }
             window.nsNotify?.success ? window.nsNotify.success('Takvime eklendi.') : nsnsAlert('Takvime eklendi.');
         }
 
@@ -1560,10 +1566,10 @@
             window.location.href = 'notifications.html';
         }
 
-        function renderUpcomingSchedules() {
+        async function renderUpcomingSchedules() {
             const root = document.getElementById('upcomingScheduleList');
             if (!root) return;
-            const items = readArrayStorage('nextscout_calendar_items');
+            const items = await loadUpcomingSchedulesFromApi();
 
             if (!items.length) {
                 root.innerHTML = `
@@ -1581,8 +1587,8 @@
             root.innerHTML = items.slice(0, 4).map((item) => `
                 <div class="mini-item">
                     <div class="left">
-                        <div class="t">${item.title || 'Etkinlik'}</div>
-                    <div class="d">${item.time || '-'} • ${item.location || 'Konum yok'}</div>
+                        <div class="t">${item.match_title || item.title || 'Etkinlik'}</div>
+                    <div class="d">${item.match_date || item.time || '-'} • ${item.city || item.location || 'Konum yok'}</div>
                     </div>
                     <span class="tag">Planli</span>
                 </div>

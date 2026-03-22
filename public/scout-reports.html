@@ -511,7 +511,16 @@
   </div>
 
   <script>
-    const REPORTS_KEY = 'nextscout_scout_reports';
+    let reportState = [];
+
+    function getApiBaseUrl() {
+      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      return '/api';
+    }
+
+    function getAuthToken() {
+      return (localStorage.getItem('nextscout_token') || '').trim();
+    }
 
     function getUserRole() {
       const roleRaw = (localStorage.getItem('nextscout_user_role') || '').trim().toLowerCase();
@@ -566,79 +575,80 @@
         .replace(/'/g, '&#39;');
     }
 
-    function getDefaultReports() {
-      return [
-        {
-          id: 1,
-          player_id: 11,
-          player_name: 'Ahmet Yılmaz',
-          position: 'Forvet',
-          age: 23,
-          rating: 8.2,
-          status: 'shortlist',
-          scout_name: 'Emre Kara',
-          club: 'Anadolu FK',
-          watched_at: '2026-03-12',
-          potential: 'Yüksek',
-          summary: 'Ceza sahasında bitiriciliği yüksek, topsuz koşu kalitesiyle fark yaratıyor.',
-          strengths: ['Bitiricilik', 'Pozisyon Alma', 'Ön Alan Presi'],
-          risks: ['Sırtı dönük oyun', 'Hava topu zamanlaması'],
-          note: 'Kısa vadede rotasyona girebilir, doğru servisle gol katkısı hızlı gelir.'
-        },
-        {
-          id: 2,
-          player_id: 12,
-          player_name: 'Mert Can',
-          position: 'Orta Saha',
-          age: 21,
-          rating: 7.8,
-          status: 'review',
-          scout_name: 'Bora Aydın',
-          club: 'İzmirspor',
-          watched_at: '2026-03-09',
-          potential: 'Orta-Yüksek',
-          summary: 'Oyun yönünü değiştiren pas kalitesi iyi, baskı altında doğru karar verme seviyesi dikkat çekiyor.',
-          strengths: ['Pas Kalitesi', 'Oyun Görüşü', 'Tempo Kontrolü'],
-          risks: ['Patlayıcı hız', 'İkili mücadele sertliği'],
-          note: 'Bir üst tempoda tekrar izlenmeli, doğru yapı içinde değer yaratır.'
-        },
-        {
-          id: 3,
-          player_id: 13,
-          player_name: 'Kaan Demir',
-          position: 'Defans',
-          age: 25,
-          rating: 7.4,
-          status: 'observe',
-          scout_name: 'Selin Öztürk',
-          club: 'Marmara SK',
-          watched_at: '2026-03-05',
-          potential: 'Orta',
-          summary: 'Fiziksel teması güçlü, savunma çizgisini iyi yönetiyor fakat açık alanda hız limiti var.',
-          strengths: ['Fizik Güç', 'Pozisyon Disiplini', 'Hava Topu'],
-          risks: ['Açık Alan Savunması', 'Çabuk Yön Değiştirme'],
-          note: 'Düşük blok savunma yapan takımlar için daha uygun profil.'
-        },
-      ];
+    function loadReportsCache() {
+      return Array.isArray(reportState) ? reportState : [];
     }
 
-    function loadReports() {
-      try {
-        const raw = localStorage.getItem(REPORTS_KEY);
-        if (!raw) {
-          const defaults = getDefaultReports();
-          localStorage.setItem(REPORTS_KEY, JSON.stringify(defaults));
-          return defaults;
-        }
-        const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) ? parsed : [];
-      } catch (error) {
-        return [];
+    function saveReportsCache(items) {
+      reportState = Array.isArray(items) ? items.slice(0, 300) : [];
+    }
+
+    async function fetchReports() {
+      const token = getAuthToken();
+      if (!token) return [];
+
+      const params = new URLSearchParams();
+      const q = document.getElementById('qInput')?.value?.trim();
+      const status = document.getElementById('statusFilter')?.value?.trim();
+      const minRating = document.getElementById('ratingFilter')?.value?.trim();
+      params.set('per_page', '100');
+      if (q) params.set('q', q);
+      if (status) params.set('status', status);
+      if (minRating) params.set('min_rating', minRating);
+
+      const response = await fetch(`${getApiBaseUrl()}/scout/player-reports?${params.toString()}`, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || payload?.ok === false) {
+        throw new Error(payload?.message || 'Scout raporlari yuklenemedi.');
       }
+
+      reportState = Array.isArray(payload?.data?.data) ? payload.data.data : [];
+      return reportState;
     }
 
-    function saveReports(items) {
-      localStorage.setItem(REPORTS_KEY, JSON.stringify(items));
+    async function createReport(payload) {
+      const token = getAuthToken();
+      if (!token) throw new Error('Rapor kaydetmek icin oturum gerekli.');
+
+      const response = await fetch(`${getApiBaseUrl()}/scout/player-reports`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok || body?.ok === false) {
+        throw new Error(body?.message || 'Scout raporu kaydedilemedi.');
+      }
+      return body?.data || null;
+    }
+
+    async function updateReportStatus(id, status) {
+      const token = getAuthToken();
+      if (!token) throw new Error('Durum guncellemek icin oturum gerekli.');
+
+      const response = await fetch(`${getApiBaseUrl()}/scout/player-reports/${encodeURIComponent(id)}/status`, {
+        method: 'PATCH',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status }),
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok || body?.ok === false) {
+        throw new Error(body?.message || 'Scout raporu durumu guncellenemedi.');
+      }
+      return body?.data || null;
     }
 
     function statusLabel(status) {
@@ -657,7 +667,7 @@
     const reportEntry = document.getElementById('reportEntry');
     if (reportEntry) reportEntry.style.display = isScoutEditor ? 'block' : 'none';
 
-    let allReports = hasReportsAccess ? loadReports() : [];
+    let allReports = [];
     let visible = allReports.slice();
     let selectedReportId = visible[0] ? Number(visible[0].id) : null;
 
@@ -749,14 +759,20 @@
       render();
     }
 
-    function nextStatus(id) {
+    async function nextStatus(id) {
       const order = ['observe', 'review', 'shortlist', 'reject'];
       const idx = allReports.findIndex((x) => Number(x.id) === Number(id));
       if (idx === -1) return;
       const current = order.indexOf(allReports[idx].status);
-      allReports[idx].status = order[(current + 1) % order.length];
-      saveReports(allReports);
-      applyFilters();
+      const next = order[(current + 1) % order.length];
+      try {
+        const updated = await updateReportStatus(id, next);
+        allReports[idx] = ensureReportShape(updated || Object.assign({}, allReports[idx], { status: next }));
+        saveReportsCache(allReports);
+        applyFilters();
+      } catch (error) {
+        window.alert(error.message || 'Durum guncellenemedi.');
+      }
     }
 
     function selectReport(id) {
@@ -804,9 +820,15 @@
         shortlistBtn.onclick = () => {
           const idx = allReports.findIndex((row) => Number(row.id) === Number(item.id));
           if (idx === -1) return;
-          allReports[idx].status = 'shortlist';
-          saveReports(allReports);
-          applyFilters();
+          updateReportStatus(item.id, 'shortlist')
+            .then((updated) => {
+              allReports[idx] = ensureReportShape(updated || Object.assign({}, allReports[idx], { status: 'shortlist' }));
+              saveReportsCache(allReports);
+              applyFilters();
+            })
+            .catch((error) => {
+              window.alert(error.message || 'Durum guncellenemedi.');
+            });
         };
       }
       const contactBtn = document.getElementById('contactBtn');
@@ -864,7 +886,7 @@
         .filter(Boolean);
     }
 
-    function saveReportFromForm() {
+    async function saveReportFromForm() {
       const playerName = String(document.getElementById('playerNameInput')?.value || '').trim();
       const position = String(document.getElementById('positionInput')?.value || '').trim();
       const age = Number(document.getElementById('ageInput')?.value || 0);
@@ -891,14 +913,12 @@
       })();
 
       const report = {
-        id: Date.now(),
-        player_id: playerId,
+        player_user_id: Number.isFinite(playerId) ? playerId : null,
         player_name: playerName,
         position,
         age: age || '-',
         rating,
         status,
-        scout_name: scoutName,
         club: club || '-',
         watched_at: watchedAt || new Date().toISOString().slice(0, 10),
         potential: potential || 'Orta',
@@ -908,17 +928,40 @@
         note: note || 'Scout notu girilmedi.'
       };
 
-      allReports.unshift(report);
-      saveReports(allReports);
-      clearReportForm();
-      applyFilters();
-      selectedReportId = Number(report.id);
+      try {
+        const created = await createReport(report);
+        const nextReport = ensureReportShape(created || Object.assign({ scout_name: scoutName }, report));
+        allReports.unshift(nextReport);
+        saveReportsCache(allReports.slice(0, 300));
+        clearReportForm();
+        applyFilters();
+        selectedReportId = Number(nextReport.id);
+        render();
+      } catch (error) {
+        window.alert(error.message || 'Scout raporu kaydedilemedi.');
+      }
+    }
+
+    async function initReportsPage() {
+      if (!hasReportsAccess) {
+        renderAccessDenied(currentRole);
+        return;
+      }
+
+      bind();
       render();
+      try {
+        allReports = await fetchReports();
+        visible = allReports.slice();
+        selectedReportId = visible[0] ? Number(visible[0].id) : null;
+        render();
+      } catch (error) {
+        console.error(error);
+      }
     }
 
     if (hasReportsAccess) {
-      bind();
-      render();
+      initReportsPage();
     } else {
       renderAccessDenied(currentRole);
     }
