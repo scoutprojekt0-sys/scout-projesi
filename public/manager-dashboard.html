@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manager Dashboard | NextScout</title>
-    <meta name="description" content="MENAJER paneli: oyuncu portfoyu, teklif yÃ¶netimi ve ihtiyaÃ§ eslesme akislarini yonetin.">
+    <meta name="description" content="MENAJER paneli: oyuncu portfoyu, teklif yönetimi ve ihtiyaç eşleşme akışlarını yönetin.">
     <meta name="robots" content="noindex,follow">
     <link rel="canonical" href="https://nextscout.pro/manager-dashboard.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
     <meta property="og:title" content="Manager Dashboard | NextScout">
-    <meta property="og:description" content="MENAJER paneli: oyuncu portfoyu, teklif yÃ¶netimi ve ihtiyaÃ§ eslesme akislarini yonetin.">
+    <meta property="og:description" content="MENAJER paneli: oyuncu portfoyu, teklif yönetimi ve ihtiyaç eşleşme akışlarını yönetin.">
     <meta property="og:url" content="https://nextscout.pro/manager-dashboard.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
@@ -1010,12 +1010,12 @@
             <div class="logo">NextScout Manager</div>
         </div>
         <div class="navbar-right">
-            <button class="btn-small success" onclick="openNeedModal()"><i class="fas fa-plus-circle"></i><span>Ä°lan Gir</span></button>
-            <button class="btn-small primary" onclick="window.location.href='manager-needs.html'"><i class="fas fa-list-check"></i><span>Ä°lan Listesi</span></button>
-            <button class="btn-small secondary" onclick="openManagerProfile()"><i class="fas fa-user-check"></i><span>Public GÃ¶rÃ¼nÃ¼m</span></button>
+            <button class="btn-small success" onclick="openNeedModal()"><i class="fas fa-plus-circle"></i><span>İlan Gir</span></button>
+            <button class="btn-small primary" onclick="window.location.href='manager-needs.html'"><i class="fas fa-list-check"></i><span>İlan Listesi</span></button>
+            <button class="btn-small secondary" onclick="openManagerProfile()"><i class="fas fa-user-check"></i><span>Public Görünüm</span></button>
             <button class="btn-small secondary" onclick="window.location.href='index.html?success_story=submit#homeStep3'"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></button>
             <button class="btn-small home-btn" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255, 126, 34, 0.6);background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 16px 28px rgba(255,90,31,0.28);" onclick="window.location.href='index.html'"><i class="fas fa-house"></i><span>Ana Sayfa</span></button>
-            <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Ã‡Ä±kÄ±ÅŸ</span></button>
+            <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Çıkış</span></button>
         </div>
     </div>
 
@@ -1026,16 +1026,16 @@
                 <ul class="sidebar-menu">
                     <li class="sidebar-item active" onclick="location.reload()"><i class="fas fa-magnifying-glass"></i><span>Oyuncu Ara</span></li>
                     <li class="sidebar-item" onclick="openManagerProfile()"><i class="fas fa-user"></i><span>Profilim</span></li>
-                    <li class="sidebar-item" onclick="openSentApplications()"><i class="fas fa-paper-plane"></i><span>GÃ¶nderilen BaÅŸvurular</span></li>
-                    <li class="sidebar-item" onclick="openAnsweredApplications()"><i class="fas fa-circle-check"></i><span>YanÄ±tlanan BaÅŸvurular</span></li>
+                    <li class="sidebar-item" onclick="openSentApplications()"><i class="fas fa-paper-plane"></i><span>Gönderilen Başvurular</span></li>
+                    <li class="sidebar-item" onclick="openAnsweredApplications()"><i class="fas fa-circle-check"></i><span>Yanıtlanan Başvurular</span></li>
                     <li class="sidebar-item" onclick="openFavorites()"><i class="fas fa-star"></i><span>Favorilerim</span></li>
                     <li class="sidebar-item" onclick="openWatchlist()"><i class="fas fa-list-check"></i><span>Takip Listem</span></li>
                     <li class="sidebar-item" onclick="window.location.href='ai-discovery.html'"><i class="fas fa-flask"></i><span>AI Discovery</span></li>
-                    <li class="sidebar-item" onclick="window.location.href='manager-needs.html'"><i class="fas fa-thumbtack"></i><span>AradÄ±ÄŸÄ±m Oyuncular</span></li>
-                    <li class="sidebar-item" onclick="window.location.href='live-watch-demand.html'"><i class="fas fa-location-crosshairs"></i><span>CanlÄ± Ä°zleme Talebi</span></li>
-                    <li class="sidebar-item" onclick="openMessages()"><i class="fas fa-comments"></i><span>MesajlarÄ±m</span></li>
+                    <li class="sidebar-item" onclick="window.location.href='manager-needs.html'"><i class="fas fa-thumbtack"></i><span>Aradığım Oyuncular</span></li>
+                    <li class="sidebar-item" onclick="window.location.href='live-watch-demand.html'"><i class="fas fa-location-crosshairs"></i><span>Canlı İzleme Talebi</span></li>
+                    <li class="sidebar-item" onclick="openMessages()"><i class="fas fa-comments"></i><span>Mesajlarım</span></li>
                     <li class="sidebar-item" onclick="openSettings()"><i class="fas fa-gear"></i><span>Ayarlar</span></li>
-                    <li class="sidebar-item" onclick="openHelp()"><i class="fas fa-circle-question"></i><span>YardÄ±m</span></li>
+                    <li class="sidebar-item" onclick="openHelp()"><i class="fas fa-circle-question"></i><span>Yardım</span></li>
                 </ul>
             </div>
         </aside>
@@ -1067,13 +1067,13 @@
             </section>
             <div class="welcome-card" style="display:none;">
                 <h1>Manager operasyonunu buradan yonet.</h1>
-                <p>Oyuncu ara, profil incele, baÅŸvuru gÃ¶nder ve favori listeni yonet.</p>
+                <p>Oyuncu ara, profil incele, başvuru gönder ve favori listeni yönet.</p>
             </div>
 
             <div class="need-section">
                 <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
-                    <h2 style="font-size:18px;font-weight:800;color:#e5e7eb;">AradÄ±ÄŸÄ±m Oyuncu Ä°lanlarÄ±</h2>
-                    <button class="btn-small success" onclick="openNeedModal()">+ Yeni Ä°lan</button>
+                    <h2 style="font-size:18px;font-weight:800;color:#e5e7eb;">Aradığım Oyuncu İlanları</h2>
+                    <button class="btn-small success" onclick="openNeedModal()">+ Yeni İlan</button>
                 </div>
                 <div class="need-list" id="managerNeedRecent"></div>
             </div>
@@ -1090,7 +1090,7 @@
                         <input type="number" id="offerContractClarity" min="0" max="100" value="70">
                     </div>
                     <div class="form-group">
-                        <label>Ã–deme Hizi (0-100)</label>
+                        <label>Ödeme Hızı (0-100)</label>
                         <input type="number" id="offerPaymentSpeed" min="0" max="100" value="70">
                     </div>
                     <div class="form-group">
@@ -1108,7 +1108,7 @@
                 <div class="stat-card"><div class="stat-card-value" id="statPool">0</div><div class="stat-card-label">Oyuncu Havuzu</div></div>
                 <div class="stat-card"><div class="stat-card-value" id="statFiltered">0</div><div class="stat-card-label">Filtre Sonucu</div></div>
                 <div class="stat-card"><div class="stat-card-value" id="statFavorites">0</div><div class="stat-card-label">Favori Oyuncu</div></div>
-                <div class="stat-card"><div class="stat-card-value" id="statApplications">0</div><div class="stat-card-label">Gonderilen BaÅŸvuru</div></div>
+                <div class="stat-card"><div class="stat-card-value" id="statApplications">0</div><div class="stat-card-label">Gönderilen Başvuru</div></div>
             </div>
             <div class="market-pulse-overlay" id="managerMarketPulseOverlay" onclick="closeManagerMarketPulse()"></div>
             <section class="market-pulse market-pulse-flyout" id="managerMarketPulseCard">
@@ -1342,7 +1342,7 @@
             </div>
 
             <div class="results-section">
-                <h2 style="margin-bottom:20px;font-size:18px;font-weight:800;color:#e5e7eb;">Arama SonuÃ§larÄ±</h2>
+                <h2 style="margin-bottom:20px;font-size:18px;font-weight:800;color:#e5e7eb;">Arama Sonuçları</h2>
                 <div class="players-grid" id="playersGrid"></div>
             </div>
         </div>
@@ -2046,28 +2046,28 @@
                 .slice(0, 3);
 
             controlRoot.innerHTML = [
-                `<div class="smart-manager-item"><strong>${poolCount} oyunculuk havuz aÃ§Ä±k</strong><span>BugÃ¼n portfÃ¶y taramasÄ±na hazÄ±r aktif oyuncu veri seti masanda duruyor.</span></div>`,
-                `<div class="smart-manager-item"><strong>${favorites.length} favori dosya takipte</strong><span>Ã–ne Ã§Ä±kan oyuncularÄ±nÄ± favori listenden sÄ±cak tut ve hÄ±zlÄ± eriÅŸimle yÃ¶net.</span></div>`,
-                `<div class="smart-manager-item"><strong>${applications.length} baÅŸvuru gÃ¶nderildi</strong><span>GÃ¶nderdiÄŸin temas ve baÅŸvuru dosyalarÄ± canlÄ± akÄ±ÅŸta izlenebilir durumda.</span></div>`,
+                `<div class="smart-manager-item"><strong>${poolCount} oyunculuk havuz açık</strong><span>Bugün portföy taramasına hazır aktif oyuncu veri seti masanda duruyor.</span></div>`,
+                `<div class="smart-manager-item"><strong>${favorites.length} favori dosya takipte</strong><span>Öne çıkan oyuncularını favori listenden sıcak tut ve hızlı erişimle yönet.</span></div>`,
+                `<div class="smart-manager-item"><strong>${applications.length} başvuru gönderildi</strong><span>Gönderdiğin temas ve başvuru dosyaları canlı akışta izlenebilir durumda.</span></div>`,
             ].join('');
 
             if (!topPlayers.length) {
-                matchesRoot.innerHTML = '<div class="smart-manager-item"><strong>HenÃ¼z gÃ¼Ã§lÃ¼ eÅŸleÅŸme yok</strong><span>FiltreledikÃ§e ve ilanlar yenilendikÃ§e burasÄ± kulÃ¼p fÄ±rsatlarÄ±yla dolacak.</span></div>';
+                matchesRoot.innerHTML = '<div class="smart-manager-item"><strong>Henüz güçlü eşleşme yok</strong><span>Filtreledikçe ve ilanlar yenilendikçe burası kulüp fırsatlarıyla dolacak.</span></div>';
             } else {
                 matchesRoot.innerHTML = topPlayers.map((player, index) => {
                     const budgetBase = 45000 + (index * 15000);
-                    return `<div class="smart-manager-item"><strong>${escapeHtml(player.position || 'Oyuncu')} â€¢ ${escapeHtml(player.name || 'Profil')}</strong><span>${escapeHtml(player.club || 'KulÃ¼p bilgisi yok')} Ã§Ä±kÄ±ÅŸlÄ± bu profil iÃ§in ${budgetBase.toLocaleString('tr-TR')} TL bandÄ±nda kulÃ¼p ihtiyacÄ± eÅŸleÅŸmesi Ã¶ne Ã§Ä±kÄ±yor.</span></div>`;
+                return `<div class="smart-manager-item"><strong>${escapeHtml(player.position || 'Oyuncu')} • ${escapeHtml(player.name || 'Profil')}</strong><span>${escapeHtml(player.club || 'Kulüp bilgisi yok')} çıkışlı bu profil için ${budgetBase.toLocaleString('tr-TR')} TL bandında kulüp ihtiyacı eşleşmesi öne çıkıyor.</span></div>`;
                 }).join('');
             }
 
             const weakSignals = [
-                !favorites.length ? '<div class="smart-manager-item"><strong>Favori listesi zayÄ±f</strong><span>Karar havuzunu daraltmak iÃ§in en az 3 gÃ¼Ã§lÃ¼ oyuncuyu favoriye al.</span></div>' : '',
-                !applications.length ? '<div class="smart-manager-item"><strong>BaÅŸvuru trafiÄŸi yok</strong><span>PortfÃ¶ydeki oyuncular iÃ§in bugÃ¼n en az bir sÄ±cak temas aÃ§man Ã¶nerilir.</span></div>' : '',
-                filteredCount < 3 ? '<div class="smart-manager-item"><strong>Filtre seti Ã§ok dar</strong><span>Daha geniÅŸ bir pozisyon ve yaÅŸ aralÄ±ÄŸÄ±yla yeni fÄ±rsat alanlarÄ± aÃ§abilirsin.</span></div>' : '',
+                !favorites.length ? '<div class="smart-manager-item"><strong>Favori listesi zayıf</strong><span>Karar havuzunu daraltmak için en az 3 güçlü oyuncuyu favoriye al.</span></div>' : '',
+                !applications.length ? '<div class="smart-manager-item"><strong>Başvuru trafiği yok</strong><span>Portföydeki oyuncular için bugün en az bir sıcak temas açman önerilir.</span></div>' : '',
+                filteredCount < 3 ? '<div class="smart-manager-item"><strong>Filtre seti çok dar</strong><span>Daha geniş bir pozisyon ve yaş aralığıyla yeni fırsat alanları açabilirsin.</span></div>' : '',
             ].filter(Boolean);
             alertsRoot.innerHTML = weakSignals.length
                 ? weakSignals.join('')
-                : '<div class="smart-manager-item"><strong>PortfÃ¶y dengesi gÃ¼Ã§lÃ¼</strong><span>Favoriler, baÅŸvurular ve oyuncu filtreleri bugÃ¼n saÄŸlÄ±klÄ± seviyede gÃ¶rÃ¼nÃ¼yor.</span></div><div class="smart-manager-item"><strong>Bir sonraki adÄ±m net</strong><span>Profilini gÃ¼ncelle ve yeni ilan ekleyerek portfÃ¶yÃ¼ daha gÃ¶rÃ¼nÃ¼r hale getir.</span></div>';
+                : '<div class="smart-manager-item"><strong>Portföy dengesi güçlü</strong><span>Favoriler, başvurular ve oyuncu filtreleri bugün sağlıklı seviyede görünüyor.</span></div><div class="smart-manager-item"><strong>Bir sonraki adım net</strong><span>Profilini güncelle ve yeni ilan ekleyerek portföyü daha görünür hale getir.</span></div>';
 
             const answeredCount = applications.filter((x) => {
                 const status = String(x?.status || '').toLowerCase();
@@ -2075,9 +2075,9 @@
             }).length;
             const pendingCount = Math.max(applications.length - answeredCount, 0);
             flowRoot.innerHTML = [
-                `<div class="smart-manager-item"><strong>${pendingCount} dosya geri dÃ¶nÃ¼ÅŸ bekliyor</strong><span>HenÃ¼z tamamlanmamÄ±ÅŸ gÃ¶rÃ¼ÅŸme ve temaslarÄ±n aktif takip istiyor.</span></div>`,
-                `<div class="smart-manager-item"><strong>${answeredCount} dosyada cevap var</strong><span>YanÄ±tlanan baÅŸvurularÄ± tekrar aÃ§Ä±p teklif potansiyeli olanlarÄ± Ã¶ne alabilirsin.</span></div>`,
-                `<div class="smart-manager-item"><strong>${poolCount} oyuncu arasÄ±nda yeni fÄ±rsat var</strong><span>CanlÄ± oyuncu havuzu Ã¼zerinden bugÃ¼n sÄ±cak dosyalara yeniden dÃ¶nmek iÃ§in doÄŸru zaman.</span></div>`,
+                `<div class="smart-manager-item"><strong>${pendingCount} dosya geri dönüş bekliyor</strong><span>Henüz tamamlanmamış görüşme ve temasların aktif takip istiyor.</span></div>`,
+                `<div class="smart-manager-item"><strong>${answeredCount} dosyada cevap var</strong><span>Yanıtlanan başvuruları tekrar açıp teklif potansiyeli olanları öne alabilirsin.</span></div>`,
+                `<div class="smart-manager-item"><strong>${poolCount} oyuncu arasında yeni fırsat var</strong><span>Canlı oyuncu havuzu üzerinden bugün sıcak dosyalara yeniden dönmek için doğru zaman.</span></div>`,
             ].join('');
         }
 
@@ -2091,7 +2091,7 @@
                 items = [];
             }
             if (!items.length) {
-                root.innerHTML = '<div class="need-item">Henuz ilan yok. "Yeni Ä°lan" ile ilk ilani olustur.</div>';
+                root.innerHTML = '<div class="need-item">Henüz ilan yok. "Yeni İlan" ile ilk ilanı oluştur.</div>';
                 return;
             }
             root.innerHTML = items.map((item) => {
@@ -2161,10 +2161,10 @@
             grid.innerHTML = players.map((player) => {
                 const rating = Number(player.rating) || 0;
                 const starCount = Math.max(1, Math.min(5, Math.round(rating / 2)));
-                const stars = 'â˜…'.repeat(starCount) + 'â˜†'.repeat(5 - starCount);
+                const stars = '★'.repeat(starCount) + '☆'.repeat(5 - starCount);
                 return `
                 <div class="player-card">
-                    <div class="player-card-image">âš½</div>
+                            <div class="player-card-image">⚽</div>
                     <div class="player-card-content">
                         <div class="player-name">${escapeHtml(player.name || '-')}</div>
                         <div class="player-position">${escapeHtml(player.position || '-')}</div>
@@ -2341,7 +2341,7 @@
             titleEl.textContent = title;
 
             if (!Array.isArray(items) || !items.length) {
-                bodyEl.innerHTML = '<div class="application-empty">Bu listede baÅŸvuru bulunamadi.</div>';
+                bodyEl.innerHTML = '<div class="application-empty">Bu listede başvuru bulunamadı.</div>';
             } else {
                 bodyEl.innerHTML = items.map((item) => {
                     const statusRaw = String(item?.status || 'sent').toLowerCase();
@@ -2438,7 +2438,7 @@
             else if (score >= 55) verdict = 'Orta Seviye';
 
             const root = document.getElementById('offerScoreResult');
-            if (root) root.textContent = `Teklif Skoru: ${score}/100 â€¢ ${verdict}`;
+            if (root) root.textContent = `Teklif Skoru: ${score}/100 • ${verdict}`;
 
         }
 
@@ -2541,9 +2541,9 @@
                 this.reset();
                 closeNeedModal();
                 await renderRecentNeeds();
-                window.nsNotify?.success ? window.nsNotify.success('Ä°lan kaydedildi. Anasayfa ve MENAJER ilan listesinde gorunecek.') : nsnsAlert('Ä°lan kaydedildi. Anasayfa ve MENAJER ilan listesinde gorunecek.');
+                window.nsNotify?.success ? window.nsNotify.success('İlan kaydedildi. Anasayfa ve MENAJER ilan listesinde görünecek.') : nsnsAlert('İlan kaydedildi. Anasayfa ve MENAJER ilan listesinde görünecek.');
             } catch (error) {
-                window.nsNotify?.error ? window.nsNotify.error(`Ä°lan kaydedilemedi: ${error.message}`) : nsnsAlert(`Ä°lan kaydedilemedi: ${error.message}`);
+                window.nsNotify?.error ? window.nsNotify.error(`İlan kaydedilemedi: ${error.message}`) : nsnsAlert(`İlan kaydedilemedi: ${error.message}`);
             }
         });
 
@@ -2552,13 +2552,13 @@
             const welcomeTitle = document.querySelector('.welcome-card h1');
             if (welcomeTitle) welcomeTitle.textContent = 'Manager Dashboard';
             const welcomeSub = document.querySelector('.welcome-card p');
-            if (welcomeSub) welcomeSub.textContent = 'Oyuncu ara, profil incele, baÅŸvuru gÃ¶nder ve favori listeni yÃ¶net.';
+            if (welcomeSub) welcomeSub.textContent = 'Oyuncu ara, profil incele, başvuru gönder ve favori listeni yönet.';
             const sidebarMenu = document.querySelector('.sidebar-menu');
             if (sidebarMenu && !sidebarMenu.querySelector('[data-nav="scout-reports"]')) {
                 const reportsItem = document.createElement('li');
                 reportsItem.className = 'sidebar-item';
                 reportsItem.setAttribute('data-nav', 'scout-reports');
-                reportsItem.innerHTML = '<i class="fas fa-file-lines"></i><span>Scout RaporlarÄ±</span>';
+                reportsItem.innerHTML = '<i class="fas fa-file-lines"></i><span>Scout Raporları</span>';
                 reportsItem.onclick = openScoutReports;
                 const helpItem = Array.from(sidebarMenu.querySelectorAll('.sidebar-item')).find((item) => {
                     const label = item.querySelector('span:last-child');
@@ -2570,40 +2570,40 @@
             document.querySelectorAll('.sidebar-item span:last-child').forEach((el) => {
                 let text = el.textContent || '';
                 text = text
-                    .replace('Gonderilen Basvurular', 'GÃ¶nderilen BaÅŸvurular')
-                    .replace('Yanitlanan Basvurular', 'YanÄ±tlanan BaÅŸvurular')
-                    .replace('Aradigim Oyuncular', 'AradÄ±ÄŸÄ±m Oyuncular')
-                    .replace('Mesajlarim', 'MesajlarÄ±m')
-                    .replace('Yardim', 'YardÄ±m');
+                    .replace('Gonderilen Basvurular', 'Gönderilen Başvurular')
+                    .replace('Yanitlanan Basvurular', 'Yanıtlanan Başvurular')
+                    .replace('Aradigim Oyuncular', 'Aradığım Oyuncular')
+                    .replace('Mesajlarim', 'Mesajlarım')
+                    .replace('Yardim', 'Yardım');
                 el.textContent = text;
             });
             document.querySelectorAll('h2').forEach((el) => {
                 let text = el.textContent || '';
                 text = text
-                    .replace('Aradigim Oyuncu Ilanlari', 'AradÄ±ÄŸÄ±m Oyuncu Ä°lanlarÄ±')
-                    .replace('Arama Sonuclari', 'Arama SonuÃ§larÄ±');
+                    .replace('Aradigim Oyuncu Ilanlari', 'Aradığım Oyuncu İlanları')
+                    .replace('Arama Sonuclari', 'Arama Sonuçları');
                 el.textContent = text;
             });
             document.querySelectorAll('.stat-card-label').forEach((el) => {
-                el.textContent = (el.textContent || '').replace('Gonderilen BaÅŸvuru', 'GÃ¶nderilen BaÅŸvuru');
+                el.textContent = (el.textContent || '').replace('Gonderilen Başvuru', 'Gönderilen Başvuru');
             });
             document.querySelectorAll('button, label, option, .need-modal-title, .applications-modal-title, .action-btn span').forEach((el) => {
                 let text = el.textContent || '';
                 text = text
-                    .replace('Basvur', 'BaÅŸvur')
-                    .replace('Basvurular', 'BaÅŸvurular')
-                    .replace('Iptal', 'Ä°ptal')
-                    .replace('Aradigin Oyuncuyu Ekle', 'AradÄ±ÄŸÄ±n Oyuncuyu Ekle')
-                    .replace('Oyuncu Adi', 'Oyuncu AdÄ±')
-                    .replace('Yas Araligi', 'YaÅŸ AralÄ±ÄŸÄ±')
-                    .replace('Yas', 'YaÅŸ')
-                    .replace('Tumu', 'TÃ¼mÃ¼')
-                    .replace('Butce Guveni', 'BÃ¼tÃ§e GÃ¼veni')
-                    .replace('Sozlesme Netligi', 'SÃ¶zleÅŸme NetliÄŸi')
-                    .replace('Odeme Hizi', 'Ã–deme HÄ±zÄ±')
+                    .replace('Basvur', 'Başvur')
+                    .replace('Basvurular', 'Başvurular')
+                    .replace('Iptal', 'İptal')
+                    .replace('Aradigin Oyuncuyu Ekle', 'Aradığın Oyuncuyu Ekle')
+                    .replace('Oyuncu Adi', 'Oyuncu Adı')
+                    .replace('Yas Araligi', 'Yaş Aralığı')
+                    .replace('Yas', 'Yaş')
+                    .replace('Tumu', 'Tümü')
+                    .replace('Butce Guveni', 'Bütçe Güveni')
+                    .replace('Sozlesme Netligi', 'Sözleşme Netliği')
+                    .replace('Odeme Hizi', 'Ödeme Hızı')
                     .replace('Menejer', 'Menajer')
-                    .replace('Menajer Adi', 'Menajer AdÄ±')
-                    .replace('Menajer Soyadi', 'Menajer SoyadÄ±');
+                    .replace('Menajer Adi', 'Menajer Adı')
+                    .replace('Menajer Soyadi', 'Menajer Soyadı');
                 el.textContent = text;
             });
             document.querySelectorAll('input[placeholder], input[value]').forEach((el) => {
@@ -2611,11 +2611,11 @@
                 const value = el.getAttribute('value');
                 if (placeholder) {
                     el.setAttribute('placeholder', placeholder
-                        .replace('Oyuncu adi gir', 'Oyuncu adÄ± gir')
+                        .replace('Oyuncu adi gir', 'Oyuncu adı gir')
                         .replace('Ad Soyad', 'Ad Soyad'));
                 }
                 if (value) {
-                    el.setAttribute('value', value.replace('Ilanda gorunecek isim', 'Ä°landa gÃ¶rÃ¼necek isim'));
+                    el.setAttribute('value', value.replace('Ilanda gorunecek isim', 'İlanda görünecek isim'));
                 }
             });
         }
