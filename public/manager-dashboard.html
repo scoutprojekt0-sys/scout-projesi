@@ -190,8 +190,35 @@
         .hero-title { margin:0; max-width:720px; font:800 clamp(2rem, 3vw, 3rem)/1.02 Inter, sans-serif; letter-spacing:-0.03em; color:#fff; }
         .hero-sub { margin:14px 0 0; max-width:740px; color:rgba(255,255,255,0.82); font-size:14px; line-height:1.7; }
         .hero-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+        .hero-actions .btn-small {
+            min-height: 44px;
+            padding: 10px 14px;
+            border-radius: 0;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+            justify-content: center;
+        }
+        .hero-actions .btn-small i {
+            width: 16px;
+            text-align: center;
+            font-size: 13px;
+        }
+        .hero-actions .btn-small.primary {
+            background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+            border-color: rgba(255, 126, 34, 0.6);
+            color: #fff;
+            box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28);
+        }
+        .hero-actions .btn-small.secondary {
+            background: rgba(59, 130, 246, 0.12);
+            color: #dbeafe;
+            border-color: rgba(96, 165, 250, 0.24);
+            box-shadow: none;
+        }
         .hero-points { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
         .pill { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; font-size:12px; font-weight:800; background:rgba(255,255,255,0.10); border:1px solid rgba(255,255,255,0.14); color:#eef2ff; }
+        .eyebrow { display:inline-flex; align-items:center; gap:8px; padding:7px 10px; border:1px solid rgba(96,165,250,.22); background:rgba(56,189,248,.08); color:#bae6fd; font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; white-space:nowrap; }
         .hero-side { background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid rgba(148,163,184,.18); border-radius:18px; padding:18px; box-shadow:0 16px 30px rgba(8,19,29,.28); position:relative; overflow:hidden; }
         .hero-side::before { content:""; position:absolute; inset:0 0 auto 0; height:4px; background:linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%); }
         .panel-title { font-size:17px; font-weight:800; margin-bottom:10px; color:#dbeafe; }
@@ -234,33 +261,58 @@
         .tip-empty { color:#9bb5cb; font-size:12px; border:1px dashed rgba(148,163,184,.18); border-radius:12px; padding:14px; }
 
         .quick-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-        .market-pulse-overlay { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.72); z-index: 2100; display: none; }
+        .market-pulse-overlay { position: fixed; inset: 0; background: rgba(6, 17, 27, 0.74); z-index: 2100; display: none; }
         .market-pulse-overlay.active { display: block; }
-        .market-pulse-flyout { position: fixed; left: 50%; top: 7vh; transform: translateX(-50%); width: min(980px, calc(100vw - 28px)); max-height: 86vh; overflow: auto; z-index: 2110; display: none; border-radius: 14px; }
+        .market-pulse-flyout { position: fixed; left: 50%; top: 7vh; transform: translateX(-50%); width: min(980px, calc(100vw - 28px)); max-height: 86vh; overflow: auto; z-index: 2110; display: none; margin-bottom: 0; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.42); }
         .market-pulse-flyout.active { display: block; }
-        .market-pulse { background: var(--panel); border: 1px solid var(--line); padding: 16px; position: relative; box-shadow: 0 30px 80px rgba(2, 6, 23, 0.42); }
+        .market-pulse { background: #0f1722; border: 1px solid rgba(148,163,184,.18); padding: 16px; position: relative; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.42); }
         .market-pulse::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, #2dd4bf 0%, #fbbf24 50%, #38bdf8 100%); }
-        .market-pulse-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
-        .market-pulse-copy { color: var(--muted); font-size: 13px; line-height: 1.6; margin-top: 6px; }
-        .market-pulse-tools { display: flex; align-items: center; gap: 10px; }
-        .market-pulse-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid rgba(96, 165, 250, 0.22); background: rgba(56, 189, 248, 0.08); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #bae6fd; }
-        .market-pulse-close { width: 40px; height: 40px; border: 1px solid var(--line); background: rgba(255,255,255,.04); color: #dbeafe; cursor: pointer; border-radius: 10px; }
-        .market-pulse-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 14px; }
+        .market-pulse-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+        .market-pulse-copy { color: #94a3b8; font-size: 13px; line-height: 1.6; margin-top: 6px; max-width: 760px; }
+        .market-pulse-tools { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .market-pulse-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid rgba(96, 165, 250, 0.22); background: rgba(56, 189, 248, 0.08); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #bae6fd; white-space: nowrap; }
+        .market-pulse-close { display:inline-flex; align-items:center; justify-content:center; width: 40px; height: 40px; border: 1px solid rgba(148,163,184,.18); background: rgba(255,255,255,.04); color: #dbeafe; cursor: pointer; }
+        .market-pulse-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 14px; align-items: stretch; }
         .market-pulse-list, .market-pulse-side { display: grid; gap: 10px; min-width: 0; }
-        .market-pulse-item { display: grid; grid-template-columns: 56px minmax(0,1fr) auto; gap: 10px; align-items: center; padding: 12px; border: 1px solid var(--line); background: var(--panel-soft); border-radius: 10px; }
-        .market-pulse-time, .market-pulse-tag { display: inline-flex; align-items: center; justify-content: center; min-width: 48px; padding: 5px 6px; border: 1px solid var(--line); font-size: 11px; color: var(--muted); font-family: Consolas, monospace; }
-        .market-pulse-tag.up { color: #99f6e4; } .market-pulse-tag.watch { color: #fde68a; } .market-pulse-tag.info { color: #bae6fd; } .market-pulse-tag.hot { color: #fecdd3; }
+        .market-pulse-item { display: grid; grid-template-columns: 56px minmax(0,1fr) auto; gap: 10px; align-items: center; padding: 12px; border: 1px solid rgba(148,163,184,.18); background: rgba(255,255,255,.03); }
+        .market-pulse-time, .market-pulse-tag { display: inline-flex; align-items: center; justify-content: center; min-width: 48px; padding: 5px 6px; border: 1px solid rgba(148,163,184,.18); font-size: 11px; color: #94a3b8; font-family: Consolas, monospace; }
+        .market-pulse-tag.up { color: #99f6e4; border-color: rgba(45, 212, 191, 0.24); } .market-pulse-tag.watch { color: #fde68a; border-color: rgba(251, 191, 36, 0.24); } .market-pulse-tag.info { color: #bae6fd; border-color: rgba(56, 189, 248, 0.24); } .market-pulse-tag.hot { color: #fecdd3; border-color: rgba(251, 113, 133, 0.24); }
         .market-pulse-line { font-size: 13px; line-height: 1.45; color: #f5fbff; }
-        .market-pulse-sub { margin-top: 4px; color: var(--muted); font-size: 12px; line-height: 1.55; }
-        .market-pulse-metric { min-width: 90px; padding: 10px; border: 1px solid var(--line); background: rgba(255,255,255,.04); text-align: right; border-radius: 10px; }
-        .market-pulse-metric span { display: block; color: var(--muted); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+        .market-pulse-line strong { color: #ffffff; }
+        .market-pulse-sub { margin-top: 4px; color: #94a3b8; font-size: 12px; line-height: 1.55; }
+        .market-pulse-metric { min-width: 90px; padding: 10px; border: 1px solid rgba(148,163,184,.18); background: rgba(255,255,255,.04); text-align: right; }
+        .market-pulse-metric span { display: block; color: #94a3b8; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
         .market-pulse-metric strong { display: block; margin-top: 6px; font-size: 24px; color: #f5fbff; }
         .market-pulse-metric em { display: block; margin-top: 4px; font: 700 11px/1.2 Consolas, monospace; color: #2dd4bf; font-style: normal; }
         .market-pulse-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-        .market-pulse-stat { padding: 12px; border: 1px solid var(--line); background: var(--panel-soft); border-radius: 10px; }
-        .market-pulse-stat-label { color: var(--muted); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+        .market-pulse-stat { padding: 12px; border: 1px solid rgba(148,163,184,.18); background: rgba(255,255,255,.03); }
+        .market-pulse-stat-label { color: #94a3b8; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
         .market-pulse-stat-value { margin-top: 8px; font-size: 24px; color: #f5fbff; font-weight: 800; }
-        .market-pulse-link, .market-pulse-launch { display: inline-flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border: 1px solid var(--line); color: #dbeafe; text-decoration: none; border-radius: 10px; background: rgba(45, 212, 191, 0.12); }
+        .market-pulse-link, .market-pulse-launch { display: inline-flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border: 1px solid rgba(148,163,184,.18); color: #dbeafe; text-decoration: none; background: rgba(45, 212, 191, 0.12); }
+        #managerMarketPulseOverlay { display:none; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(4px); }
+        #managerMarketPulseOverlay.active { display:flex; }
+        #managerMarketPulseCard { position:relative; left:auto; top:auto; transform:none; width:min(980px, 100%); max-height:88vh; display:block; }
+        #managerMarketPulseCard.market-pulse { background:#0f1722; border:1px solid rgba(148,163,184,.18); color:#e2e8f0; box-shadow:0 30px 80px rgba(0,0,0,.42); border-radius:0; }
+        #managerOpportunityOverlay { display:none; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(4px); }
+        #managerOpportunityOverlay.active { display:flex; }
+        #managerOpportunityCard { position:relative; left:auto; top:auto; transform:none; width:min(980px, 100%); max-height:88vh; display:block; }
+        #managerMarketPulseCard .market-pulse-copy,
+        #managerMarketPulseCard .market-pulse-sub,
+        #managerMarketPulseCard .market-pulse-stat-label,
+        #managerMarketPulseCard .market-pulse-metric span,
+        #managerMarketPulseCard .market-pulse-time,
+        #managerMarketPulseCard .market-pulse-tag { color:#94a3b8; }
+        #managerMarketPulseCard .market-pulse-line,
+        #managerMarketPulseCard .market-pulse-metric strong,
+        #managerMarketPulseCard .market-pulse-stat-value,
+        #managerMarketPulseCard .panel-title { color:#f5fbff; }
+        #managerMarketPulseCard .market-pulse-item,
+        #managerMarketPulseCard .market-pulse-stat,
+        #managerMarketPulseCard .market-pulse-metric { background:rgba(255,255,255,.03); border-color:rgba(148,163,184,.18); border-radius:0; }
+        #managerMarketPulseCard .market-pulse-close { background:rgba(255,255,255,.04); border-color:rgba(148,163,184,.18); color:#dbeafe; border-radius:0; }
+        #managerMarketPulseCard .market-pulse-badge { border-color:rgba(96,165,250,.22); background:rgba(56,189,248,.08); color:#bae6fd; border-radius:0; }
+        #managerMarketPulseCard .market-pulse-time,
+        #managerMarketPulseCard .market-pulse-tag { border-color:rgba(148,163,184,.18); background:transparent; border-radius:0; }
         .stat-card {
             background: var(--panel);
             border-radius: 12px;
@@ -506,6 +558,85 @@
         .need-modal-footer { display: flex; justify-content: flex-end; gap: 10px; padding: 0 18px 18px; }
         .offer-score-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
         .offer-score-result { border: 1px solid #475569; border-radius: 10px; background: #1f2937; padding: 10px 12px; font-size: 13px; font-weight: 700; color: #dbeafe; }
+        #managerSuccessStoriesHubModal .offer-score-result,
+        #managerSuccessStoryModal .offer-score-result,
+        #managerSuccessStoriesReadModal .offer-score-result {
+            border: 1px solid var(--line);
+            border-radius: 0 !important;
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            padding: 10px 12px;
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--muted);
+            box-shadow: 0 24px 48px rgba(8, 19, 29, 0.28);
+            position: relative;
+            overflow: hidden;
+        }
+        #managerSuccessStoriesHubModal .offer-score-result::before,
+        #managerSuccessStoryModal .offer-score-result::before,
+        #managerSuccessStoriesReadModal .offer-score-result::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+        }
+        #managerSuccessStoriesHubModal .btn-small,
+        #managerSuccessStoryModal .btn-small,
+        #managerSuccessStoriesReadModal .btn-small {
+            padding: 8px 14px;
+            width: auto !important;
+            min-width: 0 !important;
+            border-radius: 0 !important;
+            border: 1px solid rgba(255, 126, 34, 0.45) !important;
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%) !important;
+            color: #16325c !important;
+            box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24) !important;
+            font-weight: 800 !important;
+            font-size: 13px !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+        #managerSuccessStoriesHubModal .btn-small.primary,
+        #managerSuccessStoryModal .btn-small.primary,
+        #managerSuccessStoriesReadModal .btn-small.primary {
+            background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%) !important;
+            border-color: rgba(255, 126, 34, 0.6) !important;
+            color: #fff !important;
+            box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28) !important;
+        }
+        #managerSuccessStoriesHubModal .btn-small.secondary,
+        #managerSuccessStoryModal .btn-small.secondary,
+        #managerSuccessStoriesReadModal .btn-small.secondary {
+            background: rgba(59, 130, 246, 0.12) !important;
+            color: #dbeafe !important;
+            border-color: rgba(96, 165, 250, 0.24) !important;
+            box-shadow: none !important;
+        }
+        #managerSuccessStoriesHubModal .quick-report-grid,
+        #managerSuccessStoryModal .quick-report-grid,
+        #managerSuccessStoriesReadModal .quick-report-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            align-items: stretch;
+        }
+        #managerSuccessStoriesHubModal .quick-report-grid .btn-small,
+        #managerSuccessStoryModal .quick-report-grid .btn-small,
+        #managerSuccessStoriesReadModal .quick-report-grid .btn-small {
+            width: 100% !important;
+            min-height: 96px;
+            justify-content: flex-start;
+        }
+        #managerSuccessStoriesHubModal .need-modal-actions .btn-small,
+        #managerSuccessStoryModal .need-modal-actions .btn-small,
+        #managerSuccessStoriesReadModal .need-modal-actions .btn-small {
+            width: auto !important;
+            min-height: 0;
+        }
         .applications-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(2, 6, 23, 0.62); z-index: 1600; align-items: center; justify-content: center; padding: 16px; }
         .applications-modal-overlay.show { display: flex; }
         .applications-modal {
@@ -811,7 +942,7 @@
             .quick-stats {
                 grid-template-columns: 1fr;
             }
-            .market-pulse-flyout { top: 10px; width: calc(100vw - 14px); max-height: calc(100vh - 20px); }
+            .market-pulse-flyout { left: 50%; top: 50%; transform: translate(-50%, -50%); width: calc(100vw - 14px); max-height: calc(100vh - 20px); }
             .sidebar-menu {
                 grid-template-columns: 1fr;
             }
@@ -1046,7 +1177,7 @@
             <button class="btn-small success" onclick="openNeedModal()"><i class="fas fa-plus-circle"></i><span>İlan Gir</span></button>
             <button class="btn-small primary" onclick="window.location.href='manager-needs.html'"><i class="fas fa-list-check"></i><span>İlan Listesi</span></button>
             <button class="btn-small secondary" onclick="openManagerProfile()"><i class="fas fa-user-check"></i><span>Public Görünüm</span></button>
-            <button class="btn-small secondary" onclick="window.location.href='index.html?success_story=submit#homeStep3'"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></button>
+            <button class="btn-small secondary" onclick="openManagerSuccessStoriesHub()"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></button>
             <button class="btn-small home-btn" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255, 126, 34, 0.6);background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 16px 28px rgba(255,90,31,0.28);" onclick="window.location.href='index.html'"><i class="fas fa-house"></i><span>Ana Sayfa</span></button>
             <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Çıkış</span></button>
         </div>
@@ -1059,6 +1190,7 @@
                 <ul class="sidebar-menu">
                     <li class="sidebar-item active" onclick="location.reload()"><i class="fas fa-magnifying-glass"></i><span>Oyuncu Ara</span></li>
                     <li class="sidebar-item" onclick="openManagerTalentTipModal()"><i class="fas fa-video"></i><span>Yetenek Bildir</span></li>
+                    <li class="sidebar-item" onclick="window.location.href='review-center.html'"><i class="fas fa-comments"></i><span>Yorumlar</span></li>
                     <li class="sidebar-item" onclick="openManagerProfile()"><i class="fas fa-user"></i><span>Profilim</span></li>
                     <li class="sidebar-item" onclick="openSentApplications()"><i class="fas fa-paper-plane"></i><span>Gönderilen Başvurular</span></li>
                     <li class="sidebar-item" onclick="openAnsweredApplications()"><i class="fas fa-circle-check"></i><span>Yanıtlanan Başvurular</span></li>
@@ -1066,6 +1198,7 @@
                     <li class="sidebar-item" onclick="openWatchlist()"><i class="fas fa-list-check"></i><span>Takip Listem</span></li>
                     <li class="sidebar-item" onclick="window.location.href='ai-discovery.html'"><i class="fas fa-flask"></i><span>AI Discovery</span></li>
                     <li class="sidebar-item" onclick="window.location.href='manager-needs.html'"><i class="fas fa-thumbtack"></i><span>Aradığım Oyuncular</span></li>
+                    <li class="sidebar-item" onclick="openLiveMatches()"><i class="fas fa-tower-broadcast"></i><span>Canli Mac Bildirimleri</span></li>
                     <li class="sidebar-item" onclick="window.location.href='live-watch-demand.html'"><i class="fas fa-location-crosshairs"></i><span>Canlı İzleme Talebi</span></li>
                     <li class="sidebar-item" onclick="openMessages()"><i class="fas fa-comments"></i><span>Mesajlarım</span></li>
                     <li class="sidebar-item" onclick="openSettings()"><i class="fas fa-gear"></i><span>Ayarlar</span></li>
@@ -1085,6 +1218,10 @@
                     <p class="hero-sub">Oyuncu ara, profil incele, basvuru gonder ve iliski agini tek panelden yonet.</p>
                     <div class="hero-actions">
                         <button class="btn-small primary" type="button" onclick="openManagerTalentTipModal()"><i class="fas fa-video"></i><span>Yetenek Bildir</span></button>
+                        <button class="btn-small secondary" type="button" onclick="openManagerMarketPulse()"><i class="fas fa-chart-line"></i><span>Market Pulse</span></button>
+                        <button class="btn-small secondary" type="button" onclick="openLiveMatches()"><i class="fas fa-tower-broadcast"></i><span>Canli Mac Bildirimleri</span></button>
+                        <button class="btn-small secondary" type="button" onclick="openManagerScoutHub()"><i class="fas fa-bookmark"></i><span>Scout Watchlist & Raporlar</span></button>
+                        <button class="btn-small secondary" type="button" onclick="openManagerOpportunityArea('needs')"><i class="fas fa-bullseye"></i><span>Firsat Alani</span></button>
                     </div>
                     <div class="hero-points">
                         <span class="pill"><i class="fas fa-circle-check"></i><span>Dogrulanan oyuncu akisi karar hizini artirir</span></span>
@@ -1147,50 +1284,145 @@
                 <div class="stat-card"><div class="stat-card-value" id="statFavorites">0</div><div class="stat-card-label">Favori Oyuncu</div></div>
                 <div class="stat-card"><div class="stat-card-value" id="statApplications">0</div><div class="stat-card-label">Gönderilen Başvuru</div></div>
             </div>
-            <div class="market-pulse-overlay" id="managerMarketPulseOverlay" onclick="closeManagerMarketPulse()"></div>
-            <section class="market-pulse market-pulse-flyout" id="managerMarketPulseCard">
-                <div class="market-pulse-head">
-                    <div>
-                        <div class="sidebar-title">Market Pulse</div>
-                        <h2 style="margin:0 0 6px 0;font-size:18px;color:#e5e7eb;">Canli Piyasa Ozeti</h2>
-                        <div class="market-pulse-copy">Manager icin video ilgisi, favori sicakligi ve trial baskisini tek panelde toplar.</div>
+            <div class="market-pulse-overlay" id="managerMarketPulseOverlay" onclick="if (event.target.id === 'managerMarketPulseOverlay') closeManagerMarketPulse()">
+                <section class="market-pulse market-pulse-flyout" id="managerMarketPulseCard">
+                    <div class="market-pulse-head">
+                        <div>
+                            <div class="eyebrow">Market Pulse</div>
+                            <h3 class="panel-title" style="margin:0;">Canli Piyasa Ozeti</h3>
+                            <div class="market-pulse-copy">Scout ekranini bozmadan son video hareketi, favori sicakligi ve trial baskisini tek kartta toplar.</div>
+                        </div>
+                        <div class="market-pulse-tools">
+                            <div class="market-pulse-badge" id="managerMarketPulseStatus"><i class="fas fa-signal"></i><span>Yukleniyor</span></div>
+                            <button class="market-pulse-close" type="button" onclick="closeManagerMarketPulse()"><i class="fas fa-times"></i></button>
+                        </div>
                     </div>
-                    <div class="market-pulse-tools">
-                        <div class="market-pulse-badge" id="managerMarketPulseStatus"><i class="fas fa-signal"></i><span>Yukleniyor</span></div>
-                        <button class="market-pulse-close" type="button" onclick="closeManagerMarketPulse()"><i class="fas fa-times"></i></button>
+                    <div class="market-pulse-grid">
+                        <div class="market-pulse-list" id="managerMarketPulseList"><div class="need-item">Market pulse verisi yukleniyor...</div></div>
+                        <div class="market-pulse-side">
+                            <div class="market-pulse-stats" id="managerMarketPulseStats"></div>
+                            <a class="market-pulse-link" href="platform-akisi.html"><span><i class="fas fa-chart-line"></i> Terminali Ac</span><i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="market-pulse-overlay" id="managerOpportunityOverlay" onclick="if (event.target.id === 'managerOpportunityOverlay') closeManagerOpportunityArea()">
+                <section class="market-pulse market-pulse-flyout" id="managerOpportunityCard">
+                    <div class="market-pulse-head">
+                        <div>
+                            <div class="sidebar-title">Firsat Alani</div>
+                            <h2 id="managerOpportunityTitle" style="margin:0 0 6px 0;font-size:18px;color:#e5e7eb;">Kulup Ihtiyaclari</h2>
+                            <div class="market-pulse-copy" id="managerOpportunitySummary">Acik kulup arayislarini ve deneme akisini tek panelde izle.</div>
+                        </div>
+                        <div class="market-pulse-tools">
+                            <div class="market-pulse-badge" id="managerOpportunityStatus"><i class="fas fa-signal"></i><span>Yukleniyor</span></div>
+                            <button class="market-pulse-close" type="button" onclick="closeManagerOpportunityArea()"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="workspace-tabs" style="margin-bottom:14px;">
+                        <button class="workspace-tab active" type="button" data-manager-opportunity-tab="needs" onclick="openManagerOpportunityArea('needs')">Kulup Ihtiyaclari</button>
+                        <button class="workspace-tab" type="button" data-manager-opportunity-tab="events" onclick="openManagerOpportunityArea('events')">Deneme ve Idmanlar</button>
+                    </div>
+                    <div class="form-actions" style="margin-bottom:14px;">
+                        <button class="btn-small secondary" type="button" id="managerOpportunityRefreshBtn" onclick="loadManagerOpportunityArea('needs')"><i class="fas fa-arrows-rotate"></i><span>Yenile</span></button>
+                    </div>
+                    <div class="market-pulse-list" id="managerOpportunityNeedsList"><div class="need-item">Kulup ihtiyaclari yukleniyor...</div></div>
+                    <div class="market-pulse-list" id="managerOpportunityEventsList" hidden><div class="need-item">Deneme ve idmanlar yukleniyor...</div></div>
+                </section>
+            </div>
+
+            <div class="need-modal-overlay" id="managerSuccessStoriesHubModal" onclick="if (event.target.id === 'managerSuccessStoriesHubModal') closeManagerSuccessStoriesHub()">
+                <div class="need-modal live-modal" onclick="event.stopPropagation()">
+                    <div class="need-modal-header">
+                        <h3>Basari Hikayeleri</h3>
+                        <button class="btn-small secondary" type="button" onclick="closeManagerSuccessStoriesHub()">Kapat</button>
+                    </div>
+                    <div class="need-modal-body">
+                        <div class="offer-score-result" style="margin-bottom:12px;">Basari hikayesi gonder veya topluluktaki hikayeleri oku.</div>
+                        <div class="quick-report-grid" style="grid-template-columns:repeat(2,1fr); margin-bottom:0;">
+                            <button class="btn-small secondary" type="button" style="justify-content:flex-start; min-height:96px;" onclick="openManagerSuccessStoryModal()"><i class="fas fa-paper-plane"></i><span>Gonder</span></button>
+                            <button class="btn-small secondary" type="button" style="justify-content:flex-start; min-height:96px;" onclick="openManagerSuccessStoriesReadModal()"><i class="fas fa-book-open"></i><span>Oku</span></button>
+                        </div>
                     </div>
                 </div>
-                <div class="market-pulse-grid">
-                    <div class="market-pulse-list" id="managerMarketPulseList"><div class="need-item">Market pulse verisi yukleniyor...</div></div>
-                    <div class="market-pulse-side">
-                        <div class="market-pulse-stats" id="managerMarketPulseStats"></div>
-                        <a class="market-pulse-link" href="platform-akisi.html"><span><i class="fas fa-chart-line"></i> Terminali Ac</span><i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="need-modal-overlay" id="managerScoutHubModal" onclick="if (event.target.id === 'managerScoutHubModal') closeManagerScoutHub()">
+                <div class="need-modal live-modal" onclick="event.stopPropagation()">
+                    <div class="need-modal-header">
+                        <h3>Scout Watchlist & Raporlar</h3>
+                        <button class="btn-small secondary" type="button" onclick="closeManagerScoutHub()">Kapat</button>
+                    </div>
+                    <div class="need-modal-body">
+                        <div class="workspace-tabs" style="margin-bottom:14px;">
+                            <button class="workspace-tab active" type="button" data-manager-scout-tab="watchlist" onclick="openManagerScoutHub('watchlist')">Scout Watchlist</button>
+                            <button class="workspace-tab" type="button" data-manager-scout-tab="reports" onclick="openManagerScoutHub('reports')">Scout Raporlari</button>
+                        </div>
+                        <div id="managerScoutHubWatchlist">
+                            <div class="offer-score-result" style="margin-bottom:12px;">Takip ettigin oyunculara hizli ulas.</div>
+                            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                                <button class="btn-small secondary" type="button" onclick="openWatchlist()">Scout Watchlist Ac</button>
+                            </div>
+                        </div>
+                        <div id="managerScoutHubReports" hidden>
+                            <div class="offer-score-result" style="margin-bottom:12px;">Kaydedilen scout raporlarini tek yerden ac.</div>
+                            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                                <button class="btn-small secondary" type="button" onclick="openScoutReports()">Scout Raporlarini Ac</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </section>
-            <div class="market-pulse-overlay" id="managerOpportunityOverlay" onclick="closeManagerOpportunityArea()"></div>
-            <section class="market-pulse market-pulse-flyout" id="managerOpportunityCard">
-                <div class="market-pulse-head">
-                    <div>
-                        <div class="sidebar-title">Firsat Alani</div>
-                        <h2 id="managerOpportunityTitle" style="margin:0 0 6px 0;font-size:18px;color:#e5e7eb;">Kulup Ihtiyaclari</h2>
-                        <div class="market-pulse-copy" id="managerOpportunitySummary">Acik kulup arayislarini ve deneme akisini tek panelde izle.</div>
+            </div>
+
+            <div class="need-modal-overlay" id="managerSuccessStoryModal" onclick="if (event.target.id === 'managerSuccessStoryModal') closeManagerSuccessStoryModal()">
+                <div class="need-modal live-modal" onclick="event.stopPropagation()">
+                    <div class="need-modal-header">
+                        <h3>Basari Hikayesi Gonder</h3>
+                        <button class="btn-small secondary" type="button" onclick="closeManagerSuccessStoryModal()">Kapat</button>
                     </div>
-                    <div class="market-pulse-tools">
-                        <div class="market-pulse-badge" id="managerOpportunityStatus"><i class="fas fa-signal"></i><span>Yukleniyor</span></div>
-                        <button class="market-pulse-close" type="button" onclick="closeManagerOpportunityArea()"><i class="fas fa-times"></i></button>
+                    <form id="managerSuccessStoryForm">
+                        <div class="need-modal-body">
+                            <input type="text" name="full_name" placeholder="Ad Soyad" required maxlength="150">
+                            <div class="live-grid">
+                                <select name="sport" required>
+                                    <option value="">Spor Sec</option>
+                                    <option value="Futbol">Futbol</option>
+                                    <option value="Basketbol">Basketbol</option>
+                                    <option value="Voleybol">Voleybol</option>
+                                </select>
+                                <input type="text" name="old_club" placeholder="Eski Kulup" maxlength="160">
+                            </div>
+                            <input type="text" name="new_club" placeholder="Yeni Kulup" maxlength="160" required>
+                            <textarea name="story_text" placeholder="Basari hikayeni yaz..." required maxlength="1200"></textarea>
+                            <input type="url" name="image_url" placeholder="Gorsel linki (opsiyonel)">
+                            <div class="offer-score-result" id="managerSuccessStoryResult">Yeni basari hikayesini dashboard icinden gonder.</div>
+                        </div>
+                        <div class="need-modal-actions">
+                            <button class="btn-small secondary" type="button" onclick="closeManagerSuccessStoryModal()">Vazgec</button>
+                            <button class="btn-small primary" type="submit">Gonder</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="need-modal-overlay" id="managerSuccessStoriesReadModal" onclick="if (event.target.id === 'managerSuccessStoriesReadModal') closeManagerSuccessStoriesReadModal()">
+                <div class="need-modal live-modal" onclick="event.stopPropagation()">
+                    <div class="need-modal-header">
+                        <h3>Basari Hikayelerini Oku</h3>
+                        <button class="btn-small secondary" type="button" onclick="closeManagerSuccessStoriesReadModal()">Kapat</button>
+                    </div>
+                    <div class="need-modal-body">
+                        <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
+                            <button class="btn-small secondary" type="button" onclick="closeManagerSuccessStoriesReadModal(); openManagerSuccessStoriesHub()"><i class="fas fa-arrow-left"></i><span>Geri</span></button>
+                            <button class="btn-small secondary" type="button" onclick="loadManagerSuccessStories()"><i class="fas fa-arrows-rotate"></i><span>Yenile</span></button>
+                        </div>
+                        <div class="offer-score-result" id="managerSuccessStoriesStatus">Topluluktan gelen son basari hikayelerini burada oku.</div>
+                        <div id="managerSuccessStoriesList" style="display:grid; gap:10px; margin-top:14px;">
+                            <div class="empty">Basari hikayeleri yukleniyor...</div>
+                        </div>
                     </div>
                 </div>
-                <div class="workspace-tabs" style="margin-bottom:14px;">
-                    <button class="workspace-tab active" type="button" data-manager-opportunity-tab="needs" onclick="openManagerOpportunityArea('needs')">Kulup Ihtiyaclari</button>
-                    <button class="workspace-tab" type="button" data-manager-opportunity-tab="events" onclick="openManagerOpportunityArea('events')">Deneme ve Idmanlar</button>
-                </div>
-                <div class="form-actions" style="margin-bottom:14px;">
-                    <button class="btn-small secondary" type="button" id="managerOpportunityRefreshBtn" onclick="loadManagerOpportunityArea('needs')"><i class="fas fa-arrows-rotate"></i><span>Yenile</span></button>
-                </div>
-                <div class="market-pulse-list" id="managerOpportunityNeedsList"><div class="need-item">Kulup ihtiyaclari yukleniyor...</div></div>
-                <div class="market-pulse-list" id="managerOpportunityEventsList" hidden><div class="need-item">Deneme ve idmanlar yukleniyor...</div></div>
-            </section>
+            </div>
 
             <section class="ai-video-lab" data-ai-video-lab>
                 <div class="ai-video-lab-head">
@@ -1693,19 +1925,17 @@
                 renderManagerMarketPulse(await managerMarketPulseGet());
             } catch (error) {
                 statusRoot.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span>Beklemede</span>';
-                root.innerHTML = '<div class="need-item">Market pulse su an yuklenemedi.</div>';
+                root.innerHTML = '<div class="empty">Market pulse su an yuklenemedi. Terminal ekranindan tekrar deneyebilirsin.</div>';
             }
         }
 
         function openManagerMarketPulse() {
-            document.getElementById('managerMarketPulseCard')?.classList.add('active');
             document.getElementById('managerMarketPulseOverlay')?.classList.add('active');
             document.body.style.overflow = 'hidden';
             loadManagerMarketPulse();
         }
 
         function closeManagerMarketPulse() {
-            document.getElementById('managerMarketPulseCard')?.classList.remove('active');
             document.getElementById('managerMarketPulseOverlay')?.classList.remove('active');
             document.body.style.overflow = '';
         }
@@ -1744,14 +1974,12 @@
             needs.hidden = activeManagerOpportunityTab !== 'needs';
             events.hidden = activeManagerOpportunityTab !== 'events';
             tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.managerOpportunityTab === activeManagerOpportunityTab));
-            card.classList.add('active');
             overlay.classList.add('active');
             document.body.style.overflow = 'hidden';
             loadManagerOpportunityArea(activeManagerOpportunityTab);
         }
 
         function closeManagerOpportunityArea() {
-            document.getElementById('managerOpportunityCard')?.classList.remove('active');
             document.getElementById('managerOpportunityOverlay')?.classList.remove('active');
             document.body.style.overflow = '';
         }
@@ -2299,6 +2527,159 @@
             if (overlay) overlay.classList.remove('show');
         }
 
+        function openManagerSuccessStoriesHub() {
+            document.getElementById('managerSuccessStoriesHubModal')?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeManagerSuccessStoriesHub() {
+            document.getElementById('managerSuccessStoriesHubModal')?.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function openManagerScoutHub(type = 'watchlist') {
+            const modal = document.getElementById('managerScoutHubModal');
+            const watchlist = document.getElementById('managerScoutHubWatchlist');
+            const reports = document.getElementById('managerScoutHubReports');
+            const activeType = type === 'reports' ? 'reports' : 'watchlist';
+            document.querySelectorAll('[data-manager-scout-tab]').forEach((tab) => {
+                tab.classList.toggle('active', tab.dataset.managerScoutTab === activeType);
+            });
+            if (watchlist) watchlist.hidden = activeType !== 'watchlist';
+            if (reports) reports.hidden = activeType !== 'reports';
+            modal?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeManagerScoutHub() {
+            document.getElementById('managerScoutHubModal')?.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function openManagerSuccessStoryModal() {
+            closeManagerSuccessStoriesHub();
+            const user = getStoredUser();
+            const input = document.querySelector('#managerSuccessStoryForm input[name="full_name"]');
+            if (input && !input.value && user?.name) input.value = String(user.name);
+            document.getElementById('managerSuccessStoryModal')?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeManagerSuccessStoryModal() {
+            document.getElementById('managerSuccessStoryModal')?.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function openManagerSuccessStoriesReadModal() {
+            closeManagerSuccessStoriesHub();
+            document.getElementById('managerSuccessStoriesReadModal')?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            loadManagerSuccessStories();
+        }
+
+        function closeManagerSuccessStoriesReadModal() {
+            document.getElementById('managerSuccessStoriesReadModal')?.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        async function fetchManagerSuccessStories() {
+            const response = await fetch(`${getApiBaseUrl()}/success-stories?limit=8`, {
+                headers: { Accept: 'application/json' },
+                cache: 'no-store',
+                credentials: 'same-origin',
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok || payload?.ok === false) throw new Error(payload?.message || 'Basari hikayeleri alinamadi.');
+            return payload;
+        }
+
+        function renderManagerSuccessStories(payload) {
+            const root = document.getElementById('managerSuccessStoriesList');
+            const status = document.getElementById('managerSuccessStoriesStatus');
+            const rows = Array.isArray(payload?.data) ? payload.data.slice(0, 8) : [];
+            if (!root || !status) return;
+            if (!rows.length) {
+                status.textContent = 'Bos';
+                root.innerHTML = '<div class="empty">Basari hikayesi bulunmuyor.</div>';
+                return;
+            }
+            status.textContent = `${rows.length} kayit`;
+            root.innerHTML = rows.map((item) => `
+                <article class="point-item">
+                    <div class="row-top">
+                        <div>
+                            <div class="row-title">${escapeHtml(item.full_name || 'Basari Hikayesi')}</div>
+                            <div class="row-copy">${escapeHtml(item.story_text || 'Hikaye metni yok.')}</div>
+                        </div>
+                        <span class="badge approved">${escapeHtml(item.sport || '-')}</span>
+                    </div>
+                    <div class="row-meta">
+                        <span>${escapeHtml(item.old_club || '-')} -> ${escapeHtml(item.new_club || '-')}</span>
+                        <span>${formatDate(item.created_at)}</span>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        async function loadManagerSuccessStories() {
+            const root = document.getElementById('managerSuccessStoriesList');
+            const status = document.getElementById('managerSuccessStoriesStatus');
+            if (!root || !status) return;
+            status.textContent = 'Yukleniyor';
+            root.innerHTML = '<div class="empty">Basari hikayeleri yukleniyor...</div>';
+            try {
+                renderManagerSuccessStories(await fetchManagerSuccessStories());
+            } catch (error) {
+                status.textContent = 'Hata';
+                root.innerHTML = `<div class="empty">${escapeHtml(error.message || 'Basari hikayeleri yuklenemedi.')}</div>`;
+            }
+        }
+
+        async function submitManagerSuccessStoryForm(event) {
+            event.preventDefault();
+            const form = event.currentTarget;
+            const root = document.getElementById('managerSuccessStoryResult');
+            const token = getToken();
+            if (!token) {
+                if (root) root.textContent = 'Hikaye gondermek icin giris yapman gerekiyor.';
+                return;
+            }
+
+            const formData = new FormData(form);
+            const payload = {
+                full_name: (formData.get('full_name') || '').toString().trim(),
+                sport: (formData.get('sport') || '').toString().trim(),
+                old_club: (formData.get('old_club') || '').toString().trim(),
+                new_club: (formData.get('new_club') || '').toString().trim(),
+                story_text: (formData.get('story_text') || '').toString().trim(),
+                image_url: (formData.get('image_url') || '').toString().trim(),
+            };
+
+            if (!payload.full_name || !payload.sport || !payload.new_club || !payload.story_text) {
+                if (root) root.textContent = 'Ad, spor, yeni kulup ve hikaye zorunlu.';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/success-stories`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(payload),
+                });
+                const result = await response.json().catch(() => ({}));
+                if (!response.ok || !result?.ok) throw new Error(result?.message || 'Hikaye gonderilemedi.');
+                if (root) root.textContent = 'Hikayen alindi. Admin onayindan sonra yayinlanacak.';
+                form.reset();
+                closeManagerSuccessStoryModal();
+            } catch (error) {
+                if (root) root.textContent = error?.message || 'Hikaye gonderilemedi.';
+            }
+        }
+
         function updateStats() {
             document.getElementById('statPool').textContent = String(allPlayers.length);
             document.getElementById('statFiltered').textContent = String(filteredPlayers.length);
@@ -2563,6 +2944,7 @@
         function openFavorites() { window.location.href = 'favorites.html'; }
         function openWatchlist() { window.location.href = 'scout-watchlist.html'; }
         function openScoutReports() { window.location.href = 'scout-reports.html'; }
+        function openLiveMatches() { window.location.href = 'scout-live-matches.html'; }
         function openMessages() { window.location.href = 'notifications.html'; }
         function openManagerProfile() { window.location.href = 'manager-profile.html'; }
         function openSettings() { window.location.href = 'settings.html'; }
@@ -2803,7 +3185,8 @@
         async function init() {
             loadManagerMarketPulse();
             setInterval(loadManagerMarketPulse, 30000);
-            document.getElementById('managerTalentTipForm')?.addEventListener('submit', submitManagerTalentTip);
+        document.getElementById('managerTalentTipForm')?.addEventListener('submit', submitManagerTalentTip);
+        document.getElementById('managerSuccessStoryForm')?.addEventListener('submit', submitManagerSuccessStoryForm);
             let authUser = null;
             try { authUser = JSON.parse(localStorage.getItem('nextscout_user') || '{}'); } catch (error) { authUser = null; }
             const managerHeroUser = document.getElementById('managerHeroUser');

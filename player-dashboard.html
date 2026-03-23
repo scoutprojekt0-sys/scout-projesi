@@ -103,16 +103,127 @@
             gap: 14px;
         }
 
-        .welcome {
-            background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 100%);
-            color: #ffffff;
-            padding: 18px;
-            border-radius: 14px;
-            box-shadow: 0 14px 32px rgba(30, 64, 175, 0.2);
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.65fr) minmax(280px, 0.85fr);
+            gap: 14px;
+            align-items: stretch;
         }
 
-        .welcome h1 { font-size: clamp(22px, 3vw, 34px); margin-bottom: 6px; }
-        .welcome p { font-size: 14px; opacity: 0.96; }
+        .welcome {
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            color: var(--ink);
+            padding: 24px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome::before,
+        .panel::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1e40af 0%, #0ea5e9 55%, #60a5fa 100%);
+        }
+
+        .hero-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(96, 165, 250, 0.25);
+            color: #dbeafe;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .hero-title {
+            margin: 0;
+            max-width: 720px;
+            font: 800 clamp(2rem, 3vw, 3rem)/1.02 Inter, sans-serif;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+        }
+
+        .hero-sub {
+            margin: 14px 0 0;
+            max-width: 740px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .hero-points {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--line);
+            color: #dbeafe;
+        }
+
+        .hero-side {
+            padding: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel-title {
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: #dbeafe;
+        }
+
+        .panel-sub {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .status-stack {
+            display: grid;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .status-row span:first-child {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
 
         .layout-grid {
             display: grid;
@@ -518,6 +629,7 @@
             .nav a i { display: inline-flex; }
 
             .container { padding: 12px; gap: 10px; }
+            .hero { grid-template-columns: 1fr; }
             .welcome { padding: 14px; border-radius: 12px; }
             .welcome p { font-size: 13px; }
 
@@ -571,10 +683,31 @@
     </div>
 
     <div class="container">
-        <div class="welcome">
-            <h1>Hos Geldin, Oyuncu!</h1>
-            <p>Profilini guclendir, mac videolarini yukle ve scout ilgisini artir.</p>
-        </div>
+        <section class="hero">
+            <div class="welcome">
+                <div class="hero-kicker">
+                    <i class="fas fa-bullseye"></i>
+                    <span>Crowdsourced Scout</span>
+                </div>
+                <h2 class="hero-title">Scout operasyonunu buradan yonet.</h2>
+                <p class="hero-sub" id="heroGreeting">Scout akisinda once oyuncu bildir, sonra ihbarlarini ve market hareketini yonet.</p>
+                <div class="hero-points">
+                    <span class="pill"><i class="fas fa-circle-check"></i><span>Dogrulanan kesif puan kazandirir</span></span>
+                    <span class="pill"><i class="fas fa-handshake-angle"></i><span>Trial adimlari odul baglar</span></span>
+                </div>
+            </div>
+
+            <aside class="panel hero-side">
+                <h3 class="panel-title">Scout Durumu</h3>
+                <p class="panel-sub">Guncel kullanici ve hesap sinyalleri tek panelde.</p>
+                <div class="status-stack">
+                    <div class="status-row"><span>Kullanici</span><strong id="heroStatusUser">Misafir</strong></div>
+                    <div class="status-row"><span>Rol</span><strong>Oyuncu</strong></div>
+                    <div class="status-row"><span>Scout Puani</span><strong id="heroScoutScore">4.7</strong></div>
+                    <div class="status-row"><span>Profil Durumu</span><strong id="heroProfileStatus">Guncelleniyor</strong></div>
+                </div>
+            </aside>
+        </section>
 
         <div class="kpi-strip">
             <div class="kpi">
@@ -1508,8 +1641,12 @@
             const raw = localStorage.getItem('nextscout_user');
             try {
                 const u = raw ? JSON.parse(raw) : null;
-                const welcome = document.querySelector('.welcome h1');
-                if (welcome && u?.name) welcome.textContent = `Hos Geldin, ${u.name.split(' ')[0]}!`;
+                const heroTitle = document.querySelector('.hero-title');
+                if (heroTitle && u?.name) heroTitle.textContent = `Hos Geldin, ${u.name.split(' ')[0]}!`;
+                const heroGreeting = document.getElementById('heroGreeting');
+                if (heroGreeting && u?.name) heroGreeting.textContent = `${u.name.split(' ')[0]}, profilini guclendir, mac videolarini yukle ve scout ilgisini artir.`;
+                const heroStatusUser = document.getElementById('heroStatusUser');
+                if (heroStatusUser && u?.name) heroStatusUser.textContent = u.name;
             } catch (e) {}
 
             refreshPlayerDashboardLiveStats();

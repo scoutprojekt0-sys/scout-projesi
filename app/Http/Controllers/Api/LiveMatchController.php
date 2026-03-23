@@ -124,6 +124,9 @@ class LiveMatchController extends Controller
                     'stream_links' => is_array($meta['stream_links'] ?? null) ? $meta['stream_links'] : [],
                     'note'         => $meta['note']        ?? null,
                     'scout_name'   => $meta['scout_name']  ?? null,
+                    'source_role'  => $meta['source_role'] ?? null,
+                    'source_name'  => $meta['source_name'] ?? null,
+                    'source_user_id' => $meta['source_user_id'] ?? null,
                 ];
             })->values();
 
@@ -152,6 +155,9 @@ class LiveMatchController extends Controller
             'away_team'              => ['nullable', 'string', 'max:120'],
             'match_date'             => ['nullable', 'date'],
             'scout_name'             => ['nullable', 'string', 'max:150'],
+            'source_role'            => ['nullable', 'string', 'max:50'],
+            'source_name'            => ['nullable', 'string', 'max:150'],
+            'source_user_id'         => ['nullable', 'integer'],
         ]);
 
         [$homeTeam, $awayTeam] = $this->extractTeams($validated['match_name']);
@@ -165,6 +171,9 @@ class LiveMatchController extends Controller
             'stream_links' => is_array($validated['stream_links'] ?? null) ? $validated['stream_links'] : [],
             'note'         => $validated['note']        ?? null,
             'scout_name'   => $scoutName,
+            'source_role'  => $validated['source_role'] ?? null,
+            'source_name'  => $validated['source_name'] ?? null,
+            'source_user_id' => $validated['source_user_id'] ?? null,
         ];
 
         $match = LiveMatch::query()->create([
@@ -228,6 +237,9 @@ class LiveMatchController extends Controller
                 'stream_links' => is_array($meta['stream_links'] ?? null) ? $meta['stream_links'] : [],
                 'scout_name'   => $meta['scout_name'] ?? null,
                 'note'         => $meta['note']       ?? null,
+                'source_role'  => $meta['source_role'] ?? null,
+                'source_name'  => $meta['source_name'] ?? null,
+                'source_user_id' => $meta['source_user_id'] ?? null,
                 'updated_at'   => $updateRow->update_time ?? $record->updated_at?->toIso8601String(),
             ], 'Mac detayi hazir.');
         } catch (ModelNotFoundException $e) {

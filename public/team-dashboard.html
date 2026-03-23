@@ -64,7 +64,7 @@
         .btn-small {
             padding: 8px 14px;
             border: 1px solid transparent;
-            border-radius: 999px;
+            border-radius: 0;
             font-weight: 700;
             font-size: 12px;
             cursor: pointer;
@@ -167,19 +167,72 @@
         .hero-title { margin:0; max-width:720px; font:800 clamp(2rem, 3vw, 3rem)/1.02 Inter, sans-serif; letter-spacing:-0.03em; color:#fff; }
         .hero-sub { margin:14px 0 0; max-width:740px; color:rgba(255,255,255,0.82); font-size:14px; line-height:1.7; }
         .hero-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+        .hero-actions .btn-small {
+            min-height: 44px;
+            padding: 10px 14px;
+            border-radius: 0;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+            justify-content: center;
+        }
+        .hero-actions .btn-small i {
+            width: 16px;
+            text-align: center;
+            font-size: 13px;
+        }
+        .hero-actions .btn-small.primary {
+            background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+            border-color: rgba(255, 126, 34, 0.6);
+            color: #fff;
+            box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28);
+        }
+        .hero-actions .btn-small.secondary {
+            background: rgba(59, 130, 246, 0.12);
+            color: #dbeafe;
+            border-color: rgba(96, 165, 250, 0.24);
+            box-shadow: none;
+        }
         .hero-points { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
         .pill { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; font-size:12px; font-weight:800; background:rgba(255,255,255,0.10); border:1px solid rgba(255,255,255,0.14); color:#eef2ff; }
+        .eyebrow { display:inline-flex; align-items:center; gap:8px; padding:7px 10px; border:1px solid rgba(96,165,250,.22); background:rgba(56,189,248,.08); color:#bae6fd; font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; white-space:nowrap; }
         .hero-side { background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid rgba(148,163,184,.18); border-radius:18px; padding:18px; box-shadow:0 16px 30px rgba(8,19,29,.28); position:relative; overflow:hidden; }
         .hero-side::before { content:""; position:absolute; inset:0 0 auto 0; height:4px; background:linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%); }
         .panel-title { font-size:17px; font-weight:800; margin-bottom:10px; color:#dbeafe; }
         .panel-sub { color:#9bb5cb; font-size:14px; margin-bottom:12px; }
+        .workspace-tabs { display:flex; flex-wrap:wrap; gap:10px; }
+        .workspace-tab {
+            appearance:none;
+            border:1px solid rgba(96, 165, 250, 0.24);
+            background:rgba(59, 130, 246, 0.10);
+            color:#dbeafe;
+            padding:10px 14px;
+            border-radius:12px;
+            font-size:13px;
+            font-weight:800;
+            font-family:inherit;
+            line-height:1.2;
+            cursor:pointer;
+            transition:all .2s ease;
+        }
+        .workspace-tab:hover {
+            background:rgba(59, 130, 246, 0.18);
+            border-color:rgba(96, 165, 250, 0.38);
+            transform:translateY(-1px);
+        }
+        .workspace-tab.active {
+            background:linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+            border-color:rgba(255, 126, 34, 0.62);
+            color:#fff;
+            box-shadow:0 14px 24px rgba(255, 90, 31, 0.22);
+        }
         .status-stack { display:grid; gap:12px; }
         .status-row { display:flex; justify-content:space-between; gap:10px; padding:14px; border:1px solid rgba(148,163,184,.16); background:rgba(255,255,255,.04); }
         .status-row span:first-child { color:#9bb5cb; font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
         .status-row strong { color:#f8fafc; font-size:14px; font-weight:800; }
         .tip-modal-overlay { display:none; position:fixed; inset:0; z-index:2400; background:rgba(2,6,23,.72); align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(4px); }
         .tip-modal-overlay.show { display:flex; }
-        .tip-modal { width:min(980px, 100%); max-height:88vh; overflow:auto; background:#0f1f2e; border:1px solid rgba(148,163,184,.18); border-radius:18px; box-shadow:0 30px 80px rgba(2,6,23,.45); color:#e2e8f0; }
+        .tip-modal { width:min(980px, 100%); max-height:88vh; overflow:auto; background:#0f1f2e; border:1px solid rgba(148,163,184,.18); border-radius:0; box-shadow:0 30px 80px rgba(2,6,23,.45); color:#e2e8f0; }
         .tip-modal-header { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:18px 20px; border-bottom:1px solid rgba(148,163,184,.16); }
         .tip-modal-title { font-size:20px; font-weight:800; color:#f8fafc; }
         .tip-modal-body { padding:20px; }
@@ -187,7 +240,7 @@
         .tip-field { display:grid; gap:6px; }
         .tip-field.full { grid-column:1 / -1; }
         .tip-field label { color:#cbd5e1; font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; }
-        .tip-field input, .tip-field select, .tip-field textarea { width:100%; padding:11px 12px; border-radius:12px; border:1px solid rgba(148,163,184,.22); background:rgba(255,255,255,.05); color:#f8fafc; }
+        .tip-field input, .tip-field select, .tip-field textarea { width:100%; padding:11px 12px; border-radius:0; border:1px solid rgba(148,163,184,.22); background:rgba(255,255,255,.05); color:#f8fafc; }
         .tip-field textarea { min-height:110px; resize:vertical; }
         .tip-preview { display:grid; grid-template-columns:120px minmax(0,1fr); gap:12px; padding:12px; margin-top:10px; border-radius:14px; border:1px solid rgba(148,163,184,.16); background:rgba(255,255,255,.04); }
         .tip-preview img { width:120px; height:72px; object-fit:cover; border-radius:10px; background:#08131d; }
@@ -196,7 +249,7 @@
         .tip-preview-link { display:inline-flex; align-items:center; gap:8px; margin-top:10px; color:#ffb38a; text-decoration:none; font-size:12px; font-weight:700; }
         .tip-actions { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:16px; }
         .tip-lab-chip { display:inline-flex; align-items:center; gap:8px; padding:9px 12px; border-radius:999px; border:1px solid rgba(255,126,34,.35); background:rgba(255,126,34,.12); color:#ffd3bd; font-size:12px; font-weight:800; }
-        .tip-notice { margin-top:14px; min-height:20px; font-size:13px; font-weight:700; }
+        .tip-notice { margin-top:14px; min-height:20px; font-size:13px; font-weight:700; border-radius:0; }
         .tip-notice.ok { color:#34d399; }
         .tip-notice.bad { color:#fca5a5; }
         .tip-analysis { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:18px; }
@@ -209,34 +262,141 @@
         .tip-mini span { display:block; margin-top:6px; font-size:11px; color:#9bb5cb; text-transform:uppercase; letter-spacing:.08em; }
         .tip-events { display:grid; gap:10px; }
         .tip-empty { color:#9bb5cb; font-size:12px; border:1px dashed rgba(148,163,184,.18); border-radius:12px; padding:14px; }
+        .club-actions-modal-grid { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; }
+        .club-actions-card { border:1px solid rgba(148,163,184,.18); background:rgba(255,255,255,.04); padding:16px; border-radius:14px; display:grid; gap:10px; }
+        .club-actions-card h3 { margin:0; font-size:15px; color:#f8fafc; }
+        .club-actions-card p { margin:0; font-size:12px; color:#9bb5cb; line-height:1.6; }
+        .success-story-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; }
+        .success-story-card { border:1px solid rgba(148,163,184,.18); background:rgba(255,255,255,.04); padding:16px; border-radius:0; display:grid; gap:10px; color:#e2e8f0; cursor:pointer; text-align:left; }
+        .success-story-card h3 { margin:0; font-size:15px; color:#f8fafc; }
+        .success-story-card p { margin:0; font-size:12px; color:#9bb5cb; line-height:1.6; }
+        .success-story-list { display:grid; gap:10px; }
+        .success-story-item { border:1px solid rgba(148,163,184,.18); background:rgba(255,255,255,.04); padding:14px; border-radius:0; }
+        .success-story-item h4 { margin:0 0 6px; font-size:15px; color:#f8fafc; }
+        .success-story-item p { margin:0; font-size:13px; line-height:1.6; color:#cbd5e1; }
+        .success-story-meta { display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; font-size:12px; color:#9bb5cb; }
         .quick-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
-        .market-pulse-overlay { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.72); z-index: 2100; display: none; }
+        .market-pulse-overlay { position: fixed; inset: 0; background: rgba(6, 17, 27, 0.74); z-index: 2100; display: none; }
         .market-pulse-overlay.active { display: block; }
-        .market-pulse-flyout { position: fixed; left: 50%; top: 7vh; transform: translateX(-50%); width: min(980px, calc(100vw - 28px)); max-height: 86vh; overflow: auto; z-index: 2110; display: none; }
+        .market-pulse-flyout { position: fixed; left: 50%; top: 7vh; transform: translateX(-50%); width: min(980px, calc(100vw - 28px)); max-height: 86vh; overflow: auto; z-index: 2110; display: none; margin-bottom: 0; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.42); }
         .market-pulse-flyout.active { display: block; }
-        .market-pulse { background: #fff; border: 1px solid #e5e7eb; padding: 16px; position: relative; border-radius: 12px; box-shadow: 0 30px 80px rgba(2, 6, 23, 0.26); }
+        .market-pulse { background: #0f1722; border: 1px solid rgba(148,163,184,.18); padding: 16px; position: relative; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.42); }
         .market-pulse::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, #2dd4bf 0%, #fbbf24 50%, #38bdf8 100%); }
-        .market-pulse-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
-        .market-pulse-copy { color: #6b7280; font-size: 13px; line-height: 1.6; margin-top: 6px; }
-        .market-pulse-tools { display: flex; align-items: center; gap: 10px; }
-        .market-pulse-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid rgba(79, 70, 229, 0.18); background: rgba(79, 70, 229, 0.08); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #3730a3; border-radius: 10px; }
-        .market-pulse-close { width: 40px; height: 40px; border: 1px solid #e5e7eb; background: #fff; color: #374151; cursor: pointer; border-radius: 10px; }
-        .market-pulse-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 14px; }
+        .market-pulse-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+        .market-pulse-copy { color: #94a3b8; font-size: 13px; line-height: 1.6; margin-top: 6px; max-width: 760px; }
+        .market-pulse-tools { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .market-pulse-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid rgba(96, 165, 250, 0.22); background: rgba(56, 189, 248, 0.08); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #bae6fd; white-space: nowrap; }
+        .market-pulse-close { display:inline-flex; align-items:center; justify-content:center; width: 40px; height: 40px; border: 1px solid rgba(148,163,184,.18); background: rgba(255,255,255,.04); color: #dbeafe; cursor: pointer; }
+        .market-pulse-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 14px; align-items: stretch; }
         .market-pulse-list, .market-pulse-side { display: grid; gap: 10px; min-width: 0; }
-        .market-pulse-item { display: grid; grid-template-columns: 56px minmax(0,1fr) auto; gap: 10px; align-items: center; padding: 12px; border: 1px solid #e5e7eb; background: #f8fafc; border-radius: 10px; }
-        .market-pulse-time, .market-pulse-tag { display: inline-flex; align-items: center; justify-content: center; min-width: 48px; padding: 5px 6px; border: 1px solid #e5e7eb; font-size: 11px; color: #6b7280; font-family: Consolas, monospace; background: #fff; }
-        .market-pulse-tag.up { color: #0f766e; } .market-pulse-tag.watch { color: #b45309; } .market-pulse-tag.info { color: #0369a1; } .market-pulse-tag.hot { color: #be123c; }
-        .market-pulse-line { font-size: 13px; line-height: 1.45; color: #111827; }
-        .market-pulse-sub { margin-top: 4px; color: #6b7280; font-size: 12px; line-height: 1.55; }
-        .market-pulse-metric { min-width: 90px; padding: 10px; border: 1px solid #e5e7eb; background: #fff; text-align: right; border-radius: 10px; }
-        .market-pulse-metric span { display: block; color: #6b7280; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
-        .market-pulse-metric strong { display: block; margin-top: 6px; font-size: 24px; color: #111827; }
-        .market-pulse-metric em { display: block; margin-top: 4px; font: 700 11px/1.2 Consolas, monospace; color: #0f766e; font-style: normal; }
+        .market-pulse-item { display: grid; grid-template-columns: 56px minmax(0,1fr) auto; gap: 10px; align-items: center; padding: 12px; border: 1px solid rgba(148,163,184,.18); background: rgba(255,255,255,.03); }
+        .market-pulse-time, .market-pulse-tag { display: inline-flex; align-items: center; justify-content: center; min-width: 48px; padding: 5px 6px; border: 1px solid rgba(148,163,184,.18); font-size: 11px; color: #94a3b8; font-family: Consolas, monospace; }
+        .market-pulse-tag.up { color: #99f6e4; border-color: rgba(45, 212, 191, 0.24); } .market-pulse-tag.watch { color: #fde68a; border-color: rgba(251, 191, 36, 0.24); } .market-pulse-tag.info { color: #bae6fd; border-color: rgba(56, 189, 248, 0.24); } .market-pulse-tag.hot { color: #fecdd3; border-color: rgba(251, 113, 133, 0.24); }
+        .market-pulse-line { font-size: 13px; line-height: 1.45; color: #f5fbff; }
+        .market-pulse-line strong { color: #ffffff; }
+        .market-pulse-sub { margin-top: 4px; color: #94a3b8; font-size: 12px; line-height: 1.55; }
+        .market-pulse-metric { min-width: 90px; padding: 10px; border: 1px solid rgba(148,163,184,.18); background: rgba(255,255,255,.04); text-align: right; }
+        .market-pulse-metric span { display: block; color: #94a3b8; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+        .market-pulse-metric strong { display: block; margin-top: 6px; font-size: 24px; color: #f5fbff; }
+        .market-pulse-metric em { display: block; margin-top: 4px; font: 700 11px/1.2 Consolas, monospace; color: #2dd4bf; font-style: normal; }
         .market-pulse-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-        .market-pulse-stat { padding: 12px; border: 1px solid #e5e7eb; background: #f8fafc; border-radius: 10px; }
-        .market-pulse-stat-label { color: #6b7280; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
-        .market-pulse-stat-value { margin-top: 8px; font-size: 24px; color: #111827; font-weight: 800; }
-        .market-pulse-link, .market-pulse-launch { display: inline-flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border: 1px solid #c7d2fe; color: #3730a3; text-decoration: none; border-radius: 10px; background: rgba(79, 70, 229, 0.08); }
+        .market-pulse-stat { padding: 12px; border: 1px solid rgba(148,163,184,.18); background: rgba(255,255,255,.03); }
+        .market-pulse-stat-label { color: #94a3b8; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+        .market-pulse-stat-value { margin-top: 8px; font-size: 24px; color: #f5fbff; font-weight: 800; }
+        .market-pulse-link, .market-pulse-launch { display: inline-flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border: 1px solid rgba(148,163,184,.18); color: #dbeafe; text-decoration: none; background: rgba(45, 212, 191, 0.12); }
+        #teamMarketPulseOverlay { display:none; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(4px); }
+        #teamMarketPulseOverlay.active { display:flex; }
+        #teamMarketPulseCard { position:relative; left:auto; top:auto; transform:none; width:min(980px, 100%); max-height:88vh; display:block; }
+        #teamMarketPulseCard.market-pulse { background:#0f1722; border:1px solid rgba(148,163,184,.18); color:#e2e8f0; box-shadow:0 30px 80px rgba(0,0,0,.42); border-radius:0; }
+        #teamMarketPulseCard .market-pulse-copy,
+        #teamMarketPulseCard .market-pulse-sub,
+        #teamMarketPulseCard .market-pulse-stat-label,
+        #teamMarketPulseCard .market-pulse-metric span,
+        #teamMarketPulseCard .market-pulse-time,
+        #teamMarketPulseCard .market-pulse-tag { color:#94a3b8; }
+        #teamMarketPulseCard .market-pulse-line,
+        #teamMarketPulseCard .market-pulse-metric strong,
+        #teamMarketPulseCard .market-pulse-stat-value,
+        #teamMarketPulseCard .panel-title { color:#f5fbff; }
+        #teamMarketPulseCard .market-pulse-item,
+        #teamMarketPulseCard .market-pulse-stat,
+        #teamMarketPulseCard .market-pulse-metric { background:rgba(255,255,255,.03); border-color:rgba(148,163,184,.18); border-radius:0; }
+        #teamMarketPulseCard .market-pulse-close { background:rgba(255,255,255,.04); border-color:rgba(148,163,184,.18); color:#dbeafe; border-radius:0; }
+        #teamMarketPulseCard .market-pulse-link { border-color:rgba(148,163,184,.18); color:#dbeafe; background:rgba(45,212,191,.12); }
+        #teamMarketPulseCard .market-pulse-badge { border-color:rgba(96,165,250,.22); background:rgba(56,189,248,.08); color:#bae6fd; border-radius:0; }
+        #teamMarketPulseCard .market-pulse-time,
+        #teamMarketPulseCard .market-pulse-tag { border-color:rgba(148,163,184,.18); background:transparent; border-radius:0; }
+        #teamOpportunityOverlay { display:none; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(4px); }
+        #teamOpportunityOverlay.active { display:flex; }
+        #teamOpportunityCard { position:relative; left:auto; top:auto; transform:none; width:min(980px, 100%); max-height:88vh; display:block; }
+        #teamOpportunityCard.market-pulse { background:#0f1722; border:1px solid rgba(148,163,184,.18); color:#e2e8f0; box-shadow:0 30px 80px rgba(0,0,0,.42); border-radius:0; }
+        #teamOpportunityCard .market-pulse-copy,
+        #teamOpportunityCard .market-pulse-sub,
+        #teamOpportunityCard .market-pulse-metric span,
+        #teamOpportunityCard .market-pulse-time,
+        #teamOpportunityCard .market-pulse-tag { color:#94a3b8; }
+        #teamOpportunityCard .market-pulse-line,
+        #teamOpportunityCard .market-pulse-metric strong,
+        #teamOpportunityCard .panel-title,
+        #teamOpportunityCard #teamOpportunityTitle { color:#f5fbff; }
+        #teamOpportunityCard .market-pulse-item,
+        #teamOpportunityCard .market-pulse-metric { background:rgba(255,255,255,.03); border-color:rgba(148,163,184,.18); border-radius:0; }
+        #teamOpportunityCard .market-pulse-close { background:rgba(255,255,255,.04); border-color:rgba(148,163,184,.18); color:#dbeafe; border-radius:0; }
+        #teamOpportunityCard .market-pulse-badge { border-color:rgba(96,165,250,.22); background:rgba(56,189,248,.08); color:#bae6fd; border-radius:0; }
+        #teamGroupsOverlay { display:none; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(4px); }
+        #teamGroupsOverlay.active { display:flex; }
+        #teamGroupsSection {
+            width:min(980px, 100%);
+            max-height:88vh;
+            overflow:auto;
+            margin:0;
+            background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border:1px solid rgba(148,163,184,.18);
+            border-radius:0;
+            box-shadow:0 30px 80px rgba(0,0,0,.42);
+            position:relative;
+        }
+        #teamGroupsSection::before {
+            content:"";
+            position:absolute;
+            inset:0 0 auto 0;
+            height:4px;
+            background:linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
+        }
+        #teamGroupsSection .group-head {
+            position:sticky;
+            top:0;
+            z-index:2;
+            padding-top:14px;
+            background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+        }
+        .team-groups-title {
+            display:flex;
+            align-items:flex-start;
+            justify-content:space-between;
+            gap:12px;
+            margin-bottom:16px;
+        }
+        .team-groups-title h3 {
+            margin:0;
+            color:#f8fafc;
+            font-size:20px;
+            font-weight:800;
+        }
+        .team-groups-title p {
+            margin:6px 0 0;
+            color:#9bb5cb;
+            font-size:13px;
+        }
+        .team-groups-close {
+            width:40px;
+            height:40px;
+            border:1px solid rgba(148,163,184,.18);
+            background:rgba(255,255,255,.04);
+            color:#dbeafe;
+            cursor:pointer;
+            border-radius:0;
+        }
         .stat-card { background: white; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-top: 3px solid #667eea; }
         .stat-card-value { font-size: 28px; font-weight: bold; color: #667eea; margin-bottom: 8px; }
         .stat-card-label { font-size: 13px; color: #9ca3af; text-transform: uppercase; }
@@ -505,7 +665,7 @@
             .transfer-summary-grid { grid-template-columns: repeat(2, 1fr); }
             .transfer-lists { grid-template-columns: 1fr; }
         }
-        @media (max-width: 768px) {
+    @media (max-width: 768px) {
             body { background: #1f252d; color: #e2e8f0; }
             .top-navbar {
                 height: auto;
@@ -542,6 +702,12 @@
             .btn-small.secondary { background: #2b3440; color: #dbeafe; border-color: #475569; }
             .btn-small.light { background: #1f2937; color: #dbeafe; border-color: #475569; }
             .btn-small.primary { background: linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%); }
+            .live-grid { grid-template-columns: 1fr; }
+            .need-modal-overlay { padding: 10px; align-items: flex-end; }
+            .need-modal { width: 100%; max-height: 92vh; display: grid; grid-template-rows: auto 1fr auto; }
+            .need-modal-head { border-bottom-color: #374151; }
+            .need-modal-body { overflow-y: auto; max-height: calc(92vh - 128px); }
+            .need-modal-actions { border-top: 1px solid #374151; padding-top: 10px; }
 
             .main-container { grid-template-columns: 1fr; padding: 10px; gap: 10px; }
             .sidebar {
@@ -669,7 +835,7 @@
         @media (max-width: 480px) {
             .navbar-right { grid-template-columns: 1fr; }
             .quick-stats { grid-template-columns: 1fr; }
-            .market-pulse-flyout { top: 10px; width: calc(100vw - 14px); max-height: calc(100vh - 20px); }
+            .market-pulse-flyout { left: 50%; top: 50%; transform: translate(-50%, -50%); width: calc(100vw - 14px); max-height: calc(100vh - 20px); }
             .transfer-summary-grid { grid-template-columns: 1fr; }
             .compare-toolbar > div:last-child { grid-template-columns: 1fr; }
             .btn-small { font-size: 11px; min-height: 40px; }
@@ -715,6 +881,167 @@
             border-color: rgba(255, 126, 34, 0.45) !important;
         }
 
+        .need-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.62);
+            z-index: 2400;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            backdrop-filter: blur(4px);
+        }
+        .need-modal-overlay.show { display: flex; }
+        .need-modal {
+            width: min(860px, 100%);
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border: 1px solid var(--ns-line);
+            box-shadow: var(--ns-shadow);
+            color: var(--ns-text);
+            position: relative;
+            overflow: hidden;
+            border-radius: 0;
+        }
+        .need-modal::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--ns-cta) 0%, var(--ns-cta-2) 55%, #60a5fa 100%);
+        }
+        .live-modal { width: min(860px, 100%); }
+        .need-modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 18px;
+            border-bottom: 1px solid #334155;
+        }
+        .need-modal-head h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #dbeafe;
+            margin: 0;
+        }
+        .need-modal-body {
+            padding: 16px 18px;
+            display: grid;
+            gap: 10px;
+        }
+        .need-modal-body input,
+        .need-modal-body textarea,
+        .need-modal-body select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--ns-line);
+            border-radius: 0;
+            font-size: 14px;
+            font-family: inherit;
+            background: rgba(255,255,255,.04);
+            color: var(--ns-text);
+        }
+        .need-modal-body textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .need-modal-body input:focus,
+        .need-modal-body textarea:focus,
+        .need-modal-body select:focus {
+            outline: none;
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.18);
+        }
+        .live-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .need-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 0 18px 18px;
+        }
+        .quick-report-result {
+            border: 1px solid var(--ns-line);
+            border-radius: 0 !important;
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            padding: 10px 12px;
+            font-size: 12px;
+            color: var(--ns-muted);
+            box-shadow: var(--ns-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        .quick-report-result::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--ns-cta) 0%, var(--ns-cta-2) 55%, #60a5fa 100%);
+        }
+        #teamSuccessStoriesHubOverlay .btn-small,
+        #teamSuccessStorySubmitOverlay .btn-small,
+        #teamSuccessStoriesReadOverlay .btn-small {
+            padding: 8px 14px;
+            width: auto !important;
+            min-width: 0 !important;
+            border-radius: 0 !important;
+            border: 1px solid rgba(255, 126, 34, 0.45) !important;
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%) !important;
+            color: #16325c !important;
+            box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24) !important;
+            font-weight: 800 !important;
+            font-size: 13px !important;
+            cursor: pointer;
+            transition: all .2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+        #teamSuccessStoriesHubOverlay .btn-small.primary,
+        #teamSuccessStorySubmitOverlay .btn-small.primary,
+        #teamSuccessStoriesReadOverlay .btn-small.primary {
+            background: linear-gradient(135deg, var(--ns-cta) 0%, var(--ns-cta-2) 100%) !important;
+            border-color: rgba(255, 126, 34, 0.6) !important;
+            color: #fff !important;
+            box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28) !important;
+        }
+        #teamSuccessStoriesHubOverlay .btn-small.secondary,
+        #teamSuccessStorySubmitOverlay .btn-small.secondary,
+        #teamSuccessStoriesReadOverlay .btn-small.secondary {
+            background: rgba(59, 130, 246, 0.12) !important;
+            color: #dbeafe !important;
+            border-color: rgba(96, 165, 250, 0.24) !important;
+            box-shadow: none !important;
+        }
+        #teamSuccessStoriesHubOverlay .quick-report-grid,
+        #teamSuccessStorySubmitOverlay .quick-report-grid,
+        #teamSuccessStoriesReadOverlay .quick-report-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            align-items: stretch;
+        }
+        #teamSuccessStoriesHubOverlay .quick-report-grid .btn-small,
+        #teamSuccessStorySubmitOverlay .quick-report-grid .btn-small,
+        #teamSuccessStoriesReadOverlay .quick-report-grid .btn-small {
+            width: 100% !important;
+            min-height: 96px;
+            justify-content: flex-start;
+        }
+        #teamSuccessStoriesHubOverlay .need-modal-actions .btn-small,
+        #teamSuccessStorySubmitOverlay .need-modal-actions .btn-small,
+        #teamSuccessStoriesReadOverlay .need-modal-actions .btn-small {
+            width: auto !important;
+            min-height: 0;
+        }
+        .point-item { border: 1px solid rgba(148,163,184,.18); background: rgba(255,255,255,.04); padding: 14px; border-radius: 0; }
+        .row-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+        .row-title { font-size: 15px; font-weight: 800; color: #f8fafc; }
+        .row-copy { margin-top: 6px; font-size: 13px; line-height: 1.6; color: #cbd5e1; }
+        .row-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; font-size: 12px; color: #9bb5cb; }
+        .badge.approved { display: inline-flex; align-items: center; padding: 6px 10px; border: 1px solid rgba(96,165,250,.22); background: rgba(56,189,248,.08); color: #bae6fd; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
         .sidebar,
             .welcome-card,
             .stat-card,
@@ -867,7 +1194,7 @@
             <button class="btn-small light" onclick="toggleClubPromoPanel()"><i class="fas fa-bullhorn"></i><span>Kulübünü Tanıt</span></button>
             <button class="btn-small light" onclick="toggleTrialPublishPanel()"><i class="fas fa-calendar-check"></i><span>Deneme/İdman İlanı</span></button>
             <button class="btn-small secondary" onclick="openTeamProfile()"><i class="fas fa-user-check"></i><span>Public Görünüm</span></button>
-            <button class="btn-small secondary" onclick="window.location.href='index.html?success_story=submit#homeStep3'"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></button>
+            <button class="btn-small secondary" onclick="openTeamSuccessStoriesHub()"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></button>
             <button class="btn-small home-btn-global" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255, 126, 34, 0.6);background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 16px 28px rgba(255,90,31,0.28);" onclick="window.location.href='index.html'"><i class="fas fa-house"></i><span>Ana Sayfa</span></button>
             <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Çıkış</span></button>
         </div>
@@ -881,14 +1208,12 @@
                     <li class="sidebar-item active" onclick="location.reload()"><i class="fas fa-magnifying-glass"></i><span>Oyuncu Ara</span></li>
                     <li class="sidebar-item" onclick="openTeamTalentTipModal()"><i class="fas fa-video"></i><span>Yetenek Bildir</span></li>
                     <li class="sidebar-item" onclick="openScoutReports()"><i class="fas fa-chart-line"></i><span>Scout Raporlari</span></li>
-                    <li class="sidebar-item" onclick="toggleClubNeedsPanel()"><i class="fas fa-thumbtack"></i><span>Kulup Ihtiyaclari</span></li>
-                    <li class="sidebar-item" onclick="toggleClubPromoPanel()"><i class="fas fa-bullhorn"></i><span>Kulubunu Tanit</span></li>
-                    <li class="sidebar-item" onclick="toggleTrialPublishPanel()"><i class="fas fa-calendar-check"></i><span>Deneme ve Idman Ilani</span></li>
                     <li class="sidebar-item" onclick="openTeamProfile()"><i class="fas fa-user-check"></i><span>Public Gorunum</span></li>
-                    <li class="sidebar-item" onclick="window.location.href='index.html?success_story=submit#homeStep3'"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></li>
+                    <li class="sidebar-item" onclick="openTeamSuccessStoriesHub()"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></li>
                     <li class="sidebar-item" onclick="openTeamProfile()"><i class="fas fa-trophy"></i><span>KULÜP Profili</span></li>
-                    <li class="sidebar-item" onclick="openTrialCenter()"><i class="fas fa-calendar-check"></i><span>Deneme & Idmanlar</span></li>
+                    <li class="sidebar-item" onclick="openLiveMatches()"><i class="fas fa-tower-broadcast"></i><span>Canli Mac Bildirimleri</span></li>
                     <li class="sidebar-item" onclick="window.location.href='ai-discovery.html'"><i class="fas fa-flask"></i><span>AI Discovery</span></li>
+                    <li class="sidebar-item" onclick="window.location.href='review-center.html'"><i class="fas fa-comments"></i><span>Yorumlar</span></li>
                     <li class="sidebar-item" onclick="openMessages()"><i class="fas fa-comments"></i><span>Mesajlarim</span></li>
                     <li class="sidebar-item" onclick="openSettings()"><i class="fas fa-gear"></i><span>Ayarlar</span></li>
                     <li class="sidebar-item" onclick="openHelp()"><i class="fas fa-circle-question"></i><span>Yardim</span></li>
@@ -907,6 +1232,11 @@
                     <p class="hero-sub">Oyuncu ara, profilleri incele, transfer teklifi gonder ve ihtiyaclarini tek panelden yonet.</p>
                     <div class="hero-actions">
                         <button class="btn-small primary" type="button" onclick="openTeamTalentTipModal()"><i class="fas fa-video"></i><span>Yetenek Bildir</span></button>
+                        <button class="btn-small secondary" type="button" onclick="openTeamMarketPulse()"><i class="fas fa-chart-line"></i><span>Market Pulse</span></button>
+                        <button class="btn-small secondary" type="button" onclick="openLiveMatches()"><i class="fas fa-tower-broadcast"></i><span>Canli Mac Bildirimleri</span></button>
+                        <button class="btn-small secondary" type="button" onclick="openTeamScoutHub()"><i class="fas fa-bookmark"></i><span>Scout Watchlist & Raporlar</span></button>
+                        <button class="btn-small secondary" type="button" onclick="openTeamGroupsCard()"><i class="fas fa-people-group"></i><span>Takim Gruplari</span></button>
+                        <button class="btn-small secondary" type="button" onclick="openClubOperationsModal()"><i class="fas fa-layer-group"></i><span>Kulup Operasyonlari</span></button>
                     </div>
                     <div class="hero-points">
                         <span class="pill"><i class="fas fa-circle-check"></i><span>Dogrulanan oyuncu akisi karar hizini artirir</span></span>
@@ -928,11 +1258,15 @@
                 <h1>Kulup operasyonunu buradan yonet.</h1>
                 <p>Oyuncu ara, profilleri incele ve transfer teklifi gönder.</p>
             </div>
-            <div class="group-section">
+            <div class="market-pulse-overlay" id="teamGroupsOverlay" onclick="if (event.target.id === 'teamGroupsOverlay') closeTeamGroupsCard()">
+            <div class="group-section" id="teamGroupsSection">
                 <div class="group-head">
-                    <div>
-                        <h2 style="margin:0;font-size:18px;font-weight:800;color:#1f2937;">Takim Gruplari</h2>
-                        <p>Antrenor veya yonetici oyuncuyu ait oldugu yas grubuna kaydedebilir.</p>
+                    <div class="team-groups-title">
+                        <div>
+                            <h3>Takim Gruplari</h3>
+                            <p>Antrenor veya yonetici oyuncuyu ait oldugu yas grubuna kaydedebilir.</p>
+                        </div>
+                        <button class="team-groups-close" type="button" onclick="closeTeamGroupsCard()">×</button>
                     </div>
                     <button class="btn-small secondary" type="button" onclick="togglePlayerRegisterPanel(true)">
                         <i class="fas fa-clipboard-list"></i><span>Gruba Oyuncu Ekle</span>
@@ -954,6 +1288,7 @@
                 <div class="group-note" id="teamGroupNote">Secili grup: U9. Bu gruba sadece kulup ici profil kaydi yapilir.</div>
                 <div class="group-roster" id="teamGroupRoster"></div>
             </div>
+            </div>
 
             <div class="quick-stats">
                 <div class="stat-card"><div class="stat-card-value" id="statTotalPlayers">0</div><div class="stat-card-label">Oyuncu Havuzu</div></div>
@@ -961,28 +1296,30 @@
                 <div class="stat-card"><div class="stat-card-value" id="statOffersSent">0</div><div class="stat-card-label">Gonderilen Teklif</div></div>
                 <div class="stat-card"><div class="stat-card-value" id="statAverageRating">0.0</div><div class="stat-card-label">Ortalama Rating</div></div>
                 <div class="stat-card"><div class="stat-card-value" id="statProfileCompletion">0%</div><div class="stat-card-label">Profil Tamamlama</div></div>
-            <div class="market-pulse-overlay" id="teamMarketPulseOverlay" onclick="closeTeamMarketPulse()"></div>
-            <section class="market-pulse market-pulse-flyout" id="teamMarketPulseCard">
-                <div class="market-pulse-head">
-                    <div>
-                        <div class="sidebar-title">Market Pulse</div>
-                        <h2 style="margin:0 0 6px 0;font-size:18px;color:#111827;">Canli Piyasa Ozeti</h2>
-                        <div class="market-pulse-copy">Kulup icin sicak oyuncu hareketi, favori artisi ve trial baskisini tek panelde ac.</div>
+            </div>
+            <div class="market-pulse-overlay" id="teamMarketPulseOverlay" onclick="if (event.target.id === 'teamMarketPulseOverlay') closeTeamMarketPulse()">
+                <section class="market-pulse market-pulse-flyout" id="teamMarketPulseCard">
+                    <div class="market-pulse-head">
+                        <div>
+                        <div class="eyebrow">Market Pulse</div>
+                        <h3 class="panel-title" style="margin:0;">Canli Piyasa Ozeti</h3>
+                        <div class="market-pulse-copy">Scout ekranini bozmadan son video hareketi, favori sicakligi ve trial baskisini tek kartta toplar.</div>
+                        </div>
+                        <div class="market-pulse-tools">
+                            <div class="market-pulse-badge" id="teamMarketPulseStatus"><i class="fas fa-signal"></i><span>Yukleniyor</span></div>
+                            <button class="market-pulse-close" type="button" onclick="closeTeamMarketPulse()"><i class="fas fa-times"></i></button>
+                        </div>
                     </div>
-                    <div class="market-pulse-tools">
-                        <div class="market-pulse-badge" id="teamMarketPulseStatus"><i class="fas fa-signal"></i><span>Yukleniyor</span></div>
-                        <button class="market-pulse-close" type="button" onclick="closeTeamMarketPulse()"><i class="fas fa-times"></i></button>
+                    <div class="market-pulse-grid">
+                        <div class="market-pulse-list" id="teamMarketPulseList"><div class="empty">Market pulse verisi yukleniyor...</div></div>
+                        <div class="market-pulse-side">
+                            <div class="market-pulse-stats" id="teamMarketPulseStats"></div>
+                            <a class="market-pulse-link" href="platform-akisi.html"><span><i class="fas fa-chart-line"></i> Terminali Ac</span><i class="fas fa-arrow-right"></i></a>
+                        </div>
                     </div>
-                </div>
-                <div class="market-pulse-grid">
-                    <div class="market-pulse-list" id="teamMarketPulseList"><div class="empty">Market pulse verisi yukleniyor...</div></div>
-                    <div class="market-pulse-side">
-                        <div class="market-pulse-stats" id="teamMarketPulseStats"></div>
-                        <a class="market-pulse-link" href="platform-akisi.html"><span><i class="fas fa-chart-line"></i> Terminali Ac</span><i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            </section>
-            <div class="market-pulse-overlay" id="teamOpportunityOverlay" onclick="closeTeamOpportunityArea()"></div>
+                </section>
+            </div>
+            <div class="market-pulse-overlay" id="teamOpportunityOverlay" onclick="if (event.target.id === 'teamOpportunityOverlay') closeTeamOpportunityArea()">
             <section class="market-pulse market-pulse-flyout" id="teamOpportunityCard">
                 <div class="market-pulse-head">
                     <div>
@@ -998,12 +1335,14 @@
                 <div class="workspace-tabs" style="margin-bottom:14px;">
                     <button class="workspace-tab active" type="button" data-team-opportunity-tab="needs" onclick="openTeamOpportunityArea('needs')">Kulup Ihtiyaclari</button>
                     <button class="workspace-tab" type="button" data-team-opportunity-tab="events" onclick="openTeamOpportunityArea('events')">Deneme ve Idmanlar</button>
+                    <button class="workspace-tab" type="button" data-team-opportunity-tab="manager" onclick="openTeamOpportunityArea('manager')">Menajer Ilanlari</button>
                 </div>
                 <div class="form-actions" style="margin-bottom:14px;">
                     <button class="btn-small secondary" type="button" id="teamOpportunityRefreshBtn" onclick="loadTeamOpportunityArea('needs')"><i class="fas fa-arrows-rotate"></i><span>Yenile</span></button>
                 </div>
                 <div class="market-pulse-list" id="teamOpportunityNeedsList"><div class="empty">Kulup ihtiyaclari yukleniyor...</div></div>
                 <div class="market-pulse-list" id="teamOpportunityEventsList" hidden><div class="empty">Deneme ve idmanlar yukleniyor...</div></div>
+                <div class="market-pulse-list" id="teamOpportunityManagerList" hidden><div class="empty">Menajer ilanlari yukleniyor...</div></div>
             </section>
             </div>
 
@@ -1420,6 +1759,136 @@
         </div>
     </div>
 
+    <div class="tip-modal-overlay" id="clubOperationsOverlay" onclick="if (event.target.id === 'clubOperationsOverlay') closeClubOperationsModal();">
+        <div class="tip-modal">
+            <div class="tip-modal-header">
+                <div class="tip-modal-title">Kulup Operasyonlari</div>
+                <button class="btn-small secondary" type="button" onclick="closeClubOperationsModal()">Kapat</button>
+            </div>
+            <div class="tip-modal-body">
+                <div class="club-actions-modal-grid">
+                    <article class="club-actions-card">
+                        <h3>Kulubu Tanit</h3>
+                        <p>Kulubun tanitim metnini, odagini ve gorunurlugunu tek yerden guncelle.</p>
+                        <button class="btn-small secondary" type="button" onclick="closeClubOperationsModal(); toggleClubPromoPanel(true)"><i class="fas fa-bullhorn"></i><span>Ac</span></button>
+                    </article>
+                    <article class="club-actions-card">
+                        <h3>Kulup Ihtiyaclari</h3>
+                        <p>Aradigin pozisyonlari ve ihtiyac notlarini hizli sekilde yayinla.</p>
+                        <button class="btn-small secondary" type="button" onclick="closeClubOperationsModal(); toggleClubNeedsPanel(true)"><i class="fas fa-thumbtack"></i><span>Ac</span></button>
+                    </article>
+                    <article class="club-actions-card">
+                        <h3>Deneme/Idman Icin Ilan Ver</h3>
+                        <p>Deneme, idman veya etkinlik ilanini buradan olustur.</p>
+                        <button class="btn-small secondary" type="button" onclick="closeClubOperationsModal(); toggleTrialPublishPanel(true)"><i class="fas fa-calendar-check"></i><span>Ac</span></button>
+                    </article>
+                    <article class="club-actions-card">
+                        <h3>Menajer Ilanlari</h3>
+                        <p>Acik menajer oyuncu arayislarini buradan gor ve takip et.</p>
+                        <button class="btn-small secondary" type="button" onclick="closeClubOperationsModal(); openTeamOpportunityArea('manager')"><i class="fas fa-briefcase"></i><span>Ac</span></button>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="need-modal-overlay" id="teamSuccessStoriesHubOverlay" onclick="if (event.target.id === 'teamSuccessStoriesHubOverlay') closeTeamSuccessStoriesHub();">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+            <div class="need-modal-head">
+                <h3>Basari Hikayeleri</h3>
+                <button class="btn-small secondary" type="button" onclick="closeTeamSuccessStoriesHub()">Kapat</button>
+            </div>
+            <div class="need-modal-body">
+                <div class="quick-report-result" style="margin-bottom:12px;">Basari hikayesi gonder veya topluluktaki hikayeleri oku.</div>
+                <div class="quick-report-grid" style="grid-template-columns:repeat(2,1fr); margin-bottom:0;">
+                    <button class="btn-small secondary" type="button" style="justify-content:flex-start; min-height:96px;" onclick="openTeamSuccessStorySubmitModal()">
+                        <i class="fas fa-paper-plane"></i><span>Gonder</span>
+                    </button>
+                    <button class="btn-small secondary" type="button" style="justify-content:flex-start; min-height:96px;" onclick="openTeamSuccessStoriesReadModal()">
+                        <i class="fas fa-book-open"></i><span>Oku</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="need-modal-overlay" id="teamScoutHubOverlay" onclick="if (event.target.id === 'teamScoutHubOverlay') closeTeamScoutHub();">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+            <div class="need-modal-head">
+                <h3>Scout Watchlist & Raporlar</h3>
+                <button class="btn-small secondary" type="button" onclick="closeTeamScoutHub()">Kapat</button>
+            </div>
+            <div class="need-modal-body">
+                <div class="workspace-tabs" style="margin-bottom:14px;">
+                    <button class="workspace-tab active" type="button" data-team-scout-tab="watchlist" onclick="openTeamScoutHub('watchlist')">Scout Watchlist</button>
+                    <button class="workspace-tab" type="button" data-team-scout-tab="reports" onclick="openTeamScoutHub('reports')">Scout Raporlari</button>
+                </div>
+                <div id="teamScoutHubWatchlist">
+                    <div class="quick-report-result" style="margin-bottom:12px;">Takip ettigin oyunculara hizli ulas.</div>
+                    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                        <button class="btn-small secondary" type="button" onclick="openTeamScoutWatchlist()">Scout Watchlist Ac</button>
+                    </div>
+                </div>
+                <div id="teamScoutHubReports" hidden>
+                    <div class="quick-report-result" style="margin-bottom:12px;">Kaydedilen scout raporlarini tek yerden ac.</div>
+                    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                        <button class="btn-small secondary" type="button" onclick="openTeamScoutReports()">Scout Raporlarini Ac</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="need-modal-overlay" id="teamSuccessStorySubmitOverlay" onclick="if (event.target.id === 'teamSuccessStorySubmitOverlay') closeTeamSuccessStorySubmitModal();">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+            <div class="need-modal-head">
+                <h3>Basari Hikayesi Gonder</h3>
+                <button class="btn-small secondary" type="button" onclick="closeTeamSuccessStorySubmitModal()">Kapat</button>
+            </div>
+            <form id="teamSuccessStoryForm">
+                <div class="need-modal-body">
+                    <input id="teamSuccessStoryFullName" name="full_name" placeholder="Ad Soyad" maxlength="150" required>
+                    <div class="live-grid">
+                        <select id="teamSuccessStorySport" name="sport" required>
+                            <option value="">Spor Sec</option>
+                            <option value="Futbol">Futbol</option>
+                            <option value="Basketbol">Basketbol</option>
+                            <option value="Voleybol">Voleybol</option>
+                        </select>
+                        <input id="teamSuccessStoryOldClub" name="old_club" placeholder="Eski Kulup" maxlength="160">
+                    </div>
+                    <input id="teamSuccessStoryNewClub" name="new_club" placeholder="Yeni Kulup" maxlength="160" required>
+                    <textarea id="teamSuccessStoryText" name="story_text" placeholder="Basari hikayeni yaz..." maxlength="1200" required></textarea>
+                    <input id="teamSuccessStoryImage" name="image_url" type="url" maxlength="2048" placeholder="Gorsel linki (opsiyonel)">
+                    <div class="quick-report-result" id="teamSuccessStoryNotice">Yeni basari hikayesini dashboard icinden gonder.</div>
+                </div>
+                <div class="need-modal-actions">
+                    <button class="btn-small secondary" type="button" onclick="closeTeamSuccessStorySubmitModal()">Vazgec</button>
+                    <button class="btn-small primary" type="submit">Gonder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="need-modal-overlay" id="teamSuccessStoriesReadOverlay" onclick="if (event.target.id === 'teamSuccessStoriesReadOverlay') closeTeamSuccessStoriesReadModal();">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+            <div class="need-modal-head">
+                <h3>Basari Hikayelerini Oku</h3>
+                <button class="btn-small secondary" type="button" onclick="closeTeamSuccessStoriesReadModal()">Kapat</button>
+            </div>
+            <div class="need-modal-body">
+                <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
+                    <button class="btn-small secondary" type="button" onclick="closeTeamSuccessStoriesReadModal(); openTeamSuccessStoriesHub()"><i class="fas fa-arrow-left"></i><span>Geri</span></button>
+                    <button class="btn-small secondary" type="button" onclick="loadTeamSuccessStories()"><i class="fas fa-arrows-rotate"></i><span>Yenile</span></button>
+                </div>
+                <div class="quick-report-result" id="teamSuccessStoriesStatus">Topluluktan gelen son basari hikayelerini burada oku.</div>
+                <div id="teamSuccessStoriesList" style="display:grid; gap:10px; margin-top:14px;">
+                    <div class="empty">Basari hikayeleri yukleniyor...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="trialPublishPanel" class="needs-panel" style="right: 330px;">
         <h3>Deneme / Idman Ilani</h3>
         <select id="trialType" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;margin-bottom:8px;">
@@ -1743,19 +2212,17 @@
                 renderTeamMarketPulse(await teamMarketPulseGet());
             } catch (error) {
                 statusRoot.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span>Beklemede</span>';
-                root.innerHTML = '<div class="empty">Market pulse su an yuklenemedi.</div>';
+                root.innerHTML = '<div class="empty">Market pulse su an yuklenemedi. Terminal ekranindan tekrar deneyebilirsin.</div>';
             }
         }
 
         function openTeamMarketPulse() {
-            document.getElementById('teamMarketPulseCard')?.classList.add('active');
             document.getElementById('teamMarketPulseOverlay')?.classList.add('active');
             document.body.style.overflow = 'hidden';
             loadTeamMarketPulse();
         }
 
         function closeTeamMarketPulse() {
-            document.getElementById('teamMarketPulseCard')?.classList.remove('active');
             document.getElementById('teamMarketPulseOverlay')?.classList.remove('active');
             document.body.style.overflow = '';
         }
@@ -1771,8 +2238,9 @@
             const refresh = document.getElementById('teamOpportunityRefreshBtn');
             const needs = document.getElementById('teamOpportunityNeedsList');
             const events = document.getElementById('teamOpportunityEventsList');
+            const manager = document.getElementById('teamOpportunityManagerList');
             const tabs = Array.from(document.querySelectorAll('[data-team-opportunity-tab]'));
-            if (!card || !overlay || !title || !summary || !status || !refresh || !needs || !events) return;
+            if (!card || !overlay || !title || !summary || !status || !refresh || !needs || !events || !manager) return;
 
             const map = {
                 needs: {
@@ -1782,6 +2250,10 @@
                 events: {
                     title: 'Deneme ve Idmanlar',
                     summary: 'Acik deneme ve idman duyurularini tek panelden tara.'
+                },
+                manager: {
+                    title: 'Menajer Ilanlari',
+                    summary: 'Menajerlerin acik oyuncu arayislarini tek panelden tara.'
                 }
             };
 
@@ -1793,15 +2265,14 @@
             refresh.setAttribute('onclick', `loadTeamOpportunityArea('${activeTeamOpportunityTab}')`);
             needs.hidden = activeTeamOpportunityTab !== 'needs';
             events.hidden = activeTeamOpportunityTab !== 'events';
+            manager.hidden = activeTeamOpportunityTab !== 'manager';
             tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.teamOpportunityTab === activeTeamOpportunityTab));
-            card.classList.add('active');
             overlay.classList.add('active');
             document.body.style.overflow = 'hidden';
             loadTeamOpportunityArea(activeTeamOpportunityTab);
         }
 
         function closeTeamOpportunityArea() {
-            document.getElementById('teamOpportunityCard')?.classList.remove('active');
             document.getElementById('teamOpportunityOverlay')?.classList.remove('active');
             document.body.style.overflow = '';
         }
@@ -1852,20 +2323,45 @@
             if (status) status.innerHTML = `<i class="fas fa-calendar"></i><span>${rows.slice(0, 8).length} kayit</span>`;
         }
 
+        function renderTeamOpportunityManager(rows) {
+            const root = document.getElementById('teamOpportunityManagerList');
+            const status = document.getElementById('teamOpportunityStatus');
+            if (!root || activeTeamOpportunityTab !== 'manager') return;
+            if (!Array.isArray(rows) || !rows.length) {
+                root.innerHTML = '<div class="empty">Acik menajer ilani yok.</div>';
+                if (status) status.innerHTML = '<i class="fas fa-briefcase"></i><span>Bos</span>';
+                return;
+            }
+            root.innerHTML = rows.slice(0, 8).map((item) => `
+                <article class="market-pulse-item">
+                    <div><div class="market-pulse-time">${escapeHtml(item.city || 'Sehir yok')}</div><div class="market-pulse-tag info">${escapeHtml(item.status || 'open')}</div></div>
+                    <div><div class="market-pulse-line"><strong>${escapeHtml(item.title || item.position || 'Menajer ilani')}</strong></div><div class="market-pulse-sub">${escapeHtml(item.position || '-')}</div></div>
+                    <div class="market-pulse-metric"><span>Yas</span><strong>${escapeHtml(item.age_min ?? '-')} - ${escapeHtml(item.age_max ?? '-')}</strong><em>${formatDate(item.created_at)}</em></div>
+                </article>
+            `).join('');
+            if (status) status.innerHTML = `<i class="fas fa-briefcase"></i><span>${rows.slice(0, 8).length} kayit</span>`;
+        }
+
         async function loadTeamOpportunityArea(type = 'needs') {
             const status = document.getElementById('teamOpportunityStatus');
-            const root = document.getElementById(type === 'events' ? 'teamOpportunityEventsList' : 'teamOpportunityNeedsList');
+            const root = document.getElementById(type === 'events'
+                ? 'teamOpportunityEventsList'
+                : type === 'manager'
+                    ? 'teamOpportunityManagerList'
+                    : 'teamOpportunityNeedsList');
             if (status) status.innerHTML = '<i class="fas fa-signal"></i><span>Senkron</span>';
             if (root) root.innerHTML = '<div class="empty">Yukleniyor...</div>';
             try {
                 if (type === 'events') {
                     renderTeamOpportunityEvents(await teamOpportunityGet('/community-events'));
+                } else if (type === 'manager') {
+                    renderTeamOpportunityManager(await teamOpportunityGet('/discovery/manager-needs'));
                 } else {
                     renderTeamOpportunityNeeds(await teamOpportunityGet('/club-needs'));
                 }
             } catch (error) {
                 if (status) status.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span>Hata</span>';
-                if (root) root.innerHTML = `<div class="empty">${type === 'events' ? 'Deneme ve idmanlar' : 'Kulup ihtiyaclari'} su an yuklenemedi.</div>`;
+                if (root) root.innerHTML = `<div class="empty">${type === 'events' ? 'Deneme ve idmanlar' : type === 'manager' ? 'Menajer ilanlari' : 'Kulup ihtiyaclari'} su an yuklenemedi.</div>`;
             }
         }
 
@@ -2521,11 +3017,45 @@
         }
 
         function openScoutReports() { window.location.href = 'scout-reports.html'; }
+        function openLiveMatches() { window.location.href = 'scout-live-matches.html'; }
+        function openTeamScoutHub(type = 'watchlist') {
+            const overlay = document.getElementById('teamScoutHubOverlay');
+            const watchlist = document.getElementById('teamScoutHubWatchlist');
+            const reports = document.getElementById('teamScoutHubReports');
+            const activeType = type === 'reports' ? 'reports' : 'watchlist';
+            document.querySelectorAll('[data-team-scout-tab]').forEach((tab) => {
+                tab.classList.toggle('active', tab.dataset.teamScoutTab === activeType);
+            });
+            if (watchlist) watchlist.hidden = activeType !== 'watchlist';
+            if (reports) reports.hidden = activeType !== 'reports';
+            overlay?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeTeamScoutHub() {
+            document.getElementById('teamScoutHubOverlay')?.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+        function openTeamScoutWatchlist() {
+            closeTeamScoutHub();
+            window.location.href = 'scout-watchlist.html';
+        }
+        function openTeamScoutReports() {
+            closeTeamScoutHub();
+            window.location.href = 'scout-reports.html';
+        }
         function openTeamProfile() { window.location.href = 'club-profile.html'; }
         function openTrialCenter() { window.location.href = 'trial-center.html?view=club'; }
         function openMessages() { window.location.href = 'notifications.html'; }
         function openSettings() { window.location.href = 'settings.html'; }
         function openHelp() { window.location.href = 'help.html'; }
+        function openTeamGroupsCard() {
+            document.getElementById('teamGroupsOverlay')?.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeTeamGroupsCard() {
+            document.getElementById('teamGroupsOverlay')?.classList.remove('active');
+            document.body.style.overflow = '';
+        }
 
         function toggleClubNeedsPanel(forceState) {
             const panel = document.getElementById('clubNeedsPanel');
@@ -3156,6 +3686,163 @@
             document.body.style.overflow = '';
         }
 
+        function openClubOperationsModal() {
+            closeAllTopPanels();
+            document.getElementById('clubOperationsOverlay')?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeClubOperationsModal() {
+            document.getElementById('clubOperationsOverlay')?.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function openTeamSuccessStoriesHub() {
+            document.getElementById('teamSuccessStoriesHubOverlay')?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTeamSuccessStoriesHub() {
+            document.getElementById('teamSuccessStoriesHubOverlay')?.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function openTeamSuccessStorySubmitModal() {
+            closeTeamSuccessStoriesHub();
+            const user = getStoredUser();
+            const input = document.getElementById('teamSuccessStoryFullName');
+            if (input && !input.value && user?.name) input.value = String(user.name);
+            document.getElementById('teamSuccessStorySubmitOverlay')?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTeamSuccessStorySubmitModal() {
+            document.getElementById('teamSuccessStorySubmitOverlay')?.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function openTeamSuccessStoriesReadModal() {
+            closeTeamSuccessStoriesHub();
+            document.getElementById('teamSuccessStoriesReadOverlay')?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            loadTeamSuccessStories();
+        }
+
+        function closeTeamSuccessStoriesReadModal() {
+            document.getElementById('teamSuccessStoriesReadOverlay')?.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        async function fetchTeamSuccessStories() {
+            const response = await fetch(`${getApiBaseUrl()}/success-stories?limit=8`, {
+                headers: { Accept: 'application/json' },
+                cache: 'no-store',
+                credentials: 'same-origin',
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok || payload?.ok === false) throw new Error(payload?.message || 'Basari hikayeleri alinamadi.');
+            return payload;
+        }
+
+        function renderTeamSuccessStories(payload) {
+            const root = document.getElementById('teamSuccessStoriesList');
+            const status = document.getElementById('teamSuccessStoriesStatus');
+            const rows = Array.isArray(payload?.data) ? payload.data.slice(0, 8) : [];
+            if (!root || !status) return;
+            if (!rows.length) {
+                status.textContent = 'Bos';
+                root.innerHTML = '<div class="empty">Basari hikayesi bulunmuyor.</div>';
+                return;
+            }
+            status.textContent = `${rows.length} kayit`;
+            root.innerHTML = rows.map((item) => `
+                <article class="point-item">
+                    <div class="row-top">
+                        <div>
+                            <div class="row-title">${escapeHtml(item.full_name || 'Basari Hikayesi')}</div>
+                            <div class="row-copy">${escapeHtml(item.story_text || 'Hikaye metni yok.')}</div>
+                        </div>
+                        <span class="badge approved">${escapeHtml(item.sport || '-')}</span>
+                    </div>
+                    <div class="row-meta">
+                        <span><i class="fas fa-building"></i> ${escapeHtml(item.old_club || '-')} -> ${escapeHtml(item.new_club || '-')}</span>
+                        <span><i class="fas fa-calendar"></i> ${formatDate(item.created_at)}</span>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        async function loadTeamSuccessStories() {
+            const root = document.getElementById('teamSuccessStoriesList');
+            const status = document.getElementById('teamSuccessStoriesStatus');
+            if (!root || !status) return;
+            status.textContent = 'Yukleniyor';
+            root.innerHTML = '<div class="empty">Basari hikayeleri yukleniyor...</div>';
+            try {
+                renderTeamSuccessStories(await fetchTeamSuccessStories());
+            } catch (error) {
+                status.textContent = 'Hata';
+                root.innerHTML = `<div class="empty">${escapeHtml(error.message || 'Basari hikayeleri yuklenemedi.')}</div>`;
+            }
+        }
+
+        async function submitTeamSuccessStory(event) {
+            event.preventDefault();
+            const form = event.currentTarget;
+            const notice = document.getElementById('teamSuccessStoryNotice');
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            if (!token) {
+                if (notice) {
+                    notice.className = 'tip-notice bad';
+                    notice.textContent = 'Hikaye gondermek icin giris yapman gerekiyor.';
+                }
+                return;
+            }
+
+            const formData = new FormData(form);
+            const payload = {
+                full_name: String(formData.get('full_name') || '').trim(),
+                sport: String(formData.get('sport') || '').trim(),
+                old_club: String(formData.get('old_club') || '').trim(),
+                new_club: String(formData.get('new_club') || '').trim(),
+                story_text: String(formData.get('story_text') || '').trim(),
+                image_url: String(formData.get('image_url') || '').trim(),
+            };
+
+            if (!payload.full_name || !payload.sport || !payload.new_club || !payload.story_text) {
+                if (notice) {
+                    notice.className = 'tip-notice bad';
+                    notice.textContent = 'Ad, spor, yeni kulup ve hikaye zorunlu.';
+                }
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/success-stories`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(payload),
+                });
+                const result = await response.json().catch(() => ({}));
+                if (!response.ok || !result?.ok) throw new Error(result?.message || 'Hikaye gonderilemedi.');
+                if (notice) {
+                    notice.className = 'tip-notice ok';
+                    notice.textContent = 'Hikayen alindi. Admin onayindan sonra yayinlanacak.';
+                }
+                form.reset();
+                closeTeamSuccessStorySubmitModal();
+            } catch (error) {
+                if (notice) {
+                    notice.className = 'tip-notice bad';
+                    notice.textContent = error?.message || 'Hikaye gonderilemedi.';
+                }
+            }
+        }
+
         function closeAllTopPanels() {
             ['clubNeedsPanel', 'clubPromoPanel', 'trialPublishPanel', 'playerRegisterPanel'].forEach((id) => {
                 const panel = document.getElementById(id);
@@ -3247,6 +3934,7 @@
             setInterval(loadTeamMarketPulse, 30000);
             window.NextScoutGrowth?.bindAutoTelemetry(document);
             document.getElementById('teamTalentTipForm')?.addEventListener('submit', submitTeamTalentTip);
+            document.getElementById('teamSuccessStoryForm')?.addEventListener('submit', submitTeamSuccessStory);
             let authUser = null;
             try { authUser = JSON.parse(localStorage.getItem('nextscout_user') || '{}'); } catch (error) { authUser = null; }
             const teamHeroUser = document.getElementById('teamHeroUser');

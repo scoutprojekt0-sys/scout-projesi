@@ -3,39 +3,510 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Canlı Maclar - NextScout</title>
-    <meta name="description" content="NextScout scout live matches sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
-    <meta name="robots" content="index,follow">
-    <link rel="canonical" href="https://nextscout.pro/scout-live-matches.html">
-    <meta property="og:type" content="website">
-    <meta property="og:locale" content="tr_TR">
-    <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="Canlı Maclar - NextScout">
-    <meta property="og:description" content="NextScout scout live matches sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
-    <meta property="og:url" content="https://nextscout.pro/scout-live-matches.html">
-    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Canlı Maclar - NextScout">
-    <meta name="twitter:description" content="NextScout scout live matches sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
-    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
-    <meta name="theme-color" content="#0B3B8A">
+  <title>Canli Mac Bildirimleri - NextScout</title>
+  <meta name="description" content="NextScout canli mac bildirimleri sayfasi: oyunculardan gelen mac bilgilerini tek akista gosterir.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://nextscout.pro/scout-live-matches.html">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:site_name" content="NextScout">
+  <meta property="og:title" content="Canli Mac Bildirimleri - NextScout">
+  <meta property="og:description" content="NextScout canli mac bildirimleri sayfasi: oyunculardan gelen mac bilgilerini tek akista gosterir.">
+  <meta property="og:url" content="https://nextscout.pro/scout-live-matches.html">
+  <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Canli Mac Bildirimleri - NextScout">
+  <meta name="twitter:description" content="NextScout canli mac bildirimleri sayfasi: oyunculardan gelen mac bilgilerini tek akista gosterir.">
+  <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
+  <meta name="theme-color" content="#08131d">
   <style>
-    body{font-family:Inter,Arial,sans-serif;background:#f8fafc;color:#1f2937;margin:0}
-    .wrap{max-width:900px;margin:0 auto;padding:24px}
-    .top{display:flex;justify-content:space-between;align-items:center}
-    a{color:#2563eb;text-decoration:none}
-    .card{background:#fff;border:1px solid #dbeafe;border-radius:10px;padding:14px;margin-top:12px}
-    .card.live{border-color:#93c5fd;background:#eff6ff}
-    .tag{display:inline-block;padding:4px 8px;border-radius:999px;background:#1d4ed8;color:#fff;font-size:11px;font-weight:700;margin-bottom:8px}
+    :root{
+      --bg:#08131d;
+      --bg-2:#0d1a27;
+      --panel:#0f1f2e;
+      --panel-2:#12293d;
+      --line:#2b4660;
+      --line-2:#385a79;
+      --text:#f5fbff;
+      --muted:#9bb5cb;
+      --accent:#60a5fa;
+      --accent-2:#8fd3ff;
+      --blue:#8fd3ff;
+      --blue-soft:rgba(96,165,250,.12);
+      --cta:#ff5a1f;
+      --cta-2:#ff7e22;
+      --danger:#ff5f57;
+      --shadow:0 28px 60px rgba(0,0,0,.34);
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Inter,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+        radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+        var(--bg);
+    }
+
+    a{color:inherit;text-decoration:none}
+
+    .page{
+      width:min(1180px, calc(100% - 32px));
+      margin:0 auto;
+      padding:28px 0 48px;
+    }
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border:1px solid var(--line);
+      border-radius:0;
+      box-shadow:0 18px 36px rgba(8, 19, 29, 0.34);
+      padding:28px;
+    }
+
+    .hero::before,
+    .stat::before,
+    .card::before,
+    .placeholder::before{
+      content:"";
+      position:absolute;
+      inset:0 0 auto 0;
+      height:4px;
+      background:linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+      pointer-events:none;
+    }
+
+    .hero::after{
+      position:absolute;
+      inset:-30% auto auto -10%;
+      width:280px;
+      height:280px;
+      background:radial-gradient(circle, rgba(26,63,99,.34), transparent 70%);
+      pointer-events:none;
+    }
+
+    .hero .hero-top::after{
+      content:"";
+      position:absolute;
+      inset:auto -6% -22% auto;
+      width:320px;
+      height:320px;
+      background:radial-gradient(circle, rgba(61,31,46,.28), transparent 68%);
+      pointer-events:none;
+    }
+
+    .hero-top{
+      position:relative;
+      z-index:1;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:18px;
+      flex-wrap:wrap;
+    }
+
+    .hero-copy{max-width:760px}
+
+    .hero-kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border:1px solid rgba(96,165,250,.2);
+      background:rgba(59,130,246,.12);
+      color:#dbeafe;
+      font-size:11px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      font-weight:800;
+    }
+
+    .hero h1{
+      margin:16px 0 10px;
+      font-size:clamp(30px, 4vw, 42px);
+      line-height:1.05;
+      letter-spacing:-.03em;
+    }
+
+    .hero p{
+      margin:0;
+      max-width:700px;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.7;
+    }
+
+    .hero-actions{
+      position:relative;
+      z-index:1;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:20px;
+    }
+
+    .hero-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:9px;
+      min-height:46px;
+      padding:0 18px;
+      border:1px solid transparent;
+      border-radius:0;
+      font-size:13px;
+      font-weight:800;
+      letter-spacing:.02em;
+      transition:transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .hero-btn:hover{transform:translateY(-1px)}
+
+    .hero-btn.primary{
+      background:linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
+      color:#fff;
+      box-shadow:0 16px 28px rgba(255,90,31,.28);
+    }
+
+    .hero-btn.secondary{
+      background:rgba(59,130,246,.12);
+      border-color:rgba(96,165,250,.22);
+      color:#dbeafe;
+    }
+
+    .hero-btn.ghost{
+      background:rgba(255,255,255,.04);
+      border-color:rgba(255,255,255,.1);
+      color:#f4f8fc;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:14px;
+      margin-top:18px;
+    }
+
+    .stat{
+      position:relative;
+      overflow:hidden;
+      background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border:1px solid var(--line);
+      padding:18px;
+      min-height:112px;
+      border-radius:0;
+      box-shadow:0 16px 30px rgba(8, 19, 29, 0.28);
+    }
+
+    .stat-label{
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      color:#9bb5cb;
+      font-weight:800;
+    }
+
+    .stat-value{
+      margin-top:14px;
+      font-size:34px;
+      font-weight:900;
+      line-height:1;
+      letter-spacing:-.04em;
+    }
+
+    .stat-note{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .shell{
+      margin-top:18px;
+      position:relative;
+      overflow:hidden;
+      background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border:1px solid var(--line);
+      border-radius:0;
+      box-shadow:0 16px 30px rgba(8, 19, 29, 0.28);
+      padding:22px;
+    }
+
+    .section-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:16px;
+      margin-bottom:18px;
+      flex-wrap:wrap;
+    }
+
+    .section-head h2{
+      margin:0;
+      font-size:22px;
+      letter-spacing:-.02em;
+    }
+
+    .section-head p{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.6;
+      max-width:640px;
+    }
+
+    .status-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:9px 12px;
+      border:1px solid rgba(255,126,34,.28);
+      background:rgba(255,126,34,.1);
+      color:#ffd3c3;
+      font-size:12px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+    }
+
+    .list{
+      display:grid;
+      gap:16px;
+    }
+
+    .card{
+      display:grid;
+      gap:18px;
+      position:relative;
+      overflow:hidden;
+      background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border:1px solid var(--line);
+      border-radius:0;
+      box-shadow:0 16px 30px rgba(8, 19, 29, 0.28);
+      padding:20px;
+    }
+
+    .card.live{
+      border-color:var(--line);
+      background:
+        linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+    }
+
+    .card-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 12px;
+      background:rgba(255,126,34,.12);
+      border:1px solid rgba(255,126,34,.24);
+      color:#ffe0cf;
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+    }
+
+    .title{
+      margin:10px 0 6px;
+      font-size:24px;
+      font-weight:900;
+      letter-spacing:-.03em;
+    }
+
+    .league{
+      color:#dbeafe;
+      font-size:13px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .score-box{
+      min-width:180px;
+      text-align:right;
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--line);
+      padding:14px 16px;
+      border-radius:0;
+    }
+
+    .score-label{
+      color:#9bb5cb;
+      font-size:11px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+    }
+
+    .score{
+      margin-top:10px;
+      font-size:32px;
+      font-weight:900;
+      letter-spacing:-.04em;
+      line-height:1;
+    }
+
+    .minute{
+      margin-top:8px;
+      color:#ffd5c4;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .meta-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border:1px solid rgba(96,165,250,.18);
+      background:rgba(59,130,246,.12);
+      color:#d7ecff;
+      font-size:13px;
+      line-height:1.35;
+      border-radius:0;
+    }
+
+    .note-box{
+      padding:14px 16px;
+      border-left:3px solid var(--cta);
+      background:rgba(255,255,255,.04);
+      color:#ffe2d5;
+      font-size:14px;
+      line-height:1.65;
+      border-radius:0;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .link-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      min-height:42px;
+      padding:0 16px;
+      border:1px solid rgba(96,165,250,.22);
+      background:rgba(59,130,246,.12);
+      color:#dbeafe;
+      font-size:13px;
+      font-weight:800;
+      border-radius:0;
+      transition:transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .link-btn:hover{
+      transform:translateY(-1px);
+      border-color:rgba(96,165,250,.32);
+      background:rgba(59,130,246,.18);
+    }
+
+    .link-btn.primary{
+      background:linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
+      border-color:transparent;
+      color:#fff;
+    }
+
+    .placeholder{
+      position:relative;
+      overflow:hidden;
+      padding:24px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.7;
+      border-radius:0;
+    }
+
+    @media (max-width: 860px){
+      .stats{grid-template-columns:1fr}
+      .score-box{min-width:100%;text-align:left}
+    }
+
+    @media (max-width: 640px){
+      .page{width:min(100% - 18px, 100%);padding:18px 0 32px}
+      .hero,.shell,.card,.stat{padding:16px}
+      .hero h1{font-size:28px}
+      .title{font-size:21px}
+      .score{font-size:28px}
+      .hero-top,.card-top,.section-head{gap:12px}
+      .hero-actions,.actions,.meta{gap:8px}
+      .hero-btn,.link-btn{width:100%}
+    }
   </style>
-    <link rel="stylesheet" href="assets/css/mobile-unified.css">
-    <link rel="stylesheet" href="assets/css/mobile-polish.css">
+  <link rel="stylesheet" href="assets/css/mobile-unified.css">
+  <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
 <body>
-  <div class="wrap">
-    <div class="top"><h1>Canlı Maclar</h1><a class="home-btn-global" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a></div>
-    <div id="list"></div>
+  <div class="page">
+    <section class="hero">
+      <div class="hero-top">
+        <div class="hero-copy">
+          <div class="hero-kicker">Oyuncu Bildirimleri</div>
+          <h1>Canli Mac Bildirimleri</h1>
+          <p>Bu ekranda sadece oyuncularin gectigi mac bildirimleri listelenir. Tarih, konum, yayin linki ve oyuncunun biraktigi kisa not ayni kartta gorunur.</p>
+        </div>
+        <div class="hero-actions">
+          <a class="hero-btn secondary" href="javascript:history.back()">Geri Don</a>
+          <a class="hero-btn ghost" href="index.html">Ana Sayfa</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div class="stat">
+        <div class="stat-label">Aktif Bildirim</div>
+        <div class="stat-value" id="liveMatchCount">0</div>
+        <div class="stat-note">Su anda oyunculardan gelen aktif mac bildirimleri.</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Yayin Linki Hazir</div>
+        <div class="stat-value" id="streamMatchCount">0</div>
+        <div class="stat-note">Yayin linki eklenmis oyuncu bildirimleri.</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Son Guncelleme</div>
+        <div class="stat-value" id="liveUpdatedAt">--</div>
+        <div class="stat-note">Liste her acilista API uzerinden yeniden yuklenir.</div>
+      </div>
+    </section>
+
+    <section class="shell">
+      <div class="section-head">
+        <div>
+          <h2>Oyuncu Bildirim Akisi</h2>
+          <p>Sadece oyuncularin actigi mac kayitlari burada listelenir. Scout veya sistem tarafli diger canli mac kayitlari bu akisa dahil edilmez.</p>
+        </div>
+        <div class="status-pill">Oyuncu Kayitlari</div>
+      </div>
+      <div class="list" id="list"></div>
+    </section>
   </div>
+
   <script>
   function getApiBaseUrl() {
     const query = new URLSearchParams(window.location.search);
@@ -83,110 +554,126 @@
     }
   }
 
-  function isUserAuthenticated() {
-    const token = (localStorage.getItem('nextscout_token') || '').trim();
-    const userRaw = (localStorage.getItem('nextscout_user') || '').trim();
-    return Boolean(token || userRaw);
-  }
-
-  function startBroadcast(event) {
-    if (event) event.preventDefault();
-    if (!isUserAuthenticated()) {
-      localStorage.setItem('nextscout_open_login', '1');
-      window.location.href = 'index.html';
-      return false;
-    }
-    window.location.href = 'scout-dashboard.html';
-    return false;
-  }
-
   function renderMatchCard(match) {
-    const title = match.title || `${match.home_team || ''} - ${match.away_team || ''}`.trim();
+    const title = match.title || `${match.home_team || ''} - ${match.away_team || ''}`.trim() || match.match_name || 'Mac';
     const teams = `${match.home_team || ''} - ${match.away_team || ''}`.trim();
     const score = `${match.home_score ?? '-'} : ${match.away_score ?? '-'}`;
-    const minute = match.minute ? ` | ${match.minute}'` : '';
-    const league = match.league ? `<div><strong>${esc(match.league)}</strong></div>` : '';
-    const sportAndLocation = (match.sport || match.location)
-      ? `<div>${match.sport ? `Spor: ${esc(match.sport)}` : ''}${match.sport && match.location ? ' | ' : ''}${match.location ? `Konum: ${esc(match.location)}` : ''}</div>`
-      : '';
-    const focus = match.focus ? `<div>Odak: ${esc(match.focus)}</div>` : '';
-    const note = match.note ? `<div>Not: ${esc(match.note)}</div>` : '';
-    const scout = match.scout_name ? `<div>Scout: ${esc(match.scout_name)}</div>` : '';
+    const minute = match.minute ? `${match.minute}'` : 'Takipte';
+    const sourceName = match.source_name || match.scout_name || '';
+    const league = match.league ? `<div class="league">${esc(match.league)}</div>` : '';
     const streamLinks = (match.stream_links && typeof match.stream_links === 'object') ? match.stream_links : {};
+    const chips = [];
+
+    if (teams) chips.push(`<span class="meta-chip">Takimlar: ${esc(teams)}</span>`);
+    if (match.location) chips.push(`<span class="meta-chip">Konum: ${esc(match.location)}</span>`);
+    if (match.sport) chips.push(`<span class="meta-chip">Spor: ${esc(match.sport)}</span>`);
+    if (match.focus) chips.push(`<span class="meta-chip">Odak: ${esc(match.focus)}</span>`);
+    if (sourceName) chips.push(`<span class="meta-chip">Oyuncu: ${esc(sourceName)}</span>`);
+    if (match.match_date) {
+      const formatted = new Date(match.match_date).toLocaleString('tr-TR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+      chips.push(`<span class="meta-chip">Tarih: ${esc(formatted)}</span>`);
+    }
+
     const platformOrder = [
       { key: 'youtube', label: 'YouTube' },
       { key: 'instagram', label: 'Instagram' },
       { key: 'facebook', label: 'Facebook' },
       { key: 'x', label: 'X' },
     ];
+
     const platformButtons = platformOrder
       .map((p) => ({ label: p.label, key: p.key, url: streamLinks[p.key] || '' }))
       .filter((p) => p.url)
       .map((p) => {
         if (isDemoStreamUrl(p.url)) {
-          return `<span style="display:inline-block;margin-right:8px;color:#64748b;">${esc(p.label)}: test link</span>`;
+          return `<span class="link-btn">${esc(p.label)} test link</span>`;
         }
         if (!isAllowedPlatformUrl(p.url, p.key)) {
-          return `<span style="display:inline-block;margin-right:8px;color:#64748b;">${esc(p.label)}: link hazir degil</span>`;
+          return `<span class="link-btn">${esc(p.label)} hazir degil</span>`;
         }
-        return `<a href="${esc(p.url)}" target="_blank" rel="noopener" style="display:inline-block;margin-right:8px;">${esc(p.label)} Ac</a>`;
+        return `<a class="link-btn" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.label)} Ac</a>`;
       })
       .join('');
+
     const fallbackStream = match.stream_url
       ? (isDemoStreamUrl(match.stream_url)
-          ? `<div>Yayın linki test adresi. Gercek yayın linki bekleniyor.</div>`
-          : `<div>Yayın linki platforma uygun degilse acilmaz.</div>`)
+          ? '<span class="link-btn">Test yayin linki</span>'
+          : '<span class="link-btn">Yayin linki kontrol edilmeli</span>')
       : '';
-    const stream = platformButtons ? `<div style="margin-top:6px;">${platformButtons}</div>` : fallbackStream;
-    const startBroadcastHtml = `<div style="margin-top:8px;"><a href="#" onclick="return startBroadcast(event)">Yayın Baslat</a></div>`;
+
+    const actions = (platformButtons || fallbackStream)
+      ? `<div class="actions">${platformButtons || fallbackStream}</div>`
+      : '';
+
+    const note = match.note ? `<div class="note-box">${esc(match.note)}</div>` : '';
 
     return `
-      <div class="card">
-        <div class="tag">CANLI</div>
-        <div><strong>${esc(title || 'Mac')}</strong></div>
-        ${league}
-        ${teams ? `<div>${esc(teams)}</div>` : ''}
-        <div><strong>${score}</strong>${minute}</div>
-        ${sportAndLocation}
-        ${focus}
+      <article class="card live">
+        <div class="card-top">
+          <div>
+            <div class="tag">Canli</div>
+            <div class="title">${esc(title)}</div>
+            ${league}
+          </div>
+          <div class="score-box">
+            <div class="score-label">Mac Durumu</div>
+            <div class="score">${score}</div>
+            <div class="minute">${esc(minute)}</div>
+          </div>
+        </div>
+        <div class="meta">${chips.join('')}</div>
         ${note}
-        ${scout}
-        ${stream}
-        ${startBroadcastHtml}
-      </div>
+        ${actions}
+      </article>
     `;
   }
 
   (async function() {
     const el = document.getElementById('list');
+    const liveMatchCount = document.getElementById('liveMatchCount');
+    const streamMatchCount = document.getElementById('streamMatchCount');
+    const liveUpdatedAt = document.getElementById('liveUpdatedAt');
     const apiBase = getApiBaseUrl();
+
     try {
       const res = await fetch(`${apiBase}/live-matches`, { headers: { Accept: 'application/json' } });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
       const data = await res.json();
       const matches = Array.isArray(data.matches) ? data.matches : [];
+      const playerMatches = matches.filter((match) => String(match?.source_role || '').toLowerCase() === 'player');
+      const validStreamCount = playerMatches.filter((match) => {
+        const links = (match.stream_links && typeof match.stream_links === 'object') ? Object.values(match.stream_links) : [];
+        const hasPlatformLink = links.some(Boolean);
+        return hasPlatformLink || Boolean(match.stream_url);
+      }).length;
 
-      if (!matches.length) {
-        el.innerHTML = '<div class="card">Su an canlı mac yok.</div>';
+      liveMatchCount.textContent = String(playerMatches.length);
+      streamMatchCount.textContent = String(validStreamCount);
+      liveUpdatedAt.textContent = new Date().toLocaleTimeString('tr-TR', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+
+      if (!playerMatches.length) {
+        el.innerHTML = '<div class="placeholder">Su anda goruntulenecek oyuncu mac bildirimi bulunmuyor. Yeni oyuncu kayitlari geldikce bu alan otomatik olarak dolar.</div>';
         return;
       }
 
-      el.innerHTML = matches.map(renderMatchCard).join('');
+      el.innerHTML = playerMatches.map(renderMatchCard).join('');
     } catch (e) {
-      el.innerHTML = '<div class="card">Veri alinamadi. Laravel server calisiyor mu kontrol edin.</div>';
+      el.innerHTML = '<div class="placeholder">Veri alinamadi. Laravel server veya API baglantisini kontrol edin.</div>';
+      liveUpdatedAt.textContent = '--';
     }
   })();
   </script>
-    <script src="assets/js/core-stability.js"></script>
-    <script src="assets/js/mobile-professional.js" defer></script>
+  <script src="assets/js/core-stability.js"></script>
+  <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-

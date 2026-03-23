@@ -28,6 +28,40 @@
         .btn-small.primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
         .btn-small.secondary { background: #f3f4f6; color: #667eea; border: 1px solid #e5e7eb; }
         .btn-small.light { background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; }
+        .need-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(2, 6, 23, 0.62); z-index: 1500; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
+        .need-modal-overlay.show { display: flex; }
+        .need-modal { width: min(860px, 100%); background: #232a33; border: 1px solid #334155; border-radius: 14px; overflow: hidden; box-shadow: 0 30px 60px rgba(2,6,23,.45); }
+        .live-modal { width: min(860px, 100%); }
+        .need-modal-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 16px 18px; border-bottom: 1px solid #334155; }
+        .need-modal-head h3 { font-size: 18px; font-weight: 800; color: #dbeafe; margin: 0; }
+        .need-modal-body { padding: 16px 18px; display: grid; gap: 10px; }
+        .need-modal-body input, .need-modal-body textarea, .need-modal-body select { width: 100%; padding: 10px; border: 1px solid #475569; border-radius: 8px; font-size: 14px; font-family: inherit; background:#1f2937; color:#f8fafc; }
+        .need-modal-body textarea { min-height: 120px; resize: vertical; }
+        .need-modal-body input:focus, .need-modal-body textarea:focus, .need-modal-body select:focus { outline: none; border-color: #60a5fa; box-shadow: 0 0 0 3px rgba(96,165,250,.16); }
+        .need-modal-actions { display: flex; justify-content: flex-end; gap: 10px; padding: 0 18px 18px; }
+        .live-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .quick-report-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
+        .quick-report-result { border: 1px solid #475569; border-radius: 8px; background: #1f2937; padding: 10px 12px; font-size: 12px; color: #dbeafe; }
+        #teamSuccessStoriesHubOverlay .btn-small,
+        #teamSuccessStorySubmitOverlay .btn-small,
+        #teamSuccessStoriesReadOverlay .btn-small { padding: 8px 14px; border: 1px solid transparent; border-radius: 999px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all .2s; display:inline-flex; align-items:center; gap:6px; }
+        #teamSuccessStoriesHubOverlay .btn-small.primary,
+        #teamSuccessStorySubmitOverlay .btn-small.primary,
+        #teamSuccessStoriesReadOverlay .btn-small.primary { background: linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%); color: #fff; border-color: transparent; }
+        #teamSuccessStoriesHubOverlay .btn-small.secondary,
+        #teamSuccessStorySubmitOverlay .btn-small.secondary,
+        #teamSuccessStoriesReadOverlay .btn-small.secondary { background: #2b3440; color: #e2e8f0; border-color: #475569; }
+        #teamSuccessStoriesHubOverlay .quick-report-result,
+        #teamSuccessStorySubmitOverlay .quick-report-result,
+        #teamSuccessStoriesReadOverlay .quick-report-result { border: 1px solid #475569; background: #1f2937; color: #dbeafe; }
+        #teamSuccessStoriesReadOverlay .point-item { border: 1px solid #334155; border-radius: 10px; padding: 14px; background: #1f2937; }
+        #teamSuccessStoriesReadOverlay .row-top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+        #teamSuccessStoriesReadOverlay .row-title { color: #f8fafc; font-size: 15px; font-weight: 700; }
+        #teamSuccessStoriesReadOverlay .row-copy { margin-top: 8px; color: #cbd5e1; font-size: 13px; line-height: 1.6; }
+        #teamSuccessStoriesReadOverlay .row-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; font-size: 12px; color: #9bb5cb; }
+        #teamSuccessStoriesReadOverlay .badge { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 800; }
+        #teamSuccessStoriesReadOverlay .badge.approved { background: rgba(59, 130, 246, 0.12); color: #dbeafe; border: 1px solid rgba(96, 165, 250, 0.24); }
+        #teamSuccessStoriesReadOverlay .empty { color: #9bb5cb; font-size: 12px; border: 1px dashed rgba(148,163,184,.18); border-radius: 12px; padding: 14px; }
         .needs-panel {
             position: fixed;
             right: 16px;
@@ -194,6 +228,12 @@
             .quick-stats { grid-template-columns: repeat(2, 1fr); }
             .transfer-summary-grid { grid-template-columns: 1fr 1fr; }
             .needs-panel { left: 12px; right: 12px; width: auto; }
+            .quick-report-grid { grid-template-columns: 1fr; }
+            .live-grid { grid-template-columns: 1fr; }
+            .need-modal-overlay { padding:10px; align-items:flex-end; }
+            .need-modal { width:100%; max-height:92vh; border-radius:14px 14px 0 0; display:grid; grid-template-rows:auto 1fr auto; }
+            .need-modal-body { overflow-y:auto; max-height:calc(92vh - 128px); }
+            .need-modal-actions { border-top:1px solid #374151; padding-top:10px; }
         }
     </style>
 </head>
@@ -206,6 +246,7 @@
             <button class="btn-small light" onclick="toggleClubNeedsPanel()">Kulup Ihtiyaclari</button>
             <button class="btn-small light" onclick="toggleClubPromoPanel()">Kulubunu Tanit</button>
             <button class="btn-small light" onclick="toggleTrialPublishPanel()">Deneme/Idman Ilani</button>
+            <button class="btn-small light" onclick="openTeamSuccessStoriesHub()">Basari Hikayesi</button>
             <button class="btn-small primary" onclick="window.location.href='index.html'">Ana Sayfa</button>
             <button class="btn-small secondary" onclick="logout()">Cikis</button>
         </div>
@@ -218,6 +259,7 @@
                 <ul class="sidebar-menu">
                     <li class="sidebar-item active" onclick="location.reload()"><span style="font-size:18px;min-width:20px;">🔍</span><span>Oyuncu Ara</span></li>
                     <li class="sidebar-item" onclick="openScoutReports()"><span style="font-size:18px;min-width:20px;">📊</span><span>Scout Raporlari</span></li>
+                    <li class="sidebar-item" onclick="openTeamSuccessStoriesHub()"><span style="font-size:18px;min-width:20px;">🏆</span><span>Basari Hikayesi</span></li>
                     <li class="sidebar-item" onclick="openTeamProfile()"><span style="font-size:18px;min-width:20px;">🏆</span><span>Kulup Profili</span></li>
                     <li class="sidebar-item" onclick="openTrialCenter()"><span style="font-size:18px;min-width:20px;">📅</span><span>Deneme & Idmanlar</span></li>
                     <li class="sidebar-item" onclick="openMessages()"><span style="font-size:18px;min-width:20px;">💬</span><span>Mesajlarim</span></li>
@@ -307,6 +349,76 @@
                 </div>
                 <div id="compareResult" class="compare-result-grid" style="display:none;"></div>
                 <div class="players-grid" id="playersGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="need-modal-overlay" id="teamSuccessStoriesHubOverlay" onclick="if(event.target.id==='teamSuccessStoriesHubOverlay'){closeTeamSuccessStoriesHub();}">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+            <div class="need-modal-head">
+                <h3>Basari Hikayeleri</h3>
+                <button class="btn-small secondary" type="button" onclick="closeTeamSuccessStoriesHub()">Kapat</button>
+            </div>
+            <div class="need-modal-body">
+                <div class="quick-report-result" style="margin-bottom:12px;">Basari hikayesi gonder veya topluluktaki hikayeleri oku.</div>
+                <div class="quick-report-grid" style="grid-template-columns:repeat(2,1fr); margin-bottom:0;">
+                    <button class="btn-small secondary" type="button" style="justify-content:flex-start; min-height:96px;" onclick="openTeamSuccessStorySubmitModal()">
+                        <span>Gonder</span>
+                    </button>
+                    <button class="btn-small secondary" type="button" style="justify-content:flex-start; min-height:96px;" onclick="openTeamSuccessStoriesReadModal()">
+                        <span>Oku</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="need-modal-overlay" id="teamSuccessStorySubmitOverlay" onclick="if(event.target.id==='teamSuccessStorySubmitOverlay'){closeTeamSuccessStorySubmitModal();}">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+            <div class="need-modal-head">
+                <h3>Basari Hikayesi Gonder</h3>
+                <button class="btn-small secondary" type="button" onclick="closeTeamSuccessStorySubmitModal()">Kapat</button>
+            </div>
+            <form id="teamSuccessStoryForm">
+                <div class="need-modal-body">
+                    <input id="teamSuccessStoryFullName" name="full_name" type="text" placeholder="Ad Soyad" maxlength="150" required>
+                    <div class="live-grid">
+                        <select id="teamSuccessStorySport" name="sport" required>
+                            <option value="">Spor Sec</option>
+                            <option value="Futbol">Futbol</option>
+                            <option value="Basketbol">Basketbol</option>
+                            <option value="Voleybol">Voleybol</option>
+                        </select>
+                        <input id="teamSuccessStoryOldClub" name="old_club" type="text" placeholder="Eski Kulup" maxlength="160">
+                    </div>
+                    <input id="teamSuccessStoryNewClub" name="new_club" type="text" placeholder="Yeni Kulup" maxlength="160" required>
+                    <textarea id="teamSuccessStoryText" name="story_text" placeholder="Basari hikayeni yaz..." maxlength="1200" required></textarea>
+                    <input id="teamSuccessStoryImage" name="image_url" type="url" maxlength="2048" placeholder="Gorsel linki (opsiyonel)">
+                    <div class="quick-report-result" id="teamSuccessStoryNotice">Yeni basari hikayesini dashboard icinden gonder.</div>
+                </div>
+                <div class="need-modal-actions">
+                    <button class="btn-small secondary" type="button" onclick="closeTeamSuccessStorySubmitModal()">Vazgec</button>
+                    <button class="btn-small primary" type="submit">Gonder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="need-modal-overlay" id="teamSuccessStoriesReadOverlay" onclick="if(event.target.id==='teamSuccessStoriesReadOverlay'){closeTeamSuccessStoriesReadModal();}">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+            <div class="need-modal-head">
+                <h3>Basari Hikayelerini Oku</h3>
+                <button class="btn-small secondary" type="button" onclick="closeTeamSuccessStoriesReadModal()">Kapat</button>
+            </div>
+            <div class="need-modal-body">
+                <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
+                    <button class="btn-small secondary" type="button" onclick="closeTeamSuccessStoriesReadModal(); openTeamSuccessStoriesHub()"><span>Geri</span></button>
+                    <button class="btn-small secondary" type="button" onclick="loadTeamSuccessStories()"><span>Yenile</span></button>
+                </div>
+                <div class="quick-report-result" id="teamSuccessStoriesStatus">Topluluktan gelen son basari hikayelerini burada oku.</div>
+                <div id="teamSuccessStoriesList" style="display:grid; gap:10px; margin-top:14px;">
+                    <div class="empty">Basari hikayeleri yukleniyor...</div>
+                </div>
             </div>
         </div>
     </div>
@@ -402,6 +514,21 @@
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#39;');
+        }
+
+        function formatDate(value) {
+            if (!value) return '-';
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return '-';
+            return date.toLocaleDateString('tr-TR');
+        }
+
+        function getStoredUser() {
+            try {
+                return JSON.parse(localStorage.getItem('nextscout_user') || '{}');
+            } catch (error) {
+                return null;
+            }
         }
 
         function parseAgeRange(value) {
@@ -910,6 +1037,140 @@
         function openSettings() { window.location.href = 'settings.html'; }
         function openHelp() { window.location.href = 'help.html'; }
 
+        function openTeamSuccessStoriesHub() {
+            document.getElementById('teamSuccessStoriesHubOverlay')?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTeamSuccessStoriesHub() {
+            document.getElementById('teamSuccessStoriesHubOverlay')?.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function openTeamSuccessStorySubmitModal() {
+            closeTeamSuccessStoriesHub();
+            const input = document.getElementById('teamSuccessStoryFullName');
+            const user = getStoredUser();
+            if (input && !input.value && user?.name) input.value = String(user.name);
+            document.getElementById('teamSuccessStorySubmitOverlay')?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTeamSuccessStorySubmitModal() {
+            document.getElementById('teamSuccessStorySubmitOverlay')?.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function openTeamSuccessStoriesReadModal() {
+            closeTeamSuccessStoriesHub();
+            document.getElementById('teamSuccessStoriesReadOverlay')?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            loadTeamSuccessStories();
+        }
+
+        function closeTeamSuccessStoriesReadModal() {
+            document.getElementById('teamSuccessStoriesReadOverlay')?.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        async function fetchTeamSuccessStories() {
+            const response = await fetch(`${getApiBaseUrl()}/success-stories?limit=8`, {
+                headers: { Accept: 'application/json' },
+                cache: 'no-store',
+                credentials: 'same-origin',
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok || payload?.ok === false) throw new Error(payload?.message || 'Basari hikayeleri alinamadi.');
+            return payload;
+        }
+
+        function renderTeamSuccessStories(payload) {
+            const root = document.getElementById('teamSuccessStoriesList');
+            const status = document.getElementById('teamSuccessStoriesStatus');
+            const rows = Array.isArray(payload?.data) ? payload.data.slice(0, 8) : [];
+            if (!root || !status) return;
+            if (!rows.length) {
+                status.textContent = 'Bos';
+                root.innerHTML = '<div class="empty">Basari hikayesi bulunmuyor.</div>';
+                return;
+            }
+            status.textContent = `${rows.length} kayit`;
+            root.innerHTML = rows.map((item) => `
+                <article class="point-item">
+                    <div class="row-top">
+                        <div>
+                            <div class="row-title">${escapeHtml(item.full_name || 'Basari Hikayesi')}</div>
+                            <div class="row-copy">${escapeHtml(item.story_text || 'Hikaye metni yok.')}</div>
+                        </div>
+                        <span class="badge approved">${escapeHtml(item.sport || '-')}</span>
+                    </div>
+                    <div class="row-meta">
+                        <span>${escapeHtml(item.old_club || '-')} -> ${escapeHtml(item.new_club || '-')}</span>
+                        <span>${formatDate(item.created_at)}</span>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        async function loadTeamSuccessStories() {
+            const root = document.getElementById('teamSuccessStoriesList');
+            const status = document.getElementById('teamSuccessStoriesStatus');
+            if (!root || !status) return;
+            status.textContent = 'Yukleniyor';
+            root.innerHTML = '<div class="empty">Basari hikayeleri yukleniyor...</div>';
+            try {
+                renderTeamSuccessStories(await fetchTeamSuccessStories());
+            } catch (error) {
+                status.textContent = 'Hata';
+                root.innerHTML = `<div class="empty">${escapeHtml(error?.message || 'Basari hikayeleri yuklenemedi.')}</div>`;
+            }
+        }
+
+        async function submitTeamSuccessStory(event) {
+            event.preventDefault();
+            const form = event.currentTarget;
+            const notice = document.getElementById('teamSuccessStoryNotice');
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            if (!token) {
+                if (notice) notice.textContent = 'Hikaye gondermek icin giris yapman gerekiyor.';
+                return;
+            }
+
+            const formData = new FormData(form);
+            const payload = {
+                full_name: String(formData.get('full_name') || '').trim(),
+                sport: String(formData.get('sport') || '').trim(),
+                old_club: String(formData.get('old_club') || '').trim(),
+                new_club: String(formData.get('new_club') || '').trim(),
+                story_text: String(formData.get('story_text') || '').trim(),
+                image_url: String(formData.get('image_url') || '').trim(),
+            };
+
+            if (!payload.full_name || !payload.sport || !payload.new_club || !payload.story_text) {
+                if (notice) notice.textContent = 'Ad, spor, yeni kulup ve hikaye zorunlu.';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/success-stories`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(payload),
+                });
+                const result = await response.json().catch(() => ({}));
+                if (!response.ok || !result?.ok) throw new Error(result?.message || 'Hikaye gonderilemedi.');
+                if (notice) notice.textContent = 'Hikayen alindi. Admin onayindan sonra yayinlanacak.';
+                form.reset();
+                closeTeamSuccessStorySubmitModal();
+            } catch (error) {
+                if (notice) notice.textContent = error?.message || 'Hikaye gonderilemedi.';
+            }
+        }
+
         function toggleClubNeedsPanel(forceState) {
             const panel = document.getElementById('clubNeedsPanel');
             if (!panel) return;
@@ -1191,6 +1452,7 @@
 
         async function init() {
             window.NextScoutGrowth?.bindAutoTelemetry(document);
+            document.getElementById('teamSuccessStoryForm')?.addEventListener('submit', submitTeamSuccessStory);
             const grid = document.getElementById('playersGrid');
             grid.innerHTML = '<div style="padding:18px;border:1px solid #e5e7eb;border-radius:10px;background:#f9fafb;color:#6b7280;">Oyuncular yukleniyor...</div>';
             try {

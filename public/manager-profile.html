@@ -137,10 +137,39 @@
     }
     .preview-k{font-size:10px;color:#94a3b8;text-transform:uppercase;font-weight:700;margin-bottom:4px}
     .preview-v{font-size:13px;color:#f8fafc;font-weight:700;word-break:break-word}
+    .review-shell{display:grid;gap:16px}
+    .review-list{display:grid;gap:14px}
+    .review-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .review-summary-card{padding:14px 15px;border-radius:0 !important;border:1px solid rgba(96,165,250,.14);background:linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%)}
+    .review-summary-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#9bb5cb;margin-bottom:8px}
+    .review-summary-value{font-size:26px;font-weight:900;color:#f8fbff}
+    .review-item{
+      position:relative;padding:18px;border-radius:0 !important;border:1px solid rgba(96,165,250,.14);
+      background:linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%);box-shadow:0 18px 32px rgba(2,6,23,.16)
+    }
+    .review-item::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:linear-gradient(180deg,#ff7e22 0%,#60a5fa 100%)}
+    .review-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}
+    .review-author{display:grid;gap:4px}
+    .review-author strong{font-size:15px;color:#f5fbff}
+    .review-author span,.review-empty,.review-meta{font-size:12px;color:var(--muted);line-height:1.6}
+    .review-tags{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 14px}
+    .review-pill{
+      display:inline-flex;align-items:center;min-height:28px;padding:0 11px;border-radius:0 !important;border:1px solid rgba(148,163,184,.16);
+      background:rgba(255,255,255,.06);color:#dbeafe;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase
+    }
+    .review-pill.sentiment-olumlu{color:#bbf7d0}
+    .review-pill.sentiment-notr{color:#bfdbfe}
+    .review-pill.sentiment-dikkat{color:#fde68a}
+    .review-body{color:#e2e8f0;font-size:14px;line-height:1.72}
+    .review-reply{
+      margin-top:12px;padding:14px 15px;border-radius:0 !important;background:linear-gradient(180deg, rgba(11,59,138,.18) 0%, rgba(15,23,42,.16) 100%);
+      border:1px solid rgba(96,165,250,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)
+    }
 
     @media (max-width:900px){
       .layout{grid-template-columns:1fr}
       .form-grid{grid-template-columns:1fr}
+      .review-summary-grid{grid-template-columns:1fr}
     }
     @media (max-width:768px){
       .wrap{padding:10px 10px 18px}
@@ -241,6 +270,17 @@
         <div class="row"><span class="muted">Ajans</span><strong id="sumAgency">-</strong></div>
         <div class="row"><span class="muted">Sehir</span><strong id="sumCity">-</strong></div>
         <div class="row"><span class="muted">�lke</span><strong id="sumCountry">-</strong></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px;">
+      <h2 class="section-title">Profil Yorumlari</h2>
+      <div class="review-shell">
+        <div class="review-summary-grid" id="managerReviewSummary">
+          <div class="review-summary-card"><div class="review-summary-label">Toplam</div><div class="review-summary-value">0</div></div>
+          <div class="review-summary-card"><div class="review-summary-label">Olumlu Oran</div><div class="review-summary-value">%0</div></div>
+          <div class="review-summary-card"><div class="review-summary-label">Guven Skoru</div><div class="review-summary-value">0/10</div></div>
+        </div>
+        <div class="review-list" id="managerReviewList"></div>
       </div>
     </div>
   </div>
@@ -413,6 +453,107 @@
       return res.ok;
     }
 
+    function esc(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function formatReviewDate(value) {
+      if (!value) return '-';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return String(value);
+      return date.toLocaleDateString('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function reviewLabelMap() {
+      return {
+        calisti: 'Birlikte calistik',
+        gorusuldu: 'Gorusme yapildi',
+        gozlendi: 'Surec izlendi',
+        diger: 'Diger',
+        olumlu: 'Olumlu',
+        notr: 'Notr',
+        dikkat: 'Dikkat',
+      };
+    }
+
+    function renderManagerProfileReviews(items) {
+      const root = document.getElementById('managerReviewList');
+      const summary = document.getElementById('managerReviewSummary');
+      if (!root) return;
+      const rows = Array.isArray(items) ? items : [];
+      if (summary) {
+        const total = rows.length;
+        const positive = rows.filter((row) => row?.sentiment === 'olumlu').length;
+        const positiveRate = total ? Math.round((positive / total) * 100) : 0;
+        const score = total ? Math.min(10, Math.max(1, ((positive * 10) + ((total - positive) * 5)) / (total * 10) * 10)).toFixed(1) : '0.0';
+        summary.innerHTML = `
+          <div class="review-summary-card"><div class="review-summary-label">Toplam</div><div class="review-summary-value">${total}</div></div>
+          <div class="review-summary-card"><div class="review-summary-label">Olumlu Oran</div><div class="review-summary-value">%${positiveRate}</div></div>
+          <div class="review-summary-card"><div class="review-summary-label">Guven Skoru</div><div class="review-summary-value">${score}/10</div></div>
+        `;
+      }
+      if (!rows.length) {
+        root.innerHTML = '<div class="review-empty">Bu menajer profili icin henuz yayinlanmis yorum yok.</div>';
+        return;
+      }
+
+      const labels = reviewLabelMap();
+      root.innerHTML = rows.map((review) => `
+        <article class="review-item">
+          <div class="review-head">
+            <div class="review-author">
+              <strong>${esc(review?.author_name || 'Kullanici')}</strong>
+              <span>${esc(review?.author_role || 'rol belirtilmedi')}</span>
+            </div>
+            <div class="review-meta">${esc(formatReviewDate(review?.created_at))}</div>
+          </div>
+          <div class="review-tags">
+            <span class="review-pill">${esc(labels[review?.relationship_type] || review?.relationship_type || '-')}</span>
+            <span class="review-pill sentiment-${esc(review?.sentiment || 'notr')}">${esc(labels[review?.sentiment] || review?.sentiment || '-')}</span>
+          </div>
+          <div class="review-body">${esc(review?.body || '')}</div>
+          ${review?.reply?.body ? `
+            <div class="review-reply">
+              <div class="review-meta">${esc(review?.reply?.author_name || 'Profil sahibi')} yaniti</div>
+              <div class="review-body">${esc(review.reply.body)}</div>
+            </div>
+          ` : ''}
+        </article>
+      `).join('');
+    }
+
+    async function loadManagerProfileReviews() {
+      const root = document.getElementById('managerReviewList');
+      if (!root) return;
+      const params = new URLSearchParams(window.location.search);
+      let targetId = Number(params.get('user_id') || params.get('id') || 0);
+      if (!targetId) targetId = await resolveCurrentUserId();
+      if (!targetId) return;
+
+      root.innerHTML = '<div class="review-empty">Yorumlar yukleniyor...</div>';
+      try {
+        const res = await fetch(`${getApiBaseUrl()}/profiles/${encodeURIComponent(targetId)}/reviews`, {
+          headers: { 'Accept': 'application/json' },
+        });
+        const data = await res.json().catch(() => null);
+        const items = Array.isArray(data?.data?.data)
+          ? data.data.data
+          : Array.isArray(data?.data?.items)
+          ? data.data.items
+          : Array.isArray(data?.data)
+          ? data.data
+          : [];
+        renderManagerProfileReviews(items);
+      } catch (error) {
+        root.innerHTML = '<div class="review-empty">Yorumlar su an alinamiyor.</div>';
+      }
+    }
+
     let profile = defaults();
 
     function applyTurkishTextFixes() {
@@ -468,6 +609,7 @@
       setForm(profile);
       renderSummary(profile);
       applyTurkishTextFixes();
+      await loadManagerProfileReviews();
     }
 
     document.getElementById('managerForm')?.addEventListener('submit', async function(e){
@@ -529,8 +671,4 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
 

@@ -356,6 +356,32 @@
     .hero-title { margin: 0; max-width: 720px; font: 800 clamp(2rem, 3vw, 3rem)/1.02 Inter, sans-serif; letter-spacing: -0.03em; color: var(--ink); }
     .hero-sub { margin: 14px 0 0; max-width: 740px; color: var(--muted); font-size: 14px; line-height: 1.7; }
     .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .hero-actions .btn-small {
+      min-height: 44px;
+      padding: 10px 14px;
+      border-radius: 0;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      justify-content: center;
+    }
+    .hero-actions .btn-small i {
+      width: 16px;
+      text-align: center;
+      font-size: 13px;
+    }
+    .hero-actions .btn-small.primary {
+      background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
+      border-color: rgba(255, 126, 34, 0.6);
+      color: #fff;
+      box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28);
+    }
+    .hero-actions .btn-small.secondary {
+      background: rgba(59, 130, 246, 0.12);
+      color: #dbeafe;
+      border-color: rgba(96, 165, 250, 0.24);
+      box-shadow: none;
+    }
     .hero-points { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
     .pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; font-size: 12px; font-weight: 800; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--line); color: #dbeafe; }
     .hero-side {
@@ -476,6 +502,25 @@
       color: #fff;
       box-shadow: 0 14px 24px rgba(255, 90, 31, 0.22);
     }
+    .opportunity-launcher-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .opportunity-launcher-card {
+      display: grid;
+      gap: 10px;
+      text-align: left;
+      padding: 16px;
+      border: 1px solid rgba(148,163,184,.18);
+      background: rgba(255,255,255,.04);
+      color: #dbeafe;
+      cursor: pointer;
+      border-radius: 14px;
+    }
+    .opportunity-launcher-card strong { font-size: 15px; color: #f8fafc; }
+    .opportunity-launcher-card span { font-size: 12px; line-height: 1.6; color: #9bb5cb; }
+    .opportunity-launcher-card i { font-size: 16px; color: #7dd3fc; }
 
     .player-card {
       background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
@@ -517,6 +562,25 @@
     .need-modal-overlay {
       background: rgba(2, 6, 23, 0.78);
       backdrop-filter: blur(10px);
+    }
+
+    #coachMarketPulseModal {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 2200;
+    }
+
+    #coachMarketPulseModal.show {
+      display: flex;
+    }
+
+    #coachMarketPulseCard {
+      width: min(980px, 100%);
+      max-height: 88vh;
+      overflow: auto;
+      position: relative;
     }
 
     .need-modal-head {
@@ -597,9 +661,11 @@
         <ul class="sidebar-menu">
           <li class="sidebar-item active" onclick="openPlayerSearchModal()"><i class="fas fa-magnifying-glass"></i><span>Oyuncu Ara</span></li>
           <li class="sidebar-item" onclick="window.location.href='ai-discovery.html'"><i class="fas fa-flask"></i><span>AI Discovery</span></li>
+          <li class="sidebar-item" onclick="window.location.href='review-center.html'"><i class="fas fa-comments"></i><span>Yorumlar</span></li>
           <li class="sidebar-item" onclick="openScoutProfile()"><i class="fas fa-user"></i><span>Antrenor Profili</span></li>
           <li class="sidebar-item" onclick="openCoachWorkspace('reviews')"><i class="fas fa-comments"></i><span>Profil Yorumları</span></li>
-          <li class="sidebar-item" onclick="openCoachSuccessStoryModal()"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></li>
+          <li class="sidebar-item" onclick="openCoachSuccessStoriesHub()"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></li>
+          <li class="sidebar-item" onclick="openLiveMatches()"><i class="fas fa-tower-broadcast"></i><span>Canli Mac Bildirimleri</span></li>
           <li class="sidebar-item" onclick="window.location.href='live-watch-demand.html'"><i class="fas fa-location-crosshairs"></i><span>Canlı İzleme Talebi</span></li>
         <li class="sidebar-item" onclick="openPerformance()"><i class="fas fa-chart-line"></i><span>Istatistikler</span></li>
         <li class="sidebar-item" onclick="openScoutReports()"><i class="fas fa-file-lines"></i><span>Scout Raporları</span></li>
@@ -623,6 +689,7 @@
             <button class="btn-small primary" type="button" onclick="openCoachTalentModal()"><i class="fas fa-video"></i><span>Yetenek Bildir</span></button>
             <button class="btn-small secondary" type="button" onclick="openCoachOpportunityArea('needs')"><i class="fas fa-calendar-check"></i><span>Antranör Firsat Alani</span></button>
             <button class="btn-small secondary" type="button" onclick="openCoachMarketPulse()"><i class="fas fa-chart-line"></i><span>Market Pulse</span></button>
+            <button class="btn-small secondary" type="button" onclick="openLiveMatches()"><i class="fas fa-tower-broadcast"></i><span>Canli Mac Bildirimleri</span></button>
             <button class="btn-small secondary" type="button" onclick="openCoachWorkspace('notes')"><i class="fas fa-briefcase"></i><span>Antrenör Çalışma Alanı</span></button>
             <button class="btn-small secondary" type="button" onclick="openCoachReportsHub('watchlist')"><i class="fas fa-bookmark"></i><span>Scout Watchlist & Raporlar</span></button>
           </div>
@@ -751,6 +818,7 @@
         </div>
         </div>
       </section>
+      </div>
 
       <div class="need-modal-overlay" id="coachMarketPulseModal" onclick="if(event.target.id==='coachMarketPulseModal'){closeCoachMarketPulse();}">
       <section class="need-modal live-modal" id="coachMarketPulseCard" onclick="event.stopPropagation()">
@@ -776,7 +844,6 @@
         </div>
       </section>
       </div>
-      </div>
       <div class="need-modal-overlay" id="coachOpportunityModal" onclick="if(event.target.id==='coachOpportunityModal'){closeCoachOpportunityArea();}">
       <section class="need-modal live-modal" id="coachOpportunityCard" onclick="event.stopPropagation()">
         <div class="tips-flyout-card">
@@ -791,15 +858,20 @@
             <button class="market-pulse-close tips-flyout-close" type="button" onclick="closeCoachOpportunityArea()"><i class="fas fa-times"></i></button>
           </div>
         </div>
-        <div class="workspace-tabs" style="margin-bottom:14px;">
-          <button class="workspace-tab active" type="button" data-coach-opportunity-tab="needs" onclick="openCoachOpportunityArea('needs')">Kulup Ihtiyaclari</button>
-          <button class="workspace-tab" type="button" data-coach-opportunity-tab="events" onclick="openCoachOpportunityArea('events')">Deneme ve Idmanlar</button>
+        <div class="opportunity-launcher-grid" id="coachOpportunityLauncher">
+          <button class="opportunity-launcher-card" type="button" onclick="openCoachOpportunityArea('needs')"><i class="fas fa-bullseye"></i><strong>Kulup Ihtiyaclari</strong><span>Acik kulup arayislarini tek karttan gor.</span></button>
+          <button class="opportunity-launcher-card" type="button" onclick="openCoachOpportunityArea('events')"><i class="fas fa-calendar-check"></i><strong>Deneme ve Idmanlar</strong><span>Deneme ve idman duyurularini kart olarak ac.</span></button>
+          <button class="opportunity-launcher-card" type="button" onclick="openCoachOpportunityArea('manager')"><i class="fas fa-briefcase"></i><strong>Menajer Ilanlari</strong><span>Menajerlerin acik oyuncu arayislarini gor.</span></button>
         </div>
+        <div id="coachOpportunityDetail" hidden>
         <div class="form-actions" style="margin-bottom:14px;">
+          <button class="btn-small secondary" type="button" onclick="openCoachOpportunityArea()"><i class="fas fa-arrow-left"></i><span>Geri</span></button>
           <button class="btn-small secondary" type="button" id="coachOpportunityRefreshBtn" onclick="loadCoachOpportunityArea('needs')"><i class="fas fa-arrows-rotate"></i><span>Yenile</span></button>
         </div>
         <div class="market-pulse-list" id="coachOpportunityNeedsList"><div class="empty">Kulup ihtiyaclari yukleniyor...</div></div>
         <div class="market-pulse-list" id="coachOpportunityEventsList" hidden><div class="empty">Deneme ve idmanlar yukleniyor...</div></div>
+        <div class="market-pulse-list" id="coachOpportunityManagerList" hidden><div class="empty">Menajer ilanlari yukleniyor...</div></div>
+        </div>
         </div>
       </section>
       </div>
@@ -904,6 +976,26 @@
     </div>
   </div>
 
+  <div class="need-modal-overlay" id="coachSuccessStoriesHubModal" onclick="if(event.target.id==='coachSuccessStoriesHubModal'){closeCoachSuccessStoriesHub();}">
+    <div class="need-modal live-modal" onclick="event.stopPropagation()">
+      <div class="need-modal-head">
+        <h3>Basari Hikayeleri</h3>
+        <button class="btn-small secondary" type="button" onclick="closeCoachSuccessStoriesHub()">Kapat</button>
+      </div>
+      <div class="need-modal-body">
+        <div class="quick-report-result" style="margin-bottom:12px;">Basari hikayesi gonder veya topluluktaki hikayeleri oku.</div>
+        <div class="quick-report-grid" style="grid-template-columns:repeat(2,1fr); margin-bottom:0;">
+          <button class="btn-small secondary" type="button" style="justify-content:flex-start; min-height:96px;" onclick="openCoachSuccessStoryModal()">
+            <i class="fas fa-paper-plane"></i><span>Gonder</span>
+          </button>
+          <button class="btn-small secondary" type="button" style="justify-content:flex-start; min-height:96px;" onclick="openCoachSuccessStoriesReadModal()">
+            <i class="fas fa-book-open"></i><span>Oku</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="need-modal-overlay" id="coachSuccessStoryModal" onclick="if(event.target.id==='coachSuccessStoryModal'){closeCoachSuccessStoryModal();}">
     <div class="need-modal live-modal" onclick="event.stopPropagation()">
       <div class="need-modal-head">
@@ -925,13 +1017,32 @@
           <input type="text" name="new_club" placeholder="Yeni Kulup" maxlength="160" required>
           <textarea name="story_text" placeholder="Basari hikayeni yaz..." required maxlength="1200"></textarea>
           <input type="url" name="image_url" placeholder="Gorsel linki (opsiyonel)">
-          <div class="quick-report-result" id="coachSuccessStoryResult">Hikayen admin onayindan sonra yayinlanir.</div>
+          <div class="quick-report-result" id="coachSuccessStoryResult">Yeni basari hikayesini dashboard icinden gonder.</div>
         </div>
         <div class="need-modal-actions">
           <button class="btn-small secondary" type="button" onclick="closeCoachSuccessStoryModal()">Vazgec</button>
           <button class="btn-small primary" type="submit">Gonder</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <div class="need-modal-overlay" id="coachSuccessStoriesReadModal" onclick="if(event.target.id==='coachSuccessStoriesReadModal'){closeCoachSuccessStoriesReadModal();}">
+    <div class="need-modal live-modal" onclick="event.stopPropagation()">
+      <div class="need-modal-head">
+        <h3>Basari Hikayelerini Oku</h3>
+        <button class="btn-small secondary" type="button" onclick="closeCoachSuccessStoriesReadModal()">Kapat</button>
+      </div>
+      <div class="need-modal-body">
+        <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
+          <button class="btn-small secondary" type="button" onclick="closeCoachSuccessStoriesReadModal(); openCoachSuccessStoriesHub()"><i class="fas fa-arrow-left"></i><span>Geri</span></button>
+          <button class="btn-small secondary" type="button" onclick="loadCoachSuccessStories()"><i class="fas fa-arrows-rotate"></i><span>Yenile</span></button>
+        </div>
+        <div class="quick-report-result" id="coachSuccessStoriesStatus">Topluluktan gelen son basari hikayelerini burada oku.</div>
+        <div id="coachSuccessStoriesList" style="display:grid; gap:10px; margin-top:14px;">
+          <div class="empty">Basari hikayeleri yukleniyor...</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1115,7 +1226,18 @@
       document.body.style.overflow = '';
     }
 
+    function openCoachSuccessStoriesHub() {
+      document.getElementById('coachSuccessStoriesHubModal')?.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCoachSuccessStoriesHub() {
+      document.getElementById('coachSuccessStoriesHubModal')?.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
     function openCoachSuccessStoryModal() {
+      closeCoachSuccessStoriesHub();
       const modal = document.getElementById('coachSuccessStoryModal');
       if (!modal) return;
       try {
@@ -1131,6 +1253,71 @@
     function closeCoachSuccessStoryModal() {
       document.getElementById('coachSuccessStoryModal')?.classList.remove('show');
       document.body.style.overflow = '';
+    }
+
+    function openCoachSuccessStoriesReadModal() {
+      closeCoachSuccessStoriesHub();
+      document.getElementById('coachSuccessStoriesReadModal')?.classList.add('show');
+      document.body.style.overflow = 'hidden';
+      loadCoachSuccessStories();
+    }
+
+    function closeCoachSuccessStoriesReadModal() {
+      document.getElementById('coachSuccessStoriesReadModal')?.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    async function fetchCoachSuccessStories() {
+      const response = await fetch(`${getApiBaseUrl()}/success-stories?limit=8`, {
+        headers: { Accept: 'application/json' },
+        cache: 'no-store',
+        credentials: 'same-origin',
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || payload?.ok === false) throw new Error(payload?.message || 'Basari hikayeleri alinamadi.');
+      return payload;
+    }
+
+    function renderCoachSuccessStories(payload) {
+      const root = document.getElementById('coachSuccessStoriesList');
+      const status = document.getElementById('coachSuccessStoriesStatus');
+      const rows = Array.isArray(payload?.data) ? payload.data.slice(0, 8) : [];
+      if (!root || !status) return;
+      if (!rows.length) {
+        status.textContent = 'Bos';
+        root.innerHTML = '<div class="empty">Basari hikayesi bulunmuyor.</div>';
+        return;
+      }
+      status.textContent = `${rows.length} kayit`;
+      root.innerHTML = rows.map((item) => `
+        <article class="point-item">
+          <div class="row-top">
+            <div>
+              <div class="row-title">${escapeHtml(item.full_name || 'Basari Hikayesi')}</div>
+              <div class="row-copy">${escapeHtml(item.story_text || 'Hikaye metni yok.')}</div>
+            </div>
+            <span class="badge approved">${escapeHtml(item.sport || '-')}</span>
+          </div>
+          <div class="row-meta">
+            <span><i class="fas fa-building"></i> ${escapeHtml(item.old_club || '-')} -> ${escapeHtml(item.new_club || '-')}</span>
+            <span><i class="fas fa-calendar"></i> ${formatDate(item.created_at)}</span>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    async function loadCoachSuccessStories() {
+      const root = document.getElementById('coachSuccessStoriesList');
+      const status = document.getElementById('coachSuccessStoriesStatus');
+      if (!root || !status) return;
+      status.textContent = 'Yukleniyor';
+      root.innerHTML = '<div class="empty">Basari hikayeleri yukleniyor...</div>';
+      try {
+        renderCoachSuccessStories(await fetchCoachSuccessStories());
+      } catch (error) {
+        status.textContent = 'Hata';
+        root.innerHTML = `<div class="empty">${escapeHtml(error.message || 'Basari hikayeleri yuklenemedi.')}</div>`;
+      }
     }
 
     async function submitCoachSuccessStoryForm(event) {
@@ -1240,21 +1427,27 @@
       document.body.style.overflow = '';
     }
 
-    let activeCoachOpportunityTab = 'needs';
+    let activeCoachOpportunityTab = 'hub';
 
-    function openCoachOpportunityArea(type = 'needs') {
+    function openCoachOpportunityArea(type = 'hub') {
       const card = document.getElementById('coachOpportunityCard');
       const modal = document.getElementById('coachOpportunityModal');
       const title = document.getElementById('coachOpportunityTitle');
       const summary = document.getElementById('coachOpportunitySummary');
       const status = document.getElementById('coachOpportunityStatus');
+      const launcher = document.getElementById('coachOpportunityLauncher');
+      const detail = document.getElementById('coachOpportunityDetail');
       const refresh = document.getElementById('coachOpportunityRefreshBtn');
       const needs = document.getElementById('coachOpportunityNeedsList');
       const events = document.getElementById('coachOpportunityEventsList');
-      const tabs = Array.from(document.querySelectorAll('[data-coach-opportunity-tab]'));
-      if (!card || !modal || !title || !summary || !status || !refresh || !needs || !events) return;
+      const manager = document.getElementById('coachOpportunityManagerList');
+      if (!card || !modal || !title || !summary || !status || !launcher || !detail || !refresh || !needs || !events || !manager) return;
 
       const map = {
+        hub: {
+          title: 'AntranÃ¶r Firsat Alani',
+          summary: 'Ihtiyac, deneme ve menajer ilanlarini kart secerek ac.'
+        },
         needs: {
           title: 'Antranör Firsat Alani',
           summary: 'Acik kulup arayislarini antrenor ekranindan hizlica tara.'
@@ -1262,20 +1455,40 @@
         events: {
           title: 'Deneme ve Idmanlar',
           summary: 'Acik deneme ve idman duyurularini tek panelden izle.'
+        },
+        manager: {
+          title: 'Menajer Ilanlari',
+          summary: 'Menajerlerin acik oyuncu arayislarini tek panelden tara.'
         }
       };
 
-      activeCoachOpportunityTab = map[type] ? type : 'needs';
+      if (!modal.classList.contains('show') && type === 'needs') type = 'hub';
+
+      activeCoachOpportunityTab = map[type] ? type : 'hub';
       const selected = map[activeCoachOpportunityTab];
       title.textContent = selected.title;
       summary.textContent = selected.summary;
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+
+      if (activeCoachOpportunityTab === 'hub') {
+        status.hidden = true;
+        launcher.hidden = false;
+        detail.hidden = true;
+        needs.hidden = true;
+        events.hidden = true;
+        manager.hidden = true;
+        return;
+      }
+
+      status.hidden = false;
       status.innerHTML = '<i class="fas fa-signal"></i><span>Hazirlaniyor</span>';
+      launcher.hidden = true;
+      detail.hidden = false;
       refresh.setAttribute('onclick', `loadCoachOpportunityArea('${activeCoachOpportunityTab}')`);
       needs.hidden = activeCoachOpportunityTab !== 'needs';
       events.hidden = activeCoachOpportunityTab !== 'events';
-      tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.coachOpportunityTab === activeCoachOpportunityTab));
-      modal.classList.add('show');
-      document.body.style.overflow = 'hidden';
+      manager.hidden = activeCoachOpportunityTab !== 'manager';
       loadCoachOpportunityArea(activeCoachOpportunityTab);
     }
 
@@ -1352,20 +1565,53 @@
       if (status) status.innerHTML = `<i class="fas fa-calendar"></i><span>${rows.slice(0, 8).length} kayit</span>`;
     }
 
+    function renderCoachOpportunityManager(rows) {
+      const root = document.getElementById('coachOpportunityManagerList');
+      const status = document.getElementById('coachOpportunityStatus');
+      if (!root || activeCoachOpportunityTab !== 'manager') return;
+      if (!Array.isArray(rows) || !rows.length) {
+        root.innerHTML = '<div class="empty">Acik menajer ilani yok.</div>';
+        if (status) status.innerHTML = '<i class="fas fa-briefcase"></i><span>Bos</span>';
+        return;
+      }
+      root.innerHTML = rows.slice(0, 8).map((item) => `
+        <article class="point-item">
+          <div class="row-top">
+            <div>
+              <div class="row-title">${escapeHtml(item.title || item.position || 'Menajer ilani')}</div>
+              <div class="row-copy">${escapeHtml(item.city || 'Sehir yok')} Â· ${escapeHtml(item.status || 'open')}</div>
+            </div>
+            <span class="badge approved">${escapeHtml(item.position || '-')}</span>
+          </div>
+          <div class="row-meta">
+            <span><i class="fas fa-user-clock"></i> ${escapeHtml(item.age_min ?? '-')} - ${escapeHtml(item.age_max ?? '-')}</span>
+            <span><i class="fas fa-calendar"></i> ${formatDate(item.created_at)}</span>
+          </div>
+        </article>
+      `).join('');
+      if (status) status.innerHTML = `<i class="fas fa-briefcase"></i><span>${rows.slice(0, 8).length} kayit</span>`;
+    }
+
     async function loadCoachOpportunityArea(type = 'needs') {
       const status = document.getElementById('coachOpportunityStatus');
-      const root = document.getElementById(type === 'events' ? 'coachOpportunityEventsList' : 'coachOpportunityNeedsList');
+      const root = document.getElementById(type === 'events'
+        ? 'coachOpportunityEventsList'
+        : type === 'manager'
+          ? 'coachOpportunityManagerList'
+          : 'coachOpportunityNeedsList');
       if (status) status.innerHTML = '<i class="fas fa-signal"></i><span>Senkron</span>';
       if (root) root.innerHTML = '<div class="empty">Yukleniyor...</div>';
       try {
         if (type === 'events') {
           renderCoachOpportunityEvents(await coachOpportunityGet('/community-events'));
+        } else if (type === 'manager') {
+          renderCoachOpportunityManager(await coachOpportunityGet('/discovery/manager-needs'));
         } else {
           renderCoachOpportunityNeeds(await coachOpportunityGet('/club-needs'));
         }
       } catch (error) {
         if (status) status.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span>Hata</span>';
-        if (root) root.innerHTML = `<div class="empty">${type === 'events' ? 'Deneme ve idmanlar' : 'Kulup ihtiyaclari'} su an yuklenemedi.</div>`;
+        if (root) root.innerHTML = `<div class="empty">${type === 'events' ? 'Deneme ve idmanlar' : type === 'manager' ? 'Menajer ilanlari' : 'Kulup ihtiyaclari'} su an yuklenemedi.</div>`;
       }
     }
 
@@ -1886,6 +2132,7 @@
       document.body.style.overflow = '';
     }
 
+    function openLiveMatches() { window.location.href = 'scout-live-matches.html'; }
     function openTrialCenter() { window.location.href = 'trial-center.html?view=coach'; }
     function openScoutProfile() { window.location.href = 'coach-profile.html'; }
     function openPerformance() { window.location.href = 'statistics.html'; }

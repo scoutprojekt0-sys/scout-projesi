@@ -235,6 +235,10 @@
       border: 1px solid rgba(96,165,250,.2);
       box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
     }
+    #coachReviewFormCard,
+    #coachReviewGate {
+      display: none !important;
+    }
     .notes-shell { display:grid; gap:16px; }
     .notes-form {
       display:grid;
@@ -433,6 +437,18 @@
         <div class="row"><span class="muted">BranÅŸ</span><strong id="sumBranch">-</strong></div>
         <div class="row"><span class="muted">Ãœlke</span><strong id="sumCountry">-</strong></div>
         <div class="row"><span class="muted">Åehir</span><strong id="sumCity">-</strong></div>
+      </div>
+    </div>
+
+    <div class="card" id="coachReviewsCard">
+      <h2 class="section-title">Profil Yorumlari</h2>
+      <div class="review-shell">
+        <div class="review-summary-grid" id="coachReviewSummary">
+          <div class="review-summary-card"><div class="review-summary-label">Toplam</div><div class="review-summary-value">0</div></div>
+          <div class="review-summary-card"><div class="review-summary-label">Olumlu Oran</div><div class="review-summary-value">%0</div></div>
+          <div class="review-summary-card"><div class="review-summary-label">Guven Skoru</div><div class="review-summary-value">0/10</div></div>
+        </div>
+        <div class="review-list" id="coachReviewList"></div>
       </div>
     </div>
 

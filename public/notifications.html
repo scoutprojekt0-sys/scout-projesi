@@ -406,6 +406,88 @@
       font-size: 13px;
     }
 
+    .compose-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(2, 6, 23, 0.62);
+      z-index: 1700;
+      padding: 16px;
+      backdrop-filter: blur(4px);
+    }
+
+    .compose-modal.show { display: flex; }
+
+    .compose-card {
+      width: min(760px, 100%);
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .compose-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
+    }
+
+    .compose-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .compose-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800;
+      color: #dbeafe;
+    }
+
+    .compose-body {
+      padding: 16px 18px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .compose-grid {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 10px;
+    }
+
+    .compose-body textarea {
+      min-height: 160px;
+      resize: vertical;
+    }
+
+    .compose-note {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .compose-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 0 18px 18px;
+      flex-wrap: wrap;
+    }
+
     @media (max-width: 960px) {
       .layout { grid-template-columns: 1fr; }
       .detail { min-height: 45vh; }
@@ -436,6 +518,8 @@
       .detail-body { padding: 12px; font-size: 13px; }
       .detail-actions { padding: 12px; }
       .detail-actions .btn { width: 100%; }
+      .compose-grid { grid-template-columns: 1fr; }
+      .compose-actions .btn { width: 100%; }
     }
   </style>
     <link rel="stylesheet" href="assets/css/mobile-unified.css">
@@ -461,6 +545,7 @@
         <div class="quick-pill"><span>Okundu</span><strong id="quickRead">0</strong></div>
       </div>
       <div class="quick-actions">
+        <button class="btn" id="composeBtn">Yeni Mesaj</button>
         <button class="btn" id="filterUnreadBtn">Okunmadı</button>
         <button class="btn" id="filterReadBtn">Okundu</button>
         <button class="btn btn-primary" id="markAllReadBtn">Tümünü Oku</button>
@@ -486,6 +571,29 @@
       <section class="panel detail" id="detailPanel">
         <div class="detail-empty">Soldan bir mesaj seç.</div>
       </section>
+    </div>
+  </div>
+
+  <div class="compose-modal" id="composeModal" onclick="if(event.target.id==='composeModal') closeComposeModal()">
+    <div class="compose-card" onclick="event.stopPropagation()">
+      <div class="compose-head">
+        <h3 class="compose-title">Yeni Mesaj</h3>
+        <button class="btn" type="button" id="composeCloseBtn">Kapat</button>
+      </div>
+      <form id="composeForm">
+        <div class="compose-body">
+          <div class="compose-grid">
+            <input id="composeRecipientId" name="to_user_id" type="number" min="1" placeholder="Alici User ID" required>
+            <input id="composeSubject" name="subject" type="text" maxlength="150" placeholder="Konu" required>
+          </div>
+          <textarea id="composeBody" name="message" placeholder="Mesajini yaz..." required></textarea>
+          <div class="compose-note" id="composeNotice">Yeni mesaj gondermek icin alici kullanici ID bilgisi gerekli.</div>
+        </div>
+        <div class="compose-actions">
+          <button class="btn" type="button" id="composeCancelBtn">Vazgec</button>
+          <button class="btn btn-primary" type="submit">Mesaj Gonder</button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -542,6 +650,8 @@
         apiType: 'contact',
         box,
         read,
+        fromUserId: Number(item?.from_user_id || item?.sender_user_id || item?.user_id || 0) || null,
+        toUserId: Number(item?.to_user_id || item?.receiver_user_id || 0) || null,
         from: String(fromName || '-'),
         to: String(toName || '-'),
         subject: String(item?.subject || 'Mesaj'),
@@ -643,6 +753,71 @@
     const quickTotal = document.getElementById('quickTotal');
     const quickUnread = document.getElementById('quickUnread');
     const quickRead = document.getElementById('quickRead');
+    const composeModal = document.getElementById('composeModal');
+    const composeForm = document.getElementById('composeForm');
+    const composeNotice = document.getElementById('composeNotice');
+    const composeRecipientId = document.getElementById('composeRecipientId');
+    const composeSubject = document.getElementById('composeSubject');
+    const composeBody = document.getElementById('composeBody');
+
+    function openComposeModal(prefill = {}) {
+      if (composeRecipientId) composeRecipientId.value = prefill.to_user_id || '';
+      if (composeSubject) composeSubject.value = prefill.subject || '';
+      if (composeBody) composeBody.value = prefill.message || '';
+      if (composeNotice) composeNotice.textContent = prefill.notice || 'Yeni mesaj gondermek icin alici kullanici ID bilgisi gerekli.';
+      composeModal?.classList.add('show');
+    }
+
+    function closeComposeModal() {
+      composeModal?.classList.remove('show');
+    }
+
+    async function sendComposeMessage(event) {
+      event.preventDefault();
+      const toUserId = Number(composeRecipientId?.value || 0);
+      const subject = String(composeSubject?.value || '').trim();
+      const message = String(composeBody?.value || '').trim();
+
+      if (!toUserId || !subject || !message) {
+        if (composeNotice) composeNotice.textContent = 'Alici user ID, konu ve mesaj zorunlu.';
+        return;
+      }
+
+      try {
+        const payload = await fetchJson(`${API_BASE}/contacts`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to_user_id: toUserId,
+            subject,
+            message,
+          }),
+        });
+
+        const created = payload?.data || payload || {};
+        state.messages.unshift({
+          id: `contact-sent-${created?.id || Date.now()}`,
+          rawId: Number(created?.id || 0),
+          apiType: 'contact',
+          box: 'sent',
+          read: true,
+          fromUserId: USER?.id ? Number(USER.id) : null,
+          toUserId,
+          from: String(USER?.name || 'Sen'),
+          to: String(created?.to_name || created?.receiver_name || `User #${toUserId}`),
+          subject,
+          body: message,
+          time: created?.created_at || new Date().toISOString(),
+        });
+        state.tab = 'sent';
+        state.selectedId = state.messages[0].id;
+        closeComposeModal();
+        composeForm?.reset();
+        render();
+      } catch (error) {
+        if (composeNotice) composeNotice.textContent = `Mesaj gonderilemedi: ${String(error.message || 'Bilinmeyen hata')}`;
+      }
+    }
 
     (function syncDashboardButton() {
       const btn = document.getElementById('dashboardBtn');
@@ -779,10 +954,21 @@
         </div>
         <div class="detail-body">${msg.body}</div>
         <div class="detail-actions">
+          ${msg.apiType === 'contact' ? '<button class="btn" id="replyBtn">Yanitla</button>' : ''}
           <button class="btn ${msg.read ? '' : 'btn-primary'}" id="toggleReadBtn">${msg.read ? 'Okunmadı Yap' : 'Okundu Yap'}</button>
           <button class="btn btn-danger" id="deleteBtn">Mesajı Sil</button>
         </div>
       `;
+
+      document.getElementById('replyBtn')?.addEventListener('click', () => {
+        const replyTargetId = msg.box === 'inbox' ? msg.fromUserId : msg.toUserId;
+        openComposeModal({
+          to_user_id: replyTargetId || '',
+          subject: msg.subject ? `Re: ${msg.subject}` : 'Re: Mesaj',
+          message: '',
+          notice: replyTargetId ? `Yanit ${msg.box === 'inbox' ? msg.from : msg.to} kullanicisina gidecek.` : 'Bu mesaji yanitlamak icin alici kullanici ID bilgisini girmen gerekebilir.',
+        });
+      });
 
       document.getElementById('toggleReadBtn')?.addEventListener('click', async () => {
         const nextRead = !msg.read;
@@ -842,6 +1028,11 @@
       statusFilter.value = 'all';
       render();
     });
+
+    document.getElementById('composeBtn')?.addEventListener('click', () => openComposeModal());
+    document.getElementById('composeCloseBtn')?.addEventListener('click', closeComposeModal);
+    document.getElementById('composeCancelBtn')?.addEventListener('click', closeComposeModal);
+    composeForm?.addEventListener('submit', sendComposeMessage);
 
     async function init() {
       try {

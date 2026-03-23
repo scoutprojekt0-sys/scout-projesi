@@ -464,47 +464,53 @@
           </div>
         </div>
 
-        <div class="detail-grid">
-          <div class="metric"><div class="metric-k">Pozisyon</div><div class="metric-v" id="detailPosition">-</div></div>
-          <div class="metric"><div class="metric-k">Yaş</div><div class="metric-v" id="detailAge">-</div></div>
-          <div class="metric"><div class="metric-k">Durum</div><div class="metric-v" id="detailStatus">-</div></div>
-          <div class="metric"><div class="metric-k">Scout</div><div class="metric-v" id="detailScout">-</div></div>
+        <div class="empty" id="detailEmpty">
+          Soldaki listeden bir scout raporu secin. Secim yaptiginizda oyuncunun degerlendirmesi ve ilgili aksiyonlar burada acilir.
         </div>
 
-        <div class="detail-section">
-          <h3>Genel Değerlendirme</h3>
-          <p id="detailSummary">Seçilen raporun genel değerlendirmesi burada görünecek.</p>
-        </div>
+        <div id="detailContent" style="display:none;">
+          <div class="detail-grid">
+            <div class="metric"><div class="metric-k">Pozisyon</div><div class="metric-v" id="detailPosition">-</div></div>
+            <div class="metric"><div class="metric-k">Yaş</div><div class="metric-v" id="detailAge">-</div></div>
+            <div class="metric"><div class="metric-k">Durum</div><div class="metric-v" id="detailStatus">-</div></div>
+            <div class="metric"><div class="metric-k">Scout</div><div class="metric-v" id="detailScout">-</div></div>
+          </div>
 
-        <div class="detail-section">
-          <h3>Güçlü Yönler</h3>
-          <div class="chips" id="detailStrengths"></div>
-        </div>
+          <div class="detail-section">
+            <h3>Genel Değerlendirme</h3>
+            <p id="detailSummary">Seçilen raporun genel değerlendirmesi burada görünecek.</p>
+          </div>
 
-        <div class="detail-section">
-          <h3>Gelişim Alanları</h3>
-          <div class="chips" id="detailRisks"></div>
-        </div>
+          <div class="detail-section">
+            <h3>Güçlü Yönler</h3>
+            <div class="chips" id="detailStrengths"></div>
+          </div>
 
-        <div class="detail-note" id="detailNote">Scout notu burada görünecek.</div>
+          <div class="detail-section">
+            <h3>Gelişim Alanları</h3>
+            <div class="chips" id="detailRisks"></div>
+          </div>
 
-        <div class="detail-actions">
-          <button class="btn btn-secondary" id="profileBtn">
-            <i class="fas fa-user"></i>
-            <span>Oyuncu Profili</span>
-          </button>
-          <button class="btn" id="contactBtn">
-            <i class="fas fa-comments"></i>
-            <span>İletişime Geç</span>
-          </button>
-          <button class="btn" id="compareBtn">
-            <i class="fas fa-code-compare"></i>
-            <span>Karşılaştır</span>
-          </button>
-          <button class="btn btn-primary" id="shortlistBtn">
-            <i class="fas fa-star"></i>
-            <span>Kısa Listeye Al</span>
-          </button>
+          <div class="detail-note" id="detailNote">Scout notu burada görünecek.</div>
+
+          <div class="detail-actions">
+            <button class="btn btn-secondary" id="profileBtn">
+              <i class="fas fa-user"></i>
+              <span>Oyuncu Profili</span>
+            </button>
+            <button class="btn" id="contactBtn">
+              <i class="fas fa-comments"></i>
+              <span>İletişime Geç</span>
+            </button>
+            <button class="btn" id="compareBtn">
+              <i class="fas fa-code-compare"></i>
+              <span>Karşılaştır</span>
+            </button>
+            <button class="btn btn-primary" id="shortlistBtn">
+              <i class="fas fa-star"></i>
+              <span>Kısa Listeye Al</span>
+            </button>
+          </div>
         </div>
       </aside>
     </div>
@@ -523,6 +529,9 @@
     }
 
     function getUserRole() {
+      const params = new URLSearchParams(window.location.search);
+      const mode = String(params.get('mode') || '').trim().toLowerCase();
+      if (mode === 'scout' || mode === 'editor') return 'scout';
       const roleRaw = (localStorage.getItem('nextscout_user_role') || '').trim().toLowerCase();
       if (roleRaw) return roleRaw;
       try {
@@ -535,11 +544,11 @@
     }
 
     function isReportsViewerRole(role) {
-      return ['manager', 'team', 'club'].includes(String(role || '').trim().toLowerCase());
+      return ['manager', 'team', 'club', 'coach'].includes(String(role || '').trim().toLowerCase());
     }
 
     function isScoutEditorRole(role) {
-      return ['scout', 'coach'].includes(String(role || '').trim().toLowerCase());
+      return ['scout'].includes(String(role || '').trim().toLowerCase());
     }
 
     function getDashboardHref(role) {
@@ -556,7 +565,7 @@
         <div class="wrap">
           <div class="access-card">
             <h2>Scout Raporları</h2>
-            <p>Bu sayfa sadece kulüp ve menajer hesapları için açıktır. Mevcut rol bu ekranı görüntüleyemez.</p>
+            <p>Bu sayfa scout, kulup, menajer ve antrenor rolleri icin aciktir. Mevcut rol bu ekrani goruntuleyemez.</p>
             <div class="access-actions">
               <a class="btn" href="${dashboardHref}">Uygun Dashboard</a>
               <a class="btn" href="index.html">Ana Sayfa</a>
@@ -660,12 +669,31 @@
 
     const currentRole = getUserRole();
     const hasReportsAccess = !currentRole || isReportsViewerRole(currentRole) || isScoutEditorRole(currentRole);
-    const isScoutEditor = isScoutEditorRole(currentRole) || !currentRole;
+    const isScoutEditor = isScoutEditorRole(currentRole);
 
     const dashboardBtn = document.getElementById('dashboardBtn');
     if (dashboardBtn) dashboardBtn.setAttribute('href', getDashboardHref(currentRole));
+    const pageTitle = document.querySelector('.title');
+    const pageSub = document.querySelector('.sub');
+    const tableTitle = document.querySelector('.panel-title');
+    const tableSub = document.querySelector('.panel-sub');
+    const contactBtn = document.getElementById('contactBtn');
+    const compareBtn = document.getElementById('compareBtn');
+    const shortlistBtnEl = document.getElementById('shortlistBtn');
+    if (pageTitle) pageTitle.textContent = isScoutEditor ? 'Scout Raporlari' : 'Gelen Scout Raporlari';
+    if (pageSub) pageSub.textContent = isScoutEditor
+      ? 'Scout burada oyuncu raporunu yazar, kaydeder ve paylasilan havuzu yonetir.'
+      : 'Scout tarafindan paylasilan oyuncu degerlendirmeleri, shortlist kararları ve sonraki aksiyon akisini buradan izlersin.';
+    if (tableTitle) tableTitle.textContent = isScoutEditor ? 'Paylasilan Raporlar' : 'Gelen Raporlar';
+    if (tableSub) tableSub.textContent = isScoutEditor
+      ? 'Oyunculari filtrele, raporu sec ve sag panelden yonet.'
+      : 'Scout tarafindan paylasilan raporlari filtrele ve detaylarini sag panelden incele.';
     const reportEntry = document.getElementById('reportEntry');
     if (reportEntry) reportEntry.style.display = isScoutEditor ? 'block' : 'none';
+    if (!isScoutEditor) {
+      if (compareBtn) compareBtn.style.display = 'none';
+      if (shortlistBtnEl) shortlistBtnEl.style.display = 'none';
+    }
 
     let allReports = [];
     let visible = allReports.slice();
@@ -730,7 +758,7 @@
             <td data-label="Aksiyon">
               <div class="inline-actions">
                 <button class="inline-btn" onclick="event.stopPropagation(); openProfile(${Number(item.player_id) || 0})">Profil</button>
-                <button class="inline-btn" onclick="event.stopPropagation(); nextStatus(${Number(item.id) || 0})">Durum</button>
+                ${isScoutEditor ? `<button class="inline-btn" onclick="event.stopPropagation(); nextStatus(${Number(item.id) || 0})">Durum</button>` : ''}
               </div>
             </td>
           </tr>`;
@@ -798,7 +826,21 @@
 
     function renderDetail() {
       const item = currentSelectedReport();
-      if (!item) return;
+      const detailEmpty = document.getElementById('detailEmpty');
+      const detailContent = document.getElementById('detailContent');
+      const detailName = document.getElementById('detailName');
+      const detailRole = document.getElementById('detailRole');
+      const detailScore = document.getElementById('detailScore');
+      if (!item) {
+        if (detailName) detailName.textContent = 'Rapor Secin';
+        if (detailRole) detailRole.textContent = 'Soldaki listeden bir scout raporu secin.';
+        if (detailScore) detailScore.textContent = '0.0';
+        if (detailEmpty) detailEmpty.style.display = 'block';
+        if (detailContent) detailContent.style.display = 'none';
+        return;
+      }
+      if (detailEmpty) detailEmpty.style.display = 'none';
+      if (detailContent) detailContent.style.display = 'block';
       selectedReportId = Number(item.id);
       const status = statusLabel(item.status);
       document.getElementById('detailName').textContent = item.player_name || '-';
@@ -815,9 +857,15 @@
 
       const profileBtn = document.getElementById('profileBtn');
       if (profileBtn) profileBtn.onclick = () => openProfile(item.player_id);
+      const contactBtn = document.getElementById('contactBtn');
+      if (contactBtn) contactBtn.onclick = () => { window.location.href = 'notifications.html'; };
+      const compareBtn = document.getElementById('compareBtn');
+      if (compareBtn) compareBtn.onclick = () => { window.location.href = `professional-players.html?compare_player=${encodeURIComponent(item.player_id || '')}`; };
       const shortlistBtn = document.getElementById('shortlistBtn');
       if (shortlistBtn) {
+        shortlistBtn.style.display = isScoutEditor ? 'inline-flex' : 'none';
         shortlistBtn.onclick = () => {
+          if (!isScoutEditor) return;
           const idx = allReports.findIndex((row) => Number(row.id) === Number(item.id));
           if (idx === -1) return;
           updateReportStatus(item.id, 'shortlist')
@@ -831,10 +879,6 @@
             });
         };
       }
-      const contactBtn = document.getElementById('contactBtn');
-      if (contactBtn) contactBtn.onclick = () => { window.location.href = 'notifications.html'; };
-      const compareBtn = document.getElementById('compareBtn');
-      if (compareBtn) compareBtn.onclick = () => { window.location.href = `professional-players.html?compare_player=${encodeURIComponent(item.player_id || '')}`; };
     }
 
     function openProfile(playerId) {

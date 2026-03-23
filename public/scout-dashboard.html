@@ -91,6 +91,29 @@
       gap: 8px;
     }
 
+    .btn-small { padding: 8px 14px; border-radius: 0; border: 1px solid rgba(255, 126, 34, 0.45); background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%); color: #16325c; box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24); font-weight: 800; font-size: 13px; cursor: pointer; transition: all .2s; display:inline-flex; align-items:center; gap:6px; }
+    .btn-small.primary,
+    .btn-small.success { background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%); border-color: rgba(255, 126, 34, 0.6); color: #fff; box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28); }
+    .btn-small.secondary { background: rgba(59, 130, 246, 0.12); color: #dbeafe; border-color: rgba(96, 165, 250, 0.24); box-shadow: none; }
+
+    .need-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(2, 6, 23, 0.62); z-index: 1500; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
+    .need-modal-overlay.show { display: flex; }
+    .need-modal { width: min(860px, 100%); background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid var(--line); border-radius: 0; overflow: hidden; box-shadow: 0 24px 48px rgba(8, 19, 29, 0.28); color: var(--ink); position: relative; }
+    .need-modal::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%); }
+    .live-modal { width: min(860px, 100%); }
+    .need-modal-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 16px 18px; border-bottom: 1px solid #334155; }
+    .need-modal-head h3 { font-size: 18px; font-weight: 800; color: #dbeafe; margin: 0; }
+    .need-modal-body { padding: 16px 18px; display: grid; gap: 10px; }
+    .need-modal-body input, .need-modal-body textarea { width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 0; font-size: 14px; font-family: inherit; background: rgba(255, 255, 255, 0.04); color: var(--ink); }
+    .need-modal-body textarea { min-height: 120px; resize: vertical; }
+    .need-modal-body select { width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 0; font-size: 14px; font-family: inherit; background: rgba(255, 255, 255, 0.04); color: var(--ink); }
+    .need-modal-body input:focus, .need-modal-body textarea:focus, .need-modal-body select:focus { outline: none; border-color: #60a5fa; box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.18); }
+    .live-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .need-modal-actions { display: flex; justify-content: flex-end; gap: 10px; padding: 0 18px 18px; }
+    .quick-report-result { border: 1px solid var(--line); border-radius: 0 !important; background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); padding: 10px 12px; font-size: 12px; color: var(--muted); box-shadow: 0 24px 48px rgba(8, 19, 29, 0.28); position: relative; overflow: hidden; }
+    .quick-report-result::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%); }
+    .quick-report-grid { display: grid; gap: 10px; }
+
     .main-container {
       display: grid;
       grid-template-columns: 250px 1fr;
@@ -207,6 +230,30 @@
 
     .hero-actions, .hero-points, .form-actions { display: flex; flex-wrap: wrap; gap: 10px; }
     .hero-actions, .hero-points { margin-top: 18px; }
+    .hero-actions .btn {
+      min-height: 44px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      justify-content: center;
+      align-items: center;
+      gap: 7px;
+      box-shadow: none;
+    }
+    .hero-actions .btn i {
+      width: 16px;
+      text-align: center;
+      font-size: 13px;
+    }
+    .hero-actions .btn-primary {
+      box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28);
+      border: 1px solid rgba(255, 126, 34, 0.6);
+    }
+    .hero-actions .btn-secondary {
+      box-shadow: none;
+      border: 1px solid rgba(96, 165, 250, 0.24);
+    }
     .btn {
       border: none;
       border-radius: 0;
@@ -759,6 +806,24 @@
       border-color: rgba(255, 126, 34, 0.65);
       color: #ffffff;
     }
+    .opportunity-launcher-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .opportunity-launcher-card {
+      display: grid;
+      gap: 10px;
+      text-align: left;
+      padding: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      color: #dbeafe;
+      cursor: pointer;
+    }
+    .opportunity-launcher-card strong { font-size: 15px; color: #ffffff; }
+    .opportunity-launcher-card span { font-size: 12px; line-height: 1.6; color: #9fb7cc; }
+    .opportunity-launcher-card i { font-size: 16px; color: #7dd3fc; }
     .workspace-panel[hidden] {
       display: none;
     }
@@ -803,6 +868,14 @@
       .hero-panel, .hero-side, .card, .panel, .stat { padding: 16px; border-radius: 0; }
       .grid-4, .form-grid, .footer-links { grid-template-columns: 1fr; }
       .btn, .hero-actions .btn, .form-actions .btn { width: 100%; }
+      .btn-small { width:100%; justify-content:center; white-space:normal; text-align:center; min-height:42px; padding:8px 10px; font-size:12px; line-height:1.2; }
+      .btn-small span { white-space:normal; }
+      .live-grid { grid-template-columns: 1fr; }
+      .need-modal-overlay { padding:10px; align-items:flex-end; }
+      .need-modal { width:100%; max-height:92vh; border-radius:0; display:grid; grid-template-rows:auto 1fr auto; }
+      .need-modal-head { border-bottom-color:#374151; }
+      .need-modal-body { overflow-y:auto; max-height:calc(92vh - 128px); }
+      .need-modal-actions { border-top:1px solid #374151; padding-top:10px; }
       .market-pulse-flyout {
         top: 10px;
         width: calc(100vw - 14px);
@@ -817,6 +890,7 @@
     @media (max-width: 560px) {
       .sidebar-menu { grid-template-columns: 1fr; }
       .header-actions { grid-template-columns: 1fr; }
+      .btn-small { font-size:11px; min-height:40px; }
     }
 
     .sidebar,
@@ -886,12 +960,12 @@
         <a class="sidebar-item" href="ai-discovery.html"><i class="fas fa-flask"></i><span>AI Discovery</span></a>
         <a class="sidebar-item" href="#submit"><i class="fas fa-video"></i><span>Yetenek Bildir</span></a>
         <a class="sidebar-item" href="scout-watchlist.html"><i class="fas fa-bookmark"></i><span>Takip Listem</span></a>
-        <a class="sidebar-item" href="scout-reports.html"><i class="fas fa-file-lines"></i><span>Scout Raporlari</span></a>
-        <a class="sidebar-item" href="scout-profile.html"><i class="fas fa-comments"></i><span>Profil Yorumlari</span></a>
+        <a class="sidebar-item" href="scout-reports.html?mode=scout"><i class="fas fa-file-lines"></i><span>Scout Raporlari</span></a>
+        <a class="sidebar-item" href="review-center.html"><i class="fas fa-comments"></i><span>Yorumlar</span></a>
         <a class="sidebar-item" href="scout-profile.html"><i class="fas fa-user-check"></i><span>Scout Profili</span></a>
-        <a class="sidebar-item" href="scout-live-matches.html"><i class="fas fa-tower-broadcast"></i><span>Canli Scout</span></a>
+        <a class="sidebar-item" href="scout-live-matches.html"><i class="fas fa-tower-broadcast"></i><span>Canli Mac Bildirimleri</span></a>
         <a class="sidebar-item" href="live-watch-demand.html"><i class="fas fa-location-crosshairs"></i><span>Canli Izleme Talebi</span></a>
-        <a class="sidebar-item" href="index.html?success_story=submit"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></a>
+        <button class="sidebar-item" type="button" onclick="openScoutSuccessStoriesHub()"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></button>
         <a class="sidebar-item" href="settings.html"><i class="fas fa-gear"></i><span>Ayarlar</span></a>
         <a class="sidebar-item" href="help.html"><i class="fas fa-circle-question"></i><span>Yardim</span></a>
       </nav>
@@ -930,7 +1004,11 @@
                 <i class="fas fa-chart-line"></i>
                 Market Pulse
               </button>
-              <button class="btn btn-secondary" type="button" onclick="openScoutOpportunityArea('needs')">
+              <a class="btn btn-secondary" href="scout-live-matches.html">
+                <i class="fas fa-tower-broadcast"></i>
+                Canli Mac Bildirimleri
+              </a>
+              <button class="btn btn-secondary" type="button" onclick="openScoutOpportunityArea()">
                 <i class="fas fa-bullseye"></i>
                 Scout Firsat Alani
               </button>
@@ -1059,8 +1137,8 @@
           <div class="tips-flyout-head">
             <div>
               <div class="eyebrow">Scout Firsat Alani</div>
-              <h3 class="panel-title" id="scoutOpportunityTitle" style="margin:0;">Kulup Ihtiyaclari</h3>
-              <div class="market-pulse-copy" id="scoutOpportunitySummary">Kulup arayislarini ve deneme akisini tek panelde izle.</div>
+              <h3 class="panel-title" id="scoutOpportunityTitle" style="margin:0;">Scout Firsat Alani</h3>
+              <div class="market-pulse-copy" id="scoutOpportunitySummary">Ihtiyac, deneme ve menajer ilanlarini kart secerek ac.</div>
             </div>
             <div class="tips-flyout-tools">
               <div class="tips-flyout-badge" id="scoutOpportunityBadge"><i class="fas fa-signal"></i><span>Hazirlaniyor</span></div>
@@ -1069,11 +1147,17 @@
               </button>
             </div>
           </div>
-          <div class="workspace-tabs" style="margin-bottom:14px;">
-            <button class="workspace-tab active" type="button" data-opportunity-tab="needs" onclick="openScoutOpportunityArea('needs')">Kulup Ihtiyaclari</button>
-            <button class="workspace-tab" type="button" data-opportunity-tab="events" onclick="openScoutOpportunityArea('events')">Deneme ve Idmanlar</button>
+          <div class="opportunity-launcher-grid" id="scoutOpportunityLauncher">
+            <button class="opportunity-launcher-card" type="button" onclick="openScoutOpportunityArea('needs')"><i class="fas fa-bullseye"></i><strong>Kulup Ihtiyaclari</strong><span>Acik kulup arayislarini tek karttan gor.</span></button>
+            <button class="opportunity-launcher-card" type="button" onclick="openScoutOpportunityArea('events')"><i class="fas fa-calendar-check"></i><strong>Deneme ve Idmanlar</strong><span>Deneme ve idman duyurularini tek karttan ac.</span></button>
+            <button class="opportunity-launcher-card" type="button" onclick="openScoutOpportunityArea('manager')"><i class="fas fa-briefcase"></i><strong>Menajer Ilanlari</strong><span>Menajerlerin acik oyuncu arayislarini gor.</span></button>
           </div>
+          <div id="scoutOpportunityDetail" hidden>
           <div class="form-actions" style="margin-bottom:14px;">
+            <button class="btn btn-secondary" type="button" onclick="openScoutOpportunityArea()">
+              <i class="fas fa-arrow-left"></i>
+              Geri
+            </button>
             <button class="btn btn-secondary" type="button" id="scoutOpportunityRefreshBtn" onclick="loadScoutOpportunityArea('needs')">
               <i class="fas fa-arrows-rotate"></i>
               Yenile
@@ -1085,8 +1169,82 @@
           <div class="list" id="scoutOpportunityEventsList" hidden>
             <div class="empty">Deneme ve idmanlar yukleniyor...</div>
           </div>
+          <div class="list" id="scoutOpportunityManagerList" hidden>
+            <div class="empty">Menajer ilanlari yukleniyor...</div>
+          </div>
+          </div>
         </div>
       </section>
+
+      <div class="need-modal-overlay" id="scoutSuccessStoriesOverlay" onclick="if(event.target.id==='scoutSuccessStoriesOverlay'){closeScoutSuccessStoriesHub();}">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+          <div class="need-modal-head">
+            <h3>Basari Hikayeleri</h3>
+            <button class="btn-small secondary" type="button" onclick="closeScoutSuccessStoriesHub()">Kapat</button>
+          </div>
+          <div class="need-modal-body">
+            <div class="quick-report-result" style="margin-bottom:12px;">Basari hikayesi gonder veya topluluktaki hikayeleri oku.</div>
+            <div class="quick-report-grid" style="grid-template-columns:repeat(2,1fr); margin-bottom:0;">
+              <button class="btn-small secondary" type="button" style="justify-content:flex-start; min-height:96px;" onclick="openScoutSuccessStorySubmitModal()">
+                <i class="fas fa-paper-plane"></i><span>Gonder</span>
+              </button>
+              <button class="btn-small secondary" type="button" style="justify-content:flex-start; min-height:96px;" onclick="openScoutSuccessStoriesReadModal()">
+                <i class="fas fa-book-open"></i><span>Oku</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="need-modal-overlay" id="scoutSuccessStorySubmitOverlay" onclick="if(event.target.id==='scoutSuccessStorySubmitOverlay'){closeScoutSuccessStorySubmitModal();}">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+          <div class="need-modal-head">
+            <h3>Basari Hikayesi Gonder</h3>
+            <button class="btn-small secondary" type="button" onclick="closeScoutSuccessStorySubmitModal()">Kapat</button>
+          </div>
+          <form id="scoutSuccessStoryForm">
+            <div class="need-modal-body">
+              <input id="scoutSuccessStoryFullName" name="full_name" placeholder="Ad Soyad" required maxlength="150">
+              <div class="live-grid">
+                <select id="scoutSuccessStorySport" name="sport" required>
+                  <option value="">Spor Sec</option>
+                  <option value="Futbol">Futbol</option>
+                  <option value="Basketbol">Basketbol</option>
+                  <option value="Voleybol">Voleybol</option>
+                </select>
+                <input id="scoutSuccessStoryOldClub" name="old_club" placeholder="Eski Kulup" maxlength="160">
+              </div>
+              <input id="scoutSuccessStoryNewClub" name="new_club" placeholder="Yeni Kulup" maxlength="160" required>
+              <textarea id="scoutSuccessStoryText" name="story_text" placeholder="Basari hikayeni yaz..." required maxlength="1200"></textarea>
+              <input id="scoutSuccessStoryImage" name="image_url" type="url" placeholder="Gorsel linki (opsiyonel)">
+              <div class="quick-report-result" id="scoutSuccessStoryNotice">Yeni basari hikayesini dashboard icinden gonder.</div>
+            </div>
+            <div class="need-modal-actions">
+              <button class="btn-small secondary" type="button" onclick="closeScoutSuccessStorySubmitModal()">Vazgec</button>
+              <button class="btn-small primary" type="submit">Gonder</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="need-modal-overlay" id="scoutSuccessStoriesReadOverlay" onclick="if(event.target.id==='scoutSuccessStoriesReadOverlay'){closeScoutSuccessStoriesReadModal();}">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+          <div class="need-modal-head">
+            <h3>Basari Hikayelerini Oku</h3>
+            <button class="btn-small secondary" type="button" onclick="closeScoutSuccessStoriesReadModal()">Kapat</button>
+          </div>
+          <div class="need-modal-body">
+            <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
+              <button class="btn-small secondary" type="button" onclick="closeScoutSuccessStoriesReadModal(); openScoutSuccessStoriesHub()"><i class="fas fa-arrow-left"></i><span>Geri</span></button>
+              <button class="btn-small secondary" type="button" onclick="loadScoutSuccessStories()"><i class="fas fa-arrows-rotate"></i><span>Yenile</span></button>
+            </div>
+            <div class="quick-report-result" id="scoutSuccessStoriesStatus">Topluluktan gelen son basari hikayelerini burada oku.</div>
+            <div id="scoutSuccessStoriesList" style="display:grid; gap:10px; margin-top:14px;">
+              <div class="empty">Basari hikayeleri yukleniyor...</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <section class="ai-video-lab" data-ai-video-lab>
         <div class="ai-video-lab-head">
@@ -1455,7 +1613,7 @@
                 <strong>Takip Listesi</strong>
                 <span>Izlemeye aldigin oyunculari ayri listede tut.</span>
               </a>
-              <a class="footer-link" href="scout-reports.html">
+              <a class="footer-link" href="scout-reports.html?mode=scout">
                 <strong>Rapor Merkezi</strong>
                 <span>Hazir raporlarini ac ve degerlendirme notlarini gor.</span>
               </a>
@@ -1617,22 +1775,28 @@
     function openScoutLeaderboardPanel(event) { openScoutStatusArea('leaderboard', event); }
     function closeScoutLeaderboardPanel() { closeScoutStatusArea(); }
 
-    let activeScoutOpportunityTab = 'needs';
+    let activeScoutOpportunityTab = 'hub';
 
-    function openScoutOpportunityArea(type = 'needs', event) {
+    function openScoutOpportunityArea(type = 'hub', event) {
       if (event?.preventDefault) event.preventDefault();
       const panel = document.getElementById('scoutOpportunityFlyout');
       const overlay = document.getElementById('scoutOpportunityOverlay');
       const title = document.getElementById('scoutOpportunityTitle');
       const summary = document.getElementById('scoutOpportunitySummary');
       const badge = document.getElementById('scoutOpportunityBadge');
+      const launcher = document.getElementById('scoutOpportunityLauncher');
+      const detail = document.getElementById('scoutOpportunityDetail');
       const refreshBtn = document.getElementById('scoutOpportunityRefreshBtn');
       const needs = document.getElementById('scoutOpportunityNeedsList');
       const events = document.getElementById('scoutOpportunityEventsList');
-      const tabs = Array.from(document.querySelectorAll('[data-opportunity-tab]'));
-      if (!panel || !overlay || !title || !summary || !badge || !refreshBtn || !needs || !events) return;
+      const manager = document.getElementById('scoutOpportunityManagerList');
+      if (!panel || !overlay || !title || !summary || !badge || !launcher || !detail || !refreshBtn || !needs || !events || !manager) return;
 
       const config = {
+        hub: {
+          title: 'Scout Firsat Alani',
+          summary: 'Ihtiyac, deneme ve menajer ilanlarini kart secerek ac.',
+        },
         needs: {
           title: 'Kulup Ihtiyaclari',
           summary: 'Bugun hangi kulubun hangi pozisyonu aradigini tek akista takip et.',
@@ -1640,23 +1804,41 @@
         events: {
           title: 'Deneme ve Idmanlar',
           summary: 'Acik deneme ve idman duyurularini tek panelden tara.',
+        },
+        manager: {
+          title: 'Menajer Ilanlari',
+          summary: 'Menajerlerin acik oyuncu arayislarini tek panelden tara.',
         }
       };
 
-      activeScoutOpportunityTab = config[type] ? type : 'needs';
+      activeScoutOpportunityTab = config[type] ? type : 'hub';
       const selected = config[activeScoutOpportunityTab];
 
       title.textContent = selected.title;
       summary.textContent = selected.summary;
-      badge.innerHTML = '<i class="fas fa-signal"></i><span>Hazirlaniyor</span>';
-      refreshBtn.setAttribute('onclick', `loadScoutOpportunityArea('${activeScoutOpportunityTab}')`);
-      needs.hidden = activeScoutOpportunityTab !== 'needs';
-      events.hidden = activeScoutOpportunityTab !== 'events';
-      tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.opportunityTab === activeScoutOpportunityTab));
 
       panel.classList.add('active');
       overlay.classList.add('active');
       document.body.style.overflow = 'hidden';
+
+      if (activeScoutOpportunityTab === 'hub') {
+        badge.hidden = true;
+        launcher.hidden = false;
+        detail.hidden = true;
+        needs.hidden = true;
+        events.hidden = true;
+        manager.hidden = true;
+        return;
+      }
+
+      badge.hidden = false;
+      badge.innerHTML = '<i class="fas fa-signal"></i><span>Hazirlaniyor</span>';
+      launcher.hidden = true;
+      detail.hidden = false;
+      refreshBtn.setAttribute('onclick', `loadScoutOpportunityArea('${activeScoutOpportunityTab}')`);
+      needs.hidden = activeScoutOpportunityTab !== 'needs';
+      events.hidden = activeScoutOpportunityTab !== 'events';
+      manager.hidden = activeScoutOpportunityTab !== 'manager';
       loadScoutOpportunityArea(activeScoutOpportunityTab);
     }
 
@@ -1665,6 +1847,44 @@
       const overlay = document.getElementById('scoutOpportunityOverlay');
       if (panel) panel.classList.remove('active');
       if (overlay) overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function openScoutSuccessStoriesHub() {
+      document.getElementById('scoutSuccessStoriesOverlay')?.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeScoutSuccessStoriesHub() {
+      document.getElementById('scoutSuccessStoriesOverlay')?.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    function openScoutSuccessStorySubmitModal() {
+      closeScoutSuccessStoriesHub();
+      try {
+        const user = getUser();
+        const input = document.getElementById('scoutSuccessStoryFullName');
+        if (input && !input.value && user?.name) input.value = String(user.name);
+      } catch (error) {}
+      document.getElementById('scoutSuccessStorySubmitOverlay')?.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeScoutSuccessStorySubmitModal() {
+      document.getElementById('scoutSuccessStorySubmitOverlay')?.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    function openScoutSuccessStoriesReadModal() {
+      closeScoutSuccessStoriesHub();
+      document.getElementById('scoutSuccessStoriesReadOverlay')?.classList.add('show');
+      document.body.style.overflow = 'hidden';
+      loadScoutSuccessStories();
+    }
+
+    function closeScoutSuccessStoriesReadModal() {
+      document.getElementById('scoutSuccessStoriesReadOverlay')?.classList.remove('show');
       document.body.style.overflow = '';
     }
 
@@ -1714,6 +1934,66 @@
         throw new Error(data.message || 'Market pulse verisi alinamadi.');
       }
       return data;
+    }
+
+    async function successStoriesGet() {
+      const response = await fetch(`${API_BASE_URL}/success-stories?limit=8`, {
+        headers: { 'Accept': 'application/json' },
+        cache: 'no-store',
+        credentials: 'same-origin'
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.ok === false) {
+        throw new Error(data.message || 'Basari hikayeleri alinamadi.');
+      }
+      return data;
+    }
+
+    async function submitScoutSuccessStoryForm(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const root = document.getElementById('scoutSuccessStoryNotice');
+      const token = getToken();
+      if (!token) {
+        if (root) root.textContent = 'Hikaye gondermek icin giris yapman gerekiyor.';
+        return;
+      }
+
+      const formData = new FormData(form);
+      const payload = {
+        full_name: (formData.get('full_name') || '').toString().trim(),
+        sport: (formData.get('sport') || '').toString().trim(),
+        old_club: (formData.get('old_club') || '').toString().trim(),
+        new_club: (formData.get('new_club') || '').toString().trim(),
+        story_text: (formData.get('story_text') || '').toString().trim(),
+        image_url: (formData.get('image_url') || '').toString().trim(),
+      };
+
+      if (!payload.full_name || !payload.sport || !payload.new_club || !payload.story_text) {
+        if (root) root.textContent = 'Ad, spor, yeni kulup ve hikaye zorunlu.';
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/success-stories`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || !result?.ok) {
+          throw new Error(result?.message || 'Hikaye gonderilemedi.');
+        }
+        if (root) root.textContent = 'Hikayen alindi. Admin onayindan sonra yayinlanacak.';
+        form.reset();
+        closeScoutSuccessStorySubmitModal();
+      } catch (error) {
+        if (root) root.textContent = error?.message || 'Hikaye gonderilemedi.';
+      }
     }
 
     async function apiPost(path, payload) {
@@ -2149,8 +2429,8 @@
         if (status) status.innerHTML = '<i class="fas fa-ranking-star"></i><span>Hazir</span>';
       }
 
-      function renderMarketPulseCard(payload) {
-        const root = document.getElementById('marketPulseList');
+    function renderMarketPulseCard(payload) {
+      const root = document.getElementById('marketPulseList');
         const statsRoot = document.getElementById('marketPulseStats');
         const statusRoot = document.getElementById('marketPulseStatus');
         if (!root || !statsRoot || !statusRoot) return;
@@ -2194,11 +2474,42 @@
           </article>
         `).join('');
 
-        statusRoot.innerHTML = '<i class="fas fa-signal"></i><span>Canli</span>';
+      statusRoot.innerHTML = '<i class="fas fa-signal"></i><span>Canli</span>';
+    }
+
+    function renderScoutSuccessStories(payload) {
+      const root = document.getElementById('scoutSuccessStoriesList');
+      const badge = document.getElementById('scoutSuccessStoriesStatus');
+      const rows = Array.isArray(payload?.data) ? payload.data.slice(0, 8) : [];
+      if (!root || !badge) return;
+
+      if (!rows.length) {
+        root.innerHTML = '<div class="empty">Basari hikayesi bulunmuyor.</div>';
+        badge.textContent = 'Bos';
+        return;
       }
 
-      async function loadMarketPulseCard() {
-        const root = document.getElementById('marketPulseList');
+      root.innerHTML = rows.map((item) => `
+        <article class="point-item">
+          <div class="row-top">
+            <div>
+              <div class="row-title">${escapeHtml(item.full_name || 'Basari Hikayesi')}</div>
+              <div class="row-copy">${escapeHtml(item.story_text || 'Hikaye metni yok.')}</div>
+            </div>
+            <span class="badge approved">${escapeHtml(item.sport || '-')}</span>
+          </div>
+          <div class="row-meta">
+            <span><i class="fas fa-building"></i> ${escapeHtml(item.old_club || '-')} -> ${escapeHtml(item.new_club || '-')}</span>
+            <span><i class="fas fa-calendar"></i> ${formatDate(item.created_at)}</span>
+          </div>
+        </article>
+      `).join('');
+
+      badge.textContent = `${rows.length} kayit`;
+    }
+
+    async function loadMarketPulseCard() {
+      const root = document.getElementById('marketPulseList');
         const statusRoot = document.getElementById('marketPulseStatus');
         if (!root || !statusRoot) return;
 
@@ -2208,9 +2519,26 @@
           renderMarketPulseCard(payload);
         } catch (error) {
           statusRoot.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span>Beklemede</span>';
-          root.innerHTML = '<div class="empty">Market pulse su an yuklenemedi. Terminal ekranindan tekrar deneyebilirsin.</div>';
-        }
+        root.innerHTML = '<div class="empty">Market pulse su an yuklenemedi. Terminal ekranindan tekrar deneyebilirsin.</div>';
       }
+    }
+
+    async function loadScoutSuccessStories() {
+      const root = document.getElementById('scoutSuccessStoriesList');
+      const badge = document.getElementById('scoutSuccessStoriesStatus');
+      if (!root || !badge) return;
+
+      badge.textContent = 'Yukleniyor';
+      root.innerHTML = '<div class="empty">Basari hikayeleri yukleniyor...</div>';
+
+      try {
+        const payload = await successStoriesGet();
+        renderScoutSuccessStories(payload);
+      } catch (error) {
+        badge.textContent = 'Hata';
+        root.innerHTML = `<div class="empty">${escapeHtml(error.message || 'Basari hikayeleri yuklenemedi.')}</div>`;
+      }
+    }
 
       async function loadScoreboard() {
         const payload = await apiGet('/scout-scoreboard/me');
@@ -2296,9 +2624,44 @@
       if (badge) badge.innerHTML = `<i class="fas fa-calendar"></i><span>${rows.length} kayit</span>`;
     }
 
+    function renderScoutManagerNeeds(payload) {
+      const root = document.getElementById('scoutOpportunityManagerList');
+      const badge = document.getElementById('scoutOpportunityBadge');
+      const rows = Array.isArray(payload?.data) ? payload.data.slice(0, 8) : [];
+      if (!root || activeScoutOpportunityTab !== 'manager') return;
+
+      if (!rows.length) {
+        root.innerHTML = '<div class="empty">Acik menajer ilani yok.</div>';
+        if (badge) badge.innerHTML = '<i class="fas fa-briefcase"></i><span>Bos</span>';
+        return;
+      }
+
+      root.innerHTML = rows.map((item) => `
+        <article class="point-item">
+          <div class="row-top">
+            <div>
+              <div class="row-title">${escapeHtml(item.title || item.position || 'Menajer ilani')}</div>
+              <div class="row-copy">${escapeHtml(item.city || 'Sehir yok')} Â· ${escapeHtml(item.status || 'open')}</div>
+            </div>
+            <span class="badge approved">${escapeHtml(item.position || '-')}</span>
+          </div>
+          <div class="row-meta">
+            <span><i class="fas fa-user-clock"></i> ${escapeHtml(item.age_min ?? '-')} - ${escapeHtml(item.age_max ?? '-')}</span>
+            <span><i class="fas fa-calendar"></i> ${formatDate(item.created_at)}</span>
+          </div>
+        </article>
+      `).join('');
+
+      if (badge) badge.innerHTML = `<i class="fas fa-briefcase"></i><span>${rows.length} kayit</span>`;
+    }
+
     async function loadScoutOpportunityArea(type = 'needs') {
       const badge = document.getElementById('scoutOpportunityBadge');
-      const root = document.getElementById(type === 'events' ? 'scoutOpportunityEventsList' : 'scoutOpportunityNeedsList');
+      const root = document.getElementById(type === 'events'
+        ? 'scoutOpportunityEventsList'
+        : type === 'manager'
+          ? 'scoutOpportunityManagerList'
+          : 'scoutOpportunityNeedsList');
       if (badge) badge.innerHTML = '<i class="fas fa-signal"></i><span>Senkron</span>';
       if (root) root.innerHTML = '<div class="empty">Yukleniyor...</div>';
 
@@ -2309,12 +2672,18 @@
           return;
         }
 
+        if (type === 'manager') {
+          const payload = await apiGet('/discovery/manager-needs');
+          renderScoutManagerNeeds(payload);
+          return;
+        }
+
         const payload = await apiGet('/club-needs');
         renderScoutClubNeeds(payload);
       } catch (error) {
         if (badge) badge.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span>Hata</span>';
         if (root) {
-          root.innerHTML = `<div class="empty">${type === 'events' ? 'Deneme ve idmanlar' : 'Kulup ihtiyaclari'} su an yuklenemedi.</div>`;
+          root.innerHTML = `<div class="empty">${type === 'events' ? 'Deneme ve idmanlar' : type === 'manager' ? 'Menajer ilanlari' : 'Kulup ihtiyaclari'} su an yuklenemedi.</div>`;
         }
       }
     }
@@ -2519,6 +2888,7 @@
       }
 
       document.getElementById('scoutTipForm')?.addEventListener('submit', submitScoutTip);
+      document.getElementById('scoutSuccessStoryForm')?.addEventListener('submit', submitScoutSuccessStoryForm);
       document.getElementById('scoutWorkspaceNoteSubmit')?.addEventListener('click', submitScoutWorkspaceNote);
       document.getElementById('scoutWorkspaceClipSubmit')?.addEventListener('click', submitScoutWorkspaceClip);
       document.getElementById('scoutWorkspaceNoteSearch')?.addEventListener('input', renderScoutWorkspaceNotes);

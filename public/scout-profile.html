@@ -108,6 +108,9 @@
     .review-pill.sentiment-dikkat{color:#fde68a}
     .review-body{color:#e2e8f0;font-size:14px;line-height:1.72}
     .review-reply{margin-top:12px;padding:14px 15px;border-radius:16px;background:linear-gradient(180deg, rgba(11,59,138,.18) 0%, rgba(15,23,42,.16) 100%);border:1px solid rgba(96,165,250,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+    #scoutReviewFormCard,
+    #scoutReviewGate{display:none !important}
+    #scoutReviewsCard{grid-column:1 / -1}
     @media (max-width:900px){.layout{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}}
     @media (max-width:900px){.review-form-grid{grid-template-columns:1fr}.review-summary-grid{grid-template-columns:1fr}}
     @media (max-width:768px){
@@ -168,6 +171,7 @@
         <div class="row"><span class="muted">Brans</span><strong id="sumBranch">-</strong></div>
         <div class="row"><span class="muted">Ülke</span><strong id="sumCountry">-</strong></div>
         <div class="row"><span class="muted">Sehir</span><strong id="sumCity">-</strong></div>
+      </div>
       <div class="card" id="scoutReviewsCard">
         <h2 class="section-title">Profil Yorumlari</h2>
         <div class="review-shell">

@@ -60,8 +60,8 @@ class ScoutPlayerReportController extends Controller
     public function store(Request $request): JsonResponse
     {
         $user = $request->user();
-        if (! in_array((string) $user->role, ['scout', 'coach'], true)) {
-            return $this->errorResponse('Scout raporu sadece scout veya antrenor tarafindan kaydedilebilir.', Response::HTTP_FORBIDDEN, 'forbidden_role');
+        if ((string) $user->role !== 'scout') {
+            return $this->errorResponse('Scout raporu sadece scout tarafindan kaydedilebilir.', Response::HTTP_FORBIDDEN, 'forbidden_role');
         }
 
         $validated = $request->validate([
@@ -149,7 +149,7 @@ class ScoutPlayerReportController extends Controller
     public function updateStatus(int $id, Request $request): JsonResponse
     {
         $user = $request->user();
-        if (! in_array((string) $user->role, ['scout', 'coach', 'manager', 'team', 'club'], true)) {
+        if ((string) $user->role !== 'scout') {
             return $this->errorResponse('Bu alan icin yetkiniz yok.', Response::HTTP_FORBIDDEN, 'forbidden_role');
         }
 

@@ -164,18 +164,26 @@
             gap: 14px;
         }
 
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            align-items: stretch;
+        }
+
         .welcome {
             background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
             color: var(--ink);
             padding: 24px;
             border: 1px solid var(--line);
-            border-radius: 22px;
+            border-radius: 0;
             box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
             position: relative;
             overflow: hidden;
         }
 
-        .welcome::before {
+        .welcome::before,
+        .panel::before {
             content: "";
             position: absolute;
             inset: 0 0 auto 0;
@@ -183,8 +191,107 @@
             background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
         }
 
-        .welcome h1 { font-size: clamp(22px, 3vw, 34px); margin-bottom: 6px; }
-        .welcome p { font-size: 14px; color: var(--muted); }
+        .hero-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            border-radius: 0;
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(96, 165, 250, 0.25);
+            color: #dbeafe;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .hero-title {
+            margin: 0;
+            max-width: 720px;
+            font: 800 clamp(2rem, 3vw, 3rem)/1.02 Inter, sans-serif;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+        }
+
+        .hero-sub {
+            margin: 14px 0 0;
+            max-width: 740px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .hero-points {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .hero-inline-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--line);
+            color: #dbeafe;
+        }
+
+        .hero-side {
+            padding: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel-title {
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: #dbeafe;
+        }
+
+        .panel-sub {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .status-stack {
+            display: grid;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .status-row span:first-child {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
 
         .layout-grid {
             display: grid;
@@ -472,6 +579,108 @@
             line-height: 1.55;
         }
 
+        .listings-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.62);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1600;
+            padding: 16px;
+        }
+
+        .listings-modal.active { display: flex; }
+
+        .listings-card {
+            width: min(980px, 100%);
+            max-height: 90vh;
+            overflow: auto;
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: 0 24px 48px rgba(2, 6, 23, 0.45);
+            position: relative;
+        }
+
+        .listings-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+        }
+
+        .listings-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 18px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .listings-head h3 {
+            margin: 0;
+            color: #f5fbff;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .listings-sub {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .listings-body {
+            padding: 18px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .listing-section {
+            display: grid;
+            gap: 10px;
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0.72) 0%, rgba(15, 23, 42, 0.54) 100%);
+            box-shadow: inset 0 0 0 1px rgba(96, 165, 250, 0.04);
+        }
+
+        .listing-section-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 0 0 10px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+        }
+
+        .listing-section-title {
+            color: #dbeafe;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+        }
+
+        .listing-section-count {
+            font-size: 11px;
+            font-weight: 800;
+            color: #bfdbfe;
+            border: 1px solid rgba(96, 165, 250, 0.24);
+            background: rgba(59, 130, 246, 0.12);
+            padding: 4px 8px;
+            border-radius: 999px;
+        }
+
+        .listing-section-items {
+            display: grid;
+            gap: 10px;
+        }
+
 
         .schedule-actions {
             display: grid;
@@ -593,6 +802,210 @@
             justify-content: flex-end;
         }
 
+        .btn-small {
+            padding: 8px 14px;
+            border-radius: 0;
+            border: 1px solid rgba(255, 126, 34, 0.45);
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+            color: #16325c;
+            box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24);
+            font-weight: 800;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all .2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            justify-content: center;
+        }
+
+        .btn-small.primary,
+        .btn-small.success {
+            background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
+            border-color: rgba(255, 126, 34, 0.6);
+            color: #fff;
+            box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28);
+        }
+
+        .btn-small.secondary {
+            background: rgba(59, 130, 246, 0.12);
+            color: #dbeafe;
+            border-color: rgba(96, 165, 250, 0.24);
+            box-shadow: none;
+        }
+
+        .need-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.62);
+            z-index: 1500;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            backdrop-filter: blur(4px);
+        }
+
+        .need-modal-overlay.show { display: flex; }
+
+        .need-modal {
+            width: min(860px, 100%);
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border: 1px solid var(--line);
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: 0 24px 48px rgba(8, 19, 29, 0.28);
+            color: var(--ink);
+            position: relative;
+        }
+
+        .need-modal::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+        }
+
+        .live-modal { width: min(860px, 100%); }
+
+        .need-modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 18px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .need-modal-head h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #dbeafe;
+            margin: 0;
+        }
+
+        .need-modal-body {
+            padding: 16px 18px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .need-modal-body input,
+        .need-modal-body textarea,
+        .need-modal-body select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--line);
+            border-radius: 0;
+            font-size: 14px;
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--ink);
+        }
+
+        .need-modal-body textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .need-modal-body input:focus,
+        .need-modal-body textarea:focus,
+        .need-modal-body select:focus {
+            outline: none;
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.18);
+        }
+
+        .live-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .quick-report-grid { display: grid; gap: 10px; }
+
+        .quick-report-result {
+            border: 1px solid var(--line);
+            border-radius: 0;
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            padding: 10px 12px;
+            font-size: 12px;
+            color: var(--muted);
+            box-shadow: 0 24px 48px rgba(8, 19, 29, 0.28);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-report-result::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+        }
+
+        .need-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 0 18px 18px;
+        }
+
+        .point-item {
+            padding: 14px;
+            border-radius: 0;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .row-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .row-title {
+            color: #dbeafe;
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .row-copy {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+            margin-top: 4px;
+        }
+
+        .row-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .badge.approved {
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(96, 165, 250, 0.25);
+            color: #dbeafe;
+        }
+
+        .empty {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
         @media (max-width: 980px) {
             .main-container { grid-template-columns: 1fr; }
             .sidebar { position: static; }
@@ -611,7 +1024,8 @@
             .sidebar { padding: 12px; }
             .sidebar-menu { grid-template-columns: 1fr 1fr; }
             .container { padding: 0; gap: 10px; }
-            .welcome { padding: 14px; border-radius: 12px; }
+            .hero { grid-template-columns: 1fr; }
+            .welcome { padding: 14px; border-radius: 0; }
             .welcome p { font-size: 13px; }
 
             .panel { padding: 10px; border-radius: 12px; }
@@ -628,6 +1042,11 @@
             .boost-grid { grid-template-columns: 1fr; }
             .boost-actions { justify-content: stretch; }
             .boost-actions button { width: 100%; }
+            .live-grid,
+            .quick-report-grid { grid-template-columns: 1fr; }
+            .need-modal-overlay { padding: 10px; align-items: flex-end; }
+            .need-modal { width: 100%; max-height: 92vh; display: grid; grid-template-rows: auto 1fr auto; }
+            .need-modal-body { overflow-y: auto; max-height: calc(92vh - 128px); }
         }
 
         @media (max-width: 480px) {
@@ -677,10 +1096,17 @@
             <nav class="sidebar-menu">
                 <a class="sidebar-item active" href="player-dashboard.html"><i class="fas fa-house"></i><span>Dashboard</span></a>
                 <a class="sidebar-item" href="index.html"><i class="fas fa-house-user"></i><span>Ana Sayfa</span></a>
-                <a class="sidebar-item" href="index.html?success_story=submit#homeStep3"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></a>
-                <a class="sidebar-item" href="player-profile.html"><i class="fas fa-user-check"></i><span>Public Gorunum</span></a>
-                <a class="sidebar-item" href="player-profile.html"><i class="fas fa-user"></i><span>Profil</span></a>
+                <button class="sidebar-item" type="button" onclick="openPlayerSuccessStoriesHub()"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></button>
+                <a class="sidebar-item" href="player-profile.html" onclick="return openOwnPlayerProfile(event)"><i class="fas fa-user-check"></i><span>Public Gorunum</span></a>
+                <a class="sidebar-item" href="player-profile.html" onclick="return openOwnPlayerProfile(event)"><i class="fas fa-user"></i><span>Profil</span></a>
                 <a class="sidebar-item" href="notifications.html"><i class="fas fa-bell"></i><span>Bildirim</span></a>
+                <a class="sidebar-item" href="review-center.html"><i class="fas fa-comments"></i><span>Yorumlar</span></a>
+                <button class="sidebar-item" type="button" onclick="openListingsModal()"><i class="fas fa-bullhorn"></i><span>Ilanlar</span></button>
+                <button class="sidebar-item" type="button" onclick="openMetricModal('videos')"><i class="fas fa-video"></i><span>Videolarim</span></button>
+                <button class="sidebar-item" type="button" onclick="openMetricModal('offers')"><i class="fas fa-handshake"></i><span>Tekliflerim</span></button>
+                <button class="sidebar-item" type="button" onclick="openMyTrialsModal()"><i class="fas fa-clipboard-list"></i><span>Denemelerim</span></button>
+                <a class="sidebar-item" href="trial-center.html"><i class="fas fa-tower-observation"></i><span>Deneme Merkezi</span></a>
+                <a class="sidebar-item" href="statistics.html"><i class="fas fa-chart-line"></i><span>Istatistikler</span></a>
                 <a class="sidebar-item" href="scout-watchlist.html"><i class="fas fa-list-check"></i><span>Takip Listem</span></a>
                 <a class="sidebar-item" href="player-match-schedule.html"><i class="fas fa-calendar-days"></i><span>Maç Takvimim</span></a>
                 <a class="sidebar-item" href="professional-players.html?player_view=discover"><i class="fas fa-compass"></i><span>Kesfet</span></a>
@@ -691,10 +1117,35 @@
         </aside>
 
         <div class="container">
-        <div class="welcome">
-            <h1>Hos Geldin, Oyuncu!</h1>
-            <p>Profilini guclendir, mac videolarini yukle ve scout ilgisini artir.</p>
-        </div>
+        <section class="hero">
+            <div class="welcome">
+                <div class="hero-kicker">
+                    <i class="fas fa-bullseye"></i>
+                    <span>Crowdsourced player</span>
+                </div>
+                <h2 class="hero-title">Oyuncu kariyerini buradan yonet.</h2>
+                <p class="hero-sub" id="heroGreeting">Profilini guclendir, videolarini sergile ve scoutlarla kurdugun temasi tek panelden yonet.</p>
+                <div class="hero-inline-actions">
+                    <button type="button" class="btn btn-secondary" onclick="openListingsModal()"><i class="fas fa-bullhorn"></i> Ilanlar</button>
+                    <button type="button" class="btn btn-secondary" onclick="openTodayMatchModal()"><i class="fas fa-tower-broadcast"></i> Bugun Macim Var</button>
+                </div>
+                <div class="hero-points">
+                    <span class="pill"><i class="fas fa-circle-check"></i><span>Guncel profil daha fazla scout ilgisi ceker</span></span>
+                    <span class="pill"><i class="fas fa-handshake-angle"></i><span>Trial ve teklif surecini tek yerden takip et</span></span>
+                </div>
+            </div>
+
+            <aside class="panel hero-side">
+                <h3 class="panel-title">Oyuncu Durumu</h3>
+                <p class="panel-sub">Guncel hesap ve profil sinyalleri tek panelde.</p>
+                <div class="status-stack">
+                    <div class="status-row"><span>Kullanici</span><strong id="heroStatusUser">Misafir</strong></div>
+                    <div class="status-row"><span>Rol</span><strong>Oyuncu</strong></div>
+                    <div class="status-row"><span>Scout Puani</span><strong>4.7</strong></div>
+                    <div class="status-row"><span>Profil Durumu</span><strong>Tamamlanıyor</strong></div>
+                </div>
+            </aside>
+        </section>
 
         <div class="kpi-strip">
             <div class="kpi">
@@ -884,6 +1335,118 @@
             </form>
         </div>
     </div>
+
+    <div class="listings-modal" id="listingsModal" onclick="if(event.target===this) closeListingsModal()">
+        <div class="listings-card" onclick="event.stopPropagation()">
+            <div class="listings-head">
+                <div>
+                    <h3>Ilanlar</h3>
+                    <div class="listings-sub" id="listingsModalSummary">Menajer, antrenor ve kulup kaynakli ilanlar burada listelenir.</div>
+                </div>
+                <button class="metric-modal-close" type="button" onclick="closeListingsModal()">×</button>
+            </div>
+            <div class="listings-body" id="listingsModalBody"></div>
+        </div>
+    </div>
+
+    <div class="need-modal-overlay" id="todayMatchOverlay" onclick="if(event.target.id==='todayMatchOverlay'){closeTodayMatchModal();}">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+            <div class="need-modal-head">
+                <h3>Bugun Macim Var</h3>
+                <button class="btn-small secondary" type="button" onclick="closeTodayMatchModal()">Kapat</button>
+            </div>
+            <form id="todayMatchForm">
+                <div class="need-modal-body">
+                    <input id="todayMatchName" type="text" placeholder="Mac adi (or: Besiktas U19 - Kasimpasa U19)" required>
+                    <div class="live-grid">
+                        <input id="todayMatchLeague" type="text" placeholder="Lig / Organizasyon">
+                        <input id="todayMatchLocation" type="text" placeholder="Saha / Konum">
+                    </div>
+                    <div class="live-grid">
+                        <input id="todayMatchDate" type="datetime-local" required>
+                        <input id="todayMatchFocus" type="text" placeholder="Odak (or: Sol kanat, 10 numara)">
+                    </div>
+                    <input id="todayMatchStream" type="url" placeholder="Yayin linki (opsiyonel)">
+                    <textarea id="todayMatchNote" placeholder="Scout ve kulupler icin kisa not: saat, forma rengi, oynadigin pozisyon vb."></textarea>
+                    <div class="quick-report-result" id="todayMatchResult">Mac bilgini kaydettiginde Canli Mac Bildirimleri listesinde gorunur.</div>
+                </div>
+                <div class="need-modal-actions">
+                    <button class="btn-small secondary" type="button" onclick="closeTodayMatchModal()">Vazgec</button>
+                    <button class="btn-small primary" type="submit">Yayina Al</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="need-modal-overlay" id="playerSuccessStoriesOverlay" onclick="if(event.target.id==='playerSuccessStoriesOverlay'){closePlayerSuccessStoriesHub();}">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+            <div class="need-modal-head">
+                <h3>Basari Hikayeleri</h3>
+                <button class="btn-small secondary" type="button" onclick="closePlayerSuccessStoriesHub()">Kapat</button>
+            </div>
+            <div class="need-modal-body">
+                <div class="quick-report-result" style="margin-bottom:12px;">Basari hikayesi gonder veya topluluktaki hikayeleri oku.</div>
+                <div class="quick-report-grid" style="grid-template-columns:repeat(2,1fr); margin-bottom:0;">
+                    <button class="btn-small secondary" type="button" style="justify-content:flex-start; min-height:96px;" onclick="openPlayerSuccessStorySubmitModal()">
+                        <i class="fas fa-paper-plane"></i><span>Gonder</span>
+                    </button>
+                    <button class="btn-small secondary" type="button" style="justify-content:flex-start; min-height:96px;" onclick="openPlayerSuccessStoriesReadModal()">
+                        <i class="fas fa-book-open"></i><span>Oku</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="need-modal-overlay" id="playerSuccessStorySubmitOverlay" onclick="if(event.target.id==='playerSuccessStorySubmitOverlay'){closePlayerSuccessStorySubmitModal();}">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+            <div class="need-modal-head">
+                <h3>Basari Hikayesi Gonder</h3>
+                <button class="btn-small secondary" type="button" onclick="closePlayerSuccessStorySubmitModal()">Kapat</button>
+            </div>
+            <form id="playerSuccessStoryForm">
+                <div class="need-modal-body">
+                    <input id="playerSuccessStoryFullName" name="full_name" placeholder="Ad Soyad" required maxlength="150">
+                    <div class="live-grid">
+                        <select id="playerSuccessStorySport" name="sport" required>
+                            <option value="">Spor Sec</option>
+                            <option value="Futbol">Futbol</option>
+                            <option value="Basketbol">Basketbol</option>
+                            <option value="Voleybol">Voleybol</option>
+                        </select>
+                        <input id="playerSuccessStoryOldClub" name="old_club" placeholder="Eski Kulup" maxlength="160">
+                    </div>
+                    <input id="playerSuccessStoryNewClub" name="new_club" placeholder="Yeni Kulup" maxlength="160" required>
+                    <textarea id="playerSuccessStoryText" name="story_text" placeholder="Basari hikayeni yaz..." required maxlength="1200"></textarea>
+                    <input id="playerSuccessStoryImage" name="image_url" type="url" placeholder="Gorsel linki (opsiyonel)">
+                    <div class="quick-report-result" id="playerSuccessStoryNotice">Yeni basari hikayesini dashboard icinden gonder.</div>
+                </div>
+                <div class="need-modal-actions">
+                    <button class="btn-small secondary" type="button" onclick="closePlayerSuccessStorySubmitModal()">Vazgec</button>
+                    <button class="btn-small primary" type="submit">Gonder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="need-modal-overlay" id="playerSuccessStoriesReadOverlay" onclick="if(event.target.id==='playerSuccessStoriesReadOverlay'){closePlayerSuccessStoriesReadModal();}">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+            <div class="need-modal-head">
+                <h3>Basari Hikayelerini Oku</h3>
+                <button class="btn-small secondary" type="button" onclick="closePlayerSuccessStoriesReadModal()">Kapat</button>
+            </div>
+            <div class="need-modal-body">
+                <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
+                    <button class="btn-small secondary" type="button" onclick="closePlayerSuccessStoriesReadModal(); openPlayerSuccessStoriesHub()"><i class="fas fa-arrow-left"></i><span>Geri</span></button>
+                    <button class="btn-small secondary" type="button" onclick="loadPlayerSuccessStories()"><i class="fas fa-arrows-rotate"></i><span>Yenile</span></button>
+                </div>
+                <div class="quick-report-result" id="playerSuccessStoriesStatus">Topluluktan gelen son basari hikayelerini burada oku.</div>
+                <div id="playerSuccessStoriesList" style="display:grid; gap:10px; margin-top:14px;">
+                    <div class="empty">Basari hikayeleri yukleniyor...</div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="assets/js/core-stability.js"></script>
     <script>
         const dashboardApiState = {
@@ -904,6 +1467,30 @@
 
         function normalizeText(value) {
             return (value || '').toString().trim().toLowerCase();
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function formatDate(value) {
+            if (!value) return '-';
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return String(value);
+            return new Intl.DateTimeFormat('tr-TR', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+            }).format(date);
+        }
+
+        function getToken() {
+            return (localStorage.getItem('nextscout_token') || '').trim();
         }
 
         function getApiBaseUrl() {
@@ -947,6 +1534,42 @@
             } catch (e) {
                 return '';
             }
+        }
+
+        function getCurrentPlayerUserIdFromStorage() {
+            try {
+                const raw = localStorage.getItem('nextscout_user');
+                const user = raw ? JSON.parse(raw) : null;
+                const id = Number(user?.id);
+                return Number.isFinite(id) ? id : null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function openOwnPlayerProfile(event) {
+            if (event) event.preventDefault();
+            const userId = getCurrentPlayerUserIdFromStorage();
+            if (userId) {
+                window.location.href = `player-profile.html?user_id=${encodeURIComponent(userId)}`;
+                return false;
+            }
+            resolveCurrentUserId()
+                .then((resolvedId) => {
+                    if (resolvedId) {
+                        window.location.href = `player-profile.html?user_id=${encodeURIComponent(resolvedId)}`;
+                        return;
+                    }
+                    window.nsNotify?.error
+                        ? window.nsNotify.error('Oyuncu profili icin gecerli kullanici bulunamadi.')
+                        : nsnsAlert('Oyuncu profili icin gecerli kullanici bulunamadi.');
+                })
+                .catch(() => {
+                    window.nsNotify?.error
+                        ? window.nsNotify.error('Oyuncu profili acilamadi.')
+                        : nsnsAlert('Oyuncu profili acilamadi.');
+                });
+            return false;
         }
 
         function getPlayerLikeCount(playerName) {
@@ -1169,6 +1792,153 @@
             document.body.style.overflow = 'auto';
         }
 
+        function openPlayerSuccessStoriesHub() {
+            document.getElementById('playerSuccessStoriesOverlay')?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePlayerSuccessStoriesHub() {
+            document.getElementById('playerSuccessStoriesOverlay')?.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function openPlayerSuccessStorySubmitModal() {
+            closePlayerSuccessStoriesHub();
+            try {
+                const raw = localStorage.getItem('nextscout_user');
+                const user = raw ? JSON.parse(raw) : null;
+                const input = document.getElementById('playerSuccessStoryFullName');
+                if (input && !input.value && user?.name) input.value = String(user.name);
+            } catch (error) {}
+            document.getElementById('playerSuccessStorySubmitOverlay')?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePlayerSuccessStorySubmitModal() {
+            document.getElementById('playerSuccessStorySubmitOverlay')?.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function openPlayerSuccessStoriesReadModal() {
+            closePlayerSuccessStoriesHub();
+            document.getElementById('playerSuccessStoriesReadOverlay')?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            loadPlayerSuccessStories();
+        }
+
+        function closePlayerSuccessStoriesReadModal() {
+            document.getElementById('playerSuccessStoriesReadOverlay')?.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        async function fetchPlayerSuccessStories() {
+            const response = await fetch(`${getApiBaseUrl()}/success-stories?limit=8`, {
+                headers: { Accept: 'application/json' },
+                cache: 'no-store',
+                credentials: 'same-origin',
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok || data.ok === false) {
+                throw new Error(data.message || 'Basari hikayeleri alinamadi.');
+            }
+            return data;
+        }
+
+        function renderPlayerSuccessStories(payload) {
+            const root = document.getElementById('playerSuccessStoriesList');
+            const badge = document.getElementById('playerSuccessStoriesStatus');
+            const rows = Array.isArray(payload?.data) ? payload.data.slice(0, 8) : [];
+            if (!root || !badge) return;
+
+            if (!rows.length) {
+                root.innerHTML = '<div class="empty">Basari hikayesi bulunmuyor.</div>';
+                badge.textContent = 'Bos';
+                return;
+            }
+
+            root.innerHTML = rows.map((item) => `
+                <article class="point-item">
+                    <div class="row-top">
+                        <div>
+                            <div class="row-title">${escapeHtml(item.full_name || 'Basari Hikayesi')}</div>
+                            <div class="row-copy">${escapeHtml(item.story_text || 'Hikaye metni yok.')}</div>
+                        </div>
+                        <span class="badge approved">${escapeHtml(item.sport || '-')}</span>
+                    </div>
+                    <div class="row-meta">
+                        <span><i class="fas fa-building"></i> ${escapeHtml(item.old_club || '-')} -> ${escapeHtml(item.new_club || '-')}</span>
+                        <span><i class="fas fa-calendar"></i> ${formatDate(item.created_at)}</span>
+                    </div>
+                </article>
+            `).join('');
+
+            badge.textContent = `${rows.length} kayit`;
+        }
+
+        async function loadPlayerSuccessStories() {
+            const root = document.getElementById('playerSuccessStoriesList');
+            const badge = document.getElementById('playerSuccessStoriesStatus');
+            if (!root || !badge) return;
+
+            badge.textContent = 'Yukleniyor';
+            root.innerHTML = '<div class="empty">Basari hikayeleri yukleniyor...</div>';
+
+            try {
+                const payload = await fetchPlayerSuccessStories();
+                renderPlayerSuccessStories(payload);
+            } catch (error) {
+                badge.textContent = 'Hata';
+                root.innerHTML = `<div class="empty">${escapeHtml(error.message || 'Basari hikayeleri yuklenemedi.')}</div>`;
+            }
+        }
+
+        async function submitPlayerSuccessStoryForm(event) {
+            event.preventDefault();
+            const form = event.currentTarget;
+            const root = document.getElementById('playerSuccessStoryNotice');
+            const token = getToken();
+            if (!token) {
+                if (root) root.textContent = 'Hikaye gondermek icin giris yapman gerekiyor.';
+                return;
+            }
+
+            const formData = new FormData(form);
+            const payload = {
+                full_name: (formData.get('full_name') || '').toString().trim(),
+                sport: (formData.get('sport') || '').toString().trim(),
+                old_club: (formData.get('old_club') || '').toString().trim(),
+                new_club: (formData.get('new_club') || '').toString().trim(),
+                story_text: (formData.get('story_text') || '').toString().trim(),
+                image_url: (formData.get('image_url') || '').toString().trim(),
+            };
+
+            if (!payload.full_name || !payload.sport || !payload.new_club || !payload.story_text) {
+                if (root) root.textContent = 'Ad, spor, yeni kulup ve hikaye zorunlu.';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/success-stories`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(payload),
+                });
+                const result = await response.json().catch(() => ({}));
+                if (!response.ok || !result?.ok) {
+                    throw new Error(result?.message || 'Hikaye gonderilemedi.');
+                }
+                if (root) root.textContent = 'Hikayen alindi. Admin onayindan sonra yayinlanacak.';
+                form.reset();
+                closePlayerSuccessStorySubmitModal();
+            } catch (error) {
+                if (root) root.textContent = error?.message || 'Hikaye gonderilemedi.';
+            }
+        }
+
         async function submitBoostForm(event) {
             event.preventDefault();
 
@@ -1325,6 +2095,178 @@
             document.body.style.overflow = 'hidden';
         }
 
+        function getPlayerListingRows() {
+            const managerNeeds = Array.isArray(dashboardApiState.latestNeeds) ? dashboardApiState.latestNeeds.slice(0, 4) : [];
+            const communityEvents = Array.isArray(dashboardApiState.communityEvents) ? dashboardApiState.communityEvents.slice(0, 4) : [];
+            const inbound = Array.isArray(dashboardApiState.incomingMessages) ? dashboardApiState.incomingMessages : [];
+            const inboundListings = inbound
+                .filter((row) => {
+                    const haystack = normalizeText(`${row?.subject || ''} ${row?.message || ''} ${row?.type || ''}`);
+                    return /ilan|trial|deneme|idman|kamp|secme|seçme|etkinlik|camp|showcase/.test(haystack);
+                })
+                .slice(0, 4);
+
+            const grouped = {
+                manager: [],
+                coach: [],
+                club: [],
+            };
+
+            managerNeeds.forEach((row) => {
+                grouped.manager.push({
+                    title: row?.title || row?.position || 'Menajer ilani',
+                    meta: [row?.club_name || row?.club || 'Kulup', row?.city || null, row?.created_at || null].filter(Boolean).join(' • '),
+                });
+            });
+
+            communityEvents.forEach((row) => {
+                const owner = normalizeText(`${row?.organizer_name || ''} ${row?.club_name || ''} ${row?.host_type || ''} ${row?.source || ''}`);
+                const targetGroup = /coach|antrenor|trainer/.test(owner) ? 'coach' : 'club';
+                grouped[targetGroup].push({
+                    title: row?.title || row?.event_name || 'Deneme veya etkinlik',
+                    meta: [row?.city || row?.location || 'Konum yok', row?.start_at || row?.event_date || null, row?.organizer_name || row?.club_name || null].filter(Boolean).join(' • '),
+                });
+            });
+
+            inboundListings.forEach((row) => {
+                const owner = normalizeText(`${row?.from_name || ''} ${row?.sender_name || ''} ${row?.subject || ''} ${row?.message || ''}`);
+                const targetGroup = /coach|antrenor|trainer/.test(owner)
+                    ? 'coach'
+                    : (/manager|menajer/.test(owner) ? 'manager' : 'club');
+                grouped[targetGroup].push({
+                    title: row?.subject || 'Ilan mesaji',
+                    meta: [row?.from_name || row?.sender_name || 'Gonderen', row?.created_at || row?.time || null, row?.message || null].filter(Boolean).join(' • '),
+                });
+            });
+
+            return grouped;
+        }
+
+        function openListingsModal() {
+            const grouped = getPlayerListingRows();
+            const sections = [
+                { key: 'manager', label: 'Menajerden Gelen Ilanlar' },
+                { key: 'coach', label: 'Antrenorden Gelen Ilanlar' },
+                { key: 'club', label: 'Kulupten Gelen Ilanlar' },
+            ];
+            const total = sections.reduce((sum, section) => sum + (grouped[section.key]?.length || 0), 0);
+            const summaryEl = document.getElementById('listingsModalSummary');
+            const listEl = document.getElementById('listingsModalBody');
+            const modal = document.getElementById('listingsModal');
+            if (!summaryEl || !listEl || !modal) return;
+
+            summaryEl.textContent = total
+                ? `Menajer, antrenor ve kulup kaynakli ${total} aktif ilan veya firsat kaydi.`
+                : 'Su anda goruntulenecek aktif ilan bulunmuyor.';
+
+            listEl.innerHTML = total
+                ? sections.map((section) => {
+                    const rows = grouped[section.key] || [];
+                    return `
+                        <section class="listing-section">
+                            <div class="listing-section-head">
+                                <div class="listing-section-title">${section.label}</div>
+                                <div class="listing-section-count">${rows.length} kayit</div>
+                            </div>
+                            <div class="listing-section-items">
+                                ${rows.length
+                                    ? rows.map((item) => `
+                                        <article class="metric-item">
+                                            <div class="metric-item-title">${escapeHtml(item.title)}</div>
+                                            <div class="metric-item-meta">${escapeHtml(item.meta || 'Detay bekleniyor')}</div>
+                                        </article>
+                                    `).join('')
+                                    : '<div class="metric-item-meta">Bu kategoride aktif ilan yok.</div>'}
+                            </div>
+                        </section>
+                    `;
+                }).join('')
+                : '<div class="metric-item-meta">Yeni ilan geldiginde burada goreceksin.</div>';
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeListingsModal() {
+            const modal = document.getElementById('listingsModal');
+            if (!modal) return;
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function openTodayMatchModal() {
+            const modal = document.getElementById('todayMatchOverlay');
+            const result = document.getElementById('todayMatchResult');
+            if (result) result.textContent = 'Mac bilgini kaydettiginde Canli Mac Bildirimleri listesinde gorunur.';
+            modal?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTodayMatchModal() {
+            document.getElementById('todayMatchOverlay')?.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        async function submitTodayMatchForm(event) {
+            event.preventDefault();
+            const token = getToken();
+            const result = document.getElementById('todayMatchResult');
+            if (!token || token === 'local-session-token') {
+                if (result) result.textContent = 'Mac bilgisi girmek icin giris yapman gerekiyor.';
+                return;
+            }
+
+            const matchName = String(document.getElementById('todayMatchName')?.value || '').trim();
+            const league = String(document.getElementById('todayMatchLeague')?.value || '').trim();
+            const location = String(document.getElementById('todayMatchLocation')?.value || '').trim();
+            const matchDate = String(document.getElementById('todayMatchDate')?.value || '').trim();
+            const focus = String(document.getElementById('todayMatchFocus')?.value || '').trim();
+            const streamUrl = String(document.getElementById('todayMatchStream')?.value || '').trim();
+            const note = String(document.getElementById('todayMatchNote')?.value || '').trim();
+            const currentPlayerName = getCurrentPlayerName();
+            const currentPlayerUserId = getCurrentPlayerUserIdFromStorage();
+
+            if (!matchName || !matchDate) {
+                if (result) result.textContent = 'Mac adi ve tarih zorunlu.';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/live-matches`, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        match_name: matchName,
+                        league: league || null,
+                        location: location || null,
+                        sport: 'football',
+                        focus: focus || 'Oyuncu bildirimi',
+                        stream_url: streamUrl || null,
+                        note: note || null,
+                        source_role: 'player',
+                        source_name: currentPlayerName || null,
+                        source_user_id: currentPlayerUserId || null,
+                        match_date: new Date(matchDate).toISOString(),
+                    }),
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    const firstError = payload?.errors ? Object.values(payload.errors)?.[0]?.[0] : '';
+                    throw new Error(firstError || payload?.message || 'Canli mac kaydedilemedi.');
+                }
+                if (result) result.textContent = 'Mac bilgin kaydedildi. Canli Mac Bildirimleri listesinde gorunur.';
+                event.target.reset();
+                window.nsNotify?.success ? window.nsNotify.success('Mac bilgin kaydedildi.') : null;
+                setTimeout(() => closeTodayMatchModal(), 900);
+            } catch (error) {
+                if (result) result.textContent = error?.message || 'Canli mac kaydedilemedi.';
+            }
+        }
+
         function openLatestItemModal(type) {
             const firstNeed = dashboardApiState.latestNeeds[0] || null;
             const firstTrend = dashboardApiState.weeklyTrends[0] || null;
@@ -1453,6 +2395,59 @@
             const body = await response.json().catch(() => ({}));
             if (!response.ok || body?.ok === false) return [];
             return Array.isArray(body?.data) ? body.data : [];
+        }
+
+        async function openMyTrialsModal() {
+            const titleEl = document.getElementById('metricModalTitle');
+            const summaryEl = document.getElementById('metricModalSummary');
+            const listEl = document.getElementById('metricModalList');
+            const modal = document.getElementById('metricModal');
+            if (!titleEl || !summaryEl || !listEl || !modal) return;
+
+            titleEl.textContent = 'Denemelerim';
+            summaryEl.textContent = 'Oyuncu olarak kayit oldugun deneme, trial ve hatirlatici kayitlari.';
+            listEl.innerHTML = '<div class="metric-empty">Denemelerin yukleniyor...</div>';
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            try {
+                const items = await loadUpcomingSchedulesFromApi();
+                const rows = Array.isArray(items) ? items : [];
+                if (!rows.length) {
+                    listEl.innerHTML = `
+                        <div class="metric-empty">
+                            Henuz kayitli denemen yok.
+                            <div style="margin-top:12px;">
+                                <a class="schedule-btn primary" href="trial-center.html">Deneme Merkezine Git</a>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                summaryEl.textContent = `Toplam ${rows.length} kayit bulundu. En guncel kayitlar asagida listeleniyor.`;
+                listEl.innerHTML = rows.map((row) => {
+                    const title = row?.match_title || row?.title || 'Deneme kaydi';
+                    const team = row?.team_name || row?.organizer_name || 'NextScout';
+                    const city = row?.city || row?.location || '-';
+                    const date = row?.match_date || row?.event_date || row?.created_at || '-';
+                    const note = row?.notes || row?.status || row?.position || '-';
+                    return `
+                        <article class="metric-item">
+                            <div class="metric-item-title">${escapeHtml(title)}</div>
+                            <div class="metric-item-meta">${escapeHtml(team)} • ${escapeHtml(city)}</div>
+                            <div class="metric-item-meta">${escapeHtml(date)}</div>
+                            <div class="metric-item-meta">${escapeHtml(note)}</div>
+                        </article>
+                    `;
+                }).join('') + `
+                    <div class="schedule-actions">
+                        <a class="schedule-btn primary" href="trial-center.html">Deneme Merkezini Ac</a>
+                    </div>
+                `;
+            } catch (error) {
+                listEl.innerHTML = '<div class="metric-empty">Denemelerin su an yuklenemiyor.</div>';
+            }
         }
 
         function openScheduleModal(type) {
@@ -1639,8 +2634,8 @@
                 if (el) el.textContent = text;
             };
 
-            setText('.welcome h1', 'Ho\u015f Geldin, Oyuncu!');
-            setText('.welcome p', 'Profilini g\u00fc\u00e7lendir, ma\u00e7 videolar\u0131n\u0131 y\u00fckle ve scout ilgisini art\u0131r.');
+            setText('.hero-title', 'Oyuncu kariyerini buradan yonet.');
+            setText('#heroGreeting', 'Profilini guclendir, videolarini sergile ve scoutlarla kurdugun temasi tek panelden yonet.');
             setText('#videoCountSub', '2 yeni video beklemede');
             setText('#scoutInterestSub', '5 yeni takip\u00e7i');
             setText('#transferOfferSub', '1 teklif a\u00e7\u0131k');
@@ -1671,8 +2666,12 @@
             const raw = localStorage.getItem('nextscout_user');
             try {
                 const u = raw ? JSON.parse(raw) : null;
-                const welcome = document.querySelector('.welcome h1');
-                if (welcome && u?.name) welcome.textContent = `Ho\u015f Geldin, ${u.name.split(' ')[0]}!`;
+                const heroTitle = document.querySelector('.hero-title');
+                if (heroTitle && u?.name) heroTitle.textContent = `Ho\u015f Geldin, ${u.name.split(' ')[0]}!`;
+                const heroGreeting = document.getElementById('heroGreeting');
+                if (heroGreeting && u?.name) heroGreeting.textContent = `${u.name.split(' ')[0]}, profilini guclendir, videolarini sergile ve scoutlarla kurdugun temasi yonet.`;
+                const heroStatusUser = document.getElementById('heroStatusUser');
+                if (heroStatusUser && u?.name) heroStatusUser.textContent = u.name;
             } catch (e) {}
 
             applyTurkishTextFixes();
@@ -1684,6 +2683,14 @@
             if (boostForm) {
                 boostForm.addEventListener('submit', submitBoostForm);
             }
+            const playerSuccessStoryForm = document.getElementById('playerSuccessStoryForm');
+            if (playerSuccessStoryForm) {
+                playerSuccessStoryForm.addEventListener('submit', submitPlayerSuccessStoryForm);
+            }
+            const todayMatchForm = document.getElementById('todayMatchForm');
+            if (todayMatchForm) {
+                todayMatchForm.addEventListener('submit', submitTodayMatchForm);
+            }
             const boostPackage = document.getElementById('boostPackage');
             if (boostPackage) {
                 boostPackage.addEventListener('change', updateBoostPackageSummary);
@@ -1692,6 +2699,10 @@
                 if (event.key === 'Escape') {
                     closeMetricModal();
                     closeBoostModal();
+                    closeListingsModal();
+                    closePlayerSuccessStoriesHub();
+                    closePlayerSuccessStorySubmitModal();
+                    closePlayerSuccessStoriesReadModal();
                 }
             });
         });
