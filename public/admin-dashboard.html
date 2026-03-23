@@ -405,9 +405,9 @@
         </div>
 
         <div class="section">
-            <div class="section-title"><i class="fas fa-calendar-check"></i> Deneme/Idman Ilan Moderasyonu (API)</div>
+            <div class="section-title"><i class="fas fa-calendar-check"></i> Deneme/Idman Ilan Moderasyonu</div>
             <div class="action-buttons" style="margin-bottom:12px;">
-                <button class="btn btn-secondary" type="button" onclick="loadTrialModerationQueue()"><i class="fas fa-rotate"></i> Listeyi Yenile</button>
+                <button class="btn btn-secondary" type="button" onclick="loadTrialModerationQueue()"><i class="fas fa-circle-info"></i> Durumu Goster</button>
             </div>
             <table class="users-table">
                 <thead>
@@ -422,7 +422,7 @@
                     </tr>
                 </thead>
                 <tbody id="trialModerationBody">
-                    <tr><td colspan="7" style="text-align:center;color:#64748B;">Yukleniyor...</td></tr>
+                    <tr><td colspan="7" style="text-align:center;color:#64748B;">Bu modul icin backend endpointi bu buildde aktif degil.</td></tr>
                 </tbody>
             </table>
         </div>
@@ -1512,85 +1512,11 @@
         async function loadTrialModerationQueue() {
             const tbody = document.getElementById('trialModerationBody');
             if (!tbody) return;
-            const apiBase = getApiBaseUrl();
-            const token = getAuthToken();
-            if (!token) {
-                tbody.innerHTML = '<tr><td colspan=\"7\" style=\"text-align:center;color:#b91c1c;\">Admin token bulunamadi. Giris yap.</td></tr>';
-                return;
-            }
-
-            try {
-                const response = await fetch(`${apiBase}/admin/trial-events`, {
-                    headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
-                });
-                const payload = await response.json().catch(() => ({}));
-                if (!response.ok || payload?.ok === false) {
-                    throw new Error(payload?.message || `HTTP ${response.status}`);
-                }
-
-                const rows = Array.isArray(payload?.data?.data) ? payload.data.data : [];
-                if (!rows.length) {
-                    tbody.innerHTML = '<tr><td colspan=\"7\" style=\"text-align:center;color:#64748B;\">Ilan bulunamadi.</td></tr>';
-                    return;
-                }
-
-                tbody.innerHTML = rows.map((item) => `
-                    <tr>
-                        <td><strong>${escapeHtml(item?.title || '-')}</strong></td>
-                        <td>${escapeHtml(item?.event_type || '-')}</td>
-                        <td>${escapeHtml(item?.city || '-')}</td>
-                        <td>${formatDate(item?.event_date)}</td>
-                        <td>${escapeHtml(item?.organizer?.name || '-')}</td>
-                        <td><span class=\"badge badge-info\">${escapeHtml(item?.status || '-')}</span></td>
-                        <td>
-                            <button class=\"btn btn-primary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"moderateTrialEvent(${Number(item.id)}, 'approve')\">Onayla</button>
-                            <button class=\"btn btn-secondary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"moderateTrialEvent(${Number(item.id)}, 'reject')\">Reddet</button>
-                            <button class=\"btn btn-secondary\" style=\"padding:6px 10px;font-size:12px;\" onclick=\"moderateTrialEvent(${Number(item.id)}, 'cancel')\">Iptal</button>
-                        </td>
-                    </tr>
-                `).join('');
-            } catch (error) {
-                tbody.innerHTML = `<tr><td colspan=\"7\" style=\"text-align:center;color:#b91c1c;\">Hata: ${escapeHtml(error.message)}</td></tr>`;
-            }
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#64748B;">Bu modulun backend endpointleri mevcut olmadigi icin canliya kapali birakildi. Trial akislarini ayri panelden veya sonraki backend sürümünde ac.</td></tr>';
         }
 
         async function moderateTrialEvent(id, action) {
-            const apiBase = getApiBaseUrl();
-            const token = getAuthToken();
-            if (!token) {
-                nsAlert('Admin token bulunamadi.');
-                return;
-            }
-            let reason = '';
-            if (action === 'reject' || action === 'cancel') {
-                reason = (prompt('Moderasyon notu gir (min 10 karakter):', '') || '').trim();
-                const checklist = window.NextScoutData?.editorialChecklist
-                    ? window.NextScoutData.editorialChecklist({ title: `Trial-${id}`, body: reason })
-                    : { ok: true, warnings: [] };
-                if (!checklist.ok) {
-                    nsAlert(`Moderasyon notu yetersiz: ${checklist.warnings.join(', ')}`);
-                    return;
-                }
-            }
-            try {
-                const response = await fetch(`${apiBase}/admin/trial-events/${encodeURIComponent(id)}/moderate`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json',
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({ action, reason }),
-                });
-                const payload = await response.json().catch(() => ({}));
-                if (!response.ok || payload?.ok === false) {
-                    throw new Error(payload?.message || `HTTP ${response.status}`);
-                }
-                window.NextScoutGrowth?.track('trial_event_moderated', { id: Number(id), action });
-                loadTrialModerationQueue();
-            } catch (error) {
-                nsAlert(`Moderasyon hatasi: ${error.message}`);
-            }
+            nsAlert(`Trial moderasyon islemi bu buildde kapali. Islem: ${action}, kayit: ${id}`);
         }
 
         document.addEventListener('DOMContentLoaded', function() {

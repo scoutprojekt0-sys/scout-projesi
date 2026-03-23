@@ -156,11 +156,60 @@ class DiscoveryController extends Controller
             ->where('status', 'open')
             ->join('users as teams', 'opportunities.team_user_id', '=', 'teams.id')
             ->where('teams.role', 'manager')
-            ->select('opportunities.*', 'teams.name as manager_name')
+            ->select([
+                'opportunities.*',
+                'teams.name as manager_name',
+                'teams.name as author_name',
+                'opportunities.details as description',
+            ])
             ->orderBy('opportunities.created_at', 'desc')
             ->paginate(20);
 
         return $this->paginatedListResponse($needs, 'Menajer ihtiyaclari hazir.');
+    }
+
+    public function weeklyDigest(): JsonResponse
+    {
+        $windowStart = now()->subDays(7);
+
+        $weeklyPlayerCount = DB::table('users')
+            ->where('role', 'player')
+            ->where('created_at', '>=', $windowStart)
+            ->count();
+
+        $weeklyManagerNeeds = DB::table('opportunities')
+            ->join('users as owner', 'opportunities.team_user_id', '=', 'owner.id')
+            ->where('opportunities.status', 'open')
+            ->where('owner.role', 'manager')
+            ->where('opportunities.created_at', '>=', $windowStart)
+            ->count();
+
+        $weeklyCoachNeeds = DB::table('opportunities')
+            ->join('users as owner', 'opportunities.team_user_id', '=', 'owner.id')
+            ->where('opportunities.status', 'open')
+            ->where('owner.role', 'coach')
+            ->where('opportunities.created_at', '>=', $windowStart)
+            ->count();
+
+        $topViewedPlayers = DB::table('users')
+            ->where('role', 'player')
+            ->where('created_at', '>=', $windowStart)
+            ->orderByDesc('views_count')
+            ->limit(5)
+            ->get(['id', 'name', 'views_count'])
+            ->map(fn ($row) => [
+                'id' => (int) $row->id,
+                'name' => (string) ($row->name ?? 'Oyuncu'),
+                'views' => (int) ($row->views_count ?? 0),
+            ])
+            ->values();
+
+        return $this->successResponse([
+            'weekly_player_count' => $weeklyPlayerCount,
+            'weekly_manager_needs' => $weeklyManagerNeeds,
+            'weekly_coach_needs' => $weeklyCoachNeeds,
+            'top_viewed_players' => $topViewedPlayers,
+        ], 'Haftalik bulten hazir.');
     }
 
     public function matchesForUser(): JsonResponse

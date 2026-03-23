@@ -482,6 +482,20 @@
       };
     }
 
+    async function fetchCurrentCoachUser(headers) {
+      const authResponse = await fetch(`${getApiBaseUrl()}/auth/me`, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': headers.Authorization,
+        },
+      });
+      if (!authResponse.ok) return null;
+      const authPayload = await authResponse.json().catch(() => null);
+      const authUser = authPayload?.data || null;
+      if (!authUser?.id) return null;
+      return authUser;
+    }
+
     function getCurrentAuthUserFromStorage() {
       try {
         const raw = localStorage.getItem('nextscout_user');
@@ -849,25 +863,33 @@
     async function loadBackendProfile() {
       const headers = authHeaders();
       if (!headers) return null;
-      const res = await fetch(`${getApiBaseUrl()}/staff-profiles/me`, { headers: { 'Accept': 'application/json', 'Authorization': headers.Authorization } });
+      const authUser = await fetchCurrentCoachUser(headers);
+      const targetId = authUser?.id || getCurrentAuthUserFromStorage()?.id;
+      if (!targetId) return null;
+      const res = await fetch(`${getApiBaseUrl()}/staff/${encodeURIComponent(targetId)}`, {
+        headers: { 'Accept': 'application/json', 'Authorization': headers.Authorization },
+      });
       if (!res.ok) return null;
-      const payload = await res.json();
+      const payload = await res.json().catch(() => null);
       const data = payload?.data || {};
       return {
-        name: data.name || '',
+        name: data.name || authUser?.name || '',
         experience: data.experience_years || '',
         branch: data.branch || '',
-        country: data.country || '',
-        city: data.city || '',
-        phone: data.phone || '',
+        country: data.country || authUser?.country || '',
+        city: data.city || authUser?.city || '',
+        phone: data.phone || authUser?.phone || '',
         bio: data.bio || '',
-        photo: data.profile_photo_url || '',
+        photo: data.profile_photo_url || authUser?.photo_url || '',
       };
     }
 
     async function saveBackendProfile(profile) {
       const headers = authHeaders();
       if (!headers) return false;
+      const authUser = await fetchCurrentCoachUser(headers);
+      const targetId = authUser?.id || getCurrentAuthUserFromStorage()?.id;
+      if (!targetId) return false;
       const body = {
         name: profile.name,
         city: profile.city,
@@ -880,7 +902,7 @@
         branch: profile.branch,
         profile_photo_url: profile.photo || '',
       };
-      const res = await fetch(`${getApiBaseUrl()}/staff-profiles/me`, {
+      const res = await fetch(`${getApiBaseUrl()}/staff/${encodeURIComponent(targetId)}`, {
         method: 'PUT',
         headers,
         body: JSON.stringify(body),
