@@ -11851,17 +11851,9 @@
             const toArray = window.NextScoutData?.toArray || ((input) => Array.isArray(input) ? input : []);
 
             try {
-                const [clubNeedsPayload, managerNeedsPayload, coachNeedsPayload] = await Promise.all([
-                    fetchJsonSafe(`${API_BASE_URL}/club-needs?limit=300`),
-                    fetchJsonSafe(`${API_BASE_URL}/discovery/manager-needs`),
-                    fetchJsonSafe(`${API_BASE_URL}/discovery/coach-needs`),
-                ]);
-
-                const rows = [
-                    ...toArray(clubNeedsPayload?.data ?? clubNeedsPayload),
-                    ...toArray(managerNeedsPayload?.data ?? managerNeedsPayload),
-                    ...toArray(coachNeedsPayload?.data ?? coachNeedsPayload),
-                ].filter((row) => row && typeof row === 'object');
+                const clubNeedsPayload = await fetchJsonSafe(`${API_BASE_URL}/club-needs?limit=300`);
+                const rows = toArray(clubNeedsPayload?.data ?? clubNeedsPayload)
+                    .filter((row) => row && typeof row === 'object');
 
                 const positionCounts = new Map();
                 rows.forEach((row) => {

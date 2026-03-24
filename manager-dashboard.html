@@ -369,21 +369,32 @@
 
         async function fetchManagerNeeds() {
             const apiBase = getApiBaseUrl();
-            const response = await fetch(`${apiBase}/discovery/manager-needs`, {
-                headers: { Accept: 'application/json' },
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            const currentUserId = Number(localStorage.getItem('nextscout_user_id') || 0);
+            const query = currentUserId ? `?team_user_id=${currentUserId}&sort_by=created_at&sort_dir=desc&per_page=20` : '?sort_by=created_at&sort_dir=desc&per_page=20';
+            const response = await fetch(`${apiBase}/opportunities${query}`, {
+                headers: {
+                    Accept: 'application/json',
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                },
             });
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const payload = await response.json();
-            return Array.isArray(payload?.data) ? payload.data : [];
+            const rows = Array.isArray(payload?.data?.data)
+                ? payload.data.data
+                : (Array.isArray(payload?.data) ? payload.data : []);
+            return rows.filter((item) => item && typeof item === 'object');
         }
 
         async function saveManagerNeed(row) {
             const apiBase = getApiBaseUrl();
-            const response = await fetch(`${apiBase}/discovery/manager-needs`, {
+            const token = localStorage.getItem('nextscout_token');
+            const response = await fetch(`${apiBase}/opportunities`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
                 },
                 body: JSON.stringify(row),
             });
@@ -720,9 +731,8 @@
             }
 
             const item = {
-                author_name: `${managerFirstName} ${managerLastName}`.trim(),
                 title: `${document.getElementById('needPosition').value || 'Oyuncu'} pozisyonu icin ilan`,
-                description: document.getElementById('needNote').value.trim(),
+                details: document.getElementById('needNote').value.trim(),
                 position: document.getElementById('needPosition').value,
                 min_height: Number(document.getElementById('needMinHeight').value || 0),
                 dominant_side: document.getElementById('needFoot').value,

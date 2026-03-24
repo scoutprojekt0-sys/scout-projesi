@@ -103,13 +103,14 @@ class LegacyCompatibilityController extends Controller
         $rows = DB::table('opportunities as o')
             ->join('users as u', 'u.id', '=', 'o.team_user_id')
             ->where('o.status', 'open')
+            ->where('u.role', 'team')
             ->select([
                 'o.id',
                 'o.title',
                 'o.city',
                 'o.created_at',
                 DB::raw('o.details as venue'),
-                DB::raw("CASE WHEN u.role = 'coach' THEN 'training_session' ELSE 'trial_day' END as event_type"),
+                DB::raw("'trial_day' as event_type"),
                 DB::raw("'open' as status"),
                 DB::raw('u.name as organizer_name'),
                 DB::raw('u.role as organizer_role'),
@@ -149,13 +150,14 @@ class LegacyCompatibilityController extends Controller
         $row = DB::table('opportunities as o')
             ->join('users as u', 'u.id', '=', 'o.team_user_id')
             ->where('o.id', $id)
+            ->where('u.role', 'team')
             ->select([
                 'o.id',
                 'o.title',
                 'o.city',
                 'o.created_at',
                 DB::raw('o.details as venue'),
-                DB::raw("CASE WHEN u.role = 'coach' THEN 'training_session' ELSE 'trial_day' END as event_type"),
+                DB::raw("'trial_day' as event_type"),
                 DB::raw("'open' as status"),
                 DB::raw('u.name as organizer_name'),
                 DB::raw('u.role as organizer_role'),
