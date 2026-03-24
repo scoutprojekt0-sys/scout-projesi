@@ -2613,6 +2613,10 @@
         const formScore = Math.max(0, Math.min(100, Math.round(Number(player.rating || 0) * 10)));
         const qualityScore = Math.max(0, Math.min(100, Math.round(Number(player.quality_score || 0))));
         const fitScore = compatibility ? Math.max(0, Math.min(100, Math.round(Number(compatibility.score || 0)))) : 0;
+        const playerPhoto = String(player.photo_url || player.profile_photo_url || '').trim();
+        const avatarBody = playerPhoto
+          ? `<img src="${esc(playerPhoto)}" alt="${esc(player.name || 'Oyuncu')}" style="width:100%;height:100%;object-fit:cover;display:block;">`
+          : `<div class="player-avatar-mark">${getPlayerInitials(player.name)}</div>`;
         return `
         <div class="player-card">
           <div class="player-avatar">
@@ -2620,7 +2624,7 @@
               <span class="player-hero-chip">${(player.sport || "futbol").toUpperCase()}</span>
               <span class="player-value-chip">${marketValue}</span>
             </div>
-            <div class="player-avatar-mark">${getPlayerInitials(player.name)}</div>
+            ${avatarBody}
             <div class="player-avatar-bottom">
               <span class="player-hero-chip">${player.club || "Kulup bilgisi yok"}</span>
               <span class="player-hero-chip">${player.nationality || "Ulke yok"}</span>
@@ -2663,7 +2667,7 @@
               </div>
               <div class="info-item">
                 <span class="info-label">Boy</span>
-                <span class="info-value">${player.height}cm</span>
+                <span class="info-value">${player.height === "-" ? "-" : `${player.height}cm`}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Brans</span>
@@ -2888,6 +2892,7 @@
           radar_new: Boolean(p.radar_new),
           radar_rising: Boolean(p.radar_rising),
           radar_hidden: Boolean(p.radar_hidden),
+          photo_url: p.photo_url || p.profile_photo_url || "",
         })).map((player) => ({
           ...player,
           visibility_level: getVisibilityLevelForPlayer(player),

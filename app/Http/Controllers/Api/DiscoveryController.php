@@ -18,11 +18,29 @@ class DiscoveryController extends Controller
         $city = request('city');
 
         $players = DB::table('users')
+            ->leftJoin('player_profiles as pp', 'pp.user_id', '=', 'users.id')
             ->where('role', 'player')
             ->when($search, fn($q) => $q->where('name', 'like', "%{$search}%"))
-            ->when($position, fn($q) => $q->where('position', $position))
+            ->when($position, fn($q) => $q->where(function ($inner) use ($position) {
+                $inner->where('users.position', $position)
+                    ->orWhere('pp.position', $position);
+            }))
             ->when($city, fn($q) => $q->where('city', $city))
-            ->select('id', 'name', 'position', 'city', 'age', 'photo_url')
+            ->select([
+                'users.id',
+                'users.name',
+                'users.sport',
+                DB::raw('COALESCE(pp.position, users.position) as position'),
+                'users.city',
+                'users.age',
+                'users.photo_url',
+                'pp.height_cm',
+                'pp.current_team',
+                DB::raw("'-' as league"),
+                'users.created_at',
+            ])
+            ->orderByDesc('users.created_at')
+            ->orderByDesc('users.id')
             ->paginate(20);
 
         return $this->paginatedListResponse($players, 'Public oyuncu listesi hazir.');

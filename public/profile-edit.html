@@ -1338,6 +1338,7 @@
 
                 const payload = {
                     name: (profileData.name || '').toString().trim(),
+                    sport: (profileData.sport || 'futbol').toString().trim() || 'futbol',
                     age: ageNum || null,
                     rating: Number(profileData.rating || 0) || null,
                     photo_url: currentProfilePhotoUrl || null,
@@ -1401,6 +1402,22 @@
             syncSportStatsFields();
         }
 
+        function flattenPublicProfilePayload(payload) {
+            const root = payload?.data || {};
+            const user = root?.user || {};
+            const profile = root?.profile || {};
+            const card = root?.card || {};
+
+            return {
+                ...user,
+                ...profile,
+                ...card,
+                photo_url: card.profile_photo_url || user.photo_url || '',
+                current_team: profile.current_team || profile.current_club || card.club_name || '',
+                rating: card.overall_rating || user.rating || null,
+            };
+        }
+
         async function loadProfileEditorData() {
             currentUserId = await resolveCurrentUserId();
             let sessionUser = null;
@@ -1424,19 +1441,31 @@
             }
 
             try {
-                const [privatePayload, publicPayload, mediaPayload, videoPayload] = await Promise.all([
+                const [privatePayload, publicPayload] = await Promise.all([
                     fetchJsonSafe(`${getApiBaseUrl()}/players/${encodeURIComponent(currentUserId)}`, { headers: getAuthHeaders() }),
                     fetchJsonSafe(`${getApiBaseUrl()}/public/players/${encodeURIComponent(currentUserId)}/profile`, { headers: getAuthHeaders() }),
-                    fetchJsonSafe(`${getApiBaseUrl()}/users/${encodeURIComponent(currentUserId)}/media?type=image&per_page=12`, { headers: getAuthHeaders() }),
-                    fetchJsonSafe(`${getApiBaseUrl()}/users/${encodeURIComponent(currentUserId)}/videos`, { headers: getAuthHeaders() }),
                 ]);
 
                 const privateData = privatePayload?.data || {};
-                const publicData = publicPayload?.data || {};
-                populateProfileForm({ ...privateData, ...publicData, name: privateData.name || publicData.name || sessionUser?.name || '' });
+                const publicData = flattenPublicProfilePayload(publicPayload);
+                populateProfileForm({
+                    ...publicData,
+                    ...privateData,
+                    name: privateData.name || publicData.name || sessionUser?.name || '',
+                });
 
                 currentProfilePhotoUrl = privateData.photo_url || publicData.photo_url || '';
                 renderPhotoPreview(currentProfilePhotoUrl);
+
+                galleryImages.fill(null);
+                renderGallery();
+                videos = [];
+                renderVideos();
+
+                const [mediaPayload, videoPayload] = await Promise.all([
+                    fetchJsonSafe(`${getApiBaseUrl()}/users/${encodeURIComponent(currentUserId)}/media?type=image&per_page=12`, { headers: getAuthHeaders() }).catch(() => null),
+                    fetchJsonSafe(`${getApiBaseUrl()}/users/${encodeURIComponent(currentUserId)}/videos`, { headers: getAuthHeaders() }).catch(() => null),
+                ]);
 
                 const imageRows = extractRows(mediaPayload).filter((row) => row?.type === 'image');
                 const photoMedia = imageRows.find((row) => row?.url === currentProfilePhotoUrl) || null;
@@ -1473,7 +1502,5 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
 
 

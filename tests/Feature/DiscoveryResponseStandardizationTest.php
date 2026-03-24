@@ -16,9 +16,16 @@ class DiscoveryResponseStandardizationTest extends TestCase
 
     public function test_public_players_endpoint_returns_standard_paginated_payload(): void
     {
-        User::factory()->create([
+        $latestPlayer = User::factory()->create([
             'role' => 'player',
             'name' => 'Public Player',
+            'created_at' => now(),
+        ]);
+
+        User::factory()->create([
+            'role' => 'player',
+            'name' => 'Older Player',
+            'created_at' => now()->subDay(),
         ]);
 
         $this->getJson('/api/public/players')
@@ -26,6 +33,8 @@ class DiscoveryResponseStandardizationTest extends TestCase
             ->assertJsonPath('ok', true)
             ->assertJsonPath('message', 'Public oyuncu listesi hazir.')
             ->assertJsonPath('data.0.name', 'Public Player')
+            ->assertJsonPath('data.0.id', $latestPlayer->id)
+            ->assertJsonPath('data.0.created_at', $latestPlayer->created_at->format('Y-m-d H:i:s'))
             ->assertJsonPath('current_page', 1);
     }
 

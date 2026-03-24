@@ -176,12 +176,13 @@ class LegacyCompatibilityEndpointsTest extends TestCase
             'story_text' => 'Signed with a new club after scouting.',
         ])
             ->assertOk()
-            ->assertJsonPath('ok', true);
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.status', 'pending');
 
         $this->getJson('/api/success-stories')
             ->assertOk()
             ->assertJsonPath('ok', true)
-            ->assertJsonPath('data.0.full_name', 'Demo Player');
+            ->assertJsonCount(0, 'data');
 
         $this->postJson('/api/lawyers/register', [
             'license_number' => 'TR-12345',
@@ -218,15 +219,47 @@ class LegacyCompatibilityEndpointsTest extends TestCase
         ])
             ->assertOk()
             ->assertJsonPath('ok', true)
-            ->assertJsonPath('data.status', 'approved');
+            ->assertJsonPath('data.status', 'pending');
 
         $this->assertDatabaseHas('success_stories', [
             'user_id' => $user->id,
             'full_name' => 'Database Player',
-            'status' => 'approved',
+            'status' => 'pending',
         ]);
 
         $story = SuccessStory::query()->firstOrFail();
+
+        $this->getJson('/api/success-stories')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonCount(0, 'data');
+
+        $admin = User::factory()->create([
+            'role' => 'admin',
+            'editor_role' => 'admin',
+        ]);
+        Sanctum::actingAs($admin, ['profile:write']);
+
+        $this->getJson('/api/admin/success-stories?status=pending')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.data.0.id', $story->id)
+            ->assertJsonPath('data.data.0.status', 'pending');
+
+        $this->patchJson('/api/admin/success-stories/'.$story->id, [
+            'status' => 'approved',
+            'admin_note' => 'Yayina uygun.',
+        ])
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.status', 'approved');
+
+        $this->assertDatabaseHas('success_stories', [
+            'id' => $story->id,
+            'status' => 'approved',
+            'approved_by' => $admin->id,
+            'admin_note' => 'Yayina uygun.',
+        ]);
 
         $this->getJson('/api/success-stories')
             ->assertOk()

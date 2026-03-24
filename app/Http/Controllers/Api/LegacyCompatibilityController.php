@@ -217,6 +217,8 @@ class LegacyCompatibilityController extends Controller
     {
         if (Schema::hasTable('success_stories')) {
             $rows = SuccessStory::query()
+                ->where('status', 'approved')
+                ->orderByDesc('approved_at')
                 ->latest('created_at')
                 ->latest('id')
                 ->limit(100)
@@ -255,6 +257,70 @@ class LegacyCompatibilityController extends Controller
         return response()->json(['ok' => true, 'data' => array_values($rows)]);
     }
 
+    public function adminSuccessStoriesIndex(Request $request): JsonResponse
+    {
+        if (! Schema::hasTable('success_stories')) {
+            return response()->json(['ok' => true, 'data' => []]);
+        }
+
+        $status = strtolower(trim((string) $request->query('status', '')));
+        $query = trim((string) $request->query('q', ''));
+        $perPage = max(1, min((int) $request->query('per_page', 20), 100));
+
+        $stories = SuccessStory::query()
+            ->with(['user:id,name,email,role', 'approver:id,name,email'])
+            ->when($status !== '', fn ($builder) => $builder->where('status', $status))
+            ->when($query !== '', function ($builder) use ($query) {
+                $builder->where(function ($inner) use ($query) {
+                    $inner
+                        ->where('full_name', 'like', '%'.$query.'%')
+                        ->orWhere('sport', 'like', '%'.$query.'%')
+                        ->orWhere('story_text', 'like', '%'.$query.'%')
+                        ->orWhereHas('user', function ($userQuery) use ($query) {
+                            $userQuery
+                                ->where('name', 'like', '%'.$query.'%')
+                                ->orWhere('email', 'like', '%'.$query.'%');
+                        });
+                });
+            })
+            ->latest('created_at')
+            ->latest('id')
+            ->paginate($perPage);
+
+        $stories->getCollection()->transform(function (SuccessStory $story) {
+            return [
+                'id' => (int) $story->id,
+                'full_name' => (string) $story->full_name,
+                'sport' => (string) $story->sport,
+                'story_text' => (string) $story->story_text,
+                'old_club' => $story->old_club,
+                'new_club' => $story->new_club,
+                'image_url' => $story->image_url,
+                'status' => (string) $story->status,
+                'admin_note' => $story->admin_note,
+                'created_at' => optional($story->created_at)?->toIso8601String(),
+                'approved_at' => optional($story->approved_at)?->toIso8601String(),
+                'user' => $story->user ? [
+                    'id' => (int) $story->user->id,
+                    'name' => (string) $story->user->name,
+                    'email' => (string) $story->user->email,
+                    'role' => (string) $story->user->role,
+                ] : null,
+                'approver' => $story->approver ? [
+                    'id' => (int) $story->approver->id,
+                    'name' => (string) $story->approver->name,
+                    'email' => (string) $story->approver->email,
+                ] : null,
+            ];
+        });
+
+        return response()->json([
+            'ok' => true,
+            'message' => 'Basari hikayeleri hazir.',
+            'data' => $stories,
+        ]);
+    }
+
     public function successStoriesStore(Request $request): JsonResponse
     {
         $data = $request->validate([
@@ -275,15 +341,14 @@ class LegacyCompatibilityController extends Controller
                 'old_club' => $data['old_club'] ?? null,
                 'new_club' => $data['new_club'] ?? null,
                 'image_url' => $data['image_url'] ?? null,
-                // Legacy mobile flow expects newly added stories to appear immediately.
-                'status' => 'approved',
-                'approved_by' => (int) $request->user()->id,
-                'approved_at' => now(),
+                'status' => 'pending',
+                'approved_by' => null,
+                'approved_at' => null,
             ]);
 
             return response()->json([
                 'ok' => true,
-                'message' => 'Basari hikayesi kaydedildi.',
+                'message' => 'Basari hikayesi onay bekliyor.',
                 'data' => [
                     'id' => (int) $story->id,
                     'status' => (string) $story->status,
@@ -309,6 +374,54 @@ class LegacyCompatibilityController extends Controller
         Cache::put('legacy_success_stories', array_slice($rows, 0, 100), now()->addDays(30));
 
         return response()->json(['ok' => true, 'message' => 'Basari hikayesi kaydedildi.']);
+    }
+
+    public function adminSuccessStoriesUpdate(Request $request, int $id): JsonResponse
+    {
+        if (! Schema::hasTable('success_stories')) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Basari hikayeleri tablosu bulunamadi.',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $validated = $request->validate([
+            'status' => ['required', 'string', 'in:pending,approved,rejected'],
+            'admin_note' => ['nullable', 'string', 'max:1500'],
+        ]);
+
+        $story = SuccessStory::query()->find($id);
+        if (! $story) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Basari hikayesi bulunamadi.',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $story->status = $validated['status'];
+        $story->admin_note = $validated['admin_note'] ?? null;
+
+        if ($story->status === 'approved') {
+            $story->approved_by = (int) $request->user()->id;
+            $story->approved_at = now();
+        } else {
+            $story->approved_by = null;
+            $story->approved_at = null;
+        }
+
+        $story->save();
+
+        return response()->json([
+            'ok' => true,
+            'message' => 'Basari hikayesi guncellendi.',
+            'data' => [
+                'id' => (int) $story->id,
+                'status' => (string) $story->status,
+                'admin_note' => $story->admin_note,
+                'approved_by' => $story->approved_by,
+                'approved_at' => optional($story->approved_at)?->toIso8601String(),
+            ],
+        ]);
     }
 
     public function lawyerRegister(Request $request): JsonResponse

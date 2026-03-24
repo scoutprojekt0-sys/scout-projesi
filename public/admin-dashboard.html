@@ -96,6 +96,7 @@
             <div class="section-title"><i class="fas fa-bolt"></i> Hizli Islemler</div>
             <div class="action-buttons">
                 <a href="settings.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Kullanici Yï¿½netimi</a>
+                <a href="#successStoriesModerationSection" class="btn btn-primary"><i class="fas fa-trophy"></i> Basari Hikayeleri</a>
                 <a href="statistics.html" class="btn btn-secondary"><i class="fas fa-file-alt"></i> Raporlari Goruntule</a>
                 <a href="settings.html" class="btn btn-secondary"><i class="fas fa-cog"></i> Sistem Ayarlari</a>
                 <button type="button" class="btn btn-secondary" onclick="exportAdminSnapshot()"><i class="fas fa-database"></i> Yedek Al</button>
@@ -423,6 +424,44 @@
                 </thead>
                 <tbody id="trialModerationBody">
                     <tr><td colspan="7" style="text-align:center;color:#64748B;">Bu modul icin backend endpointi bu buildde aktif degil.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section" id="successStoriesModerationSection">
+            <div class="section-title"><i class="fas fa-trophy"></i> Basari Hikayesi Moderasyonu</div>
+            <div style="display:grid;grid-template-columns:2fr 1fr auto;gap:10px;align-items:end;margin-bottom:12px;">
+                <div>
+                    <label for="successStoryQuery" style="display:block;font-weight:600;margin-bottom:6px;">Isim / Spor / Metin</label>
+                    <input id="successStoryQuery" type="text" placeholder="or: oyuncu1 veya futbol" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;width:100%;">
+                </div>
+                <div>
+                    <label for="successStoryStatus" style="display:block;font-weight:600;margin-bottom:6px;">Durum</label>
+                    <select id="successStoryStatus" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;width:100%;">
+                        <option value="pending">Bekleyen</option>
+                        <option value="">Tum durumlar</option>
+                        <option value="approved">Onayli</option>
+                        <option value="rejected">Reddedilmis</option>
+                    </select>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="btn btn-primary" type="button" style="height:40px;" onclick="loadSuccessStoriesModeration()"><i class="fas fa-rotate"></i> Yukle</button>
+                    <button class="btn btn-secondary" type="button" style="height:40px;" onclick="clearSuccessStoriesFilters()"><i class="fas fa-eraser"></i> Temizle</button>
+                </div>
+            </div>
+            <div style="margin-bottom:8px;color:#64748B;font-size:13px;" id="successStoriesModerationMeta">Basari hikayeleri bekleniyor...</div>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Hikaye</th>
+                        <th>Gonderen</th>
+                        <th>Durum</th>
+                        <th>Not</th>
+                        <th>Islem</th>
+                    </tr>
+                </thead>
+                <tbody id="successStoriesModerationBody">
+                    <tr><td colspan="5" style="text-align:center;color:#64748B;">Basari hikayeleri yukleniyor...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -1519,11 +1558,142 @@
             nsAlert(`Trial moderasyon islemi bu buildde kapali. Islem: ${action}, kayit: ${id}`);
         }
 
+        function formatSuccessStoryStatus(status) {
+            const normalized = (status || '').toString().toLowerCase();
+            if (normalized === 'approved') return '<span class="badge badge-success">Onayli</span>';
+            if (normalized === 'rejected') return '<span class="badge badge-danger">Reddedildi</span>';
+            return '<span class="badge badge-warning">Beklemede</span>';
+        }
+
+        function clearSuccessStoriesFilters() {
+            const queryInput = document.getElementById('successStoryQuery');
+            const statusSelect = document.getElementById('successStoryStatus');
+            if (queryInput) queryInput.value = '';
+            if (statusSelect) statusSelect.value = 'pending';
+            loadSuccessStoriesModeration();
+        }
+
+        async function loadSuccessStoriesModeration() {
+            const body = document.getElementById('successStoriesModerationBody');
+            const meta = document.getElementById('successStoriesModerationMeta');
+            if (!body || !meta) return;
+
+            const token = getAuthToken();
+            if (!token) {
+                body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#b91c1c;">Token yok. Once admin girisi yap.</td></tr>';
+                meta.textContent = 'Basari hikayeleri yuklenemedi: token bulunamadi.';
+                return;
+            }
+
+            const query = (document.getElementById('successStoryQuery')?.value || '').trim();
+            const status = (document.getElementById('successStoryStatus')?.value || '').trim();
+            const apiBase = getApiBaseUrl();
+
+            try {
+                const params = new URLSearchParams();
+                params.set('per_page', '50');
+                if (query) params.set('q', query);
+                if (status) params.set('status', status);
+
+                const response = await fetch(`${apiBase}/admin/success-stories?${params.toString()}`, {
+                    headers: {
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    throw new Error(payload?.message || `HTTP ${response.status}`);
+                }
+
+                const rows = Array.isArray(payload?.data?.data) ? payload.data.data : [];
+                if (!rows.length) {
+                    body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#64748B;">Filtreye uygun hikaye bulunamadi.</td></tr>';
+                    meta.textContent = '0 hikaye listelendi.';
+                    return;
+                }
+
+                body.innerHTML = rows.map((row) => {
+                    const imageLink = row.image_url ? `<div><a href="${escapeHtml(row.image_url)}" target="_blank" rel="noopener">Gorsel</a></div>` : '';
+                    const approvalMeta = row.approver?.name
+                        ? `<div style="margin-top:6px;font-size:12px;color:#64748B;">Onay: ${escapeHtml(row.approver.name)}${row.approved_at ? ` • ${formatDate(row.approved_at)}` : ''}</div>`
+                        : '';
+                    return `
+                        <tr>
+                            <td>
+                                <strong>${escapeHtml(row.full_name || '-')}</strong>
+                                <div style="font-size:12px;color:#64748B;margin-top:4px;">${escapeHtml(row.sport || '-')} • ${formatDate(row.created_at)}</div>
+                                <div style="margin-top:8px;max-width:420px;white-space:normal;">${escapeHtml(row.story_text || '-')}</div>
+                                ${imageLink}
+                            </td>
+                            <td>
+                                <strong>${escapeHtml(row.user?.name || '-')}</strong>
+                                <div style="font-size:12px;color:#64748B;">${escapeHtml(row.user?.email || '-')}</div>
+                                <div style="font-size:12px;color:#64748B;">Rol: ${escapeHtml(roleLabel(row.user?.role))}</div>
+                            </td>
+                            <td>${formatSuccessStoryStatus(row.status)}${approvalMeta}</td>
+                            <td style="max-width:220px;white-space:normal;">${escapeHtml(row.admin_note || '-')}</td>
+                            <td>
+                                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                    <button class="btn btn-primary" style="padding:6px 10px;font-size:12px;" onclick="updateSuccessStoryStatus(${Number(row.id)}, 'approved')">Onayla</button>
+                                    <button class="btn btn-secondary" style="padding:6px 10px;font-size:12px;" onclick="updateSuccessStoryStatus(${Number(row.id)}, 'rejected')">Reddet</button>
+                                    <button class="btn btn-secondary" style="padding:6px 10px;font-size:12px;" onclick="updateSuccessStoryStatus(${Number(row.id)}, 'pending')">Beklemeye Al</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                meta.textContent = `${rows.length} hikaye listelendi.`;
+            } catch (error) {
+                body.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#b91c1c;">Hata: ${escapeHtml(error.message || error)}</td></tr>`;
+                meta.textContent = 'Basari hikayeleri yuklenemedi.';
+            }
+        }
+
+        async function updateSuccessStoryStatus(id, status) {
+            const token = getAuthToken();
+            if (!token) {
+                nsAlert('Admin token bulunamadi.');
+                return;
+            }
+
+            const notePrompt = status === 'rejected' ? 'Reddetme notu gir (opsiyonel):' : 'Admin notu gir (opsiyonel):';
+            const adminNote = window.prompt(notePrompt, '');
+            if (adminNote === null && status === 'rejected') {
+                return;
+            }
+
+            try {
+                const apiBase = getApiBaseUrl();
+                const response = await fetch(`${apiBase}/admin/success-stories/${encodeURIComponent(id)}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        status,
+                        admin_note: (adminNote || '').trim() || null,
+                    }),
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    throw new Error(payload?.message || `HTTP ${response.status}`);
+                }
+                await loadSuccessStoriesModeration();
+            } catch (error) {
+                nsAlert(`Basari hikayesi guncellenemedi: ${error.message}`);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             updateAuthNotice();
             loadContactMessages();
             loadBoostPackagesAdmin();
             loadTrialModerationQueue();
+            loadSuccessStoriesModeration();
             loadDataQualityWidget();
             loadOpsSummary();
             loadClientErrorLogs();

@@ -1832,18 +1832,18 @@
                     <div class="hero-player-number" id="heroPlayerNumber">07</div>
                     <div class="hero-image-bottomline">
                         <div class="hero-identity-block">
-                            <div class="hero-identity-name" id="heroIdentityName">Ahmet Yilmaz</div>
-                            <div class="hero-identity-sub" id="heroIdentitySub">Elite scout profili</div>
+                            <div class="hero-identity-name" id="heroIdentityName">Profil yukleniyor</div>
+                            <div class="hero-identity-sub" id="heroIdentitySub">Oyuncu bilgileri hazirlaniyor</div>
                         </div>
                         <span class="hero-editorial-chip" id="heroClubChip">Kulup bilgisi bekleniyor</span>
                     </div>
                 </div>
-                ?
+                <span aria-hidden="true">Foto</span>
             </div>
             
             <div class="hero-info">
-                <h1 id="playerName">Ahmet Yilmaz</h1>
-                <div class="hero-position" id="playerPosition">Forvet</div>
+                <h1 id="playerName">Profil yukleniyor</h1>
+                <div class="hero-position" id="playerPosition">Pozisyon yukleniyor</div>
                 <div class="hero-tag-row">
                     <span class="hero-tag" id="contractStatusBadge">Sozlesmeli</span>
                     <span class="hero-tag" id="seekingClubBadge">KULUP Aramiyor</span>
@@ -1852,15 +1852,15 @@
 
                 <div class="hero-stats">
                     <div class="stat-item">
-                        <span class="stat-value" id="playerAge">24</span>
+                        <span class="stat-value" id="playerAge">-</span>
                         <span class="stat-label">Yas</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-value" id="playerHeight">180cm</span>
+                        <span class="stat-value" id="playerHeight">-</span>
                         <span class="stat-label">Boy</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-value" id="playerRating">4.8</span>
+                        <span class="stat-value" id="playerRating">-</span>
                         <span class="stat-label">Rating</span>
                     </div>
                 </div>
@@ -1868,7 +1868,7 @@
                 <div class="rating-box">
                     <div class="rating-main">
                         <div class="rating-stars">★★★★★</div>
-                        <div class="rating-text" id="ratingText">4.8/10 - Scoutlar Tarafindan Degerlendirildi</div>
+                        <div class="rating-text" id="ratingText">Oyuncu puani yukleniyor</div>
                     </div>
                     <div class="hero-market-box">
                         <span class="hero-box-label">Piyasa Gorunumu</span>
@@ -1937,7 +1937,7 @@
                 <div class="card">
                     <h3 class="card-title">Hakkinda</h3>
                     <p class="bio-text" id="bioText">
-                        Turkiye'nin en yetenekli forvet oyuncularindan biri. Guclu fizik yapisi, hizi ve gol yetenegi ile biliniyor.
+                        Oyuncu biyografisi yukleniyor.
                     </p>
                 </div>
                 <div class="card" id="stats">
@@ -3287,7 +3287,17 @@
 
         async function loadProfileData() {
             const params = new URLSearchParams(window.location.search);
-            const userId = params.get('user_id');
+            let userId = params.get('user_id');
+            if (!userId) {
+                const sessionUser = getCurrentAuthUserFromStorage();
+                const sessionUserId = Number(sessionUser?.id);
+                if (Number.isFinite(sessionUserId) && sessionUserId > 0) {
+                    userId = String(sessionUserId);
+                    params.set('user_id', userId);
+                    const nextUrl = `${window.location.pathname}?${params.toString()}`;
+                    window.history.replaceState({}, '', nextUrl);
+                }
+            }
             updateProfileActionVisibility();
             loadProfileReviews();
 
@@ -3357,4 +3367,3 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-

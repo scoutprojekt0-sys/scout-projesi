@@ -583,11 +583,12 @@
       <form id="composeForm">
         <div class="compose-body">
           <div class="compose-grid">
-            <input id="composeRecipientId" name="to_user_id" type="number" min="1" placeholder="Alici User ID" required>
+            <input id="composeRecipientName" type="text" placeholder="Alici oyuncu adi" required>
+            <input id="composeRecipientId" name="to_user_id" type="hidden">
             <input id="composeSubject" name="subject" type="text" maxlength="150" placeholder="Konu" required>
           </div>
           <textarea id="composeBody" name="message" placeholder="Mesajini yaz..." required></textarea>
-          <div class="compose-note" id="composeNotice">Yeni mesaj gondermek icin alici kullanici ID bilgisi gerekli.</div>
+          <div class="compose-note" id="composeNotice">Alici adini yaz. Sistem uygun oyuncuyu otomatik bulur.</div>
         </div>
         <div class="compose-actions">
           <button class="btn" type="button" id="composeCancelBtn">Vazgec</button>
@@ -756,15 +757,35 @@
     const composeModal = document.getElementById('composeModal');
     const composeForm = document.getElementById('composeForm');
     const composeNotice = document.getElementById('composeNotice');
+    const composeRecipientName = document.getElementById('composeRecipientName');
     const composeRecipientId = document.getElementById('composeRecipientId');
     const composeSubject = document.getElementById('composeSubject');
     const composeBody = document.getElementById('composeBody');
 
+    async function resolveRecipientByName(name) {
+      const query = String(name || '').trim();
+      if (!query) return null;
+
+      try {
+        const rows = await safeFetchRows(`${API_BASE}/public/players?q=${encodeURIComponent(query)}&per_page=20`);
+        const exact = rows.find((row) => String(row?.name || row?.full_name || '').trim().toLowerCase() === query.toLowerCase());
+        const pick = exact || rows[0] || null;
+        if (!pick?.id) return null;
+        return {
+          id: Number(pick.id),
+          name: String(pick?.name || pick?.full_name || query),
+        };
+      } catch (error) {
+        return null;
+      }
+    }
+
     function openComposeModal(prefill = {}) {
+      if (composeRecipientName) composeRecipientName.value = prefill.to_name || '';
       if (composeRecipientId) composeRecipientId.value = prefill.to_user_id || '';
       if (composeSubject) composeSubject.value = prefill.subject || '';
       if (composeBody) composeBody.value = prefill.message || '';
-      if (composeNotice) composeNotice.textContent = prefill.notice || 'Yeni mesaj gondermek icin alici kullanici ID bilgisi gerekli.';
+      if (composeNotice) composeNotice.textContent = prefill.notice || 'Alici adini yaz. Sistem uygun oyuncuyu otomatik bulur.';
       composeModal?.classList.add('show');
     }
 
@@ -774,13 +795,27 @@
 
     async function sendComposeMessage(event) {
       event.preventDefault();
-      const toUserId = Number(composeRecipientId?.value || 0);
+      const recipientName = String(composeRecipientName?.value || '').trim();
+      let toUserId = Number(composeRecipientId?.value || 0);
       const subject = String(composeSubject?.value || '').trim();
       const message = String(composeBody?.value || '').trim();
 
-      if (!toUserId || !subject || !message) {
-        if (composeNotice) composeNotice.textContent = 'Alici user ID, konu ve mesaj zorunlu.';
+      if (!recipientName || !subject || !message) {
+        if (composeNotice) composeNotice.textContent = 'Alici adi, konu ve mesaj zorunlu.';
         return;
+      }
+
+      let resolvedRecipientName = recipientName;
+      if (!toUserId) {
+        const resolved = await resolveRecipientByName(recipientName);
+        if (!resolved?.id) {
+          if (composeNotice) composeNotice.textContent = 'Alici oyuncu bulunamadi. Tam adini yazmayi dene.';
+          return;
+        }
+        toUserId = resolved.id;
+        resolvedRecipientName = resolved.name;
+        if (composeRecipientId) composeRecipientId.value = String(resolved.id);
+        if (composeRecipientName) composeRecipientName.value = resolved.name;
       }
 
       try {
@@ -804,7 +839,7 @@
           fromUserId: USER?.id ? Number(USER.id) : null,
           toUserId,
           from: String(USER?.name || 'Sen'),
-          to: String(created?.to_name || created?.receiver_name || `User #${toUserId}`),
+          to: String(created?.to_name || created?.receiver_name || resolvedRecipientName || `User #${toUserId}`),
           subject,
           body: message,
           time: created?.created_at || new Date().toISOString(),
@@ -963,10 +998,11 @@
       document.getElementById('replyBtn')?.addEventListener('click', () => {
         const replyTargetId = msg.box === 'inbox' ? msg.fromUserId : msg.toUserId;
         openComposeModal({
+          to_name: msg.box === 'inbox' ? msg.from : msg.to,
           to_user_id: replyTargetId || '',
           subject: msg.subject ? `Re: ${msg.subject}` : 'Re: Mesaj',
           message: '',
-          notice: replyTargetId ? `Yanit ${msg.box === 'inbox' ? msg.from : msg.to} kullanicisina gidecek.` : 'Bu mesaji yanitlamak icin alici kullanici ID bilgisini girmen gerekebilir.',
+          notice: replyTargetId ? `Yanit ${msg.box === 'inbox' ? msg.from : msg.to} kisina gidecek.` : 'Bu mesaji yanitlamak icin alici adini yazman gerekebilir.',
         });
       });
 

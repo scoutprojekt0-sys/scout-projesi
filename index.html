@@ -497,10 +497,13 @@
         @media (max-width: 1024px) {
             .hero-wrapper,
             #homeStep2,
-            #homeStep3,
             .home-data-center-panel,
             .desktop-support-grid {
                 display: none !important;
+            }
+
+            #homeStep3 {
+                display: block !important;
             }
 
             .mobile-discover-panel.show,
@@ -535,10 +538,13 @@
 
             .hero-wrapper,
             #homeStep2,
-            #homeStep3,
             .home-data-center-panel,
             .desktop-support-grid {
                 display: grid !important;
+            }
+
+            #homeStep3 {
+                display: block !important;
             }
 
             .hero {
@@ -7106,7 +7112,19 @@
             if (!root && !mobileRoot) return;
 
             try {
-                const payload = await fetchJsonSafe(`${API_BASE_URL}/success-stories?limit=8`);
+                const endpoint = `${API_BASE_URL}/success-stories?limit=8&_t=${Date.now()}`;
+                let payload = await fetchJsonSafe(endpoint);
+                if (!payload?.data) {
+                    const fallbackResponse = await fetch(endpoint, {
+                        method: 'GET',
+                        headers: { Accept: 'application/json' },
+                        cache: 'no-store',
+                    });
+                    if (!fallbackResponse.ok) {
+                        throw new Error(`HTTP ${fallbackResponse.status}`);
+                    }
+                    payload = await fallbackResponse.json();
+                }
                 const items = Array.isArray(payload?.data) ? payload.data.slice(0, 8) : [];
                 if (!items.length) {
                     if (root) root.innerHTML = '<div class="success-story-item">Henüz onaylı başarı hikayesi yok.</div>';
@@ -7247,6 +7265,7 @@
             renderClubNeedsInlineList();
             renderPaidClubPromoNamesInline();
             renderDataStatusStrip();
+            renderSuccessStoriesPanel();
             fetchNotificationCount();
             fetchLiveMatchCount();
             renderContractStatusTicker();
@@ -7323,6 +7342,8 @@
                 testAPIConnection();
             }
             startAutoRefresh();
+            setTimeout(() => renderSuccessStoriesPanel(), 450);
+            window.addEventListener('load', () => renderSuccessStoriesPanel(), { once: true });
             bindContractTickerEvents();
             renderManagerNeedsButtonPanel();
             renderContractStatusTicker();
@@ -10679,10 +10700,14 @@
                 mobileSquare.style.display = isMobileViewport ? 'block' : 'none';
             }
 
-            [heroWrapper, homeStep2, homeStep3, homeDataPanel].forEach((el) => {
+            [heroWrapper, homeStep2, homeDataPanel].forEach((el) => {
                 if (!el) return;
                 el.style.display = isMobileViewport ? 'none' : '';
             });
+
+            if (homeStep3) {
+                homeStep3.style.display = '';
+            }
         }
 
         syncHomeViewportMode();
@@ -10693,8 +10718,10 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
+    <section class="success-stories-standalone" id="successStoriesStandalone">
+        <h3 class="success-stories-standalone-title">Başarı Hikayeleri</h3>
+        <div class="success-stories-list" id="successStoriesStandaloneList">
+            <div class="success-story-item">Hikayeler yükleniyor...</div>
+        </div>
+    </section>
 

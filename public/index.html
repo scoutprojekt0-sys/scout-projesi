@@ -548,10 +548,13 @@
         @media (max-width: 1024px) {
             .hero-wrapper,
             #homeStep2,
-            #homeStep3,
             .home-data-center-panel,
             .desktop-support-grid {
                 display: none !important;
+            }
+
+            #homeStep3 {
+                display: block !important;
             }
 
             .mobile-discover-panel.show,
@@ -586,10 +589,13 @@
 
             .hero-wrapper,
             #homeStep2,
-            #homeStep3,
             .home-data-center-panel,
             .desktop-support-grid {
                 display: grid !important;
+            }
+
+            #homeStep3 {
+                display: block !important;
             }
 
             .hero {
@@ -1396,6 +1402,7 @@
         .mobile-discover-panel.show {
             display: block;
         }
+
 
         .mobile-discover-wrap {
             width: 100%;
@@ -5465,6 +5472,61 @@
             padding-right: 4px;
         }
 
+        .success-stories-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .success-stories-more-btn {
+            border: 1px solid rgba(96, 165, 250, 0.4);
+            background: rgba(15, 23, 42, 0.68);
+            color: #dbeafe;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .success-stories-more-btn[hidden] {
+            display: none !important;
+        }
+
+        .success-story-dense-item {
+            padding: 8px 10px;
+            border: 1px solid rgba(110, 138, 255, 0.16);
+            background: rgba(255, 255, 255, 0.03);
+            font-size: 11px;
+            line-height: 1.35;
+            color: var(--ns-text);
+        }
+
+        .success-story-dense-item strong {
+            font-size: 11px;
+        }
+
+        .success-story-dense-meta {
+            margin-top: 4px;
+            color: var(--ns-muted);
+            font-size: 10px;
+        }
+
+        .success-stories-modal-card {
+            max-width: 860px;
+            width: min(860px, calc(100vw - 32px));
+            max-height: 82vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .success-stories-modal-body {
+            padding: 16px;
+            overflow-y: auto;
+            display: grid;
+            gap: 8px;
+        }
+
         .success-story-item {
             border: 1px solid rgba(110, 138, 255, 0.22);
             background: rgba(255, 255, 255, 0.04);
@@ -7204,7 +7266,7 @@
                 z-index: 3100;
             }
 
-            body > *:not(header):not(script):not(.modal-overlay):not(.mobile-bottom-search-panel):not(.mobile-icon-square):not(.mobile-discover-panel):not(.mobile-icon-tooltip) {
+            body > *:not(header):not(script):not(.modal-overlay):not(.mobile-bottom-search-panel):not(.mobile-icon-square):not(.mobile-discover-panel):not(.mobile-icon-tooltip):not(#homeStep3) {
                 display: none !important;
             }
 
@@ -8094,6 +8156,13 @@
             </button>
         </div>
     </div>
+
+    <section class="success-stories-standalone" id="successStoriesStandalone">
+        <h3 class="success-stories-standalone-title">Başarı Hikayeleri</h3>
+        <div class="success-stories-list" id="successStoriesStandaloneList">
+            <div class="success-story-item">Hikayeler yükleniyor...</div>
+        </div>
+    </section>
 
     <section class="mobile-discover-panel" id="mobileDiscoverPanel">
         <div class="mobile-discover-wrap">
@@ -9117,6 +9186,18 @@
                         <button type="submit" class="btn btn-primary">Gönder</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="successStoriesListModal" onclick="if(event.target===this) closeSuccessStoriesListModal()">
+        <div class="modal-card success-stories-modal-card" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2><i class="fas fa-trophy"></i> Tüm Başarı Hikayeleri</h2>
+                <button class="modal-close" onclick="closeSuccessStoriesListModal()">&times;</button>
+            </div>
+            <div class="success-stories-modal-body" id="successStoriesListModalBody">
+                <div class="success-story-dense-item">Hikayeler yükleniyor...</div>
             </div>
         </div>
     </div>
@@ -10244,6 +10325,9 @@
                     <div class="success-story-item">
                         Hikayeler yükleniyor...
                     </div>
+                </div>
+                <div class="success-stories-footer">
+                    <button type="button" class="success-stories-more-btn" id="successStoriesToggleBtn" onclick="toggleSuccessStoriesList()" hidden>Tümünü Gör</button>
                 </div>
             </section>
 
@@ -12357,37 +12441,108 @@
             return;
         }
 
+        const SUCCESS_STORIES_PREVIEW_LIMIT = 3;
+        let successStoriesExpanded = false;
+        let successStoriesCache = [];
+
+        function renderSuccessStoriesDesktopList(items) {
+            const root = document.getElementById('successStoriesList');
+            const toggleBtn = document.getElementById('successStoriesToggleBtn');
+            if (!root) return;
+
+            if (!items.length) {
+                root.innerHTML = '<div class="success-story-item">Henüz onaylı başarı hikayesi yok.</div>';
+                if (toggleBtn) toggleBtn.hidden = true;
+                return;
+            }
+
+            const visibleItems = successStoriesExpanded ? items : items.slice(0, SUCCESS_STORIES_PREVIEW_LIMIT);
+            root.innerHTML = visibleItems.map((item) => {
+                const fullName = esc(item?.full_name || 'Oyuncu');
+                const sport = esc(item?.sport || '-');
+                const oldClub = esc(item?.old_club || 'Eski KULÜP belirtilmedi');
+                const newClub = esc(item?.new_club || 'Yeni KULÜP belirtilmedi');
+                const story = esc(item?.story_text || '').slice(0, 190);
+                return `<article class="success-story-item">
+                            <strong>${fullName}</strong> <span style="opacity:.85;">• ${sport}</span>
+                            <div class="meta">${oldClub} → ${newClub}</div>
+                            <div style="margin-top:6px;">${story}${(item?.story_text || '').length > 190 ? '...' : ''}</div>
+                        </article>`;
+            }).join('');
+
+            if (toggleBtn) {
+                toggleBtn.hidden = false;
+                toggleBtn.disabled = false;
+                toggleBtn.textContent = 'Tümünü Gör';
+            }
+        }
+
+        function toggleSuccessStoriesList() {
+            const modal = document.getElementById('successStoriesListModal');
+            const body = document.getElementById('successStoriesListModalBody');
+            if (!modal || !body) return;
+
+            if (!successStoriesCache.length) {
+                body.innerHTML = '<div class="success-story-dense-item">Henüz onaylı başarı hikayesi yok.</div>';
+            } else {
+                body.innerHTML = successStoriesCache.map((item) => {
+                    const fullName = esc(item?.full_name || 'Oyuncu');
+                    const sport = esc(item?.sport || '-');
+                    const oldClub = esc(item?.old_club || 'Eski KULÜP belirtilmedi');
+                    const newClub = esc(item?.new_club || 'Yeni KULÜP belirtilmedi');
+                    const story = esc(item?.story_text || '').slice(0, 240);
+                    return `<article class="success-story-dense-item">
+                        <strong>${fullName}</strong> <span style="opacity:.85;">• ${sport}</span>
+                        <div class="success-story-dense-meta">${oldClub} → ${newClub}</div>
+                        <div style="margin-top:4px;">${story}${(item?.story_text || '').length > 240 ? '...' : ''}</div>
+                    </article>`;
+                }).join('');
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSuccessStoriesListModal() {
+            const modal = document.getElementById('successStoriesListModal');
+            if (!modal) return;
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
         async function renderSuccessStoriesPanel() {
             const root = document.getElementById('successStoriesList');
             const mobileRoot = document.getElementById('mobileSuccessStoriesList');
             if (!root && !mobileRoot) return;
 
             try {
-                const payload = await fetchJsonSafe(`${API_BASE_URL}/success-stories?limit=8`);
-                const items = Array.isArray(payload?.data) ? payload.data.slice(0, 8) : [];
+                const endpoint = `${API_BASE_URL}/success-stories?limit=8&_t=${Date.now()}`;
+                let payload = await fetchJsonSafe(endpoint);
+                if (!payload?.data) {
+                    const fallbackResponse = await fetch(endpoint, {
+                        method: 'GET',
+                        headers: { Accept: 'application/json' },
+                        cache: 'no-store',
+                    });
+                    if (!fallbackResponse.ok) {
+                        throw new Error(`HTTP ${fallbackResponse.status}`);
+                    }
+                    payload = await fallbackResponse.json();
+                }
+                const items = Array.isArray(payload?.data) ? payload.data.slice(0, 100) : [];
+                successStoriesCache = items.slice();
                 if (!items.length) {
-                    if (root) root.innerHTML = '<div class="success-story-item">Henüz onaylı başarı hikayesi yok.</div>';
+                    renderSuccessStoriesDesktopList([]);
                     if (mobileRoot) mobileRoot.innerHTML = '<div class="mobile-success-item">Henüz onaylı başarı hikayesi yok.</div>';
                     return;
                 }
 
                 if (root) {
-                    root.innerHTML = items.map((item) => {
-                        const fullName = esc(item?.full_name || 'Oyuncu');
-                        const sport = esc(item?.sport || '-');
-                        const oldClub = esc(item?.old_club || 'Eski KULÜP belirtilmedi');
-                        const newClub = esc(item?.new_club || 'Yeni KULÜP belirtilmedi');
-                        const story = esc(item?.story_text || '').slice(0, 190);
-                        return `<article class="success-story-item">
-                            <strong>${fullName}</strong> <span style="opacity:.85;">• ${sport}</span>
-                            <div class="meta">${oldClub} → ${newClub}</div>
-                            <div style="margin-top:6px;">${story}${(item?.story_text || '').length > 190 ? '...' : ''}</div>
-                        </article>`;
-                    }).join('');
+                    renderSuccessStoriesDesktopList(items);
                 }
 
                 if (mobileRoot) {
-                    mobileRoot.innerHTML = items.slice(0, 6).map((item) => {
+                    mobileRoot.innerHTML = items.slice(0, SUCCESS_STORIES_PREVIEW_LIMIT).map((item) => {
                         const fullName = esc(item?.full_name || 'Uye');
                         const sport = esc(item?.sport || '-');
                         const oldClub = esc(item?.old_club || 'Eski KULÜP');
@@ -12404,7 +12559,11 @@
                     }).join('');
                 }
             } catch (error) {
-                if (root) root.innerHTML = '<div class="success-story-item">Hikayeler şu an alınamıyor.</div>';
+                if (root) {
+                    root.innerHTML = '<div class="success-story-item">Hikayeler şu an alınamıyor.</div>';
+                    const toggleBtn = document.getElementById('successStoriesToggleBtn');
+                    if (toggleBtn) toggleBtn.hidden = true;
+                }
                 if (mobileRoot) mobileRoot.innerHTML = '<div class="mobile-success-item">Hikayeler şu an alınamıyor.</div>';
             }
         }
@@ -12985,6 +13144,7 @@
         // ========== AUTO REFRESH ==========
         function startAutoRefresh() {
             // İlk yükleme
+            renderSuccessStoriesPanel();
             renderBreakingNewsStrip();
             renderLiveNewsCard();
             renderFeatureTransferCard();
@@ -13126,7 +13286,10 @@
             if (window.location.protocol !== 'file:') {
                 testAPIConnection();
             }
+            renderSuccessStoriesPanel();
             startAutoRefresh();
+            setTimeout(() => renderSuccessStoriesPanel(), 450);
+            window.addEventListener('load', () => renderSuccessStoriesPanel(), { once: true });
             bindFeatureTransferCard();
             bindLawInsightCard();
             bindContractTickerEvents();
@@ -17130,10 +17293,14 @@
                 mobileSquare.style.display = isMobileViewport ? 'block' : 'none';
             }
 
-            [heroWrapper, homeStep2, homeStep3].forEach((el) => {
+            [heroWrapper, homeStep2].forEach((el) => {
                 if (!el) return;
                 el.style.display = isMobileViewport ? 'none' : '';
             });
+
+            if (homeStep3) {
+                homeStep3.style.display = '';
+            }
 
             if (homeDataPanel) {
                 homeDataPanel.style.display = isMobileViewport || isPublicSession ? 'none' : '';
