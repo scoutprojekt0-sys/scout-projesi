@@ -32,6 +32,106 @@
         })();
     </script>
     <style>
+        /* PLAYER DASHBOARD MODAL STYLES (BİREBİR KOPYA) */
+        .need-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.62);
+            z-index: 1500;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            backdrop-filter: blur(4px);
+        }
+        .need-modal-overlay.show { display: flex; }
+        .need-modal {
+            width: min(860px, 100%);
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border: 1px solid var(--line);
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: 0 24px 48px rgba(8, 19, 29, 0.28);
+            color: var(--ink);
+            position: relative;
+        }
+        .need-modal::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+        }
+        .live-modal { width: min(860px, 100%); }
+        .need-modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 18px;
+            border-bottom: 1px solid #334155;
+        }
+        .need-modal-head h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #dbeafe;
+            margin: 0;
+        }
+        .need-modal-body {
+            padding: 16px 18px;
+            display: grid;
+            gap: 10px;
+        }
+        .need-modal-body input,
+        .need-modal-body textarea,
+        .need-modal-body select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--line);
+            border-radius: 0;
+            font-size: 14px;
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--ink);
+        }
+        .need-modal-body textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .need-modal-body input:focus,
+        .need-modal-body textarea:focus,
+        .need-modal-body select:focus {
+            outline: none;
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.18);
+        }
+        .live-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .quick-report-grid { display: grid; gap: 10px; }
+        .quick-report-result {
+            border: 1px solid var(--line);
+            border-radius: 0;
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            padding: 10px 12px;
+            font-size: 12px;
+            color: var(--muted);
+            box-shadow: 0 24px 48px rgba(8, 19, 29, 0.28);
+            position: relative;
+            overflow: hidden;
+        }
+        .quick-report-result::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+        }
+        .need-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 0 18px 18px;
+        }
+        /* PLAYER DASHBOARD MODAL STYLES SONU */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --bg: #1f252d;
@@ -572,21 +672,13 @@
             position: relative;
             overflow: hidden;
         }
-        #managerSuccessStoriesHubModal .offer-score-result::before,
-        #managerSuccessStoryModal .offer-score-result::before,
-        #managerSuccessStoriesReadModal .offer-score-result::before {
-            content: "";
-            position: absolute;
-            inset: 0 0 auto 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
-        }
         #managerSuccessStoriesHubModal .btn-small,
         #managerSuccessStoryModal .btn-small,
         #managerSuccessStoriesReadModal .btn-small {
             padding: 8px 14px;
             width: auto !important;
             min-width: 0 !important;
+            cursor: pointer !important;
             border-radius: 0 !important;
             border: 1px solid rgba(255, 126, 34, 0.45) !important;
             background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%) !important;
@@ -608,6 +700,19 @@
             color: #fff !important;
             box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28) !important;
         }
+        #managerSuccessStoriesHubModal .btn-small *,
+        #managerSuccessStoryModal .btn-small *,
+        #managerSuccessStoriesReadModal .btn-small * {
+            cursor: pointer !important;
+        }
+        #managerSuccessStoriesHubModal .btn-small.ns-btn-loading,
+        #managerSuccessStoryModal .btn-small.ns-btn-loading,
+        #managerSuccessStoriesReadModal .btn-small.ns-btn-loading,
+        #managerSuccessStoriesHubModal .btn-small.ns-btn-loading *,
+        #managerSuccessStoryModal .btn-small.ns-btn-loading *,
+        #managerSuccessStoriesReadModal .btn-small.ns-btn-loading * {
+            cursor: pointer !important;
+        }
         #managerSuccessStoriesHubModal .btn-small.secondary,
         #managerSuccessStoryModal .btn-small.secondary,
         #managerSuccessStoriesReadModal .btn-small.secondary {
@@ -616,6 +721,16 @@
             border-color: rgba(96, 165, 250, 0.24) !important;
             box-shadow: none !important;
         }
+        #managerSuccessStoriesSendBtn,
+        #managerSuccessStoriesReadBtn,
+        #managerSuccessStoriesSendBtn *,
+        #managerSuccessStoriesReadBtn * {
+            cursor: pointer !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            caret-color: transparent !important;
+            pointer-events: auto !important;
+        }
         #managerSuccessStoriesHubModal .quick-report-grid,
         #managerSuccessStoryModal .quick-report-grid,
         #managerSuccessStoriesReadModal .quick-report-grid {
@@ -623,6 +738,8 @@
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 10px;
             align-items: stretch;
+            position: relative;
+            z-index: 5;
         }
         #managerSuccessStoriesHubModal .quick-report-grid .btn-small,
         #managerSuccessStoryModal .quick-report-grid .btn-small,
@@ -630,6 +747,8 @@
             width: 100% !important;
             min-height: 96px;
             justify-content: flex-start;
+            position: relative;
+            z-index: 6;
         }
         #managerSuccessStoriesHubModal .need-modal-actions .btn-small,
         #managerSuccessStoryModal .need-modal-actions .btn-small,
@@ -637,8 +756,152 @@
             width: auto !important;
             min-height: 0;
         }
+        #managerSuccessStoryModal .need-modal.live-modal {
+            width: min(780px, 100%);
+            background: linear-gradient(180deg, rgba(37, 17, 123, 0.98) 0%, rgba(44, 24, 150, 0.98) 100%);
+            border: 1px solid rgba(110, 84, 210, 0.55);
+            border-radius: 0;
+            box-shadow: 0 30px 80px rgba(4, 7, 22, 0.58);
+        }
+        #managerSuccessStoryModal .need-modal-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 18px 18px 14px;
+            border-bottom: 1px solid rgba(255, 126, 34, 0.65);
+        }
+        #managerSuccessStoryModal .need-modal-head h3 {
+            margin: 0;
+            font-size: 20px;
+            line-height: 1.1;
+            color: rgba(240, 244, 255, 0.08);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        #managerSuccessStoryModal .manager-story-form {
+            padding: 14px 18px 18px;
+            display: grid;
+            gap: 10px;
+        }
+        #managerSuccessStoryModal .manager-story-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px 16px;
+        }
+        #managerSuccessStoryModal .manager-story-field {
+            display: grid;
+            gap: 6px;
+        }
+        #managerSuccessStoryModal .manager-story-field-full {
+            grid-column: 1 / -1;
+        }
+        #managerSuccessStoryModal .manager-story-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0;
+            text-transform: none;
+            color: rgba(226, 232, 240, 0.35);
+        }
+        #managerSuccessStoryModal .manager-story-field input,
+        #managerSuccessStoryModal .manager-story-field select,
+        #managerSuccessStoryModal .manager-story-field textarea {
+            width: 100%;
+            border: 1px solid rgba(255, 126, 34, 0.9);
+            background: rgba(71, 38, 196, 0.52);
+            color: #f8fafc;
+            border-radius: 0;
+            padding: 9px 12px;
+            font-size: 11px;
+            outline: none;
+            transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+            box-shadow: none;
+        }
+        #managerSuccessStoryModal .manager-story-field select {
+            height: 37px;
+        }
+        #managerSuccessStoryModal .manager-story-field textarea {
+            min-height: 90px;
+            resize: none;
+            line-height: 1.5;
+        }
+        #managerSuccessStoryModal .manager-story-field input:focus,
+        #managerSuccessStoryModal .manager-story-field select:focus,
+        #managerSuccessStoryModal .manager-story-field textarea:focus {
+            border-color: rgba(255, 154, 79, 1);
+            box-shadow: none;
+            background: rgba(79, 46, 207, 0.62);
+        }
+        #managerSuccessStoryModal .manager-story-field input::placeholder,
+        #managerSuccessStoryModal .manager-story-field textarea::placeholder {
+            color: rgba(255, 255, 255, 0.55);
+        }
+        #managerSuccessStoryModal .manager-story-note {
+            display: none;
+        }
+        #managerSuccessStoryModal .need-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            padding: 0 18px 18px;
+        }
+        #managerSuccessStoryModal .need-modal-actions .btn-small {
+            min-width: 78px;
+            min-height: 32px;
+            border-radius: 0 !important;
+            justify-content: center !important;
+            font-size: 11px !important;
+            letter-spacing: 0;
+            box-shadow: none !important;
+        }
+        #managerSuccessStoryModal .need-modal-actions .btn-small.secondary {
+            background: rgba(77, 58, 165, 0.82) !important;
+            border-color: rgba(182, 174, 230, 0.35) !important;
+            color: #f8fafc !important;
+        }
+        #managerSuccessStoryModal .need-modal-actions .btn-small.primary {
+            background: linear-gradient(180deg, rgba(245,245,255,0.98) 0%, rgba(226,229,255,0.94) 100%) !important;
+            border-color: rgba(255,255,255,0.75) !important;
+            color: #6a56c5 !important;
+        }
+        #managerSuccessStoryModal .manager-story-close {
+            width: 32px;
+            min-width: 32px;
+            height: 32px;
+            padding: 0 !important;
+            border-radius: 0 !important;
+            background: rgba(255,255,255,0.96) !important;
+            color: #5640b9 !important;
+            border-color: rgba(255,255,255,0.8) !important;
+            font-weight: 900 !important;
+        }
+        #managerSuccessStoryModal .manager-story-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #managerSuccessStoryModal .manager-story-title i {
+            color: rgba(186, 230, 253, 0.35);
+            font-size: 16px;
+        }
+        @media (max-width: 720px) {
+            #managerSuccessStoryModal .manager-story-grid {
+                grid-template-columns: 1fr;
+            }
+            #managerSuccessStoryModal .need-modal-head,
+            #managerSuccessStoryModal .manager-story-form,
+            #managerSuccessStoryModal .need-modal-actions {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+            #managerSuccessStoryModal .need-modal-actions {
+                flex-direction: column-reverse;
+            }
+            #managerSuccessStoryModal .need-modal-actions .btn-small {
+                width: 100% !important;
+            }
+        }
         .applications-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(2, 6, 23, 0.62); z-index: 1600; align-items: center; justify-content: center; padding: 16px; }
-        .applications-modal-overlay.show { display: flex; }
         .applications-modal {
             width: min(760px, 100%);
             max-height: 90vh;
@@ -872,7 +1135,7 @@
                 box-shadow: none;
             }
             .stat-card-label {
-                color: #9ca3af;
+                color: #9ca3b8;
             }
 
             .player-card {
@@ -889,7 +1152,7 @@
                 color: #f3f4f6;
             }
             .player-info-label {
-                color: #9ca3af;
+                color: #9ca3b8;
             }
             .player-rating {
                 background: #1f2937;
@@ -1243,7 +1506,6 @@
                 <h1>Manager operasyonunu buradan yonet.</h1>
                 <p>Oyuncu ara, profil incele, başvuru gönder ve favori listeni yönet.</p>
             </div>
-
             <div class="need-section">
                 <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
                     <h2 style="font-size:18px;font-weight:800;color:#e5e7eb;">Aradığım Oyuncu İlanları</h2>
@@ -1331,17 +1593,21 @@
                 </section>
             </div>
 
-            <div class="need-modal-overlay" id="managerSuccessStoriesHubModal" onclick="if (event.target.id === 'managerSuccessStoriesHubModal') closeManagerSuccessStoriesHub()">
+            <div class="need-modal-overlay" id="managerSuccessStoriesHubModal" onclick="if(event.target.id==='managerSuccessStoriesHubModal'){closeManagerSuccessStoriesHub();}">
                 <div class="need-modal live-modal" onclick="event.stopPropagation()">
-                    <div class="need-modal-header">
+                    <div class="need-modal-head">
                         <h3>Basari Hikayeleri</h3>
                         <button class="btn-small secondary" type="button" onclick="closeManagerSuccessStoriesHub()">Kapat</button>
                     </div>
                     <div class="need-modal-body">
-                        <div class="offer-score-result" style="margin-bottom:12px;">Basari hikayesi gonder veya topluluktaki hikayeleri oku.</div>
+                        <div class="quick-report-result" style="margin-bottom:12px;">Basari hikayesi gonder veya topluluktaki hikayeleri oku.</div>
                         <div class="quick-report-grid" style="grid-template-columns:repeat(2,1fr); margin-bottom:0;">
-                            <button class="btn-small secondary" type="button" style="justify-content:flex-start; min-height:96px;" onclick="openManagerSuccessStoryModal()"><i class="fas fa-paper-plane"></i><span>Gonder</span></button>
-                            <button class="btn-small secondary" type="button" style="justify-content:flex-start; min-height:96px;" onclick="openManagerSuccessStoriesReadModal()"><i class="fas fa-book-open"></i><span>Oku</span></button>
+                            <button class="btn-small secondary" id="managerSuccessStoriesSendBtn" data-success-story-action="send" type="button" style="justify-content:flex-start; min-height:96px;" onclick="openManagerSuccessStoryModal()">
+                                <i class="fas fa-paper-plane"></i><span>Gonder</span>
+                            </button>
+                            <button class="btn-small secondary" id="managerSuccessStoriesReadBtn" data-success-story-action="read" type="button" style="justify-content:flex-start; min-height:96px;" onclick="openManagerSuccessStoriesReadModal()">
+                                <i class="fas fa-book-open"></i><span>Oku</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1374,28 +1640,28 @@
                 </div>
             </div>
 
-            <div class="need-modal-overlay" id="managerSuccessStoryModal" onclick="if (event.target.id === 'managerSuccessStoryModal') closeManagerSuccessStoryModal()">
+            <div class="need-modal-overlay" id="managerSuccessStoryModal" onclick="if(event.target.id==='managerSuccessStoryModal'){closeManagerSuccessStoryModal();}">
                 <div class="need-modal live-modal" onclick="event.stopPropagation()">
-                    <div class="need-modal-header">
+                    <div class="need-modal-head">
                         <h3>Basari Hikayesi Gonder</h3>
                         <button class="btn-small secondary" type="button" onclick="closeManagerSuccessStoryModal()">Kapat</button>
                     </div>
                     <form id="managerSuccessStoryForm">
                         <div class="need-modal-body">
-                            <input type="text" name="full_name" placeholder="Ad Soyad" required maxlength="150">
+                            <input id="managerSuccessStoryFullName" name="full_name" placeholder="Ad Soyad" required maxlength="150">
                             <div class="live-grid">
-                                <select name="sport" required>
+                                <select id="managerSuccessStorySport" name="sport" required>
                                     <option value="">Spor Sec</option>
                                     <option value="Futbol">Futbol</option>
                                     <option value="Basketbol">Basketbol</option>
                                     <option value="Voleybol">Voleybol</option>
                                 </select>
-                                <input type="text" name="old_club" placeholder="Eski Kulup" maxlength="160">
+                                <input id="managerSuccessStoryOldClub" name="old_club" placeholder="Eski Kulup" maxlength="160">
                             </div>
-                            <input type="text" name="new_club" placeholder="Yeni Kulup" maxlength="160" required>
-                            <textarea name="story_text" placeholder="Basari hikayeni yaz..." required maxlength="1200"></textarea>
-                            <input type="url" name="image_url" placeholder="Gorsel linki (opsiyonel)">
-                            <div class="offer-score-result" id="managerSuccessStoryResult">Yeni basari hikayesini dashboard icinden gonder.</div>
+                            <input id="managerSuccessStoryNewClub" name="new_club" placeholder="Yeni Kulup" maxlength="160" required>
+                            <textarea id="managerSuccessStoryText" name="story_text" placeholder="Basari hikayeni yaz..." required maxlength="1200"></textarea>
+                            <input id="managerSuccessStoryImage" name="image_url" type="url" placeholder="Gorsel linki (opsiyonel)">
+                            <div class="quick-report-result" id="managerSuccessStoryNotice">Yeni basari hikayesini dashboard icinden gonder.</div>
                         </div>
                         <div class="need-modal-actions">
                             <button class="btn-small secondary" type="button" onclick="closeManagerSuccessStoryModal()">Vazgec</button>
@@ -1405,9 +1671,9 @@
                 </div>
             </div>
 
-            <div class="need-modal-overlay" id="managerSuccessStoriesReadModal" onclick="if (event.target.id === 'managerSuccessStoriesReadModal') closeManagerSuccessStoriesReadModal()">
+            <div class="need-modal-overlay" id="managerSuccessStoriesReadModal" onclick="if(event.target.id==='managerSuccessStoriesReadModal'){closeManagerSuccessStoriesReadModal();}">
                 <div class="need-modal live-modal" onclick="event.stopPropagation()">
-                    <div class="need-modal-header">
+                    <div class="need-modal-head">
                         <h3>Basari Hikayelerini Oku</h3>
                         <button class="btn-small secondary" type="button" onclick="closeManagerSuccessStoriesReadModal()">Kapat</button>
                     </div>
@@ -1416,7 +1682,7 @@
                             <button class="btn-small secondary" type="button" onclick="closeManagerSuccessStoriesReadModal(); openManagerSuccessStoriesHub()"><i class="fas fa-arrow-left"></i><span>Geri</span></button>
                             <button class="btn-small secondary" type="button" onclick="loadManagerSuccessStories()"><i class="fas fa-arrows-rotate"></i><span>Yenile</span></button>
                         </div>
-                        <div class="offer-score-result" id="managerSuccessStoriesStatus">Topluluktan gelen son basari hikayelerini burada oku.</div>
+                        <div class="quick-report-result" id="managerSuccessStoriesStatus">Topluluktan gelen son basari hikayelerini burada oku.</div>
                         <div id="managerSuccessStoriesList" style="display:grid; gap:10px; margin-top:14px;">
                             <div class="empty">Basari hikayeleri yukleniyor...</div>
                         </div>
@@ -2055,7 +2321,7 @@
                 }
             } catch (error) {
                 if (status) status.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span>Hata</span>';
-                if (root) root.innerHTML = `<div class="need-item">${type === 'events' ? 'Deneme ve idmanlar' : 'Kulup ihtiyaclari'} su an yuklenemedi.</div>`;
+                if (root) root.innerHTML = `<div class="need-item">${type === 'events' ? 'Deneme ve idmanlar' : 'Kulup ihtiyaclari'} su an yuklenmedi.</div>`;
             }
         }
 
@@ -2368,12 +2634,21 @@
 
         async function fetchManagerNeeds() {
             const apiBase = getApiBaseUrl();
-            const response = await fetch(`${apiBase}/discovery/manager-needs`, {
-                headers: { Accept: 'application/json' },
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            const currentUserId = Number(localStorage.getItem('nextscout_user_id') || 0);
+            const query = currentUserId ? `?team_user_id=${currentUserId}&sort_by=created_at&sort_dir=desc&per_page=20` : '?sort_by=created_at&sort_dir=desc&per_page=20';
+            const response = await fetch(`${apiBase}/opportunities${query}`, {
+                headers: {
+                    Accept: 'application/json',
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                },
             });
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const payload = await response.json();
-            return Array.isArray(payload?.data) ? payload.data : [];
+            const rows = Array.isArray(payload?.data?.data)
+                ? payload.data.data
+                : (Array.isArray(payload?.data) ? payload.data : []);
+            return rows.filter((item) => item && typeof item === 'object');
         }
 
         async function saveManagerNeed(row) {
@@ -2392,10 +2667,15 @@
                 body: JSON.stringify({
                     title: row?.title || 'Menajer ilani',
                     position: row?.position || '',
+                    min_height: row?.min_height || null,
+                    dominant_side: row?.dominant_side || '',
                     age_min: row?.age_min || null,
                     age_max: row?.age_max || null,
+                    free_only: row?.free_only || 'any',
+                    budget_min: row?.budget_min || null,
+                    budget_max: row?.budget_max || null,
                     city: row?.city || '',
-                    details: row?.description || row?.note || '',
+                    details: row?.details || row?.description || row?.note || '',
                     status: 'open',
                 }),
             });
@@ -2556,9 +2836,28 @@
             document.body.style.overflow = '';
         }
 
+        function bindManagerSuccessStoriesHubActions() {
+            const sendBtn = document.getElementById('managerSuccessStoriesSendBtn');
+            const readBtn = document.getElementById('managerSuccessStoriesReadBtn');
+            if (sendBtn && !sendBtn.dataset.bound) {
+                sendBtn.dataset.bound = 'true';
+                sendBtn.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    openManagerSuccessStoryModal();
+                });
+            }
+            if (readBtn && !readBtn.dataset.bound) {
+                readBtn.dataset.bound = 'true';
+                readBtn.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    openManagerSuccessStoriesReadModal();
+                });
+            }
+        }
+
         function openManagerSuccessStoryModal() {
             closeManagerSuccessStoriesHub();
-            const user = getStoredUser();
+            const user = getStoredManagerUser();
             const input = document.querySelector('#managerSuccessStoryForm input[name="full_name"]');
             if (input && !input.value && user?.name) input.value = String(user.name);
             document.getElementById('managerSuccessStoryModal')?.classList.add('show');
@@ -2639,7 +2938,7 @@
             event.preventDefault();
             const form = event.currentTarget;
             const root = document.getElementById('managerSuccessStoryResult');
-            const token = getToken();
+            const token = getAuthToken();
             if (!token) {
                 if (root) root.textContent = 'Hikaye gondermek icin giris yapman gerekiyor.';
                 return;
@@ -2951,7 +3250,7 @@
         function openHelp() { window.location.href = 'help.html'; }
 
         function clampScoreInput(value) {
-            const n = Number(value || 0);
+            const n = Number(value) || 0;
             if (!Number.isFinite(n)) return 0;
             return Math.max(0, Math.min(100, n));
         }
@@ -3185,8 +3484,9 @@
         async function init() {
             loadManagerMarketPulse();
             setInterval(loadManagerMarketPulse, 30000);
-        document.getElementById('managerTalentTipForm')?.addEventListener('submit', submitManagerTalentTip);
-        document.getElementById('managerSuccessStoryForm')?.addEventListener('submit', submitManagerSuccessStoryForm);
+            bindManagerSuccessStoriesHubActions();
+            document.getElementById('managerTalentTipForm')?.addEventListener('submit', submitManagerTalentTip);
+            document.getElementById('managerSuccessStoryForm')?.addEventListener('submit', submitManagerSuccessStoryForm);
             let authUser = null;
             try { authUser = JSON.parse(localStorage.getItem('nextscout_user') || '{}'); } catch (error) { authUser = null; }
             const managerHeroUser = document.getElementById('managerHeroUser');
@@ -3245,9 +3545,8 @@
             }
 
             const item = {
-                author_name: `${managerFirstName} ${managerLastName}`.trim(),
                 title: `${document.getElementById('needPosition').value || 'Oyuncu'} pozisyonu icin ilan`,
-                description: document.getElementById('needNote').value.trim(),
+                details: document.getElementById('needNote').value.trim(),
                 position: document.getElementById('needPosition').value,
                 min_height: Number(document.getElementById('needMinHeight').value || 0),
                 dominant_side: document.getElementById('needFoot').value,
@@ -3357,14 +3656,3 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
