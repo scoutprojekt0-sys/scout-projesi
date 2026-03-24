@@ -513,6 +513,66 @@
         }
         .smart-manager-cta:hover { filter: brightness(1.06); }
 
+        #managerSuccessStoriesList .point-item {
+            border: 1px solid var(--line);
+            border-radius: 0;
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            padding: 14px;
+            box-shadow: 0 12px 24px rgba(2, 6, 23, 0.2);
+            display: grid;
+            gap: 10px;
+        }
+        #managerSuccessStoriesList .row-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        #managerSuccessStoriesList .row-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #f8fafc;
+            margin-bottom: 8px;
+        }
+        #managerSuccessStoriesList .row-copy {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 126, 34, 0.55);
+            border-radius: 0;
+            background: rgba(71, 38, 196, 0.22);
+            color: #e5e7eb;
+            font-size: 12px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        #managerSuccessStoriesList .row-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            color: #9bb5cb;
+            font-size: 11px;
+        }
+        #managerSuccessStoriesReadModal .need-modal.live-modal {
+            max-height: min(760px, calc(100vh - 32px));
+            display: flex;
+            flex-direction: column;
+        }
+        #managerSuccessStoriesReadModal .need-modal-body {
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        #managerSuccessStoriesList {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
         .workspace-tabs {
             display: flex;
             flex-wrap: wrap;
@@ -1682,7 +1742,7 @@
                             <button class="btn-small secondary" type="button" onclick="closeManagerSuccessStoriesReadModal(); openManagerSuccessStoriesHub()"><i class="fas fa-arrow-left"></i><span>Geri</span></button>
                             <button class="btn-small secondary" type="button" onclick="loadManagerSuccessStories()"><i class="fas fa-arrows-rotate"></i><span>Yenile</span></button>
                         </div>
-                        <div class="quick-report-result" id="managerSuccessStoriesStatus">Topluluktan gelen son basari hikayelerini burada oku.</div>
+                        <div class="quick-report-result" id="managerSuccessStoriesStatus">Burada sadece kendi başarı hikayelerini görürsün.</div>
                         <div id="managerSuccessStoriesList" style="display:grid; gap:10px; margin-top:14px;">
                             <div class="empty">Basari hikayeleri yukleniyor...</div>
                         </div>
@@ -2117,6 +2177,17 @@
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#39;');
+        }
+
+        function formatDate(value) {
+            if (!value) return '-';
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return String(value);
+            return date.toLocaleDateString('tr-TR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+            });
         }
 
         function parseAgeRange(value) {
@@ -2882,8 +2953,13 @@
         }
 
         async function fetchManagerSuccessStories() {
-            const response = await fetch(`${getApiBaseUrl()}/success-stories?limit=8`, {
-                headers: { Accept: 'application/json' },
+            const token = getAuthToken();
+            if (!token) throw new Error('Kendi başarı hikayelerini görmek için giriş yapman gerekiyor.');
+            const response = await fetch(`${getApiBaseUrl()}/success-stories?mine=1&limit=8`, {
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
                 cache: 'no-store',
                 credentials: 'same-origin',
             });
@@ -2899,7 +2975,7 @@
             if (!root || !status) return;
             if (!rows.length) {
                 status.textContent = 'Bos';
-                root.innerHTML = '<div class="empty">Basari hikayesi bulunmuyor.</div>';
+                root.innerHTML = '<div class="empty">Henüz kendi başarı hikayen bulunmuyor.</div>';
                 return;
             }
             status.textContent = `${rows.length} kayit`;
@@ -2925,7 +3001,7 @@
             const status = document.getElementById('managerSuccessStoriesStatus');
             if (!root || !status) return;
             status.textContent = 'Yukleniyor';
-            root.innerHTML = '<div class="empty">Basari hikayeleri yukleniyor...</div>';
+            root.innerHTML = '<div class="empty">Kendi başarı hikayelerin yükleniyor...</div>';
             try {
                 renderManagerSuccessStories(await fetchManagerSuccessStories());
             } catch (error) {

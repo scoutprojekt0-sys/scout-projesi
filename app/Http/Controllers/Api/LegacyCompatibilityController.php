@@ -218,9 +218,25 @@ class LegacyCompatibilityController extends Controller
     public function successStoriesIndex(): JsonResponse
     {
         if (Schema::hasTable('success_stories')) {
-            $rows = SuccessStory::query()
-                ->where('status', 'approved')
-                ->orderByDesc('approved_at')
+            $mine = filter_var(request()->query('mine', false), FILTER_VALIDATE_BOOLEAN);
+            $authUser = auth('sanctum')->user();
+            $query = SuccessStory::query();
+
+            if ($mine) {
+                if (! $authUser) {
+                    return response()->json([
+                        'ok' => false,
+                        'message' => 'Kendi başarı hikayelerini görmek için giriş yapman gerekiyor.',
+                    ], 401);
+                }
+
+                $query->where('user_id', (int) $authUser->id);
+            } else {
+                $query->where('status', 'approved')
+                    ->orderByDesc('approved_at');
+            }
+
+            $rows = $query
                 ->latest('created_at')
                 ->latest('id')
                 ->limit(100)
