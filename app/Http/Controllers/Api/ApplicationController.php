@@ -8,8 +8,10 @@ use App\Http\Requests\Application\ChangeApplicationStatusRequest;
 use App\Http\Requests\Application\IncomingApplicationsRequest;
 use App\Http\Requests\Application\OutgoingApplicationsRequest;
 use App\Models\Application;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Symfony\Component\HttpFoundation\Response;
 
 class ApplicationController extends Controller
@@ -120,6 +122,7 @@ class ApplicationController extends Controller
     public function outgoing(OutgoingApplicationsRequest $request): JsonResponse
     {
         $this->authorize('viewOutgoing', Application::class);
+        $hasExpiresAt = Schema::hasColumn('opportunities', 'expires_at');
 
         $validated = $request->validated();
         $perPage = (int) ($validated['per_page'] ?? 20);
@@ -143,10 +146,16 @@ class ApplicationController extends Controller
                 'applications.created_at',
                 'opportunities.id as opportunity_id',
                 'opportunities.title as opportunity_title',
+                'opportunities.details as opportunity_details',
+                'opportunities.status as opportunity_status',
                 'teams.id as team_id',
                 'teams.name as team_name',
                 'teams.city as team_city',
             ]);
+
+        if ($hasExpiresAt) {
+            $query->addSelect('opportunities.expires_at as opportunity_expires_at');
+        }
 
         if (! empty($validated['status'])) {
             $query->where('applications.status', $validated['status']);
@@ -160,6 +169,15 @@ class ApplicationController extends Controller
         $query->orderBy($sortColumnMap[$sortBy], $sortDir);
 
         $outgoing = $query->paginate($perPage);
+        $mappedRows = $outgoing->getCollection()
+            ->map(function ($row) {
+                $row->event_date = optional($this->extractOpportunityEventDate($row))?->toIso8601String();
+                return $row;
+            });
+        $filteredRows = $mappedRows
+            ->filter(fn ($row) => $this->shouldShowOutgoingApplication($row))
+            ->values();
+        $outgoing->setCollection($filteredRows);
 
         return response()->json([
             'ok' => true,
@@ -201,5 +219,64 @@ class ApplicationController extends Controller
             'message' => 'Basvuru durumu guncellendi.',
             'data' => $updated,
         ]);
+    }
+
+    private function shouldShowOutgoingApplication(object $row): bool
+    {
+        if (($row->opportunity_status ?? 'open') !== 'open') {
+            return false;
+        }
+
+        $expiresAt = $this->extractOpportunityExpiresAt($row);
+        if ($expiresAt && ! $expiresAt->isFuture()) {
+            return false;
+        }
+
+        $eventDate = $this->extractOpportunityEventDate($row);
+        if (! $eventDate) {
+            return true;
+        }
+
+        return $eventDate->isFuture();
+    }
+
+    private function extractOpportunityExpiresAt(object $row): ?Carbon
+    {
+        $value = $row->opportunity_expires_at ?? null;
+        if (empty($value)) {
+            return null;
+        }
+
+        try {
+            return Carbon::parse($value);
+        } catch (\Throwable) {
+            return null;
+        }
+    }
+
+    private function extractOpportunityEventDate(object $row): ?Carbon
+    {
+        $details = (string) ($row->opportunity_details ?? '');
+        if ($details === '') {
+            return null;
+        }
+
+        if (preg_match('/event_date=([^|]+)/i', $details, $matches) === 1) {
+            try {
+                return Carbon::parse(trim($matches[1]));
+            } catch (\Throwable) {
+                return null;
+            }
+        }
+
+        if (preg_match('/(20\d{2}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z)/i', $details, $matches) === 1) {
+            try {
+                return Carbon::parse(trim($matches[1]));
+            } catch (\Throwable) {
+                return null;
+            }
+        }
+
+        return null;
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -14,6 +15,9 @@ class OpportunityController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
+        $hasExpiresAt = Schema::hasColumn('opportunities', 'expires_at');
+        $this->closeExpiredOpportunities();
+
         $validated = $request->validate([
             'status' => ['nullable', Rule::in(['open', 'closed'])],
             'position' => ['nullable', 'string', 'max:40'],
@@ -51,6 +55,15 @@ class OpportunityController extends Controller
                 'opportunities.created_at',
                 'opportunities.updated_at',
             ]);
+
+        if ($hasExpiresAt) {
+            $query->addSelect('opportunities.expires_at');
+            $query->where(function ($builder): void {
+                $builder
+                    ->whereNull('opportunities.expires_at')
+                    ->orWhere('opportunities.expires_at', '>', now());
+            });
+        }
 
         if (! empty($validated['status'])) {
             $query->where('opportunities.status', $validated['status']);
@@ -136,6 +149,7 @@ class OpportunityController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        $hasExpiresAt = Schema::hasColumn('opportunities', 'expires_at');
         $authUser = $request->user();
         if (! in_array($authUser->role, ['team', 'manager', 'coach'], true)) {
             return response()->json([
@@ -158,9 +172,13 @@ class OpportunityController extends Controller
             'details' => ['nullable', 'string', 'max:5000'],
             'description' => ['nullable', 'string', 'max:5000'],
             'status' => ['nullable', Rule::in(['open', 'closed'])],
+            'duration_days' => ['nullable', Rule::in([7, 15, '7', '15'])],
         ]);
 
-        $id = DB::table('opportunities')->insertGetId([
+        $durationDays = (int) ($validated['duration_days'] ?? 7);
+        $expiresAt = now()->addDays($durationDays);
+
+        $payload = [
             'team_user_id' => (int) $authUser->id,
             'title' => $validated['title'],
             'position' => $validated['position'] ?? null,
@@ -176,7 +194,13 @@ class OpportunityController extends Controller
             'status' => $validated['status'] ?? 'open',
             'created_at' => now(),
             'updated_at' => now(),
-        ]);
+        ];
+
+        if ($hasExpiresAt) {
+            $payload['expires_at'] = $expiresAt;
+        }
+
+        $id = DB::table('opportunities')->insertGetId($payload);
 
         $created = DB::table('opportunities')->where('id', $id)->first();
         $this->bumpIndexCacheVersion();
@@ -190,7 +214,10 @@ class OpportunityController extends Controller
 
     public function show(int $id): JsonResponse
     {
-        $opportunity = DB::table('opportunities')
+        $hasExpiresAt = Schema::hasColumn('opportunities', 'expires_at');
+        $this->closeExpiredOpportunities();
+
+        $query = DB::table('opportunities')
             ->leftJoin('users as teams', 'teams.id', '=', 'opportunities.team_user_id')
             ->where('opportunities.id', $id)
             ->select([
@@ -212,8 +239,13 @@ class OpportunityController extends Controller
                 'opportunities.status',
                 'opportunities.created_at',
                 'opportunities.updated_at',
-            ])
-            ->first();
+            ]);
+
+        if ($hasExpiresAt) {
+            $query->addSelect('opportunities.expires_at');
+        }
+
+        $opportunity = $query->first();
 
         if (! $opportunity) {
             return response()->json([
@@ -230,6 +262,7 @@ class OpportunityController extends Controller
 
     public function update(Request $request, int $id): JsonResponse
     {
+        $hasExpiresAt = Schema::hasColumn('opportunities', 'expires_at');
         $opportunity = DB::table('opportunities')->where('id', $id)->first();
         if (! $opportunity) {
             return response()->json([
@@ -260,11 +293,10 @@ class OpportunityController extends Controller
             'details' => ['sometimes', 'nullable', 'string', 'max:5000'],
             'description' => ['sometimes', 'nullable', 'string', 'max:5000'],
             'status' => ['sometimes', Rule::in(['open', 'closed'])],
+            'duration_days' => ['sometimes', 'nullable', Rule::in([7, 15, '7', '15'])],
         ]);
 
-        DB::table('opportunities')
-            ->where('id', $id)
-            ->update([
+        $updates = [
                 'title' => $validated['title'] ?? $opportunity->title,
                 'position' => array_key_exists('position', $validated) ? $validated['position'] : $opportunity->position,
                 'age_min' => array_key_exists('age_min', $validated) ? $validated['age_min'] : $opportunity->age_min,
@@ -280,7 +312,17 @@ class OpportunityController extends Controller
                     : (array_key_exists('description', $validated) ? $validated['description'] : $opportunity->details),
                 'status' => $validated['status'] ?? $opportunity->status,
                 'updated_at' => now(),
-            ]);
+            ];
+
+        if ($hasExpiresAt) {
+            $updates['expires_at'] = array_key_exists('duration_days', $validated) && $validated['duration_days']
+                ? now()->addDays((int) $validated['duration_days'])
+                : ($opportunity->expires_at ?? null);
+        }
+
+        DB::table('opportunities')
+            ->where('id', $id)
+            ->update($updates);
 
         $updated = DB::table('opportunities')->where('id', $id)->first();
         $this->bumpIndexCacheVersion();
@@ -326,5 +368,21 @@ class OpportunityController extends Controller
             Cache::forever($key, 1);
         }
         Cache::increment($key);
+    }
+
+    private function closeExpiredOpportunities(): void
+    {
+        if (! Schema::hasColumn('opportunities', 'expires_at')) {
+            return;
+        }
+
+        DB::table('opportunities')
+            ->where('status', 'open')
+            ->whereNotNull('expires_at')
+            ->where('expires_at', '<=', now())
+            ->update([
+                'status' => 'closed',
+                'updated_at' => now(),
+            ]);
     }
 }

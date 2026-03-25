@@ -6,10 +6,25 @@ use App\Http\Controllers\Concerns\ApiResponds;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class DiscoveryController extends Controller
 {
     use ApiResponds;
+
+    private const EVENT_KEYWORDS = [
+        '%deneme%',
+        '%idman%',
+        '%trial%',
+        '%training%',
+        '%etkinlik%',
+        '%showcase%',
+        '%camp%',
+        '%kamp%',
+        '%secme%',
+        '%seçme%',
+        '%match%',
+    ];
 
     public function publicPlayers(): JsonResponse
     {
@@ -241,19 +256,51 @@ class DiscoveryController extends Controller
 
     public function clubNeeds(): JsonResponse
     {
+        $hasExpiresAt = Schema::hasColumn('opportunities', 'expires_at');
+        $this->closeExpiredOpportunities();
+
         $needs = DB::table('opportunities')
             ->where('status', 'open')
             ->join('users as teams', 'opportunities.team_user_id', '=', 'teams.id')
             ->where('teams.role', 'team')
+            ->where(function ($query) {
+                foreach (self::EVENT_KEYWORDS as $keyword) {
+                    $query->whereRaw('LOWER(COALESCE(opportunities.title, "")) NOT LIKE ?', [$keyword])
+                        ->whereRaw('LOWER(COALESCE(opportunities.details, "")) NOT LIKE ?', [$keyword]);
+                }
+            })
             ->select('opportunities.*', 'teams.name as team_name')
             ->orderBy('opportunities.created_at', 'desc')
             ->paginate(20);
+
+        if ($hasExpiresAt) {
+            $needs = DB::table('opportunities')
+                ->where('status', 'open')
+                ->where(function ($query) {
+                    $query->whereNull('opportunities.expires_at')
+                        ->orWhere('opportunities.expires_at', '>', now());
+                })
+                ->join('users as teams', 'opportunities.team_user_id', '=', 'teams.id')
+                ->where('teams.role', 'team')
+                ->where(function ($query) {
+                    foreach (self::EVENT_KEYWORDS as $keyword) {
+                        $query->whereRaw('LOWER(COALESCE(opportunities.title, "")) NOT LIKE ?', [$keyword])
+                            ->whereRaw('LOWER(COALESCE(opportunities.details, "")) NOT LIKE ?', [$keyword]);
+                    }
+                })
+                ->select('opportunities.*', 'teams.name as team_name')
+                ->orderBy('opportunities.created_at', 'desc')
+                ->paginate(20);
+        }
 
         return $this->paginatedListResponse($needs, 'Kulup ihtiyaclari hazir.');
     }
 
     public function managerNeeds(): JsonResponse
     {
+        $hasExpiresAt = Schema::hasColumn('opportunities', 'expires_at');
+        $this->closeExpiredOpportunities();
+
         $needs = DB::table('opportunities')
             ->where('status', 'open')
             ->join('users as teams', 'opportunities.team_user_id', '=', 'teams.id')
@@ -266,6 +313,25 @@ class DiscoveryController extends Controller
             ])
             ->orderBy('opportunities.created_at', 'desc')
             ->paginate(20);
+
+        if ($hasExpiresAt) {
+            $needs = DB::table('opportunities')
+                ->where('status', 'open')
+                ->where(function ($query) {
+                    $query->whereNull('opportunities.expires_at')
+                        ->orWhere('opportunities.expires_at', '>', now());
+                })
+                ->join('users as teams', 'opportunities.team_user_id', '=', 'teams.id')
+                ->where('teams.role', 'manager')
+                ->select([
+                    'opportunities.*',
+                    'teams.name as manager_name',
+                    'teams.name as author_name',
+                    'opportunities.details as description',
+                ])
+                ->orderBy('opportunities.created_at', 'desc')
+                ->paginate(20);
+        }
 
         return $this->paginatedListResponse($needs, 'Menajer ihtiyaclari hazir.');
     }
@@ -735,5 +801,21 @@ class DiscoveryController extends Controller
         ];
 
         return strtolower(strtr($value, $map));
+    }
+
+    private function closeExpiredOpportunities(): void
+    {
+        if (! Schema::hasColumn('opportunities', 'expires_at')) {
+            return;
+        }
+
+        DB::table('opportunities')
+            ->where('status', 'open')
+            ->whereNotNull('expires_at')
+            ->where('expires_at', '<=', now())
+            ->update([
+                'status' => 'closed',
+                'updated_at' => now(),
+            ]);
     }
 }
