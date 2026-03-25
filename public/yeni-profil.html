@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yeni Profil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --ns-bg: #08131d;
+            --ns-ink: #f5fbff;
+            --ns-muted: #9bb5cb;
+            --ns-line: #2b4660;
+            --ns-line-soft: rgba(96, 165, 250, 0.16);
+            --ns-panel: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            --ns-panel-soft: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(15,23,42,0.18) 100%);
+            --ns-cta: #ff5a1f;
+            --ns-cta-2: #ff7e22;
+            --ns-primary: #60a5fa;
+            --ns-shadow: 0 18px 36px rgba(8,19,29,.34);
+        }
+        body {
+            font-family: Inter, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+                radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+                var(--ns-bg);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ns-ink);
+        }
+        .ipad-card {
+            width: 1024px;
+            height: 1366px;
+            max-width: 98vw;
+            max-height: 98vh;
+            background: linear-gradient(180deg, rgba(10, 24, 39, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border-radius: 32px;
+            box-shadow: 0 30px 70px rgba(2, 6, 23, 0.46);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #cbd5e1;
+            border: 1px solid var(--ns-line);
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+        }
+        .ipad-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 18% 18%, rgba(96,165,250,.14), transparent 24%),
+                radial-gradient(circle at 84% 10%, rgba(255,126,34,.12), transparent 18%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .ipad-card::before {
+            content: "";
+            display: block;
+            position: absolute;
+            top: 2cm;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 100%);
+            border-radius: 2px;
+        }
+        .profile-buttons {
+            position: absolute;
+            left: 0;
+            display: flex;
+            justify-content: flex-start;
+            z-index: 6;
+            top: 0.7cm;
+            margin-left: 2.5rem;
+            gap: 10px;
+        }
+        .profile-btn,
+        .stats-btn {
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+            color: #16325c;
+            border: 1px solid rgba(255, 126, 34, 0.45);
+            border-radius: 12px;
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            box-shadow: 0 12px 24px rgba(8,19,29,.24);
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s, color 0.2s, transform 0.2s;
+        }
+        .stats-btn {
+            padding: 4px 18px;
+        }
+        .profile-btn:hover,
+        .stats-btn:hover {
+            background: linear-gradient(135deg, var(--ns-cta) 0%, var(--ns-cta-2) 100%);
+            color: #fff;
+            box-shadow: 0 16px 28px rgba(255,90,31,.28);
+            transform: translateY(-1px);
+        }
+        .profile-btn.active,
+        .stats-btn.active {
+            background: linear-gradient(135deg, var(--ns-cta) 0%, var(--ns-cta-2) 100%);
+            color: #fff;
+            box-shadow: 0 18px 32px rgba(255,90,31,.30);
+        }
+        .profile-detail-card,
+        .stats-detail-card {
+            position: absolute;
+            left: 0;
+            width: 1024px;
+            max-width: 98vw;
+            background: var(--ns-panel);
+            border-radius: 0 0 32px 32px;
+            box-shadow: var(--ns-shadow);
+            top: calc(2cm + 4px);
+            height: calc(100% - (2cm + 4px));
+            display: flex;
+            border-top: 1px solid rgba(96,165,250,.16);
+            border-left: 1px solid var(--ns-line);
+            border-right: 1px solid var(--ns-line);
+            border-bottom: 1px solid var(--ns-line);
+            border-bottom-left-radius: 32px;
+            border-bottom-right-radius: 32px;
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity .28s ease, transform .28s ease;
+        }
+        .profile-detail-card {
+            z-index: 10;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 0;
+        }
+        .stats-detail-card {
+            z-index: 11;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .profile-detail-card.is-visible,
+        .stats-detail-card.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .profile-shell {
+            width: 100%;
+            display: grid;
+            gap: 14px;
+            padding: 18px 24px 22px;
+            overflow: hidden;
+            height: 100%;
+        }
+        .profile-hero {
+            display: grid;
+            grid-template-columns: 280px minmax(0, 1fr);
+            gap: 16px;
+            align-items: stretch;
+        }
+        .profile-visual {
+            position: relative;
+            min-height: 332px;
+            border-radius: 28px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,.08);
+            background:
+                linear-gradient(160deg, rgba(15, 23, 42, 0.14), rgba(15, 23, 42, 0.4)),
+                linear-gradient(135deg, rgba(30,64,175,.22) 0%, rgba(14,165,233,.16) 58%, rgba(249,115,22,.14) 100%);
+            box-shadow: 0 22px 44px rgba(2, 6, 23, 0.34);
+            animation: floatCard 10s ease-in-out infinite;
+        }
+        .profile-visual::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                repeating-linear-gradient(128deg, rgba(255,255,255,.04) 0, rgba(255,255,255,.04) 2px, transparent 2px, transparent 30px),
+                linear-gradient(120deg, rgba(255,255,255,.06) 0%, transparent 32%);
+            opacity: .45;
+            pointer-events: none;
+        }
+        .profile-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 28px;
+            object-fit: cover;
+            border: none;
+            box-shadow: none;
+            background: linear-gradient(135deg, rgba(30,64,175,.22) 0%, rgba(14,165,233,.16) 58%, rgba(249,115,22,.14) 100%);
+            margin: 0;
+        }
+        .profile-visual-overlay {
+            position: absolute;
+            inset: 18px;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+        .profile-visual-chip {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            min-height: 30px;
+            padding: 0 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,.12);
+            background: rgba(8, 19, 29, 0.34);
+            color: #eef6ff;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            backdrop-filter: blur(12px);
+        }
+        .profile-visual-number {
+            align-self: flex-end;
+            font-size: 72px;
+            line-height: 1;
+            font-weight: 900;
+            color: rgba(255,255,255,.14);
+            letter-spacing: -0.08em;
+            text-shadow: 0 18px 36px rgba(2, 6, 23, 0.24);
+        }
+        .profile-copy {
+            display: grid;
+            gap: 12px;
+            align-content: start;
+            min-width: 0;
+            padding-top: 0;
+            padding-right: 0;
+        }
+        .profile-identity {
+            display: grid;
+            gap: 8px;
+            padding: 16px 18px;
+            border-radius: 26px;
+            background: linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%);
+            border: 1px solid rgba(96,165,250,.14);
+            box-shadow: 0 18px 32px rgba(2,6,23,.16);
+            animation: fadeSlideIn .5s ease both;
+        }
+        .profile-name {
+            font-size: 32px;
+            line-height: 1;
+            font-weight: 900;
+            color: var(--ns-ink);
+            letter-spacing: -0.04em;
+        }
+        .profile-role {
+            display: inline-flex;
+            align-items: center;
+            min-height: 28px;
+            width: fit-content;
+            padding: 0 12px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--ns-cta) 0%, var(--ns-cta-2) 100%);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            box-shadow: 0 12px 24px rgba(255,90,31,.22);
+        }
+        .profile-subcopy {
+            font-size: 12px;
+            color: var(--ns-muted);
+        }
+        .profile-meta-ribbon {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .profile-meta-pill {
+            min-height: 28px;
+            padding: 0 10px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255,255,255,.05);
+            border: 1px solid rgba(255,255,255,.08);
+            color: #dbeafe;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+        }
+        .talent-cards {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            align-items: stretch;
+        }
+        .talent-card {
+            min-height: 128px;
+            border-radius: 18px;
+            background: var(--ns-panel-soft);
+            border: 1px solid var(--ns-line-soft);
+            box-shadow: 0 18px 32px rgba(2,6,23,.16);
+            padding: 12px;
+            display: grid;
+            align-content: start;
+            gap: 10px;
+            animation: fadeSlideIn .55s ease both;
+        }
+        .talent-card:nth-child(2) { animation-delay: .06s; }
+        .talent-card:nth-child(3) { animation-delay: .12s; }
+        .talent-card-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        .talent-card-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.08);
+            color: #ffb37d;
+            font-size: 13px;
+        }
+        .talent-card-label {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ns-muted);
+        }
+        .talent-card-value {
+            font-size: 22px;
+            line-height: 1;
+            font-weight: 900;
+            color: var(--ns-ink);
+        }
+        .talent-card-note {
+            font-size: 11px;
+            color: #dbeafe;
+            line-height: 1.35;
+        }
+        .talent-card-track {
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.08);
+            overflow: hidden;
+        }
+        .talent-card-fill {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--ns-cta) 0%, var(--ns-cta-2) 100%);
+        }
+        .profile-line {
+            border-radius: 14px;
+            background: linear-gradient(90deg, rgba(255,255,255,.08) 0%, rgba(15,23,42,.24) 100%);
+            border: 1px solid var(--ns-line-soft);
+        }
+        .profile-line.title {
+            width: 320px;
+            height: 42px;
+        }
+        .profile-line.role {
+            width: 140px;
+            height: 32px;
+        }
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+        }
+        .profile-chip {
+            height: 58px;
+            border-radius: 14px;
+            background: var(--ns-panel-soft);
+            border: 1px solid var(--ns-line-soft);
+            box-shadow: 0 10px 24px rgba(2,6,23,.16);
+            padding: 10px 12px;
+            display: grid;
+            align-content: center;
+            gap: 4px;
+            animation: fadeSlideIn .6s ease both;
+        }
+        .profile-chip-label {
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            color: var(--ns-muted);
+        }
+        .profile-chip-value {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--ns-ink);
+        }
+        .profile-panel {
+            min-height: 112px;
+            border-radius: 18px;
+            background: var(--ns-panel-soft);
+            border: 1px solid var(--ns-line-soft);
+            box-shadow: 0 12px 26px rgba(2,6,23,.16);
+            padding: 14px 16px;
+            display: grid;
+            gap: 8px;
+            animation: fadeSlideIn .66s ease both;
+        }
+        .profile-panel-title {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            color: var(--ns-muted);
+        }
+        .profile-panel-copy {
+            font-size: 13px;
+            line-height: 1.55;
+            color: #e2e8f0;
+        }
+        .profile-contact-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .profile-contact-box {
+            height: 46px;
+            border-radius: 12px;
+            background: rgba(255,255,255,.04);
+            border: 1px solid var(--ns-line-soft);
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #e2e8f0;
+            font-size: 12px;
+            font-weight: 700;
+            animation: fadeSlideIn .72s ease both;
+        }
+        .profile-contact-box i {
+            color: var(--ns-cta-2);
+        }
+        .profile-social-row {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-start;
+        }
+        .profile-social-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(255,255,255,.04);
+            border: 1px solid var(--ns-line-soft);
+            color: #dbeafe;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 14px;
+            transition: transform .2s ease, border-color .2s ease, color .2s ease;
+        }
+        .profile-social-dot:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255,126,34,.34);
+            color: #fff;
+        }
+        .stats-empty-state,
+        .stats-empty-state {
+            display: grid;
+            gap: 10px;
+            justify-items: center;
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+        .stats-empty-state strong {
+            color: #1e293b;
+            font-size: 1.4rem;
+        }
+        .stats-shell {
+            width: 100%;
+            display: grid;
+            gap: 10px;
+            padding: 16px 18px 18px;
+            align-content: start;
+            overflow: hidden;
+            height: 100%;
+        }
+        .stats-shell > * {
+            animation: fadeSlideIn .45s ease both;
+        }
+        .stats-shell > *:nth-child(2) { animation-delay: .05s; }
+        .stats-shell > *:nth-child(3) { animation-delay: .10s; }
+        .stats-shell > *:nth-child(4) { animation-delay: .15s; }
+        .stats-shell > *:nth-child(5) { animation-delay: .20s; }
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        .stats-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .stats-title-wrap {
+            display: grid;
+            gap: 6px;
+        }
+        .stats-kicker {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #f97316;
+        }
+        .stats-title {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--ns-ink);
+        }
+        .stats-subtitle {
+            font-size: 11px;
+            color: var(--ns-muted);
+        }
+        .stats-badge {
+            min-height: 32px;
+            padding: 0 12px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(96,165,250,.22);
+            color: #dbeafe;
+            font-size: 10px;
+            font-weight: 800;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 8px;
+        }
+        .stats-card {
+            border-radius: 14px;
+            padding: 10px;
+            background: var(--ns-panel-soft);
+            border: 1px solid var(--ns-line-soft);
+            box-shadow: 0 10px 28px rgba(2,6,23,.14);
+            display: grid;
+            gap: 6px;
+        }
+        .stats-card-label {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ns-muted);
+        }
+        .stats-card-value {
+            font-size: 22px;
+            line-height: 1;
+            font-weight: 900;
+            color: var(--ns-ink);
+        }
+        .stats-card-note {
+            font-size: 10px;
+            color: var(--ns-muted);
+        }
+        .stats-insight-grid {
+            display: grid;
+            grid-template-columns: 1.2fr .8fr;
+            gap: 10px;
+        }
+        .stats-panel {
+            border-radius: 16px;
+            padding: 12px;
+            background: var(--ns-panel-soft);
+            border: 1px solid var(--ns-line-soft);
+            box-shadow: 0 12px 26px rgba(2,6,23,.10);
+            display: grid;
+            gap: 8px;
+        }
+        .stats-panel-title {
+            font-size: 13px;
+            font-weight: 900;
+            color: var(--ns-ink);
+        }
+        .stats-bars {
+            display: grid;
+            gap: 8px;
+        }
+        .stats-bar-row {
+            display: grid;
+            gap: 6px;
+        }
+        .stats-bar-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            font-size: 11px;
+            color: #dbeafe;
+            font-weight: 700;
+        }
+        .stats-bar-track {
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.08);
+            overflow: hidden;
+        }
+        .stats-bar-fill {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 100%);
+        }
+        .stats-mini-list {
+            display: grid;
+            gap: 8px;
+        }
+        .stats-mini-item {
+            min-height: 52px;
+            border-radius: 12px;
+            background: rgba(255,255,255,.04);
+            border: 1px solid var(--ns-line-soft);
+            display: grid;
+            align-content: center;
+            gap: 4px;
+            padding: 10px 12px;
+        }
+        .stats-mini-k {
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ns-muted);
+        }
+        .stats-mini-v {
+            font-size: 15px;
+            font-weight: 900;
+            color: var(--ns-ink);
+        }
+        .stats-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 8px;
+        }
+        .stats-detail-box {
+            min-height: 60px;
+            border-radius: 12px;
+            background: rgba(255,255,255,.04);
+            border: 1px solid var(--ns-line-soft);
+            box-shadow: 0 8px 22px rgba(2,6,23,.10);
+            display: grid;
+            align-content: center;
+            gap: 4px;
+            padding: 10px;
+        }
+        .stats-detail-label {
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ns-muted);
+        }
+        .stats-detail-value {
+            font-size: 15px;
+            font-weight: 900;
+            color: var(--ns-ink);
+        }
+        .stats-meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .stats-meta-card {
+            min-height: 66px;
+            border-radius: 14px;
+            background: var(--ns-panel-soft);
+            border: 1px solid var(--ns-line-soft);
+            box-shadow: 0 10px 24px rgba(2,6,23,.10);
+            padding: 10px 12px;
+            display: grid;
+            align-content: center;
+            gap: 4px;
+        }
+        .stats-meta-card .stats-detail-label {
+            font-size: 10px;
+        }
+        .stats-meta-card .stats-detail-value {
+            font-size: 16px;
+        }
+        @media (max-width: 600px) {
+            .stats-empty-state {
+                padding: 16px;
+            }
+            .profile-detail-card {
+                padding: 0;
+            }
+            .profile-shell {
+                padding: 20px;
+            }
+            .profile-hero {
+                grid-template-columns: 1fr;
+            }
+            .profile-visual {
+                min-height: 280px;
+            }
+            .profile-avatar {
+                width: 100%;
+                height: 100%;
+                border-radius: 24px;
+            }
+            .talent-cards {
+                grid-template-columns: 1fr;
+            }
+            .talent-card {
+                min-height: 120px;
+            }
+            .profile-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .profile-contact-row {
+                grid-template-columns: 1fr;
+            }
+            .stats-shell {
+                padding: 20px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .stats-insight-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-detail-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .stats-meta-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="ipad-card">
+        <div class="profile-buttons">
+            <button class="profile-btn" id="profileBtn">Profil ve Biyografi</button>
+            <button class="stats-btn" id="statsBtn">Istatistikler</button>
+        </div>
+
+        <div class="profile-detail-card" id="profileDetailCard" style="display:none;">
+            <div class="profile-shell">
+                <div class="profile-hero">
+                    <div class="profile-visual">
+                        <img class="profile-avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profil avatar">
+                        <div class="profile-visual-overlay">
+                            <span class="profile-visual-chip" id="profileCountryChip">Scout Vitrini</span>
+                            <div class="profile-visual-number" id="profileRatingHero">00</div>
+                        </div>
+                    </div>
+                    <div class="profile-copy">
+                        <div class="profile-identity">
+                            <div class="profile-name" id="profileName">Oyuncu</div>
+                            <div class="profile-role" id="profileRole">Oyuncu</div>
+                            <div class="profile-subcopy" id="profileSubcopy">Pozisyon ve kulup bilgisi yukleniyor.</div>
+                            <div class="profile-meta-ribbon">
+                                <span class="profile-meta-pill" id="profileClubPill">Kulup bilgisi</span>
+                                <span class="profile-meta-pill" id="profileCityPill">Sehir bilgisi</span>
+                                <span class="profile-meta-pill" id="profileStatusPill">Status</span>
+                            </div>
+                        </div>
+                        <div class="talent-cards">
+                            <div class="talent-card">
+                                <div class="talent-card-top">
+                                    <div class="talent-card-label">Pozisyon</div>
+                                    <span class="talent-card-icon"><i class="fas fa-location-arrow"></i></span>
+                                </div>
+                                <div class="talent-card-value" id="talentPosition">-</div>
+                                <div class="talent-card-note">Sahadaki ana rol</div>
+                                <div class="talent-card-track"><div class="talent-card-fill" id="talentPositionFill" style="width:78%"></div></div>
+                            </div>
+                            <div class="talent-card">
+                                <div class="talent-card-top">
+                                    <div class="talent-card-label">Ayak</div>
+                                    <span class="talent-card-icon"><i class="fas fa-shoe-prints"></i></span>
+                                </div>
+                                <div class="talent-card-value" id="talentFoot">-</div>
+                                <div class="talent-card-note">Baskin kullanim tarafi</div>
+                                <div class="talent-card-track"><div class="talent-card-fill" id="talentFootFill" style="width:64%"></div></div>
+                            </div>
+                            <div class="talent-card">
+                                <div class="talent-card-top">
+                                    <div class="talent-card-label">Status</div>
+                                    <span class="talent-card-icon"><i class="fas fa-signal"></i></span>
+                                </div>
+                                <div class="talent-card-value" id="talentStatus">-</div>
+                                <div class="talent-card-note">Kulup ve kontrat durumu</div>
+                                <div class="talent-card-track"><div class="talent-card-fill" id="talentStatusFill" style="width:72%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-grid">
+                    <div class="profile-chip">
+                        <div class="profile-chip-label">Yas</div>
+                        <div class="profile-chip-value" id="profileAge">-</div>
+                    </div>
+                    <div class="profile-chip">
+                        <div class="profile-chip-label">Boy</div>
+                        <div class="profile-chip-value" id="profileHeight">-</div>
+                    </div>
+                    <div class="profile-chip">
+                        <div class="profile-chip-label">Kilo</div>
+                        <div class="profile-chip-value" id="profileWeight">-</div>
+                    </div>
+                    <div class="profile-chip">
+                        <div class="profile-chip-label">Sehir</div>
+                        <div class="profile-chip-value" id="profileCity">-</div>
+                    </div>
+                </div>
+                <div class="profile-panel">
+                    <div class="profile-panel-title">Biyografi</div>
+                    <div class="profile-panel-copy" id="profileBio">Profil biyografisi yukleniyor.</div>
+                </div>
+                <div class="profile-contact-row">
+                    <div class="profile-contact-box"><i class="fas fa-envelope"></i><span id="profileEmail">email bilgisi yok</span></div>
+                    <div class="profile-contact-box"><i class="fas fa-phone"></i><span id="profilePhone">telefon bilgisi yok</span></div>
+                </div>
+                <div class="profile-social-row">
+                    <a class="profile-social-dot" id="profileTwitter" href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
+                    <a class="profile-social-dot" id="profileLinkedin" href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
+                    <a class="profile-social-dot" id="profileInstagram" href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-detail-card" id="statsDetailCard" style="display:none;">
+            <div class="stats-shell">
+                <div class="stats-head">
+                    <div class="stats-title-wrap">
+                        <div class="stats-kicker">Canli Veri</div>
+                        <div class="stats-title">Istatistikler</div>
+                        <div class="stats-subtitle">Projendeki mevcut oyuncu istatistik verileri burada gosterilir.</div>
+                    </div>
+                    <div class="stats-badge" id="statsStatusBadge">Yukleniyor</div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stats-card">
+                        <div class="stats-card-label">Mac</div>
+                        <div class="stats-card-value" id="statsMatches">0</div>
+                        <div class="stats-card-note">Toplam oynanan mac</div>
+                    </div>
+                    <div class="stats-card">
+                        <div class="stats-card-label">Gol</div>
+                        <div class="stats-card-value" id="statsGoals">0</div>
+                        <div class="stats-card-note">Skor katkisi</div>
+                    </div>
+                    <div class="stats-card">
+                        <div class="stats-card-label">Asist</div>
+                        <div class="stats-card-value" id="statsAssists">0</div>
+                        <div class="stats-card-note">Oyun baglantisi</div>
+                    </div>
+                    <div class="stats-card">
+                        <div class="stats-card-label">Rating</div>
+                        <div class="stats-card-value" id="statsRating">0.0</div>
+                        <div class="stats-card-note">Genel performans puani</div>
+                    </div>
+                </div>
+                <div class="stats-insight-grid">
+                    <div class="stats-panel">
+                        <div class="stats-panel-title">Performans Dagilimi</div>
+                        <div class="stats-bars">
+                            <div class="stats-bar-row">
+                                <div class="stats-bar-top"><span>Mac Hacmi</span><span id="barMatchesValue">0%</span></div>
+                                <div class="stats-bar-track"><div class="stats-bar-fill" id="barMatches" style="width:0%"></div></div>
+                            </div>
+                            <div class="stats-bar-row">
+                                <div class="stats-bar-top"><span>Gol Etkisi</span><span id="barGoalsValue">0%</span></div>
+                                <div class="stats-bar-track"><div class="stats-bar-fill" id="barGoals" style="width:0%"></div></div>
+                            </div>
+                            <div class="stats-bar-row">
+                                <div class="stats-bar-top"><span>Asist Etkisi</span><span id="barAssistsValue">0%</span></div>
+                                <div class="stats-bar-track"><div class="stats-bar-fill" id="barAssists" style="width:0%"></div></div>
+                            </div>
+                            <div class="stats-bar-row">
+                                <div class="stats-bar-top"><span>Form</span><span id="barRatingValue">0%</span></div>
+                                <div class="stats-bar-track"><div class="stats-bar-fill" id="barRating" style="width:0%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stats-panel">
+                        <div class="stats-panel-title">Hizli Ozet</div>
+                        <div class="stats-mini-list">
+                            <div class="stats-mini-item">
+                                <div class="stats-mini-k">Gol / Mac</div>
+                                <div class="stats-mini-v" id="statsGoalsPerMatch">0.00</div>
+                            </div>
+                            <div class="stats-mini-item">
+                                <div class="stats-mini-k">Asist / Mac</div>
+                                <div class="stats-mini-v" id="statsAssistsPerMatch">0.00</div>
+                            </div>
+                            <div class="stats-mini-item">
+                                <div class="stats-mini-k">Toplam Katki</div>
+                                <div class="stats-mini-v" id="statsTotalContribution">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stats-detail-grid">
+                    <div class="stats-detail-box">
+                        <div class="stats-detail-label">Baslayan Mac</div>
+                        <div class="stats-detail-value" id="statsStarted">0</div>
+                    </div>
+                    <div class="stats-detail-box">
+                        <div class="stats-detail-label">Yedek Mac</div>
+                        <div class="stats-detail-value" id="statsBenched">0</div>
+                    </div>
+                    <div class="stats-detail-box">
+                        <div class="stats-detail-label">Dakika</div>
+                        <div class="stats-detail-value" id="statsMinutes">0</div>
+                    </div>
+                    <div class="stats-detail-box">
+                        <div class="stats-detail-label">Sari Kart</div>
+                        <div class="stats-detail-value" id="statsYellowCards">0</div>
+                    </div>
+                    <div class="stats-detail-box">
+                        <div class="stats-detail-label">Kirmizi Kart</div>
+                        <div class="stats-detail-value" id="statsRedCards">0</div>
+                    </div>
+                    <div class="stats-detail-box">
+                        <div class="stats-detail-label">Sezon</div>
+                        <div class="stats-detail-value" id="statsSeason">-</div>
+                    </div>
+                </div>
+                <div class="stats-meta-grid">
+                    <div class="stats-meta-card">
+                        <div class="stats-detail-label">Lig</div>
+                        <div class="stats-detail-value" id="statsLeague">-</div>
+                    </div>
+                    <div class="stats-meta-card">
+                        <div class="stats-detail-label">Dakika / Mac</div>
+                        <div class="stats-detail-value" id="statsMinutesPerMatch">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(type) {
+            var profileBtn = document.getElementById('profileBtn');
+            var statsBtn = document.getElementById('statsBtn');
+            var card = document.getElementById('profileDetailCard');
+            var stats = document.getElementById('statsDetailCard');
+            var showProfile = type !== 'stats';
+
+            card.style.display = showProfile ? 'flex' : 'none';
+            stats.style.display = showProfile ? 'none' : 'flex';
+            card.classList.toggle('is-visible', showProfile);
+            stats.classList.toggle('is-visible', !showProfile);
+            profileBtn.classList.toggle('active', showProfile);
+            statsBtn.classList.toggle('active', !showProfile);
+        }
+
+        function getApiBaseUrl() {
+            if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+            return `${window.location.origin}/api`;
+        }
+
+        function getAuthHeaders() {
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            return token ? { Accept: 'application/json', Authorization: `Bearer ${token}` } : { Accept: 'application/json' };
+        }
+
+        async function resolveCurrentUserId() {
+            try {
+                const raw = localStorage.getItem('nextscout_user');
+                const user = raw ? JSON.parse(raw) : null;
+                if (user?.id) return Number(user.id);
+            } catch (_) {}
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/auth/me`, { headers: getAuthHeaders() });
+                const payload = await response.json().catch(() => null);
+                const me = payload?.data?.user || payload?.data || payload?.user || null;
+                return me?.id ? Number(me.id) : null;
+            } catch (_) {
+                return null;
+            }
+        }
+
+        function setText(id, value) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = String(value);
+        }
+
+        function setBar(id, labelId, value) {
+            const safe = Math.max(0, Math.min(100, Number(value) || 0));
+            const bar = document.getElementById(id);
+            if (bar) bar.style.width = `${safe}%`;
+            setText(labelId, `${Math.round(safe)}%`);
+        }
+
+        function setHref(id, value) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const safe = (value || '').toString().trim();
+            el.href = safe || '#';
+            el.style.opacity = safe ? '1' : '.45';
+            el.style.pointerEvents = safe ? 'auto' : 'none';
+        }
+
+        function setWidth(id, value) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const safe = Math.max(10, Math.min(100, Number(value) || 10));
+            el.style.width = `${safe}%`;
+        }
+
+        function formatDominantFoot(value) {
+            const raw = (value || '').toString().trim().toLowerCase();
+            if (raw === 'left') return 'Sol';
+            if (raw === 'right') return 'Sag';
+            if (raw === 'both') return 'Cift';
+            return '-';
+        }
+
+        function formatContractStatus(value, seekingClub) {
+            const status = (value || '').toString().trim().toLowerCase();
+            if (Boolean(seekingClub)) return 'Ariyor';
+            if (status === 'free') return 'Bosta';
+            if (status === 'active') return 'Aktif';
+            return '-';
+        }
+
+        function renderProfile(payload) {
+            const user = payload?.user || {};
+            const profile = payload?.profile || {};
+            const card = payload?.card || {};
+            const storedUser = (() => {
+                try {
+                    return JSON.parse(localStorage.getItem('nextscout_user') || '{}');
+                } catch (_) {
+                    return {};
+                }
+            })();
+
+            const name = user?.name || storedUser?.name || 'Oyuncu';
+            const role = user?.sport || profile?.sport || 'Oyuncu';
+            const position = profile?.position || card?.position || '-';
+            const club = profile?.current_club || profile?.club_name || '-';
+            const city = profile?.city || storedUser?.city || '-';
+            const age = profile?.age ?? '-';
+            const height = profile?.height_cm ? `${profile.height_cm} cm` : (card?.height || '-');
+            const weight = profile?.weight_kg ? `${profile.weight_kg} kg` : '-';
+            const dominantFoot = formatDominantFoot(profile?.dominant_foot);
+            const status = formatContractStatus(profile?.contract_status, profile?.seeking_club);
+            const bio = (profile?.bio || '').toString().trim() || 'Bu oyuncu henuz biyografi eklemedi.';
+            const photo = (card?.profile_photo_url || storedUser?.photo_url || '').toString().trim();
+            const country = profile?.nationality || 'Scout Vitrini';
+            const rating = Number(card?.overall_rating || 0);
+
+            setText('profileName', name);
+            setText('profileRole', role);
+            setText('profileSubcopy', `${position} • ${club}`);
+            setText('profileCountryChip', country);
+            setText('profileRatingHero', rating ? rating.toFixed(1) : '00');
+            setText('profileClubPill', club);
+            setText('profileCityPill', city);
+            setText('profileStatusPill', status);
+            setText('talentPosition', position);
+            setText('talentFoot', dominantFoot);
+            setText('talentStatus', status);
+            setText('profileAge', age);
+            setText('profileHeight', height);
+            setText('profileWeight', weight);
+            setText('profileCity', city);
+            setText('profileBio', bio);
+            setText('profileEmail', user?.email || storedUser?.email || 'email bilgisi yok');
+            setText('profilePhone', storedUser?.phone || 'telefon bilgisi yok');
+            setWidth('talentPositionFill', position && position !== '-' ? 82 : 28);
+            setWidth('talentFootFill', dominantFoot === 'Cift' ? 94 : (dominantFoot === '-' ? 24 : 68));
+            setWidth('talentStatusFill', status === 'Ariyor' ? 88 : (status === 'Aktif' ? 74 : (status === 'Bosta' ? 66 : 24)));
+
+            const avatar = document.querySelector('.profile-avatar');
+            if (avatar && photo) avatar.src = photo;
+
+            setHref('profileTwitter', storedUser?.twitter);
+            setHref('profileLinkedin', storedUser?.linkedin);
+            setHref('profileInstagram', storedUser?.instagram);
+        }
+
+        async function initProfile() {
+            const userId = await resolveCurrentUserId();
+            if (!userId) {
+                renderProfile({
+                    user: { name: 'Oyuncu', email: '' },
+                    profile: {
+                        sport: 'Oyuncu',
+                        position: 'Pozisyon',
+                        current_club: 'Kulup bilgisi yok',
+                        city: '-',
+                        age: '-',
+                        dominant_foot: '',
+                        contract_status: '',
+                        bio: ''
+                    },
+                    card: { height: '-', profile_photo_url: '' }
+                });
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/players/${encodeURIComponent(userId)}`, {
+                    headers: getAuthHeaders()
+                });
+                const payload = await response.json().catch(() => null);
+                renderProfile(payload?.data || {});
+            } catch (_) {
+                renderProfile({
+                    user: { name: 'Oyuncu', email: '' },
+                    profile: {
+                        sport: 'Oyuncu',
+                        position: 'Pozisyon',
+                        current_club: 'Kulup bilgisi yok',
+                        city: '-',
+                        age: '-',
+                        dominant_foot: '',
+                        contract_status: '',
+                        bio: ''
+                    },
+                    card: { height: '-', profile_photo_url: '' }
+                });
+            }
+        }
+
+        function renderStats(data, statusText) {
+            const matches = Number(data?.matches_played ?? data?.matches ?? 0);
+            const started = Number(data?.matches_started ?? 0);
+            const benched = Number(data?.matches_benched ?? 0);
+            const goals = Number(data?.goals ?? data?.points ?? 0);
+            const assists = Number(data?.assists ?? data?.rebounds ?? 0);
+            const yellowCards = Number(data?.yellow_cards ?? 0);
+            const redCards = Number(data?.red_cards ?? 0);
+            const minutes = Number(data?.minutes_played ?? 0);
+            const rating = Number(data?.avg_rating ?? data?.rating ?? data?.overall_rating ?? 0);
+            const season = data?.season ? String(data.season) : '-';
+            const league = data?.league ? String(data.league) : '-';
+            const goalsPerMatch = matches > 0 ? (goals / matches) : 0;
+            const assistsPerMatch = matches > 0 ? (assists / matches) : 0;
+            const minutesPerMatch = matches > 0 ? (minutes / matches) : 0;
+
+            setText('statsMatches', matches);
+            setText('statsStarted', started);
+            setText('statsBenched', benched);
+            setText('statsGoals', goals);
+            setText('statsAssists', assists);
+            setText('statsYellowCards', yellowCards);
+            setText('statsRedCards', redCards);
+            setText('statsMinutes', minutes);
+            setText('statsRating', rating ? rating.toFixed(1) : '0.0');
+            setText('statsSeason', season);
+            setText('statsLeague', league);
+            setText('statsGoalsPerMatch', goalsPerMatch.toFixed(2));
+            setText('statsAssistsPerMatch', assistsPerMatch.toFixed(2));
+            setText('statsMinutesPerMatch', minutesPerMatch.toFixed(0));
+            setText('statsTotalContribution', goals + assists);
+            setText('statsStatusBadge', statusText);
+
+            setBar('barMatches', 'barMatchesValue', matches * 3);
+            setBar('barGoals', 'barGoalsValue', goals * 10);
+            setBar('barAssists', 'barAssistsValue', assists * 12);
+            setBar('barRating', 'barRatingValue', rating * 10);
+        }
+
+        async function initStatistics() {
+            const userId = await resolveCurrentUserId();
+            if (!userId) {
+                renderStats({ season: '2025-2026', league: 'Ornek Lig', matches_played: 28, matches_started: 22, matches_benched: 6, goals: 15, assists: 6, yellow_cards: 4, red_cards: 0, minutes_played: 2140, avg_rating: 4.8 }, 'Ornek Veri');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/players/${encodeURIComponent(userId)}/statistics`, {
+                    headers: getAuthHeaders()
+                });
+                const payload = await response.json().catch(() => null);
+                const rows = Array.isArray(payload?.data) ? payload.data : [];
+                const latest = rows[0] || null;
+                if (!latest) {
+                    renderStats({ season: '-', league: '-', matches_played: 0, matches_started: 0, matches_benched: 0, goals: 0, assists: 0, yellow_cards: 0, red_cards: 0, minutes_played: 0, avg_rating: 0 }, 'Bos');
+                    return;
+                }
+                renderStats(latest, 'Canli Veri');
+            } catch (_) {
+                renderStats({ season: '2025-2026', league: 'Yedek Lig', matches_played: 28, matches_started: 22, matches_benched: 6, goals: 15, assists: 6, yellow_cards: 4, red_cards: 0, minutes_played: 2140, avg_rating: 4.8 }, 'Yedek Veri');
+            }
+        }
+
+        document.getElementById('profileBtn').onclick = function() { showTab('profile'); };
+        document.getElementById('statsBtn').onclick = function() { showTab('stats'); };
+
+        initStatistics();
+        initProfile();
+        showTab('profile');
+    </script>
+</body>
+</html>

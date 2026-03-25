@@ -93,6 +93,20 @@ class LegacyCompatibilityEndpointsTest extends TestCase
             ->assertJsonPath('ok', true)
             ->assertJsonPath('data.total', 1);
 
+        $team = User::factory()->create([
+            'role' => 'team',
+            'name' => 'Team Organizer',
+            'city' => 'Istanbul',
+        ]);
+
+        Opportunity::factory()->create([
+            'team_user_id' => $team->id,
+            'title' => 'Trial Event',
+            'position' => 'Forward',
+            'city' => 'Istanbul',
+            'status' => 'open',
+        ]);
+
         $events = $this->getJson('/api/community-events')
             ->assertOk()
             ->assertJsonPath('ok', true)

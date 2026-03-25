@@ -10375,6 +10375,7 @@
 
     <script src="assets/js/site-core.js"></script>
     <script src="assets/js/growth-upgrade.js"></script>
+    <script src="assets/js/api-base.js"></script>
     <script src="assets/js/index-runtime.js"></script>
     <script>
         const runtime = window.NextScoutRuntime || {
@@ -10618,6 +10619,9 @@
                     const data = await response.json();
                     if (data.ok) {
                         API_BASE_URL = `http://127.0.0.1:${port}/api`;
+                        if (window.NextScoutApi && typeof window.NextScoutApi.setBase === 'function') {
+                            window.NextScoutApi.setBase(API_BASE_URL);
+                        }
                         runtime.log(`✅ API bağlantısı başarılı (Port ${port})`);
                         runtime.log(`📍 API URL: ${API_BASE_URL}`);
                         return true;

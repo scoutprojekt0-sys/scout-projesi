@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Concerns\ApiResponds;
 use App\Http\Controllers\Controller;
+use App\Models\LiveMatch;
 use App\Models\LiveWatchRequest;
 use App\Models\PlayerMatchSchedule;
 use Carbon\Carbon;
@@ -126,6 +127,8 @@ class WatchDemandController extends Controller
             'player_user_id' => $user->id,
             'is_public' => array_key_exists('is_public', $validated) ? (bool) $validated['is_public'] : true,
         ]);
+
+        $this->syncTodayScheduleToLiveMatches($schedule, $user);
 
         return $this->successResponse($this->transformSchedule($schedule), 'Mac takvimi kaydedildi.', 201);
     }
@@ -336,5 +339,61 @@ class WatchDemandController extends Controller
         }
 
         return implode(', ', $reasons) . ' filtresiyle güçlü eşleşme sağlandı.';
+    }
+    private function syncTodayScheduleToLiveMatches(PlayerMatchSchedule $schedule, object $user): void
+    {
+        $matchDate = $schedule->match_date;
+        if (! $matchDate || ! $matchDate->isToday()) {
+            return;
+        }
+
+        $title = trim((string) ($schedule->match_title ?: 'Oyuncu Maci'));
+        $homeTeam = trim((string) ($schedule->team_name ?: 'Oyuncu Takimi'));
+        $awayTeam = trim((string) ($schedule->opponent_name ?: 'Rakip'));
+        $sourceName = trim((string) ($user->name ?? ''));
+        $meta = [
+            'location' => $schedule->venue ?: $schedule->city,
+            'sport' => 'football',
+            'focus' => $schedule->position ?: 'Oyuncu bildirimi',
+            'note' => $schedule->notes,
+            'source_role' => 'player',
+            'source_name' => $sourceName !== '' ? $sourceName : null,
+            'source_user_id' => (int) $schedule->player_user_id,
+        ];
+
+        $encodedMeta = 'meta::'.json_encode([
+            'round' => null,
+            'meta' => array_filter($meta, fn ($value) => $value !== null && $value !== ''),
+        ], JSON_UNESCAPED_UNICODE);
+
+        $existing = LiveMatch::query()
+            ->where('is_finished', false)
+            ->where('match_date', $matchDate)
+            ->where('title', $title)
+            ->where('home_team', $homeTeam)
+            ->where('away_team', $awayTeam)
+            ->first();
+
+        if ($existing) {
+            $existing->forceFill([
+                'is_live' => true,
+                'round' => $encodedMeta,
+            ])->save();
+
+            return;
+        }
+
+        LiveMatch::query()->create([
+            'title' => $title,
+            'league' => null,
+            'home_team' => $homeTeam,
+            'away_team' => $awayTeam,
+            'home_score' => null,
+            'away_score' => null,
+            'match_date' => $matchDate,
+            'is_live' => true,
+            'is_finished' => false,
+            'round' => $encodedMeta,
+        ]);
     }
 }

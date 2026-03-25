@@ -87,10 +87,16 @@
     </div>
   </main>
 
+  <script src="assets/js/api-base.js"></script>
   <script>
     (function () {
-      const API_BASE = "http://127.0.0.1:8000/api";
       const ROLE = "team";
+      function getApiBaseUrl() {
+        if (window.NextScoutApi && typeof window.NextScoutApi.base === "function") {
+          return window.NextScoutApi.base();
+        }
+        return "http://127.0.0.1:8000/api";
+      }
 
       const registerForm = document.getElementById("registerForm");
       const loginForm = document.getElementById("loginForm");
@@ -118,7 +124,7 @@
         };
 
         try {
-          const response = await fetch(`${API_BASE}/auth/register`, {
+          const response = await fetch(`${getApiBaseUrl()}/auth/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json", "Accept": "application/json" },
             body: JSON.stringify(data),
@@ -160,7 +166,7 @@
         };
 
         try {
-          const response = await fetch(`${API_BASE}/auth/login`, {
+          const response = await fetch(`${getApiBaseUrl()}/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json", "Accept": "application/json" },
             body: JSON.stringify(data),

@@ -87,13 +87,17 @@
     </div>
   </main>
 
+  <script src="assets/js/api-base.js"></script>
   <script>
     (function () {
       function getApiBaseUrl() {
+        if (window.NextScoutApi && typeof window.NextScoutApi.base === "function") {
+          return window.NextScoutApi.base();
+        }
         const fromStorage = (localStorage.getItem("nextscout_api_base") || "").trim();
         if (fromStorage) return fromStorage.replace(/\/$/, "");
         if (window.location.protocol === "file:") return "http://127.0.0.1:8000/api";
-        return "/api";
+        return `${window.location.origin}/api`;
       }
       const ROLE = "coach";
 

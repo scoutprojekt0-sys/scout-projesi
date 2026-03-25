@@ -635,7 +635,11 @@
       });
       const body = await response.json().catch(() => ({}));
       if (!response.ok || body?.ok === false) {
-        throw new Error(body?.message || 'Scout raporu kaydedilemedi.');
+        const validationErrors = body?.errors && typeof body.errors === 'object'
+          ? Object.values(body.errors).flat().filter(Boolean)
+          : [];
+        const detail = validationErrors.length ? validationErrors.join(' | ') : '';
+        throw new Error(detail || body?.message || 'Scout raporu kaydedilemedi.');
       }
       return body?.data || null;
     }
@@ -939,7 +943,8 @@
       const status = String(document.getElementById('reportStatusInput')?.value || 'review').trim();
       const club = String(document.getElementById('clubInput')?.value || '').trim();
       const watchedAt = String(document.getElementById('watchedAtInput')?.value || '').trim();
-      const playerId = Number(document.getElementById('playerIdInput')?.value || Date.now());
+      const playerIdRaw = Number(document.getElementById('playerIdInput')?.value || 0);
+      const playerId = Number.isFinite(playerIdRaw) && playerIdRaw > 0 ? playerIdRaw : null;
       const summary = String(document.getElementById('summaryInput')?.value || '').trim();
       const note = String(document.getElementById('noteInput')?.value || '').trim();
       if (!playerName || !position || !rating) {
@@ -957,13 +962,13 @@
       })();
 
       const report = {
-        player_user_id: Number.isFinite(playerId) ? playerId : null,
+        player_user_id: playerId,
         player_name: playerName,
         position,
-        age: age || '-',
+        age: age > 0 ? age : null,
         rating,
         status,
-        club: club || '-',
+        club: club || null,
         watched_at: watchedAt || new Date().toISOString().slice(0, 10),
         potential: potential || 'Orta',
         summary: summary || note || 'Genel değerlendirme bekleniyor.',

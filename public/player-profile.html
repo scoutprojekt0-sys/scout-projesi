@@ -1484,320 +1484,96 @@
             font-size: 12px;
         }
 
-        .profile-score-shell {
-            display: grid;
-            grid-template-columns: 160px 1fr;
-            gap: 16px;
+        .profile-card-modal .profile-card-content {
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            margin-bottom: 16px;
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            padding: 36px 32px 28px 32px;
+            min-width: 320px;
+            max-width: 360px;
+            margin: 0 auto;
+            position: relative;
         }
-
-        .profile-score-ring {
-            width: 160px;
-            height: 160px;
-            display: grid;
-            place-items: center;
-            background:
-                radial-gradient(circle at center, rgba(8, 19, 29, 0.96) 0 56%, transparent 57% 100%),
-                conic-gradient(#ff7e22 0deg, #60a5fa var(--profile-score-angle), rgba(148, 163, 184, 0.18) var(--profile-score-angle), rgba(148, 163, 184, 0.18) 360deg);
+        .profile-card-avatar {
+            width: 108px;
+            height: 108px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
         }
-
-        .profile-score-core {
+        .profile-card-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .profile-card-name {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 4px;
             text-align: center;
         }
-
-        .profile-score-number {
-            color: #f5fbff;
-            font-size: 34px;
-            font-weight: 800;
+        .profile-card-role {
+            font-size: 15px;
+            color: #60a5fa;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-align: center;
         }
-
-        .profile-score-caption {
-            color: #9bb5cb;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
-
-        .profile-score-list {
-            display: grid;
-            gap: 10px;
-        }
-
-        .profile-score-item {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            padding: 12px 14px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid #2b4660;
-        }
-
-        .profile-score-item strong {
-            display: block;
-            color: #f5fbff;
+        .profile-card-bio {
             font-size: 14px;
+            color: #334155;
+            margin-bottom: 14px;
+            text-align: center;
         }
-
-        .profile-score-item span {
-            color: #9bb5cb;
-            font-size: 12px;
-        }
-
-        .profile-score-item b {
-            color: #f5fbff;
-            font-size: 18px;
-        }
-
-        .profile-stats-table-wrap {
-            overflow-x: auto;
-            border: 1px solid #2b4660;
-            margin-top: 10px;
-        }
-
-        .profile-stats-table {
-            width: 100%;
-            min-width: 700px;
-            border-collapse: collapse;
-        }
-
-        .profile-stats-table th,
-        .profile-stats-table td {
-            padding: 12px 14px;
-            text-align: left;
-            border-bottom: 1px solid #2b4660;
+        .profile-card-contact {
+            display: flex;
+            gap: 18px;
             font-size: 13px;
+            color: #475569;
+            margin-bottom: 10px;
+            justify-content: center;
         }
-
-        .profile-stats-table th {
-            color: #dbeafe;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            background: rgba(255, 255, 255, 0.04);
+        .profile-card-contact i {
+            margin-right: 6px;
+            color: #60a5fa;
         }
-
-        .profile-stats-table td {
-            color: #f5fbff;
+        .profile-card-social {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 18px;
+            justify-content: center;
         }
-
-        .profile-stats-table tr:last-child td {
-            border-bottom: none;
+        .profile-card-social a {
+            color: #64748b;
+            font-size: 18px;
+            transition: color 0.2s;
         }
-
-        .profile-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 10px;
-            border: 1px solid #2b4660;
-            background: rgba(255, 255, 255, 0.06);
-            color: #dbeafe;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            white-space: nowrap;
+        .profile-card-social a:hover {
+            color: #60a5fa;
         }
-
-        .profile-pill.is-verified {
-            border-color: rgba(16, 185, 129, 0.45);
-            background: rgba(16, 185, 129, 0.16);
-            color: #a7f3d0;
+        .profile-card-close {
+            margin-top: 8px;
+            width: 100%;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
         }
-
-        .profile-pill.is-evidence {
-            border-color: rgba(245, 158, 11, 0.45);
-            background: rgba(245, 158, 11, 0.16);
-            color: #fde68a;
-        }
-
-        .profile-pill.is-self {
-            border-color: rgba(96, 165, 250, 0.45);
-            background: rgba(96, 165, 250, 0.16);
-            color: #bfdbfe;
-        }
-
-        .square-ui,
-        .square-ui .header-nav,
-        .square-ui .hero-section,
-        .square-ui .hero-image,
-        .square-ui .stat-item,
-        .square-ui .btn,
-        .square-ui .back-btn,
-        .square-ui .profile-close-btn,
-        .square-ui .card,
-        .square-ui .gallery-item,
-        .square-ui .video-card,
-        .square-ui .achievement-item,
-        .square-ui .stats-item,
-        .square-ui .data-meta,
-        .square-ui .profile-tab,
-        .square-ui .mobile-accordion-card,
-        .square-ui .transfer-table,
-        .square-ui .profile-stat-box,
-        .square-ui .profile-score-item,
-        .square-ui .profile-stats-table-wrap,
-        .square-ui .profile-pill,
-        .square-ui #contractStatusBadge,
-        .square-ui #seekingClubBadge,
-        .square-ui #currentClubBadge {
-            border-radius: 0 !important;
-        }
-
-        @media (max-width: 1024px) {
-            .hero-section {
-                grid-template-columns: 1fr;
-                padding: 40px 20px;
+        @media (max-width: 600px) {
+            .profile-card-modal .profile-card-content {
+                padding: 18px 8px 18px 8px;
+                min-width: 0;
+                max-width: 98vw;
             }
-
-            .rating-box {
-                grid-template-columns: 1fr;
-            }
-
-            .profile-showcase {
-                grid-template-columns: 1fr;
-            }
-
-            .details-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .hero-info h1 {
-                font-size: 36px;
-            }
-
-            .profile-stat-summary {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            .profile-score-shell {
-                grid-template-columns: 1fr;
-            }
-
-            .profile-score-ring {
-                margin: 0 auto;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header-nav {
-                margin: 10px 12px 12px;
-                padding: 16px 14px;
-                border-radius: 14px;
-            }
-
-            .nav-content {
-                display: grid;
-                grid-template-columns: 1fr;
-                gap: 8px;
-                align-items: flex-start;
-            }
-
-            .nav-title {
-                font-size: 24px;
-            }
-
-            .nav-actions {
-                width: 100%;
-                margin-left: 0;
-            }
-
-            .back-btn {
-                padding: 8px 10px;
-                font-size: 12px;
-                width: 100%;
-                text-align: center;
-            }
-
-            .container {
-                padding: 14px 12px 24px;
-            }
-
-            .hero-section {
-                padding: 18px 14px;
-                border-radius: 14px;
-                gap: 14px;
-            }
-
-            .hero-image {
-                height: 220px;
-                font-size: 86px;
-            }
-
-            .hero-info h1 {
-                font-size: 28px;
-            }
-
-            .hero-stats {
-                grid-template-columns: 1fr;
-            }
-
-            .hero-tag-row,
-            .hero-actions {
-                grid-template-columns: 1fr;
-            }
-
-            .showcase-stat-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .gallery-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .videos-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .hero-stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .hero-actions {
-                grid-template-columns: 1fr;
-            }
-
-            .card {
-                padding: 14px;
-                border-radius: 12px;
-            }
-
-            .review-form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .review-summary-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .mobile-accordion-card {
-                padding: 0;
-                overflow: hidden;
-            }
-
-            .mobile-accordion-card .card-title {
-                margin: 0;
-                padding: 14px;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                cursor: pointer;
-                border-bottom: 1px solid #334155;
-            }
-
-            .mobile-accordion-title-icon {
-                display: inline-flex;
-            }
-
-            .mobile-accordion-content {
-                padding: 14px;
-            }
-
-            .mobile-accordion-card.mobile-collapsed .mobile-accordion-content {
-                display: none;
-            }
-
         }
     </style>
     <link rel="stylesheet" href="assets/css/mobile-unified.css">
@@ -1840,7 +1616,7 @@
                 </div>
                 <span aria-hidden="true">Foto</span>
             </div>
-            
+
             <div class="hero-info">
                 <h1 id="playerName">Profil yukleniyor</h1>
                 <div class="hero-position" id="playerPosition">Pozisyon yukleniyor</div>
@@ -2084,8 +1860,142 @@
         </section>
     </div>
 
-    <script src="assets/js/site-core.js"></script>
-    <script src="assets/js/growth-upgrade.js"></script>
+    <!-- PROFESYONEL PROFİL KART MODAL (GÖRSELDEKİYLE BİREBİR) -->
+    <div class="need-modal-overlay" id="profileCardModal" onclick="if(event.target.id==='profileCardModal'){closeProfileCardModal();}">
+        <div class="need-modal live-modal profile-card-modal" onclick="event.stopPropagation()">
+            <div class="profile-card-content">
+                <div class="profile-card-avatar">
+                    <img id="profileCardAvatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profil Fotoğrafı">
+                </div>
+                <div class="profile-card-name" id="profileCardName">Ad Soyad</div>
+                <div class="profile-card-role" id="profileCardRole">Oyuncu</div>
+                <div class="profile-card-bio" id="profileCardBio">Kısa biyografi veya açıklama buraya gelecek.</div>
+                <div class="profile-card-contact">
+                    <span id="profileCardEmail"><i class="fas fa-envelope"></i> email@site.com</span>
+                    <span id="profileCardPhone"><i class="fas fa-phone"></i> +90 555 555 55 55</span>
+                </div>
+                <div class="profile-card-social">
+                    <a href="#" id="profileCardTwitter" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="#" id="profileCardLinkedin" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" id="profileCardInstagram" target="_blank"><i class="fab fa-instagram"></i></a>
+                </div>
+                <button class="btn btn-primary profile-card-close" type="button" onclick="closeProfileCardModal()">Kapat</button>
+            </div>
+        </div>
+    </div>
+    <script>
+    function openProfileCardModal(profile) {
+        document.getElementById('profileCardAvatar').src = profile.avatar || 'https://randomuser.me/api/portraits/men/32.jpg';
+        document.getElementById('profileCardName').textContent = profile.name || 'Ad Soyad';
+        document.getElementById('profileCardRole').textContent = profile.role || 'Oyuncu';
+        document.getElementById('profileCardBio').textContent = profile.bio || 'Kısa biyografi veya açıklama buraya gelecek.';
+        document.getElementById('profileCardEmail').innerHTML = '<i class="fas fa-envelope"></i> ' + (profile.email || 'email@site.com');
+        document.getElementById('profileCardPhone').innerHTML = '<i class="fas fa-phone"></i> ' + (profile.phone || '+90 555 555 55 55');
+        document.getElementById('profileCardTwitter').href = profile.twitter || '#';
+        document.getElementById('profileCardLinkedin').href = profile.linkedin || '#';
+        document.getElementById('profileCardInstagram').href = profile.instagram || '#';
+        document.getElementById('profileCardModal').classList.add('show');
+    }
+    function closeProfileCardModal() {
+        document.getElementById('profileCardModal').classList.remove('show');
+    }
+    </script>
+    <style>
+    .profile-card-modal .profile-card-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #fff;
+        border-radius: 24px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+        padding: 36px 32px 28px 32px;
+        min-width: 320px;
+        max-width: 360px;
+        margin: 0 auto;
+        position: relative;
+    }
+    .profile-card-avatar {
+        width: 108px;
+        height: 108px;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+        background: #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 18px;
+    }
+    .profile-card-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+    .profile-card-name {
+        font-size: 22px;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 4px;
+        text-align: center;
+    }
+    .profile-card-role {
+        font-size: 15px;
+        color: #60a5fa;
+        font-weight: 600;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    .profile-card-bio {
+        font-size: 14px;
+        color: #334155;
+        margin-bottom: 14px;
+        text-align: center;
+    }
+    .profile-card-contact {
+        display: flex;
+        gap: 18px;
+        font-size: 13px;
+        color: #475569;
+        margin-bottom: 10px;
+        justify-content: center;
+    }
+    .profile-card-contact i {
+        margin-right: 6px;
+        color: #60a5fa;
+    }
+    .profile-card-social {
+        display: flex;
+        gap: 14px;
+        margin-bottom: 18px;
+        justify-content: center;
+    }
+    .profile-card-social a {
+        color: #64748b;
+        font-size: 18px;
+        transition: color 0.2s;
+    }
+    .profile-card-social a:hover {
+        color: #60a5fa;
+    }
+    .profile-card-close {
+        margin-top: 8px;
+        width: 100%;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 700;
+    }
+    @media (max-width: 600px) {
+        .profile-card-modal .profile-card-content {
+            padding: 18px 8px 18px 8px;
+            min-width: 0;
+            max-width: 98vw;
+        }
+    }
+    </style>
+    <!-- PROFESYONEL PROFİL KART MODAL SONU -->
+    <!-- Modalı açmak için örnek kullanım: -->
+    <!-- <button onclick="openProfileCardModal({name:'Ali Veli',role:'Oyuncu',bio:'10 yıllık deneyim...',email:'ali@site.com',phone:'+90 555 555 55 55',avatar:'https://randomuser.me/api/portraits/men/32.jpg',twitter:'#',linkedin:'#',instagram:'#'})">Profil Kartı Aç</button> -->
     <script>
         function getApiBaseUrl() {
             if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
@@ -3163,7 +3073,7 @@
                 text: `Deger ${row?.market_value ? `�${row.market_value}` : '-'}`,
             }));
 
-            if (summary.current_value) achievements.push({ title: 'G�ncel Piyasa Degeri', text: `�${summary.current_value}` });
+            if (summary.current_value) achievements.push({ title: 'Güncel Piyasa Degeri', text: `�${summary.current_value}` });
             if (summary.highest_value) achievements.push({ title: 'Zirve Deger', text: `�${summary.highest_value}` });
             if (history.length) {
                 notes.push({

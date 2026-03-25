@@ -1568,13 +1568,14 @@
     function renderCoachOpportunityManager(rows) {
       const root = document.getElementById('coachOpportunityManagerList');
       const status = document.getElementById('coachOpportunityStatus');
+      const items = Array.isArray(rows?.data) ? rows.data : (Array.isArray(rows) ? rows : []);
       if (!root || activeCoachOpportunityTab !== 'manager') return;
-      if (!Array.isArray(rows) || !rows.length) {
+      if (!items.length) {
         root.innerHTML = '<div class="empty">Acik menajer ilani yok.</div>';
         if (status) status.innerHTML = '<i class="fas fa-briefcase"></i><span>Bos</span>';
         return;
       }
-      root.innerHTML = rows.slice(0, 8).map((item) => `
+      root.innerHTML = items.slice(0, 8).map((item) => `
         <article class="point-item">
           <div class="row-top">
             <div>
@@ -1589,7 +1590,7 @@
           </div>
         </article>
       `).join('');
-      if (status) status.innerHTML = `<i class="fas fa-briefcase"></i><span>${rows.slice(0, 8).length} kayit</span>`;
+      if (status) status.innerHTML = `<i class="fas fa-briefcase"></i><span>${items.slice(0, 8).length} kayit</span>`;
     }
 
     async function loadCoachOpportunityArea(type = 'needs') {
@@ -3111,6 +3112,7 @@ setText('.content h1', 'Antrenör Profili');
 
     window.addEventListener('DOMContentLoaded', init);
   </script>
+  <script src="assets/js/api-base.js"></script>
   <script src="assets/js/ai-video-lab.js"></script>
   <script src="assets/js/core-stability.js"></script>
     <script src="assets/js/mobile-professional.js" defer></script>

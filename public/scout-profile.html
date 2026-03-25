@@ -125,9 +125,101 @@
       .act{grid-template-columns:1fr}
       .act .btn{width:100%;justify-content:center}
     }
-  </style>
-    <link rel="stylesheet" href="assets/css/mobile-unified.css">
-    <link rel="stylesheet" href="assets/css/mobile-polish.css">
+    .profile-card-modal .profile-card-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #fff;
+        border-radius: 24px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+        padding: 36px 32px 28px 32px;
+        min-width: 320px;
+        max-width: 360px;
+        margin: 0 auto;
+        position: relative;
+    }
+    .profile-card-avatar {
+        width: 108px;
+        height: 108px;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+        background: #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 18px;
+    }
+    .profile-card-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+    .profile-card-name {
+        font-size: 22px;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 4px;
+        text-align: center;
+    }
+    .profile-card-role {
+        font-size: 15px;
+        color: #60a5fa;
+        font-weight: 600;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    .profile-card-bio {
+        font-size: 14px;
+        color: #334155;
+        margin-bottom: 14px;
+        text-align: center;
+    }
+    .profile-card-contact {
+        display: flex;
+        gap: 18px;
+        font-size: 13px;
+        color: #475569;
+        margin-bottom: 10px;
+        justify-content: center;
+    }
+    .profile-card-contact i {
+        margin-right: 6px;
+        color: #60a5fa;
+    }
+    .profile-card-social {
+        display: flex;
+        gap: 14px;
+        margin-bottom: 18px;
+        justify-content: center;
+    }
+    .profile-card-social a {
+        color: #64748b;
+        font-size: 18px;
+        transition: color 0.2s;
+    }
+    .profile-card-social a:hover {
+        color: #60a5fa;
+    }
+    .profile-card-close {
+        margin-top: 8px;
+        width: 100%;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 700;
+    }
+    @media (max-width: 600px) {
+        .profile-card-modal .profile-card-content {
+            padding: 18px 8px 18px 8px;
+            min-width: 0;
+            max-width: 98vw;
+        }
+    }
+    </style>
+    <!-- PROFESYONEL PROFİL KART MODAL SONU -->
+    <!-- Modalı açmak için örnek kullanım: -->
+    <!-- <button onclick="openProfileCardModal({name:'Ali Veli',role:'Scout',bio:'10 yıllık deneyim...',email:'ali@site.com',phone:'+90 555 555 55 55',avatar:'https://randomuser.me/api/portraits/men/32.jpg',twitter:'#',linkedin:'#',instagram:'#'})">Profil Kartı Aç</button> -->
 </head>
 <body>
   <div class="wrap">
@@ -216,6 +308,46 @@
     </div>
   </div>
 
+  <!-- PROFESYONEL PROFİL KART MODAL (GÖRSELDEKİYLE BİREBİR) -->
+  <div class="need-modal-overlay" id="profileCardModal" onclick="if(event.target.id==='profileCardModal'){closeProfileCardModal();}">
+      <div class="need-modal live-modal profile-card-modal" onclick="event.stopPropagation()">
+          <div class="profile-card-content">
+              <div class="profile-card-avatar">
+                  <img id="profileCardAvatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profil Fotoğrafı">
+              </div>
+              <div class="profile-card-name" id="profileCardName">Ad Soyad</div>
+              <div class="profile-card-role" id="profileCardRole">Scout</div>
+              <div class="profile-card-bio" id="profileCardBio">Kısa biyografi veya açıklama buraya gelecek.</div>
+              <div class="profile-card-contact">
+                  <span id="profileCardEmail"><i class="fas fa-envelope"></i> email@site.com</span>
+                  <span id="profileCardPhone"><i class="fas fa-phone"></i> +90 555 555 55 55</span>
+              </div>
+              <div class="profile-card-social">
+                  <a href="#" id="profileCardTwitter" target="_blank"><i class="fab fa-twitter"></i></a>
+                  <a href="#" id="profileCardLinkedin" target="_blank"><i class="fab fa-linkedin"></i></a>
+                  <a href="#" id="profileCardInstagram" target="_blank"><i class="fab fa-instagram"></i></a>
+              </div>
+              <button class="btn btn-primary profile-card-close" type="button" onclick="closeProfileCardModal()">Kapat</button>
+          </div>
+      </div>
+  </div>
+  <script>
+  function openProfileCardModal(profile) {
+      document.getElementById('profileCardAvatar').src = profile.avatar || 'https://randomuser.me/api/portraits/men/32.jpg';
+      document.getElementById('profileCardName').textContent = profile.name || 'Ad Soyad';
+      document.getElementById('profileCardRole').textContent = profile.role || 'Scout';
+      document.getElementById('profileCardBio').textContent = profile.bio || 'Kısa biyografi veya açıklama buraya gelecek.';
+      document.getElementById('profileCardEmail').innerHTML = '<i class="fas fa-envelope"></i> ' + (profile.email || 'email@site.com');
+      document.getElementById('profileCardPhone').innerHTML = '<i class="fas fa-phone"></i> ' + (profile.phone || '+90 555 555 55 55');
+      document.getElementById('profileCardTwitter').href = profile.twitter || '#';
+      document.getElementById('profileCardLinkedin').href = profile.linkedin || '#';
+      document.getElementById('profileCardInstagram').href = profile.instagram || '#';
+      document.getElementById('profileCardModal').classList.add('show');
+  }
+  function closeProfileCardModal() {
+      document.getElementById('profileCardModal').classList.remove('show');
+  }
+  </script>
   <script>
 
     function getApiBaseUrl() {

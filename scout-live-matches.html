@@ -36,11 +36,18 @@
   </div>
   <script>
   function getApiBaseUrl() {
+    if (window.NextScoutApi && typeof window.NextScoutApi.base === 'function') {
+      return window.NextScoutApi.base();
+    }
+    const configured = (window.NEXTSCOUT_API_BASE || '').toString().trim();
+    if (configured) return configured.replace(/\/$/, '');
+    if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
+      return `${window.location.origin}/api`;
+    }
     const query = new URLSearchParams(window.location.search);
     const fromQuery = (query.get('api_base') || '').trim();
     if (fromQuery) return fromQuery.replace(/\/$/, '');
-    if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
-    return '/api';
+    return 'http://127.0.0.1:8000/api';
   }
 
   function esc(value) {
@@ -162,7 +169,9 @@
       const res = await fetch(`${apiBase}/live-matches`, { headers: { Accept: 'application/json' } });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      const matches = Array.isArray(data.matches) ? data.matches : [];
+      const matches = Array.isArray(data?.data)
+        ? data.data
+        : (Array.isArray(data?.matches) ? data.matches : []);
 
       if (!matches.length) {
         el.innerHTML = '<div class="card">Su an canli mac yok.</div>';
@@ -178,7 +187,5 @@
     <script src="assets/js/core-stability.js"></script>
 </body>
 </html>
-
-
 
 

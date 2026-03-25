@@ -135,4 +135,55 @@ class LiveMatchEndpointsTest extends TestCase
             ->assertJsonPath('data.match_id', $match->id)
             ->assertJsonPath('data.payload.minute', 42);
     }
+
+    public function test_player_schedule_for_today_creates_live_match_notification(): void
+    {
+        $user = User::factory()->create(['role' => 'player', 'name' => 'Player One']);
+        Sanctum::actingAs($user, ['player']);
+
+        $this->postJson('/api/player/match-schedules', [
+            'match_title' => 'Bugunku Mac',
+            'team_name' => 'Ev Sahibi',
+            'opponent_name' => 'Rakip',
+            'position' => '10 numara',
+            'match_date' => now()->toIso8601String(),
+            'city' => 'Izmir',
+            'venue' => 'Stadyum',
+            'notes' => 'Oyuncu takvim kaydi',
+        ])->assertCreated()
+            ->assertJsonPath('ok', true);
+
+        $this->assertDatabaseHas('live_matches', [
+            'title' => 'Bugunku Mac',
+            'home_team' => 'Ev Sahibi',
+            'away_team' => 'Rakip',
+            'is_live' => true,
+            'is_finished' => false,
+        ]);
+
+        $this->getJson('/api/live-matches')
+            ->assertOk()
+            ->assertJsonPath('total', 1)
+            ->assertJsonPath('data.0.source_role', 'player')
+            ->assertJsonPath('data.0.source_name', 'Player One');
+    }
+
+    public function test_player_schedule_for_future_does_not_create_live_match_notification(): void
+    {
+        $user = User::factory()->create(['role' => 'player', 'name' => 'Player Future']);
+        Sanctum::actingAs($user, ['player']);
+
+        $this->postJson('/api/player/match-schedules', [
+            'match_title' => 'Gelecek Mac',
+            'team_name' => 'Ev Sahibi',
+            'opponent_name' => 'Rakip',
+            'position' => 'Kanat',
+            'match_date' => now()->addDays(10)->toIso8601String(),
+            'city' => 'Istanbul',
+            'venue' => 'Saha',
+        ])->assertCreated()
+            ->assertJsonPath('ok', true);
+
+        $this->assertDatabaseCount('live_matches', 0);
+    }
 }
