@@ -230,6 +230,60 @@
             margin-top: 18px;
         }
 
+        .hero-action-groups {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .hero-action-group {
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            background: rgba(255, 255, 255, 0.04);
+            padding: 12px;
+        }
+
+        .hero-action-title {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #f8fafc;
+            margin-bottom: 10px;
+        }
+
+        .hero-action-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .hero-action-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 40px;
+            padding: 10px 12px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: #e2e8f0;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .hero-action-link i {
+            color: #8fd3ff;
+            width: 14px;
+            text-align: center;
+        }
+
+        .hero-action-link:hover {
+            border-color: rgba(255, 126, 34, 0.45);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
         .hero-inline-actions {
             display: flex;
             flex-wrap: wrap;
@@ -1108,6 +1162,8 @@
             .sidebar-menu { grid-template-columns: 1fr 1fr; }
             .container { padding: 0; gap: 10px; }
             .hero { grid-template-columns: 1fr; }
+            .hero-action-groups { grid-template-columns: 1fr; }
+            .hero-action-links { grid-template-columns: 1fr; }
             .welcome { padding: 14px; border-radius: 0; }
             .welcome p { font-size: 13px; }
 
@@ -1179,24 +1235,11 @@
             <nav class="sidebar-menu">
                 <a class="sidebar-item active" href="player-dashboard.html"><i class="fas fa-house"></i><span>Dashboard</span></a>
                 <a class="sidebar-item" href="index.html"><i class="fas fa-house-user"></i><span>Ana Sayfa</span></a>
-                <button class="sidebar-item" type="button" onclick="openPlayerSuccessStoriesHub()"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></button>
                 <a class="sidebar-item" href="player-profile.html" onclick="return openOwnPlayerProfile(event)"><i class="fas fa-user-check"></i><span>Public Gorunum</span></a>
-                <a class="sidebar-item" href="player-profile.html" onclick="return openOwnPlayerProfile(event)"><i class="fas fa-user"></i><span>Profil</span></a>
                 <a class="sidebar-item" href="notifications.html"><i class="fas fa-bell"></i><span>Bildirim</span></a>
-                <a class="sidebar-item" href="review-center.html"><i class="fas fa-comments"></i><span>Yorumlar</span></a>
-                <button class="sidebar-item" type="button" onclick="openListingsModal()"><i class="fas fa-bullhorn"></i><span>Ilanlar</span></button>
-                <button class="sidebar-item" type="button" onclick="openMyApplicationsModal()"><i class="fas fa-file-signature"></i><span>Basvurularim</span></button>
-                <button class="sidebar-item" type="button" onclick="openMetricModal('videos')"><i class="fas fa-video"></i><span>Videolarim</span></button>
-                <button class="sidebar-item" type="button" onclick="openMetricModal('offers')"><i class="fas fa-handshake"></i><span>Tekliflerim</span></button>
-                <button class="sidebar-item" type="button" onclick="openMyTrialsModal()"><i class="fas fa-clipboard-list"></i><span>Kayitlarim</span></button>
-                <a class="sidebar-item" href="trial-center.html"><i class="fas fa-tower-observation"></i><span>Deneme Merkezi</span></a>
-                <a class="sidebar-item" href="statistics.html"><i class="fas fa-chart-line"></i><span>Istatistikler</span></a>
                 <a class="sidebar-item" href="favorites.html"><i class="fas fa-star"></i><span>Favorilerim</span></a>
-                <a class="sidebar-item" href="scout-watchlist.html"><i class="fas fa-list-check"></i><span>Takip Listem</span></a>
-                <a class="sidebar-item" href="player-match-schedule.html"><i class="fas fa-calendar-days"></i><span>Maç Takvimim</span></a>
+                <a class="sidebar-item" href="player-match-schedule.html"><i class="fas fa-calendar-days"></i><span>Mac Takvimim</span></a>
                 <a class="sidebar-item" href="professional-players.html?player_view=discover"><i class="fas fa-compass"></i><span>Kesfet</span></a>
-                <a class="sidebar-item" href="help.html"><i class="fas fa-circle-question"></i><span>Yardim</span></a>
-                <a class="sidebar-item" href="settings.html"><i class="fas fa-gear"></i><span>Ayarlar</span></a>
                 <a class="sidebar-item" href="index.html" onclick="try { localStorage.removeItem('nextscout_user'); localStorage.removeItem('nextscout_token'); localStorage.removeItem('authToken'); localStorage.removeItem('token'); sessionStorage.removeItem('nextscout_skip_auth_modal_once'); } catch(e) {}"><i class="fas fa-right-from-bracket"></i><span>Cikis</span></a>
             </nav>
         </aside>
@@ -1213,6 +1256,35 @@
                 <div class="hero-inline-actions">
                     <button type="button" class="btn btn-secondary" onclick="openListingsModal()"><i class="fas fa-bullhorn"></i> Ilanlar</button>
                     <button type="button" class="btn btn-secondary" onclick="openTodayMatchModal()"><i class="fas fa-tower-broadcast"></i> Bugun Macim Var</button>
+                </div>
+                <div class="hero-action-groups">
+                    <section class="hero-action-group">
+                        <div class="hero-action-title">Profil</div>
+                        <div class="hero-action-links">
+                            <a class="hero-action-link" href="player-profile.html" onclick="return openOwnPlayerProfile(event)"><i class="fas fa-user"></i><span>Profil</span></a>
+                            <button type="button" class="hero-action-link" onclick="openMetricModal('videos')"><i class="fas fa-video"></i><span>Videolarim</span></button>
+                            <a class="hero-action-link" href="review-center.html"><i class="fas fa-comments"></i><span>Yorumlar</span></a>
+                            <button type="button" class="hero-action-link" onclick="openPlayerSuccessStoriesHub()"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></button>
+                        </div>
+                    </section>
+                    <section class="hero-action-group">
+                        <div class="hero-action-title">Firsatlar</div>
+                        <div class="hero-action-links">
+                            <button type="button" class="hero-action-link" onclick="openListingsModal()"><i class="fas fa-bullhorn"></i><span>Ilanlar</span></button>
+                            <button type="button" class="hero-action-link" onclick="openMyApplicationsModal()"><i class="fas fa-file-signature"></i><span>Basvurularim</span></button>
+                            <button type="button" class="hero-action-link" onclick="openMyTrialsModal()"><i class="fas fa-clipboard-list"></i><span>Kayitlarim</span></button>
+                            <button type="button" class="hero-action-link" onclick="openMetricModal('offers')"><i class="fas fa-handshake"></i><span>Tekliflerim</span></button>
+                        </div>
+                    </section>
+                    <section class="hero-action-group">
+                        <div class="hero-action-title">Takip</div>
+                        <div class="hero-action-links">
+                            <a class="hero-action-link" href="trial-center.html"><i class="fas fa-tower-observation"></i><span>Deneme Merkezi</span></a>
+                            <a class="hero-action-link" href="statistics.html"><i class="fas fa-chart-line"></i><span>Istatistikler</span></a>
+                            <a class="hero-action-link" href="scout-watchlist.html"><i class="fas fa-list-check"></i><span>Takip Listem</span></a>
+                            <a class="hero-action-link" href="settings.html"><i class="fas fa-gear"></i><span>Ayarlar</span></a>
+                        </div>
+                    </section>
                 </div>
                 <div class="hero-points">
                     <span class="pill"><i class="fas fa-circle-check"></i><span>Guncel profil daha fazla scout ilgisi ceker</span></span>
@@ -3008,6 +3080,7 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+
 
 
 
