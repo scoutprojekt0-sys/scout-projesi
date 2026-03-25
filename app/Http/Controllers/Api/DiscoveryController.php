@@ -13,14 +13,20 @@ class DiscoveryController extends Controller
 
     public function publicPlayers(): JsonResponse
     {
-        $search = request('search');
+        $search = trim((string) (request('search') ?? request('q') ?? ''));
         $position = request('position');
         $city = request('city');
 
         $players = DB::table('users')
             ->leftJoin('player_profiles as pp', 'pp.user_id', '=', 'users.id')
             ->where('role', 'player')
-            ->when($search, fn($q) => $q->where('name', 'like', "%{$search}%"))
+            ->when($search, fn($q) => $q->where(function ($inner) use ($search) {
+                $inner->where('users.name', 'like', "%{$search}%")
+                    ->orWhere('pp.current_team', 'like', "%{$search}%")
+                    ->orWhere('users.city', 'like', "%{$search}%")
+                    ->orWhere('pp.position', 'like', "%{$search}%")
+                    ->orWhere('users.position', 'like', "%{$search}%");
+            }))
             ->when($position, fn($q) => $q->where(function ($inner) use ($position) {
                 $inner->where('users.position', $position)
                     ->orWhere('pp.position', $position);
@@ -44,6 +50,84 @@ class DiscoveryController extends Controller
             ->paginate(20);
 
         return $this->paginatedListResponse($players, 'Public oyuncu listesi hazir.');
+    }
+
+    public function globalSearch(): JsonResponse
+    {
+        $query = trim((string) request()->query('q', ''));
+        $limit = max(1, min((int) request()->query('limit', 12), 24));
+
+        if ($query === '') {
+            return $this->successResponse([], 'Arama sonucu yok.');
+        }
+
+        $rows = DB::table('users')
+            ->leftJoin('player_profiles as pp', 'pp.user_id', '=', 'users.id')
+            ->leftJoin('team_profiles as tp', 'tp.user_id', '=', 'users.id')
+            ->leftJoin('staff_profiles as sp', 'sp.user_id', '=', 'users.id')
+            ->leftJoin('lawyers as lw', 'lw.user_id', '=', 'users.id')
+            ->whereIn('users.role', ['player', 'team', 'club', 'scout', 'manager', 'coach', 'lawyer'])
+            ->where(function ($builder) use ($query) {
+                $builder->where('users.name', 'like', "%{$query}%")
+                    ->orWhere('users.city', 'like', "%{$query}%")
+                    ->orWhere('users.email', 'like', "%{$query}%")
+                    ->orWhere('pp.current_team', 'like', "%{$query}%")
+                    ->orWhere('pp.position', 'like', "%{$query}%")
+                    ->orWhere('tp.team_name', 'like', "%{$query}%")
+                    ->orWhere('tp.league_level', 'like', "%{$query}%")
+                    ->orWhere('sp.organization', 'like', "%{$query}%")
+                    ->orWhere('lw.office_name', 'like', "%{$query}%")
+                    ->orWhere('lw.specialization', 'like', "%{$query}%");
+            })
+            ->select([
+                'users.id',
+                'users.name',
+                'users.role',
+                'users.city',
+                'users.photo_url',
+                'users.sport',
+                DB::raw('COALESCE(pp.position, users.position, lw.specialization, tp.team_name, sp.organization, users.role) as subtitle'),
+                'pp.current_team',
+                'tp.team_name',
+                'tp.league_level',
+                'sp.organization',
+                'lw.office_name',
+                'lw.specialization',
+            ])
+            ->orderByRaw('LOWER(users.name) = ? desc', [mb_strtolower($query, 'UTF-8')])
+            ->orderBy('users.name')
+            ->limit($limit)
+            ->get()
+            ->map(function ($row) {
+                $rawRole = (string) ($row->role ?? 'profile');
+                $normalizedRole = in_array($rawRole, ['team', 'club'], true) ? 'club' : $rawRole;
+                $displayName = match ($normalizedRole) {
+                    'club' => (string) ($row->team_name ?: $row->name ?: 'Kulup'),
+                    'lawyer' => (string) ($row->office_name ?: $row->name ?: 'Avukat'),
+                    default => (string) ($row->name ?? 'Profil'),
+                };
+                $subtitle = match ($normalizedRole) {
+                    'club' => (string) ($row->league_level ?: $row->city ?: 'Kulup profili'),
+                    'lawyer' => (string) ($row->specialization ?: $row->city ?: 'Spor hukuku'),
+                    default => (string) ($row->subtitle ?? ''),
+                };
+
+                return [
+                    'id' => (int) $row->id,
+                    'name' => $displayName,
+                    'role' => $normalizedRole,
+                    'city' => (string) ($row->city ?? ''),
+                    'sport' => (string) ($row->sport ?? ''),
+                    'photo_url' => (string) ($row->photo_url ?? ''),
+                    'subtitle' => $subtitle,
+                    'club' => (string) ($row->current_team ?? $row->team_name ?? ''),
+                    'organization' => (string) ($row->organization ?? $row->office_name ?? ''),
+                    'specialization' => (string) ($row->specialization ?? $row->league_level ?? ''),
+                ];
+            })
+            ->values();
+
+        return $this->successResponse($rows, 'Global arama sonuclari hazir.');
     }
 
     public function contractsLive(): JsonResponse

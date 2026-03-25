@@ -723,7 +723,8 @@
         grid-template-columns: 1fr;
       }
 
-      .players-grid {
+      .players-grid,
+      .global-results-grid {
         grid-template-columns: 1fr;
       }
 
@@ -1286,6 +1287,191 @@
     .player-card:hover {
       border-color: var(--ns-line-strong);
       box-shadow: 0 26px 56px rgba(4, 9, 26, 0.62);
+    }
+
+    .global-results {
+      display: none;
+      margin-bottom: 24px;
+    }
+
+    .global-results.is-visible {
+      display: block;
+    }
+
+    .global-results-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .global-results-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #f8fbff;
+    }
+
+    .global-results-copy {
+      color: #9bb5cb;
+      font-size: 13px;
+    }
+
+    .global-results-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .global-result-role {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(96, 165, 250, 0.24);
+      background: rgba(59, 130, 246, 0.10);
+      color: #dbeafe;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .global-profile-card {
+      min-height: 100%;
+    }
+
+    .global-profile-card .player-avatar {
+      background:
+        radial-gradient(circle at 84% 18%, rgba(251, 191, 36, 0.28), transparent 20%),
+        radial-gradient(circle at 12% 16%, rgba(96, 165, 250, 0.26), transparent 24%),
+        linear-gradient(135deg, #0f2740 0%, #12293d 38%, #1a2236 100%);
+    }
+
+    .global-profile-card.role-club .player-avatar {
+      background:
+        radial-gradient(circle at 84% 18%, rgba(250, 204, 21, 0.26), transparent 20%),
+        radial-gradient(circle at 12% 16%, rgba(52, 211, 153, 0.24), transparent 24%),
+        linear-gradient(135deg, #123028 0%, #102a34 40%, #1a2236 100%);
+    }
+
+    .global-profile-card.role-scout .player-avatar {
+      background:
+        radial-gradient(circle at 80% 20%, rgba(244, 114, 182, 0.26), transparent 18%),
+        radial-gradient(circle at 14% 18%, rgba(96, 165, 250, 0.28), transparent 24%),
+        linear-gradient(135deg, #1f2540 0%, #17253a 40%, #1a2236 100%);
+    }
+
+    .global-profile-card.role-manager .player-avatar {
+      background:
+        radial-gradient(circle at 82% 18%, rgba(251, 191, 36, 0.24), transparent 20%),
+        radial-gradient(circle at 16% 18%, rgba(248, 113, 113, 0.22), transparent 22%),
+        linear-gradient(135deg, #3a2616 0%, #20293a 42%, #1a2236 100%);
+    }
+
+    .global-profile-card.role-coach .player-avatar {
+      background:
+        radial-gradient(circle at 82% 18%, rgba(34, 197, 94, 0.24), transparent 20%),
+        radial-gradient(circle at 14% 18%, rgba(59, 130, 246, 0.24), transparent 24%),
+        linear-gradient(135deg, #132c34 0%, #12293d 40%, #1a2236 100%);
+    }
+
+    .global-profile-card.role-lawyer .player-avatar {
+      background:
+        radial-gradient(circle at 82% 18%, rgba(251, 191, 36, 0.24), transparent 20%),
+        radial-gradient(circle at 14% 18%, rgba(167, 139, 250, 0.24), transparent 24%),
+        linear-gradient(135deg, #2b1c34 0%, #17253a 42%, #1a2236 100%);
+    }
+
+    .global-profile-card .player-avatar-mark {
+      font-size: 58px;
+    }
+
+    .global-profile-card .player-actions {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .global-profile-card .player-content {
+      gap: 12px;
+    }
+
+    .global-profile-card .player-kpi-grid {
+      gap: 10px;
+    }
+
+    .global-profile-card .player-kpi-value {
+      font-size: 18px;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    .global-profile-card .player-info {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .global-profile-card .player-kpi-sub,
+    .global-profile-card .player-footnote {
+      display: none;
+    }
+
+    .global-profile-card .info-value {
+      word-break: break-word;
+    }
+
+    .global-profile-card .global-result-role {
+      min-height: 24px;
+      padding: 0 8px;
+      font-size: 9px;
+      letter-spacing: 0.05em;
+      flex: 0 0 auto;
+    }
+
+    .global-profile-card .player-actions a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 10px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.01em;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .global-profile-card .player-actions a:hover {
+      transform: translateY(-1px);
+    }
+
+    .global-card-primary {
+      border: 1px solid rgba(255, 126, 34, 0.34);
+      background: linear-gradient(135deg, rgba(255, 126, 34, 0.18), rgba(59, 130, 246, 0.12));
+      color: #fff;
+    }
+
+    .global-card-secondary {
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      background: rgba(255, 255, 255, 0.04);
+      color: #dceaf8;
+    }
+
+    .global-result-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .global-result-meta span {
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.12);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      color: #d9e6f3;
+      font-size: 12px;
     }
 
     .player-avatar {
@@ -2052,6 +2238,15 @@
       </div>
     </div>
       <div class="results-meta" id="resultsMeta">Sonuc hazirlaniyor...</div>
+      <section class="global-results" id="globalResultsSection">
+        <div class="global-results-head">
+          <div>
+            <div class="global-results-title">Diger Sonuclar</div>
+            <div class="global-results-copy" id="globalResultsCopy">Oyuncu disi eslesmeler burada listelenir.</div>
+          </div>
+        </div>
+        <div class="global-results-grid" id="globalResultsGrid"></div>
+      </section>
 
     <!-- Players Grid -->
     <div class="players-grid" id="playersGrid">
@@ -2106,6 +2301,9 @@
     const qualityMinFilter = document.getElementById("qualityMinFilter");
     const systemFilter = document.getElementById("systemFilter");
     const sortFilter = document.getElementById("sortFilter");
+    const globalResultsSection = document.getElementById("globalResultsSection");
+    const globalResultsGrid = document.getElementById("globalResultsGrid");
+    const globalResultsCopy = document.getElementById("globalResultsCopy");
     const initialQueryParams = new URLSearchParams(window.location.search);
     const initialSort = (initialQueryParams.get("sort") || "").trim().toLowerCase();
     if (sortFilter && initialSort) {
@@ -2588,6 +2786,441 @@
       const date = new Date(value);
       if (Number.isNaN(date.getTime())) return "Bugun guncellenmedi";
       return date.toLocaleDateString("tr-TR");
+    }
+
+    function getGlobalRoleLabel(role) {
+      const key = String(role || "").toLowerCase();
+      if (key === "team" || key === "club") return "Kulup";
+      if (key === "scout") return "Scout";
+      if (key === "manager") return "Menajer";
+      if (key === "coach") return "Antrenor";
+      if (key === "lawyer") return "Avukat";
+      return "Oyuncu";
+    }
+
+    function getGlobalProfileHref(item) {
+      const role = String(item?.role || "").toLowerCase();
+      const id = Number(item?.id || 0);
+      if (!id) return "#";
+      if (role === "team" || role === "club") return `club-profile.html?user_id=${encodeURIComponent(id)}`;
+      if (role === "scout") return `scout-profile.html?user_id=${encodeURIComponent(id)}`;
+      if (role === "manager") return `manager-profile.html?user_id=${encodeURIComponent(id)}`;
+      if (role === "coach") return `coach-profile.html?user_id=${encodeURIComponent(id)}`;
+      if (role === "lawyer") return `lawyer-profile.html?user_id=${encodeURIComponent(id)}`;
+      return `player-profile.html?user_id=${encodeURIComponent(id)}`;
+    }
+
+    function getGlobalProfileMeta(item) {
+      const role = String(item?.role || "").toLowerCase();
+      if (role === "club") {
+        return {
+          headline: item?.subtitle || item?.organization || "Kulup profili",
+          metricA: { label: "Sehir", value: item?.city || "-" },
+          metricB: { label: "Lig", value: item?.organization || item?.subtitle || "-" },
+          metricC: { label: "Profil", value: "Kurumsal" },
+        };
+      }
+      if (role === "scout") {
+        return {
+          headline: item?.subtitle || item?.organization || "Scout profili",
+          metricA: { label: "Sehir", value: item?.city || "-" },
+          metricB: { label: "Alan", value: item?.organization || "-" },
+          metricC: { label: "Profil", value: "Gozlem" },
+        };
+      }
+      if (role === "manager") {
+        return {
+          headline: item?.subtitle || item?.organization || "Menajer profili",
+          metricA: { label: "Sehir", value: item?.city || "-" },
+          metricB: { label: "Ajans", value: item?.organization || "-" },
+          metricC: { label: "Profil", value: "Temsil" },
+        };
+      }
+      if (role === "coach") {
+        return {
+          headline: item?.subtitle || item?.organization || "Antrenor profili",
+          metricA: { label: "Sehir", value: item?.city || "-" },
+          metricB: { label: "Kulup", value: item?.organization || "-" },
+          metricC: { label: "Profil", value: "Teknik" },
+        };
+      }
+      if (role === "lawyer") {
+        return {
+          headline: item?.subtitle || item?.specialization || "Avukat profili",
+          metricA: { label: "Sehir", value: item?.city || "-" },
+          metricB: { label: "Uzmanlik", value: item?.specialization || "-" },
+          metricC: { label: "Profil", value: "Hukuk" },
+        };
+      }
+      return {
+        headline: item?.subtitle || item?.organization || "Profil",
+        metricA: { label: "Sehir", value: item?.city || "-" },
+        metricB: { label: "Alan", value: item?.organization || "-" },
+        metricC: { label: "Profil", value: "Genel" },
+      };
+    }
+
+    function renderGlobalProfileCard(item) {
+      const role = String(item?.role || "").toLowerCase();
+      const href = getGlobalProfileHref(item);
+      const meta = getGlobalProfileMeta(item);
+      const initials = getPlayerInitials(item?.name || "Profil");
+      if (role === "scout") {
+        return `
+          <article class="player-card global-profile-card role-scout">
+            <div class="player-avatar">
+              <div class="player-avatar-mark">${esc(initials)}</div>
+            </div>
+            <div class="player-content">
+              <div class="player-header-row">
+                <div>
+                  <div class="player-name">${esc(item?.name || "Scout")}</div>
+                  <div class="player-position">${esc(item?.subtitle || "Scout profili")}</div>
+                </div>
+                <div class="global-result-role">Scout</div>
+              </div>
+
+              <div class="player-kpi-grid">
+                <div class="player-kpi">
+                  <div class="player-kpi-label">Sehir</div>
+                  <div class="player-kpi-value">${esc(item?.city || "-")}</div>
+                </div>
+                <div class="player-kpi">
+                  <div class="player-kpi-label">Organizasyon</div>
+                  <div class="player-kpi-value">${esc(item?.organization || "-")}</div>
+                </div>
+                <div class="player-kpi">
+                  <div class="player-kpi-label">Profil</div>
+                  <div class="player-kpi-value">Gozlem</div>
+                </div>
+              </div>
+
+              <div class="player-info">
+                <div class="info-item">
+                  <span class="info-label">Bolge</span>
+                  <span class="info-value" style="font-size:12px;">${esc(item?.city || "-")}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Ag</span>
+                  <span class="info-value" style="font-size:12px;">${esc(item?.organization || item?.subtitle || "-")}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Uzmanlik</span>
+                  <span class="info-value" style="font-size:12px;">${esc(item?.specialization || item?.subtitle || "-")}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Durum</span>
+                  <span class="info-value" style="font-size:12px;">Aktif profil</span>
+                </div>
+              </div>
+
+              <div class="player-actions">
+                <a class="global-card-primary" href="${href}">Profili Ac</a>
+                <a class="global-card-secondary" href="#" onclick="event.preventDefault(); globalAddToFavorites(${Number(item?.id || 0)}, '${esc(String(item?.name || "Scout")).replace(/'/g, "\\'")}');">Favoriye Ekle</a>
+                <a class="global-card-secondary" href="#" onclick="event.preventDefault(); globalContact(${Number(item?.id || 0)}, '${esc(String(item?.name || "Scout")).replace(/'/g, "\\'")}');">Iletisime Gec</a>
+              </div>
+            </div>
+          </article>
+        `;
+      }
+      if (role === "coach") {
+        return `
+          <article class="player-card global-profile-card role-coach">
+            <div class="player-avatar">
+              <div class="player-avatar-mark">${esc(initials)}</div>
+            </div>
+            <div class="player-content">
+              <div class="player-header-row">
+                <div>
+                  <div class="player-name">${esc(item?.name || "Antrenor")}</div>
+                  <div class="player-position">${esc(item?.subtitle || "Antrenor profili")}</div>
+                </div>
+                <div class="global-result-role">Antrenor</div>
+              </div>
+
+              <div class="player-kpi-grid">
+                <div class="player-kpi">
+                  <div class="player-kpi-label">Sehir</div>
+                  <div class="player-kpi-value">${esc(item?.city || "-")}</div>
+                </div>
+                <div class="player-kpi">
+                  <div class="player-kpi-label">Kulup</div>
+                  <div class="player-kpi-value">${esc(item?.organization || "-")}</div>
+                </div>
+                <div class="player-kpi">
+                  <div class="player-kpi-label">Profil</div>
+                  <div class="player-kpi-value">Teknik</div>
+                </div>
+              </div>
+
+              <div class="player-info">
+                <div class="info-item">
+                  <span class="info-label">Bolge</span>
+                  <span class="info-value" style="font-size:12px;">${esc(item?.city || "-")}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Kulup</span>
+                  <span class="info-value" style="font-size:12px;">${esc(item?.organization || item?.subtitle || "-")}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Uzmanlik</span>
+                  <span class="info-value" style="font-size:12px;">${esc(item?.specialization || item?.subtitle || "-")}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Durum</span>
+                  <span class="info-value" style="font-size:12px;">Aktif profil</span>
+                </div>
+              </div>
+
+              <div class="player-actions">
+                <a class="global-card-primary" href="${href}">Profili Ac</a>
+                <a class="global-card-secondary" href="#" onclick="event.preventDefault(); globalAddToFavorites(${Number(item?.id || 0)}, '${esc(String(item?.name || "Antrenor")).replace(/'/g, "\\'")}');">Favoriye Ekle</a>
+                <a class="global-card-secondary" href="#" onclick="event.preventDefault(); globalContact(${Number(item?.id || 0)}, '${esc(String(item?.name || "Antrenor")).replace(/'/g, "\\'")}');">Iletisime Gec</a>
+              </div>
+            </div>
+          </article>
+        `;
+      }
+      if (role === "manager") {
+        return `
+          <article class="player-card global-profile-card role-manager">
+            <div class="player-avatar">
+              <div class="player-avatar-mark">${esc(initials)}</div>
+            </div>
+            <div class="player-content">
+              <div class="player-header-row">
+                <div>
+                  <div class="player-name">${esc(item?.name || "Menajer")}</div>
+                  <div class="player-position">${esc(item?.subtitle || "Menajer profili")}</div>
+                </div>
+                <div class="global-result-role">Menajer</div>
+              </div>
+
+              <div class="player-kpi-grid">
+                <div class="player-kpi">
+                  <div class="player-kpi-label">Sehir</div>
+                  <div class="player-kpi-value">${esc(item?.city || "-")}</div>
+                </div>
+                <div class="player-kpi">
+                  <div class="player-kpi-label">Ajans</div>
+                  <div class="player-kpi-value">${esc(item?.organization || "-")}</div>
+                </div>
+                <div class="player-kpi">
+                  <div class="player-kpi-label">Profil</div>
+                  <div class="player-kpi-value">Temsil</div>
+                </div>
+              </div>
+
+              <div class="player-info">
+                <div class="info-item">
+                  <span class="info-label">Bolge</span>
+                  <span class="info-value" style="font-size:12px;">${esc(item?.city || "-")}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Ajans</span>
+                  <span class="info-value" style="font-size:12px;">${esc(item?.organization || item?.subtitle || "-")}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Uzmanlik</span>
+                  <span class="info-value" style="font-size:12px;">${esc(item?.specialization || item?.subtitle || "-")}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Durum</span>
+                  <span class="info-value" style="font-size:12px;">Aktif profil</span>
+                </div>
+              </div>
+
+              <div class="player-actions">
+                <a class="global-card-primary" href="${href}">Profili Ac</a>
+                <a class="global-card-secondary" href="#" onclick="event.preventDefault(); globalAddToFavorites(${Number(item?.id || 0)}, '${esc(String(item?.name || "Menajer")).replace(/'/g, "\\'")}');">Favoriye Ekle</a>
+                <a class="global-card-secondary" href="#" onclick="event.preventDefault(); globalContact(${Number(item?.id || 0)}, '${esc(String(item?.name || "Menajer")).replace(/'/g, "\\'")}');">Iletisime Gec</a>
+              </div>
+            </div>
+          </article>
+        `;
+      }
+      if (role === "lawyer") {
+        return `
+          <article class="player-card global-profile-card role-lawyer">
+            <div class="player-avatar">
+              <div class="player-avatar-mark">${esc(initials)}</div>
+            </div>
+            <div class="player-content">
+              <div class="player-header-row">
+                <div>
+                  <div class="player-name">${esc(item?.name || "Avukat")}</div>
+                  <div class="player-position">${esc(item?.subtitle || "Avukat profili")}</div>
+                </div>
+                <div class="global-result-role">Avukat</div>
+              </div>
+
+              <div class="player-kpi-grid">
+                <div class="player-kpi">
+                  <div class="player-kpi-label">Sehir</div>
+                  <div class="player-kpi-value">${esc(item?.city || "-")}</div>
+                </div>
+                <div class="player-kpi">
+                  <div class="player-kpi-label">Ofis</div>
+                  <div class="player-kpi-value">${esc(item?.organization || "-")}</div>
+                </div>
+                <div class="player-kpi">
+                  <div class="player-kpi-label">Profil</div>
+                  <div class="player-kpi-value">Hukuk</div>
+                </div>
+              </div>
+
+              <div class="player-info">
+                <div class="info-item">
+                  <span class="info-label">Bolge</span>
+                  <span class="info-value" style="font-size:12px;">${esc(item?.city || "-")}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Ofis</span>
+                  <span class="info-value" style="font-size:12px;">${esc(item?.organization || item?.subtitle || "-")}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Uzmanlik</span>
+                  <span class="info-value" style="font-size:12px;">${esc(item?.specialization || item?.subtitle || "-")}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Durum</span>
+                  <span class="info-value" style="font-size:12px;">Aktif profil</span>
+                </div>
+              </div>
+
+              <div class="player-actions">
+                <a class="global-card-primary" href="${href}">Profili Ac</a>
+                <a class="global-card-secondary" href="#" onclick="event.preventDefault(); globalAddToFavorites(${Number(item?.id || 0)}, '${esc(String(item?.name || "Avukat")).replace(/'/g, "\\'")}');">Favoriye Ekle</a>
+                <a class="global-card-secondary" href="#" onclick="event.preventDefault(); globalContact(${Number(item?.id || 0)}, '${esc(String(item?.name || "Avukat")).replace(/'/g, "\\'")}');">Iletisime Gec</a>
+              </div>
+            </div>
+          </article>
+        `;
+      }
+      return `
+        <article class="player-card global-profile-card role-${esc(role || "profile")}">
+          <div class="player-avatar">
+            <div class="player-avatar-mark">${esc(initials)}</div>
+          </div>
+          <div class="player-content">
+            <div class="player-header-row">
+              <div>
+                <div class="player-name">${esc(item?.name || "Profil")}</div>
+                <div class="player-position">${esc(meta.headline)}</div>
+              </div>
+              <div class="global-result-role">${esc(getGlobalRoleLabel(role))}</div>
+            </div>
+
+            <div class="player-kpi-grid">
+              <div class="player-kpi">
+                <div class="player-kpi-label">${esc(meta.metricA.label)}</div>
+                <div class="player-kpi-value">${esc(meta.metricA.value)}</div>
+              </div>
+              <div class="player-kpi">
+                <div class="player-kpi-label">${esc(meta.metricB.label)}</div>
+                <div class="player-kpi-value">${esc(meta.metricB.value)}</div>
+              </div>
+              <div class="player-kpi">
+                <div class="player-kpi-label">${esc(meta.metricC.label)}</div>
+                <div class="player-kpi-value">${esc(meta.metricC.value)}</div>
+              </div>
+            </div>
+
+            <div class="player-info">
+              <div class="info-item">
+                <span class="info-label">Sehir</span>
+                <span class="info-value" style="font-size:12px;">${esc(item?.city || "-")}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Baglanti</span>
+                <span class="info-value" style="font-size:12px;">${esc(item?.organization || item?.subtitle || "-")}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Detay</span>
+                <span class="info-value" style="font-size:12px;">${esc(item?.specialization || item?.subtitle || "-")}</span>
+              </div>
+            </div>
+
+            <div class="player-actions">
+              <a class="global-card-primary" href="${href}">Profili Ac</a>
+              <a class="global-card-secondary" href="#" onclick="event.preventDefault(); globalAddToFavorites(${Number(item?.id || 0)}, '${esc(String(item?.name || "Profil")).replace(/'/g, "\\'")}');">Favoriye Ekle</a>
+              <a class="global-card-secondary" href="#" onclick="event.preventDefault(); globalContact(${Number(item?.id || 0)}, '${esc(String(item?.name || "Profil")).replace(/'/g, "\\'")}');">Iletisime Gec</a>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderGlobalResults(rows, query) {
+      if (!globalResultsSection || !globalResultsGrid || !globalResultsCopy) return;
+      const list = Array.isArray(rows) ? rows.filter((row) => String(row?.role || "").toLowerCase() !== "player") : [];
+      if (!String(query || "").trim() || !list.length) {
+        globalResultsSection.classList.remove("is-visible");
+        globalResultsGrid.innerHTML = "";
+        return;
+      }
+
+      globalResultsSection.classList.add("is-visible");
+      globalResultsCopy.textContent = `"${query}" icin scout, kulup, menajer, antrenor ve avukat eslesmeleri.`;
+      globalResultsGrid.innerHTML = list.map((item) => renderGlobalProfileCard(item)).join("");
+    }
+
+    async function globalAddToFavorites(id, name) {
+      const targetId = Number(id || 0);
+      const targetName = String(name || "Profil").trim() || "Profil";
+      const token = (localStorage.getItem("nextscout_token") || "").trim();
+      if (!targetId) return;
+      if (!token) {
+        nsAlert("Favori eklemek icin giris yap.");
+        return;
+      }
+      try {
+        const response = await fetch(`${getApiBaseUrl()}/favorites/${encodeURIComponent(targetId)}/toggle`, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`
+          }
+        });
+        const payload = await response.json().catch(() => null);
+        if (!response.ok || payload?.ok === false) {
+          throw new Error(payload?.message || "Favori islemi tamamlanamadi.");
+        }
+        const isFavorited = Boolean(payload?.data?.is_favorited);
+        nsAlert(payload?.message || (isFavorited ? `${targetName} favorilere eklendi.` : `${targetName} favorilerden cikarildi.`));
+      } catch (error) {
+        nsAlert(error?.message || "Favori islemi tamamlanamadi.");
+      }
+    }
+
+    function globalContact(id, name) {
+      const targetId = Number(id || 0);
+      const targetName = String(name || "Profil").trim() || "Profil";
+      if (!targetId) return;
+      localStorage.setItem("nextscout_message_target_id", String(targetId));
+      localStorage.setItem("nextscout_message_target_name", targetName);
+      window.location.href = `notifications.html?target_user_id=${encodeURIComponent(targetId)}`;
+    }
+
+    async function loadGlobalResults() {
+      const params = new URLSearchParams(window.location.search);
+      const q = String(params.get("q") || "").trim();
+      if (!q) {
+        renderGlobalResults([], "");
+        return;
+      }
+
+      try {
+        const apiBase = getApiBaseUrl();
+        const response = await fetch(`${apiBase}/public/search?q=${encodeURIComponent(q)}&limit=12`, {
+          headers: { Accept: "application/json" }
+        });
+        const payload = await response.json().catch(() => ({}));
+        const rows = Array.isArray(payload?.data) ? payload.data : [];
+        renderGlobalResults(rows, q);
+      } catch (error) {
+        renderGlobalResults([], q);
+      }
     }
 
     function getScoutSignal(player) {
@@ -3676,6 +4309,7 @@
 
     // Initial render
     (async function init() {
+      await loadGlobalResults();
       standardizeTransferCategoryQuery();
       standardizeScoutRadarQuery();
       applyWeeklyDigestMode();
@@ -3695,4 +4329,3 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-

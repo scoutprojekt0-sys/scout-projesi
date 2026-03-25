@@ -256,6 +256,69 @@
             overflow: hidden;
         }
 
+        .hero-opportunity-panel {
+            padding: 18px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .hero-opportunity-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .hero-opportunity-tab {
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--muted);
+            min-height: 34px;
+            padding: 0 12px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .hero-opportunity-tab.active {
+            color: #fff;
+            border-color: rgba(255, 126, 34, 0.45);
+            background: linear-gradient(135deg, rgba(255, 126, 34, 0.18), rgba(59, 130, 246, 0.12));
+        }
+
+        .hero-opportunity-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .hero-opportunity-item {
+            display: grid;
+            gap: 6px;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .hero-opportunity-item strong {
+            color: #f8fafc;
+            font-size: 14px;
+            line-height: 1.35;
+        }
+
+        .hero-opportunity-item span {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .hero-opportunity-empty {
+            color: var(--muted);
+            font-size: 13px;
+            border: 1px dashed rgba(148, 163, 184, 0.24);
+            border-radius: 10px;
+            padding: 14px;
+        }
+
         .panel-title {
             font-size: 17px;
             font-weight: 800;
@@ -1146,6 +1209,20 @@
                     <div class="status-row"><span>Profil Durumu</span><strong>Tamamlanıyor</strong></div>
                 </div>
             </aside>
+
+            <aside class="panel hero-opportunity-panel">
+                <div>
+                    <h3 class="panel-title">Kulup Talepleri</h3>
+                    <p class="panel-sub">Kulup ihtiyaclari ile deneme ve idman ilanlarini hero alanindan takip et.</p>
+                </div>
+                <div class="hero-opportunity-tabs">
+                    <button type="button" class="hero-opportunity-tab active" data-hero-opportunity-tab="needs" onclick="openHeroOpportunityTab('needs')">Ihtiyaclar</button>
+                    <button type="button" class="hero-opportunity-tab" data-hero-opportunity-tab="events" onclick="openHeroOpportunityTab('events')">Deneme / Idman</button>
+                </div>
+                <div class="hero-opportunity-list" id="heroOpportunityList">
+                    <div class="hero-opportunity-empty">Kulup talepleri yukleniyor...</div>
+                </div>
+            </aside>
         </section>
 
         <div class="kpi-strip">
@@ -1459,6 +1536,7 @@
             incomingMessages: [],
             offers: [],
             notifications: [],
+            clubNeeds: [],
             latestNeeds: [],
             weeklyTrends: [],
             weeklyDigest: null,
@@ -1675,19 +1753,22 @@
 
         async function loadLatestApiHighlights() {
             const apiBase = getApiBaseUrl();
-            const [needsPayload, trendingPayload, digestPayload, eventsPayload] = await Promise.all([
+            const [clubNeedsPayload, needsPayload, trendingPayload, digestPayload, eventsPayload] = await Promise.all([
+                fetchJsonSafe(`${apiBase}/club-needs`),
                 fetchJsonSafe(`${apiBase}/discovery/manager-needs`),
                 fetchJsonSafe(`${apiBase}/trending/week`),
                 fetchJsonSafe(`${apiBase}/discovery/weekly-digest`),
                 fetchJsonSafe(`${apiBase}/community-events`),
             ]);
 
+            dashboardApiState.clubNeeds = parseAnyRows(clubNeedsPayload);
             dashboardApiState.latestNeeds = parseAnyRows(needsPayload);
             dashboardApiState.weeklyTrends = parseAnyRows(trendingPayload);
             dashboardApiState.weeklyDigest = digestPayload?.data || digestPayload || null;
             dashboardApiState.communityEvents = parseAnyRows(eventsPayload);
+            renderHeroOpportunities();
 
-            const need = dashboardApiState.latestNeeds[0] || null;
+            const need = dashboardApiState.clubNeeds[0] || dashboardApiState.latestNeeds[0] || null;
             const trend = dashboardApiState.weeklyTrends[0] || null;
 
             const newTitleEl = document.getElementById('latestNewTitle');
@@ -1718,6 +1799,46 @@
             if (trend && trendTagEl) {
                 trendTagEl.textContent = 'Trend';
             }
+        }
+
+        function getHeroOpportunityRows(tab = 'needs') {
+            if (tab === 'events') {
+                return (Array.isArray(dashboardApiState.communityEvents) ? dashboardApiState.communityEvents : [])
+                    .slice(0, 3)
+                    .map((row) => ({
+                        title: row?.title || row?.event_name || 'Deneme veya idman ilani',
+                        meta: [row?.city || row?.location || 'Konum yok', row?.start_at || row?.event_date || null, row?.organizer_name || row?.club_name || null].filter(Boolean).join(' • ')
+                    }));
+            }
+
+            return (Array.isArray(dashboardApiState.clubNeeds) ? dashboardApiState.clubNeeds : [])
+                .slice(0, 3)
+                .map((row) => ({
+                    title: row?.title || row?.position || 'Kulup ihtiyaci',
+                    meta: [row?.team_name || row?.club_name || row?.club || 'Kulup', row?.city || null, row?.created_at || null].filter(Boolean).join(' • ')
+                }));
+        }
+
+        function renderHeroOpportunities(tab = 'needs') {
+            const root = document.getElementById('heroOpportunityList');
+            if (!root) return;
+            const rows = getHeroOpportunityRows(tab);
+            root.innerHTML = rows.length
+                ? rows.map((item) => `
+                    <article class="hero-opportunity-item">
+                        <strong>${escapeHtml(item.title || 'Firsat')}</strong>
+                        <span>${escapeHtml(item.meta || 'Detay bekleniyor')}</span>
+                    </article>
+                `).join('')
+                : `<div class="hero-opportunity-empty">${tab === 'events' ? 'Su anda aktif deneme veya idman ilani yok.' : 'Su anda aktif kulup ihtiyaci yok.'}</div>`;
+
+            document.querySelectorAll('[data-hero-opportunity-tab]').forEach((button) => {
+                button.classList.toggle('active', button.getAttribute('data-hero-opportunity-tab') === tab);
+            });
+        }
+
+        function openHeroOpportunityTab(tab) {
+            renderHeroOpportunities(tab === 'events' ? 'events' : 'needs');
         }
 
         function formatTryAmount(value) {

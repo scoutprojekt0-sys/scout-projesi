@@ -3120,23 +3120,18 @@
             window.NextScoutGrowth?.track('club_need_note_publish', { note_len: note.length });
 
             try {
-                const apiBase = getApiBaseUrl();
-                const response = await fetch(`${apiBase}/opportunities`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json',
-                    },
-                    body: JSON.stringify({
-                        title: `${newItem.club_name} Oyuncu Ihtiyaci`,
-                        position: 'Belirtilmedi',
-                        city: '',
-                        details: newItem.note,
-                        status: 'open',
-                    }),
+                const headers = getAuthHeaders(true);
+                if (!headers) {
+                    throw new Error('Bu islem icin giris yapmaniz gerekiyor.');
+                }
+
+                await teamApiPost('/opportunities', {
+                    title: `${newItem.club_name} Oyuncu Ihtiyaci`,
+                    position: 'Belirtilmedi',
+                    city: '',
+                    details: newItem.note,
+                    status: 'open',
                 });
-                const body = await response.json().catch(() => ({}));
-                if (!response.ok || body?.ok === false) throw new Error(body?.message || 'Ihtiyac notu kaydedilemedi.');
             } catch (error) {
                 if (msg) msg.textContent = error.message || 'Ihtiyac notu kaydedilemedi.';
                 return;
@@ -3398,6 +3393,7 @@
         function togglePlayerRegisterPanel(forceState) {
             const panel = document.getElementById('playerRegisterPanel');
             const overlay = document.getElementById('panelOverlay');
+            const groupsOverlay = document.getElementById('teamGroupsOverlay');
             if (!panel) return;
             const shouldOpen = typeof forceState === 'boolean' ? forceState : !panel.classList.contains('active');
             panel.classList.toggle('active', shouldOpen);
@@ -3411,8 +3407,11 @@
             panel.style.width = 'min(640px, calc(100vw - 24px))';
             panel.style.maxHeight = '78vh';
             panel.style.margin = '0';
-            panel.style.zIndex = '2000';
-            if (overlay) overlay.classList.toggle('active', shouldOpen);
+            panel.style.zIndex = groupsOverlay?.classList.contains('active') ? '2600' : '2000';
+            if (overlay) {
+                overlay.classList.toggle('active', shouldOpen);
+                overlay.style.zIndex = groupsOverlay?.classList.contains('active') ? '2590' : '1990';
+            }
             const select = document.getElementById('registerGroupSelect');
             if (shouldOpen && select) select.value = activeTeamGroup;
             if (!shouldOpen) editingClubPlayerId = null;

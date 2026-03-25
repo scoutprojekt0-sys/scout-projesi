@@ -19,93 +19,154 @@
     <meta name="twitter:description" content="NextScout player DASHBOARD sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/mobile-unified.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --bg: #1f252d;
-            --ink: #e2e8f0;
-            --muted: #94a3b8;
-            --line: #334155;
-            --panel: #232a33;
-            --primary: #60a5fa;
-            --accent: #38bdf8;
-            --good: #10b981;
-            --warn: #f59e0b;
+            --bg: #08131d;
+            --ink: #f5fbff;
+            --muted: #9bb5cb;
+            --line: #2b4660;
+            --panel: #0f1f2e;
+            --panel-2: #12293d;
+            --primary: #8fd3ff;
+            --accent: #60a5fa;
+            --good: #2fd4b0;
+            --warn: #ff7e22;
+            --cta: #ff5a1f;
+            --cta-2: #ff7e22;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             color: var(--ink);
             background:
-                radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.16), transparent 34%),
-                radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.14), transparent 36%),
+                radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+                radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
                 var(--bg);
+            min-height: 100vh;
         }
 
         .header {
             position: sticky;
             top: 0;
             z-index: 20;
-            background: rgba(31, 37, 45, 0.92);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--line);
-            padding: 14px 22px;
+            background: rgba(7, 18, 36, 0.78);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.24);
+            padding: 16px 24px;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
+            box-shadow: 0 12px 28px rgba(8, 19, 29, 0.26);
         }
 
         .logo {
+            font-family: 'Poppins', sans-serif;
             font-size: 22px;
-            font-weight: 800;
-            color: #bfdbfe;
+            font-weight: 700;
+            color: #BFDBFE;
             letter-spacing: 0.2px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
         }
 
-        .nav {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            justify-content: flex-end;
+        .main-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 16px;
+            padding: 18px;
+            max-width: 1400px;
+            margin: 0 auto;
+            align-items: start;
         }
 
-        .nav a {
-            color: #e2e8f0;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 13px;
+        .sidebar {
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
             border: 1px solid var(--line);
-            background: #2b3440;
-            border-radius: 999px;
-            padding: 8px 12px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: 0.2s ease;
+            padding: 16px;
+            position: sticky;
+            top: 90px;
+            box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28);
+            overflow: hidden;
         }
 
-        .nav a:hover { color: #dbeafe; border-color: #60a5fa; background: #334155; }
-        .nav a i { display: none; }
-        .nav-label { line-height: 1; }
+        .sidebar::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: 0.8px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: grid;
+            gap: 8px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 12px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.04);
+            color: #dbeafe;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease;
+        }
+
+        .sidebar-item i {
+            width: 18px;
+            text-align: center;
+            color: #8fd3ff;
+            font-size: 13px;
+        }
+
+        .sidebar-item:hover {
+            transform: translateY(-1px);
+            border-color: rgba(255, 126, 34, 0.55);
+            box-shadow: 0 16px 28px rgba(8, 19, 29, 0.26);
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .sidebar-item.active {
+            background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
+            border-color: rgba(255, 126, 34, 0.65);
+            color: #ffffff;
+        }
+
+        .sidebar-item.active i {
+            color: #ffffff;
+        }
 
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 18px;
+            max-width: none;
+            margin: 0;
+            padding: 0;
             display: grid;
             gap: 14px;
         }
 
         .hero {
             display: grid;
-            grid-template-columns: minmax(0, 1.65fr) minmax(280px, 0.85fr);
+            grid-template-columns: 1fr;
             gap: 14px;
             align-items: stretch;
         }
@@ -115,7 +176,7 @@
             color: var(--ink);
             padding: 24px;
             border: 1px solid var(--line);
-            border-radius: 14px;
+            border-radius: 0;
             box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
             position: relative;
             overflow: hidden;
@@ -127,7 +188,7 @@
             position: absolute;
             inset: 0 0 auto 0;
             height: 4px;
-            background: linear-gradient(90deg, #1e40af 0%, #0ea5e9 55%, #60a5fa 100%);
+            background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
         }
 
         .hero-kicker {
@@ -136,7 +197,7 @@
             gap: 8px;
             margin-bottom: 12px;
             padding: 8px 12px;
-            border-radius: 999px;
+            border-radius: 0;
             background: rgba(59, 130, 246, 0.12);
             border: 1px solid rgba(96, 165, 250, 0.25);
             color: #dbeafe;
@@ -169,6 +230,13 @@
             margin-top: 18px;
         }
 
+        .hero-inline-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
         .pill {
             display: inline-flex;
             align-items: center;
@@ -186,6 +254,69 @@
             padding: 18px;
             position: relative;
             overflow: hidden;
+        }
+
+        .hero-opportunity-panel {
+            padding: 18px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .hero-opportunity-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .hero-opportunity-tab {
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--muted);
+            min-height: 34px;
+            padding: 0 12px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .hero-opportunity-tab.active {
+            color: #fff;
+            border-color: rgba(255, 126, 34, 0.45);
+            background: linear-gradient(135deg, rgba(255, 126, 34, 0.18), rgba(59, 130, 246, 0.12));
+        }
+
+        .hero-opportunity-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .hero-opportunity-item {
+            display: grid;
+            gap: 6px;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .hero-opportunity-item strong {
+            color: #f8fafc;
+            font-size: 14px;
+            line-height: 1.35;
+        }
+
+        .hero-opportunity-item span {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .hero-opportunity-empty {
+            color: var(--muted);
+            font-size: 13px;
+            border: 1px dashed rgba(148, 163, 184, 0.24);
+            border-radius: 10px;
+            padding: 14px;
         }
 
         .panel-title {
@@ -232,11 +363,21 @@
         }
 
         .panel {
-            background: var(--panel);
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
             border: 1px solid var(--line);
-            border-radius: 14px;
-            padding: 14px;
-            box-shadow: 0 12px 26px rgba(2, 6, 23, 0.26);
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
         }
 
         .section-title {
@@ -254,7 +395,7 @@
 
         .stat-card {
             border: 1px solid var(--line);
-            background: #2b3440;
+            background: rgba(255, 255, 255, 0.04);
             border-radius: 12px;
             padding: 12px;
             position: relative;
@@ -268,21 +409,21 @@
 
         .stat-card.is-clickable:hover {
             transform: translateY(-2px);
-            border-color: #60a5fa;
-            box-shadow: 0 12px 24px rgba(2, 6, 23, 0.35);
+            border-color: #ff7e22;
+            box-shadow: 0 18px 34px rgba(8, 19, 29, 0.34);
         }
 
         .stat-icon {
             position: absolute;
             right: 10px;
             top: 10px;
-            color: #bfdbfe;
+            color: #8fd3ff;
             font-size: 24px;
         }
 
         .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-        .stat-value { font-size: 28px; font-weight: 800; color: var(--primary); }
-        .stat-sub { font-size: 11px; color: #cbd5e1; margin-top: 4px; }
+        .stat-value { font-size: 28px; font-weight: 800; color: var(--ink); }
+        .stat-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
 
         .btn-row {
             display: grid;
@@ -305,14 +446,14 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+            background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
             color: #ffffff;
         }
 
         .btn-secondary {
-            background: #eef2ff;
-            color: #1e3a8a;
-            border: 1px solid #bfdbfe;
+            background: rgba(59, 130, 246, 0.12);
+            color: #dbeafe;
+            border: 1px solid rgba(96, 165, 250, 0.24);
         }
 
 
@@ -325,7 +466,7 @@
             border: 1px solid var(--line);
             border-radius: 10px;
             padding: 10px;
-            background: #2b3440;
+            background: rgba(255, 255, 255, 0.04);
         }
 
         .mini-item.is-clickable {
@@ -335,8 +476,8 @@
 
         .mini-item.is-clickable:hover {
             transform: translateY(-2px);
-            border-color: #60a5fa;
-            box-shadow: 0 10px 20px rgba(2, 6, 23, 0.3);
+            border-color: #ff7e22;
+            box-shadow: 0 18px 34px rgba(8, 19, 29, 0.34);
         }
 
         .mini-item .left { display: grid; gap: 2px; }
@@ -347,9 +488,9 @@
             font-weight: 700;
             border-radius: 999px;
             padding: 4px 8px;
-            border: 1px solid #475569;
-            background: #1f2937;
-            color: #bfdbfe;
+            border: 1px solid rgba(96, 165, 250, 0.34);
+            background: rgba(59, 130, 246, 0.14);
+            color: #dbeafe;
             white-space: nowrap;
         }
 
@@ -359,13 +500,13 @@
         .progress-bar {
             height: 8px;
             border-radius: 999px;
-            background: #475569;
+            background: rgba(255, 255, 255, 0.08);
             overflow: hidden;
         }
         .progress-fill {
             height: 100%;
             border-radius: inherit;
-            background: linear-gradient(90deg, #1e40af, #0ea5e9);
+            background: linear-gradient(90deg, var(--cta), var(--cta-2), #60a5fa);
         }
 
         .kpi-strip {
@@ -379,21 +520,21 @@
             border-radius: 10px;
             padding: 9px;
             text-align: center;
-            background: #2b3440;
+            background: rgba(255, 255, 255, 0.04);
         }
 
-        .kpi .v { font-size: 16px; font-weight: 800; color: #0b3b8a; }
-        .kpi .k { font-size: 11px; color: #cbd5e1; margin-top: 2px; }
+        .kpi .v { font-size: 16px; font-weight: 800; color: var(--ink); }
+        .kpi .k { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
         .metric-modal {
             position: fixed;
             inset: 0;
-            background: rgba(2, 6, 23, 0.62);
-            backdrop-filter: blur(4px);
+            background: rgba(2, 6, 23, 0.78);
+            backdrop-filter: blur(10px);
             display: none;
             align-items: center;
             justify-content: center;
-            padding: 16px;
+            padding: 18px;
             z-index: 90;
         }
 
@@ -405,10 +546,21 @@
             width: min(760px, 100%);
             max-height: 88vh;
             overflow: auto;
-            border: 1px solid #334155;
-            background: #232a33;
-            border-radius: 14px;
-            box-shadow: 0 18px 34px rgba(2, 6, 23, 0.42);
+            border: 1px solid var(--line);
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border-radius: 22px;
+            box-shadow: 0 24px 48px rgba(8, 19, 29, 0.46);
+            position: relative;
+        }
+
+        .metric-modal-card::before {
+            content: "";
+            position: sticky;
+            display: block;
+            top: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+            z-index: 2;
         }
 
         .metric-modal-head {
@@ -416,63 +568,182 @@
             align-items: center;
             justify-content: space-between;
             gap: 10px;
-            padding: 14px;
-            border-bottom: 1px solid #334155;
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
         }
 
         .metric-modal-title {
-            font-size: 17px;
+            font-size: 19px;
             font-weight: 800;
-            color: #dbeafe;
+            color: #f5fbff;
         }
 
         .metric-modal-close {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            border: 1px solid #475569;
-            background: #2b3440;
-            color: #cbd5e1;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            border: 1px solid rgba(96, 165, 250, 0.24);
+            background: rgba(59, 130, 246, 0.12);
+            color: #dbeafe;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 18px;
+            font-weight: 800;
+            transition: transform .18s ease, border-color .18s ease, background .18s ease;
+        }
+
+        .metric-modal-close:hover {
+            transform: translateY(-1px);
+            border-color: rgba(255, 126, 34, 0.45);
+            background: rgba(255, 126, 34, 0.14);
         }
 
         .metric-modal-body {
+            padding: 16px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .metric-summary {
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.04);
             padding: 14px;
+            color: #f5fbff;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+
+        .metric-item {
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 14px;
+            display: grid;
+            gap: 6px;
+            transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+        }
+
+        .metric-item:hover {
+            transform: translateY(-1px);
+            border-color: rgba(255, 126, 34, 0.45);
+            box-shadow: 0 14px 28px rgba(8, 19, 29, 0.28);
+        }
+
+        .metric-item-title {
+            color: #f5fbff;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .metric-item-meta {
+            color: #9bb5cb;
+            font-size: 12px;
+            line-height: 1.55;
+        }
+
+        .listings-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.62);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1600;
+            padding: 16px;
+        }
+
+        .listings-modal.active { display: flex; }
+
+        .listings-card {
+            width: min(980px, 100%);
+            max-height: 90vh;
+            overflow: auto;
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: 0 24px 48px rgba(2, 6, 23, 0.45);
+            position: relative;
+        }
+
+        .listings-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+        }
+
+        .listings-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 18px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .listings-head h3 {
+            margin: 0;
+            color: #f5fbff;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .listings-sub {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .listings-body {
+            padding: 18px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .listing-section {
+            display: grid;
+            gap: 10px;
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0.72) 0%, rgba(15, 23, 42, 0.54) 100%);
+            box-shadow: inset 0 0 0 1px rgba(96, 165, 250, 0.04);
+        }
+
+        .listing-section-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 0 0 10px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+        }
+
+        .listing-section-title {
+            color: #dbeafe;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+        }
+
+        .listing-section-count {
+            font-size: 11px;
+            font-weight: 800;
+            color: #bfdbfe;
+            border: 1px solid rgba(96, 165, 250, 0.24);
+            background: rgba(59, 130, 246, 0.12);
+            padding: 4px 8px;
+            border-radius: 999px;
+        }
+
+        .listing-section-items {
             display: grid;
             gap: 10px;
         }
 
-        .metric-summary {
-            border: 1px solid #334155;
-            border-radius: 10px;
-            background: #1f2937;
-            padding: 10px;
-            color: #bfdbfe;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .metric-item {
-            border: 1px solid #334155;
-            border-radius: 10px;
-            background: #2b3440;
-            padding: 10px;
-            display: grid;
-            gap: 4px;
-        }
-
-        .metric-item-title {
-            color: #e2e8f0;
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .metric-item-meta {
-            color: #94a3b8;
-            font-size: 12px;
-        }
 
         .schedule-actions {
             display: grid;
@@ -482,31 +753,31 @@
         }
 
         .schedule-btn {
-            border: 1px solid #475569;
-            background: #2b3440;
+            border: 1px solid rgba(96, 165, 250, 0.24);
+            background: rgba(59, 130, 246, 0.12);
             color: #dbeafe;
-            border-radius: 10px;
-            padding: 9px 10px;
+            border-radius: 12px;
+            padding: 10px 12px;
             font-size: 12px;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
         }
 
         .schedule-btn.primary {
-            background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
-            border-color: #1d4ed8;
+            background: linear-gradient(135deg, var(--cta), var(--cta-2));
+            border-color: rgba(255, 126, 34, 0.6);
             color: #fff;
         }
 
         .boost-modal {
             position: fixed;
             inset: 0;
-            background: rgba(2, 6, 23, 0.72);
-            backdrop-filter: blur(4px);
+            background: rgba(2, 6, 23, 0.78);
+            backdrop-filter: blur(10px);
             display: none;
             align-items: center;
             justify-content: center;
-            padding: 16px;
+            padding: 18px;
             z-index: 95;
         }
 
@@ -516,42 +787,53 @@
             width: min(760px, 100%);
             max-height: 92vh;
             overflow: auto;
-            border: 1px solid #334155;
-            background: #232a33;
-            border-radius: 14px;
-            box-shadow: 0 20px 40px rgba(2, 6, 23, 0.45);
+            border: 1px solid var(--line);
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border-radius: 22px;
+            box-shadow: 0 24px 48px rgba(8, 19, 29, 0.46);
+            position: relative;
+        }
+
+        .boost-card::before {
+            content: "";
+            position: sticky;
+            display: block;
+            top: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+            z-index: 2;
         }
 
         .boost-head {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 14px;
-            border-bottom: 1px solid #334155;
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
         }
 
         .boost-title {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 800;
-            color: #dbeafe;
+            color: #f5fbff;
         }
 
         .boost-close {
-            width: 32px;
-            height: 32px;
-            border: 1px solid #475569;
-            border-radius: 8px;
-            background: #2b3440;
-            color: #cbd5e1;
+            width: 38px;
+            height: 38px;
+            border: 1px solid rgba(96, 165, 250, 0.24);
+            border-radius: 12px;
+            background: rgba(59, 130, 246, 0.12);
+            color: #dbeafe;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 18px;
+            font-weight: 800;
         }
 
         .boost-form {
-            padding: 14px;
+            padding: 16px;
             display: grid;
-            gap: 10px;
+            gap: 12px;
         }
 
         .boost-grid {
@@ -562,10 +844,10 @@
 
         .boost-input {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #475569;
-            border-radius: 10px;
-            background: #2b3440;
+            padding: 12px 14px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
             color: #e2e8f0;
             font-size: 13px;
             outline: none;
@@ -583,7 +865,213 @@
             justify-content: flex-end;
         }
 
+        .btn-small {
+            padding: 8px 14px;
+            border-radius: 0;
+            border: 1px solid rgba(255, 126, 34, 0.45);
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+            color: #16325c;
+            box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24);
+            font-weight: 800;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all .2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            justify-content: center;
+        }
+
+        .btn-small.primary,
+        .btn-small.success {
+            background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
+            border-color: rgba(255, 126, 34, 0.6);
+            color: #fff;
+            box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28);
+        }
+
+        .btn-small.secondary {
+            background: rgba(59, 130, 246, 0.12);
+            color: #dbeafe;
+            border-color: rgba(96, 165, 250, 0.24);
+            box-shadow: none;
+        }
+
+        .need-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.62);
+            z-index: 1500;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            backdrop-filter: blur(4px);
+        }
+
+        .need-modal-overlay.show { display: flex; }
+
+        .need-modal {
+            width: min(860px, 100%);
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border: 1px solid var(--line);
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: 0 24px 48px rgba(8, 19, 29, 0.28);
+            color: var(--ink);
+            position: relative;
+        }
+
+        .need-modal::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+        }
+
+        .live-modal { width: min(860px, 100%); }
+
+        .need-modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 18px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .need-modal-head h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #dbeafe;
+            margin: 0;
+        }
+
+        .need-modal-body {
+            padding: 16px 18px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .need-modal-body input,
+        .need-modal-body textarea,
+        .need-modal-body select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--line);
+            border-radius: 0;
+            font-size: 14px;
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--ink);
+        }
+
+        .need-modal-body textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .need-modal-body input:focus,
+        .need-modal-body textarea:focus,
+        .need-modal-body select:focus {
+            outline: none;
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.18);
+        }
+
+        .live-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .quick-report-grid { display: grid; gap: 10px; }
+
+        .quick-report-result {
+            border: 1px solid var(--line);
+            border-radius: 0;
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            padding: 10px 12px;
+            font-size: 12px;
+            color: var(--muted);
+            box-shadow: 0 24px 48px rgba(8, 19, 29, 0.28);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-report-result::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+        }
+
+        .need-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 0 18px 18px;
+        }
+
+        .point-item {
+            padding: 14px;
+            border-radius: 0;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .row-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .row-title {
+            color: #dbeafe;
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .row-copy {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+            margin-top: 4px;
+        }
+
+        .row-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .badge.approved {
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(96, 165, 250, 0.25);
+            color: #dbeafe;
+        }
+
+        .empty {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
         @media (max-width: 980px) {
+            .main-container { grid-template-columns: 1fr; }
+            .sidebar { position: static; }
             .layout-grid { grid-template-columns: 1fr; }
         }
 
@@ -592,45 +1080,15 @@
                 padding: 10px 12px;
                 align-items: center;
                 gap: 8px;
-                flex-direction: row;
             }
 
             .logo { font-size: 18px; white-space: nowrap; }
-            .nav {
-                flex: 1;
-                width: auto;
-                justify-content: flex-end;
-                overflow-x: auto;
-                scrollbar-width: none;
-            }
-            .nav::-webkit-scrollbar { display: none; }
-            .nav a { flex: 0 0 auto; font-size: 12px; padding: 7px 10px; }
-            .nav a:not(.home-btn-global) {
-                width: 36px;
-                height: 36px;
-                padding: 0;
-                font-size: 0;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .nav a:not(.home-btn-global) i {
-                font-size: 14px;
-                margin: 0;
-            }
-            .nav a.home-btn-global {
-                width: 36px !important;
-                height: 36px !important;
-                padding: 0 !important;
-                font-size: 0 !important;
-                gap: 0 !important;
-            }
-            .nav a .nav-label { display: none; }
-            .nav a i { display: inline-flex; }
-
-            .container { padding: 12px; gap: 10px; }
+            .main-container { padding: 12px; gap: 10px; }
+            .sidebar { padding: 12px; }
+            .sidebar-menu { grid-template-columns: 1fr 1fr; }
+            .container { padding: 0; gap: 10px; }
             .hero { grid-template-columns: 1fr; }
-            .welcome { padding: 14px; border-radius: 12px; }
+            .welcome { padding: 14px; border-radius: 0; }
             .welcome p { font-size: 13px; }
 
             .panel { padding: 10px; border-radius: 12px; }
@@ -647,25 +1105,46 @@
             .boost-grid { grid-template-columns: 1fr; }
             .boost-actions { justify-content: stretch; }
             .boost-actions button { width: 100%; }
+            .live-grid,
+            .quick-report-grid { grid-template-columns: 1fr; }
+            .need-modal-overlay { padding: 10px; align-items: flex-end; }
+            .need-modal { width: 100%; max-height: 92vh; display: grid; grid-template-rows: auto 1fr auto; }
+            .need-modal-body { overflow-y: auto; max-height: calc(92vh - 128px); }
         }
 
         @media (max-width: 480px) {
             .header { padding: 10px; }
             .logo { font-size: 17px; }
-            .nav a {
-                width: 34px;
-                height: 34px;
-                border-radius: 10px;
-                padding: 0;
-                font-size: 0;
-                justify-content: center;
-            }
-            .nav a i { font-size: 14px; margin: 0; }
-            .nav a.home-btn-global {
-                width: 34px !important;
-                height: 34px !important;
-            }
+            .sidebar-menu { grid-template-columns: 1fr; }
             .kpi-strip { grid-template-columns: 1fr; }
+        }
+        .top-navbar,
+        .btn-small,
+        .sidebar,
+        .sidebar-item,
+        .welcome-card,
+        .stat-card,
+        .profile-summary-card,
+        .status-card,
+        .highlight-card,
+        .quick-action-card,
+        .activity-card,
+        .notifications-card,
+        .offer-card,
+        .mini-stat,
+        .progress-card,
+        .chart-card,
+        .modal-card,
+        .modal-body input,
+        .modal-body select,
+        .modal-body textarea,
+        .action-link,
+        .btn-action,
+        .summary-badge,
+        .sidebar,
+        .sidebar-item,
+        .nav a {
+            border-radius: 0 !important;
         }
     </style>
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
@@ -673,38 +1152,75 @@
 <body>
     <div class="header">
         <div class="logo">NextScout</div>
-        <div class="nav">
-            <a class="home-btn-global" href="index.html" aria-label="Ana Sayfa" title="Ana Sayfa" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;"><i class="fas fa-house"></i><span class="nav-label">Ana Sayfa</span></a>
-            <a href="player-profile.html" aria-label="Profil" title="Profil"><i class="fas fa-user"></i><span class="nav-label">Profil</span></a>
-            <a href="notifications.html" aria-label="Bildirim" title="Bildirim"><i class="fas fa-bell"></i><span class="nav-label">Bildirim</span></a>
-            <a href="scout-watchlist.html" aria-label="Takip Listem" title="Takip Listem"><i class="fas fa-list-check"></i><span class="nav-label">Takip Listem</span></a>
-            <a href="professional-players.html" aria-label="Kesfet" title="Kesfet"><i class="fas fa-compass"></i><span class="nav-label">Kesfet</span></a>
-        </div>
     </div>
+    <div class="main-container">
+        <aside class="sidebar">
+            <div class="sidebar-title">Oyuncu Menusu</div>
+            <nav class="sidebar-menu">
+                <a class="sidebar-item active" href="player-dashboard.html"><i class="fas fa-house"></i><span>Dashboard</span></a>
+                <a class="sidebar-item" href="index.html"><i class="fas fa-house-user"></i><span>Ana Sayfa</span></a>
+                <button class="sidebar-item" type="button" onclick="openPlayerSuccessStoriesHub()"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></button>
+                <a class="sidebar-item" href="player-profile.html" onclick="return openOwnPlayerProfile(event)"><i class="fas fa-user-check"></i><span>Public Gorunum</span></a>
+                <a class="sidebar-item" href="player-profile.html" onclick="return openOwnPlayerProfile(event)"><i class="fas fa-user"></i><span>Profil</span></a>
+                <a class="sidebar-item" href="notifications.html"><i class="fas fa-bell"></i><span>Bildirim</span></a>
+                <a class="sidebar-item" href="review-center.html"><i class="fas fa-comments"></i><span>Yorumlar</span></a>
+                <button class="sidebar-item" type="button" onclick="openListingsModal()"><i class="fas fa-bullhorn"></i><span>Ilanlar</span></button>
+                <button class="sidebar-item" type="button" onclick="openMetricModal('videos')"><i class="fas fa-video"></i><span>Videolarim</span></button>
+                <button class="sidebar-item" type="button" onclick="openMetricModal('offers')"><i class="fas fa-handshake"></i><span>Tekliflerim</span></button>
+                <button class="sidebar-item" type="button" onclick="openMyTrialsModal()"><i class="fas fa-clipboard-list"></i><span>Denemelerim</span></button>
+                <a class="sidebar-item" href="trial-center.html"><i class="fas fa-tower-observation"></i><span>Deneme Merkezi</span></a>
+                <a class="sidebar-item" href="statistics.html"><i class="fas fa-chart-line"></i><span>Istatistikler</span></a>
+                <a class="sidebar-item" href="favorites.html"><i class="fas fa-star"></i><span>Favorilerim</span></a>
+                <a class="sidebar-item" href="scout-watchlist.html"><i class="fas fa-list-check"></i><span>Takip Listem</span></a>
+                <a class="sidebar-item" href="player-match-schedule.html"><i class="fas fa-calendar-days"></i><span>Maç Takvimim</span></a>
+                <a class="sidebar-item" href="professional-players.html?player_view=discover"><i class="fas fa-compass"></i><span>Kesfet</span></a>
+                <a class="sidebar-item" href="help.html"><i class="fas fa-circle-question"></i><span>Yardim</span></a>
+                <a class="sidebar-item" href="settings.html"><i class="fas fa-gear"></i><span>Ayarlar</span></a>
+                <a class="sidebar-item" href="index.html" onclick="try { localStorage.removeItem('nextscout_user'); localStorage.removeItem('nextscout_token'); localStorage.removeItem('authToken'); localStorage.removeItem('token'); sessionStorage.removeItem('nextscout_skip_auth_modal_once'); } catch(e) {}"><i class="fas fa-right-from-bracket"></i><span>Cikis</span></a>
+            </nav>
+        </aside>
 
-    <div class="container">
+        <div class="container">
         <section class="hero">
             <div class="welcome">
                 <div class="hero-kicker">
                     <i class="fas fa-bullseye"></i>
-                    <span>Crowdsourced Scout</span>
+                    <span>Crowdsourced player</span>
                 </div>
-                <h2 class="hero-title">Scout operasyonunu buradan yonet.</h2>
-                <p class="hero-sub" id="heroGreeting">Scout akisinda once oyuncu bildir, sonra ihbarlarini ve market hareketini yonet.</p>
+                <h2 class="hero-title">Oyuncu kariyerini buradan yonet.</h2>
+                <p class="hero-sub" id="heroGreeting">Profilini guclendir, videolarini sergile ve scoutlarla kurdugun temasi tek panelden yonet.</p>
+                <div class="hero-inline-actions">
+                    <button type="button" class="btn btn-secondary" onclick="openListingsModal()"><i class="fas fa-bullhorn"></i> Ilanlar</button>
+                    <button type="button" class="btn btn-secondary" onclick="openTodayMatchModal()"><i class="fas fa-tower-broadcast"></i> Bugun Macim Var</button>
+                </div>
                 <div class="hero-points">
-                    <span class="pill"><i class="fas fa-circle-check"></i><span>Dogrulanan kesif puan kazandirir</span></span>
-                    <span class="pill"><i class="fas fa-handshake-angle"></i><span>Trial adimlari odul baglar</span></span>
+                    <span class="pill"><i class="fas fa-circle-check"></i><span>Guncel profil daha fazla scout ilgisi ceker</span></span>
+                    <span class="pill"><i class="fas fa-handshake-angle"></i><span>Trial ve teklif surecini tek yerden takip et</span></span>
                 </div>
             </div>
 
             <aside class="panel hero-side">
-                <h3 class="panel-title">Scout Durumu</h3>
-                <p class="panel-sub">Guncel kullanici ve hesap sinyalleri tek panelde.</p>
+                <h3 class="panel-title">Oyuncu Durumu</h3>
+                <p class="panel-sub">Guncel hesap ve profil sinyalleri tek panelde.</p>
                 <div class="status-stack">
                     <div class="status-row"><span>Kullanici</span><strong id="heroStatusUser">Misafir</strong></div>
                     <div class="status-row"><span>Rol</span><strong>Oyuncu</strong></div>
-                    <div class="status-row"><span>Scout Puani</span><strong id="heroScoutScore">4.7</strong></div>
-                    <div class="status-row"><span>Profil Durumu</span><strong id="heroProfileStatus">Guncelleniyor</strong></div>
+                    <div class="status-row"><span>Scout Puani</span><strong>4.7</strong></div>
+                    <div class="status-row"><span>Profil Durumu</span><strong>Tamamlanıyor</strong></div>
+                </div>
+            </aside>
+
+            <aside class="panel hero-opportunity-panel">
+                <div>
+                    <h3 class="panel-title">Kulup Talepleri</h3>
+                    <p class="panel-sub">Kulup ihtiyaclari ile deneme ve idman ilanlarini hero alanindan takip et.</p>
+                </div>
+                <div class="hero-opportunity-tabs">
+                    <button type="button" class="hero-opportunity-tab active" data-hero-opportunity-tab="needs" onclick="openHeroOpportunityTab('needs')">Ihtiyaclar</button>
+                    <button type="button" class="hero-opportunity-tab" data-hero-opportunity-tab="events" onclick="openHeroOpportunityTab('events')">Deneme / Idman</button>
+                </div>
+                <div class="hero-opportunity-list" id="heroOpportunityList">
+                    <div class="hero-opportunity-empty">Kulup talepleri yukleniyor...</div>
                 </div>
             </aside>
         </section>
@@ -787,8 +1303,8 @@
             <div class="section-title">Hizli Islemler</div>
             <div class="btn-row">
                     <a href="profile-edit.html" class="btn btn-primary"><i class="fas fa-edit"></i> Profili Düzenle</a>
-                <a href="player-profile.html#stats" class="btn btn-secondary"><i class="fas fa-chart-line"></i> Istatistikler</a>
-                <a href="player-profile.html#videos" class="btn btn-primary"><i class="fas fa-upload"></i> Video Yukle</a>
+                <a href="statistics.html" class="btn btn-secondary"><i class="fas fa-chart-line"></i> Istatistikler</a>
+                <a href="notifications.html" class="btn btn-primary"><i class="fas fa-comments"></i> Iletisime Gec</a>
                 <a href="look-alike.html" class="btn btn-secondary"><i class="fas fa-clone"></i> Look-alike</a>
                 <button type="button" class="btn btn-primary" onclick="openBoostModal()"><i class="fas fa-bolt"></i> Beni Kesfedin</button>
             </div>
@@ -853,6 +1369,7 @@
                 </div>
             </div>
         </section>
+        </div>
     </div>
     <div class="metric-modal" id="metricModal" onclick="if(event.target===this) closeMetricModal()">
         <div class="metric-modal-card" onclick="event.stopPropagation()">
@@ -896,6 +1413,119 @@
             </form>
         </div>
     </div>
+
+    <div class="listings-modal" id="listingsModal" onclick="if(event.target===this) closeListingsModal()">
+        <div class="listings-card" onclick="event.stopPropagation()">
+            <div class="listings-head">
+                <div>
+                    <h3>Ilanlar</h3>
+                    <div class="listings-sub" id="listingsModalSummary">Menajer, antrenor ve kulup kaynakli ilanlar burada listelenir.</div>
+                </div>
+                <button class="metric-modal-close" type="button" onclick="closeListingsModal()">×</button>
+            </div>
+            <div class="listings-body" id="listingsModalBody"></div>
+        </div>
+    </div>
+
+    <div class="need-modal-overlay" id="todayMatchOverlay" onclick="if(event.target.id==='todayMatchOverlay'){closeTodayMatchModal();}">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+            <div class="need-modal-head">
+                <h3>Bugun Macim Var</h3>
+                <button class="btn-small secondary" type="button" onclick="closeTodayMatchModal()">Kapat</button>
+            </div>
+            <form id="todayMatchForm">
+                <div class="need-modal-body">
+                    <input id="todayMatchName" type="text" placeholder="Mac adi (or: Besiktas U19 - Kasimpasa U19)" required>
+                    <div class="live-grid">
+                        <input id="todayMatchLeague" type="text" placeholder="Lig / Organizasyon">
+                        <input id="todayMatchLocation" type="text" placeholder="Saha / Konum">
+                    </div>
+                    <div class="live-grid">
+                        <input id="todayMatchDate" type="datetime-local" required>
+                        <input id="todayMatchFocus" type="text" placeholder="Odak (or: Sol kanat, 10 numara)">
+                    </div>
+                    <input id="todayMatchStream" type="url" placeholder="Yayin linki (opsiyonel)">
+                    <textarea id="todayMatchNote" placeholder="Scout ve kulupler icin kisa not: saat, forma rengi, oynadigin pozisyon vb."></textarea>
+                    <div class="quick-report-result" id="todayMatchResult">Mac bilgini kaydettiginde Canli Mac Bildirimleri listesinde gorunur.</div>
+                </div>
+                <div class="need-modal-actions">
+                    <button class="btn-small secondary" type="button" onclick="closeTodayMatchModal()">Vazgec</button>
+                    <button class="btn-small primary" type="submit">Yayina Al</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="need-modal-overlay" id="playerSuccessStoriesOverlay" onclick="if(event.target.id==='playerSuccessStoriesOverlay'){closePlayerSuccessStoriesHub();}">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+            <div class="need-modal-head">
+                <h3>Basari Hikayeleri</h3>
+                <button class="btn-small secondary" type="button" onclick="closePlayerSuccessStoriesHub()">Kapat</button>
+            </div>
+            <div class="need-modal-body">
+                <div class="quick-report-result" style="margin-bottom:12px;">Basari hikayesi gonder veya topluluktaki hikayeleri oku.</div>
+                <div class="quick-report-grid" style="grid-template-columns:repeat(2,1fr); margin-bottom:0;">
+                    <button class="btn-small secondary" type="button" style="justify-content:flex-start; min-height:96px;" onclick="openPlayerSuccessStorySubmitModal()">
+                        <i class="fas fa-paper-plane"></i><span>Gonder</span>
+                    </button>
+                    <button class="btn-small secondary" type="button" style="justify-content:flex-start; min-height:96px;" onclick="openPlayerSuccessStoriesReadModal()">
+                        <i class="fas fa-book-open"></i><span>Oku</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="need-modal-overlay" id="playerSuccessStorySubmitOverlay" onclick="if(event.target.id==='playerSuccessStorySubmitOverlay'){closePlayerSuccessStorySubmitModal();}">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+            <div class="need-modal-head">
+                <h3>Basari Hikayesi Gonder</h3>
+                <button class="btn-small secondary" type="button" onclick="closePlayerSuccessStorySubmitModal()">Kapat</button>
+            </div>
+            <form id="playerSuccessStoryForm">
+                <div class="need-modal-body">
+                    <input id="playerSuccessStoryFullName" name="full_name" placeholder="Ad Soyad" required maxlength="150">
+                    <div class="live-grid">
+                        <select id="playerSuccessStorySport" name="sport" required>
+                            <option value="">Spor Sec</option>
+                            <option value="Futbol">Futbol</option>
+                            <option value="Basketbol">Basketbol</option>
+                            <option value="Voleybol">Voleybol</option>
+                        </select>
+                        <input id="playerSuccessStoryOldClub" name="old_club" placeholder="Eski Kulup" maxlength="160">
+                    </div>
+                    <input id="playerSuccessStoryNewClub" name="new_club" placeholder="Yeni Kulup" maxlength="160" required>
+                    <textarea id="playerSuccessStoryText" name="story_text" placeholder="Basari hikayeni yaz..." required maxlength="1200"></textarea>
+                    <input id="playerSuccessStoryImage" name="image_url" type="url" placeholder="Gorsel linki (opsiyonel)">
+                    <div class="quick-report-result" id="playerSuccessStoryNotice">Yeni basari hikayesini dashboard icinden gonder.</div>
+                </div>
+                <div class="need-modal-actions">
+                    <button class="btn-small secondary" type="button" onclick="closePlayerSuccessStorySubmitModal()">Vazgec</button>
+                    <button class="btn-small primary" type="submit">Gonder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="need-modal-overlay" id="playerSuccessStoriesReadOverlay" onclick="if(event.target.id==='playerSuccessStoriesReadOverlay'){closePlayerSuccessStoriesReadModal();}">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+            <div class="need-modal-head">
+                <h3>Basari Hikayelerini Oku</h3>
+                <button class="btn-small secondary" type="button" onclick="closePlayerSuccessStoriesReadModal()">Kapat</button>
+            </div>
+            <div class="need-modal-body">
+                <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
+                    <button class="btn-small secondary" type="button" onclick="closePlayerSuccessStoriesReadModal(); openPlayerSuccessStoriesHub()"><i class="fas fa-arrow-left"></i><span>Geri</span></button>
+                    <button class="btn-small secondary" type="button" onclick="loadPlayerSuccessStories()"><i class="fas fa-arrows-rotate"></i><span>Yenile</span></button>
+                </div>
+                <div class="quick-report-result" id="playerSuccessStoriesStatus">Topluluktan gelen son basari hikayelerini burada oku.</div>
+                <div id="playerSuccessStoriesList" style="display:grid; gap:10px; margin-top:14px;">
+                    <div class="empty">Basari hikayeleri yukleniyor...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/api-base.js"></script>
     <script src="assets/js/core-stability.js"></script>
     <script>
         const dashboardApiState = {
@@ -906,6 +1536,7 @@
             incomingMessages: [],
             offers: [],
             notifications: [],
+            clubNeeds: [],
             latestNeeds: [],
             weeklyTrends: [],
             weeklyDigest: null,
@@ -916,6 +1547,30 @@
 
         function normalizeText(value) {
             return (value || '').toString().trim().toLowerCase();
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function formatDate(value) {
+            if (!value) return '-';
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return String(value);
+            return new Intl.DateTimeFormat('tr-TR', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+            }).format(date);
+        }
+
+        function getToken() {
+            return (localStorage.getItem('nextscout_token') || '').trim();
         }
 
         function getApiBaseUrl() {
@@ -961,28 +1616,48 @@
             }
         }
 
-        function getPlayerLikeCount(playerName) {
-            const key = normalizeText(playerName);
-            if (!key) return 0;
+        function getCurrentPlayerUserIdFromStorage() {
             try {
-                const raw = localStorage.getItem('nextscout_player_likes');
-                const store = raw ? JSON.parse(raw) : {};
-                return Number(store?.[key] || 0);
+                const raw = localStorage.getItem('nextscout_user');
+                const user = raw ? JSON.parse(raw) : null;
+                const id = Number(user?.id);
+                return Number.isFinite(id) ? id : null;
             } catch (e) {
-                return 0;
+                return null;
             }
         }
 
-        function getIncomingMessageCount(playerName) {
-            const key = normalizeText(playerName);
-            if (!key) return 0;
-            try {
-                const rows = JSON.parse(localStorage.getItem('nextscout_messages') || '[]');
-                if (!Array.isArray(rows)) return 0;
-                return rows.filter((row) => normalizeText(row?.box) === 'inbox' && normalizeText(row?.to) === key).length;
-            } catch (e) {
-                return 0;
+        function openOwnPlayerProfile(event) {
+            if (event) event.preventDefault();
+            const userId = getCurrentPlayerUserIdFromStorage();
+            if (userId) {
+                window.location.href = `player-profile.html?user_id=${encodeURIComponent(userId)}`;
+                return false;
             }
+            resolveCurrentUserId()
+                .then((resolvedId) => {
+                    if (resolvedId) {
+                        window.location.href = `player-profile.html?user_id=${encodeURIComponent(resolvedId)}`;
+                        return;
+                    }
+                    window.nsNotify?.error
+                        ? window.nsNotify.error('Oyuncu profili icin gecerli kullanici bulunamadi.')
+                        : nsnsAlert('Oyuncu profili icin gecerli kullanici bulunamadi.');
+                })
+                .catch(() => {
+                    window.nsNotify?.error
+                        ? window.nsNotify.error('Oyuncu profili acilamadi.')
+                        : nsnsAlert('Oyuncu profili acilamadi.');
+                });
+            return false;
+        }
+
+        function getPlayerLikeCount(playerName) {
+            return 0;
+        }
+
+        function getIncomingMessageCount(playerName) {
+            return 0;
         }
 
         function readArrayStorage(key) {
@@ -995,45 +1670,19 @@
         }
 
         function readLocalBoostPackages() {
-            try {
-                const raw = JSON.parse(localStorage.getItem('nextscout_boost_packages') || '[]');
-                return Array.isArray(raw) ? raw : [];
-            } catch (error) {
-                return [];
-            }
+            return [];
         }
 
         function getProfileViewsCount(playerName) {
-            const key = normalizeText(playerName);
-            const fallback = 1247;
-            if (!key) return fallback;
-            try {
-                const raw = JSON.parse(localStorage.getItem('nextscout_profile_views') || '{}');
-                if (typeof raw === 'number') return raw;
-                if (raw && typeof raw === 'object') return Number(raw[key] || fallback);
-                return fallback;
-            } catch (e) {
-                return fallback;
-            }
+            return 0;
         }
 
         function getVideoCount() {
-            const videos = readArrayStorage('playerVideos');
-            return videos.length || 8;
+            return 0;
         }
 
         function getTransferOfferCount(playerName) {
-            const key = normalizeText(playerName);
-            const rows = readArrayStorage('nextscout_messages');
-            const matches = rows.filter((row) => {
-                const boxOk = normalizeText(row?.box) === 'inbox';
-                const toOk = !key || normalizeText(row?.to) === key;
-                const subject = normalizeText(row?.subject);
-                const body = normalizeText(row?.body);
-                const offerLike = /teklif|transfer|deneme|sozlesme/.test(subject) || /teklif|transfer|deneme|sozlesme/.test(body);
-                return boxOk && toOk && offerLike;
-            });
-            return matches.length || 3;
+            return 0;
         }
 
         async function resolveCurrentUserId() {
@@ -1104,19 +1753,22 @@
 
         async function loadLatestApiHighlights() {
             const apiBase = getApiBaseUrl();
-            const [needsPayload, trendingPayload, digestPayload, eventsPayload] = await Promise.all([
+            const [clubNeedsPayload, needsPayload, trendingPayload, digestPayload, eventsPayload] = await Promise.all([
+                fetchJsonSafe(`${apiBase}/club-needs`),
                 fetchJsonSafe(`${apiBase}/discovery/manager-needs`),
                 fetchJsonSafe(`${apiBase}/trending/week`),
                 fetchJsonSafe(`${apiBase}/discovery/weekly-digest`),
                 fetchJsonSafe(`${apiBase}/community-events`),
             ]);
 
+            dashboardApiState.clubNeeds = parseAnyRows(clubNeedsPayload);
             dashboardApiState.latestNeeds = parseAnyRows(needsPayload);
             dashboardApiState.weeklyTrends = parseAnyRows(trendingPayload);
             dashboardApiState.weeklyDigest = digestPayload?.data || digestPayload || null;
             dashboardApiState.communityEvents = parseAnyRows(eventsPayload);
+            renderHeroOpportunities();
 
-            const need = dashboardApiState.latestNeeds[0] || null;
+            const need = dashboardApiState.clubNeeds[0] || dashboardApiState.latestNeeds[0] || null;
             const trend = dashboardApiState.weeklyTrends[0] || null;
 
             const newTitleEl = document.getElementById('latestNewTitle');
@@ -1147,6 +1799,46 @@
             if (trend && trendTagEl) {
                 trendTagEl.textContent = 'Trend';
             }
+        }
+
+        function getHeroOpportunityRows(tab = 'needs') {
+            if (tab === 'events') {
+                return (Array.isArray(dashboardApiState.communityEvents) ? dashboardApiState.communityEvents : [])
+                    .slice(0, 3)
+                    .map((row) => ({
+                        title: row?.title || row?.event_name || 'Deneme veya idman ilani',
+                        meta: [row?.city || row?.location || 'Konum yok', row?.start_at || row?.event_date || null, row?.organizer_name || row?.club_name || null].filter(Boolean).join(' • ')
+                    }));
+            }
+
+            return (Array.isArray(dashboardApiState.clubNeeds) ? dashboardApiState.clubNeeds : [])
+                .slice(0, 3)
+                .map((row) => ({
+                    title: row?.title || row?.position || 'Kulup ihtiyaci',
+                    meta: [row?.team_name || row?.club_name || row?.club || 'Kulup', row?.city || null, row?.created_at || null].filter(Boolean).join(' • ')
+                }));
+        }
+
+        function renderHeroOpportunities(tab = 'needs') {
+            const root = document.getElementById('heroOpportunityList');
+            if (!root) return;
+            const rows = getHeroOpportunityRows(tab);
+            root.innerHTML = rows.length
+                ? rows.map((item) => `
+                    <article class="hero-opportunity-item">
+                        <strong>${escapeHtml(item.title || 'Firsat')}</strong>
+                        <span>${escapeHtml(item.meta || 'Detay bekleniyor')}</span>
+                    </article>
+                `).join('')
+                : `<div class="hero-opportunity-empty">${tab === 'events' ? 'Su anda aktif deneme veya idman ilani yok.' : 'Su anda aktif kulup ihtiyaci yok.'}</div>`;
+
+            document.querySelectorAll('[data-hero-opportunity-tab]').forEach((button) => {
+                button.classList.toggle('active', button.getAttribute('data-hero-opportunity-tab') === tab);
+            });
+        }
+
+        function openHeroOpportunityTab(tab) {
+            renderHeroOpportunities(tab === 'events' ? 'events' : 'needs');
         }
 
         function formatTryAmount(value) {
@@ -1194,8 +1886,7 @@
         async function loadBoostPackages() {
             const payload = await fetchJsonSafe(`${getApiBaseUrl()}/billing/boost-packages`);
             const packages = Array.isArray(payload?.data) ? payload.data : [];
-            const sourceRows = packages.length ? packages : readLocalBoostPackages();
-            dashboardApiState.boostPackages = sourceRows.filter((item) => item && item.active !== false);
+            dashboardApiState.boostPackages = packages.filter((item) => item && item.active !== false);
             renderBoostPackageOptions();
         }
 
@@ -1222,6 +1913,153 @@
             if (!modal) return;
             modal.classList.remove('active');
             document.body.style.overflow = 'auto';
+        }
+
+        function openPlayerSuccessStoriesHub() {
+            document.getElementById('playerSuccessStoriesOverlay')?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePlayerSuccessStoriesHub() {
+            document.getElementById('playerSuccessStoriesOverlay')?.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function openPlayerSuccessStorySubmitModal() {
+            closePlayerSuccessStoriesHub();
+            try {
+                const raw = localStorage.getItem('nextscout_user');
+                const user = raw ? JSON.parse(raw) : null;
+                const input = document.getElementById('playerSuccessStoryFullName');
+                if (input && !input.value && user?.name) input.value = String(user.name);
+            } catch (error) {}
+            document.getElementById('playerSuccessStorySubmitOverlay')?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePlayerSuccessStorySubmitModal() {
+            document.getElementById('playerSuccessStorySubmitOverlay')?.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function openPlayerSuccessStoriesReadModal() {
+            closePlayerSuccessStoriesHub();
+            document.getElementById('playerSuccessStoriesReadOverlay')?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            loadPlayerSuccessStories();
+        }
+
+        function closePlayerSuccessStoriesReadModal() {
+            document.getElementById('playerSuccessStoriesReadOverlay')?.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        async function fetchPlayerSuccessStories() {
+            const response = await fetch(`${getApiBaseUrl()}/success-stories?limit=8`, {
+                headers: { Accept: 'application/json' },
+                cache: 'no-store',
+                credentials: 'same-origin',
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok || data.ok === false) {
+                throw new Error(data.message || 'Basari hikayeleri alinamadi.');
+            }
+            return data;
+        }
+
+        function renderPlayerSuccessStories(payload) {
+            const root = document.getElementById('playerSuccessStoriesList');
+            const badge = document.getElementById('playerSuccessStoriesStatus');
+            const rows = Array.isArray(payload?.data) ? payload.data.slice(0, 8) : [];
+            if (!root || !badge) return;
+
+            if (!rows.length) {
+                root.innerHTML = '<div class="empty">Basari hikayesi bulunmuyor.</div>';
+                badge.textContent = 'Bos';
+                return;
+            }
+
+            root.innerHTML = rows.map((item) => `
+                <article class="point-item">
+                    <div class="row-top">
+                        <div>
+                            <div class="row-title">${escapeHtml(item.full_name || 'Basari Hikayesi')}</div>
+                            <div class="row-copy">${escapeHtml(item.story_text || 'Hikaye metni yok.')}</div>
+                        </div>
+                        <span class="badge approved">${escapeHtml(item.sport || '-')}</span>
+                    </div>
+                    <div class="row-meta">
+                        <span><i class="fas fa-building"></i> ${escapeHtml(item.old_club || '-')} -> ${escapeHtml(item.new_club || '-')}</span>
+                        <span><i class="fas fa-calendar"></i> ${formatDate(item.created_at)}</span>
+                    </div>
+                </article>
+            `).join('');
+
+            badge.textContent = `${rows.length} kayit`;
+        }
+
+        async function loadPlayerSuccessStories() {
+            const root = document.getElementById('playerSuccessStoriesList');
+            const badge = document.getElementById('playerSuccessStoriesStatus');
+            if (!root || !badge) return;
+
+            badge.textContent = 'Yukleniyor';
+            root.innerHTML = '<div class="empty">Basari hikayeleri yukleniyor...</div>';
+
+            try {
+                const payload = await fetchPlayerSuccessStories();
+                renderPlayerSuccessStories(payload);
+            } catch (error) {
+                badge.textContent = 'Hata';
+                root.innerHTML = `<div class="empty">${escapeHtml(error.message || 'Basari hikayeleri yuklenemedi.')}</div>`;
+            }
+        }
+
+        async function submitPlayerSuccessStoryForm(event) {
+            event.preventDefault();
+            const form = event.currentTarget;
+            const root = document.getElementById('playerSuccessStoryNotice');
+            const token = getToken();
+            if (!token) {
+                if (root) root.textContent = 'Hikaye gondermek icin giris yapman gerekiyor.';
+                return;
+            }
+
+            const formData = new FormData(form);
+            const payload = {
+                full_name: (formData.get('full_name') || '').toString().trim(),
+                sport: (formData.get('sport') || '').toString().trim(),
+                old_club: (formData.get('old_club') || '').toString().trim(),
+                new_club: (formData.get('new_club') || '').toString().trim(),
+                story_text: (formData.get('story_text') || '').toString().trim(),
+                image_url: (formData.get('image_url') || '').toString().trim(),
+            };
+
+            if (!payload.full_name || !payload.sport || !payload.new_club || !payload.story_text) {
+                if (root) root.textContent = 'Ad, spor, yeni kulup ve hikaye zorunlu.';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/success-stories`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(payload),
+                });
+                const result = await response.json().catch(() => ({}));
+                if (!response.ok || !result?.ok) {
+                    throw new Error(result?.message || 'Hikaye gonderilemedi.');
+                }
+                if (root) root.textContent = 'Hikayen alindi. Admin onayindan sonra yayinlanacak.';
+                form.reset();
+                closePlayerSuccessStorySubmitModal();
+            } catch (error) {
+                if (root) root.textContent = error?.message || 'Hikaye gonderilemedi.';
+            }
         }
 
         async function submitBoostForm(event) {
@@ -1267,18 +2105,6 @@
                 if (!res.ok) {
                     throw new Error(body?.message || `HTTP ${res.status}`);
                 }
-
-                try {
-                    localStorage.setItem('nextscout_last_boost_request', JSON.stringify({
-                        name,
-                        position,
-                        city,
-                        summary,
-                        package_id: Number(packageId),
-                        package_name: packageMeta?.name || '',
-                        created_at: new Date().toISOString(),
-                    }));
-                } catch (storageError) {}
 
                 if (body?.data?.payment_page_url) {
                     window.location.href = body.data.payment_page_url;
@@ -1381,7 +2207,7 @@
 
             titleEl.textContent = data.title;
             summaryEl.textContent = data.summary;
-            listEl.innerHTML = data.items.map((item) => `
+            listEl.innerHTML = data.items.map((item, index) => `
                 <article class="metric-item">
                     <div class="metric-item-title">${item.title}</div>
                     <div class="metric-item-meta">${item.meta}</div>
@@ -1390,6 +2216,178 @@
 
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
+        }
+
+        function getPlayerListingRows() {
+            const managerNeeds = Array.isArray(dashboardApiState.latestNeeds) ? dashboardApiState.latestNeeds.slice(0, 4) : [];
+            const communityEvents = Array.isArray(dashboardApiState.communityEvents) ? dashboardApiState.communityEvents.slice(0, 4) : [];
+            const inbound = Array.isArray(dashboardApiState.incomingMessages) ? dashboardApiState.incomingMessages : [];
+            const inboundListings = inbound
+                .filter((row) => {
+                    const haystack = normalizeText(`${row?.subject || ''} ${row?.message || ''} ${row?.type || ''}`);
+                    return /ilan|trial|deneme|idman|kamp|secme|seçme|etkinlik|camp|showcase/.test(haystack);
+                })
+                .slice(0, 4);
+
+            const grouped = {
+                manager: [],
+                coach: [],
+                club: [],
+            };
+
+            managerNeeds.forEach((row) => {
+                grouped.manager.push({
+                    title: row?.title || row?.position || 'Menajer ilani',
+                    meta: [row?.club_name || row?.club || 'Kulup', row?.city || null, row?.created_at || null].filter(Boolean).join(' • '),
+                });
+            });
+
+            communityEvents.forEach((row) => {
+                const owner = normalizeText(`${row?.organizer_name || ''} ${row?.club_name || ''} ${row?.host_type || ''} ${row?.source || ''}`);
+                const targetGroup = /coach|antrenor|trainer/.test(owner) ? 'coach' : 'club';
+                grouped[targetGroup].push({
+                    title: row?.title || row?.event_name || 'Deneme veya etkinlik',
+                    meta: [row?.city || row?.location || 'Konum yok', row?.start_at || row?.event_date || null, row?.organizer_name || row?.club_name || null].filter(Boolean).join(' • '),
+                });
+            });
+
+            inboundListings.forEach((row) => {
+                const owner = normalizeText(`${row?.from_name || ''} ${row?.sender_name || ''} ${row?.subject || ''} ${row?.message || ''}`);
+                const targetGroup = /coach|antrenor|trainer/.test(owner)
+                    ? 'coach'
+                    : (/manager|menajer/.test(owner) ? 'manager' : 'club');
+                grouped[targetGroup].push({
+                    title: row?.subject || 'Ilan mesaji',
+                    meta: [row?.from_name || row?.sender_name || 'Gonderen', row?.created_at || row?.time || null, row?.message || null].filter(Boolean).join(' • '),
+                });
+            });
+
+            return grouped;
+        }
+
+        function openListingsModal() {
+            const grouped = getPlayerListingRows();
+            const sections = [
+                { key: 'manager', label: 'Menajerden Gelen Ilanlar' },
+                { key: 'coach', label: 'Antrenorden Gelen Ilanlar' },
+                { key: 'club', label: 'Kulupten Gelen Ilanlar' },
+            ];
+            const total = sections.reduce((sum, section) => sum + (grouped[section.key]?.length || 0), 0);
+            const summaryEl = document.getElementById('listingsModalSummary');
+            const listEl = document.getElementById('listingsModalBody');
+            const modal = document.getElementById('listingsModal');
+            if (!summaryEl || !listEl || !modal) return;
+
+            summaryEl.textContent = total
+                ? `Menajer, antrenor ve kulup kaynakli ${total} aktif ilan veya firsat kaydi.`
+                : 'Su anda goruntulenecek aktif ilan bulunmuyor.';
+
+            listEl.innerHTML = total
+                ? sections.map((section) => {
+                    const rows = grouped[section.key] || [];
+                    return `
+                        <section class="listing-section">
+                            <div class="listing-section-head">
+                                <div class="listing-section-title">${section.label}</div>
+                                <div class="listing-section-count">${rows.length} kayit</div>
+                            </div>
+                            <div class="listing-section-items">
+                                ${rows.length
+                                    ? rows.map((item) => `
+                                        <article class="metric-item">
+                                            <div class="metric-item-title">${escapeHtml(item.title)}</div>
+                                            <div class="metric-item-meta">${escapeHtml(item.meta || 'Detay bekleniyor')}</div>
+                                        </article>
+                                    `).join('')
+                                    : '<div class="metric-item-meta">Bu kategoride aktif ilan yok.</div>'}
+                            </div>
+                        </section>
+                    `;
+                }).join('')
+                : '<div class="metric-item-meta">Yeni ilan geldiginde burada goreceksin.</div>';
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeListingsModal() {
+            const modal = document.getElementById('listingsModal');
+            if (!modal) return;
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function openTodayMatchModal() {
+            const modal = document.getElementById('todayMatchOverlay');
+            const result = document.getElementById('todayMatchResult');
+            if (result) result.textContent = 'Mac bilgini kaydettiginde Canli Mac Bildirimleri listesinde gorunur.';
+            modal?.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTodayMatchModal() {
+            document.getElementById('todayMatchOverlay')?.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        async function submitTodayMatchForm(event) {
+            event.preventDefault();
+            const token = getToken();
+            const result = document.getElementById('todayMatchResult');
+            if (!token || token === 'local-session-token') {
+                if (result) result.textContent = 'Mac bilgisi girmek icin giris yapman gerekiyor.';
+                return;
+            }
+
+            const matchName = String(document.getElementById('todayMatchName')?.value || '').trim();
+            const league = String(document.getElementById('todayMatchLeague')?.value || '').trim();
+            const location = String(document.getElementById('todayMatchLocation')?.value || '').trim();
+            const matchDate = String(document.getElementById('todayMatchDate')?.value || '').trim();
+            const focus = String(document.getElementById('todayMatchFocus')?.value || '').trim();
+            const streamUrl = String(document.getElementById('todayMatchStream')?.value || '').trim();
+            const note = String(document.getElementById('todayMatchNote')?.value || '').trim();
+            const currentPlayerName = getCurrentPlayerName();
+            const currentPlayerUserId = getCurrentPlayerUserIdFromStorage();
+
+            if (!matchName || !matchDate) {
+                if (result) result.textContent = 'Mac adi ve tarih zorunlu.';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/live-matches`, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        match_name: matchName,
+                        league: league || null,
+                        location: location || null,
+                        sport: 'football',
+                        focus: focus || 'Oyuncu bildirimi',
+                        stream_url: streamUrl || null,
+                        note: note || null,
+                        source_role: 'player',
+                        source_name: currentPlayerName || null,
+                        source_user_id: currentPlayerUserId || null,
+                        match_date: new Date(matchDate).toISOString(),
+                    }),
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    const firstError = payload?.errors ? Object.values(payload.errors)?.[0]?.[0] : '';
+                    throw new Error(firstError || payload?.message || 'Canli mac kaydedilemedi.');
+                }
+                if (result) result.textContent = 'Mac bilgin kaydedildi. Canli Mac Bildirimleri listesinde gorunur.';
+                event.target.reset();
+                window.nsNotify?.success ? window.nsNotify.success('Mac bilgin kaydedildi.') : null;
+                setTimeout(() => closeTodayMatchModal(), 900);
+            } catch (error) {
+                if (result) result.textContent = error?.message || 'Canli mac kaydedilemedi.';
+            }
         }
 
         function openLatestItemModal(type) {
@@ -1452,6 +2450,127 @@
             `).join('');
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
+        }
+
+        function parseScheduleDate(value) {
+            const raw = String(value || '').trim();
+            if (!raw) return null;
+            const direct = new Date(raw);
+            if (!Number.isNaN(direct.getTime())) return direct;
+            const normalized = raw
+                .replace(/[•]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+            const fallback = new Date(normalized);
+            return Number.isNaN(fallback.getTime()) ? null : fallback;
+        }
+
+        async function savePlayerSchedule(schedule, noteText = '') {
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            if (!token || token === 'local-session-token') {
+                throw new Error('Takvim kaydi icin giris yapman gerekiyor.');
+            }
+
+            const matchDate = parseScheduleDate(schedule?.desc);
+            if (!matchDate) {
+                throw new Error('Bu etkinlik icin gecerli tarih bulunamadi.');
+            }
+
+            const payload = {
+                match_title: schedule?.title || 'Etkinlik',
+                team_name: schedule?.organizer || 'NextScout',
+                opponent_name: null,
+                position: schedule?.type === 'join' ? 'trial' : 'reminder',
+                match_date: matchDate.toISOString(),
+                city: schedule?.location || 'Istanbul',
+                district: null,
+                venue: schedule?.location || '',
+                is_public: false,
+                notes: noteText || schedule?.capacity || '',
+            };
+
+            const response = await fetch(`${getApiBaseUrl()}/player/match-schedules`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(payload),
+            });
+            const body = await response.json().catch(() => ({}));
+            if (!response.ok || body?.ok === false) {
+                throw new Error(body?.message || 'Takvim kaydi olusturulamadi.');
+            }
+            return body?.data || null;
+        }
+
+        async function loadUpcomingSchedulesFromApi() {
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            if (!token || token === 'local-session-token') return [];
+
+            const response = await fetch(`${getApiBaseUrl()}/player/match-schedules/my`, {
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const body = await response.json().catch(() => ({}));
+            if (!response.ok || body?.ok === false) return [];
+            return Array.isArray(body?.data) ? body.data : [];
+        }
+
+        async function openMyTrialsModal() {
+            const titleEl = document.getElementById('metricModalTitle');
+            const summaryEl = document.getElementById('metricModalSummary');
+            const listEl = document.getElementById('metricModalList');
+            const modal = document.getElementById('metricModal');
+            if (!titleEl || !summaryEl || !listEl || !modal) return;
+
+            titleEl.textContent = 'Denemelerim';
+            summaryEl.textContent = 'Oyuncu olarak kayit oldugun deneme, trial ve hatirlatici kayitlari.';
+            listEl.innerHTML = '<div class="metric-empty">Denemelerin yukleniyor...</div>';
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            try {
+                const items = await loadUpcomingSchedulesFromApi();
+                const rows = Array.isArray(items) ? items : [];
+                if (!rows.length) {
+                    listEl.innerHTML = `
+                        <div class="metric-empty">
+                            Henuz kayitli denemen yok.
+                            <div style="margin-top:12px;">
+                                <a class="schedule-btn primary" href="trial-center.html">Deneme Merkezine Git</a>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                summaryEl.textContent = `Toplam ${rows.length} kayit bulundu. En guncel kayitlar asagida listeleniyor.`;
+                listEl.innerHTML = rows.map((row) => {
+                    const title = row?.match_title || row?.title || 'Deneme kaydi';
+                    const team = row?.team_name || row?.organizer_name || 'NextScout';
+                    const city = row?.city || row?.location || '-';
+                    const date = row?.match_date || row?.event_date || row?.created_at || '-';
+                    const note = row?.notes || row?.status || row?.position || '-';
+                    return `
+                        <article class="metric-item">
+                            <div class="metric-item-title">${escapeHtml(title)}</div>
+                            <div class="metric-item-meta">${escapeHtml(team)} • ${escapeHtml(city)}</div>
+                            <div class="metric-item-meta">${escapeHtml(date)}</div>
+                            <div class="metric-item-meta">${escapeHtml(note)}</div>
+                        </article>
+                    `;
+                }).join('') + `
+                    <div class="schedule-actions">
+                        <a class="schedule-btn primary" href="trial-center.html">Deneme Merkezini Ac</a>
+                    </div>
+                `;
+            } catch (error) {
+                listEl.innerHTML = '<div class="metric-empty">Denemelerin su an yuklenemiyor.</div>';
+            }
         }
 
         function openScheduleModal(type) {
@@ -1537,34 +2656,27 @@
             }
 
             try {
-                const actions = readArrayStorage('nextscout_schedule_actions');
-                actions.unshift({
-                    type: schedule.type,
-                    title: schedule.title,
-                    action: schedule.type === 'join' ? 'join-approved' : 'reminder-set',
-                    at: new Date().toISOString(),
-                });
-                localStorage.setItem('nextscout_schedule_actions', JSON.stringify(actions.slice(0, 200)));
-            } catch (e) {}
+                await savePlayerSchedule(schedule, schedule.type === 'join' ? 'join-approved' : 'reminder-set');
+                await renderUpcomingSchedules();
+            } catch (e) {
+                window.nsNotify?.error ? window.nsNotify.error(e.message || 'Takvim kaydi olusturulamadi.') : nsnsAlert(e.message || 'Takvim kaydi olusturulamadi.');
+                return;
+            }
 
             window.nsNotify?.success ? window.nsNotify.success(schedule.type === 'join' ? 'Katilim onayin alindi.' : 'Hatirlatici olusturuldu.') : nsnsAlert(schedule.type === 'join' ? 'Katilim onayin alindi.' : 'Hatirlatici olusturuldu.');
             closeMetricModal();
         }
 
-        function saveScheduleToCalendar() {
+        async function saveScheduleToCalendar() {
             const schedule = dashboardApiState.selectedSchedule;
             if (!schedule) return;
             try {
-                const items = readArrayStorage('nextscout_calendar_items');
-                items.unshift({
-                    title: schedule.title,
-                    time: schedule.desc,
-                    location: schedule.location,
-                    created_at: new Date().toISOString(),
-                });
-                localStorage.setItem('nextscout_calendar_items', JSON.stringify(items.slice(0, 200)));
-            } catch (e) {}
-            renderUpcomingSchedules();
+                await savePlayerSchedule(schedule, 'calendar-save');
+                await renderUpcomingSchedules();
+            } catch (e) {
+                window.nsNotify?.error ? window.nsNotify.error(e.message || 'Takvime eklenemedi.') : nsnsAlert(e.message || 'Takvime eklenemedi.');
+                return;
+            }
             window.nsNotify?.success ? window.nsNotify.success('Takvime eklendi.') : nsnsAlert('Takvime eklendi.');
         }
 
@@ -1572,10 +2684,10 @@
             window.location.href = 'notifications.html';
         }
 
-        function renderUpcomingSchedules() {
+        async function renderUpcomingSchedules() {
             const root = document.getElementById('upcomingScheduleList');
             if (!root) return;
-            const items = readArrayStorage('nextscout_calendar_items');
+            const items = await loadUpcomingSchedulesFromApi();
 
             if (!items.length) {
                 root.innerHTML = `
@@ -1593,8 +2705,8 @@
             root.innerHTML = items.slice(0, 4).map((item) => `
                 <div class="mini-item">
                     <div class="left">
-                        <div class="t">${item.title || 'Etkinlik'}</div>
-                    <div class="d">${item.time || '-'} • ${item.location || 'Konum yok'}</div>
+                        <div class="t">${item.match_title || item.title || 'Etkinlik'}</div>
+                    <div class="d">${item.match_date || item.time || '-'} • ${item.city || item.location || 'Konum yok'}</div>
                     </div>
                     <span class="tag">Planli</span>
                 </div>
@@ -1627,14 +2739,50 @@
             const offerSub = document.getElementById('transferOfferSub');
 
             if (interestValue) interestValue.textContent = String(23 + likes);
-            if (interestSub) interestSub.textContent = likes > 0 ? `${likes} yeni begeni` : 'Yeni begeni bekleniyor';
+            if (interestSub) interestSub.textContent = likes > 0 ? `${likes} yeni be\u011feni` : 'Yeni be\u011feni bekleniyor';
             if (incomingText) incomingText.textContent = `Gelen kutusunda ${incoming} yeni mesaj var`;
             if (incomingTag) incomingTag.textContent = incoming > 0 ? `${incoming} Mesaj` : 'Mesaj';
             if (viewsValue) viewsValue.textContent = new Intl.NumberFormat('tr-TR').format(views);
             if (videoValue) videoValue.textContent = String(videoCount);
-            if (videoSub) videoSub.textContent = videoCount > 1 ? `${Math.max(1, Math.round(videoCount / 4))} yeni video beklemede` : 'Video yuklemeye hazir';
+            if (videoSub) videoSub.textContent = videoCount > 1 ? `${Math.max(1, Math.round(videoCount / 4))} yeni video beklemede` : 'Video y\u00fcklemeye haz\u0131r';
             if (offerValue) offerValue.textContent = String(offers);
-            if (offerSub) offerSub.textContent = offers > 0 ? `${Math.max(1, offers - 1)} teklif acik` : 'Henuz teklif yok';
+            if (offerSub) offerSub.textContent = offers > 0 ? `${Math.max(1, offers - 1)} teklif a\u00e7\u0131k` : 'Hen\u00fcz teklif yok';
+        }
+
+        function applyTurkishTextFixes() {
+            document.title = 'Oyuncu Dashboard | NextScout';
+
+            const setText = (selector, text) => {
+                const el = document.querySelector(selector);
+                if (el) el.textContent = text;
+            };
+
+            setText('.hero-title', 'Oyuncu kariyerini buradan yonet.');
+            setText('#heroGreeting', 'Profilini guclendir, videolarini sergile ve scoutlarla kurdugun temasi tek panelden yonet.');
+            setText('#videoCountSub', '2 yeni video beklemede');
+            setText('#scoutInterestSub', '5 yeni takip\u00e7i');
+            setText('#transferOfferSub', '1 teklif a\u00e7\u0131k');
+            setText('#latestNewTitle', 'Scout Radar\u0131nda yeni e\u015fle\u015fme');
+            setText('#latestTrendTitle', 'Video performans\u0131 y\u00fckseldi');
+            setText('#latestTrendDesc', 'D\u00fcnk\u00fc videonun izlenmesi +38%');
+
+            document.querySelectorAll('.btn, .nav a, .t, .d, .stat-label, .k, .metric-item-title, .metric-item-meta').forEach((el) => {
+                const value = (el.textContent || '').trim();
+                if (value === 'Iletisime Gec') el.textContent = '\u0130leti\u015fime Ge\u00e7';
+                if (value === 'Mac Video Arsivi') el.textContent = 'Ma\u00e7 Video Ar\u015fivi';
+                if (value === 'Scout Karti') el.textContent = 'Scout Kart\u0131';
+                if (value === 'Scout Ilgisi') el.textContent = 'Scout \u0130lgisi';
+                if (value === 'Transfer Teklifi') el.textContent = 'Transfer Teklifi';
+                if (value === 'Scout Gozlem Seansi') el.textContent = 'Scout G\u00f6zlem Seans\u0131';
+                if (value === 'Kayitli takvim etkinligi yok') el.textContent = 'Kay\u0131tl\u0131 takvim etkinli\u011fi yok';
+                if (value === 'Firsat Takvimi kartlarindan etkinlik ekleyebilirsin.') el.textContent = 'F\u0131rsat Takvimi kartlar\u0131ndan etkinlik ekleyebilirsin.';
+                if (value === 'Bos') el.textContent = 'Bo\u015f';
+                if (value === 'Planli') el.textContent = 'Planl\u0131';
+                if (value === 'Katilim Onayi Ver') el.textContent = 'Kat\u0131l\u0131m Onay\u0131 Ver';
+                if (value === 'Hatirlatici Kur') el.textContent = 'Hat\u0131rlat\u0131c\u0131 Kur';
+                if (value === 'Takvime Ekle') el.textContent = 'Takvime Ekle';
+                if (value === 'Mesaj Gonder') el.textContent = 'Mesaj G\u00f6nder';
+            });
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -1642,13 +2790,14 @@
             try {
                 const u = raw ? JSON.parse(raw) : null;
                 const heroTitle = document.querySelector('.hero-title');
-                if (heroTitle && u?.name) heroTitle.textContent = `Hos Geldin, ${u.name.split(' ')[0]}!`;
+                if (heroTitle && u?.name) heroTitle.textContent = `Ho\u015f Geldin, ${u.name.split(' ')[0]}!`;
                 const heroGreeting = document.getElementById('heroGreeting');
-                if (heroGreeting && u?.name) heroGreeting.textContent = `${u.name.split(' ')[0]}, profilini guclendir, mac videolarini yukle ve scout ilgisini artir.`;
+                if (heroGreeting && u?.name) heroGreeting.textContent = `${u.name.split(' ')[0]}, profilini guclendir, videolarini sergile ve scoutlarla kurdugun temasi yonet.`;
                 const heroStatusUser = document.getElementById('heroStatusUser');
                 if (heroStatusUser && u?.name) heroStatusUser.textContent = u.name;
             } catch (e) {}
 
+            applyTurkishTextFixes();
             refreshPlayerDashboardLiveStats();
             loadDashboardApiMetrics();
             loadLatestApiHighlights();
@@ -1656,6 +2805,14 @@
             const boostForm = document.getElementById('boostForm');
             if (boostForm) {
                 boostForm.addEventListener('submit', submitBoostForm);
+            }
+            const playerSuccessStoryForm = document.getElementById('playerSuccessStoryForm');
+            if (playerSuccessStoryForm) {
+                playerSuccessStoryForm.addEventListener('submit', submitPlayerSuccessStoryForm);
+            }
+            const todayMatchForm = document.getElementById('todayMatchForm');
+            if (todayMatchForm) {
+                todayMatchForm.addEventListener('submit', submitTodayMatchForm);
             }
             const boostPackage = document.getElementById('boostPackage');
             if (boostPackage) {
@@ -1665,6 +2822,10 @@
                 if (event.key === 'Escape') {
                     closeMetricModal();
                     closeBoostModal();
+                    closeListingsModal();
+                    closePlayerSuccessStoriesHub();
+                    closePlayerSuccessStorySubmitModal();
+                    closePlayerSuccessStoriesReadModal();
                 }
             });
         });
