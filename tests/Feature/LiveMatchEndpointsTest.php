@@ -186,4 +186,27 @@ class LiveMatchEndpointsTest extends TestCase
 
         $this->assertDatabaseCount('live_matches', 0);
     }
+
+    public function test_past_live_match_is_automatically_hidden_after_match_time_passes(): void
+    {
+        LiveMatch::query()->create([
+            'title' => 'Bitmis Mac',
+            'league' => 'Super Lig',
+            'home_team' => 'A',
+            'away_team' => 'B',
+            'match_date' => now()->subMinute(),
+            'is_live' => true,
+            'is_finished' => false,
+        ]);
+
+        $this->getJson('/api/live-matches')
+            ->assertOk()
+            ->assertJsonPath('total', 0);
+
+        $this->assertDatabaseHas('live_matches', [
+            'title' => 'Bitmis Mac',
+            'is_live' => false,
+            'is_finished' => true,
+        ]);
+    }
 }

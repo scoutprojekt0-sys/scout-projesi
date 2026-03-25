@@ -88,6 +88,8 @@ class LiveMatchController extends Controller
 
     public function getCount(Request $request): JsonResponse
     {
+        $this->expirePastMatches();
+
         $count = LiveMatch::query()->where('is_live', true)->where('is_finished', false)->count();
 
         return $this->successResponse([
@@ -98,6 +100,8 @@ class LiveMatchController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $this->expirePastMatches();
+
         $matches = LiveMatch::query()
             ->where('is_live', true)
             ->where('is_finished', false)
@@ -279,5 +283,18 @@ class LiveMatchController extends Controller
         if ($name !== '') { return $name; }
         if (auth()->check()) { return (string) (auth()->user()->name ?? ''); }
         return null;
+    }
+
+    private function expirePastMatches(): void
+    {
+        LiveMatch::query()
+            ->where('is_live', true)
+            ->where('is_finished', false)
+            ->whereNotNull('match_date')
+            ->where('match_date', '<', now())
+            ->update([
+                'is_live' => false,
+                'is_finished' => true,
+            ]);
     }
 }

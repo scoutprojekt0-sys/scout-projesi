@@ -110,6 +110,9 @@
     const teams = `${match.home_team || ''} - ${match.away_team || ''}`.trim();
     const score = `${match.home_score ?? '-'} : ${match.away_score ?? '-'}`;
     const minute = match.minute ? ` | ${match.minute}'` : '';
+    const matchTime = match.match_date
+      ? new Date(match.match_date).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
+      : '';
     const league = match.league ? `<div><strong>${esc(match.league)}</strong></div>` : '';
     const sportAndLocation = (match.sport || match.location)
       ? `<div>${match.sport ? `Spor: ${esc(match.sport)}` : ''}${match.sport && match.location ? ' | ' : ''}${match.location ? `Konum: ${esc(match.location)}` : ''}</div>`
@@ -117,6 +120,8 @@
     const focus = match.focus ? `<div>Odak: ${esc(match.focus)}</div>` : '';
     const note = match.note ? `<div>Not: ${esc(match.note)}</div>` : '';
     const scout = match.scout_name ? `<div>Scout: ${esc(match.scout_name)}</div>` : '';
+    const source = match.source_name ? `<div>Oyuncu: ${esc(match.source_name)}</div>` : '';
+    const time = matchTime ? `<div>Saat: ${esc(matchTime)}</div>` : '';
     const streamLinks = (match.stream_links && typeof match.stream_links === 'object') ? match.stream_links : {};
     const platformOrder = [
       { key: 'youtube', label: 'YouTube' },
@@ -151,11 +156,13 @@
         <div><strong>${esc(title || 'Mac')}</strong></div>
         ${league}
         ${teams ? `<div>${esc(teams)}</div>` : ''}
+        ${time}
         <div><strong>${score}</strong>${minute}</div>
         ${sportAndLocation}
         ${focus}
         ${note}
         ${scout}
+        ${source}
         ${stream}
         ${startBroadcastHtml}
       </div>
@@ -187,5 +194,4 @@
     <script src="assets/js/core-stability.js"></script>
 </body>
 </html>
-
 
