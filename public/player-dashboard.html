@@ -2599,6 +2599,14 @@
             return parsedDate.getTime() <= Date.now();
         }
 
+        function isExpiredMatchSchedule(row) {
+            if (isRegistrationSchedule(row)) return false;
+            const rawDate = row?.match_date || row?.event_date || '';
+            const parsedDate = new Date(rawDate);
+            if (Number.isNaN(parsedDate.getTime())) return false;
+            return parsedDate.getTime() <= Date.now();
+        }
+
         async function renderMyRegistrationRows(rows, expanded = false) {
             const summaryEl = document.getElementById('metricModalSummary');
             const listEl = document.getElementById('metricModalList');
@@ -2854,7 +2862,7 @@
         async function renderUpcomingSchedules() {
             const root = document.getElementById('upcomingScheduleList');
             if (!root) return;
-            const items = (await loadUpcomingSchedulesFromApi()).filter((row) => !isRegistrationSchedule(row));
+            const items = (await loadUpcomingSchedulesFromApi()).filter((row) => !isRegistrationSchedule(row) && !isExpiredMatchSchedule(row));
 
             if (!items.length) {
                 root.innerHTML = `
@@ -3000,6 +3008,7 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+
 
 
 

@@ -104,6 +104,25 @@
         return dt.toLocaleString('tr-TR', { dateStyle:'medium', timeStyle:'short' });
     }
 
+    function isRegistrationSchedule(row) {
+        const haystack = [
+            row?.position,
+            row?.match_title,
+            row?.title,
+            row?.notes,
+            row?.team_name,
+        ].filter(Boolean).join(' ').toLowerCase();
+        return /trial|deneme|idman|training|showcase|kamp|join-approved|reminder-set/.test(haystack);
+    }
+
+    function isExpiredMatchSchedule(row) {
+        if (isRegistrationSchedule(row)) return false;
+        const rawDate = row?.match_date || row?.event_date || '';
+        const parsedDate = new Date(rawDate);
+        if (Number.isNaN(parsedDate.getTime())) return false;
+        return parsedDate.getTime() <= Date.now();
+    }
+
     function renderSchedules(rows) {
         const root = document.getElementById('scheduleList');
         if (!root) return;
@@ -140,7 +159,8 @@
         try {
             const res = await fetch(`${API_BASE}/player/match-schedules/my`, { headers: authHeaders() });
             const payload = await res.json();
-            renderSchedules(Array.isArray(payload?.data) ? payload.data : []);
+            const rows = (Array.isArray(payload?.data) ? payload.data : []).filter((row) => !isRegistrationSchedule(row) && !isExpiredMatchSchedule(row));
+            renderSchedules(rows);
         } catch (error) {
             renderSchedules([]);
         }
