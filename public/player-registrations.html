@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NextScout - Kayitlarim</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --bg:#08131d; --panel:#0f1f2e; --line:#2b4660; --text:#f5fbff; --muted:#9bb5cb; --cta:#ff5a1f; --cta2:#ff7e22; }
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{min-height:100vh;font-family:"Inter",sans-serif;color:var(--text);background:radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),var(--bg)}
+        .page{max-width:1180px;margin:28px auto;padding:0 20px 24px}
+        .hero,.item{position:relative;overflow:hidden;background:linear-gradient(180deg, rgba(18,41,61,.98) 0%, rgba(15,31,46,.98) 100%);border:1px solid #2b4660;box-shadow:0 18px 36px rgba(8,19,29,.28)}
+        .hero::before,.item::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--cta) 0%,var(--cta2) 55%,#60a5fa 100%)}
+        .hero{padding:22px;margin-bottom:14px}
+        .hero-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+        .hero h1{font-size:30px;margin-bottom:8px}
+        .hero p{color:var(--muted);max-width:760px}
+        .xbtn{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border:1px solid rgba(255,126,34,.45);background:linear-gradient(180deg, rgba(255,255,255,.95) 0%, rgba(219,234,254,.92) 100%);color:#16325c;text-decoration:none;font-weight:800;box-shadow:0 12px 24px rgba(8,19,29,.24)}
+        .status{color:var(--muted);font-size:14px;margin:0 0 14px}
+        .list{display:grid;gap:12px}
+        .item{padding:16px}
+        .item-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:10px}
+        .item-title{font-size:18px;font-weight:800}
+        .item-meta{display:flex;flex-wrap:wrap;gap:8px;color:var(--muted);font-size:13px;margin-bottom:12px}
+        .tag{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid #2b4660;background:rgba(255,255,255,.04);font-size:12px;font-weight:700;color:#d6e8f7}
+        .empty{color:var(--muted);padding:16px;border:1px dashed rgba(148,163,184,.22)}
+    </style>
+</head>
+<body>
+<main class="page">
+    <section class="hero">
+        <div class="hero-head">
+            <div>
+                <h1><i class="fas fa-clipboard-list"></i> Kayitlarim</h1>
+                <p>Deneme ve idman kayitlarini tek listede takip et. Bu sayfada sadece etkinlik kayitlari gorunur.</p>
+            </div>
+            <a class="xbtn" href="./player-dashboard.html" onclick="if (history.length > 1) { event.preventDefault(); history.back(); }"><i class="fas fa-times"></i></a>
+        </div>
+    </section>
+
+    <div class="status" id="statusText">Kayitlar yukleniyor...</div>
+    <div class="list" id="registrationList"></div>
+</main>
+
+<script>
+    const API_BASE = window.location.protocol === 'file:' ? 'http://127.0.0.1:8000/api' : '/api';
+
+    function esc(value) {
+        return String(value || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    function authHeaders() {
+        const token = (localStorage.getItem('nextscout_token') || '').trim();
+        return {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        };
+    }
+
+    function formatDate(value) {
+        const dt = new Date(value || '');
+        if (Number.isNaN(dt.getTime())) return 'Tarih belirtilmedi';
+        return dt.toLocaleString('tr-TR', { dateStyle:'medium', timeStyle:'short' });
+    }
+
+    function isRegistrationSchedule(row) {
+        const haystack = [
+            row?.position,
+            row?.match_title,
+            row?.title,
+            row?.notes,
+            row?.team_name,
+        ].filter(Boolean).join(' ').toLowerCase();
+        return /trial|deneme|idman|training|showcase|kamp|join-approved|reminder-set/.test(haystack);
+    }
+
+    function isExpiredRegistrationSchedule(row) {
+        if (!isRegistrationSchedule(row)) return false;
+        const rawDate = row?.match_date || row?.event_date || '';
+        const parsedDate = new Date(rawDate);
+        if (Number.isNaN(parsedDate.getTime())) return false;
+        return parsedDate.getTime() <= Date.now();
+    }
+
+    function renderRows(rows) {
+        const root = document.getElementById('registrationList');
+        const status = document.getElementById('statusText');
+        if (!root || !status) return;
+
+        if (!rows.length) {
+            status.textContent = 'Kayit bulunamadi.';
+            root.innerHTML = '<div class="empty">Henuz kayitli deneme veya idman kaydin yok.</div>';
+            return;
+        }
+
+        status.textContent = `${rows.length} kayit listelendi.`;
+        root.innerHTML = rows.map((row) => `
+            <article class="item">
+                <div class="item-head">
+                    <div>
+                        <div class="item-title">${esc(row?.match_title || row?.title || 'Etkinlik kaydi')}</div>
+                        <div class="item-meta">
+                            <span><i class="fas fa-building"></i> ${esc(row?.team_name || row?.organizer_name || 'NextScout')}</span>
+                            <span><i class="fas fa-location-dot"></i> ${esc(row?.city || row?.location || '-')}</span>
+                            <span><i class="fas fa-calendar-days"></i> ${esc(formatDate(row?.match_date || row?.event_date || row?.created_at))}</span>
+                        </div>
+                    </div>
+                    <span class="tag">${esc(row?.status || row?.position || 'Kayitli')}</span>
+                </div>
+                <div class="item-meta">${esc(row?.notes || 'Etkinlik kaydi')}</div>
+            </article>
+        `).join('');
+    }
+
+    async function loadRows() {
+        try {
+            const res = await fetch(`${API_BASE}/player/match-schedules/my`, { headers: authHeaders() });
+            const payload = await res.json().catch(() => ({}));
+            const rows = (Array.isArray(payload?.data) ? payload.data : []).filter((row) => isRegistrationSchedule(row) && !isExpiredRegistrationSchedule(row));
+            renderRows(rows);
+        } catch (error) {
+            renderRows([]);
+        }
+    }
+
+    loadRows();
+</script>
+</body>
+</html>

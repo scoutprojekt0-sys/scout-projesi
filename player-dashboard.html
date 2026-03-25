@@ -311,6 +311,26 @@
             line-height: 1.5;
         }
 
+        .hero-opportunity-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 2px;
+        }
+
+        .hero-opportunity-action {
+            appearance: none;
+            border: 1px solid rgba(255, 126, 34, 0.45);
+            background: linear-gradient(135deg, rgba(255, 90, 31, 0.18), rgba(255, 126, 34, 0.12));
+            color: #fff;
+            min-height: 34px;
+            padding: 0 14px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
         .hero-opportunity-empty {
             color: var(--muted);
             font-size: 13px;
@@ -1165,9 +1185,10 @@
                 <a class="sidebar-item" href="notifications.html"><i class="fas fa-bell"></i><span>Bildirim</span></a>
                 <a class="sidebar-item" href="review-center.html"><i class="fas fa-comments"></i><span>Yorumlar</span></a>
                 <button class="sidebar-item" type="button" onclick="openListingsModal()"><i class="fas fa-bullhorn"></i><span>Ilanlar</span></button>
+                <button class="sidebar-item" type="button" onclick="openMyApplicationsModal()"><i class="fas fa-file-signature"></i><span>Basvurularim</span></button>
                 <button class="sidebar-item" type="button" onclick="openMetricModal('videos')"><i class="fas fa-video"></i><span>Videolarim</span></button>
                 <button class="sidebar-item" type="button" onclick="openMetricModal('offers')"><i class="fas fa-handshake"></i><span>Tekliflerim</span></button>
-                <button class="sidebar-item" type="button" onclick="openMyTrialsModal()"><i class="fas fa-clipboard-list"></i><span>Denemelerim</span></button>
+                <button class="sidebar-item" type="button" onclick="openMyTrialsModal()"><i class="fas fa-clipboard-list"></i><span>Kayitlarim</span></button>
                 <a class="sidebar-item" href="trial-center.html"><i class="fas fa-tower-observation"></i><span>Deneme Merkezi</span></a>
                 <a class="sidebar-item" href="statistics.html"><i class="fas fa-chart-line"></i><span>Istatistikler</span></a>
                 <a class="sidebar-item" href="favorites.html"><i class="fas fa-star"></i><span>Favorilerim</span></a>
@@ -1338,32 +1359,12 @@
         </section>
 
         <section class="panel">
-            <div class="section-title">Firsat Takvimi</div>
-            <div class="mini-list">
-                <div class="mini-item is-clickable" onclick="openScheduleModal('join')">
-                    <div class="left">
-                        <div class="t">Deneme Maci - Istanbul</div>
-                    <div class="d">16 Mart 2026 • Saat 18:30</div>
-                    </div>
-                    <span class="tag">Katil</span>
-                </div>
-                <div class="mini-item is-clickable" onclick="openScheduleModal('planned')">
-                    <div class="left">
-                        <div class="t">Scout Gozlem Seansi</div>
-                    <div class="d">19 Mart 2026 • Saat 14:00</div>
-                    </div>
-                    <span class="tag">Planli</span>
-                </div>
-            </div>
-        </section>
-
-        <section class="panel">
             <div class="section-title">Yaklasanlarim</div>
             <div class="mini-list" id="upcomingScheduleList">
                 <div class="mini-item">
                     <div class="left">
                         <div class="t">Kayitli takvim etkinligi yok</div>
-                        <div class="d">Firsat Takvimi kartlarindan etkinlik ekleyebilirsin.</div>
+                        <div class="d">Mac Takvimim sayfasindan yeni mac ekleyebilirsin.</div>
                     </div>
                     <span class="tag">Bos</span>
                 </div>
@@ -1386,7 +1387,7 @@
     <div class="boost-modal" id="boostModal" onclick="if(event.target===this) closeBoostModal()">
         <div class="boost-card" onclick="event.stopPropagation()">
             <div class="boost-head">
-                <div class="boost-title">⚡ Beni Kesfedin - Ucretli Tanitim</div>
+                <div class="boost-title">? Beni Kesfedin - Ucretli Tanitim</div>
                 <button type="button" class="boost-close" onclick="closeBoostModal()">×</button>
             </div>
             <form class="boost-form" id="boostForm">
@@ -1806,16 +1807,20 @@
                 return (Array.isArray(dashboardApiState.communityEvents) ? dashboardApiState.communityEvents : [])
                     .slice(0, 3)
                     .map((row) => ({
+                        id: row?.id || null,
                         title: row?.title || row?.event_name || 'Deneme veya idman ilani',
-                        meta: [row?.city || row?.location || 'Konum yok', row?.start_at || row?.event_date || null, row?.organizer_name || row?.club_name || null].filter(Boolean).join(' • ')
+                        meta: [row?.city || row?.location || 'Konum yok', row?.start_at || row?.event_date || null, row?.organizer_name || row?.club_name || null].filter(Boolean).join(' • '),
+                        actionLabel: 'Kayit Ol',
                     }));
             }
 
             return (Array.isArray(dashboardApiState.clubNeeds) ? dashboardApiState.clubNeeds : [])
                 .slice(0, 3)
                 .map((row) => ({
+                    id: row?.id || null,
                     title: row?.title || row?.position || 'Kulup ihtiyaci',
-                    meta: [row?.team_name || row?.club_name || row?.club || 'Kulup', row?.city || null, row?.created_at || null].filter(Boolean).join(' • ')
+                    meta: [row?.team_name || row?.club_name || row?.club || 'Kulup', row?.city || null, row?.created_at || null].filter(Boolean).join(' • '),
+                    actionLabel: 'Basvur',
                 }));
         }
 
@@ -1828,6 +1833,13 @@
                     <article class="hero-opportunity-item">
                         <strong>${escapeHtml(item.title || 'Firsat')}</strong>
                         <span>${escapeHtml(item.meta || 'Detay bekleniyor')}</span>
+                        <div class="hero-opportunity-actions">
+                            <button
+                                type="button"
+                                class="hero-opportunity-action"
+                                onclick="${tab === 'events' ? `openHeroEventRegistration(${Number(item.id || 0)})` : `applyHeroOpportunity(${Number(item.id || 0)})`}"
+                            >${escapeHtml(item.actionLabel || (tab === 'events' ? 'Kayit Ol' : 'Basvur'))}</button>
+                        </div>
                     </article>
                 `).join('')
                 : `<div class="hero-opportunity-empty">${tab === 'events' ? 'Su anda aktif deneme veya idman ilani yok.' : 'Su anda aktif kulup ihtiyaci yok.'}</div>`;
@@ -1839,6 +1851,54 @@
 
         function openHeroOpportunityTab(tab) {
             renderHeroOpportunities(tab === 'events' ? 'events' : 'needs');
+        }
+
+        async function applyHeroOpportunity(opportunityId) {
+            const id = Number(opportunityId || 0);
+            if (!id) {
+                window.nsNotify?.error ? window.nsNotify.error('Basvurulacak ilan bulunamadi.') : nsnsAlert('Basvurulacak ilan bulunamadi.');
+                return;
+            }
+
+            const token = getToken();
+            if (!token) {
+                window.nsNotify?.error ? window.nsNotify.error('Basvuru icin once giris yapman gerekiyor.') : nsnsAlert('Basvuru icin once giris yapman gerekiyor.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/opportunities/${id}/apply`, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ message: 'Oyuncu dashboardundan hizli basvuru gonderildi.' }),
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok || payload?.ok === false) {
+                    throw new Error(payload?.message || 'Basvuru gonderilemedi.');
+                }
+
+                window.nsNotify?.success ? window.nsNotify.success('Basvuru gonderildi. Ilan Basvurularim alanina dusecek.') : nsnsAlert('Basvuru gonderildi. Ilan Basvurularim alanina dusecek.');
+                loadCareerCenterData();
+            } catch (error) {
+                window.nsNotify?.error ? window.nsNotify.error(error?.message || 'Basvuru gonderilemedi.') : nsnsAlert(error?.message || 'Basvuru gonderilemedi.');
+            }
+        }
+
+        function openHeroEventRegistration(eventId) {
+            const id = Number(eventId || 0);
+            const eventRow = (Array.isArray(dashboardApiState.communityEvents) ? dashboardApiState.communityEvents : [])
+                .find((row) => Number(row?.id || 0) === id) || null;
+
+            if (!eventRow) {
+                window.nsNotify?.error ? window.nsNotify.error('Kayit olunacak etkinlik bulunamadi.') : nsnsAlert('Kayit olunacak etkinlik bulunamadi.');
+                return;
+            }
+
+            openScheduleModal('join', eventRow);
         }
 
         function formatTryAmount(value) {
@@ -2520,6 +2580,63 @@
             return Array.isArray(body?.data) ? body.data : [];
         }
 
+        function isRegistrationSchedule(row) {
+            const haystack = [
+                row?.position,
+                row?.match_title,
+                row?.title,
+                row?.notes,
+                row?.team_name,
+            ].filter(Boolean).join(' ').toLowerCase();
+            return /trial|deneme|idman|training|showcase|kamp|join-approved|reminder-set/.test(haystack);
+        }
+
+        function isExpiredRegistrationSchedule(row) {
+            if (!isRegistrationSchedule(row)) return false;
+            const rawDate = row?.match_date || row?.event_date || '';
+            const parsedDate = new Date(rawDate);
+            if (Number.isNaN(parsedDate.getTime())) return false;
+            return parsedDate.getTime() <= Date.now();
+        }
+
+        async function renderMyRegistrationRows(rows, expanded = false) {
+            const summaryEl = document.getElementById('metricModalSummary');
+            const listEl = document.getElementById('metricModalList');
+            if (!summaryEl || !listEl) return;
+
+            const safeRows = Array.isArray(rows) ? rows : [];
+            const visibleRows = expanded ? safeRows : safeRows.slice(0, 3);
+            summaryEl.textContent = expanded
+                ? `Toplam ${safeRows.length} kayit listeleniyor.`
+                : `Toplam ${safeRows.length} kayit bulundu. Ilk 3 kayit asagida listeleniyor.`;
+
+            listEl.innerHTML = visibleRows.map((row) => {
+                const title = row?.match_title || row?.title || 'Deneme kaydi';
+                const team = row?.team_name || row?.organizer_name || 'NextScout';
+                const city = row?.city || row?.location || '-';
+                const date = row?.match_date || row?.event_date || row?.created_at || '-';
+                const note = row?.notes || row?.status || row?.position || '-';
+                return `
+                    <article class="metric-item">
+                        <div class="metric-item-title">${escapeHtml(title)}</div>
+                        <div class="metric-item-meta">${escapeHtml(team)} • ${escapeHtml(city)}</div>
+                        <div class="metric-item-meta">${escapeHtml(date)}</div>
+                        <div class="metric-item-meta">${escapeHtml(note)}</div>
+                    </article>
+                `;
+            }).join('') + (!expanded && safeRows.length
+                ? `
+                    <div class="schedule-actions">
+                        <button type="button" class="schedule-btn primary" onclick="window.location.href='player-registrations.html'">Tumunu Gor</button>
+                    </div>
+                `
+                : '');
+        }
+
+        function expandMyRegistrationRows() {
+            renderMyRegistrationRows(window.nextScoutRegistrationRows || [], true);
+        }
+
         async function openMyTrialsModal() {
             const titleEl = document.getElementById('metricModalTitle');
             const summaryEl = document.getElementById('metricModalSummary');
@@ -2527,62 +2644,112 @@
             const modal = document.getElementById('metricModal');
             if (!titleEl || !summaryEl || !listEl || !modal) return;
 
-            titleEl.textContent = 'Denemelerim';
-            summaryEl.textContent = 'Oyuncu olarak kayit oldugun deneme, trial ve hatirlatici kayitlari.';
-            listEl.innerHTML = '<div class="metric-empty">Denemelerin yukleniyor...</div>';
+            titleEl.textContent = 'Kayitlarim';
+            summaryEl.textContent = 'Oyuncu olarak kayit oldugun deneme ve idman kayitlari.';
+            listEl.innerHTML = '<div class="metric-empty">Kayitlarin yukleniyor...</div>';
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
 
             try {
                 const items = await loadUpcomingSchedulesFromApi();
-                const rows = Array.isArray(items) ? items : [];
+                const rows = (Array.isArray(items) ? items : []).filter((row) => isRegistrationSchedule(row) && !isExpiredRegistrationSchedule(row));
+                window.nextScoutRegistrationRows = rows;
                 if (!rows.length) {
                     listEl.innerHTML = `
-                        <div class="metric-empty">
-                            Henuz kayitli denemen yok.
-                            <div style="margin-top:12px;">
-                                <a class="schedule-btn primary" href="trial-center.html">Deneme Merkezine Git</a>
-                            </div>
-                        </div>
+                        <div class="metric-empty">Henuz kayitli etkinlik kaydin yok.</div>
                     `;
                     return;
                 }
 
-                summaryEl.textContent = `Toplam ${rows.length} kayit bulundu. En guncel kayitlar asagida listeleniyor.`;
-                listEl.innerHTML = rows.map((row) => {
-                    const title = row?.match_title || row?.title || 'Deneme kaydi';
-                    const team = row?.team_name || row?.organizer_name || 'NextScout';
-                    const city = row?.city || row?.location || '-';
-                    const date = row?.match_date || row?.event_date || row?.created_at || '-';
-                    const note = row?.notes || row?.status || row?.position || '-';
-                    return `
-                        <article class="metric-item">
-                            <div class="metric-item-title">${escapeHtml(title)}</div>
-                            <div class="metric-item-meta">${escapeHtml(team)} • ${escapeHtml(city)}</div>
-                            <div class="metric-item-meta">${escapeHtml(date)}</div>
-                            <div class="metric-item-meta">${escapeHtml(note)}</div>
-                        </article>
-                    `;
-                }).join('') + `
-                    <div class="schedule-actions">
-                        <a class="schedule-btn primary" href="trial-center.html">Deneme Merkezini Ac</a>
-                    </div>
-                `;
+                renderMyRegistrationRows(rows, false);
             } catch (error) {
-                listEl.innerHTML = '<div class="metric-empty">Denemelerin su an yuklenemiyor.</div>';
+                listEl.innerHTML = '<div class="metric-empty">Kayitlarin su an yuklenemiyor.</div>';
             }
         }
 
-        function openScheduleModal(type) {
+        async function renderMyApplicationRows(rows, expanded = false) {
+            const summaryEl = document.getElementById('metricModalSummary');
+            const listEl = document.getElementById('metricModalList');
+            if (!summaryEl || !listEl) return;
+
+            const safeRows = Array.isArray(rows) ? rows : [];
+            const visibleRows = expanded ? safeRows : safeRows.slice(0, 3);
+            summaryEl.textContent = expanded
+                ? `Toplam ${safeRows.length} ilan basvurusu listeleniyor.`
+                : `Toplam ${safeRows.length} ilan basvurun bulundu. Ilk 3 kayit asagida listeleniyor.`;
+
+            listEl.innerHTML = visibleRows.map((row) => `
+                <article class="metric-item">
+                    <div class="metric-item-title">${escapeHtml(row?.opportunity_title || 'Ilan basvurusu')}</div>
+                    <div class="metric-item-meta">${escapeHtml([row?.team_name || 'Kulup', row?.team_city || null].filter(Boolean).join(' • '))}</div>
+                    <div class="metric-item-meta">${escapeHtml(formatDate(row?.event_date || row?.created_at))}</div>
+                    <div class="metric-item-meta">${escapeHtml(row?.status || 'pending')}</div>
+                    <div class="metric-item-meta">${escapeHtml(row?.message || 'Basvuru mesaji yok.')}</div>
+                </article>
+            `).join('') + (!expanded && safeRows.length
+                ? `
+                    <div class="schedule-actions">
+                        <button type="button" class="schedule-btn primary" onclick="window.location.href='player-applications.html'">Tumunu Gor</button>
+                    </div>
+                `
+                : '');
+        }
+
+        async function openMyApplicationsModal() {
+            const titleEl = document.getElementById('metricModalTitle');
+            const summaryEl = document.getElementById('metricModalSummary');
+            const listEl = document.getElementById('metricModalList');
+            const modal = document.getElementById('metricModal');
+            if (!titleEl || !summaryEl || !listEl || !modal) return;
+
+            titleEl.textContent = 'Basvurularim';
+            summaryEl.textContent = 'Kulup ihtiyac ilanlarina yaptigin basvurular burada listelenir.';
+            listEl.innerHTML = '<div class="metric-empty">Basvurularin yukleniyor...</div>';
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            if (!token) {
+                listEl.innerHTML = '<div class="metric-empty">Basvurularini gormek icin giris yapman gerekiyor.</div>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/applications/outgoing?per_page=20`, {
+                    headers: {
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const body = await response.json().catch(() => ({}));
+                const rows = parsePaginatedRows(body);
+
+                if (!response.ok || body?.ok === false) {
+                    throw new Error(body?.message || 'Basvurular yuklenemedi.');
+                }
+
+                if (!rows.length) {
+                    listEl.innerHTML = '<div class="metric-empty">Henuz yaptigin bir ilan basvurusu yok.</div>';
+                    return;
+                }
+
+                window.nextScoutApplicationRows = rows;
+                renderMyApplicationRows(rows, false);
+            } catch (error) {
+                listEl.innerHTML = `<div class="metric-empty">${escapeHtml(error?.message || 'Basvurular su an yuklenemiyor.')}</div>`;
+            }
+        }
+
+        function openScheduleModal(type, eventRow = null) {
             const events = Array.isArray(dashboardApiState.communityEvents) ? dashboardApiState.communityEvents : [];
-            const fromApi = type === 'join' ? (events[0] || null) : (events[1] || events[0] || null);
+            const fromApi = eventRow || (type === 'join' ? (events[0] || null) : (events[1] || events[0] || null));
             const defaults = type === 'join'
                 ? {
                     title: 'Deneme Maci - Istanbul',
                     desc: '16 Mart 2026 • Saat 18:30',
                     location: 'Istanbul',
                     capacity: 'Kontenjan: 22',
-                    actionLabel: 'Katilim Onayi Ver',
+                    actionLabel: 'Kayit Ol',
                 }
                 : {
                     title: 'Scout Gozlem Seansi',
@@ -2626,7 +2793,7 @@
                     <div class="metric-item-meta">${schedule.source === 'api' ? 'Gercek API verisi' : 'Yerel takvim kaydi'}</div>
                 </article>
                 <div class="schedule-actions">
-                    <button type="button" class="schedule-btn primary" onclick="confirmScheduleAction()">${type === 'join' ? 'Katilim Onayi Ver' : 'Hatirlatici Kur'}</button>
+                    <button type="button" class="schedule-btn primary" onclick="confirmScheduleAction()">${type === 'join' ? 'Kayit Ol' : 'Hatirlatici Kur'}</button>
                     <button type="button" class="schedule-btn" onclick="saveScheduleToCalendar()">Takvime Ekle</button>
                     <button type="button" class="schedule-btn" onclick="openScheduleMessage()">Mesaj Gonder</button>
                 </div>
@@ -2663,7 +2830,7 @@
                 return;
             }
 
-            window.nsNotify?.success ? window.nsNotify.success(schedule.type === 'join' ? 'Katilim onayin alindi.' : 'Hatirlatici olusturuldu.') : nsnsAlert(schedule.type === 'join' ? 'Katilim onayin alindi.' : 'Hatirlatici olusturuldu.');
+            window.nsNotify?.success ? window.nsNotify.success(schedule.type === 'join' ? 'Kaydin alindi. Kayitlarim alanina dusecek.' : 'Hatirlatici olusturuldu.') : nsnsAlert(schedule.type === 'join' ? 'Kaydin alindi. Kayitlarim alanina dusecek.' : 'Hatirlatici olusturuldu.');
             closeMetricModal();
         }
 
@@ -2687,14 +2854,14 @@
         async function renderUpcomingSchedules() {
             const root = document.getElementById('upcomingScheduleList');
             if (!root) return;
-            const items = await loadUpcomingSchedulesFromApi();
+            const items = (await loadUpcomingSchedulesFromApi()).filter((row) => !isRegistrationSchedule(row));
 
             if (!items.length) {
                 root.innerHTML = `
                     <div class="mini-item">
                         <div class="left">
                             <div class="t">Kayitli takvim etkinligi yok</div>
-                            <div class="d">Firsat Takvimi kartlarindan etkinlik ekleyebilirsin.</div>
+                            <div class="d">Mac Takvimim sayfasindan yeni mac ekleyebilirsin.</div>
                         </div>
                         <span class="tag">Bos</span>
                     </div>
@@ -2775,10 +2942,10 @@
                 if (value === 'Transfer Teklifi') el.textContent = 'Transfer Teklifi';
                 if (value === 'Scout Gozlem Seansi') el.textContent = 'Scout G\u00f6zlem Seans\u0131';
                 if (value === 'Kayitli takvim etkinligi yok') el.textContent = 'Kay\u0131tl\u0131 takvim etkinli\u011fi yok';
-                if (value === 'Firsat Takvimi kartlarindan etkinlik ekleyebilirsin.') el.textContent = 'F\u0131rsat Takvimi kartlar\u0131ndan etkinlik ekleyebilirsin.';
+                if (value === 'Mac Takvimim sayfasindan yeni mac ekleyebilirsin.') el.textContent = 'Ma\u00e7 Takvimim sayfas\u0131ndan yeni ma\u00e7 ekleyebilirsin.';
                 if (value === 'Bos') el.textContent = 'Bo\u015f';
                 if (value === 'Planli') el.textContent = 'Planl\u0131';
-                if (value === 'Katilim Onayi Ver') el.textContent = 'Kat\u0131l\u0131m Onay\u0131 Ver';
+                if (value === 'Katilim Onayi Ver') el.textContent = 'Kayit Ol';
                 if (value === 'Hatirlatici Kur') el.textContent = 'Hat\u0131rlat\u0131c\u0131 Kur';
                 if (value === 'Takvime Ekle') el.textContent = 'Takvime Ekle';
                 if (value === 'Mesaj Gonder') el.textContent = 'Mesaj G\u00f6nder';
@@ -2833,3 +3000,13 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
