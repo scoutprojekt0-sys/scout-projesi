@@ -664,6 +664,36 @@
       return body?.data || null;
     }
 
+    async function resolvePlayerIdByName(name) {
+      const query = String(name || '').trim();
+      if (!query) return null;
+
+      try {
+        const params = new URLSearchParams({
+          search: query,
+          per_page: '20',
+        });
+        const response = await fetch(`${getApiBaseUrl()}/public/players?${params.toString()}`, {
+          headers: {
+            Accept: 'application/json',
+          },
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok || payload?.ok === false) return null;
+
+        const rows = Array.isArray(payload?.data?.data)
+          ? payload.data.data
+          : Array.isArray(payload?.data)
+            ? payload.data
+            : [];
+        const exact = rows.find((row) => String(row?.name || '').trim().toLowerCase() === query.toLowerCase());
+        const pick = exact || rows[0] || null;
+        return pick?.id ? Number(pick.id) : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
     function statusLabel(status) {
       if (status === 'shortlist') return { text: 'Kısa Liste', cls: 'st-shortlist' };
       if (status === 'review') return { text: 'İncelemede', cls: 'st-review' };
@@ -761,7 +791,7 @@
             <td data-label="Tarih">${escapeHtml(formatDate(item.watched_at))}</td>
             <td data-label="Aksiyon">
               <div class="inline-actions">
-                <button class="inline-btn" onclick="event.stopPropagation(); openProfile(${Number(item.player_id) || 0})">Profil</button>
+                <button class="inline-btn" onclick="event.stopPropagation(); openProfile(${Number(item.player_id) || 0}, ${JSON.stringify(String(item.player_name || ''))})">Profil</button>
                 ${isScoutEditor ? `<button class="inline-btn" onclick="event.stopPropagation(); nextStatus(${Number(item.id) || 0})">Durum</button>` : ''}
               </div>
             </td>
@@ -860,7 +890,7 @@
       renderChips('detailRisks', item.risks, 'Ek izleme');
 
       const profileBtn = document.getElementById('profileBtn');
-      if (profileBtn) profileBtn.onclick = () => openProfile(item.player_id);
+      if (profileBtn) profileBtn.onclick = () => openProfile(item.player_id, item.player_name);
       const contactBtn = document.getElementById('contactBtn');
       if (contactBtn) contactBtn.onclick = () => { window.location.href = 'notifications.html'; };
       const compareBtn = document.getElementById('compareBtn');
@@ -885,9 +915,20 @@
       }
     }
 
-    function openProfile(playerId) {
-      if (!playerId) return;
-      window.location.href = `player-profile.html?user_id=${encodeURIComponent(playerId)}`;
+    async function openProfile(playerId, playerName) {
+      let targetId = Number(playerId) || 0;
+      if (!targetId && playerName) {
+        targetId = await resolvePlayerIdByName(playerName);
+      }
+      if (targetId) {
+        window.location.href = `player-profile.html?user_id=${encodeURIComponent(targetId)}`;
+        return;
+      }
+      if (playerName) {
+        window.location.href = `professional-players.html?search=${encodeURIComponent(playerName)}`;
+        return;
+      }
+      window.alert('Bu raporda oyuncu profili baglanmamis.');
     }
 
     function bind() {
@@ -944,7 +985,7 @@
       const club = String(document.getElementById('clubInput')?.value || '').trim();
       const watchedAt = String(document.getElementById('watchedAtInput')?.value || '').trim();
       const playerIdRaw = Number(document.getElementById('playerIdInput')?.value || 0);
-      const playerId = Number.isFinite(playerIdRaw) && playerIdRaw > 0 ? playerIdRaw : null;
+      let playerId = Number.isFinite(playerIdRaw) && playerIdRaw > 0 ? playerIdRaw : null;
       const summary = String(document.getElementById('summaryInput')?.value || '').trim();
       const note = String(document.getElementById('noteInput')?.value || '').trim();
       if (!playerName || !position || !rating) {
@@ -978,6 +1019,14 @@
       };
 
       try {
+        if (!playerId) {
+          playerId = await resolvePlayerIdByName(playerName);
+          if (playerId) {
+            report.player_user_id = playerId;
+            const playerIdInput = document.getElementById('playerIdInput');
+            if (playerIdInput) playerIdInput.value = String(playerId);
+          }
+        }
         const created = await createReport(report);
         const nextReport = ensureReportShape(created || Object.assign({ scout_name: scoutName }, report));
         allReports.unshift(nextReport);

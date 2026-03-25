@@ -8,6 +8,7 @@ use App\Http\Requests\Contact\ChangeContactStatusRequest;
 use App\Http\Requests\Contact\ListContactsRequest;
 use App\Http\Requests\Contact\StoreContactRequest;
 use App\Models\Contact;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +17,8 @@ use Symfony\Component\HttpFoundation\Response;
 class ContactController extends Controller
 {
     use ApiResponds;
+
+    private const SEARCHABLE_ROLES = ['player', 'scout', 'team', 'club', 'manager', 'coach', 'lawyer'];
 
     public function sendMessage(StoreContactRequest $request): JsonResponse
     {
@@ -42,6 +45,45 @@ class ContactController extends Controller
         $created = DB::table('contacts')->where('id', $id)->first();
 
         return $this->successResponse($created, 'Mesaj gonderildi.', Response::HTTP_CREATED);
+    }
+
+    public function searchRecipients(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        if (! $user) {
+            return $this->errorResponse('Yetkilendirme gerekli.', Response::HTTP_UNAUTHORIZED, 'unauthenticated');
+        }
+
+        $query = trim((string) $request->query('q', ''));
+        $role = strtolower(trim((string) $request->query('role', '')));
+        $limit = max(1, min((int) $request->query('limit', 10), 20));
+
+        $rows = User::query()
+            ->whereKeyNot($user->id)
+            ->when($role !== '' && in_array($role, self::SEARCHABLE_ROLES, true), function ($builder) use ($role) {
+                $builder->where('role', $role);
+            }, function ($builder) {
+                $builder->whereIn('role', self::SEARCHABLE_ROLES);
+            })
+            ->when($query !== '', function ($builder) use ($query) {
+                $builder->where(function ($inner) use ($query) {
+                    $inner->where('name', 'like', '%'.$query.'%')
+                        ->orWhere('email', 'like', '%'.$query.'%');
+                });
+            })
+            ->orderByRaw('LOWER(name) = ? desc', [mb_strtolower($query, 'UTF-8')])
+            ->orderBy('name')
+            ->limit($limit)
+            ->get(['id', 'name', 'email', 'role'])
+            ->map(fn (User $recipient) => [
+                'id' => (int) $recipient->id,
+                'name' => (string) $recipient->name,
+                'email' => (string) $recipient->email,
+                'role' => (string) $recipient->role,
+            ])
+            ->values();
+
+        return $this->successResponse($rows, 'Alici listesi hazir.');
     }
 
     public function inbox(ListContactsRequest $request): JsonResponse

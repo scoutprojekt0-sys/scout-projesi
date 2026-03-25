@@ -329,6 +329,7 @@ Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->grou
     Route::patch('/applications/{id}/status', [ApplicationController::class, 'changeStatus'])->middleware('ability:application:incoming');
 
     Route::post('/contacts', [ContactController::class, 'store'])->middleware('ability:contact:write');
+    Route::get('/contacts/recipients/search', [ContactController::class, 'searchRecipients'])->middleware('ability:contact:read');
     Route::get('/contacts/inbox', [ContactController::class, 'inbox'])->middleware('ability:contact:read');
     Route::get('/contacts/sent', [ContactController::class, 'sent'])->middleware('ability:contact:read');
     Route::patch('/contacts/{id}/status', [ContactController::class, 'changeStatus'])->middleware('ability:contact:write');

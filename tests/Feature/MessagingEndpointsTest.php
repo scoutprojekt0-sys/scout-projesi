@@ -94,4 +94,25 @@ class MessagingEndpointsTest extends TestCase
             ->assertOk()
             ->assertJsonPath('unread_count', 0);
     }
+
+    public function test_user_can_search_message_recipients_across_roles(): void
+    {
+        $team = User::factory()->create(['role' => 'team', 'name' => 'Kulup']);
+        $scout = User::factory()->create(['role' => 'scout', 'name' => 'Scout Hakan', 'email' => 'scout.hakan@example.com']);
+        $player = User::factory()->create(['role' => 'player', 'name' => 'Oyuncu Hakan', 'email' => 'oyuncu.hakan@example.com']);
+
+        Sanctum::actingAs($team, ['contact:read']);
+
+        $this->getJson('/api/contacts/recipients/search?q=Scout Hakan')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.0.id', $scout->id)
+            ->assertJsonPath('data.0.role', 'scout');
+
+        $this->getJson('/api/contacts/recipients/search?q=@example.com')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonFragment(['id' => $scout->id, 'role' => 'scout'])
+            ->assertJsonFragment(['id' => $player->id, 'role' => 'player']);
+    }
 }

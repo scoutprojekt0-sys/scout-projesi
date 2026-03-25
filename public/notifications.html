@@ -588,7 +588,7 @@
             <input id="composeSubject" name="subject" type="text" maxlength="150" placeholder="Konu" required>
           </div>
           <textarea id="composeBody" name="message" placeholder="Mesajini yaz..." required></textarea>
-          <div class="compose-note" id="composeNotice">Alici adini yaz. Sistem uygun oyuncuyu otomatik bulur.</div>
+          <div class="compose-note" id="composeNotice">Alici adini yaz. Sistem uygun hesabi otomatik bulur.</div>
         </div>
         <div class="compose-actions">
           <button class="btn" type="button" id="composeCancelBtn">Vazgec</button>
@@ -767,13 +767,14 @@
       if (!query) return null;
 
       try {
-        const rows = await safeFetchRows(`${API_BASE}/public/players?q=${encodeURIComponent(query)}&per_page=20`);
-        const exact = rows.find((row) => String(row?.name || row?.full_name || '').trim().toLowerCase() === query.toLowerCase());
+        const rows = await safeFetchRows(`${API_BASE}/contacts/recipients/search?q=${encodeURIComponent(query)}&limit=10`);
+        const exact = rows.find((row) => String(row?.name || '').trim().toLowerCase() === query.toLowerCase());
         const pick = exact || rows[0] || null;
         if (!pick?.id) return null;
         return {
           id: Number(pick.id),
-          name: String(pick?.name || pick?.full_name || query),
+          name: String(pick?.name || query),
+          role: String(pick?.role || ''),
         };
       } catch (error) {
         return null;
@@ -785,7 +786,7 @@
       if (composeRecipientId) composeRecipientId.value = prefill.to_user_id || '';
       if (composeSubject) composeSubject.value = prefill.subject || '';
       if (composeBody) composeBody.value = prefill.message || '';
-      if (composeNotice) composeNotice.textContent = prefill.notice || 'Alici adini yaz. Sistem uygun oyuncuyu otomatik bulur.';
+      if (composeNotice) composeNotice.textContent = prefill.notice || 'Alici adini yaz. Sistem uygun hesabi otomatik bulur.';
       composeModal?.classList.add('show');
     }
 
@@ -809,7 +810,7 @@
       if (!toUserId) {
         const resolved = await resolveRecipientByName(recipientName);
         if (!resolved?.id) {
-          if (composeNotice) composeNotice.textContent = 'Alici oyuncu bulunamadi. Tam adini yazmayi dene.';
+          if (composeNotice) composeNotice.textContent = 'Alici bulunamadi. Tam adini veya e-postasini yazmayi dene.';
           return;
         }
         toUserId = resolved.id;
