@@ -37,6 +37,10 @@ class LawyerController extends Controller
 
     public function register(Request $request): JsonResponse
     {
+        if ((string) $request->user()?->role !== 'lawyer') {
+            return $this->errorResponse('Bu alan sadece avukat hesaplari icin aktif.', Response::HTTP_FORBIDDEN, 'forbidden_role');
+        }
+
         $validated = $request->validate([
             'license_number'   => ['required', 'string', 'max:100', 'unique:lawyers,license_number'],
             'specialization'   => ['required', 'string', 'max:100'],
@@ -77,6 +81,10 @@ class LawyerController extends Controller
 
     public function update(Request $request, int $lawyerId): JsonResponse
     {
+        if ((string) $request->user()?->role !== 'lawyer') {
+            return $this->errorResponse('Bu alan sadece avukat hesaplari icin aktif.', Response::HTTP_FORBIDDEN, 'forbidden_role');
+        }
+
         $lawyer = Lawyer::query()->findOrFail($lawyerId);
 
         if ((int) $lawyer->user_id !== (int) $request->user()->id) {

@@ -375,8 +375,8 @@ Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->grou
     Route::post('/favorites/{targetUserId}/toggle', [FavoriteController::class, 'toggle'])->middleware('ability:profile:write');
     Route::get('/favorites/{targetUserId}/check', [FavoriteController::class, 'check'])->middleware('ability:profile:read');
 Route::get('/lawyers/private', [LawyerController::class, 'index'])->middleware('ability:profile:read');
-Route::post('/lawyers/register', [LawyerController::class, 'register'])->middleware('ability:profile:write');
-Route::put('/lawyers/{lawyerId}', [LawyerController::class, 'update'])->middleware('ability:profile:write');
+Route::post('/lawyers/register', [LawyerController::class, 'register'])->middleware('ability:lawyer');
+Route::put('/lawyers/{lawyerId}', [LawyerController::class, 'update'])->middleware('ability:lawyer');
 Route::get('/lawyer/workspace', [LawyerWorkspaceController::class, 'index'])->middleware('ability:profile:read');
 Route::patch('/lawyer/workspace/{itemId}/status', [LawyerWorkspaceController::class, 'updateStatus'])->middleware('ability:profile:write');
     Route::post('/profiles/{userId}/view', [ProfileViewController::class, 'track'])->middleware('ability:profile:write');

@@ -249,7 +249,7 @@ class User extends Authenticatable
             'team' => array_merge($abilities, ['team', 'staff', 'opportunity:write', 'application:incoming']),
             'manager' => array_merge($abilities, ['staff', 'opportunity:write', 'application:incoming']),
             'coach', 'scout' => array_merge($abilities, ['staff']),
-            'lawyer' => array_merge($abilities, ['staff']),
+            'lawyer' => array_merge($abilities, ['staff', 'lawyer']),
             default => $abilities,
         };
     }
