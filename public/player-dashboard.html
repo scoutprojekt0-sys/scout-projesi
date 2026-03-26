@@ -827,6 +827,110 @@
             gap: 10px;
         }
 
+        .interaction-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.62);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1610;
+            padding: 16px;
+        }
+
+        .interaction-modal.active { display: flex; }
+
+        .interaction-card {
+            width: min(980px, 100%);
+            max-height: 90vh;
+            overflow: auto;
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border: 1px solid var(--line);
+            box-shadow: 0 24px 48px rgba(2, 6, 23, 0.45);
+            position: relative;
+        }
+
+        .interaction-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+        }
+
+        .interaction-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 18px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .interaction-head h3 {
+            margin: 0;
+            color: #f5fbff;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .interaction-sub {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .interaction-filters,
+        .interaction-subfilters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 0 18px 18px;
+        }
+
+        .interaction-subfilters {
+            display: none;
+        }
+
+        .interaction-subfilters.active {
+            display: flex;
+        }
+
+        .interaction-subfilters.hidden,
+        .interaction-filters.hidden {
+            display: none;
+        }
+
+        .interaction-filter {
+            appearance: none;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--muted);
+            min-height: 34px;
+            padding: 0 12px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .interaction-filter.active {
+            color: #fff;
+            border-color: rgba(255, 126, 34, 0.45);
+            background: linear-gradient(135deg, rgba(255, 126, 34, 0.18), rgba(59, 130, 246, 0.12));
+        }
+
+        .interaction-body {
+            padding: 18px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .interaction-list {
+            display: grid;
+            gap: 10px;
+        }
+
 
         .schedule-actions {
             display: grid;
@@ -1287,7 +1391,7 @@
                     <section class="hero-action-group">
                         <div class="hero-action-title">Takip</div>
                         <div class="hero-action-links">
-                            <a class="hero-action-link" href="trial-center.html"><i class="fas fa-tower-observation"></i><span>Deneme Merkezi</span></a>
+                            <button type="button" class="hero-action-link" onclick="openInteractionsModal()"><i class="fas fa-comments"></i><span>Etkilesimlerim</span></button>
                             <a class="hero-action-link" href="statistics.html"><i class="fas fa-chart-line"></i><span>Istatistikler</span></a>
                             <a class="hero-action-link" href="scout-watchlist.html"><i class="fas fa-list-check"></i><span>Takip Listem</span></a>
                             <a class="hero-action-link" href="settings.html"><i class="fas fa-gear"></i><span>Ayarlar</span></a>
@@ -1505,6 +1609,31 @@
         </div>
     </div>
 
+    <div class="interaction-modal" id="interactionsModal" onclick="if(event.target===this) closeInteractionsModal()">
+        <div class="interaction-card" onclick="event.stopPropagation()">
+            <div class="interaction-head">
+                <div>
+                    <h3>Etkilesimlerim</h3>
+                    <div class="interaction-sub" id="interactionsModalSummary">Scout, menajer, antrenor ve kulupten gelen temaslari burada filtrele.</div>
+                </div>
+                <button class="metric-modal-close" type="button" onclick="closeInteractionsModal()">×</button>
+            </div>
+            <div class="interaction-filters" id="interactionFilters">
+                <button type="button" class="interaction-filter" data-interaction-filter="scout" onclick="setInteractionsFilter('scout')">Scout</button>
+                <button type="button" class="interaction-filter" data-interaction-filter="manager" onclick="setInteractionsFilter('manager')">Menajer</button>
+                <button type="button" class="interaction-filter" data-interaction-filter="coach" onclick="setInteractionsFilter('coach')">Antrenor</button>
+                <button type="button" class="interaction-filter" data-interaction-filter="club" onclick="setInteractionsFilter('club')">Kulup</button>
+            </div>
+            <div class="interaction-subfilters" id="interactionSubfilters">
+                <button type="button" class="interaction-filter" data-interaction-type-filter="message" onclick="setInteractionsTypeFilter('message')">Mesaj</button>
+                <button type="button" class="interaction-filter" data-interaction-type-filter="interest" onclick="setInteractionsTypeFilter('interest')">Ilgi</button>
+                <button type="button" class="interaction-filter" data-interaction-type-filter="watch" onclick="setInteractionsTypeFilter('watch')">Izleme</button>
+                <button type="button" class="interaction-filter" data-interaction-type-filter="invite" onclick="setInteractionsTypeFilter('invite')">Davet</button>
+            </div>
+            <div class="interaction-body" id="interactionsModalBody"></div>
+        </div>
+    </div>
+
     <div class="need-modal-overlay" id="todayMatchOverlay" onclick="if(event.target.id==='todayMatchOverlay'){closeTodayMatchModal();}">
         <div class="need-modal live-modal" onclick="event.stopPropagation()">
             <div class="need-modal-head">
@@ -1624,6 +1753,8 @@
         };
         let listingsFilterState = '';
         let listingsTypeFilterState = '';
+        let interactionsFilterState = '';
+        let interactionsTypeFilterState = '';
 
         function normalizeText(value) {
             return (value || '').toString().trim().toLowerCase();
@@ -2450,6 +2581,190 @@
                 event: 'Deneme / Idman',
                 message: 'Mesaj',
             })[typeKey] || 'Ilan';
+        }
+
+        function normalizeInteractionRole(value) {
+            const role = normalizeText(value);
+            if (role === 'team' || role === 'club' || role === 'kulup' || role === 'klup') return 'club';
+            if (role === 'manager' || role === 'menajer') return 'manager';
+            if (role === 'coach' || role === 'antrenor' || role === 'trainer') return 'coach';
+            if (role === 'scout') return 'scout';
+            return '';
+        }
+
+        function deriveInteractionRole(row) {
+            return normalizeInteractionRole(
+                row?.sender_role
+                || row?.from_role
+                || row?.role
+                || row?.payload?.sender_role
+                || row?.payload?.from_role
+                || row?.payload?.role
+                || row?.payload?.source_role
+                || row?.payload?.actor_role
+                || ''
+            );
+        }
+
+        function deriveInteractionType(row) {
+            const haystack = normalizeText(`${row?.type || ''} ${row?.subject || ''} ${row?.message || ''} ${row?.payload?.type || ''} ${row?.payload?.title || ''} ${row?.payload?.message || ''}`);
+            if (/davet|invite|trial|deneme|idman|gorusme|izlemeye gel/.test(haystack)) return 'invite';
+            if (/watch|izleme|watchlist|takibe aldi|takip listesi/.test(haystack)) return 'watch';
+            if (/interest|ilgi|shortlist|profilini inceledi|favori|begen/.test(haystack)) return 'interest';
+            return 'message';
+        }
+
+        function getInteractionTypeLabel(typeKey) {
+            return ({
+                message: 'Mesaj',
+                interest: 'Ilgi',
+                watch: 'Izleme',
+                invite: 'Davet',
+            })[typeKey] || 'Etkilesim';
+        }
+
+        function getInteractionRoleLabel(roleKey) {
+            return ({
+                scout: 'Scout',
+                manager: 'Menajer',
+                coach: 'Antrenor',
+                club: 'Kulup',
+            })[roleKey] || 'Etkilesim';
+        }
+
+        function getPlayerInteractionRows() {
+            const rows = [];
+            const inbox = Array.isArray(dashboardApiState.incomingMessages) ? dashboardApiState.incomingMessages : [];
+            const notifications = Array.isArray(dashboardApiState.notifications) ? dashboardApiState.notifications : [];
+
+            inbox.forEach((row) => {
+                const roleKey = deriveInteractionRole(row);
+                if (!roleKey) return;
+                rows.push({
+                    role_key: roleKey,
+                    type_key: deriveInteractionType(row),
+                    title: row?.subject || 'Yeni mesaj',
+                    meta: [row?.sender_name || 'Gonderen', row?.created_at || row?.updated_at || null].filter(Boolean).join(' • '),
+                    body: row?.message || 'Mesaj detaylari hazir.',
+                    action_label: 'Oku',
+                    action_call: "window.location.href='notifications.html'",
+                });
+            });
+
+            notifications.forEach((row) => {
+                const roleKey = deriveInteractionRole(row);
+                if (!roleKey) return;
+                rows.push({
+                    role_key: roleKey,
+                    type_key: deriveInteractionType(row),
+                    title: row?.payload?.title || row?.type || 'Yeni etkileşim',
+                    meta: [row?.payload?.actor_name || row?.payload?.sender_name || getInteractionRoleLabel(roleKey), row?.created_at || null].filter(Boolean).join(' • '),
+                    body: row?.payload?.message || row?.payload?.body || 'Bildirim detayi hazir.',
+                    action_label: 'Detay',
+                    action_call: "window.location.href='notifications.html'",
+                });
+            });
+
+            return rows;
+        }
+
+        function syncInteractionsPanels() {
+            const filtersEl = document.getElementById('interactionFilters');
+            const subfiltersEl = document.getElementById('interactionSubfilters');
+            const showRoleFilters = !interactionsTypeFilterState;
+            const showTypeFilters = Boolean(interactionsFilterState) && !interactionsTypeFilterState;
+            if (filtersEl) filtersEl.style.display = showRoleFilters ? 'flex' : 'none';
+            if (subfiltersEl) subfiltersEl.style.display = showTypeFilters ? 'flex' : 'none';
+        }
+
+        function renderInteractionsModal(roleKey = interactionsFilterState, typeKey = interactionsTypeFilterState) {
+            const summaryEl = document.getElementById('interactionsModalSummary');
+            const bodyEl = document.getElementById('interactionsModalBody');
+            const modal = document.getElementById('interactionsModal');
+            if (!summaryEl || !bodyEl || !modal) return;
+
+            interactionsFilterState = ['scout', 'manager', 'coach', 'club'].includes(roleKey) ? roleKey : '';
+            interactionsTypeFilterState = ['message', 'interest', 'watch', 'invite'].includes(typeKey) ? typeKey : '';
+
+            document.querySelectorAll('[data-interaction-filter]').forEach((button) => {
+                button.classList.toggle('active', button.getAttribute('data-interaction-filter') === interactionsFilterState);
+            });
+            document.querySelectorAll('[data-interaction-type-filter]').forEach((button) => {
+                button.classList.toggle('active', button.getAttribute('data-interaction-type-filter') === interactionsTypeFilterState);
+            });
+            syncInteractionsPanels();
+
+            if (!interactionsFilterState) {
+                summaryEl.textContent = 'Once kaynagi sec. Ardindan etkileşim turunu belirle.';
+                bodyEl.innerHTML = '<div class="metric-item-meta">Scout, menajer, antrenor veya kulup secerek devam et.</div>';
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                return;
+            }
+
+            if (!interactionsTypeFilterState) {
+                summaryEl.textContent = `${getInteractionRoleLabel(interactionsFilterState)} kaynagi secildi.`;
+                bodyEl.innerHTML = `<div class="metric-item-meta">Simdi ${getInteractionTypeLabel('message')}, ${getInteractionTypeLabel('interest')}, ${getInteractionTypeLabel('watch')} veya ${getInteractionTypeLabel('invite')} sec.</div>`;
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                return;
+            }
+
+            const rows = getPlayerInteractionRows()
+                .filter((row) => row.role_key === interactionsFilterState && row.type_key === interactionsTypeFilterState)
+                .slice(0, 4);
+
+            summaryEl.textContent = rows.length
+                ? `${getInteractionRoleLabel(interactionsFilterState)} kaynagindan ${getInteractionTypeLabel(interactionsTypeFilterState)} turunde ${rows.length} kayit var.`
+                : `${getInteractionRoleLabel(interactionsFilterState)} kaynagindan ${getInteractionTypeLabel(interactionsTypeFilterState)} kaydi yok.`;
+
+            bodyEl.innerHTML = rows.length
+                ? `<div class="interaction-list">${rows.map((item) => `
+                    <article class="metric-item">
+                        <div class="metric-item-title">${escapeHtml(item.title)}</div>
+                        <div class="metric-item-meta">${escapeHtml(item.meta || '-')}</div>
+                        <div class="metric-item-meta">${escapeHtml(item.body || '-')}</div>
+                        ${item.action_call ? `
+                        <div class="row-actions" style="justify-content:flex-start; margin-top:10px;">
+                            <button type="button" class="btn btn-secondary" onclick="${item.action_call}">${escapeHtml(item.action_label || 'Detay')}</button>
+                        </div>` : ''}
+                    </article>
+                `).join('')}</div>`
+                : '<div class="metric-item-meta">Bu filtrede etkileşim kaydi bulunmuyor.</div>';
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function setInteractionsFilter(roleKey) {
+            interactionsFilterState = ['scout', 'manager', 'coach', 'club'].includes(roleKey) ? roleKey : '';
+            interactionsTypeFilterState = '';
+            renderInteractionsModal(interactionsFilterState, '');
+        }
+
+        function setInteractionsTypeFilter(typeKey) {
+            interactionsTypeFilterState = ['message', 'interest', 'watch', 'invite'].includes(typeKey) ? typeKey : '';
+            renderInteractionsModal(interactionsFilterState, interactionsTypeFilterState);
+        }
+
+        function openInteractionsModal() {
+            interactionsFilterState = '';
+            interactionsTypeFilterState = '';
+            renderInteractionsModal('', '');
+        }
+
+        function closeInteractionsModal() {
+            if (interactionsTypeFilterState) {
+                interactionsFilterState = '';
+                interactionsTypeFilterState = '';
+                renderInteractionsModal('', '');
+                return;
+            }
+
+            const modal = document.getElementById('interactionsModal');
+            if (!modal) return;
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
         }
 
         function syncListingsPanels() {
