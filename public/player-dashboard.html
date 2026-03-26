@@ -1385,7 +1385,7 @@
                             <button type="button" class="hero-action-link" onclick="openListingsModal()"><i class="fas fa-bullhorn"></i><span>Ilanlar</span></button>
                             <button type="button" class="hero-action-link" onclick="openMyApplicationsModal()"><i class="fas fa-file-signature"></i><span>Basvurularim</span></button>
                             <button type="button" class="hero-action-link" onclick="openMyTrialsModal()"><i class="fas fa-clipboard-list"></i><span>Kayitlarim</span></button>
-                            <button type="button" class="hero-action-link" onclick="openMetricModal('offers')"><i class="fas fa-handshake"></i><span>Tekliflerim</span></button>
+                            <button type="button" class="hero-action-link" onclick="openTransferRoom()"><i class="fas fa-handshake"></i><span>Tekliflerim</span></button>
                         </div>
                     </section>
                     <section class="hero-action-group">
@@ -1454,7 +1454,7 @@
                         <div class="stat-value" id="scoutInterestValue">23</div>
                         <div class="stat-sub" id="scoutInterestSub">5 yeni takipci</div>
                     </article>
-                    <article class="stat-card is-clickable" onclick="openMetricModal('offers')">
+                    <article class="stat-card is-clickable" onclick="openTransferRoom()">
                         <i class="fas fa-handshake stat-icon"></i>
                         <div class="stat-label">Transfer Teklifi</div>
                         <div class="stat-value" id="transferOfferValue">3</div>
@@ -1896,6 +1896,52 @@
             return 0;
         }
 
+        function getTransferStatusLabel(value) {
+            const key = normalizeText(value);
+            if (key === 'accepted') return 'Kabul edildi';
+            if (key === 'rejected') return 'Reddedildi';
+            if (key === 'countered') return 'Karsi teklif verildi';
+            if (key === 'verified') return 'Dogrulandi';
+            if (key === 'pending') return 'Incelemede';
+            return 'Kayit alindi';
+        }
+
+        function formatTransferOfferRow(row) {
+            const playerName = (row?.player?.name || row?.player_name || '').toString().trim();
+            const fromClub = (row?.from_club?.name || row?.fromClub?.name || row?.from_club_name || 'Mevcut kulup').toString().trim();
+            const toClub = (row?.to_club?.name || row?.toClub?.name || row?.to_club_name || 'Yeni kulup').toString().trim();
+            const feeRaw = row?.counter_fee ?? row?.fee;
+            const fee = Number(feeRaw || 0);
+            const currency = (row?.currency || 'EUR').toString().trim().toUpperCase();
+            const money = Number.isFinite(fee) && fee > 0
+                ? `${currency} ${fee.toLocaleString('tr-TR')}`
+                : currency;
+            const status = getTransferStatusLabel(row?.negotiation_status || row?.verification_status || 'pending');
+            return {
+                title: `${playerName || 'Oyuncu'} • ${status}`,
+                meta: `${fromClub} -> ${toClub} • ${money}`,
+            };
+        }
+
+        function openTransferRoom() {
+            const go = (userId) => {
+                const href = userId
+                    ? `teklif-pazarlik-odasi.html?player_id=${encodeURIComponent(userId)}`
+                    : 'teklif-pazarlik-odasi.html';
+                window.location.href = href;
+            };
+
+            const storedId = getCurrentPlayerUserIdFromStorage();
+            if (storedId) {
+                go(storedId);
+                return;
+            }
+
+            resolveCurrentUserId()
+                .then((userId) => go(userId))
+                .catch(() => go(null));
+        }
+
         async function resolveCurrentUserId() {
             try {
                 const raw = localStorage.getItem('nextscout_user');
@@ -1938,12 +1984,13 @@
             if (!userId) return;
 
             const apiBase = getApiBaseUrl();
-            const [viewPayload, cardStatsPayload, videosPayload, inboxPayload, notifPayload] = await Promise.all([
+            const [viewPayload, cardStatsPayload, videosPayload, inboxPayload, notifPayload, offersPayload] = await Promise.all([
                 fetchJsonSafe(`${apiBase}/profile-views/${userId}/count`),
                 fetchJsonSafe(`${apiBase}/profile-cards/player/${userId}/stats`),
                 fetchJsonSafe(`${apiBase}/video-portfolio/player/${userId}`),
                 fetchJsonSafe(`${apiBase}/contacts/inbox?per_page=100`),
                 fetchJsonSafe(`${apiBase}/notifications?limit=100`),
+                fetchJsonSafe(`${apiBase}/transfers?player_id=${encodeURIComponent(userId)}&per_page=100`),
             ]);
 
             dashboardApiState.loaded = true;
@@ -1952,12 +1999,7 @@
             dashboardApiState.videos = Array.isArray(videosPayload?.data) ? videosPayload.data : [];
             dashboardApiState.incomingMessages = parsePaginatedRows(inboxPayload);
             dashboardApiState.notifications = parsePaginatedRows(notifPayload);
-            dashboardApiState.offers = dashboardApiState.incomingMessages.filter((row) => {
-                const subject = normalizeText(row?.subject);
-                const message = normalizeText(row?.message);
-                const type = normalizeText(row?.type);
-                return /teklif|transfer|deneme|sozlesme|offer/.test(subject) || /teklif|transfer|deneme|sozlesme|offer/.test(message) || /offer|transfer/.test(type);
-            });
+            dashboardApiState.offers = parsePaginatedRows(offersPayload);
 
             refreshPlayerDashboardLiveStats();
         }
@@ -2454,10 +2496,7 @@
                     title: 'Transfer Teklifleri',
                 summary: `Toplam ${offerCount} teklif kaydi • ${offerCount > 0 ? Math.max(1, offerCount - 1) : 0} teklif acik`,
                     items: dashboardApiState.loaded && dashboardApiState.offers.length
-                        ? dashboardApiState.offers.slice(0, 3).map((row) => ({
-                            title: row.subject || row.title || 'Transfer teklifi',
-                            meta: row.message || row.created_at || row.time || '-',
-                        }))
+                        ? dashboardApiState.offers.slice(0, 3).map((row) => formatTransferOfferRow(row))
                         : [
                             { title: 'Acil gorusme talebi', meta: offerCount > 0 ? 'Acik gorusme var' : 'Henuz teklif yok' },
                             { title: 'Deneme mac daveti', meta: `${Math.max(0, offerCount - 1)} potansiyel davet` },
