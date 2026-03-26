@@ -5465,11 +5465,72 @@
         }
 
         .success-stories-list {
-            display: grid;
-            gap: 8px;
-            max-height: 200px;
+            max-height: 252px;
             overflow-y: auto;
             padding-right: 4px;
+        }
+
+        .success-stories-compact-table {
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            box-shadow: 0 16px 32px rgba(8, 19, 29, 0.18);
+            overflow: hidden;
+        }
+
+        .success-stories-compact-head,
+        .success-stories-compact-row {
+            display: grid;
+            grid-template-columns: minmax(170px, 1fr) minmax(0, 2.5fr);
+            gap: 12px;
+            align-items: start;
+            padding: 11px 12px;
+        }
+
+        .success-stories-compact-head {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+            color: #cbd5e1;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        .success-stories-compact-row {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            color: #e2e8f0;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .success-stories-compact-row:last-child {
+            border-bottom: 0;
+        }
+
+        .success-story-player {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .success-story-player strong {
+            color: #f8fafc;
+        }
+
+        .success-story-player .sport {
+            color: #94a3b8;
+            font-size: 11px;
+        }
+
+        .success-story-summary {
+            color: #dbeafe;
+            font-size: 12px;
+            min-width: 0;
+            word-break: break-word;
         }
 
         .success-stories-footer {
@@ -5541,6 +5602,22 @@
             margin-top: 6px;
             color: var(--ns-muted);
             font-size: 11px;
+        }
+
+        @media (max-width: 860px) {
+            .success-stories-compact-head,
+            .success-stories-compact-row {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 6px;
+            }
+
+            .success-stories-compact-head {
+                display: none;
+            }
+
+            .success-stories-compact-row {
+                padding: 12px;
+            }
         }
 
         .mvp-tool-strip {
@@ -9160,15 +9237,9 @@
                             <input type="url" class="form-control" name="image_url" maxlength="500" placeholder="https://...">
                         </div>
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <div class="form-group">
-                            <label class="form-label">Eski KULÜP (ops.)</label>
-                            <input type="text" class="form-control" name="old_club" maxlength="150">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Yeni KULÜP (ops.)</label>
-                            <input type="text" class="form-control" name="new_club" maxlength="150">
-                        </div>
+                    <div class="form-group">
+                        <label class="form-label">Konu Basligi (ops.)</label>
+                        <input type="text" class="form-control" name="story_subject" maxlength="150" placeholder="Orn: Bugun oynanan mac performansi">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Hikayen *</label>
@@ -10320,7 +10391,7 @@
                     </div>
                 </div>
                 <div class="success-stories-footer">
-                    <button type="button" class="success-stories-more-btn" id="successStoriesToggleBtn" onclick="toggleSuccessStoriesList()" hidden>Tümünü Gör</button>
+                    <button type="button" class="success-stories-more-btn" id="successStoriesToggleBtn" onclick="window.location.href=resolveLocalPage('success-stories.html')" hidden>Tümünü Gör</button>
                 </div>
             </section>
 
@@ -12434,6 +12505,13 @@
         let successStoriesExpanded = false;
         let successStoriesCache = [];
 
+        function deriveSuccessStoryTopic(item) {
+            const story = String(item?.story_text || '').trim();
+            if (!story) return 'Basari hikayesi';
+            const firstSentence = story.split(/[.!?]/).map((part) => part.trim()).find(Boolean) || story;
+            return firstSentence.slice(0, 80);
+        }
+
         function renderSuccessStoriesDesktopList(items) {
             const root = document.getElementById('successStoriesList');
             const toggleBtn = document.getElementById('successStoriesToggleBtn');
@@ -12446,18 +12524,30 @@
             }
 
             const visibleItems = successStoriesExpanded ? items : items.slice(0, SUCCESS_STORIES_PREVIEW_LIMIT);
-            root.innerHTML = visibleItems.map((item) => {
+            const rows = visibleItems.map((item) => {
                 const fullName = esc(item?.full_name || 'Oyuncu');
                 const sport = esc(item?.sport || '-');
-                const oldClub = esc(item?.old_club || 'Eski KULÜP belirtilmedi');
-                const newClub = esc(item?.new_club || 'Yeni KULÜP belirtilmedi');
+                const topicSource = String(item?.story_subject || item?.subject || '').trim();
+                const topic = esc(topicSource || deriveSuccessStoryTopic(item));
                 const story = esc(item?.story_text || '').slice(0, 190);
-                return `<article class="success-story-item">
-                            <strong>${fullName}</strong> <span style="opacity:.85;">• ${sport}</span>
-                            <div class="meta">${oldClub} → ${newClub}</div>
-                            <div style="margin-top:6px;">${story}${(item?.story_text || '').length > 190 ? '...' : ''}</div>
+                return `<article class="success-stories-compact-row">
+                            <div class="success-story-player">
+                                <strong>${fullName}</strong>
+                                <span class="sport">${sport}</span>
+                            </div>
+                            <div>
+                                <div class="success-story-summary" style="font-weight:700; margin-bottom:4px;">${topic}</div>
+                                <div class="success-story-summary">${story}${(item?.story_text || '').length > 190 ? '...' : ''}</div>
+                            </div>
                         </article>`;
             }).join('');
+            root.innerHTML = `<div class="success-stories-compact-table">
+                        <div class="success-stories-compact-head">
+                            <span>Oyuncu</span>
+                            <span>Detay</span>
+                        </div>
+                        ${rows}
+                    </div>`;
 
             if (toggleBtn) {
                 toggleBtn.hidden = false;
@@ -12477,12 +12567,12 @@
                 body.innerHTML = successStoriesCache.map((item) => {
                     const fullName = esc(item?.full_name || 'Oyuncu');
                     const sport = esc(item?.sport || '-');
-                    const oldClub = esc(item?.old_club || 'Eski KULÜP belirtilmedi');
-                    const newClub = esc(item?.new_club || 'Yeni KULÜP belirtilmedi');
+                    const topicSource = String(item?.story_subject || item?.subject || '').trim();
+                    const topic = esc(topicSource || deriveSuccessStoryTopic(item));
                     const story = esc(item?.story_text || '').slice(0, 240);
                     return `<article class="success-story-dense-item">
                         <strong>${fullName}</strong> <span style="opacity:.85;">• ${sport}</span>
-                        <div class="success-story-dense-meta">${oldClub} → ${newClub}</div>
+                        <div class="success-story-dense-meta">${topic}</div>
                         <div style="margin-top:4px;">${story}${(item?.story_text || '').length > 240 ? '...' : ''}</div>
                     </article>`;
                 }).join('');
@@ -12534,15 +12624,15 @@
                     mobileRoot.innerHTML = items.slice(0, SUCCESS_STORIES_PREVIEW_LIMIT).map((item) => {
                         const fullName = esc(item?.full_name || 'Uye');
                         const sport = esc(item?.sport || '-');
-                        const oldClub = esc(item?.old_club || 'Eski KULÜP');
-                        const newClub = esc(item?.new_club || 'Yeni KULÜP');
+                        const topicSource = String(item?.story_subject || item?.subject || '').trim();
+                        const topic = esc(topicSource || deriveSuccessStoryTopic(item));
                         const story = esc(item?.story_text || '').slice(0, 120);
                         return `<article class="mobile-success-item">
                             <div class="mobile-success-top">
                                 <strong>${fullName}</strong>
                                 <span class="mobile-success-sport">${sport}</span>
                             </div>
-                            <div class="mobile-success-meta">${oldClub} → ${newClub}</div>
+                            <div class="mobile-success-meta">${topic}</div>
                             <div class="mobile-success-text">${story}${(item?.story_text || '').length > 120 ? '...' : ''}</div>
                         </article>`;
                     }).join('');
@@ -13080,8 +13170,7 @@
             const payload = {
                 full_name: (formData.get('full_name') || '').toString().trim(),
                 sport: (formData.get('sport') || '').toString().trim(),
-                old_club: (formData.get('old_club') || '').toString().trim(),
-                new_club: (formData.get('new_club') || '').toString().trim(),
+                story_subject: (formData.get('story_subject') || '').toString().trim(),
                 story_text: (formData.get('story_text') || '').toString().trim(),
                 image_url: (formData.get('image_url') || '').toString().trim(),
             };

@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LegacyCompatibilityController extends Controller
 {
+    private const SUCCESS_STORY_PUBLIC_DAYS = 15;
+
     private const EVENT_KEYWORDS = [
         '%deneme%',
         '%idman%',
@@ -258,7 +260,17 @@ class LegacyCompatibilityController extends Controller
 
                 $query->where('user_id', (int) $authUser->id);
             } else {
+                $visibleSince = now()->subDays(self::SUCCESS_STORY_PUBLIC_DAYS);
                 $query->where('status', 'approved')
+                    ->where(function ($builder) use ($visibleSince) {
+                        $builder
+                            ->where('approved_at', '>=', $visibleSince)
+                            ->orWhere(function ($fallback) use ($visibleSince) {
+                                $fallback
+                                    ->whereNull('approved_at')
+                                    ->where('created_at', '>=', $visibleSince);
+                            });
+                    })
                     ->orderByDesc('approved_at');
             }
 
@@ -270,6 +282,7 @@ class LegacyCompatibilityController extends Controller
                     'id',
                     'full_name',
                     'sport',
+                    'story_subject',
                     'story_text',
                     'old_club',
                     'new_club',
@@ -281,6 +294,7 @@ class LegacyCompatibilityController extends Controller
                     'id' => (int) $story->id,
                     'full_name' => (string) $story->full_name,
                     'sport' => (string) $story->sport,
+                    'story_subject' => $story->story_subject,
                     'story_text' => (string) $story->story_text,
                     'old_club' => $story->old_club,
                     'new_club' => $story->new_club,
@@ -319,6 +333,7 @@ class LegacyCompatibilityController extends Controller
                     $inner
                         ->where('full_name', 'like', '%'.$query.'%')
                         ->orWhere('sport', 'like', '%'.$query.'%')
+                        ->orWhere('story_subject', 'like', '%'.$query.'%')
                         ->orWhere('story_text', 'like', '%'.$query.'%')
                         ->orWhereHas('user', function ($userQuery) use ($query) {
                             $userQuery
@@ -336,6 +351,7 @@ class LegacyCompatibilityController extends Controller
                 'id' => (int) $story->id,
                 'full_name' => (string) $story->full_name,
                 'sport' => (string) $story->sport,
+                'story_subject' => $story->story_subject,
                 'story_text' => (string) $story->story_text,
                 'old_club' => $story->old_club,
                 'new_club' => $story->new_club,
@@ -370,6 +386,7 @@ class LegacyCompatibilityController extends Controller
         $data = $request->validate([
             'full_name' => ['required', 'string', 'max:150'],
             'sport' => ['required', 'string', 'max:80'],
+            'story_subject' => ['nullable', 'string', 'max:150'],
             'story_text' => ['required', 'string', 'max:2500'],
             'old_club' => ['nullable', 'string', 'max:150'],
             'new_club' => ['nullable', 'string', 'max:150'],
@@ -381,6 +398,7 @@ class LegacyCompatibilityController extends Controller
                 'user_id' => (int) $request->user()->id,
                 'full_name' => $data['full_name'],
                 'sport' => $data['sport'],
+                'story_subject' => $data['story_subject'] ?? null,
                 'story_text' => $data['story_text'],
                 'old_club' => $data['old_club'] ?? null,
                 'new_club' => $data['new_club'] ?? null,
@@ -409,13 +427,14 @@ class LegacyCompatibilityController extends Controller
             'id' => time(),
             'full_name' => $data['full_name'],
             'sport' => $data['sport'],
+            'story_subject' => $data['story_subject'] ?? null,
             'story_text' => $data['story_text'],
             'old_club' => $data['old_club'] ?? null,
             'new_club' => $data['new_club'] ?? null,
             'image_url' => $data['image_url'] ?? null,
             'created_at' => now()->toIso8601String(),
         ]);
-        Cache::put('legacy_success_stories', array_slice($rows, 0, 100), now()->addDays(30));
+        Cache::put('legacy_success_stories', array_slice($rows, 0, 100), now()->addDays(self::SUCCESS_STORY_PUBLIC_DAYS));
 
         return response()->json(['ok' => true, 'message' => 'Basari hikayesi kaydedildi.']);
     }

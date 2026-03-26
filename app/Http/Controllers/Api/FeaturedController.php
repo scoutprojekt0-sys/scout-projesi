@@ -241,6 +241,7 @@ class FeaturedController extends Controller
             'id' => (int) $story->id,
             'full_name' => (string) $story->full_name,
             'sport' => (string) $story->sport,
+            'story_subject' => $story->story_subject,
             'old_club' => $story->old_club,
             'new_club' => $story->new_club,
             'story_text' => (string) $story->story_text,

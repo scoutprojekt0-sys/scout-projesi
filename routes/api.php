@@ -112,8 +112,8 @@ Route::prefix('moderation')->middleware('auth:sanctum')->group(function () {
 
 // Player Transfer endpoints
 Route::prefix('transfers')->group(function () {
-    Route::get('/', [PlayerTransferController::class, 'index']);
-    Route::get('/{id}', [PlayerTransferController::class, 'show']);
+    Route::get('/', [PlayerTransferController::class, 'index'])->middleware('auth:sanctum');
+    Route::get('/{id}', [PlayerTransferController::class, 'show'])->middleware('auth:sanctum');
     Route::get('/player/{playerId}/timeline', [PlayerTransferController::class, 'timeline']);
     Route::post('/', [PlayerTransferController::class, 'store'])->middleware('auth:sanctum');
     Route::post('/{id}/room-action', [PlayerTransferController::class, 'roomAction'])->middleware('auth:sanctum');

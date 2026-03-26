@@ -11,6 +11,7 @@ class SuccessStory extends Model
         'user_id',
         'full_name',
         'sport',
+        'story_subject',
         'old_club',
         'new_club',
         'story_text',

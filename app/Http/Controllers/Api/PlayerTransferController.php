@@ -10,6 +10,7 @@ use App\Services\ScoutAttributionService;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
@@ -22,9 +23,14 @@ class PlayerTransferController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $user = $request->user();
         $query = PlayerTransfer::query()
             ->with(['player:id,name', 'fromClub:id,name', 'toClub:id,name', 'negotiationUpdater:id,name,role'])
             ->orderBy('transfer_date', 'desc');
+
+        if ($user) {
+            $this->applyRoleVisibilityScope($query, $user, $request);
+        }
 
         if ($request->has('player_id')) {
             $query->where('player_id', $request->player_id);
@@ -127,7 +133,7 @@ class PlayerTransferController extends Controller
     {
         $user = $request->user();
         $role = strtolower((string) ($user?->role ?? ''));
-        $allowedRoles = ['manager', 'menajer', 'team', 'club', 'kulup', 'player', 'lawyer'];
+        $allowedRoles = ['admin', 'manager', 'menajer', 'team', 'club', 'kulup', 'player', 'lawyer'];
 
         if (!$user || !in_array($role, $allowedRoles, true)) {
             return response()->json([
@@ -151,6 +157,13 @@ class PlayerTransferController extends Controller
         }
 
         $transfer = PlayerTransfer::with(['player:id,name', 'fromClub:id,name', 'toClub:id,name', 'negotiationUpdater:id,name,role'])->findOrFail($id);
+        if (!$this->canAccessTransfer($user, $transfer)) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Bu teklif kaydina erisemezsiniz.',
+            ], 403);
+        }
+
         $payload = $validator->validated();
         $action = $payload['action'];
         $note = trim((string) ($payload['note'] ?? ''));
@@ -191,7 +204,7 @@ class PlayerTransferController extends Controller
         ]);
     }
 
-    public function show(int $id): JsonResponse
+    public function show(Request $request, int $id): JsonResponse
     {
         $transfer = PlayerTransfer::with([
             'player:id,name',
@@ -201,6 +214,13 @@ class PlayerTransferController extends Controller
             'verifier:id,name,email',
             'negotiationUpdater:id,name,role',
         ])->findOrFail($id);
+
+        if (!$this->canAccessTransfer($request->user(), $transfer)) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Bu teklif kaydina erisemezsiniz.',
+            ], 403);
+        }
 
         return response()->json([
             'ok' => true,
@@ -220,5 +240,67 @@ class PlayerTransferController extends Controller
             'ok' => true,
             'data' => $transfers,
         ]);
+    }
+
+    private function applyRoleVisibilityScope($query, User $user, Request $request): void
+    {
+        $role = strtolower((string) $user->role);
+
+        if ($role === 'admin') {
+            return;
+        }
+
+        if ($role === 'player') {
+            $request->merge(['player_id' => (string) $user->id]);
+            $query->where('player_id', $user->id);
+            return;
+        }
+
+        if (in_array($role, ['team', 'club', 'kulup'], true)) {
+            $request->merge(['club_id' => (string) $user->id]);
+            $query->where(function ($builder) use ($user) {
+                $builder
+                    ->where('from_club_id', $user->id)
+                    ->orWhere('to_club_id', $user->id);
+            });
+            return;
+        }
+
+        if (in_array($role, ['manager', 'menajer', 'lawyer'], true)) {
+            $query->where(function ($builder) use ($user) {
+                $builder
+                    ->where('created_by', $user->id)
+                    ->orWhere('negotiation_updated_by', $user->id);
+            });
+        }
+    }
+
+    private function canAccessTransfer(?User $user, PlayerTransfer $transfer): bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        $role = strtolower((string) $user->role);
+
+        if ($role === 'admin') {
+            return true;
+        }
+
+        if ($role === 'player') {
+            return (int) $transfer->player_id === (int) $user->id;
+        }
+
+        if (in_array($role, ['team', 'club', 'kulup'], true)) {
+            return (int) $transfer->from_club_id === (int) $user->id
+                || (int) $transfer->to_club_id === (int) $user->id;
+        }
+
+        if (in_array($role, ['manager', 'menajer', 'lawyer'], true)) {
+            return (int) $transfer->created_by === (int) $user->id
+                || (int) $transfer->negotiation_updated_by === (int) $user->id;
+        }
+
+        return false;
     }
 }
