@@ -314,7 +314,6 @@ Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->grou
     Route::patch('/players/{id}', [PlayerController::class, 'update'])->middleware('ability:player');
     Route::apiResource('teams', TeamController::class)->only(['index', 'show', 'update']);
     Route::get('/teams/{id}/transfer-summary', [TeamController::class, 'transferSummary']);
-    Route::apiResource('staff', StaffController::class)->only(['index', 'show', 'update']);
 
     Route::post('/media', [MediaController::class, 'store'])->middleware('ability:media:write');
     Route::get('/users/{id}/media', [MediaController::class, 'indexByUser'])->middleware('ability:media:read');
@@ -389,6 +388,7 @@ Route::get('/staff/player-evaluations', [StaffPlayerEvaluationController::class,
 Route::post('/staff/player-evaluations', [StaffPlayerEvaluationController::class, 'store'])->middleware('ability:profile:write');
 Route::get('/staff/player-notes', [StaffPlayerNoteController::class, 'index'])->middleware('ability:profile:read');
 Route::post('/staff/player-notes', [StaffPlayerNoteController::class, 'store'])->middleware('ability:profile:write');
+Route::apiResource('staff', StaffController::class)->only(['index', 'show', 'update']);
     Route::get('/scout/player-reports', [ScoutPlayerReportController::class, 'index'])->middleware('ability:profile:read');
     Route::post('/scout/player-reports', [ScoutPlayerReportController::class, 'store'])->middleware('ability:profile:write');
     Route::patch('/scout/player-reports/{id}/status', [ScoutPlayerReportController::class, 'updateStatus'])->middleware('ability:profile:write');

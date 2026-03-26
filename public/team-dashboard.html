@@ -1236,6 +1236,7 @@
                         <button class="btn-small secondary" type="button" onclick="openTeamMarketPulse()"><i class="fas fa-chart-line"></i><span>Market Pulse</span></button>
                         <button class="btn-small secondary" type="button" onclick="openLiveMatches()"><i class="fas fa-tower-broadcast"></i><span>Canli Mac Bildirimleri</span></button>
                         <button class="btn-small secondary" type="button" onclick="openTeamScoutHub()"><i class="fas fa-bookmark"></i><span>Scout Watchlist & Raporlar</span></button>
+                        <button class="btn-small secondary" type="button" onclick="openTeamWorkspace('notes')"><i class="fas fa-briefcase"></i><span>Oyuncu Calisma Alani</span></button>
                         <button class="btn-small secondary" type="button" onclick="openTeamGroupsCard()"><i class="fas fa-people-group"></i><span>Takim Gruplari</span></button>
                         <button class="btn-small secondary" type="button" onclick="openClubOperationsModal()"><i class="fas fa-layer-group"></i><span>Kulup Operasyonlari</span></button>
                     </div>
@@ -1854,6 +1855,77 @@
         </div>
     </div>
 
+    <div class="need-modal-overlay" id="teamWorkspaceOverlay" onclick="if (event.target.id === 'teamWorkspaceOverlay') closeTeamWorkspace();">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+            <div class="need-modal-head">
+                <div>
+                    <h3 id="teamWorkspaceTitle">Oyuncu Calisma Alani</h3>
+                    <p id="teamWorkspaceSummary" style="margin:6px 0 0 0;color:#6b7280;font-size:13px;">Oyuncu bazli not, klip ve degerlendirmeleri tek panelden yonet.</p>
+                </div>
+                <button class="btn-small secondary" type="button" onclick="closeTeamWorkspace()">Kapat</button>
+            </div>
+            <div class="need-modal-body">
+                <div class="workspace-tabs" style="margin-bottom:14px;">
+                    <button class="workspace-tab active" type="button" data-team-workspace-tab="notes" onclick="openTeamWorkspace('notes')">Teknik Not Defteri</button>
+                    <button class="workspace-tab" type="button" data-team-workspace-tab="clips" onclick="openTeamWorkspace('clips')">Klip Isaretleme</button>
+                    <button class="workspace-tab" type="button" data-team-workspace-tab="evaluations" onclick="openTeamWorkspace('evaluations')">Kaydedilmis Degerlendirmeler</button>
+                </div>
+                <div class="workspace-tabs" style="margin-bottom:14px;">
+                    <button class="workspace-tab active" type="button" data-team-workspace-scope="mine" onclick="setTeamWorkspaceScope('mine')">Benim</button>
+                    <button class="workspace-tab" type="button" data-team-workspace-scope="team" onclick="setTeamWorkspaceScope('team')">Ekip</button>
+                </div>
+                <section id="teamWorkspaceNotes">
+                    <div class="search-grid" style="grid-template-columns:repeat(2, 1fr);">
+                        <div class="form-group"><label>Oyuncu Adi</label><input type="text" id="teamWorkspaceNotePlayer" placeholder="Oyuncu adi"></div>
+                        <div class="form-group"><label>Oyuncu ID</label><input type="number" id="teamWorkspaceNotePlayerId" min="1" placeholder="Opsiyonel"></div>
+                        <div class="form-group"><label>Pozisyon</label><input type="text" id="teamWorkspaceNotePosition" placeholder="Sag bek / 10 numara"></div>
+                        <div class="form-group"><label>Etiket</label><select id="teamWorkspaceNoteTag"><option value="izlenecek">Izlenecek</option><option value="tekrar-bak">Tekrar Bak</option><option value="takip">Takip</option><option value="hazir">Hazir</option></select></div>
+                        <div class="form-group"><label>Odak</label><select id="teamWorkspaceNoteFocus"><option value="teknik">Teknik</option><option value="taktik">Taktik</option><option value="fizik">Fizik</option><option value="zihinsel">Zihinsel</option></select></div>
+                    </div>
+                    <div class="form-group" style="margin:12px 0;">
+                        <label>Not</label>
+                        <input type="text" id="teamWorkspaceNoteBody" placeholder="Oyuncu icin kisa kulup notu">
+                    </div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                        <button class="btn-small primary" type="button" id="teamWorkspaceNoteSubmit">Notu Kaydet</button>
+                        <input type="text" id="teamWorkspaceNoteSearch" placeholder="Oyuncu, etiket veya not ara..." style="flex:1;min-width:240px;">
+                    </div>
+                    <div class="need-list" id="teamWorkspaceNotesList" style="margin-top:14px;"><div class="need-item">Teknik notlar yukleniyor...</div></div>
+                </section>
+                <section id="teamWorkspaceClips" hidden>
+                    <div class="search-grid" style="grid-template-columns:repeat(2, 1fr);">
+                        <div class="form-group"><label>Oyuncu Adi</label><input type="text" id="teamWorkspaceClipPlayer" placeholder="Oyuncu adi"></div>
+                        <div class="form-group"><label>Oyuncu ID</label><input type="number" id="teamWorkspaceClipPlayerId" min="1" placeholder="Opsiyonel"></div>
+                        <div class="form-group"><label>Video Linki</label><input type="url" id="teamWorkspaceClipUrl" placeholder="https://..."></div>
+                        <div class="form-group"><label>Dakika</label><input type="number" id="teamWorkspaceClipMinute" min="0" max="180" placeholder="12"></div>
+                        <div class="form-group"><label>Saniye</label><input type="number" id="teamWorkspaceClipSecond" min="0" max="59" placeholder="34"></div>
+                    </div>
+                    <div class="form-group" style="margin:12px 0;">
+                        <label>Klip Notu</label>
+                        <input type="text" id="teamWorkspaceClipBody" placeholder="Bu sahnede dikkat ceken nokta">
+                    </div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                        <button class="btn-small primary" type="button" id="teamWorkspaceClipSubmit">Klibi Kaydet</button>
+                        <input type="text" id="teamWorkspaceClipSearch" placeholder="Oyuncu, link veya not ara..." style="flex:1;min-width:240px;">
+                    </div>
+                    <div class="need-list" id="teamWorkspaceClipsList" style="margin-top:14px;"><div class="need-item">Klip notlari yukleniyor...</div></div>
+                </section>
+                <section id="teamWorkspaceEvaluations" hidden>
+                    <div class="workspace-metrics">
+                        <div class="workspace-metric"><strong id="teamEvalTotal">0</strong><span>Toplam</span></div>
+                        <div class="workspace-metric"><strong id="teamEvalLastPlayer">-</strong><span>Son Oyuncu</span></div>
+                        <div class="workspace-metric"><strong id="teamEvalLastDate">-</strong><span>Son Kayit</span></div>
+                    </div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                        <input type="text" id="teamWorkspaceEvalSearch" placeholder="Oyuncu, pozisyon veya karar notu ara..." style="flex:1;min-width:240px;">
+                        <input type="number" id="teamWorkspaceEvalMinScore" min="0" max="100" placeholder="Min. ortalama" style="width:180px;">
+                    </div>
+                    <div class="need-list" id="teamWorkspaceEvaluationsList" style="margin-top:14px;"><div class="need-item">Degerlendirmeler yukleniyor...</div></div>
+                </section>
+            </div>
+        </div>
+    </div>
+
     <div class="need-modal-overlay" id="teamSuccessStorySubmitOverlay" onclick="if (event.target.id === 'teamSuccessStorySubmitOverlay') closeTeamSuccessStorySubmitModal();">
         <div class="need-modal live-modal" onclick="event.stopPropagation()">
             <div class="need-modal-head">
@@ -2424,6 +2496,259 @@
                 throw new Error(firstError || payload?.message || `HTTP ${response.status}`);
             }
             return payload?.data ?? payload;
+        }
+
+        let teamWorkspaceScope = 'mine';
+        let activeTeamWorkspaceTab = 'notes';
+
+        function formatTeamWorkspaceAuthorMeta(row) {
+            const name = String(row?.author_name || '').trim();
+            const role = String(row?.author_role || '').trim();
+            if (!name && !role) return '';
+            const roleLabel = role ? role.charAt(0).toUpperCase() + role.slice(1) : 'Ekip';
+            return `${name || 'Bilinmeyen'} • ${roleLabel}`;
+        }
+
+        async function fetchTeamWorkspaceNotes(search) {
+            const params = new URLSearchParams({ per_page: '100', scope: teamWorkspaceScope });
+            if (search) params.set('search', search);
+            const payload = await teamApiGet(`/staff/player-notes?${params.toString()}`);
+            return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
+        }
+
+        async function createTeamWorkspaceNote(body) {
+            return teamApiPost('/staff/player-notes', body);
+        }
+
+        async function fetchTeamWorkspaceClips(search) {
+            const params = new URLSearchParams({ per_page: '100', scope: teamWorkspaceScope });
+            if (search) params.set('search', search);
+            const payload = await teamApiGet(`/staff/player-clips?${params.toString()}`);
+            return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
+        }
+
+        async function createTeamWorkspaceClip(body) {
+            return teamApiPost('/staff/player-clips', body);
+        }
+
+        async function fetchTeamWorkspaceEvaluations(search) {
+            const params = new URLSearchParams({ per_page: '100', scope: teamWorkspaceScope });
+            if (search) params.set('search', search);
+            const payload = await teamApiGet(`/staff/player-evaluations?${params.toString()}`);
+            return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
+        }
+
+        function openTeamWorkspace(type = 'notes') {
+            const overlay = document.getElementById('teamWorkspaceOverlay');
+            const title = document.getElementById('teamWorkspaceTitle');
+            const summary = document.getElementById('teamWorkspaceSummary');
+            const notes = document.getElementById('teamWorkspaceNotes');
+            const clips = document.getElementById('teamWorkspaceClips');
+            const evaluations = document.getElementById('teamWorkspaceEvaluations');
+            const tabs = Array.from(document.querySelectorAll('[data-team-workspace-tab]'));
+            if (!overlay || !title || !summary || !notes || !clips || !evaluations) return;
+
+            const map = {
+                notes: { title: 'Teknik Not Defteri', summary: 'Oyuncu bazli teknik notlari kaydet ve ekip notlarini gor.' },
+                clips: { title: 'Klip Isaretleme', summary: 'Kaydedilen klip notlarini ve video sahnelerini tek yerde topla.' },
+                evaluations: { title: 'Kaydedilmis Degerlendirmeler', summary: 'Tum ekip degerlendirmelerini oyuncu bazli takip et.' },
+            };
+
+            activeTeamWorkspaceTab = map[type] ? type : 'notes';
+            title.textContent = map[activeTeamWorkspaceTab].title;
+            summary.textContent = map[activeTeamWorkspaceTab].summary;
+            notes.hidden = activeTeamWorkspaceTab !== 'notes';
+            clips.hidden = activeTeamWorkspaceTab !== 'clips';
+            evaluations.hidden = activeTeamWorkspaceTab !== 'evaluations';
+            tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.teamWorkspaceTab === activeTeamWorkspaceTab));
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            if (activeTeamWorkspaceTab === 'notes') renderTeamWorkspaceNotes();
+            if (activeTeamWorkspaceTab === 'clips') renderTeamWorkspaceClips();
+            if (activeTeamWorkspaceTab === 'evaluations') renderTeamWorkspaceEvaluations();
+        }
+
+        function closeTeamWorkspace() {
+            document.getElementById('teamWorkspaceOverlay')?.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function setTeamWorkspaceScope(scope) {
+            teamWorkspaceScope = scope === 'team' ? 'team' : 'mine';
+            Array.from(document.querySelectorAll('[data-team-workspace-scope]')).forEach((tab) => {
+                tab.classList.toggle('active', tab.dataset.teamWorkspaceScope === teamWorkspaceScope);
+            });
+            if (activeTeamWorkspaceTab === 'notes') renderTeamWorkspaceNotes();
+            if (activeTeamWorkspaceTab === 'clips') renderTeamWorkspaceClips();
+            if (activeTeamWorkspaceTab === 'evaluations') renderTeamWorkspaceEvaluations();
+        }
+
+        function buildTeamWorkspaceListUrl(type) {
+            const safeType = ['notes', 'clips', 'evaluations'].includes(type) ? type : 'notes';
+            const params = new URLSearchParams({ type: safeType, scope: teamWorkspaceScope });
+            return `team-workspace-list.html?${params.toString()}`;
+        }
+
+        async function renderTeamWorkspaceNotes() {
+            const root = document.getElementById('teamWorkspaceNotesList');
+            const search = String(document.getElementById('teamWorkspaceNoteSearch')?.value || '').trim().toLowerCase();
+            if (!root) return;
+            root.innerHTML = '<div class="need-item">Teknik notlar yukleniyor...</div>';
+            try {
+                const rows = await fetchTeamWorkspaceNotes(search);
+                if (!rows.length) {
+                    root.innerHTML = '<div class="need-item">Kayitli teknik not bulunmuyor.</div>';
+                    return;
+                }
+                const previewRows = rows.slice(0, 3);
+                root.innerHTML = previewRows.map((row) => `
+                    <div class="need-item">
+                        <div class="need-item-title">${escapeHtml(row.player || '-')}</div>
+                        <div class="need-item-meta">
+                            <span>Pozisyon: ${escapeHtml(row.position || '-')}</span>
+                            <span>Etiket: ${escapeHtml(row.tag || '-')}</span>
+                            <span>Odak: ${escapeHtml(row.focus || '-')}</span>
+                            <span>Yazan: ${escapeHtml(formatTeamWorkspaceAuthorMeta(row) || 'Benim')}</span>
+                            <span>Tarih: ${escapeHtml(row.created_at || '-')}</span>
+                        </div>
+                        <div class="application-message">${escapeHtml(row.body || '')}</div>
+                    </div>
+                `).join('') + (rows.length > 3 ? `
+                    <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+                        <a class="btn-small secondary" href="${buildTeamWorkspaceListUrl('notes')}">Tumunu Gor</a>
+                    </div>
+                ` : '');
+            } catch (error) {
+                root.innerHTML = `<div class="need-item">${escapeHtml(error.message || 'Teknik notlar alinamadi.')}</div>`;
+            }
+        }
+
+        async function submitTeamWorkspaceNote() {
+            const playerName = String(document.getElementById('teamWorkspaceNotePlayer')?.value || '').trim();
+            const playerUserId = Number(document.getElementById('teamWorkspaceNotePlayerId')?.value || 0) || null;
+            const position = String(document.getElementById('teamWorkspaceNotePosition')?.value || '').trim();
+            const tag = String(document.getElementById('teamWorkspaceNoteTag')?.value || '').trim();
+            const focus = String(document.getElementById('teamWorkspaceNoteFocus')?.value || '').trim();
+            const body = String(document.getElementById('teamWorkspaceNoteBody')?.value || '').trim();
+            if (!playerName || body.length < 8) {
+                window.nsNotify?.error ? window.nsNotify.error('Oyuncu adi ve en az 8 karakter not gerekli.') : nsnsAlert('Oyuncu adi ve en az 8 karakter not gerekli.');
+                return;
+            }
+            try {
+                await createTeamWorkspaceNote({ player_user_id: playerUserId, player_name: playerName, position: position || null, tag: tag || null, focus: focus || null, body });
+                document.getElementById('teamWorkspaceNotePlayer').value = '';
+                document.getElementById('teamWorkspaceNotePlayerId').value = '';
+                document.getElementById('teamWorkspaceNotePosition').value = '';
+                document.getElementById('teamWorkspaceNoteBody').value = '';
+                await renderTeamWorkspaceNotes();
+                window.nsNotify?.success ? window.nsNotify.success('Kulup notu kaydedildi.') : null;
+            } catch (error) {
+                window.nsNotify?.error ? window.nsNotify.error(error.message || 'Kulup notu kaydedilemedi.') : nsnsAlert(error.message || 'Kulup notu kaydedilemedi.');
+            }
+        }
+
+        async function renderTeamWorkspaceClips() {
+            const root = document.getElementById('teamWorkspaceClipsList');
+            const search = String(document.getElementById('teamWorkspaceClipSearch')?.value || '').trim().toLowerCase();
+            if (!root) return;
+            root.innerHTML = '<div class="need-item">Klip notlari yukleniyor...</div>';
+            try {
+                const rows = await fetchTeamWorkspaceClips(search);
+                if (!rows.length) {
+                    root.innerHTML = '<div class="need-item">Kayitli klip notu bulunmuyor.</div>';
+                    return;
+                }
+                const previewRows = rows.slice(0, 3);
+                root.innerHTML = previewRows.map((row) => `
+                    <div class="need-item">
+                        <div class="need-item-title">${escapeHtml(row.player || '-')}</div>
+                        <div class="need-item-meta">
+                            <span>Zaman: ${escapeHtml(row.stamp || '00:00')}</span>
+                            <span>Yazan: ${escapeHtml(formatTeamWorkspaceAuthorMeta(row) || 'Benim')}</span>
+                            <span>Tarih: ${escapeHtml(row.created_at || '-')}</span>
+                            <span><a href="${escapeHtml(row.url || '#')}" target="_blank" rel="noopener noreferrer" style="color:#bfdbfe;">Videoyu Ac</a></span>
+                        </div>
+                        <div class="application-message">${escapeHtml(row.body || '')}</div>
+                    </div>
+                `).join('') + (rows.length > 3 ? `
+                    <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+                        <a class="btn-small secondary" href="${buildTeamWorkspaceListUrl('clips')}">Tumunu Gor</a>
+                    </div>
+                ` : '');
+            } catch (error) {
+                root.innerHTML = `<div class="need-item">${escapeHtml(error.message || 'Klip notlari alinamadi.')}</div>`;
+            }
+        }
+
+        async function submitTeamWorkspaceClip() {
+            const playerName = String(document.getElementById('teamWorkspaceClipPlayer')?.value || '').trim();
+            const playerUserId = Number(document.getElementById('teamWorkspaceClipPlayerId')?.value || 0) || null;
+            const videoUrl = String(document.getElementById('teamWorkspaceClipUrl')?.value || '').trim();
+            const minuteMark = Math.max(0, Number(document.getElementById('teamWorkspaceClipMinute')?.value || 0));
+            const secondMark = Math.max(0, Math.min(59, Number(document.getElementById('teamWorkspaceClipSecond')?.value || 0)));
+            const body = String(document.getElementById('teamWorkspaceClipBody')?.value || '').trim();
+            if (!playerName || !videoUrl || body.length < 8) {
+                window.nsNotify?.error ? window.nsNotify.error('Oyuncu, video linki ve en az 8 karakter klip notu gerekli.') : nsnsAlert('Oyuncu, video linki ve en az 8 karakter klip notu gerekli.');
+                return;
+            }
+            try {
+                await createTeamWorkspaceClip({ player_user_id: playerUserId, player_name: playerName, video_url: videoUrl, minute_mark: minuteMark, second_mark: secondMark, body });
+                document.getElementById('teamWorkspaceClipPlayer').value = '';
+                document.getElementById('teamWorkspaceClipPlayerId').value = '';
+                document.getElementById('teamWorkspaceClipUrl').value = '';
+                document.getElementById('teamWorkspaceClipMinute').value = '';
+                document.getElementById('teamWorkspaceClipSecond').value = '';
+                document.getElementById('teamWorkspaceClipBody').value = '';
+                await renderTeamWorkspaceClips();
+                window.nsNotify?.success ? window.nsNotify.success('Kulup klip notu kaydedildi.') : null;
+            } catch (error) {
+                window.nsNotify?.error ? window.nsNotify.error(error.message || 'Kulup klip notu kaydedilemedi.') : nsnsAlert(error.message || 'Kulup klip notu kaydedilemedi.');
+            }
+        }
+
+        async function renderTeamWorkspaceEvaluations() {
+            const root = document.getElementById('teamWorkspaceEvaluationsList');
+            const total = document.getElementById('teamEvalTotal');
+            const lastPlayer = document.getElementById('teamEvalLastPlayer');
+            const lastDate = document.getElementById('teamEvalLastDate');
+            const search = String(document.getElementById('teamWorkspaceEvalSearch')?.value || '').trim().toLowerCase();
+            const minScore = Math.max(0, Number(document.getElementById('teamWorkspaceEvalMinScore')?.value || 0));
+            if (!root || !total || !lastPlayer || !lastDate) return;
+            root.innerHTML = '<div class="need-item">Degerlendirmeler yukleniyor...</div>';
+            try {
+                let rows = await fetchTeamWorkspaceEvaluations(search);
+                rows = rows.filter((row) => Number(row.average || 0) >= minScore);
+                total.textContent = String(rows.length);
+                lastPlayer.textContent = rows[0]?.player_name || '-';
+                lastDate.textContent = rows[0]?.saved_at || '-';
+                if (!rows.length) {
+                    root.innerHTML = '<div class="need-item">Kayitli degerlendirme bulunmuyor.</div>';
+                    return;
+                }
+                const previewRows = rows.slice(0, 3);
+                root.innerHTML = previewRows.map((row) => `
+                    <div class="need-item">
+                        <div class="need-item-title">${escapeHtml(row.player_name || '-')}</div>
+                        <div class="need-item-meta">
+                            <span>Pozisyon: ${escapeHtml(row.position || '-')}</span>
+                            <span>Ortalama: ${Number(row.average || 0).toLocaleString('tr-TR')}</span>
+                            <span>Yazan: ${escapeHtml(formatTeamWorkspaceAuthorMeta(row) || 'Benim')}</span>
+                            <span>Kayit: ${escapeHtml(row.saved_at || '-')}</span>
+                        </div>
+                        <div class="application-message">${escapeHtml(row.decision_note || 'Karar notu yok.')}</div>
+                    </div>
+                `).join('') + (rows.length > 3 ? `
+                    <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+                        <a class="btn-small secondary" href="${buildTeamWorkspaceListUrl('evaluations')}">Tumunu Gor</a>
+                    </div>
+                ` : '');
+            } catch (error) {
+                total.textContent = '0';
+                lastPlayer.textContent = '-';
+                lastDate.textContent = '-';
+                root.innerHTML = `<div class="need-item">${escapeHtml(error.message || 'Degerlendirmeler alinamadi.')}</div>`;
+            }
         }
 
         function getOffers() {
@@ -4044,6 +4369,12 @@
             window.NextScoutGrowth?.bindAutoTelemetry(document);
             document.getElementById('teamTalentTipForm')?.addEventListener('submit', submitTeamTalentTip);
             document.getElementById('teamSuccessStoryForm')?.addEventListener('submit', submitTeamSuccessStory);
+            document.getElementById('teamWorkspaceNoteSubmit')?.addEventListener('click', submitTeamWorkspaceNote);
+            document.getElementById('teamWorkspaceClipSubmit')?.addEventListener('click', submitTeamWorkspaceClip);
+            document.getElementById('teamWorkspaceNoteSearch')?.addEventListener('input', renderTeamWorkspaceNotes);
+            document.getElementById('teamWorkspaceClipSearch')?.addEventListener('input', renderTeamWorkspaceClips);
+            document.getElementById('teamWorkspaceEvalSearch')?.addEventListener('input', renderTeamWorkspaceEvaluations);
+            document.getElementById('teamWorkspaceEvalMinScore')?.addEventListener('input', renderTeamWorkspaceEvaluations);
             let authUser = null;
             try { authUser = JSON.parse(localStorage.getItem('nextscout_user') || '{}'); } catch (error) { authUser = null; }
             const teamHeroUser = document.getElementById('teamHeroUser');

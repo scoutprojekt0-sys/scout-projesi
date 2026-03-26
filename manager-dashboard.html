@@ -1848,6 +1848,10 @@
                     <button class="workspace-tab" type="button" data-manager-workspace-tab="clips" onclick="openManagerWorkspace('clips')">Klip Isaretleme</button>
                     <button class="workspace-tab" type="button" data-manager-workspace-tab="evaluations" onclick="openManagerWorkspace('evaluations')">Kaydedilmis Degerlendirmeler</button>
                 </div>
+                <div class="workspace-tabs" style="margin-bottom:14px;">
+                    <button class="workspace-tab active" type="button" data-manager-workspace-scope="mine" onclick="setManagerWorkspaceScope('mine')">Benim</button>
+                    <button class="workspace-tab" type="button" data-manager-workspace-scope="team" onclick="setManagerWorkspaceScope('team')">Ekip</button>
+                </div>
 
                 <section class="workspace-panel" id="managerWorkspaceNotes">
                     <div class="search-grid" style="grid-template-columns:repeat(2, 1fr);">
@@ -2413,9 +2417,37 @@
             return payload?.data ?? payload;
         }
 
+        let managerWorkspaceScope = 'mine';
+
+        function formatManagerWorkspaceAuthorMeta(row) {
+            const name = String(row?.author_name || '').trim();
+            const role = String(row?.author_role || '').trim();
+            if (!name && !role) return '';
+            const roleLabel = role ? role.charAt(0).toUpperCase() + role.slice(1) : 'Ekip';
+            return `${name || 'Bilinmeyen'} • ${roleLabel}`;
+        }
+
+        function setManagerWorkspaceScope(scope) {
+            managerWorkspaceScope = scope === 'team' ? 'team' : 'mine';
+            Array.from(document.querySelectorAll('[data-manager-workspace-scope]')).forEach((tab) => {
+                tab.classList.toggle('active', tab.dataset.managerWorkspaceScope === managerWorkspaceScope);
+            });
+            const activeTab = document.querySelector('[data-manager-workspace-tab].active')?.dataset.managerWorkspaceTab || 'notes';
+            if (activeTab === 'notes') renderManagerWorkspaceNotes();
+            if (activeTab === 'clips') renderManagerWorkspaceClips();
+            if (activeTab === 'evaluations') renderManagerWorkspaceEvaluations();
+        }
+
+        function buildManagerWorkspaceListUrl(type) {
+            const safeType = ['notes', 'clips', 'evaluations'].includes(type) ? type : 'notes';
+            const params = new URLSearchParams({ type: safeType, scope: managerWorkspaceScope });
+            return `manager-workspace-list.html?${params.toString()}`;
+        }
+
         async function fetchManagerWorkspaceNotes(search) {
             const params = new URLSearchParams({ per_page: '100' });
             if (search) params.set('search', search);
+            params.set('scope', managerWorkspaceScope);
 const payload = await managerApiGet(`/staff/player-notes?${params.toString()}`);
             return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
         }
@@ -2427,6 +2459,7 @@ return managerApiPost('/staff/player-notes', body);
         async function fetchManagerWorkspaceClips(search) {
             const params = new URLSearchParams({ per_page: '100' });
             if (search) params.set('search', search);
+            params.set('scope', managerWorkspaceScope);
 const payload = await managerApiGet(`/staff/player-clips?${params.toString()}`);
             return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
         }
@@ -2438,6 +2471,7 @@ return managerApiPost('/staff/player-clips', body);
         async function fetchManagerWorkspaceEvaluations(search) {
             const params = new URLSearchParams({ per_page: '100' });
             if (search) params.set('search', search);
+            params.set('scope', managerWorkspaceScope);
 const payload = await managerApiGet(`/staff/player-evaluations?${params.toString()}`);
             return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
         }
@@ -2494,18 +2528,24 @@ const payload = await managerApiGet(`/staff/player-evaluations?${params.toString
                     root.innerHTML = '<div class="need-item">Kayitli teknik not bulunmuyor.</div>';
                     return;
                 }
-                root.innerHTML = rows.map((row) => `
+                const previewRows = rows.slice(0, 3);
+                root.innerHTML = previewRows.map((row) => `
                     <div class="need-item">
                         <div class="need-item-title">${escapeHtml(row.player || '-')}</div>
                         <div class="need-item-meta">
                             <span>Pozisyon: ${escapeHtml(row.position || '-')}</span>
                             <span>Etiket: ${escapeHtml(row.tag || '-')}</span>
                             <span>Odak: ${escapeHtml(row.focus || '-')}</span>
+                            <span>Yazan: ${escapeHtml(formatManagerWorkspaceAuthorMeta(row) || 'Benim')}</span>
                             <span>Tarih: ${escapeHtml(row.created_at || '-')}</span>
                         </div>
                         <div class="application-message">${escapeHtml(row.body || '')}</div>
                     </div>
-                `).join('');
+                `).join('') + (rows.length > 3 ? `
+                    <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+                        <a class="btn-small secondary" href="${buildManagerWorkspaceListUrl('notes')}">Tumunu Gor</a>
+                    </div>
+                ` : '');
             } catch (error) {
                 root.innerHTML = `<div class="need-item">${escapeHtml(error.message || 'Teknik notlar alinamadi.')}</div>`;
             }
@@ -2556,17 +2596,23 @@ const payload = await managerApiGet(`/staff/player-evaluations?${params.toString
                     root.innerHTML = '<div class="need-item">Kayitli klip notu bulunmuyor.</div>';
                     return;
                 }
-                root.innerHTML = rows.map((row) => `
+                const previewRows = rows.slice(0, 3);
+                root.innerHTML = previewRows.map((row) => `
                     <div class="need-item">
                         <div class="need-item-title">${escapeHtml(row.player || '-')}</div>
                         <div class="need-item-meta">
                             <span>Zaman: ${escapeHtml(row.stamp || '00:00')}</span>
+                            <span>Yazan: ${escapeHtml(formatManagerWorkspaceAuthorMeta(row) || 'Benim')}</span>
                             <span>Tarih: ${escapeHtml(row.created_at || '-')}</span>
                             <span><a href="${escapeHtml(row.url || '#')}" target="_blank" rel="noopener noreferrer" style="color:#bfdbfe;">Videoyu Ac</a></span>
                         </div>
                         <div class="application-message">${escapeHtml(row.body || '')}</div>
                     </div>
-                `).join('');
+                `).join('') + (rows.length > 3 ? `
+                    <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+                        <a class="btn-small secondary" href="${buildManagerWorkspaceListUrl('clips')}">Tumunu Gor</a>
+                    </div>
+                ` : '');
             } catch (error) {
                 root.innerHTML = `<div class="need-item">${escapeHtml(error.message || 'Klip notlari alinamadi.')}</div>`;
             }
@@ -2629,17 +2675,23 @@ const payload = await managerApiGet(`/staff/player-evaluations?${params.toString
                     return;
                 }
 
-                root.innerHTML = rows.map((row) => `
+                const previewRows = rows.slice(0, 3);
+                root.innerHTML = previewRows.map((row) => `
                     <div class="need-item">
                         <div class="need-item-title">${escapeHtml(row.player_name || '-')}</div>
                         <div class="need-item-meta">
                             <span>Pozisyon: ${escapeHtml(row.position || '-')}</span>
                             <span>Ortalama: ${Number(row.average || 0).toLocaleString('tr-TR')}</span>
+                            <span>Yazan: ${escapeHtml(formatManagerWorkspaceAuthorMeta(row) || 'Benim')}</span>
                             <span>Kayit: ${escapeHtml(row.saved_at || '-')}</span>
                         </div>
                         <div class="application-message">${escapeHtml(row.decision_note || 'Karar notu yok.')}</div>
                     </div>
-                `).join('');
+                `).join('') + (rows.length > 3 ? `
+                    <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+                        <a class="btn-small secondary" href="${buildManagerWorkspaceListUrl('evaluations')}">Tumunu Gor</a>
+                    </div>
+                ` : '');
             } catch (error) {
                 total.textContent = '0';
                 lastPlayer.textContent = '-';

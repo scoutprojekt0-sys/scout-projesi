@@ -25,14 +25,20 @@ class CoachPlayerClipController extends Controller
         $validated = $request->validate([
             'search' => ['nullable', 'string', 'max:120'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
+            'scope' => ['nullable', 'in:mine,team'],
         ]);
 
         $search = trim((string) ($validated['search'] ?? ''));
         $perPage = (int) ($validated['per_page'] ?? 50);
+        $scope = (string) ($validated['scope'] ?? 'mine');
 
         $query = CoachPlayerClip::query()
-            ->where('coach_user_id', $user->id)
+            ->with('author')
             ->latest('id');
+
+        if ($scope !== 'team') {
+            $query->where('coach_user_id', $user->id);
+        }
 
         if ($search !== '') {
             $query->where(function ($builder) use ($search) {
@@ -107,6 +113,9 @@ class CoachPlayerClipController extends Controller
             'second_mark' => $clip->second_mark,
             'stamp' => $clip->stamp,
             'body' => $clip->body,
+            'author_name' => $clip->author?->name,
+            'author_role' => $clip->author?->role,
+            'is_mine' => (int) $clip->coach_user_id === (int) optional(request()->user())->id,
             'created_at' => optional($clip->created_at)->toIso8601String(),
         ];
     }

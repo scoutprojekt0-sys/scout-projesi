@@ -730,6 +730,10 @@
           <button class="workspace-tab" type="button" data-coach-workspace-tab="clips" onclick="openCoachWorkspace('clips')">Klip Isaretleme</button>
           <button class="workspace-tab" type="button" data-coach-workspace-tab="evaluations" onclick="openCoachWorkspace('evaluations')">Kaydedilmis Degerlendirmeler</button>
         </div>
+        <div class="workspace-tabs" style="margin-bottom:14px;">
+          <button class="workspace-tab active" type="button" data-coach-workspace-scope="mine" onclick="setCoachWorkspaceScope('mine')">Benim</button>
+          <button class="workspace-tab" type="button" data-coach-workspace-scope="team" onclick="setCoachWorkspaceScope('team')">Ekip</button>
+        </div>
         <div id="coachWorkspaceBody" style="display:grid; gap:14px;">
           <section id="coachWorkspaceReviews" style="display:none; padding:18px;border:1px solid #475569;border-radius:12px;background:#1f2937;color:#dbeafe;">
             <div class="quick-report-grid" style="grid-template-columns:repeat(3,1fr); margin-bottom:14px;">
@@ -1655,6 +1659,32 @@
 
     let coachDashboardNotesState = [];
     let coachDashboardClipsState = [];
+    let coachWorkspaceScope = 'mine';
+
+    function formatWorkspaceAuthorMeta(row) {
+      const name = String(row?.author_name || '').trim();
+      const role = String(row?.author_role || '').trim();
+      if (!name && !role) return '';
+      const roleLabel = role ? role.charAt(0).toUpperCase() + role.slice(1) : 'Ekip';
+      return `${name || 'Bilinmeyen'} • ${roleLabel}`;
+    }
+
+    function setCoachWorkspaceScope(scope) {
+      coachWorkspaceScope = scope === 'team' ? 'team' : 'mine';
+      Array.from(document.querySelectorAll('[data-coach-workspace-scope]')).forEach((tab) => {
+        tab.classList.toggle('active', tab.dataset.coachWorkspaceScope === coachWorkspaceScope);
+      });
+      const activeTab = document.querySelector('[data-coach-workspace-tab].active')?.dataset.coachWorkspaceTab || 'notes';
+      if (activeTab === 'notes') renderDashboardCoachNotes();
+      if (activeTab === 'clips') renderDashboardCoachClips();
+      if (activeTab === 'evaluations') renderDashboardCoachEvaluations();
+    }
+
+    function buildCoachWorkspaceListUrl(type) {
+      const safeType = ['notes', 'clips', 'evaluations'].includes(type) ? type : 'notes';
+      const params = new URLSearchParams({ type: safeType, scope: coachWorkspaceScope });
+      return `coach-workspace-list.html?${params.toString()}`;
+    }
 
     function loadCoachNotesWorkspace() {
       return Array.isArray(coachDashboardNotesState) ? coachDashboardNotesState : [];
@@ -1671,6 +1701,7 @@
       const params = new URLSearchParams();
       params.set('per_page', '100');
       if (search) params.set('search', search);
+      params.set('scope', coachWorkspaceScope);
 
       const response = await fetch(`${getApiBaseUrl()}/staff/player-notes?${params.toString()}`, {
         headers: {
@@ -1725,6 +1756,7 @@
       const params = new URLSearchParams();
       params.set('per_page', '100');
       if (search) params.set('search', search);
+      params.set('scope', coachWorkspaceScope);
 
       const response = await fetch(`${getApiBaseUrl()}/staff/player-clips?${params.toString()}`, {
         headers: {
@@ -1787,6 +1819,7 @@
       const params = new URLSearchParams();
       params.set('per_page', '100');
       if (search) params.set('search', search);
+      params.set('scope', coachWorkspaceScope);
 
       const response = await fetch(`${getApiBaseUrl()}/staff/player-evaluations?${params.toString()}`, {
         headers: {
@@ -2310,13 +2343,19 @@
         list.innerHTML = '<div class="quick-report-result">Henüz teknik not yok.</div>';
         return;
       }
-      list.innerHTML = rows.map((row) => `
+      const previewRows = rows.slice(0, 3);
+      list.innerHTML = previewRows.map((row) => `
         <div class="quick-report-result" style="text-align:left;">
           <strong>${escapeHtml(row.player || 'Oyuncu')}</strong>
           <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(row.position || '-')} • ${escapeHtml(row.tag || '-')} • ${escapeHtml(row.focus || '-')}</div>
+          <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(formatWorkspaceAuthorMeta(row) || 'Benim')}</div>
           <div style="margin-top:8px; color:#e2e8f0;">${escapeHtml(row.body || '')}</div>
         </div>
-      `).join('');
+      `).join('') + (rows.length > 3 ? `
+        <div style="display:flex; justify-content:flex-end; margin-top:12px;">
+          <a class="btn-small secondary" href="${buildCoachWorkspaceListUrl('notes')}">Tumunu Gor</a>
+        </div>
+      ` : '');
     }
 
     async function submitDashboardCoachNote() {
@@ -2377,13 +2416,19 @@
         list.innerHTML = '<div class="quick-report-result">Henüz klip kaydı yok.</div>';
         return;
       }
-      list.innerHTML = rows.map((row) => `
+      const previewRows = rows.slice(0, 3);
+      list.innerHTML = previewRows.map((row) => `
         <div class="quick-report-result" style="text-align:left;">
           <strong>${escapeHtml(row.player || 'Oyuncu')}</strong>
           <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(row.stamp || '-')} • ${escapeHtml(row.url || '-')}</div>
+          <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(formatWorkspaceAuthorMeta(row) || 'Benim')}</div>
           <div style="margin-top:8px; color:#e2e8f0;">${escapeHtml(row.body || '')}</div>
         </div>
-      `).join('');
+      `).join('') + (rows.length > 3 ? `
+        <div style="display:flex; justify-content:flex-end; margin-top:12px;">
+          <a class="btn-small secondary" href="${buildCoachWorkspaceListUrl('clips')}">Tumunu Gor</a>
+        </div>
+      ` : '');
     }
 
     async function renderDashboardCoachEvaluations() {
@@ -2423,14 +2468,20 @@
         return;
       }
 
-      list.innerHTML = filtered.map((row) => `
+      const previewRows = filtered.slice(0, 3);
+      list.innerHTML = previewRows.map((row) => `
         <div class="quick-report-result" style="text-align:left;">
           <strong>${escapeHtml(row.player_name || 'Oyuncu')}</strong>
           <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(row.position || '-')} • Ortalama ${escapeHtml(row.average)}</div>
+          <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(formatWorkspaceAuthorMeta(row) || 'Benim')}</div>
           <div style="margin-top:8px; color:#e2e8f0;">${escapeHtml(row.decision_note || '-')}</div>
           <div style="margin-top:8px; color:#9bb5cb;">${escapeHtml(row.saved_at || '-')}</div>
         </div>
-      `).join('');
+      `).join('') + (filtered.length > 3 ? `
+        <div style="display:flex; justify-content:flex-end; margin-top:12px;">
+          <a class="btn-small secondary" href="${buildCoachWorkspaceListUrl('evaluations')}">Tumunu Gor</a>
+        </div>
+      ` : '');
     }
 
     async function submitDashboardCoachClip() {

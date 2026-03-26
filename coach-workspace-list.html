@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Antrenor Calisma Alani Listesi</title>
+  <style>
+    body{margin:0;font-family:Arial,sans-serif;background:#0f172a;color:#e2e8f0}.page{max-width:1100px;margin:0 auto;padding:28px 18px 40px}.head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}.head h1{margin:0;font-size:26px}.head p{margin:6px 0 0;color:#94a3b8;font-size:14px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:10px;border:1px solid #475569;color:#e2e8f0;text-decoration:none;background:#1e293b;font-weight:700}.toolbar{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}.input{flex:1;min-width:240px;padding:11px 12px;border-radius:10px;border:1px solid #475569;background:#111827;color:#e2e8f0}.badge{display:inline-flex;padding:5px 9px;border-radius:999px;background:#1d4ed8;color:#dbeafe;font-size:12px;font-weight:700}.list{display:grid;gap:12px}.item{border:1px solid #334155;background:#111827;border-radius:14px;padding:16px}.item-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.item-title{font-size:18px;font-weight:800;color:#f8fafc}.item-copy{margin-top:8px;color:#cbd5e1;line-height:1.6}.meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;color:#94a3b8;font-size:13px}.empty{border:1px dashed #475569;border-radius:14px;padding:22px;color:#94a3b8;text-align:center}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="head">
+      <div>
+        <div class="badge" id="pageScope">Benim</div>
+        <h1 id="pageTitle">Antrenor Teknik Notlari</h1>
+        <p id="pageSummary">Calisma alanindaki tum kayitlari burada gorursun.</p>
+      </div>
+      <a class="btn" href="coach-dashboard.html">Antrenor Dashboarda Don</a>
+    </div>
+    <div class="toolbar">
+      <input class="input" id="searchInput" type="text" placeholder="Oyuncu, etiket, not veya karar ara...">
+      <a class="btn" id="backLink" href="coach-dashboard.html">Calisma Alanini Ac</a>
+    </div>
+    <div class="list" id="listRoot"><div class="empty">Kayitlar yukleniyor...</div></div>
+  </div>
+  <script>
+    const params=new URLSearchParams(location.search);const type=['notes','clips','evaluations'].includes(params.get('type'))?params.get('type'):'notes';const scope=params.get('scope')==='team'?'team':'mine';
+    function getApiBaseUrl(){const stored=(localStorage.getItem('nextscout_api_base')||'').trim();return stored?stored.replace(/\/$/,''):`${location.origin}/api`;}
+    function getHeaders(){const token=(localStorage.getItem('nextscout_token')||'').trim();if(!token||token==='local-session-token')return null;return{Accept:'application/json',Authorization:`Bearer ${token}`};}
+    function escapeHtml(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+    function formatDate(v){if(!v)return'-';const d=new Date(v);return Number.isNaN(d.getTime())?String(v):d.toLocaleString('tr-TR')}
+    function author(row){const n=String(row?.author_name||'').trim();const r=String(row?.author_role||'').trim();return !n&&!r?'-':`${n||'Bilinmeyen'}${r?` • ${r}`:''}`}
+    const cfg={notes:{title:'Antrenor Teknik Notlari',summary:'Kaydedilen teknik notlarin tam listesi.',endpoint:'/staff/player-notes',placeholder:'Oyuncu, etiket veya not ara...',render:r=>`<article class="item"><div class="item-head"><div><div class="item-title">${escapeHtml(r.player||'-')}</div><div class="item-copy">${escapeHtml(r.body||'')}</div></div><div class="badge">${escapeHtml(r.tag||'Not')}</div></div><div class="meta"><span>Pozisyon: ${escapeHtml(r.position||'-')}</span><span>Odak: ${escapeHtml(r.focus||'-')}</span><span>Yazan: ${escapeHtml(author(r))}</span><span>Tarih: ${escapeHtml(formatDate(r.created_at))}</span></div></article>`},clips:{title:'Antrenor Klip Notlari',summary:'Kaydedilen klip notlarinin tam listesi.',endpoint:'/staff/player-clips',placeholder:'Oyuncu, video veya klip notu ara...',render:r=>`<article class="item"><div class="item-head"><div><div class="item-title">${escapeHtml(r.player||'-')}</div><div class="item-copy">${escapeHtml(r.body||'')}</div></div><a class="btn" href="${escapeHtml(r.url||'#')}" target="_blank" rel="noopener noreferrer">Videoyu Ac</a></div><div class="meta"><span>Zaman: ${escapeHtml(r.stamp||'00:00')}</span><span>Yazan: ${escapeHtml(author(r))}</span><span>Tarih: ${escapeHtml(formatDate(r.created_at))}</span></div></article>`},evaluations:{title:'Antrenor Degerlendirmeleri',summary:'Kaydedilen teknik degerlendirmelerin tam listesi.',endpoint:'/staff/player-evaluations',placeholder:'Oyuncu, pozisyon veya karar notu ara...',render:r=>`<article class="item"><div class="item-head"><div><div class="item-title">${escapeHtml(r.player_name||'-')}</div><div class="item-copy">${escapeHtml(r.decision_note||'Karar notu yok.')}</div></div><div class="badge">${escapeHtml(r.average??'-')}</div></div><div class="meta"><span>Pozisyon: ${escapeHtml(r.position||'-')}</span><span>Metrik: ${Array.isArray(r.scores)?r.scores.length:0}</span><span>Yazan: ${escapeHtml(author(r))}</span><span>Kayit: ${escapeHtml(r.saved_at||'-')}</span></div></article>`}};
+    async function fetchRows(search=''){const headers=getHeaders();if(!headers)throw new Error('Oturum bulunamadi.');const q=new URLSearchParams({per_page:'100',scope});if(search)q.set('search',search);const response=await fetch(`${getApiBaseUrl()}${cfg[type].endpoint}?${q.toString()}`,{headers});const payload=await response.json().catch(()=>({}));if(!response.ok||payload?.ok===false)throw new Error(payload?.message||'Kayitlar alinamadi.');return Array.isArray(payload?.data?.data)?payload.data.data:(Array.isArray(payload?.data)?payload.data:[])}
+    async function render(){const root=document.getElementById('listRoot');root.innerHTML='<div class="empty">Kayitlar yukleniyor...</div>';try{const rows=await fetchRows(String(document.getElementById('searchInput')?.value||'').trim());root.innerHTML=rows.length?rows.map(cfg[type].render).join(''):'<div class="empty">Kayit bulunmuyor.</div>';}catch(error){root.innerHTML=`<div class="empty">${escapeHtml(error.message||'Kayitlar alinamadi.')}</div>`;}}
+    document.getElementById('pageTitle').textContent=cfg[type].title;document.getElementById('pageSummary').textContent=cfg[type].summary;document.getElementById('pageScope').textContent=scope==='team'?'Ekip':'Benim';document.getElementById('searchInput').placeholder=cfg[type].placeholder;document.getElementById('backLink').href=`coach-dashboard.html`;document.getElementById('searchInput').addEventListener('input',render);render();
+  </script>
+</body>
+</html>

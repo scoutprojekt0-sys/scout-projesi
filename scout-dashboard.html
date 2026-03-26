@@ -1487,6 +1487,10 @@
           <button class="workspace-tab" type="button" data-workspace-tab="clips" onclick="openScoutWorkspace('clips')">Klip Isaretleme</button>
           <button class="workspace-tab" type="button" data-workspace-tab="evaluations" onclick="openScoutWorkspace('evaluations')">Kaydedilmis Degerlendirmeler</button>
         </div>
+        <div class="workspace-tabs" style="margin-top:0; margin-bottom:14px;">
+          <button class="workspace-tab active" type="button" data-workspace-scope="mine" onclick="setScoutWorkspaceScope('mine')">Benim</button>
+          <button class="workspace-tab" type="button" data-workspace-scope="team" onclick="setScoutWorkspaceScope('team')">Ekip</button>
+        </div>
 
         <section class="workspace-panel" id="workspaceNotes">
           <div class="form-grid">
@@ -2025,10 +2029,41 @@
       return data.data ?? data;
     }
 
+    let scoutWorkspaceScope = 'mine';
+
+    function formatWorkspaceAuthorMeta(row) {
+      const name = String(row?.author_name || '').trim();
+      const role = String(row?.author_role || '').trim();
+      if (!name && !role) return '';
+      const roleLabel = role ? role.charAt(0).toUpperCase() + role.slice(1) : 'Ekip';
+      return `${name || 'Bilinmeyen'} • ${roleLabel}`;
+    }
+
+    function setScoutWorkspaceScope(scope) {
+      scoutWorkspaceScope = scope === 'team' ? 'team' : 'mine';
+      Array.from(document.querySelectorAll('[data-workspace-scope]')).forEach((tab) => {
+        tab.classList.toggle('active', tab.dataset.workspaceScope === scoutWorkspaceScope);
+      });
+      const activeTab = document.querySelector('[data-workspace-tab].active')?.dataset.workspaceTab || 'notes';
+      if (activeTab === 'notes') renderScoutWorkspaceNotes();
+      if (activeTab === 'clips') renderScoutWorkspaceClips();
+      if (activeTab === 'evaluations') renderScoutWorkspaceEvaluations();
+    }
+
+    function buildScoutWorkspaceListUrl(type) {
+      const safeType = ['notes', 'clips', 'evaluations'].includes(type) ? type : 'notes';
+      const params = new URLSearchParams({
+        type: safeType,
+        scope: scoutWorkspaceScope,
+      });
+      return `scout-workspace-list.html?${params.toString()}`;
+    }
+
     async function fetchScoutNotesWorkspace(search) {
       const params = new URLSearchParams();
       params.set('per_page', '100');
       if (search) params.set('search', search);
+      params.set('scope', scoutWorkspaceScope);
       const payload = await apiGet(`/staff/player-notes?${params.toString()}`);
       return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
     }
@@ -2041,6 +2076,7 @@
       const params = new URLSearchParams();
       params.set('per_page', '100');
       if (search) params.set('search', search);
+      params.set('scope', scoutWorkspaceScope);
       const payload = await apiGet(`/staff/player-clips?${params.toString()}`);
       return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
     }
@@ -2053,6 +2089,7 @@
       const params = new URLSearchParams();
       params.set('per_page', '100');
       if (search) params.set('search', search);
+      params.set('scope', scoutWorkspaceScope);
       const payload = await apiGet(`/staff/player-evaluations?${params.toString()}`);
       return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
     }
@@ -2120,7 +2157,8 @@
           return;
         }
 
-        list.innerHTML = rows.map((row) => `
+        const previewRows = rows.slice(0, 3);
+        list.innerHTML = previewRows.map((row) => `
           <article class="tip-item">
             <div class="row-top">
               <div>
@@ -2132,10 +2170,15 @@
             <div class="row-meta">
               <span><i class="fas fa-futbol"></i> ${escapeHtml(row.position || '-')}</span>
               <span><i class="fas fa-crosshairs"></i> ${escapeHtml(row.focus || '-')}</span>
+              <span><i class="fas fa-user-group"></i> ${escapeHtml(formatWorkspaceAuthorMeta(row) || 'Benim')}</span>
               <span><i class="fas fa-calendar"></i> ${formatDate(row.created_at)}</span>
             </div>
           </article>
-        `).join('');
+        `).join('') + (rows.length > 3 ? `
+          <div style="display:flex; justify-content:flex-end; margin-top:12px;">
+            <a class="btn btn-secondary" href="${buildScoutWorkspaceListUrl('notes')}">Tumunu Gor</a>
+          </div>
+        ` : '');
       } catch (error) {
         list.innerHTML = `<div class="empty">${escapeHtml(error.message || 'Teknik notlar alinamadi.')}</div>`;
       }
@@ -2187,7 +2230,8 @@
           return;
         }
 
-        list.innerHTML = rows.map((row) => `
+        const previewRows = rows.slice(0, 3);
+        list.innerHTML = previewRows.map((row) => `
           <article class="tip-item">
             <div class="row-top">
               <div>
@@ -2199,10 +2243,15 @@
             <div class="row-meta">
               <span><i class="fas fa-film"></i> ${escapeHtml(row.stamp || '00:00')}</span>
               <span><i class="fas fa-link"></i> ${escapeHtml((row.url || '').slice(0, 48) || '-')}</span>
+              <span><i class="fas fa-user-group"></i> ${escapeHtml(formatWorkspaceAuthorMeta(row) || 'Benim')}</span>
               <span><i class="fas fa-calendar"></i> ${formatDate(row.created_at)}</span>
             </div>
           </article>
-        `).join('');
+        `).join('') + (rows.length > 3 ? `
+          <div style="display:flex; justify-content:flex-end; margin-top:12px;">
+            <a class="btn btn-secondary" href="${buildScoutWorkspaceListUrl('clips')}">Tumunu Gor</a>
+          </div>
+        ` : '');
       } catch (error) {
         list.innerHTML = `<div class="empty">${escapeHtml(error.message || 'Klip notlari alinamadi.')}</div>`;
       }
@@ -2265,7 +2314,8 @@
           return;
         }
 
-        list.innerHTML = rows.map((row) => `
+        const previewRows = rows.slice(0, 3);
+        list.innerHTML = previewRows.map((row) => `
           <article class="tip-item">
             <div class="row-top">
               <div>
@@ -2277,11 +2327,16 @@
             <div class="row-meta">
               <span><i class="fas fa-futbol"></i> ${escapeHtml(row.position || '-')}</span>
               <span><i class="fas fa-list"></i> ${Array.isArray(row.scores) ? row.scores.length : 0} metrik</span>
+              <span><i class="fas fa-user-group"></i> ${escapeHtml(formatWorkspaceAuthorMeta(row) || 'Benim')}</span>
               <span><i class="fas fa-calendar"></i> ${escapeHtml(row.saved_at || '-')}</span>
               <span><i class="fas fa-up-right-from-square"></i> Oyuncu profilinden detay ac</span>
             </div>
           </article>
-        `).join('');
+        `).join('') + (rows.length > 3 ? `
+          <div style="display:flex; justify-content:flex-end; margin-top:12px;">
+            <a class="btn btn-secondary" href="${buildScoutWorkspaceListUrl('evaluations')}">Tumunu Gor</a>
+          </div>
+        ` : '');
       } catch (error) {
         total.textContent = '0';
         lastPlayer.textContent = '-';

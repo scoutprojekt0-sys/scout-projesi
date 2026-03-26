@@ -27,11 +27,16 @@ class CoachPlayerEvaluationController extends Controller
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
             'player_user_id' => ['nullable', 'integer', 'exists:users,id'],
             'player_name' => ['nullable', 'string', 'max:120'],
+            'scope' => ['nullable', 'in:mine,team'],
         ]);
 
         $query = CoachPlayerEvaluation::query()
-            ->where('coach_user_id', $user->id)
+            ->with('author')
             ->latest('id');
+
+        if ((string) ($validated['scope'] ?? 'mine') !== 'team') {
+            $query->where('coach_user_id', $user->id);
+        }
 
         if (! empty($validated['player_user_id'])) {
             $query->where('player_user_id', (int) $validated['player_user_id']);
@@ -123,6 +128,9 @@ class CoachPlayerEvaluationController extends Controller
             'scores' => $evaluation->scores ?? [],
             'average' => (float) $evaluation->average_score,
             'saved_at' => $evaluation->saved_label ?: optional($evaluation->created_at)->format('d.m.Y H:i'),
+            'author_name' => $evaluation->author?->name,
+            'author_role' => $evaluation->author?->role,
+            'is_mine' => (int) $evaluation->coach_user_id === (int) optional(request()->user())->id,
             'created_at' => optional($evaluation->created_at)->toIso8601String(),
         ];
     }
