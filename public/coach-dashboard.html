@@ -1672,7 +1672,7 @@
       params.set('per_page', '100');
       if (search) params.set('search', search);
 
-      const response = await fetch(`${getApiBaseUrl()}/coach/player-notes?${params.toString()}`, {
+      const response = await fetch(`${getApiBaseUrl()}/staff/player-notes?${params.toString()}`, {
         headers: {
           Accept: 'application/json',
           Authorization: `Bearer ${token}`,
@@ -1692,7 +1692,7 @@
       const token = getToken();
       if (!token) throw new Error('Oturum bulunamadi.');
 
-      const response = await fetch(`${getApiBaseUrl()}/coach/player-notes`, {
+      const response = await fetch(`${getApiBaseUrl()}/staff/player-notes`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -1726,7 +1726,7 @@
       params.set('per_page', '100');
       if (search) params.set('search', search);
 
-      const response = await fetch(`${getApiBaseUrl()}/coach/player-clips?${params.toString()}`, {
+      const response = await fetch(`${getApiBaseUrl()}/staff/player-clips?${params.toString()}`, {
         headers: {
           Accept: 'application/json',
           Authorization: `Bearer ${token}`,
@@ -1746,7 +1746,7 @@
       const token = getToken();
       if (!token) throw new Error('Oturum bulunamadi.');
 
-      const response = await fetch(`${getApiBaseUrl()}/coach/player-clips`, {
+      const response = await fetch(`${getApiBaseUrl()}/staff/player-clips`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -1788,7 +1788,7 @@
       params.set('per_page', '100');
       if (search) params.set('search', search);
 
-      const response = await fetch(`${getApiBaseUrl()}/coach/player-evaluations?${params.toString()}`, {
+      const response = await fetch(`${getApiBaseUrl()}/staff/player-evaluations?${params.toString()}`, {
         headers: {
           Accept: 'application/json',
           Authorization: `Bearer ${token}`,

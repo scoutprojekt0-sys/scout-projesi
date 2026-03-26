@@ -14,6 +14,20 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LegacyCompatibilityController extends Controller
 {
+    private const EVENT_KEYWORDS = [
+        '%deneme%',
+        '%idman%',
+        '%trial%',
+        '%training%',
+        '%etkinlik%',
+        '%showcase%',
+        '%camp%',
+        '%kamp%',
+        '%secme%',
+        '%seçme%',
+        '%match%',
+    ];
+
     public function discoveryCoachNeeds(): JsonResponse
     {
         $rows = DB::table('opportunities as o')
@@ -104,6 +118,12 @@ class LegacyCompatibilityController extends Controller
             ->join('users as u', 'u.id', '=', 'o.team_user_id')
             ->where('o.status', 'open')
             ->where('u.role', 'team')
+            ->where(function ($query) {
+                foreach (self::EVENT_KEYWORDS as $keyword) {
+                    $query->orWhereRaw('LOWER(COALESCE(o.title, "")) LIKE ?', [$keyword])
+                        ->orWhereRaw('LOWER(COALESCE(o.details, "")) LIKE ?', [$keyword]);
+                }
+            })
             ->select([
                 'o.id',
                 'o.title',
@@ -151,6 +171,12 @@ class LegacyCompatibilityController extends Controller
             ->join('users as u', 'u.id', '=', 'o.team_user_id')
             ->where('o.id', $id)
             ->where('u.role', 'team')
+            ->where(function ($query) {
+                foreach (self::EVENT_KEYWORDS as $keyword) {
+                    $query->orWhereRaw('LOWER(COALESCE(o.title, "")) LIKE ?', [$keyword])
+                        ->orWhereRaw('LOWER(COALESCE(o.details, "")) LIKE ?', [$keyword]);
+                }
+            })
             ->select([
                 'o.id',
                 'o.title',

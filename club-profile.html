@@ -1,102 +1,230 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kulup Profili - NextScout</title>
-    <meta name="description" content="NextScout club profile sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
+  <title>KULÜP Profili - NextScout</title>
+    <meta name="description" content="NextScout club profile sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
     <meta name="robots" content="index,follow">
-    <link rel="canonical" href="https://nextscout.app/club-profile.html">
+    <link rel="canonical" href="https://nextscout.pro/club-profile.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="Kulup Profili - NextScout">
-    <meta property="og:description" content="NextScout club profile sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
-    <meta property="og:url" content="https://nextscout.app/club-profile.html">
-    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta property="og:title" content="KULÜP Profili - NextScout">
+    <meta property="og:description" content="NextScout club profile sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta property="og:url" content="https://nextscout.pro/club-profile.html">
+    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Kulup Profili - NextScout">
-    <meta name="twitter:description" content="NextScout club profile sayfasi: futbol scout, kulup ve oyuncu odakli platform icerigi.">
-    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:title" content="KULÜP Profili - NextScout">
+    <meta name="twitter:description" content="NextScout club profile sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --bg: #f4f7fc;
-      --card: #ffffff;
-      --line: #dbe3f0;
-      --text: #0f172a;
-      --muted: #64748b;
-      --primary: #2563eb;
-      --shadow: 0 12px 32px rgba(37, 99, 235, 0.08);
+      --bg:#08131d;
+      --ink:#f5fbff;
+      --muted:#9bb5cb;
+      --line:#2b4660;
+      --panel:#0f1f2e;
+      --panel-soft:#12293d;
+      --primary:#60a5fa;
+      --primary-strong:#16325c;
+      --success:#14b8a6;
+      --cta:#ff5a1f;
+      --cta-2:#ff7e22;
+      --shadow:0 18px 36px rgba(8,19,29,.34);
     }
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: Segoe UI, Arial, sans-serif; background: var(--bg); color: var(--text); }
-    .wrap { max-width: 1020px; margin: 0 auto; padding: 24px 16px; }
-    .head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; }
-    .title { margin: 0; font-size: 30px; font-weight: 800; }
-    .sub { margin-top: 6px; color: var(--muted); font-size: 14px; }
-    .btn { border: 1px solid var(--line); background: #fff; color: var(--primary); padding: 10px 14px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 13px; cursor: pointer; }
-    .layout { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
-    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); padding: 14px; }
-    .section-title { margin: 0 0 10px 0; font-size: 16px; font-weight: 800; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .field { display: flex; flex-direction: column; gap: 6px; }
-    .label { font-size: 12px; font-weight: 700; color: #334155; }
-    .input, .select, .textarea { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 13px; background: #fff; color: var(--text); }
-    .textarea { min-height: 94px; resize: vertical; }
-    .full { grid-column: 1 / -1; }
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-    .chip { border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; font-size: 12px; color: #334155; background: #f8fbff; }
-    .act { display: flex; gap: 8px; margin-top: 12px; }
-    .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
-    .summary-row { display: flex; justify-content: space-between; gap: 10px; padding: 10px 0; border-bottom: 1px solid #edf2f7; font-size: 13px; }
-    .summary-row:last-child { border-bottom: 0; }
-    .muted { color: var(--muted); }
-    .ok { color: #059669; font-weight: 700; font-size: 12px; min-height: 18px; margin-top: 8px; }
-    .data-meta { margin: 0 0 12px; font-size: 12px; color: #475569; background: #e2e8f0; border: 1px solid #cbd5e1; border-radius: 10px; padding: 8px 10px; }
-    .profile-tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom: 12px; }
-    .profile-tab { border: 1px solid var(--line); background:#fff; color:#334155; border-radius: 999px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer; }
-    .profile-tab.active { background: var(--primary); border-color: var(--primary); color: #fff; }
-    .tab-panel { display:none; content-visibility:auto; contain-intrinsic-size: 380px; }
-    .tab-panel.active { display:block; }
-    .mini-table { width:100%; border-collapse: collapse; font-size: 13px; }
-    .mini-table th, .mini-table td { border: 1px solid #e5e7eb; padding: 8px; text-align: left; }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      color:var(--ink);
+      min-height:100vh;
+      background:
+        radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+        radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+        var(--bg);
+      background-repeat:no-repeat;
+      background-size:cover;
+      background-attachment:fixed;
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 24px}
+    .head{
+      position:relative;
+      display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px;
+      border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);padding:24px;
+      box-shadow:var(--shadow);overflow:hidden;
+    }
+    .head::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--cta) 0%,var(--cta-2) 55%,#60a5fa 100%)}
+    .title{margin:0;font-size:32px;font-weight:800;font-family:Poppins,Inter,sans-serif;color:#dbeafe;line-height:1.1}
+    .sub{margin-top:8px;color:var(--muted);font-size:14px;line-height:1.7}
+    .head-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .btn{
+      border:1px solid rgba(255,126,34,.45);background:linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);color:#16325c;padding:10px 14px;border-radius:12px;
+      text-decoration:none;font-weight:800;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+      transition:all .2s ease;line-height:1;box-shadow:0 12px 24px rgba(8,19,29,.24);
+    }
+    .btn:hover{transform:translateY(-1px);border-color:rgba(255,126,34,.6)}
+    .btn-primary{background:linear-gradient(135deg,var(--cta) 0%,var(--cta-2) 100%);color:#fff;border-color:rgba(255,126,34,.6);box-shadow:0 16px 28px rgba(255,90,31,.28)}
+    .btn-secondary{background:linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);color:#16325c;border:1px solid rgba(255,126,34,.45)}
+    .home-btn{
+      background:linear-gradient(135deg,var(--cta) 0%,var(--cta-2) 100%);
+      border:1px solid rgba(255,126,34,.6);
+      color:#fff;
+      border-radius:12px;
+      padding:10px 14px;
+      box-shadow:0 16px 28px rgba(255,90,31,.28);
+    }
+    .layout{display:grid;grid-template-columns:1.8fr 1fr;gap:12px}
+    .card{
+      position:relative;background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px;overflow:hidden;
+    }
+    .card::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--cta) 0%,var(--cta-2) 55%,#60a5fa 100%)}
+    .section-title{margin:0 0 10px 0;font-size:16px;font-weight:800;color:#dbeafe}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .field{display:flex;flex-direction:column;gap:6px}
+    .label{font-size:12px;font-weight:700;color:#cbd5e1}
+    .input,.textarea,.select{
+      border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13px;background:rgba(255,255,255,.04);color:#f8fafc;
+    }
+    .select option{
+      background:#0f1f2e;
+      color:#f5fbff;
+    }
+    .input::placeholder,.textarea::placeholder{color:#94a3b8}
+    .input:focus,.textarea:focus,.select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(96,165,250,.16)}
+    .textarea{min-height:100px;resize:vertical}
+    .full{grid-column:1/-1}
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{
+      border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:12px;color:#dbeafe;background:rgba(255,255,255,.04);
+    }
+    .act{display:flex;gap:8px;margin-top:12px}
+    .summary-row{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #334155;font-size:13px}
+    .summary-row:last-child{border-bottom:0}
+    .muted{color:var(--muted)}
+    .ok{color:#34d399;font-size:12px;min-height:16px;margin-top:8px;font-weight:700}
+    .data-meta{
+      margin:0 0 12px;font-size:12px;color:#94a3b8;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;padding:8px 10px;
+    }
+    .profile-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+    .profile-tab{
+      border:1px solid var(--line);background:rgba(255,255,255,.04);color:#e2e8f0;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;
+    }
+    .profile-tab.active{background:linear-gradient(135deg,var(--cta) 0%,var(--cta-2) 100%);border-color:rgba(255,126,34,.6);color:#fff}
+    .tab-panel{display:none;content-visibility:auto;contain-intrinsic-size:380px}
+    .tab-panel.active{display:block}
+    .mini-table{width:100%;border-collapse:collapse;font-size:13px}
+    .mini-table th,.mini-table td{border:1px solid var(--line);padding:8px;text-align:left}
+    .mini-table th{background:rgba(255,255,255,.04);color:#dbeafe}
+    .review-shell{display:grid;gap:16px}
+    .review-form{display:grid;gap:14px;padding:18px;border-radius:20px;background:linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(15,23,42,.18) 100%);border:1px solid rgba(96,165,250,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 18px 30px rgba(2,6,23,.18)}
+    .review-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .review-field{display:grid;gap:6px}
+    .review-field label{font-size:11px;font-weight:800;color:#cbd5e1;text-transform:uppercase;letter-spacing:.1em}
+    .review-field select,.review-field textarea{border:1px solid rgba(148,163,184,.18);border-radius:14px;padding:12px 13px;font-size:13px;background:linear-gradient(180deg, rgba(7,17,28,.92) 0%, rgba(15,23,42,.88) 100%);color:#f8fafc}
+    .review-field select:focus,.review-field textarea:focus{outline:none;border-color:rgba(96,165,250,.42);box-shadow:0 0 0 4px rgba(59,130,246,.14)}
+    .review-field textarea{min-height:96px;resize:vertical}
+    .review-list{display:grid;gap:14px}
+    .review-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .review-summary-card{padding:14px 15px;border-radius:18px;border:1px solid rgba(96,165,250,.14);background:linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%)}
+    .review-summary-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#9bb5cb;margin-bottom:8px}
+    .review-summary-value{font-size:26px;font-weight:900;color:#f8fbff}
+    .review-item{position:relative;padding:18px;border-radius:20px;border:1px solid rgba(96,165,250,.14);background:linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%);box-shadow:0 18px 32px rgba(2,6,23,.16)}
+    .review-item::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;border-radius:20px 0 0 20px;background:linear-gradient(180deg,#ff7e22 0%,#60a5fa 100%)}
+    .review-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}
+    .review-author{display:grid;gap:4px}
+    .review-author strong{font-size:15px;color:#f5fbff}
+    .review-author span,.review-note,.review-empty,.review-meta{font-size:12px;color:var(--muted);line-height:1.6}
+    .review-tags{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 14px}
+    .review-pill{display:inline-flex;align-items:center;min-height:28px;padding:0 11px;border-radius:999px;border:1px solid rgba(148,163,184,.16);background:rgba(255,255,255,.06);color:#dbeafe;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .review-pill.sentiment-olumlu{color:#bbf7d0}
+    .review-pill.sentiment-notr{color:#bfdbfe}
+    .review-pill.sentiment-dikkat{color:#fde68a}
+    .review-body{color:#e2e8f0;font-size:14px;line-height:1.72}
+    .review-reply{margin-top:12px;padding:14px 15px;border-radius:16px;background:linear-gradient(180deg, rgba(11,59,138,.18) 0%, rgba(15,23,42,.16) 100%);border:1px solid rgba(96,165,250,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+    #clubReviewFormCard,
+    #clubReviewGate{display:none !important}
+    #clubReviewsCard{grid-column:1 / -1}
+    .workspace-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+    .workspace-tab{
+      border:1px solid var(--line);background:rgba(255,255,255,.04);color:#e2e8f0;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;
+    }
+    .workspace-tab.active{background:linear-gradient(135deg,var(--cta) 0%,var(--cta-2) 100%);border-color:rgba(255,126,34,.6);color:#fff}
+    .workspace-panel{display:none}
+    .workspace-panel.active{display:block}
+    .workspace-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
+    .workspace-metric{padding:14px 15px;border-radius:18px;border:1px solid rgba(96,165,250,.14);background:linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%)}
+    .workspace-metric-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#9bb5cb;margin-bottom:8px}
+    .workspace-metric-value{font-size:26px;font-weight:900;color:#f8fbff}
+    .workspace-list{display:grid;gap:12px}
+    .workspace-item{padding:16px;border-radius:18px;border:1px solid rgba(96,165,250,.14);background:linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%)}
+    .workspace-item-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}
+    .workspace-item-title{font-size:15px;font-weight:800;color:#f5fbff}
+    .workspace-item-meta{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0;color:var(--muted);font-size:12px}
+    .workspace-item-body{color:#e2e8f0;font-size:14px;line-height:1.68}
+    .workspace-empty{font-size:12px;color:var(--muted);line-height:1.6}
 
-    @media (max-width: 980px) {
-      .layout { grid-template-columns: 1fr; }
-      .form-grid { grid-template-columns: 1fr; }
+    @media (max-width:900px){
+      .layout{grid-template-columns:1fr}
+      .form-grid{grid-template-columns:1fr}
+      .review-form-grid{grid-template-columns:1fr}
+      .review-summary-grid{grid-template-columns:1fr}
+      .workspace-metrics{grid-template-columns:1fr}
     }
-    @media (max-width: 560px) {
-      .title { font-size: 24px; }
+    @media (max-width:768px){
+      .wrap{padding:10px 10px 18px}
+      .head{padding:12px;gap:10px;flex-direction:column}
+      .title{font-size:24px}
+      .sub{font-size:12px}
+      .head-actions{width:100%;justify-content:flex-start}
+      .btn{padding:9px 12px}
+      .card{padding:12px}
+      .section-title{font-size:15px}
+      .act{display:grid;grid-template-columns:1fr 1fr}
+      .summary-row{font-size:12px}
+    }
+    @media (max-width:480px){
+      .act{grid-template-columns:1fr}
+      .btn{width:100%;justify-content:center}
+      .head-actions .btn{width:auto}
+      .input,.textarea,.select{font-size:16px}
     }
   </style>
+    <link rel="stylesheet" href="assets/css/mobile-unified.css">
+    <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
 <body>
   <div class="wrap">
     <div class="head">
       <div>
-        <h1 class="title">Kulup Profili</h1>
-        <div class="sub">Kulube ozel bilgiler: butce, kadro ihtiyaci, sehir ve tesis.</div>
+        <h1 class="title">KULÜP Profili</h1>
+        <div class="sub">Kulube ozel bilgiler: butce, kadro ihtiyaçi, sehir ve tesis.</div>
       </div>
-      <a class="btn" href="team-dashboard.html">Dashboard</a>
+      <div class="head-actions">
+        <a class="btn home-btn" href="team-dashboard.html"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
+      </div>
     </div>
 
-    <div class="data-meta" id="clubDataMeta">Kaynak: Sistem • Son guncelleme: -</div>
+    <div class="data-meta" id="clubDataMeta">Kaynak: Sistem • Son güncelleme: -</div>
     <div class="profile-tabs" id="clubProfileTabs">
       <button class="profile-tab active" type="button" data-tab="overview">Genel</button>
       <button class="profile-tab" type="button" data-tab="finance">Finans</button>
-      <button class="profile-tab" type="button" data-tab="recruitment">Kadro/Ihtiyac</button>
+      <button class="profile-tab" type="button" data-tab="recruitment">Kadro/İhtiyaç</button>
       <button class="profile-tab" type="button" data-tab="plan">Transfer Plani</button>
+      <button class="profile-tab" type="button" data-tab="workspace">Teknik Workspace</button>
     </div>
 
     <section class="tab-panel active" data-tab-panel="overview">
     <div class="layout">
       <div class="card">
-        <h2 class="section-title">Kulup Bilgileri</h2>
+        <h2 class="section-title">KULÜP Bilgileri</h2>
 
         <form id="clubForm" class="form-grid">
           <div class="field">
-            <label class="label" for="clubName">Kulup Adi</label>
+            <label class="label" for="clubName">KULÜP Adi</label>
             <input class="input" id="clubName" name="clubName" type="text" placeholder="Ornek SK" required>
           </div>
 
@@ -112,6 +240,10 @@
               <option value="Futbol">Futbol</option>
               <option value="Basketbol">Basketbol</option>
               <option value="Voleybol">Voleybol</option>
+              <option value="Hentbol">Hentbol</option>
+              <option value="Futsal">Futsal</option>
+              <option value="Kadin Futbol">Kadin Futbol</option>
+              <option value="Altyapi Futbol">Altyapi Futbol</option>
               <option value="Coklu Brans">Coklu Brans</option>
             </select>
           </div>
@@ -130,11 +262,30 @@
             <label class="label" for="squadNeed">Kadro Ihtiyaci</label>
             <select class="select" id="squadNeed" name="squadNeed" required>
               <option value="">Seciniz</option>
+              <option value="Stoper">Stoper</option>
+              <option value="Sol Bek">Sol Bek</option>
+              <option value="Sag Bek">Sag Bek</option>
+              <option value="Defansif Orta Saha">Defansif Orta Saha</option>
               <option value="Forvet">Forvet</option>
               <option value="Orta Saha">Orta Saha</option>
+              <option value="On Numara">On Numara</option>
+              <option value="Kanat">Kanat</option>
               <option value="Defans">Defans</option>
               <option value="Kaleci">Kaleci</option>
+              <option value="Genc Yetenek">Genc Yetenek</option>
+              <option value="Tecrubeli Lider">Tecrubeli Lider</option>
               <option value="Coklu Pozisyon">Coklu Pozisyon</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label class="label" for="preferredSystem">Tercih Edilen Oyun Sistemi</label>
+            <select class="select" id="preferredSystem" name="preferredSystem">
+              <option value="">Seciniz</option>
+              <option value="gegenpressing">Gegenpressing | 4-3-3 Ofansif</option>
+              <option value="park_the_bus">Park the Bus | 5-4-1 Savunma</option>
+              <option value="possession_control">Topa Sahip Olan Oyun | 4-2-3-1</option>
+              <option value="transition_play">Gecis Oyunu | 3-4-3 Direkt</option>
             </select>
           </div>
 
@@ -142,10 +293,13 @@
             <label class="label" for="facilityLevel">Tesis Seviyesi</label>
             <select class="select" id="facilityLevel" name="facilityLevel" required>
               <option value="">Seciniz</option>
+              <option value="UEFA Elite">UEFA Elite</option>
               <option value="Elite">Elite</option>
+              <option value="Profesyonel">Profesyonel</option>
               <option value="Gelismis">Gelismis</option>
               <option value="Orta">Orta</option>
               <option value="Temel">Temel</option>
+              <option value="Altyapi Gelisim">Altyapi Gelisim</option>
             </select>
           </div>
 
@@ -155,13 +309,13 @@
           </div>
 
           <div class="field full">
-            <label class="label" for="notes">Kulup Notlari</label>
+            <label class="label" for="notes">KULÜP Notlari</label>
             <textarea class="textarea" id="notes" name="notes" placeholder="Transfer stratejisi, hedef yas araligi, oyun tarzi..."></textarea>
           </div>
 
           <div class="act full">
             <button type="submit" class="btn btn-primary">Kaydet</button>
-            <button type="button" id="resetBtn" class="btn">Sifirla</button>
+            <button type="button" id="resetBtn" class="btn">Sıfırla</button>
           </div>
         </form>
 
@@ -170,16 +324,61 @@
 
       <div class="card">
         <h2 class="section-title">Profil Ozeti</h2>
-        <div class="summary-row"><span class="muted">Kulup</span><strong id="sumClub">-</strong></div>
+        <div class="summary-row"><span class="muted">KULÜP</span><strong id="sumClub">-</strong></div>
         <div class="summary-row"><span class="muted">Sehir</span><strong id="sumCity">-</strong></div>
         <div class="summary-row"><span class="muted">Brans</span><strong id="sumBranch">-</strong></div>
         <div class="summary-row"><span class="muted">Transfer Butcesi</span><strong id="sumBudget">-</strong></div>
         <div class="summary-row"><span class="muted">Maas Butcesi</span><strong id="sumWage">-</strong></div>
         <div class="summary-row"><span class="muted">Kadro Ihtiyaci</span><strong id="sumNeed">-</strong></div>
+        <div class="summary-row"><span class="muted">Oyun Sistemi</span><strong id="sumSystem">-</strong></div>
         <div class="summary-row"><span class="muted">Tesis Seviyesi</span><strong id="sumFacilityLevel">-</strong></div>
 
         <h3 class="section-title" style="margin-top:14px;">Odak Etiketleri</h3>
         <div class="chips" id="focusChips"></div>
+        <div class="act" style="margin-top:14px;">
+          <a class="btn btn-primary" id="systemScoutLink" href="professional-players.html?visibility_role=club">Sisteme Uygun Oyunculari Gor</a>
+        </div>
+      </div>
+      <div class="card" id="clubReviewsCard">
+        <h2 class="section-title">Profil Yorumlari</h2>
+        <div class="review-shell">
+          <div class="review-summary-grid" id="clubReviewSummary">
+            <div class="review-summary-card"><div class="review-summary-label">Toplam</div><div class="review-summary-value">0</div></div>
+            <div class="review-summary-card"><div class="review-summary-label">Olumlu Oran</div><div class="review-summary-value">%0</div></div>
+            <div class="review-summary-card"><div class="review-summary-label">Guven Skoru</div><div class="review-summary-value">0/10</div></div>
+          </div>
+          <div class="review-form" id="clubReviewFormCard">
+            <div class="review-note" id="clubReviewFormNote">Kulubun profesyonel yapisi, iletisim duzeni veya surec deneyimi hakkinda yorum yaz.</div>
+            <div class="review-form-grid">
+              <div class="review-field">
+                <label for="clubReviewRelationshipType">Iliski</label>
+                <select id="clubReviewRelationshipType">
+                  <option value="kulup_sureci">Kulup sureci</option>
+                  <option value="birlikte_calistik">Birlikte calistik</option>
+                  <option value="teknik_ekip">Teknik ekip</option>
+                  <option value="izledim">Izledim</option>
+                  <option value="temsil_sureci">Temsil sureci</option>
+                  <option value="rakiptik">Rakiptik</option>
+                </select>
+              </div>
+              <div class="review-field">
+                <label for="clubReviewSentiment">Ton</label>
+                <select id="clubReviewSentiment">
+                  <option value="olumlu">Olumlu</option>
+                  <option value="notr">Notr</option>
+                  <option value="dikkat">Dikkat</option>
+                </select>
+              </div>
+            </div>
+            <div class="review-field">
+              <label for="clubReviewBody">Yorum</label>
+              <textarea id="clubReviewBody" placeholder="Kulubun calisma bicimi, tesis duzeni veya transfer sureci hakkinda not..."></textarea>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="submitClubProfileReview()">Yorumu Gonder</button>
+          </div>
+          <div class="review-note" id="clubReviewGate">Yorum yazmak icin giris yapman gerekiyor.</div>
+          <div class="review-list" id="clubReviewList"></div>
+        </div>
       </div>
     </div>
     </section>
@@ -196,7 +395,7 @@
 
     <section class="tab-panel" data-tab-panel="recruitment">
       <div class="card">
-        <h2 class="section-title">Kadro ve Ihtiyac Analizi</h2>
+        <h2 class="section-title">Kadro ve İhtiyaç Analizi</h2>
         <div id="recruitmentInsights" style="display:grid;gap:10px;"></div>
       </div>
     </section>
@@ -210,12 +409,70 @@
         </table>
       </div>
     </section>
+    <section class="tab-panel" data-tab-panel="workspace">
+      <div class="card">
+        <h2 class="section-title" id="clubWorkspaceTitle">Kulup Teknik Workspace</h2>
+        <div class="muted" id="clubWorkspaceSummary" style="margin-bottom:12px;">Oyuncu bazli not, klip ve kaydedilmis degerlendirmeleri bu alanda yonet.</div>
+        <div class="workspace-tabs">
+          <button class="workspace-tab active" type="button" data-club-workspace-tab="notes" onclick="openClubWorkspace('notes')">Teknik Not Defteri</button>
+          <button class="workspace-tab" type="button" data-club-workspace-tab="clips" onclick="openClubWorkspace('clips')">Klip Isaretleme</button>
+          <button class="workspace-tab" type="button" data-club-workspace-tab="evaluations" onclick="openClubWorkspace('evaluations')">Kaydedilmis Degerlendirmeler</button>
+        </div>
+        <section class="workspace-panel active" id="clubWorkspaceNotes">
+          <div class="form-grid">
+            <div class="field"><label class="label">Oyuncu Adi</label><input class="input" id="clubWorkspaceNotePlayer" type="text" placeholder="Oyuncu adi"></div>
+            <div class="field"><label class="label">Oyuncu ID</label><input class="input" id="clubWorkspaceNotePlayerId" type="number" min="1" placeholder="Opsiyonel"></div>
+            <div class="field"><label class="label">Pozisyon</label><input class="input" id="clubWorkspaceNotePosition" type="text" placeholder="Stoper / Forvet"></div>
+            <div class="field"><label class="label">Etiket</label><select class="select" id="clubWorkspaceNoteTag"><option value="izlenecek">Izlenecek</option><option value="tekrar-bak">Tekrar Bak</option><option value="shortlist">Shortlist</option><option value="hazir">Hazir</option></select></div>
+            <div class="field"><label class="label">Odak</label><select class="select" id="clubWorkspaceNoteFocus"><option value="teknik">Teknik</option><option value="taktik">Taktik</option><option value="fizik">Fizik</option><option value="zihinsel">Zihinsel</option></select></div>
+            <div class="field full"><label class="label">Not</label><textarea class="textarea" id="clubWorkspaceNoteBody" placeholder="Oyuncu icin kisa kulup notu..."></textarea></div>
+          </div>
+          <div class="act">
+            <button type="button" class="btn btn-primary" id="clubWorkspaceNoteSubmit">Notu Kaydet</button>
+            <input class="input" id="clubWorkspaceNoteSearch" type="text" placeholder="Oyuncu, etiket veya not ara...">
+          </div>
+          <div class="workspace-list" id="clubWorkspaceNotesList" style="margin-top:14px;"><div class="workspace-empty">Teknik notlar yukleniyor...</div></div>
+        </section>
+        <section class="workspace-panel" id="clubWorkspaceClips">
+          <div class="form-grid">
+            <div class="field"><label class="label">Oyuncu Adi</label><input class="input" id="clubWorkspaceClipPlayer" type="text" placeholder="Oyuncu adi"></div>
+            <div class="field"><label class="label">Oyuncu ID</label><input class="input" id="clubWorkspaceClipPlayerId" type="number" min="1" placeholder="Opsiyonel"></div>
+            <div class="field full"><label class="label">Video Linki</label><input class="input" id="clubWorkspaceClipUrl" type="url" placeholder="https://..."></div>
+            <div class="field"><label class="label">Dakika</label><input class="input" id="clubWorkspaceClipMinute" type="number" min="0" max="180" placeholder="12"></div>
+            <div class="field"><label class="label">Saniye</label><input class="input" id="clubWorkspaceClipSecond" type="number" min="0" max="59" placeholder="34"></div>
+            <div class="field full"><label class="label">Klip Notu</label><textarea class="textarea" id="clubWorkspaceClipBody" placeholder="Bu sahnede dikkat ceken nokta..."></textarea></div>
+          </div>
+          <div class="act">
+            <button type="button" class="btn btn-primary" id="clubWorkspaceClipSubmit">Klibi Kaydet</button>
+            <input class="input" id="clubWorkspaceClipSearch" type="text" placeholder="Oyuncu, link veya not ara...">
+          </div>
+          <div class="workspace-list" id="clubWorkspaceClipsList" style="margin-top:14px;"><div class="workspace-empty">Klip notlari yukleniyor...</div></div>
+        </section>
+        <section class="workspace-panel" id="clubWorkspaceEvaluations">
+          <div class="workspace-metrics">
+            <div class="workspace-metric"><div class="workspace-metric-label">Toplam</div><div class="workspace-metric-value" id="clubEvalTotal">0</div></div>
+            <div class="workspace-metric"><div class="workspace-metric-label">Son Oyuncu</div><div class="workspace-metric-value" id="clubEvalLastPlayer">-</div></div>
+            <div class="workspace-metric"><div class="workspace-metric-label">Son Kayit</div><div class="workspace-metric-value" id="clubEvalLastDate">-</div></div>
+          </div>
+          <div class="act">
+            <input class="input" id="clubWorkspaceEvalSearch" type="text" placeholder="Oyuncu, pozisyon veya karar notu ara...">
+            <input class="input" id="clubWorkspaceEvalMinScore" type="number" min="0" max="100" placeholder="Min. ortalama">
+          </div>
+          <div class="workspace-list" id="clubWorkspaceEvaluationsList" style="margin-top:14px;"><div class="workspace-empty">Degerlendirmeler yukleniyor...</div></div>
+        </section>
+      </div>
+    </section>
   </div>
 
   <script src="assets/js/site-core.js"></script>
   <script src="assets/js/growth-upgrade.js"></script>
   <script>
-    const CLUB_KEY = 'nextscout_club_profile';
+    const SYSTEM_LABELS = {
+      gegenpressing: 'Gegenpressing | 4-3-3 Ofansif',
+      park_the_bus: 'Park the Bus | 5-4-1 Savunma',
+      possession_control: 'Topa Sahip Olan Oyun | 4-2-3-1',
+      transition_play: 'Gecis Oyunu | 3-4-3 Direkt',
+    };
     let currentUserId = null;
 
     function getApiBaseUrl() {
@@ -240,6 +497,16 @@
       };
     }
 
+    function getCurrentAuthUserFromStorage() {
+      try {
+        const raw = localStorage.getItem('nextscout_user');
+        const user = raw ? JSON.parse(raw) : null;
+        return user && typeof user === 'object' ? user : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
     function formatMoney(value) {
       const num = Number(value || 0);
       return new Intl.NumberFormat('tr-TR').format(num) + ' EUR';
@@ -252,6 +519,409 @@
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
+    }
+
+    function getClubReviewTargetId() {
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get('user_id');
+      const id = raw ? Number(raw) : currentUserId;
+      return Number.isFinite(id) ? id : null;
+    }
+
+    function formatReviewDate(value) {
+      if (!value) return '-';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '-';
+      return date.toLocaleDateString('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function profileReviewLabels() {
+      return {
+        birlikte_calistik: 'Birlikte calistik',
+        rakiptik: 'Rakiptik',
+        izledim: 'Izledim',
+        temsil_sureci: 'Temsil sureci',
+        kulup_sureci: 'Kulup sureci',
+        teknik_ekip: 'Teknik ekip',
+        olumlu: 'Olumlu',
+        notr: 'Notr',
+        dikkat: 'Dikkat',
+      };
+    }
+
+    function renderClubProfileReviews(items) {
+      const root = document.getElementById('clubReviewList');
+      const summary = document.getElementById('clubReviewSummary');
+      if (!root) return;
+      const rows = Array.isArray(items) ? items : [];
+      if (summary) {
+        const total = rows.length;
+        const positive = rows.filter((row) => row?.sentiment === 'olumlu').length;
+        const positiveRate = total ? Math.round((positive / total) * 100) : 0;
+        const score = total ? Math.min(10, Math.max(1, ((positive * 10) + ((total - positive) * 5)) / (total * 10) * 10)).toFixed(1) : '0.0';
+        summary.innerHTML = `
+          <div class="review-summary-card"><div class="review-summary-label">Toplam</div><div class="review-summary-value">${total}</div></div>
+          <div class="review-summary-card"><div class="review-summary-label">Olumlu Oran</div><div class="review-summary-value">%${positiveRate}</div></div>
+          <div class="review-summary-card"><div class="review-summary-label">Guven Skoru</div><div class="review-summary-value">${score}/10</div></div>
+        `;
+      }
+      if (!rows.length) {
+        root.innerHTML = '<div class="review-empty">Bu kulup icin henuz yayinlanmis yorum yok.</div>';
+        return;
+      }
+
+      const labels = profileReviewLabels();
+      root.innerHTML = rows.map((review) => `
+        <article class="review-item">
+          <div class="review-head">
+            <div class="review-author">
+              <strong>${esc(review?.author_name || 'Kullanici')}</strong>
+              <span>${esc(review?.author_role || 'rol belirtilmedi')}</span>
+            </div>
+            <div class="review-meta">${esc(formatReviewDate(review?.created_at))}</div>
+          </div>
+          <div class="review-tags">
+            <span class="review-pill">${esc(labels[review?.relationship_type] || review?.relationship_type || '-')}</span>
+            <span class="review-pill sentiment-${esc(review?.sentiment || 'notr')}">${esc(labels[review?.sentiment] || review?.sentiment || '-')}</span>
+          </div>
+          <div class="review-body">${esc(review?.body || '')}</div>
+          ${review?.reply?.body ? `
+            <div class="review-reply">
+              <div class="review-meta">${esc(review?.reply?.author_name || 'Kulup sahibi')} yaniti</div>
+              <div class="review-body">${esc(review.reply.body)}</div>
+            </div>
+          ` : ''}
+        </article>
+      `).join('');
+    }
+
+    async function loadClubProfileReviews() {
+      const targetId = getClubReviewTargetId();
+      const root = document.getElementById('clubReviewList');
+      if (!targetId || !root) return;
+
+      root.innerHTML = '<div class="review-empty">Yorumlar yukleniyor...</div>';
+      try {
+        const res = await fetch(`${getApiBaseUrl()}/profiles/${encodeURIComponent(targetId)}/reviews`, {
+          headers: { 'Accept': 'application/json' },
+        });
+        const data = await res.json().catch(() => null);
+        const items = Array.isArray(data?.data?.data)
+          ? data.data.data
+          : Array.isArray(data?.data?.items)
+          ? data.data.items
+          : Array.isArray(data?.data)
+          ? data.data
+          : [];
+        renderClubProfileReviews(items);
+      } catch (error) {
+        root.innerHTML = '<div class="review-empty">Yorumlar su an alinamiyor.</div>';
+      }
+    }
+
+    async function submitClubProfileReview() {
+      const authUser = getCurrentAuthUserFromStorage();
+      const token = getToken();
+      const targetId = getClubReviewTargetId();
+      const relationship = document.getElementById('clubReviewRelationshipType');
+      const sentiment = document.getElementById('clubReviewSentiment');
+      const body = document.getElementById('clubReviewBody');
+
+      if (!authUser || !token) {
+        alert('Yorum yazmak icin giris yapmalisin.');
+        return;
+      }
+
+      if (!targetId || !relationship || !sentiment || !body) return;
+      const payload = {
+        relationship_type: relationship.value,
+        sentiment: sentiment.value,
+        body: String(body.value || '').trim(),
+      };
+
+      if (payload.body.length < 10) {
+        alert('Yorum en az 10 karakter olmali.');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${getApiBaseUrl()}/profiles/${encodeURIComponent(targetId)}/reviews`, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data?.ok) throw new Error(data?.message || 'Yorum kaydedilemedi');
+        body.value = '';
+        alert(data?.message || 'Yorum kaydedildi.');
+        await loadClubProfileReviews();
+      } catch (error) {
+        alert(error?.message || 'Yorum kaydedilemedi.');
+      }
+    }
+
+    async function clubApiGet(path) {
+      const headers = authHeaders();
+      if (!headers) throw new Error('Oturum bulunamadi.');
+      const response = await fetch(`${getApiBaseUrl()}${path}`, { headers });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data?.ok === false) {
+        throw new Error(data?.message || 'Veri alinamadi.');
+      }
+      return data?.data ?? data;
+    }
+
+    async function clubApiPost(path, payload) {
+      const headers = authHeaders();
+      if (!headers) throw new Error('Oturum bulunamadi.');
+      const response = await fetch(`${getApiBaseUrl()}${path}`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data?.ok === false) {
+        const firstError = data?.errors ? Object.values(data.errors)?.[0]?.[0] : '';
+        throw new Error(firstError || data?.message || 'Islem basarisiz.');
+      }
+      return data?.data ?? data;
+    }
+
+    async function fetchClubWorkspaceNotes(search) {
+      const params = new URLSearchParams({ per_page: '100' });
+      if (search) params.set('search', search);
+const payload = await clubApiGet(`/staff/player-notes?${params.toString()}`);
+      return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
+    }
+
+    async function fetchClubWorkspaceClips(search) {
+      const params = new URLSearchParams({ per_page: '100' });
+      if (search) params.set('search', search);
+const payload = await clubApiGet(`/staff/player-clips?${params.toString()}`);
+      return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
+    }
+
+    async function fetchClubWorkspaceEvaluations(search) {
+      const params = new URLSearchParams({ per_page: '100' });
+      if (search) params.set('search', search);
+const payload = await clubApiGet(`/staff/player-evaluations?${params.toString()}`);
+      return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
+    }
+
+    function openClubWorkspace(type) {
+      const title = document.getElementById('clubWorkspaceTitle');
+      const summary = document.getElementById('clubWorkspaceSummary');
+      const notes = document.getElementById('clubWorkspaceNotes');
+      const clips = document.getElementById('clubWorkspaceClips');
+      const evaluations = document.getElementById('clubWorkspaceEvaluations');
+      const tabs = Array.from(document.querySelectorAll('[data-club-workspace-tab]'));
+      if (!title || !summary || !notes || !clips || !evaluations) return;
+
+      const content = {
+        notes: {
+          title: 'Kulup Teknik Not Defteri',
+          summary: 'Oyuncu bazli kulup gozuyle teknik ve karar notlarini burada tutarsin.',
+        },
+        clips: {
+          title: 'Kulup Klip Isaretleme',
+          summary: 'Izlenen sahneleri zaman damgasi ve kisa yorumla kaydedersin.',
+        },
+        evaluations: {
+          title: 'Kaydedilmis Degerlendirmeler',
+          summary: 'Oyuncu profillerinde kaydedilen degerlendirmeleri toplu olarak gorursun.',
+        },
+      };
+
+      const selected = content[type] || content.notes;
+      title.textContent = selected.title;
+      summary.textContent = selected.summary;
+      notes.classList.toggle('active', type === 'notes');
+      clips.classList.toggle('active', type === 'clips');
+      evaluations.classList.toggle('active', type === 'evaluations');
+      tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.clubWorkspaceTab === type));
+
+      if (type === 'notes') renderClubWorkspaceNotes();
+      if (type === 'clips') renderClubWorkspaceClips();
+      if (type === 'evaluations') renderClubWorkspaceEvaluations();
+    }
+
+    async function renderClubWorkspaceNotes() {
+      const root = document.getElementById('clubWorkspaceNotesList');
+      const search = String(document.getElementById('clubWorkspaceNoteSearch')?.value || '').trim().toLowerCase();
+      if (!root) return;
+      root.innerHTML = '<div class="workspace-empty">Teknik notlar yukleniyor...</div>';
+      try {
+        const rows = await fetchClubWorkspaceNotes(search);
+        if (!rows.length) {
+          root.innerHTML = '<div class="workspace-empty">Kayitli teknik not bulunmuyor.</div>';
+          return;
+        }
+        root.innerHTML = rows.map((row) => `
+          <div class="workspace-item">
+            <div class="workspace-item-head">
+              <div class="workspace-item-title">${esc(row.player || '-')}</div>
+              <div class="chip">${esc(row.tag || 'Not')}</div>
+            </div>
+            <div class="workspace-item-body">${esc(row.body || '')}</div>
+            <div class="workspace-item-meta">
+              <span>Pozisyon: ${esc(row.position || '-')}</span>
+              <span>Odak: ${esc(row.focus || '-')}</span>
+              <span>Tarih: ${esc(formatReviewDate(row.created_at))}</span>
+            </div>
+          </div>
+        `).join('');
+      } catch (error) {
+        root.innerHTML = `<div class="workspace-empty">${esc(error.message || 'Teknik notlar alinamadi.')}</div>`;
+      }
+    }
+
+    async function submitClubWorkspaceNote() {
+      const playerName = String(document.getElementById('clubWorkspaceNotePlayer')?.value || '').trim();
+      const playerUserId = Number(document.getElementById('clubWorkspaceNotePlayerId')?.value || 0) || null;
+      const position = String(document.getElementById('clubWorkspaceNotePosition')?.value || '').trim();
+      const tag = String(document.getElementById('clubWorkspaceNoteTag')?.value || '').trim();
+      const focus = String(document.getElementById('clubWorkspaceNoteFocus')?.value || '').trim();
+      const body = String(document.getElementById('clubWorkspaceNoteBody')?.value || '').trim();
+      if (!playerName || body.length < 8) {
+        alert('Oyuncu adi ve en az 8 karakter not gerekli.');
+        return;
+      }
+      try {
+await clubApiPost('/staff/player-notes', {
+          player_user_id: playerUserId,
+          player_name: playerName,
+          position: position || null,
+          tag: tag || null,
+          focus: focus || null,
+          body,
+        });
+        document.getElementById('clubWorkspaceNotePlayer').value = '';
+        document.getElementById('clubWorkspaceNotePlayerId').value = '';
+        document.getElementById('clubWorkspaceNotePosition').value = '';
+        document.getElementById('clubWorkspaceNoteBody').value = '';
+        await renderClubWorkspaceNotes();
+        alert('Kulup notu kaydedildi.');
+      } catch (error) {
+        alert(error.message || 'Kulup notu kaydedilemedi.');
+      }
+    }
+
+    async function renderClubWorkspaceClips() {
+      const root = document.getElementById('clubWorkspaceClipsList');
+      const search = String(document.getElementById('clubWorkspaceClipSearch')?.value || '').trim().toLowerCase();
+      if (!root) return;
+      root.innerHTML = '<div class="workspace-empty">Klip notlari yukleniyor...</div>';
+      try {
+        const rows = await fetchClubWorkspaceClips(search);
+        if (!rows.length) {
+          root.innerHTML = '<div class="workspace-empty">Kayitli klip notu bulunmuyor.</div>';
+          return;
+        }
+        root.innerHTML = rows.map((row) => `
+          <div class="workspace-item">
+            <div class="workspace-item-head">
+              <div class="workspace-item-title">${esc(row.player || '-')}</div>
+              <a class="btn btn-secondary" href="${esc(row.url || '#')}" target="_blank" rel="noopener noreferrer">Videoyu Ac</a>
+            </div>
+            <div class="workspace-item-body">${esc(row.body || '')}</div>
+            <div class="workspace-item-meta">
+              <span>Zaman: ${esc(row.stamp || '00:00')}</span>
+              <span>Tarih: ${esc(formatReviewDate(row.created_at))}</span>
+            </div>
+          </div>
+        `).join('');
+      } catch (error) {
+        root.innerHTML = `<div class="workspace-empty">${esc(error.message || 'Klip notlari alinamadi.')}</div>`;
+      }
+    }
+
+    async function submitClubWorkspaceClip() {
+      const playerName = String(document.getElementById('clubWorkspaceClipPlayer')?.value || '').trim();
+      const playerUserId = Number(document.getElementById('clubWorkspaceClipPlayerId')?.value || 0) || null;
+      const videoUrl = String(document.getElementById('clubWorkspaceClipUrl')?.value || '').trim();
+      const minuteMark = Math.max(0, Number(document.getElementById('clubWorkspaceClipMinute')?.value || 0));
+      const secondMark = Math.max(0, Math.min(59, Number(document.getElementById('clubWorkspaceClipSecond')?.value || 0)));
+      const body = String(document.getElementById('clubWorkspaceClipBody')?.value || '').trim();
+      if (!playerName || !videoUrl || body.length < 8) {
+        alert('Oyuncu, video linki ve en az 8 karakter klip notu gerekli.');
+        return;
+      }
+      try {
+await clubApiPost('/staff/player-clips', {
+          player_user_id: playerUserId,
+          player_name: playerName,
+          video_url: videoUrl,
+          minute_mark: minuteMark,
+          second_mark: secondMark,
+          body,
+        });
+        document.getElementById('clubWorkspaceClipPlayer').value = '';
+        document.getElementById('clubWorkspaceClipPlayerId').value = '';
+        document.getElementById('clubWorkspaceClipUrl').value = '';
+        document.getElementById('clubWorkspaceClipMinute').value = '';
+        document.getElementById('clubWorkspaceClipSecond').value = '';
+        document.getElementById('clubWorkspaceClipBody').value = '';
+        await renderClubWorkspaceClips();
+        alert('Kulup klip notu kaydedildi.');
+      } catch (error) {
+        alert(error.message || 'Kulup klip notu kaydedilemedi.');
+      }
+    }
+
+    async function renderClubWorkspaceEvaluations() {
+      const root = document.getElementById('clubWorkspaceEvaluationsList');
+      const total = document.getElementById('clubEvalTotal');
+      const lastPlayer = document.getElementById('clubEvalLastPlayer');
+      const lastDate = document.getElementById('clubEvalLastDate');
+      const search = String(document.getElementById('clubWorkspaceEvalSearch')?.value || '').trim().toLowerCase();
+      const minScore = Math.max(0, Number(document.getElementById('clubWorkspaceEvalMinScore')?.value || 0));
+      if (!root || !total || !lastPlayer || !lastDate) return;
+      root.innerHTML = '<div class="workspace-empty">Degerlendirmeler yukleniyor...</div>';
+      try {
+        let rows = await fetchClubWorkspaceEvaluations(search);
+        rows = rows.filter((row) => Number(row.average || 0) >= minScore);
+        total.textContent = String(rows.length);
+        lastPlayer.textContent = rows[0]?.player_name || '-';
+        lastDate.textContent = rows[0]?.saved_at || '-';
+        if (!rows.length) {
+          root.innerHTML = '<div class="workspace-empty">Kayitli degerlendirme bulunmuyor.</div>';
+          return;
+        }
+        root.innerHTML = rows.map((row) => `
+          <div class="workspace-item">
+            <div class="workspace-item-head">
+              <div class="workspace-item-title">${esc(row.player_name || '-')}</div>
+              <div class="chip">${Number(row.average || 0).toLocaleString('tr-TR')}</div>
+            </div>
+            <div class="workspace-item-body">${esc(row.decision_note || 'Karar notu yok.')}</div>
+            <div class="workspace-item-meta">
+              <span>Pozisyon: ${esc(row.position || '-')}</span>
+              <span>Metrik: ${Array.isArray(row.scores) ? row.scores.length : 0}</span>
+              <span>Kayit: ${esc(row.saved_at || '-')}</span>
+            </div>
+          </div>
+        `).join('');
+      } catch (error) {
+        total.textContent = '0';
+        lastPlayer.textContent = '-';
+        lastDate.textContent = '-';
+        root.innerHTML = `<div class="workspace-empty">${esc(error.message || 'Degerlendirmeler alinamadi.')}</div>`;
+      }
+    }
+
+    function updateClubReviewVisibility() {
+      const authUser = getCurrentAuthUserFromStorage();
+      const targetId = getClubReviewTargetId();
+      const authId = authUser?.id ? Number(authUser.id) : null;
+      const isOwnProfile = Number.isFinite(targetId) && Number.isFinite(authId) && targetId === authId;
+      const formCard = document.getElementById('clubReviewFormCard');
+      const gate = document.getElementById('clubReviewGate');
+      if (formCard) formCard.style.display = !isOwnProfile && authUser ? '' : 'none';
+      if (gate) gate.style.display = !isOwnProfile && !authUser ? '' : 'none';
     }
 
     function bindTabs() {
@@ -274,10 +944,70 @@
         budget: 5000000,
         wageBudget: 300000,
         squadNeed: 'Forvet',
+        preferredSystem: 'gegenpressing',
         facilityLevel: 'Gelismis',
         facilities: '2 antrenman sahasi, performans laboratuvari, video analiz odasi',
         notes: '22-27 yas bandinda oyuncu onceligi.',
       };
+    }
+
+    function ensureClubProfileSelectOptions() {
+      const fillSelect = (id, currentValue, options) => {
+        const select = document.getElementById(id);
+        if (!select) return;
+        select.innerHTML = options.map((item) => `<option value="${esc(item.value)}">${esc(item.label)}</option>`).join('');
+        if (currentValue && options.some((item) => item.value === currentValue)) {
+          select.value = currentValue;
+        }
+      };
+
+      fillSelect('branch', document.getElementById('branch')?.value || 'Futbol', [
+        { value: '', label: 'Seçiniz' },
+        { value: 'Futbol', label: 'Futbol' },
+        { value: 'Basketbol', label: 'Basketbol' },
+        { value: 'Voleybol', label: 'Voleybol' },
+        { value: 'Hentbol', label: 'Hentbol' },
+        { value: 'Futsal', label: 'Futsal' },
+        { value: 'Kadin Futbol', label: 'Kadın Futbol' },
+        { value: 'Altyapi Futbol', label: 'Altyapı Futbol' },
+        { value: 'Coklu Brans', label: 'Çoklu Branş' },
+      ]);
+
+      fillSelect('squadNeed', document.getElementById('squadNeed')?.value || 'Forvet', [
+        { value: '', label: 'Seçiniz' },
+        { value: 'Stoper', label: 'Stoper' },
+        { value: 'Sol Bek', label: 'Sol Bek' },
+        { value: 'Sag Bek', label: 'Sağ Bek' },
+        { value: 'Defansif Orta Saha', label: 'Defansif Orta Saha' },
+        { value: 'Forvet', label: 'Forvet' },
+        { value: 'Orta Saha', label: 'Orta Saha' },
+        { value: 'On Numara', label: 'On Numara' },
+        { value: 'Kanat', label: 'Kanat' },
+        { value: 'Defans', label: 'Defans' },
+        { value: 'Kaleci', label: 'Kaleci' },
+        { value: 'Genc Yetenek', label: 'Genç Yetenek' },
+        { value: 'Tecrubeli Lider', label: 'Tecrübeli Lider' },
+        { value: 'Coklu Pozisyon', label: 'Çoklu Pozisyon' },
+      ]);
+
+      fillSelect('facilityLevel', document.getElementById('facilityLevel')?.value || 'Gelismis', [
+        { value: '', label: 'Seçiniz' },
+        { value: 'UEFA Elite', label: 'UEFA Elite' },
+        { value: 'Elite', label: 'Elite' },
+        { value: 'Profesyonel', label: 'Profesyonel' },
+        { value: 'Gelismis', label: 'Gelişmiş' },
+        { value: 'Orta', label: 'Orta' },
+        { value: 'Temel', label: 'Temel' },
+        { value: 'Altyapi Gelisim', label: 'Altyapı Gelişim' },
+      ]);
+
+      fillSelect('preferredSystem', document.getElementById('preferredSystem')?.value || 'gegenpressing', [
+        { value: '', label: 'Seçiniz' },
+        { value: 'gegenpressing', label: 'Gegenpressing | 4-3-3 Ofansif' },
+        { value: 'park_the_bus', label: 'Park the Bus | 5-4-1 Savunma' },
+        { value: 'possession_control', label: 'Topa Sahip Olan Oyun | 4-2-3-1' },
+        { value: 'transition_play', label: 'Gecis Oyunu | 3-4-3 Direkt' },
+      ]);
     }
 
     function parseNeedsText(needsText) {
@@ -297,25 +1027,11 @@
         budget: Number(profile.budget) || 0,
         wageBudget: Number(profile.wageBudget) || 0,
         squadNeed: profile.squadNeed || '',
+        preferredSystem: profile.preferredSystem || '',
         facilityLevel: profile.facilityLevel || '',
         facilities: profile.facilities || '',
         notes: profile.notes || '',
       });
-    }
-
-    function loadProfileLocal() {
-      try {
-        const raw = localStorage.getItem(CLUB_KEY);
-        if (!raw) return getDefaultProfile();
-        const parsed = JSON.parse(raw);
-        return Object.assign(getDefaultProfile(), parsed || {});
-      } catch (error) {
-        return getDefaultProfile();
-      }
-    }
-
-    function saveProfileLocal(data) {
-      localStorage.setItem(CLUB_KEY, JSON.stringify(data));
     }
 
     function profileFromApi(user, team) {
@@ -333,6 +1049,7 @@
       document.getElementById('budget').value = Number(profile.budget) || 0;
       document.getElementById('wageBudget').value = Number(profile.wageBudget) || 0;
       document.getElementById('squadNeed').value = profile.squadNeed || '';
+      document.getElementById('preferredSystem').value = profile.preferredSystem || '';
       document.getElementById('facilityLevel').value = profile.facilityLevel || '';
       document.getElementById('facilities').value = profile.facilities || '';
       document.getElementById('notes').value = profile.notes || '';
@@ -346,6 +1063,7 @@
         budget: Number(document.getElementById('budget').value || 0),
         wageBudget: Number(document.getElementById('wageBudget').value || 0),
         squadNeed: document.getElementById('squadNeed').value,
+        preferredSystem: document.getElementById('preferredSystem').value,
         facilityLevel: document.getElementById('facilityLevel').value,
         facilities: document.getElementById('facilities').value.trim(),
         notes: document.getElementById('notes').value.trim(),
@@ -359,23 +1077,31 @@
       document.getElementById('sumBudget').textContent = formatMoney(profile.budget);
       document.getElementById('sumWage').textContent = formatMoney(profile.wageBudget);
       document.getElementById('sumNeed').textContent = profile.squadNeed || '-';
+      document.getElementById('sumSystem').textContent = SYSTEM_LABELS[profile.preferredSystem] || '-';
       document.getElementById('sumFacilityLevel').textContent = profile.facilityLevel || '-';
 
       const chips = [];
       if (profile.branch) chips.push(`Brans: ${profile.branch}`);
-      if (profile.squadNeed) chips.push(`Ihtiyac: ${profile.squadNeed}`);
+      if (profile.squadNeed) chips.push(`İhtiyaç: ${profile.squadNeed}`);
       if (profile.facilityLevel) chips.push(`Tesis: ${profile.facilityLevel}`);
       if (profile.city) chips.push(`Sehir: ${profile.city}`);
       chips.push(profile.budget >= 10000000 ? 'Yuksek Butce' : 'Kontrollu Butce');
+      if (profile.preferredSystem) chips.push(`Sistem: ${SYSTEM_LABELS[profile.preferredSystem] || profile.preferredSystem}`);
       document.getElementById('focusChips').innerHTML = chips.map((c) => `<span class="chip">${c}</span>`).join('');
+      const scoutLink = document.getElementById('systemScoutLink');
+      if (scoutLink) {
+        const params = new URLSearchParams({ visibility_role: 'club' });
+        if (profile.preferredSystem) params.set('system', profile.preferredSystem);
+        scoutLink.href = `professional-players.html?${params.toString()}`;
+      }
       renderAdvancedSummary(profile);
     }
 
     function renderAdvancedSummary(profile) {
       const meta = document.getElementById('clubDataMeta');
       const stamp = window.NextScoutData?.sourceStamp
-        ? window.NextScoutData.sourceStamp('Kulup Profili', new Date())
-        : `Kaynak: Kulup Profili • Son guncelleme: ${new Date().toLocaleString('tr-TR')}`;
+        ? window.NextScoutData.sourceStamp('KULÜP Profili', new Date())
+        : `Kaynak: KULÜP Profili • Son güncelleme: ${new Date().toLocaleString('tr-TR')}`;
       if (meta) meta.textContent = stamp;
 
       const finance = document.getElementById('financeSummaryBody');
@@ -390,10 +1116,31 @@
 
       const recruitment = document.getElementById('recruitmentInsights');
       if (recruitment) {
+        const facilityHint = {
+          'UEFA Elite': 'Üst düzey uluslararası kamp ve performans altyapısı hazır.',
+          'Elite': 'A takımı hemen destekleyecek yüksek kalite tesis seviyesi mevcut.',
+          'Profesyonel': 'Profesyonel seviye günlük çalışma ve maç öncesi hazırlık kapasitesi var.',
+          'Gelismis': 'Gelişen oyuncular için yeterli performans ve analiz desteği sunuyor.',
+          'Orta': 'Temel ihtiyaçları karşılar, üst seviye yatırım gerekebilir.',
+          'Temel': 'İlk kademe tesis, kısa vadede iyileştirme ihtiyacı var.',
+          'Altyapi Gelisim': 'Altyapı odaklı büyüme ve genç oyuncu geliştirme öncelikli.'
+        };
+        const branchHint = {
+          'Futbol': 'Ana scouting odağı profesyonel futbol havuzu.',
+          'Kadin Futbol': 'Kadın futbolunda kısa liste ve erişim ağı büyütülebilir.',
+          'Altyapi Futbol': 'Yaş grubu ve gelişim potansiyeli filtreleri daha kritik.',
+          'Basketbol': 'Uzun-kısa rotasyon dengesi ve atletizm öncelikli izlenmeli.',
+          'Voleybol': 'Pozisyon bazlı fizik ve sıçrama verileri ön plana çıkmalı.',
+          'Hentbol': 'Temas dayanıklılığı ve hızlı geçiş oyunu profilleri öne çıkar.',
+          'Futsal': 'Dar alan tekniği ve tempo sürekliliği daha değerli.',
+          'Coklu Brans': 'Branş bazlı ayrı bütçe ve kadro ihtiyacı takibi önerilir.'
+        };
         const items = [
-          `Oncelikli pozisyon: ${profile.squadNeed || '-'}`,
-          `Hedef brans: ${profile.branch || '-'}`,
+          `Öncelikli ihtiyaç: ${profile.squadNeed || '-'}`,
+          `Hedef branş: ${profile.branch || '-'}`,
           `Tesis seviyesi: ${profile.facilityLevel || '-'}`,
+          facilityHint[profile.facilityLevel] || 'Tesis seviyesi seçimine göre detaylı yatırım planı tanımlanabilir.',
+          branchHint[profile.branch] || 'Seçilen branşa göre scouting öncelikleri güncellenebilir.',
           `Not: ${(profile.notes || 'Belirtilmedi').slice(0, 160)}`,
         ];
         recruitment.innerHTML = items.map((item) => `<div class="chip">${esc(item)}</div>`).join('');
@@ -450,6 +1197,13 @@
       const form = document.getElementById('clubForm');
       const saveMsg = document.getElementById('saveMsg');
 
+      document.getElementById('clubWorkspaceNoteSubmit')?.addEventListener('click', submitClubWorkspaceNote);
+      document.getElementById('clubWorkspaceClipSubmit')?.addEventListener('click', submitClubWorkspaceClip);
+      document.getElementById('clubWorkspaceNoteSearch')?.addEventListener('input', renderClubWorkspaceNotes);
+      document.getElementById('clubWorkspaceClipSearch')?.addEventListener('input', renderClubWorkspaceClips);
+      document.getElementById('clubWorkspaceEvalSearch')?.addEventListener('input', renderClubWorkspaceEvaluations);
+      document.getElementById('clubWorkspaceEvalMinScore')?.addEventListener('input', renderClubWorkspaceEvaluations);
+
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const data = readForm();
@@ -472,17 +1226,27 @@
           backendSaved = false;
         }
 
-        saveProfileLocal(data);
+        if (!backendSaved) {
+          saveMsg.textContent = 'Kulup profili backend kaydedilemedi.';
+          setTimeout(() => { saveMsg.textContent = ''; }, 2200);
+          return;
+        }
+
         renderSummary(data);
-        saveMsg.textContent = backendSaved ? "Kulup profili backend'e kaydedildi." : 'Kaydedildi (local). Backend baglantisi yok.';
+        saveMsg.textContent = "Kulup profili backend'e kaydedildi.";
         window.NextScoutGrowth?.track('club_profile_saved', { club: (data.clubName || '').slice(0, 40) });
         setTimeout(() => { saveMsg.textContent = ''; }, 2200);
       });
 
-      document.getElementById('resetBtn')?.addEventListener('click', () => {
+      document.getElementById('resetBtn')?.addEventListener('click', async () => {
         const defaults = getDefaultProfile();
+        const backendSaved = await saveProfileBackend(defaults).catch(() => false);
+        if (!backendSaved) {
+          saveMsg.textContent = 'Kulup profili backend sifirlanamadi.';
+          setTimeout(() => { saveMsg.textContent = ''; }, 2000);
+          return;
+        }
         setForm(defaults);
-        saveProfileLocal(defaults);
         renderSummary(defaults);
         saveMsg.textContent = 'Profil varsayilan degerlere dondu.';
         setTimeout(() => { saveMsg.textContent = ''; }, 2000);
@@ -490,7 +1254,7 @@
     }
 
     async function init() {
-      let profile = loadProfileLocal();
+      let profile = getDefaultProfile();
       try {
         const remote = await fetchMeAndTeam();
         if (remote?.user) {
@@ -500,20 +1264,79 @@
       } catch (error) {
         // local fallback
       }
+      ensureClubProfileSelectOptions();
       setForm(profile);
       renderSummary(profile);
-      saveProfileLocal(profile);
       bindTabs();
       bind();
+      updateClubReviewVisibility();
+      loadClubProfileReviews();
+      if (getToken()) {
+        await renderClubWorkspaceNotes();
+      } else {
+        document.getElementById('clubWorkspaceNotesList').innerHTML = '<div class="workspace-empty">Giris yaptiginda teknik notlar burada gorunur.</div>';
+        document.getElementById('clubWorkspaceClipsList').innerHTML = '<div class="workspace-empty">Giris yaptiginda klip notlari burada gorunur.</div>';
+        document.getElementById('clubWorkspaceEvaluationsList').innerHTML = '<div class="workspace-empty">Giris yaptiginda kaydedilmis degerlendirmeler burada gorunur.</div>';
+      }
+    }
+
+    function applyTurkishTextFixes() {
+      document.title = 'Kulüp Profili - NextScout';
+      const sub = document.querySelector('.sub');
+      if (sub) sub.textContent = 'Kulübe özel bilgiler: bütçe, kadro ihtiyacı, şehir ve tesis.';
+      const headActions = document.querySelector('.head-actions');
+      if (headActions && !headActions.querySelector('[data-role="dashboard-btn"]')) {
+        const dashboardBtn = document.createElement('a');
+        dashboardBtn.className = 'btn btn-secondary';
+        dashboardBtn.href = 'team-dashboard.html';
+        dashboardBtn.setAttribute('data-role', 'dashboard-btn');
+        dashboardBtn.innerHTML = '<i class="fas fa-table-columns"></i><span>Dashboard</span>';
+        headActions.insertBefore(dashboardBtn, headActions.firstChild);
+      }
+      document.querySelectorAll('.label, .muted, .section-title, .profile-tab, .mini-table th, .title').forEach((el) => {
+        el.textContent = (el.textContent || '')
+          .replaceAll('KULÃœP', 'Kulüp')
+          .replaceAll('KULÜP', 'Kulüp')
+          .replaceAll('Adi', 'Adı')
+          .replaceAll('Sehir', 'Şehir')
+          .replaceAll('Brans', 'Branş')
+          .replaceAll('Butcesi', 'Bütçesi')
+          .replaceAll('Butce', 'Bütçe')
+          .replaceAll('Maas', 'Maaş')
+          .replaceAll('Ihtiyaci', 'İhtiyacı')
+          .replaceAll('Ihtiyaç', 'İhtiyaç')
+          .replaceAll('Ozeti', 'Özeti')
+          .replaceAll('Plani', 'Planı')
+          .replaceAll('Gecmis', 'Geçmiş')
+          .replaceAll('Donem', 'Dönem')
+          .replaceAll('Deger', 'Değer')
+          .replaceAll('SıfÄ±rla', 'Sıfırla')
+          .replaceAll('SÄ±fÄ±rla', 'Sıfırla');
+      });
+      document.querySelectorAll('input[placeholder], textarea[placeholder], option').forEach((el) => {
+        if (el.tagName === 'OPTION') {
+          el.textContent = (el.textContent || '')
+            .replaceAll('Seciniz', 'Seçiniz')
+            .replaceAll('Coklu Brans', 'Çoklu Branş')
+            .replaceAll('Coklu Pozisyon', 'Çoklu Pozisyon')
+            .replaceAll('Gelismis', 'Gelişmiş');
+          return;
+        }
+        const placeholder = el.getAttribute('placeholder') || '';
+        el.setAttribute('placeholder', placeholder
+          .replaceAll('Ornek', 'Örnek')
+          .replaceAll('Istanbul', 'İstanbul')
+          .replaceAll('Antrenman sahasi', 'Antrenman sahası')
+          .replaceAll('analiz odasi', 'analiz odası')
+          .replaceAll('yas', 'yaş')
+          .replaceAll('oyun tarzi', 'oyun tarzı'));
+      });
     }
 
     init();
+    applyTurkishTextFixes();
   </script>
     <script src="assets/js/core-stability.js"></script>
+    <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
-

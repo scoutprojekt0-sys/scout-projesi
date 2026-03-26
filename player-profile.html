@@ -2976,7 +2976,7 @@
             query.set('per_page', '1');
             if (userId) query.set('player_user_id', userId);
             else if (playerName) query.set('player_name', playerName);
-            const payload = await fetchJsonSafe(`${getApiBaseUrl()}/coach/player-evaluations?${query.toString()}`, true);
+const payload = await fetchJsonSafe(`${getApiBaseUrl()}/staff/player-evaluations?${query.toString()}`, true);
             const rows = Array.isArray(payload?.data?.data) ? payload.data.data : [];
             return rows[0] || null;
         }
@@ -2985,7 +2985,7 @@
             const token = (localStorage.getItem('nextscout_token') || '').trim();
             if (!token) throw new Error('Oturum bulunamadi.');
 
-            const response = await fetch(`${getApiBaseUrl()}/coach/player-evaluations`, {
+const response = await fetch(`${getApiBaseUrl()}/staff/player-evaluations`, {
                 method: 'POST',
                 headers: {
                     ...getAuthHeaders(),

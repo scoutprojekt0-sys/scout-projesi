@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NextScout - Menajerlerin Aradığı Oyuncular</title>
-    <meta name="description" content="NextScout manager needs sayfası: futbol scout, kulüp ve oyuncu odaklı platform içeriği.">
+    <meta name="description" content="NextScout manager needs sayfası: menajer ilanlarını tek merkezde gösterir.">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://nextscout.app/manager-needs.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
     <meta property="og:title" content="NextScout - Menajerlerin Aradığı Oyuncular">
-    <meta property="og:description" content="NextScout manager needs sayfası: futbol scout, kulüp ve oyuncu odaklı platform içeriği.">
+    <meta property="og:description" content="NextScout manager needs sayfası: menajer ilanlarını tek merkezde gösterir.">
     <meta property="og:url" content="https://nextscout.app/manager-needs.html">
     <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="NextScout - Menajerlerin Aradığı Oyuncular">
-    <meta name="twitter:description" content="NextScout manager needs sayfası: futbol scout, kulüp ve oyuncu odaklı platform içeriği.">
+    <meta name="twitter:description" content="NextScout manager needs sayfası: menajer ilanlarını tek merkezde gösterir.">
     <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
@@ -44,7 +44,7 @@
             var(--bg);
           min-height: 100vh;
         }
-        .topbar { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; background: rgba(7, 18, 36, 0.78); border-bottom: 1px solid rgba(148, 163, 184, 0.24); color: #f5fbff; backdrop-filter: blur(18px); }
+        .topbar { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; background: linear-gradient(180deg, rgba(18, 41, 61, 0.96) 0%, rgba(15, 31, 46, 0.94) 100%); border-bottom: 1px solid rgba(148, 163, 184, 0.18); color: #f5fbff; backdrop-filter: blur(18px); box-shadow: 0 18px 36px rgba(8,19,29,.24); }
         .brand { font-family: 'Poppins', sans-serif; font-size: 24px; color: #BFDBFE; text-decoration: none; }
         .top-actions { display: flex; gap: 10px; }
         .btn, a.btn, button.btn { display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; border: 1px solid rgba(255, 126, 34, 0.45) !important; background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%) !important; color: #16325c !important; padding: 10px 16px !important; border-radius: 12px !important; text-decoration: none !important; font-weight: 800 !important; font-size: 13px !important; cursor: pointer !important; box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24) !important; transition: transform .18s ease, box-shadow .18s ease, filter .18s ease !important; }
@@ -52,11 +52,12 @@
         .btn.primary, a.btn.primary, button.btn.primary { background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%) !important; border-color: #ff7e22 !important; color: #ffffff !important; box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28) !important; }
         .btn.primary:hover, a.btn.primary:hover, button.btn.primary:hover { box-shadow: 0 18px 30px rgba(255, 90, 31, 0.34) !important; }
         .page { max-width: 1180px; margin: 26px auto; padding: 0 20px; }
-        .hero { background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 22px; padding: 24px; box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34); margin-bottom: 14px; color: var(--text); }
+        .hero { position:relative; overflow:hidden; background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 22px; padding: 24px; box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34); margin-bottom: 14px; color: var(--text); }
+        .hero::before { content:""; position:absolute; inset:0 0 auto 0; height:4px; background:linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%); }
         .hero h1 { font-size: 30px; margin-bottom: 8px; }
         .hero p { color: var(--muted); margin-bottom: 14px; }
         .filters { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-        .control { width: 100%; padding: 10px 12px; border: 1px solid #2b4660; border-radius: 10px; background: var(--panel-2); color: var(--text); font-size: 14px; }
+        .control { width: 100%; padding: 10px 12px; border: 1px solid #2b4660; border-radius: 12px; background: rgba(255,255,255,.04); color: var(--text); font-size: 14px; }
         .list { display: grid; gap: 12px; margin-top: 14px; }
         .job { position: relative; overflow: hidden; background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 18px; padding: 18px; color: var(--text); box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28); cursor: pointer; transition: all .2s ease; }
         .job::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%); }
@@ -67,7 +68,8 @@
         .meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 13px; margin-bottom: 12px; }
         .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
         .tag { background: rgba(255, 255, 255, 0.04); border: 1px solid #2b4660; color: #d6e8f7; border-radius: 999px; padding: 6px 10px; font-size: 12px; font-weight: 700; }
-        .empty { background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 16px; padding: 16px; color: var(--muted); box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28); }
+        .empty { position:relative; overflow:hidden; background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); border: 1px solid #2b4660; border-radius: 16px; padding: 16px; color: var(--muted); box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28); }
+        .empty::before { content:""; position:absolute; inset:0 0 auto 0; height:4px; background:linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%); }
         @media (max-width: 1000px) { .filters { grid-template-columns: 1fr 1fr; } }
         @media (max-width: 768px) {
             .topbar { padding: 10px 12px; }
@@ -83,14 +85,15 @@
 <header class="topbar">
     <a class="brand" href="./index.html">NextScout</a>
     <div class="top-actions">
-        <a class="home-btn-global" href="./index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #ff7e22;background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;box-shadow:0 16px 28px rgba(255,90,31,0.28);">Ana Sayfa</a>
+        <a class="btn" href="./manager-dashboard.html"><i class="fas fa-table-columns"></i><span>Dashboard</span></a>
+        <a class="home-btn-global" href="./index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:12px;border:1px solid #ff7e22;background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;box-shadow:0 16px 28px rgba(255,90,31,0.28);"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
     </div>
 </header>
 
 <main class="page">
     <section class="hero">
         <h1><i class="fa-solid fa-filter"></i> Menajerlerin Aradığı Oyuncular</h1>
-        <p>Dashboard'da kaydedilen ilanlar burada yayınlanır. Oyuncular filtreleyip kendine uygun ilanı bulur.</p>
+        <p>Menajerlerin dashboard'da kaydettiği ilanlar burada yayınlanır. Oyuncular filtreleyip kendine uygun ilanı bulur.</p>
         <div class="filters">
             <select class="control" id="positionFilter">
                 <option value="">Pozisyon (Tümü)</option>
@@ -115,6 +118,49 @@
 <script>
     let allJobs = [];
 
+    function getCurrentRole() {
+        const rawRole = String(localStorage.getItem('nextscout_user_role') || '').trim().toLowerCase();
+        if (rawRole) return rawRole;
+        try {
+            const rawUser = localStorage.getItem('nextscout_user');
+            const user = rawUser ? JSON.parse(rawUser) : null;
+            return String(user?.role || '').trim().toLowerCase();
+        } catch (error) {
+            return '';
+        }
+    }
+
+    function buildContactHref(job) {
+        const title = job.title || `${job.position || '-'} pozisyonu için oyuncu aranıyor`;
+        const recipientName = String(job.author_name || job.manager_name || 'Menajer Ekibi').trim();
+        const body = `${recipientName} merhaba,\n\n${title} ilaninizla ilgileniyorum. Detaylari konusmak isterim.`;
+        const params = new URLSearchParams({
+            compose: '1',
+            to_name: recipientName,
+            subject: `${title} ilanı hakkında`,
+            message: body,
+            notice: 'Alici ve metin ilan ekranindan otomatik dolduruldu.',
+            return_to: 'manager-needs.html',
+        });
+        return `notifications.html?${params.toString()}`;
+    }
+
+    function getJobAction(job) {
+        const role = getCurrentRole();
+        if (role === 'player') {
+            return {
+                label: 'Bu Goreve Basvur',
+                icon: 'fa-paper-plane',
+                action: `alert('Başvuru iletildi: ${String(job.title || '').replace(/'/g, "\\'")}')`,
+            };
+        }
+        return {
+            label: 'Iletisime Gec',
+            icon: 'fa-comments',
+            href: buildContactHref(job),
+        };
+    }
+
     function getApiBaseUrl() {
         const query = new URLSearchParams(window.location.search);
         const fromQuery = (query.get('api_base') || '').trim();
@@ -130,7 +176,7 @@
         });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const payload = await response.json();
-        return Array.isArray(payload?.data) ? payload.data : [];
+        return Array.isArray(payload?.data) ? payload.data.map((item) => ({ ...item, source_role: 'manager' })) : [];
     }
 
     function money(v) {
@@ -145,9 +191,11 @@
         }
 
         root.innerHTML = data.map((job) => {
+            const roleLabel = 'MENAJER İlanı';
             const title = job.title || `${job.position || '-'} pozisyonu için oyuncu aranıyor`;
             const freeLabel = job.free_only === 'true' ? 'Bonservisi elinde' : (job.free_only === 'false' ? 'Kulübünde olabilir' : 'Bonservis fark etmez');
             const ageLabel = `${job.age_min || '-'}-${job.age_max || '-'} yaş`;
+            const action = getJobAction(job);
             return `
                 <article class="job">
                     <div class="job-head">
@@ -155,17 +203,20 @@
                         <span class="reward">${money(job.budget_min)} - ${money(job.budget_max)}</span>
                     </div>
                     <div class="meta">
-                        <span><i class="fa-solid fa-user-tie"></i> Menajer: ${job.author_name || '-'}</span>
+                        <span><i class="fa-solid fa-user-tie"></i> ${roleLabel}: ${job.author_name || job.coach_name || '-'}</span>
                         <span><i class="fa-solid fa-location-dot"></i> ${job.city || 'Şehir belirtilmedi'}</span>
                         <span><i class="fa-solid fa-ruler-vertical"></i> Min ${job.min_height || '-'} cm</span>
                         <span><i class="fa-solid fa-user"></i> ${ageLabel}</span>
                     </div>
                     <div class="tags">
+                        <span class="tag">${roleLabel}</span>
                         <span class="tag">${job.dominant_side || 'Ayak fark etmez'}</span>
                         <span class="tag">${freeLabel}</span>
                         <span class="tag">${job.description || 'Ek açıklama yok'}</span>
                     </div>
-                    <button class="btn primary" onclick="alert('Başvuru iletildi: ${title}')"><i class="fa-solid fa-paper-plane"></i> Bu Göreve Başvur</button>
+                    ${action.href
+                        ? `<a class="btn primary" href="${action.href}"><i class="fa-solid ${action.icon}"></i> ${action.label}</a>`
+                        : `<button class="btn primary" onclick="${action.action}"><i class="fa-solid ${action.icon}"></i> ${action.label}</button>`}
                 </article>
             `;
         }).join('');

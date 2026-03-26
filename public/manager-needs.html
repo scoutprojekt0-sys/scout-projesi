@@ -118,6 +118,49 @@
 <script>
     let allJobs = [];
 
+    function getCurrentRole() {
+        const rawRole = String(localStorage.getItem('nextscout_user_role') || '').trim().toLowerCase();
+        if (rawRole) return rawRole;
+        try {
+            const rawUser = localStorage.getItem('nextscout_user');
+            const user = rawUser ? JSON.parse(rawUser) : null;
+            return String(user?.role || '').trim().toLowerCase();
+        } catch (error) {
+            return '';
+        }
+    }
+
+    function buildContactHref(job) {
+        const title = job.title || `${job.position || '-'} pozisyonu için oyuncu aranıyor`;
+        const recipientName = String(job.author_name || job.manager_name || 'Menajer Ekibi').trim();
+        const body = `${recipientName} merhaba,\n\n${title} ilaninizla ilgileniyorum. Detaylari konusmak isterim.`;
+        const params = new URLSearchParams({
+            compose: '1',
+            to_name: recipientName,
+            subject: `${title} ilanı hakkında`,
+            message: body,
+            notice: 'Alici ve metin ilan ekranindan otomatik dolduruldu.',
+            return_to: 'manager-needs.html',
+        });
+        return `notifications.html?${params.toString()}`;
+    }
+
+    function getJobAction(job) {
+        const role = getCurrentRole();
+        if (role === 'player') {
+            return {
+                label: 'Bu Goreve Basvur',
+                icon: 'fa-paper-plane',
+                action: `alert('Başvuru iletildi: ${String(job.title || '').replace(/'/g, "\\'")}')`,
+            };
+        }
+        return {
+            label: 'Iletisime Gec',
+            icon: 'fa-comments',
+            href: buildContactHref(job),
+        };
+    }
+
     function getApiBaseUrl() {
         const query = new URLSearchParams(window.location.search);
         const fromQuery = (query.get('api_base') || '').trim();
@@ -152,6 +195,7 @@
             const title = job.title || `${job.position || '-'} pozisyonu için oyuncu aranıyor`;
             const freeLabel = job.free_only === 'true' ? 'Bonservisi elinde' : (job.free_only === 'false' ? 'Kulübünde olabilir' : 'Bonservis fark etmez');
             const ageLabel = `${job.age_min || '-'}-${job.age_max || '-'} yaş`;
+            const action = getJobAction(job);
             return `
                 <article class="job">
                     <div class="job-head">
@@ -170,7 +214,9 @@
                         <span class="tag">${freeLabel}</span>
                         <span class="tag">${job.description || 'Ek açıklama yok'}</span>
                     </div>
-                    <button class="btn primary" onclick="alert('Başvuru iletildi: ${title}')"><i class="fa-solid fa-paper-plane"></i> Bu Göreve Başvur</button>
+                    ${action.href
+                        ? `<a class="btn primary" href="${action.href}"><i class="fa-solid ${action.icon}"></i> ${action.label}</a>`
+                        : `<button class="btn primary" onclick="${action.action}"><i class="fa-solid ${action.icon}"></i> ${action.label}</button>`}
                 </article>
             `;
         }).join('');

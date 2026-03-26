@@ -2416,29 +2416,29 @@
         async function fetchManagerWorkspaceNotes(search) {
             const params = new URLSearchParams({ per_page: '100' });
             if (search) params.set('search', search);
-            const payload = await managerApiGet(`/coach/player-notes?${params.toString()}`);
+const payload = await managerApiGet(`/staff/player-notes?${params.toString()}`);
             return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
         }
 
         async function createManagerWorkspaceNote(body) {
-            return managerApiPost('/coach/player-notes', body);
+return managerApiPost('/staff/player-notes', body);
         }
 
         async function fetchManagerWorkspaceClips(search) {
             const params = new URLSearchParams({ per_page: '100' });
             if (search) params.set('search', search);
-            const payload = await managerApiGet(`/coach/player-clips?${params.toString()}`);
+const payload = await managerApiGet(`/staff/player-clips?${params.toString()}`);
             return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
         }
 
         async function createManagerWorkspaceClip(body) {
-            return managerApiPost('/coach/player-clips', body);
+return managerApiPost('/staff/player-clips', body);
         }
 
         async function fetchManagerWorkspaceEvaluations(search) {
             const params = new URLSearchParams({ per_page: '100' });
             if (search) params.set('search', search);
-            const payload = await managerApiGet(`/coach/player-evaluations?${params.toString()}`);
+const payload = await managerApiGet(`/staff/player-evaluations?${params.toString()}`);
             return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
         }
 

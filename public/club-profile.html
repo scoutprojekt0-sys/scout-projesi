@@ -694,21 +694,21 @@
     async function fetchClubWorkspaceNotes(search) {
       const params = new URLSearchParams({ per_page: '100' });
       if (search) params.set('search', search);
-      const payload = await clubApiGet(`/coach/player-notes?${params.toString()}`);
+const payload = await clubApiGet(`/staff/player-notes?${params.toString()}`);
       return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
     }
 
     async function fetchClubWorkspaceClips(search) {
       const params = new URLSearchParams({ per_page: '100' });
       if (search) params.set('search', search);
-      const payload = await clubApiGet(`/coach/player-clips?${params.toString()}`);
+const payload = await clubApiGet(`/staff/player-clips?${params.toString()}`);
       return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
     }
 
     async function fetchClubWorkspaceEvaluations(search) {
       const params = new URLSearchParams({ per_page: '100' });
       if (search) params.set('search', search);
-      const payload = await clubApiGet(`/coach/player-evaluations?${params.toString()}`);
+const payload = await clubApiGet(`/staff/player-evaluations?${params.toString()}`);
       return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
     }
 
@@ -791,7 +791,7 @@
         return;
       }
       try {
-        await clubApiPost('/coach/player-notes', {
+await clubApiPost('/staff/player-notes', {
           player_user_id: playerUserId,
           player_name: playerName,
           position: position || null,
@@ -851,7 +851,7 @@
         return;
       }
       try {
-        await clubApiPost('/coach/player-clips', {
+await clubApiPost('/staff/player-clips', {
           player_user_id: playerUserId,
           player_name: playerName,
           video_url: videoUrl,

@@ -10,6 +10,8 @@ class CoachPlayerEvaluation extends Model
 {
     use HasFactory;
 
+    protected $table = 'coach_player_evaluations';
+
     protected $fillable = [
         'coach_user_id',
         'player_user_id',
@@ -31,8 +33,18 @@ class CoachPlayerEvaluation extends Model
         return $this->belongsTo(User::class, 'coach_user_id');
     }
 
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'coach_user_id');
+    }
+
     public function player(): BelongsTo
     {
         return $this->belongsTo(User::class, 'player_user_id');
+    }
+
+    public function getAuthorUserIdAttribute(): ?int
+    {
+        return $this->coach_user_id ? (int) $this->coach_user_id : null;
     }
 }
