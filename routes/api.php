@@ -401,6 +401,9 @@ Route::apiResource('staff', StaffController::class)->only(['index', 'show', 'upd
     Route::post('/club/offers', [ClubWorkspaceController::class, 'offersStore'])->middleware('ability:profile:write');
     Route::get('/club/promos', [ClubWorkspaceController::class, 'promosIndex'])->middleware('ability:profile:read');
     Route::post('/club/promos', [ClubWorkspaceController::class, 'promosStore'])->middleware('ability:profile:write');
+    Route::get('/club/groups', [ClubWorkspaceController::class, 'groupsIndex'])->middleware('ability:profile:read');
+    Route::post('/club/groups', [ClubWorkspaceController::class, 'groupsStore'])->middleware('ability:profile:write');
+    Route::patch('/club/groups/{id}', [ClubWorkspaceController::class, 'groupsUpdate'])->middleware('ability:profile:write');
     Route::get('/club/internal-players', [ClubWorkspaceController::class, 'internalPlayersIndex'])->middleware('ability:profile:read');
     Route::post('/club/internal-players', [ClubWorkspaceController::class, 'internalPlayersStore'])->middleware('ability:profile:write');
     Route::put('/club/internal-players/{id}', [ClubWorkspaceController::class, 'internalPlayersUpdate'])->middleware('ability:profile:write');

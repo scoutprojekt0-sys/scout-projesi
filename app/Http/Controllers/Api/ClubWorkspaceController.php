@@ -7,12 +7,14 @@ use App\Http\Controllers\Controller;
 use App\Models\ClubInternalPlayer;
 use App\Models\ClubOffer;
 use App\Models\ClubPromo;
+use App\Models\ClubTeamGroup;
 use App\Models\PlayerTransfer;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class ClubWorkspaceController extends Controller
@@ -149,6 +151,8 @@ class ClubWorkspaceController extends Controller
             return $user;
         }
 
+        $this->ensureDefaultTeamGroups($user);
+
         $players = ClubInternalPlayer::query()
             ->where('club_user_id', (int) $user->id)
             ->latest('id')
@@ -156,6 +160,105 @@ class ClubWorkspaceController extends Controller
             ->through(fn (ClubInternalPlayer $player) => $this->transformInternalPlayer($player));
 
         return $this->successResponse($players, 'Kulup ici oyuncu profilleri hazir.');
+    }
+
+    public function groupsIndex(Request $request): JsonResponse
+    {
+        $user = $this->authorizeClubUser($request);
+        if ($user instanceof JsonResponse) {
+            return $user;
+        }
+
+        $groups = $this->ensureDefaultTeamGroups($user)
+            ->map(fn (ClubTeamGroup $group) => $this->transformTeamGroup($group))
+            ->values();
+
+        return $this->successResponse($groups, 'Takim gruplari hazir.');
+    }
+
+    public function groupsStore(Request $request): JsonResponse
+    {
+        $user = $this->authorizeClubUser($request);
+        if ($user instanceof JsonResponse) {
+            return $user;
+        }
+
+        $this->ensureDefaultTeamGroups($user);
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'min:2', 'max:80'],
+            'group_key' => ['nullable', 'string', 'max:40'],
+            'note' => ['nullable', 'string', 'max:255'],
+            'is_showcased' => ['nullable', 'boolean'],
+        ]);
+
+        $groupKey = $this->normalizeTeamGroupKey($validated['group_key'] ?? $validated['name']);
+
+        $exists = ClubTeamGroup::query()
+            ->where('club_user_id', (int) $user->id)
+            ->where('group_key', $groupKey)
+            ->exists();
+
+        if ($exists) {
+            return $this->errorResponse('Bu grup anahtari zaten kullaniliyor.', Response::HTTP_UNPROCESSABLE_ENTITY, 'duplicate_group_key');
+        }
+
+        $group = ClubTeamGroup::query()->create([
+            'club_user_id' => (int) $user->id,
+            'group_key' => $groupKey,
+            'name' => trim((string) $validated['name']),
+            'note' => $this->nullableString($validated['note'] ?? null),
+            'is_showcased' => (bool) ($validated['is_showcased'] ?? false),
+            'sort_order' => ((int) ClubTeamGroup::query()->where('club_user_id', (int) $user->id)->max('sort_order')) + 1,
+        ]);
+
+        if ($group->is_showcased) {
+            $this->syncTeamGroupShowcase($user, (int) $group->id);
+            $group->refresh();
+        }
+
+        return $this->successResponse($this->transformTeamGroup($group), 'Takim grubu kaydedildi.', Response::HTTP_CREATED);
+    }
+
+    public function groupsUpdate(int $id, Request $request): JsonResponse
+    {
+        $user = $this->authorizeClubUser($request);
+        if ($user instanceof JsonResponse) {
+            return $user;
+        }
+
+        $group = ClubTeamGroup::query()
+            ->where('club_user_id', (int) $user->id)
+            ->find($id);
+
+        if (! $group) {
+            return $this->errorResponse('Takim grubu bulunamadi.', Response::HTTP_NOT_FOUND, 'team_group_not_found');
+        }
+
+        $validated = $request->validate([
+            'name' => ['nullable', 'string', 'min:2', 'max:80'],
+            'note' => ['nullable', 'string', 'max:255'],
+            'is_showcased' => ['nullable', 'boolean'],
+        ]);
+
+        if (array_key_exists('name', $validated)) {
+            $group->name = trim((string) $validated['name']);
+        }
+        if (array_key_exists('note', $validated)) {
+            $group->note = $this->nullableString($validated['note']);
+        }
+        if (array_key_exists('is_showcased', $validated)) {
+            $group->is_showcased = (bool) $validated['is_showcased'];
+        }
+
+        $group->save();
+
+        if ($group->is_showcased) {
+            $this->syncTeamGroupShowcase($user, (int) $group->id);
+            $group->refresh();
+        }
+
+        return $this->successResponse($this->transformTeamGroup($group), 'Takim grubu guncellendi.');
     }
 
     public function internalPlayersStore(Request $request): JsonResponse
@@ -387,6 +490,92 @@ class ClubWorkspaceController extends Controller
             'rating' => $player->rating,
             'savedAt' => optional($player->updated_at)->toIso8601String(),
         ];
+    }
+
+    private function ensureDefaultTeamGroups(User $user)
+    {
+        $existing = ClubTeamGroup::query()
+            ->where('club_user_id', (int) $user->id)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get();
+
+        if ($existing->isNotEmpty()) {
+            return $existing;
+        }
+
+        foreach ($this->defaultTeamGroups() as $index => $group) {
+            ClubTeamGroup::query()->create([
+                'club_user_id' => (int) $user->id,
+                'group_key' => $group['group_key'],
+                'name' => $group['name'],
+                'note' => $group['note'],
+                'is_showcased' => false,
+                'sort_order' => $index + 1,
+            ]);
+        }
+
+        return ClubTeamGroup::query()
+            ->where('club_user_id', (int) $user->id)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get();
+    }
+
+    private function defaultTeamGroups(): array
+    {
+        return [
+            ['group_key' => 'u9', 'name' => 'U9', 'note' => 'Temel yas grubu kayit alani.'],
+            ['group_key' => 'u10', 'name' => 'U10', 'note' => 'Temel yas grubu kayit alani.'],
+            ['group_key' => 'u11', 'name' => 'U11', 'note' => 'Temel yas grubu kayit alani.'],
+            ['group_key' => 'u12', 'name' => 'U12', 'note' => 'Temel yas grubu kayit alani.'],
+            ['group_key' => 'u13', 'name' => 'U13', 'note' => 'Temel yas grubu kayit alani.'],
+            ['group_key' => 'u14', 'name' => 'U14', 'note' => 'Temel yas grubu kayit alani.'],
+            ['group_key' => 'u15', 'name' => 'U15', 'note' => 'Temel yas grubu kayit alani.'],
+            ['group_key' => 'u16', 'name' => 'U16', 'note' => 'Temel yas grubu kayit alani.'],
+            ['group_key' => 'u17', 'name' => 'U17', 'note' => 'Temel yas grubu kayit alani.'],
+            ['group_key' => 'u19', 'name' => 'U19', 'note' => 'Gecis yas grubu kayit alani.'],
+            ['group_key' => 'a-team', 'name' => 'A Takim', 'note' => 'Kulubun vitrin ve ana takim havuzu.'],
+        ];
+    }
+
+    private function transformTeamGroup(ClubTeamGroup $group): array
+    {
+        return [
+            'id' => $group->id,
+            'group_key' => $group->group_key,
+            'name' => $group->name,
+            'note' => $group->note,
+            'is_showcased' => (bool) $group->is_showcased,
+            'sort_order' => (int) $group->sort_order,
+            'created_at' => optional($group->created_at)->toIso8601String(),
+            'updated_at' => optional($group->updated_at)->toIso8601String(),
+        ];
+    }
+
+    private function normalizeTeamGroupKey(?string $value): string
+    {
+        $normalized = Str::of((string) $value)
+            ->trim()
+            ->lower()
+            ->slug('-')
+            ->limit(40, '')
+            ->value();
+
+        if ($normalized === '') {
+            return 'group-'.Str::lower(Str::random(6));
+        }
+
+        return $normalized;
+    }
+
+    private function syncTeamGroupShowcase(User $user, int $activeGroupId): void
+    {
+        ClubTeamGroup::query()
+            ->where('club_user_id', (int) $user->id)
+            ->where('id', '!=', $activeGroupId)
+            ->where('is_showcased', true)
+            ->update(['is_showcased' => false]);
     }
 
     private function nullableString(mixed $value): ?string
