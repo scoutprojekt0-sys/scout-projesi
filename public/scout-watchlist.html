@@ -150,9 +150,9 @@
           <tr>
             <th>Oyuncu</th>
             <th>Pozisyon</th>
-            <th>Yas</th>
-            <th>Rating</th>
-            <th>KULÜP</th>
+            <th>Sehir</th>
+            <th>Durum</th>
+            <th>Sonraki Adim</th>
             <th>Islem</th>
           </tr>
         </thead>
@@ -178,7 +178,7 @@
     async function loadItemsFromApi() {
       const token = authToken();
       if (!token || token === 'local-session-token') throw new Error('Auth required');
-      const response = await fetch(`${API_BASE}/favorites`, {
+      const response = await fetch(`${API_BASE}/scout-tips/watchlist/my`, {
         headers: {
           Accept: 'application/json',
           Authorization: `Bearer ${token}`,
@@ -188,14 +188,17 @@
       const payload = await response.json().catch(() => ({}));
       const rows = Array.isArray(payload?.data) ? payload.data : [];
       return rows.map((item) => {
-        const target = item?.target_user || item?.player || item?.user || {};
+        const target = item?.player || {};
+        const tip = item?.scout_tip || {};
+        const managerReview = tip?.metadata?.manager_review || {};
         return {
-          id: Number(item?.target_user_id || item?.player_id || target?.id || item?.id || 0),
-          name: (target?.name || item?.player_name || item?.name || '-'),
-          position: (target?.position || item?.position || '-'),
-          age: (target?.age || item?.age || '-'),
-          rating: Number(target?.rating || item?.rating || 0),
-          club: (target?.club_name || item?.club_name || item?.club || '-'),
+          id: Number(item?.id || 0),
+          playerId: Number(item?.player_id || target?.id || 0),
+          name: (target?.name || tip?.player_name || item?.metadata?.player_name || '-'),
+          position: (target?.position || tip?.position || item?.metadata?.position || '-'),
+          city: (target?.city || tip?.city || item?.metadata?.city || '-'),
+          status: (tip?.status || item?.status || 'active'),
+          nextAction: (managerReview?.next_action || '-'),
         };
       });
     }
@@ -216,20 +219,25 @@
         <tr>
           <td data-label="Oyuncu">${x.name || '-'}</td>
           <td data-label="Pozisyon">${x.position || '-'}</td>
-          <td data-label="Yas">${x.age || '-'}</td>
-          <td data-label="Rating">${Number(x.rating || 0).toFixed(1)}</td>
-          <td data-label="KULÜP">${x.club || '-'}</td>
+          <td data-label="Sehir">${x.city || '-'}</td>
+          <td data-label="Durum">${x.status || '-'}</td>
+          <td data-label="Sonraki Adim">${x.nextAction || '-'}</td>
           <td data-label="Islem">
-            <button class="inline-btn" onclick="openProfile(${Number(x.id) || 0})">Profil</button>
+            <button class="inline-btn" onclick="openProfile(${Number(x.playerId) || 0}, '${String(x.name || '').replace(/'/g, "\\'")}')">Profil</button>
             <button class="inline-btn" onclick="removeItem(${Number(x.id) || 0})">Kaldir</button>
           </td>
         </tr>
       `).join('');
     }
 
-    function openProfile(id){
-      if(!id) return;
-      window.location.href = `player-profile.html?user_id=${encodeURIComponent(id)}`;
+    function openProfile(id, name){
+      if(id){
+        window.location.href = `player-profile.html?user_id=${encodeURIComponent(id)}`;
+        return;
+      }
+      if(name){
+        window.location.href = `professional-players.html?search=${encodeURIComponent(name)}`;
+      }
     }
 
     async function removeItem(id){
@@ -239,7 +247,7 @@
         return;
       }
       try {
-        const response = await fetch(`${API_BASE}/favorites/${encodeURIComponent(id)}/toggle`, {
+        const response = await fetch(`${API_BASE}/scout-tips/watchlist/${encodeURIComponent(id)}/remove`, {
           method: 'POST',
           headers: {
             Accept: 'application/json',

@@ -1543,6 +1543,7 @@
                         <button class="btn-small primary" type="button" onclick="openManagerTalentTipModal()"><i class="fas fa-video"></i><span>Yetenek Bildir</span></button>
                         <button class="btn-small secondary" type="button" onclick="openManagerMarketPulse()"><i class="fas fa-chart-line"></i><span>Market Pulse</span></button>
                         <button class="btn-small secondary" type="button" onclick="openLiveMatches()"><i class="fas fa-tower-broadcast"></i><span>Canli Mac Bildirimleri</span></button>
+                        <button class="btn-small secondary" type="button" onclick="openManagerShortlist()"><i class="fas fa-list-check"></i><span>Shortlist</span></button>
                         <button class="btn-small secondary" type="button" onclick="openManagerScoutHub()"><i class="fas fa-bookmark"></i><span>Scout Watchlist & Raporlar</span></button>
                         <button class="btn-small secondary" type="button" onclick="openManagerOpportunityArea('needs')"><i class="fas fa-bullseye"></i><span>Firsat Alani</span></button>
                     </div>
@@ -1693,6 +1694,7 @@
                         <div id="managerScoutHubReports" hidden>
                             <div class="offer-score-result" style="margin-bottom:12px;">Kaydedilen scout raporlarini tek yerden ac.</div>
                             <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                                <button class="btn-small secondary" type="button" onclick="openManagerShortlist()">Shortlisti Ac</button>
                                 <button class="btn-small secondary" type="button" onclick="openScoutReports()">Scout Raporlarini Ac</button>
                             </div>
                         </div>
@@ -3424,6 +3426,7 @@ const payload = await managerApiGet(`/staff/player-evaluations?${params.toString
 
         function openFavorites() { window.location.href = 'favorites.html'; }
         function openWatchlist() { window.location.href = 'scout-watchlist.html'; }
+        function openManagerShortlist() { window.location.href = 'manager-shortlist.html'; }
         function openScoutReports() { window.location.href = 'scout-reports.html'; }
         function openLiveMatches() { window.location.href = 'scout-live-matches.html'; }
         function openMessages() { window.location.href = 'notifications.html'; }
@@ -3764,6 +3767,13 @@ const payload = await managerApiGet(`/staff/player-evaluations?${params.toString
             if (welcomeSub) welcomeSub.textContent = 'Oyuncu ara, profil incele, başvuru gönder ve favori listeni yönet.';
             const sidebarMenu = document.querySelector('.sidebar-menu');
             if (sidebarMenu && !sidebarMenu.querySelector('[data-nav="scout-reports"]')) {
+                const shortlistItem = document.createElement('li');
+                shortlistItem.className = 'sidebar-item';
+                shortlistItem.setAttribute('data-nav', 'manager-shortlist');
+                shortlistItem.innerHTML = '<i class="fas fa-list-check"></i><span>Shortlist</span>';
+                shortlistItem.onclick = openManagerShortlist;
+                sidebarMenu.appendChild(shortlistItem);
+
                 const reportsItem = document.createElement('li');
                 reportsItem.className = 'sidebar-item';
                 reportsItem.setAttribute('data-nav', 'scout-reports');
@@ -3773,8 +3783,13 @@ const payload = await managerApiGet(`/staff/player-evaluations?${params.toString
                     const label = item.querySelector('span:last-child');
                     return /yard/i.test(label?.textContent || '');
                 });
-                if (helpItem) sidebarMenu.insertBefore(reportsItem, helpItem);
-                else sidebarMenu.appendChild(reportsItem);
+                if (helpItem) {
+                    sidebarMenu.insertBefore(reportsItem, helpItem);
+                    sidebarMenu.insertBefore(tipsItem, reportsItem);
+                } else {
+                    sidebarMenu.appendChild(tipsItem);
+                    sidebarMenu.appendChild(reportsItem);
+                }
             }
             document.querySelectorAll('.sidebar-item span:last-child').forEach((el) => {
                 let text = el.textContent || '';

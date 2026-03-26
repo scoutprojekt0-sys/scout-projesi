@@ -156,9 +156,15 @@ Route::prefix('contributions')->middleware('auth:sanctum')->group(function () {
     Route::post('/{id}/request-info', [ContributionController::class, 'requestInfo']);
 });
 
+Route::get('/scout-tips/feed', [ScoutTipController::class, 'feed'])->middleware('throttle:api');
 Route::prefix('scout-tips')->middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->group(function () {
     Route::get('/', [ScoutTipController::class, 'index'])->middleware('ability:profile:read');
     Route::get('/my', [ScoutTipController::class, 'my'])->middleware('ability:profile:read');
+    Route::get('/resolve-player', [ScoutTipController::class, 'resolvePlayer'])->middleware('ability:profile:read');
+    Route::get('/watchlist/my', [ScoutTipController::class, 'watchlist'])->middleware('ability:profile:read');
+    Route::post('/{id}/manager-note', [ScoutTipController::class, 'saveManagerNote'])->middleware('ability:profile:write');
+    Route::post('/{id}/watchlist', [ScoutTipController::class, 'addToWatchlist'])->middleware('ability:profile:write');
+    Route::post('/watchlist/{id}/remove', [ScoutTipController::class, 'removeFromWatchlist'])->middleware('ability:profile:write');
     Route::get('/{id}', [ScoutTipController::class, 'show'])->middleware('ability:profile:read');
     Route::post('/', [ScoutTipController::class, 'store'])->middleware('ability:profile:write');
     Route::post('/{id}/withdraw', [ScoutTipController::class, 'withdraw'])->middleware('ability:profile:write');
@@ -171,7 +177,6 @@ Route::prefix('scout-tips')->middleware(['auth:sanctum', 'reject_legacy_token', 
 });
 
 Route::post('/scout-tips/guest', [ScoutTipController::class, 'storeGuest'])->middleware('throttle:api');
-Route::get('/scout-tips/feed', [ScoutTipController::class, 'feed'])->middleware('throttle:api');
 Route::post('/media/guest', [MediaController::class, 'guestStore'])->middleware('throttle:api');
 Route::post('/public/contact-messages', [PublicContactMessageController::class, 'store'])->middleware('throttle:api');
 

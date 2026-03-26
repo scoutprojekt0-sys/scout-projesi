@@ -692,7 +692,8 @@
             <button class="btn-small secondary" type="button" onclick="openCoachMarketPulse()"><i class="fas fa-chart-line"></i><span>Market Pulse</span></button>
             <button class="btn-small secondary" type="button" onclick="openLiveMatches()"><i class="fas fa-tower-broadcast"></i><span>Canli Mac Bildirimleri</span></button>
             <button class="btn-small secondary" type="button" onclick="openCoachWorkspace('notes')"><i class="fas fa-briefcase"></i><span>Antrenör Çalışma Alanı</span></button>
-            <button class="btn-small secondary" type="button" onclick="openCoachReportsHub('watchlist')"><i class="fas fa-bookmark"></i><span>Scout Watchlist & Raporlar</span></button>
+          <button class="btn-small secondary" type="button" onclick="window.location.href='scout-ihbarlari.html'"><i class="fas fa-bullhorn"></i><span>Scout Ihbarlari</span></button>
+          <button class="btn-small secondary" type="button" onclick="openCoachReportsHub('watchlist')"><i class="fas fa-bookmark"></i><span>Scout Watchlist & Raporlar</span></button>
           </div>
           <div class="hero-points">
             <span class="pill"><i class="fas fa-circle-check"></i><span>Dogrulanan gozlemler karar gucunu artirir</span></span>
@@ -974,6 +975,7 @@
         <div id="coachReportsHubReports" hidden>
           <div class="quick-report-result" style="margin-bottom:12px;">Kaydedilen scout raporlarini tek yerden ac.</div>
           <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <button class="btn-small secondary" type="button" onclick="window.location.href='scout-ihbarlari.html'">Scout Ihbarlarini Ac</button>
             <button class="btn-small secondary" type="button" onclick="window.location.href='scout-reports.html'">Scout Raporlarini Ac</button>
           </div>
         </div>
@@ -1069,6 +1071,86 @@
           <button class="btn-small secondary" type="button" onclick="resetPlayersModal()">Sıfırla</button>
         </div>
         <div class="players-grid player-search-results" id="playersGridModal"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="need-modal-overlay" id="coachPlayerOpsModal" onclick="if(event.target.id==='coachPlayerOpsModal'){closeCoachPlayerOps();}">
+    <div class="need-modal live-modal" onclick="event.stopPropagation()">
+      <div class="need-modal-head">
+        <div>
+          <h3 id="coachPlayerOpsTitle">Oyuncu Operasyon Paneli</h3>
+          <div id="coachPlayerOpsSummary" class="quick-report-result" style="margin-top:8px;">Secili oyuncu yok.</div>
+        </div>
+        <button class="btn-small secondary" type="button" onclick="closeCoachPlayerOps()">Kapat</button>
+      </div>
+      <div class="need-modal-body" style="display:grid; gap:14px;">
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn-small secondary" type="button" id="coachPlayerOpsProfileBtn">Profili Ac</button>
+          <button class="btn-small secondary" type="button" id="coachPlayerOpsMessageBtn">Mesaj</button>
+          <button class="btn-small secondary" type="button" id="coachPlayerOpsInterestBtn">Ilgi Bildir</button>
+          <button class="btn-small secondary" type="button" id="coachPlayerOpsWatchlistBtn">Watchlist'e Al</button>
+          <button class="btn-small secondary" type="button" id="coachPlayerOpsTrialBtn">Trial Merkezi</button>
+        </div>
+        <div class="search-grid" style="grid-template-columns:repeat(2,1fr);">
+          <div class="form-group">
+            <label>Sonraki Adim</label>
+            <select id="coachPlayerOpsNextStep">
+              <option value="">Sec</option>
+              <option value="watchlist">Takibe al</option>
+              <option value="message">Iletisime gec</option>
+              <option value="interest">Ilgi bildir</option>
+              <option value="trial">Trial planla</option>
+              <option value="note">Teknik not birak</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Operasyon Notu</label>
+            <input type="text" id="coachPlayerOpsDecisionNote" placeholder="Orn: Sol ayak teknik ama tekrar izlenmeli">
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <button class="btn-small primary" type="button" id="coachPlayerOpsRunStepBtn">Adimi Uygula</button>
+          <div class="quick-report-result" id="coachPlayerOpsStatus">Secili oyuncu icin hizli aksiyonlari buradan yonet.</div>
+        </div>
+        <section style="padding:16px; border:1px solid #475569; border-radius:12px; background:#1f2937; color:#dbeafe;">
+          <h4 style="margin:0 0 10px 0;">Hizli Teknik Not</h4>
+          <div class="search-grid" style="grid-template-columns:repeat(2,1fr);">
+            <div class="form-group"><label>Pozisyon</label><input type="text" id="coachPlayerOpsNotePosition" placeholder="Forvet / Orta saha"></div>
+            <div class="form-group"><label>Etiket</label><select id="coachPlayerOpsNoteTag"><option value="izlenecek">Izlenecek</option><option value="tekrar-bak">Tekrar Bak</option><option value="gelisim-var">Gelisim Var</option><option value="hazir">Hazir</option></select></div>
+          </div>
+          <div class="form-group" style="margin:12px 0;">
+            <label>Not</label>
+            <textarea id="coachPlayerOpsNoteBody" style="min-height:84px;" placeholder="Oyuncu hakkinda kisa teknik not..."></textarea>
+          </div>
+          <button class="btn-small primary" type="button" id="coachPlayerOpsSaveNoteBtn">Notu Kaydet</button>
+        </section>
+        <section style="padding:16px; border:1px solid #475569; border-radius:12px; background:#1f2937; color:#dbeafe;">
+          <h4 style="margin:0 0 10px 0;">Hizli Klip Notu</h4>
+          <div class="search-grid" style="grid-template-columns:repeat(3,1fr);">
+            <div class="form-group"><label>Video</label><input type="url" id="coachPlayerOpsClipUrl" placeholder="https://..."></div>
+            <div class="form-group"><label>Dakika</label><input type="number" id="coachPlayerOpsClipMinute" min="0" max="180" value="0"></div>
+            <div class="form-group"><label>Saniye</label><input type="number" id="coachPlayerOpsClipSecond" min="0" max="59" value="0"></div>
+          </div>
+          <div class="form-group" style="margin:12px 0;">
+            <label>Klip Notu</label>
+            <textarea id="coachPlayerOpsClipBody" style="min-height:84px;" placeholder="Klipte dikkat ceken sahne notu..."></textarea>
+          </div>
+          <button class="btn-small primary" type="button" id="coachPlayerOpsSaveClipBtn">Klibi Kaydet</button>
+        </section>
+        <section style="padding:16px; border:1px solid #475569; border-radius:12px; background:#1f2937; color:#dbeafe;">
+          <h4 style="margin:0 0 10px 0;">Hizli Degerlendirme</h4>
+          <div class="search-grid" style="grid-template-columns:repeat(3,1fr);">
+            <div class="form-group"><label>Teknik</label><input type="number" id="coachPlayerOpsEvalTechnical" min="0" max="100" value="70"></div>
+            <div class="form-group"><label>Taktik</label><input type="number" id="coachPlayerOpsEvalTactical" min="0" max="100" value="70"></div>
+            <div class="form-group"><label>Fizik</label><input type="number" id="coachPlayerOpsEvalPhysical" min="0" max="100" value="70"></div>
+          </div>
+          <div class="form-group" style="margin:12px 0;">
+            <label>Karar Notu</label>
+            <textarea id="coachPlayerOpsEvalDecision" style="min-height:84px;" placeholder="Kisa karar notu..."></textarea>
+          </div>
+          <button class="btn-small primary" type="button" id="coachPlayerOpsSaveEvalBtn">Degerlendirmeyi Kaydet</button>
+        </section>
       </div>
     </div>
   </div>
@@ -1172,9 +1254,10 @@
   </div>
 
   <script>
-    let allPlayers = [];
-    let filteredPlayers = [];
-    let watchlistState = [];
+let allPlayers = [];
+let filteredPlayers = [];
+let watchlistState = [];
+let selectedCoachPlayer = null;
 
     function getApiBaseUrl() {
       if (window.NextScoutApi && typeof window.NextScoutApi.base === 'function') {
@@ -1906,6 +1989,7 @@
               </div>
               <div class="player-rating"><span class="rating-stars">${stars}</span><span class="rating-value">${rating ? rating.toFixed(1) : '-'}</span></div>
               <div class="card-actions">
+                <button class="action-btn" onclick="openCoachPlayerOps(${Number(player.id) || 0})">Detay</button>
                 <button class="action-btn primary" onclick="openPlayerProfile(${Number(player.id) || 0})">Profil</button>
                 <button class="action-btn" onclick="addToWatchlist(${Number(player.id) || 0})">Takip Et</button>
               </div>
@@ -2006,6 +2090,52 @@
       window.location.href = `player-profile.html?user_id=${encodeURIComponent(playerId)}`;
     }
 
+    function getCoachPlayer(playerId) {
+      return allPlayers.find((p) => Number(p.id) === Number(playerId)) || null;
+    }
+
+    function renderCoachPlayerOps() {
+      const title = document.getElementById('coachPlayerOpsTitle');
+      const summary = document.getElementById('coachPlayerOpsSummary');
+      const status = document.getElementById('coachPlayerOpsStatus');
+      const notePosition = document.getElementById('coachPlayerOpsNotePosition');
+      const decision = document.getElementById('coachPlayerOpsDecisionNote');
+      if (!title || !summary || !status || !notePosition) return;
+
+      if (!selectedCoachPlayer) {
+        title.textContent = 'Oyuncu Operasyon Paneli';
+        summary.textContent = 'Secili oyuncu yok.';
+        status.textContent = 'Oyuncu secmeden islem yapamazsin.';
+        return;
+      }
+
+      title.textContent = `${selectedCoachPlayer.name || 'Oyuncu'} Operasyon Paneli`;
+      summary.textContent = `${selectedCoachPlayer.position || '-'} • Yas ${selectedCoachPlayer.age || '-'} • Rating ${selectedCoachPlayer.rating || '-'}`;
+      status.textContent = `${selectedCoachPlayer.name || 'Oyuncu'} icin not, klip, degerlendirme ve iletisim aksiyonlari hazir.`;
+      notePosition.value = selectedCoachPlayer.position || '';
+      if (decision && !decision.value) {
+        decision.value = `${selectedCoachPlayer.name || 'Oyuncu'} tekrar izlenecek.`;
+      }
+    }
+
+    function openCoachPlayerOps(playerId) {
+      const player = getCoachPlayer(playerId);
+      const modal = document.getElementById('coachPlayerOpsModal');
+      if (!player || !modal) {
+        window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.');
+        return;
+      }
+      selectedCoachPlayer = player;
+      renderCoachPlayerOps();
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCoachPlayerOps() {
+      document.getElementById('coachPlayerOpsModal')?.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
     function getCoachInteractionPlayer(playerId) {
       return allPlayers.find((p) => Number(p.id) === Number(playerId)) || null;
     }
@@ -2052,6 +2182,28 @@
         return_to: 'coach-dashboard.html',
       });
       window.location.href = `notifications.html?${params.toString()}`;
+    }
+
+    async function createCoachEvaluationApi(payload) {
+      const token = getToken();
+      if (!token) throw new Error('Oturum bulunamadi.');
+
+      const response = await fetch(`${getApiBaseUrl()}/staff/player-evaluations`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json().catch(() => null);
+      if (!response.ok || !data?.ok) {
+        throw new Error(data?.message || 'Degerlendirme kaydedilemedi.');
+      }
+
+      return data.data || null;
     }
 
     async function addToWatchlist(playerId) {
@@ -2520,6 +2672,123 @@
         window.nsNotify?.success ? window.nsNotify.success('Klip notu kaydedildi.') : null;
       } catch (error) {
         window.nsNotify?.error ? window.nsNotify.error(error.message || 'Klip notu kaydedilemedi.') : nsnsAlert(error.message || 'Klip notu kaydedilemedi.');
+      }
+    }
+
+    async function saveCoachPlayerOpsNote() {
+      if (!selectedCoachPlayer) return;
+      const position = String(document.getElementById('coachPlayerOpsNotePosition')?.value || '').trim();
+      const tag = String(document.getElementById('coachPlayerOpsNoteTag')?.value || 'izlenecek').trim();
+      const body = String(document.getElementById('coachPlayerOpsNoteBody')?.value || '').trim();
+      const status = document.getElementById('coachPlayerOpsStatus');
+      if (!body || body.length < 8) {
+        if (status) status.textContent = 'Teknik not en az 8 karakter olmali.';
+        return;
+      }
+
+      try {
+        await createCoachNoteApi({
+          player_user_id: Number(selectedCoachPlayer.id) || null,
+          player_name: selectedCoachPlayer.name || '',
+          position: position || selectedCoachPlayer.position || null,
+          tag: tag || null,
+          focus: 'teknik',
+          body,
+        });
+        document.getElementById('coachPlayerOpsNoteBody').value = '';
+        if (status) status.textContent = 'Teknik not kaydedildi.';
+      } catch (error) {
+        if (status) status.textContent = error.message || 'Teknik not kaydedilemedi.';
+      }
+    }
+
+    async function saveCoachPlayerOpsClip() {
+      if (!selectedCoachPlayer) return;
+      const url = String(document.getElementById('coachPlayerOpsClipUrl')?.value || '').trim();
+      const body = String(document.getElementById('coachPlayerOpsClipBody')?.value || '').trim();
+      const minute = Math.max(0, Number(document.getElementById('coachPlayerOpsClipMinute')?.value || 0));
+      const second = Math.max(0, Math.min(59, Number(document.getElementById('coachPlayerOpsClipSecond')?.value || 0)));
+      const status = document.getElementById('coachPlayerOpsStatus');
+      if (!url || !body || body.length < 8) {
+        if (status) status.textContent = 'Video ve klip notu zorunlu.';
+        return;
+      }
+
+      try {
+        await createCoachClipApi({
+          player_user_id: Number(selectedCoachPlayer.id) || null,
+          player_name: selectedCoachPlayer.name || '',
+          video_url: url,
+          minute_mark: minute,
+          second_mark: second,
+          body,
+        });
+        document.getElementById('coachPlayerOpsClipBody').value = '';
+        if (status) status.textContent = 'Klip notu kaydedildi.';
+      } catch (error) {
+        if (status) status.textContent = error.message || 'Klip notu kaydedilemedi.';
+      }
+    }
+
+    async function saveCoachPlayerOpsEvaluation() {
+      if (!selectedCoachPlayer) return;
+      const technical = Math.max(0, Math.min(100, Number(document.getElementById('coachPlayerOpsEvalTechnical')?.value || 0)));
+      const tactical = Math.max(0, Math.min(100, Number(document.getElementById('coachPlayerOpsEvalTactical')?.value || 0)));
+      const physical = Math.max(0, Math.min(100, Number(document.getElementById('coachPlayerOpsEvalPhysical')?.value || 0)));
+      const decision = String(document.getElementById('coachPlayerOpsEvalDecision')?.value || '').trim();
+      const status = document.getElementById('coachPlayerOpsStatus');
+
+      try {
+        await createCoachEvaluationApi({
+          player_user_id: Number(selectedCoachPlayer.id) || null,
+          player_name: selectedCoachPlayer.name || '',
+          position: selectedCoachPlayer.position || null,
+          decision_note: decision || null,
+          scores: [
+            { label: 'Teknik', value: technical },
+            { label: 'Taktik', value: tactical },
+            { label: 'Fizik', value: physical },
+          ],
+        });
+        if (status) status.textContent = 'Degerlendirme kaydedildi.';
+      } catch (error) {
+        if (status) status.textContent = error.message || 'Degerlendirme kaydedilemedi.';
+      }
+    }
+
+    async function runCoachPlayerNextStep() {
+      if (!selectedCoachPlayer) return;
+      const step = String(document.getElementById('coachPlayerOpsNextStep')?.value || '').trim();
+      const note = String(document.getElementById('coachPlayerOpsDecisionNote')?.value || '').trim();
+      const status = document.getElementById('coachPlayerOpsStatus');
+
+      if (!step) {
+        if (status) status.textContent = 'Sonraki adim sec.';
+        return;
+      }
+
+      try {
+        if (step === 'watchlist') {
+          await addToWatchlist(selectedCoachPlayer.id);
+        } else if (step === 'message') {
+          openCoachInteraction(selectedCoachPlayer.id, 'message');
+          return;
+        } else if (step === 'interest') {
+          sendCoachInterest(selectedCoachPlayer.id);
+          return;
+        } else if (step === 'trial') {
+          openTrialCenter();
+          return;
+        } else if (step === 'note') {
+          const noteBox = document.getElementById('coachPlayerOpsNoteBody');
+          if (noteBox && !noteBox.value.trim()) noteBox.value = note || `${selectedCoachPlayer.name || 'Oyuncu'} tekrar izlensin.`;
+          await saveCoachPlayerOpsNote();
+          return;
+        }
+
+        if (status) status.textContent = `${selectedCoachPlayer.name || 'Oyuncu'} icin "${step}" uygulandi.`;
+      } catch (error) {
+        if (status) status.textContent = error.message || 'Aksiyon uygulanamadi.';
       }
     }
 
@@ -3214,6 +3483,15 @@ setText('.content h1', 'Antrenör Profili');
       document.getElementById('coachDashboardEvalSearch')?.addEventListener('input', renderDashboardCoachEvaluations);
       document.getElementById('coachDashboardEvalMinScore')?.addEventListener('input', renderDashboardCoachEvaluations);
       document.getElementById('coachSuccessStoryForm')?.addEventListener('submit', submitCoachSuccessStoryForm);
+      document.getElementById('coachPlayerOpsProfileBtn')?.addEventListener('click', () => selectedCoachPlayer ? openPlayerProfile(selectedCoachPlayer.id) : null);
+      document.getElementById('coachPlayerOpsMessageBtn')?.addEventListener('click', () => selectedCoachPlayer ? openCoachInteraction(selectedCoachPlayer.id, 'message') : null);
+      document.getElementById('coachPlayerOpsInterestBtn')?.addEventListener('click', () => selectedCoachPlayer ? sendCoachInterest(selectedCoachPlayer.id) : null);
+      document.getElementById('coachPlayerOpsWatchlistBtn')?.addEventListener('click', () => selectedCoachPlayer ? addToWatchlist(selectedCoachPlayer.id) : null);
+      document.getElementById('coachPlayerOpsTrialBtn')?.addEventListener('click', openTrialCenter);
+      document.getElementById('coachPlayerOpsRunStepBtn')?.addEventListener('click', runCoachPlayerNextStep);
+      document.getElementById('coachPlayerOpsSaveNoteBtn')?.addEventListener('click', saveCoachPlayerOpsNote);
+      document.getElementById('coachPlayerOpsSaveClipBtn')?.addEventListener('click', saveCoachPlayerOpsClip);
+      document.getElementById('coachPlayerOpsSaveEvalBtn')?.addEventListener('click', saveCoachPlayerOpsEvaluation);
     }
 
     window.addEventListener('DOMContentLoaded', init);

@@ -26,6 +26,6 @@ class ScoutTipPolicy
     private function canReview(User $user): bool
     {
         return in_array((string) $user->editor_role, ['reviewer', 'senior_reviewer', 'admin'], true)
-            || in_array((string) $user->role, ['scout', 'manager', 'coach'], true);
+            || in_array((string) $user->role, ['scout', 'manager', 'coach', 'club', 'team', 'lawyer'], true);
     }
 }

@@ -819,27 +819,29 @@
         };
       }
       if (composeCloseBtn && absoluteReturnUrl) {
-        const closeLink = document.createElement('a');
-        closeLink.id = 'composeCloseBtn';
-        closeLink.className = composeCloseBtn.className;
-        closeLink.href = absoluteReturnUrl;
-        closeLink.textContent = composeCloseBtn.textContent || 'Kapat';
-        composeCloseBtn.replaceWith(closeLink);
-        composeCloseBtn = closeLink;
+        const closeBtn = document.createElement('button');
+        closeBtn.type = 'button';
+        closeBtn.id = 'composeCloseBtn';
+        closeBtn.className = composeCloseBtn.className;
+        closeBtn.textContent = composeCloseBtn.textContent || 'Kapat';
+        closeBtn.addEventListener('click', () => window.location.replace(absoluteReturnUrl));
+        composeCloseBtn.replaceWith(closeBtn);
+        composeCloseBtn = closeBtn;
       }
       if (composeCancelBtn && absoluteReturnUrl) {
-        const cancelLink = document.createElement('a');
-        cancelLink.id = 'composeCancelBtn';
-        cancelLink.className = composeCancelBtn.className;
-        cancelLink.href = absoluteReturnUrl;
-        cancelLink.textContent = composeCancelBtn.textContent || 'Vazgec';
-        composeCancelBtn.replaceWith(cancelLink);
-        composeCancelBtn = cancelLink;
+        const cancelBtn = document.createElement('button');
+        cancelBtn.type = 'button';
+        cancelBtn.id = 'composeCancelBtn';
+        cancelBtn.className = composeCancelBtn.className;
+        cancelBtn.textContent = composeCancelBtn.textContent || 'Vazgec';
+        cancelBtn.addEventListener('click', () => window.location.replace(absoluteReturnUrl));
+        composeCancelBtn.replaceWith(cancelBtn);
+        composeCancelBtn = cancelBtn;
       }
       if (absoluteReturnUrl) {
         window.addEventListener('keydown', function (event) {
           if (event.key === 'Escape') {
-            window.location.href = absoluteReturnUrl;
+            window.location.replace(absoluteReturnUrl);
           }
         });
       }

@@ -1025,7 +1025,7 @@
         </div>
 
         <aside class="panel hero-side">
-          <h3 class="panel-title">Scout Durumu</h3>
+          <h3 class="panel-title">Performansim</h3>
           <p class="panel-sub">Guncel kullanici ve hesap sinyalleri tek panelde.</p>
           <div class="status-stack">
             <div class="status-row"><span>Kullanici</span><strong id="statusUser">Misafir</strong></div>
@@ -1374,10 +1374,19 @@
                 </div>
                 <div class="field">
                   <label for="sourceType">Kaynak Tipi</label>
-                  <select class="select" id="sourceType" name="source_type">
+                  <select class="select" id="sourceType" name="source_type" onchange="toggleScoutPlayerMode()">
                     <option value="new_player">Yeni oyuncu</option>
                     <option value="existing_player">Mevcut oyuncu</option>
                   </select>
+                </div>
+                <div class="field full" id="existingPlayerField" hidden>
+                  <label for="existingPlayerSearch">Mevcut Oyuncu Sec</label>
+                  <input class="input" id="existingPlayerSearch" type="text" placeholder="Oyuncu ara">
+                  <select class="select" id="existingPlayerSelect" size="5" style="margin-top:8px;">
+                    <option value="">Oyuncu arayip sec</option>
+                  </select>
+                  <input id="selectedPlayerId" name="selected_player_id" type="hidden">
+                  <div class="market-pulse-copy" id="existingPlayerHint" style="margin-top:8px;">Mevcut oyuncu secersen profil ID otomatik baglanir.</div>
                 </div>
                 <div class="field">
                   <label for="playerName">Oyuncu Adi</label>
@@ -1430,7 +1439,7 @@
                   <i class="fas fa-flask"></i>
                   AI Lab
                 </span>
-                <button class="btn btn-secondary" type="button" onclick="document.getElementById('scoutTipForm').reset()">
+                <button class="btn btn-secondary" type="button" onclick="document.getElementById('scoutTipForm').reset(); toggleScoutPlayerMode();">
                   <i class="fas fa-rotate-left"></i>
                   Formu Temizle
                 </button>
@@ -1960,6 +1969,82 @@
         throw new Error(data.message || 'Basari hikayeleri alinamadi.');
       }
       return data;
+    }
+
+    function toggleScoutPlayerMode() {
+      const sourceType = String(document.getElementById('sourceType')?.value || 'new_player');
+      const existingField = document.getElementById('existingPlayerField');
+      const playerName = document.getElementById('playerName');
+      const selectedPlayerId = document.getElementById('selectedPlayerId');
+      const playerSelect = document.getElementById('existingPlayerSelect');
+      if (existingField) existingField.hidden = sourceType !== 'existing_player';
+      if (playerName) {
+        playerName.readOnly = sourceType === 'existing_player';
+        if (sourceType === 'existing_player') {
+          playerName.placeholder = 'Listeden oyuncu sec';
+        } else {
+          playerName.placeholder = 'Oyuncu adi soyadi';
+        }
+      }
+      if (sourceType !== 'existing_player') {
+        if (selectedPlayerId) selectedPlayerId.value = '';
+        if (playerSelect) playerSelect.innerHTML = '<option value="">Oyuncu arayip sec</option>';
+      }
+    }
+
+    async function searchExistingScoutPlayers(query) {
+      const select = document.getElementById('existingPlayerSelect');
+      const hint = document.getElementById('existingPlayerHint');
+      if (!select) return;
+
+      const search = String(query || '').trim();
+      if (search.length < 2) {
+        select.innerHTML = '<option value="">En az 2 harf yaz</option>';
+        if (hint) hint.textContent = 'Mevcut oyuncu secersen profil ID otomatik baglanir.';
+        return;
+      }
+
+      select.innerHTML = '<option value="">Oyuncular yukleniyor...</option>';
+
+      try {
+        const payload = await apiGet(`/public/players?search=${encodeURIComponent(search)}&per_page=10`);
+        const rows = Array.isArray(payload?.data) ? payload.data : Array.isArray(payload) ? payload : [];
+        if (!rows.length) {
+          select.innerHTML = '<option value="">Eslesen oyuncu bulunamadi</option>';
+          if (hint) hint.textContent = 'Bu isimle oyuncu bulunamadi. Yeni oyuncu olarak devam edebilirsin.';
+          return;
+        }
+
+        select.innerHTML = rows.map((row) => {
+          const city = row.city || 'Sehir yok';
+          const position = row.position || 'Pozisyon yok';
+          return `<option value="${Number(row.id) || 0}" data-name="${escapeHtml(row.name || '')}" data-city="${escapeHtml(city)}" data-position="${escapeHtml(position)}">${escapeHtml(row.name || 'Oyuncu')} - ${escapeHtml(city)} / ${escapeHtml(position)}</option>`;
+        }).join('');
+        if (hint) hint.textContent = `${rows.length} oyuncu bulundu. Listeden secim yap.`;
+      } catch (error) {
+        select.innerHTML = '<option value="">Oyuncular yuklenemedi</option>';
+        if (hint) hint.textContent = error.message || 'Oyuncular yuklenemedi.';
+      }
+    }
+
+    function applySelectedScoutPlayer() {
+      const select = document.getElementById('existingPlayerSelect');
+      const selectedPlayerId = document.getElementById('selectedPlayerId');
+      const playerName = document.getElementById('playerName');
+      const city = document.getElementById('city');
+      const position = document.getElementById('position');
+      const analysisTargetPlayerId = document.getElementById('analysisTargetPlayerId');
+      if (!select || !selectedPlayerId || !playerName) return;
+
+      const option = select.options[select.selectedIndex];
+      const value = Number(select.value || 0);
+      selectedPlayerId.value = value > 0 ? String(value) : '';
+      if (!value || !option) return;
+
+      playerName.value = option.dataset.name || option.textContent || '';
+      if (city && !String(city.value || '').trim()) city.value = option.dataset.city || '';
+      if (position && !String(position.value || '').trim()) position.value = option.dataset.position || '';
+      if (analysisTargetPlayerId) analysisTargetPlayerId.value = String(value);
     }
 
     async function submitScoutSuccessStoryForm(event) {
@@ -2921,8 +3006,11 @@
       event.preventDefault();
       const form = document.getElementById('scoutTipForm');
       const formData = new FormData(form);
+      const sourceType = String(formData.get('source_type') || 'new_player');
+      const selectedPlayerId = Number(formData.get('selected_player_id') || 0) || null;
       const payload = {
-        source_type: String(formData.get('source_type') || 'new_player'),
+        source_type: sourceType,
+        player_id: sourceType === 'existing_player' ? selectedPlayerId : null,
         player_name: String(formData.get('player_name') || '').trim(),
         city: String(formData.get('city') || '').trim(),
         position: String(formData.get('position') || '').trim() || null,
@@ -2935,6 +3023,10 @@
 
       if (!payload.player_name || !payload.city || !payload.description) {
         showNotice('Oyuncu adi, sehir ve scout notu zorunlu.', 'bad');
+        return;
+      }
+      if (sourceType === 'existing_player' && !payload.player_id) {
+        showNotice('Mevcut oyuncu tipinde listeden oyuncu secmen gerekiyor.', 'bad');
         return;
       }
       if (payload.description.length < 30) {
@@ -2952,6 +3044,7 @@
           showNotice('Scout tipe baglandi. Moderasyon sirasina alindi.', 'ok');
         }
         form.reset();
+        toggleScoutPlayerMode();
         updateSelectedVideoPreview();
         await Promise.all([loadScoreboard(), loadTips()]);
       } catch (error) {
@@ -2970,6 +3063,8 @@
       }
 
       document.getElementById('scoutTipForm')?.addEventListener('submit', submitScoutTip);
+      document.getElementById('existingPlayerSearch')?.addEventListener('input', (event) => searchExistingScoutPlayers(event.target.value));
+      document.getElementById('existingPlayerSelect')?.addEventListener('change', applySelectedScoutPlayer);
       document.getElementById('scoutSuccessStoryForm')?.addEventListener('submit', submitScoutSuccessStoryForm);
       document.getElementById('scoutWorkspaceNoteSubmit')?.addEventListener('click', submitScoutWorkspaceNote);
       document.getElementById('scoutWorkspaceClipSubmit')?.addEventListener('click', submitScoutWorkspaceClip);
@@ -2980,6 +3075,7 @@
 
       loadMarketPulseCard();
       setInterval(loadMarketPulseCard, 30000);
+      toggleScoutPlayerMode();
 
       if (!getToken()) {
         setStatusApi('Login gerekli');

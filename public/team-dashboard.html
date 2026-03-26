@@ -1235,7 +1235,8 @@
                         <button class="btn-small primary" type="button" onclick="openTeamTalentTipModal()"><i class="fas fa-video"></i><span>Yetenek Bildir</span></button>
                         <button class="btn-small secondary" type="button" onclick="openTeamMarketPulse()"><i class="fas fa-chart-line"></i><span>Market Pulse</span></button>
                         <button class="btn-small secondary" type="button" onclick="openLiveMatches()"><i class="fas fa-tower-broadcast"></i><span>Canli Mac Bildirimleri</span></button>
-                        <button class="btn-small secondary" type="button" onclick="openTeamScoutHub()"><i class="fas fa-bookmark"></i><span>Scout Watchlist & Raporlar</span></button>
+                    <button class="btn-small secondary" type="button" onclick="window.location.href='scout-ihbarlari.html'"><i class="fas fa-bullhorn"></i><span>Scout Ihbarlari</span></button>
+                    <button class="btn-small secondary" type="button" onclick="openTeamScoutHub()"><i class="fas fa-bookmark"></i><span>Scout Watchlist & Raporlar</span></button>
                         <button class="btn-small secondary" type="button" onclick="openTeamWorkspace('notes')"><i class="fas fa-briefcase"></i><span>Oyuncu Calisma Alani</span></button>
                         <button class="btn-small secondary" type="button" onclick="openTeamGroupsCard()"><i class="fas fa-people-group"></i><span>Takim Gruplari</span></button>
                         <button class="btn-small secondary" type="button" onclick="openClubOperationsModal()"><i class="fas fa-layer-group"></i><span>Kulup Operasyonlari</span></button>
@@ -1848,6 +1849,7 @@
                 <div id="teamScoutHubReports" hidden>
                     <div class="quick-report-result" style="margin-bottom:12px;">Kaydedilen scout raporlarini tek yerden ac.</div>
                     <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                        <button class="btn-small secondary" type="button" onclick="window.location.href='scout-ihbarlari.html'">Scout Ihbarlarini Ac</button>
                         <button class="btn-small secondary" type="button" onclick="openTeamScoutReports()">Scout Raporlarini Ac</button>
                     </div>
                 </div>
@@ -1921,6 +1923,85 @@
                         <input type="number" id="teamWorkspaceEvalMinScore" min="0" max="100" placeholder="Min. ortalama" style="width:180px;">
                     </div>
                     <div class="need-list" id="teamWorkspaceEvaluationsList" style="margin-top:14px;"><div class="need-item">Degerlendirmeler yukleniyor...</div></div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <div class="need-modal-overlay" id="teamPlayerOpsOverlay" onclick="if (event.target.id === 'teamPlayerOpsOverlay') closeTeamPlayerOps();">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+            <div class="need-modal-head">
+                <div>
+                    <h3 id="teamPlayerOpsTitle">Oyuncu Operasyon Paneli</h3>
+                    <p id="teamPlayerOpsSummary" style="margin:6px 0 0 0;color:#6b7280;font-size:13px;">Secili oyuncu yok.</p>
+                </div>
+                <button class="btn-small secondary" type="button" onclick="closeTeamPlayerOps()">Kapat</button>
+            </div>
+            <div class="need-modal-body" style="display:grid;gap:14px;">
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <button class="btn-small secondary" type="button" id="teamPlayerOpsProfileBtn">Profili Ac</button>
+                    <button class="btn-small secondary" type="button" id="teamPlayerOpsOfferBtn">Teklif Gonder</button>
+                    <button class="btn-small secondary" type="button" id="teamPlayerOpsMessageBtn">Mesaj</button>
+                    <button class="btn-small secondary" type="button" id="teamPlayerOpsWatchBtn">Watchlist'e Al</button>
+                    <button class="btn-small secondary" type="button" id="teamPlayerOpsTrialBtn">Trial Merkezi</button>
+                </div>
+                <div class="search-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:0;">
+                    <div class="form-group">
+                        <label>Sonraki Adim</label>
+                        <select id="teamPlayerOpsNextStep">
+                            <option value="">Sec</option>
+                            <option value="offer">Teklif gonder</option>
+                            <option value="watch">Takibe al</option>
+                            <option value="message">Iletisime gec</option>
+                            <option value="interest">Ilgi bildir</option>
+                            <option value="trial">Trial planla</option>
+                            <option value="note">Kulup notu birak</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Operasyon Notu</label>
+                        <input type="text" id="teamPlayerOpsDecision" placeholder="Orn: U21 icin uygun, teklif oncesi tekrar izle">
+                    </div>
+                </div>
+                <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                    <button class="btn-small primary" type="button" id="teamPlayerOpsRunBtn">Adimi Uygula</button>
+                    <div class="need-item" id="teamPlayerOpsStatus" style="margin:0;flex:1;">Secili oyuncu icin hizli aksiyonlari buradan yonet.</div>
+                </div>
+                <section style="padding:16px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;">
+                    <h4 style="margin:0 0 10px 0;font-size:15px;color:#111827;">Hizli Kulup Notu</h4>
+                    <div class="search-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px;">
+                        <div class="form-group"><label>Pozisyon</label><input type="text" id="teamPlayerOpsNotePosition" placeholder="Sag bek / 10 numara"></div>
+                        <div class="form-group"><label>Etiket</label><select id="teamPlayerOpsNoteTag"><option value="izlenecek">Izlenecek</option><option value="tekrar-bak">Tekrar Bak</option><option value="takip">Takip</option><option value="hazir">Hazir</option></select></div>
+                        <div class="form-group"><label>Odak</label><select id="teamPlayerOpsNoteFocus"><option value="teknik">Teknik</option><option value="taktik">Taktik</option><option value="fizik">Fizik</option><option value="zihinsel">Zihinsel</option></select></div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px;">
+                        <label>Not</label>
+                        <input type="text" id="teamPlayerOpsNoteBody" placeholder="Oyuncu icin kisa kulup notu">
+                    </div>
+                    <button class="btn-small primary" type="button" id="teamPlayerOpsSaveNoteBtn">Notu Kaydet</button>
+                </section>
+                <section style="padding:16px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;">
+                    <h4 style="margin:0 0 10px 0;font-size:15px;color:#111827;">Hizli Klip Notu</h4>
+                    <div class="search-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:12px;">
+                        <div class="form-group"><label>Video</label><input type="url" id="teamPlayerOpsClipUrl" placeholder="https://..."></div>
+                        <div class="form-group"><label>Dakika</label><input type="number" id="teamPlayerOpsClipMinute" min="0" max="180" value="0"></div>
+                        <div class="form-group"><label>Saniye</label><input type="number" id="teamPlayerOpsClipSecond" min="0" max="59" value="0"></div>
+                        <div class="form-group"><label>Klip Notu</label><input type="text" id="teamPlayerOpsClipBody" placeholder="Bu sahnede dikkat ceken nokta"></div>
+                    </div>
+                    <button class="btn-small primary" type="button" id="teamPlayerOpsSaveClipBtn">Klibi Kaydet</button>
+                </section>
+                <section style="padding:16px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;">
+                    <h4 style="margin:0 0 10px 0;font-size:15px;color:#111827;">Hizli Degerlendirme</h4>
+                    <div class="search-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px;">
+                        <div class="form-group"><label>Teknik</label><input type="number" id="teamPlayerOpsEvalTechnical" min="0" max="100" value="70"></div>
+                        <div class="form-group"><label>Taktik</label><input type="number" id="teamPlayerOpsEvalTactical" min="0" max="100" value="70"></div>
+                        <div class="form-group"><label>Fizik</label><input type="number" id="teamPlayerOpsEvalPhysical" min="0" max="100" value="70"></div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px;">
+                        <label>Karar Notu</label>
+                        <input type="text" id="teamPlayerOpsEvalDecision" placeholder="Kisa karar notu">
+                    </div>
+                    <button class="btn-small primary" type="button" id="teamPlayerOpsSaveEvalBtn">Degerlendirmeyi Kaydet</button>
                 </section>
             </div>
         </div>
@@ -2113,6 +2194,7 @@
         let allPlayers = [];
         let filteredPlayers = [];
         let selectedCompareIds = [];
+        let selectedTeamPlayer = null;
         let lastComparePayload = null;
         let searchDebounceTimer = null;
         let activeTeamGroup = 'u9';
@@ -2538,6 +2620,10 @@
             return Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.data?.data) ? payload.data.data : [];
         }
 
+        async function createTeamWorkspaceEvaluation(body) {
+            return teamApiPost('/staff/player-evaluations', body);
+        }
+
         function openTeamWorkspace(type = 'notes') {
             const overlay = document.getElementById('teamWorkspaceOverlay');
             const title = document.getElementById('teamWorkspaceTitle');
@@ -2571,6 +2657,48 @@
 
         function closeTeamWorkspace() {
             document.getElementById('teamWorkspaceOverlay')?.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function getTeamPlayer(playerId) {
+            return allPlayers.find((p) => Number(p.id) === Number(playerId)) || null;
+        }
+
+        function renderTeamPlayerOps() {
+            const title = document.getElementById('teamPlayerOpsTitle');
+            const summary = document.getElementById('teamPlayerOpsSummary');
+            const status = document.getElementById('teamPlayerOpsStatus');
+            const notePosition = document.getElementById('teamPlayerOpsNotePosition');
+            const decision = document.getElementById('teamPlayerOpsDecision');
+            if (!title || !summary || !status || !notePosition) return;
+            if (!selectedTeamPlayer) {
+                title.textContent = 'Oyuncu Operasyon Paneli';
+                summary.textContent = 'Secili oyuncu yok.';
+                status.textContent = 'Oyuncu secmeden islem yapamazsin.';
+                return;
+            }
+            title.textContent = `${selectedTeamPlayer.name || 'Oyuncu'} Operasyon Paneli`;
+            summary.textContent = `${selectedTeamPlayer.position || '-'} • Yas ${selectedTeamPlayer.age || '-'} • Rating ${selectedTeamPlayer.rating || '-'}`;
+            status.textContent = `${selectedTeamPlayer.name || 'Oyuncu'} icin teklif, mesaj, watchlist ve degerlendirme aksiyonlari hazir.`;
+            notePosition.value = selectedTeamPlayer.position || '';
+            if (decision && !decision.value) decision.value = `${selectedTeamPlayer.name || 'Oyuncu'} teklif oncesi tekrar izlensin.`;
+        }
+
+        function openTeamPlayerOps(playerId) {
+            const player = getTeamPlayer(playerId);
+            const overlay = document.getElementById('teamPlayerOpsOverlay');
+            if (!player || !overlay) {
+                window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.');
+                return;
+            }
+            selectedTeamPlayer = player;
+            renderTeamPlayerOps();
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTeamPlayerOps() {
+            document.getElementById('teamPlayerOpsOverlay')?.classList.remove('active');
             document.body.style.overflow = '';
         }
 
@@ -2748,6 +2876,71 @@
                 lastPlayer.textContent = '-';
                 lastDate.textContent = '-';
                 root.innerHTML = `<div class="need-item">${escapeHtml(error.message || 'Degerlendirmeler alinamadi.')}</div>`;
+            }
+        }
+
+        async function saveTeamPlayerOpsNote() {
+            if (!selectedTeamPlayer) return;
+            const position = String(document.getElementById('teamPlayerOpsNotePosition')?.value || '').trim();
+            const tag = String(document.getElementById('teamPlayerOpsNoteTag')?.value || '').trim();
+            const focus = String(document.getElementById('teamPlayerOpsNoteFocus')?.value || '').trim();
+            const body = String(document.getElementById('teamPlayerOpsNoteBody')?.value || '').trim();
+            const status = document.getElementById('teamPlayerOpsStatus');
+            if (body.length < 8) {
+                if (status) status.textContent = 'Kulup notu en az 8 karakter olmali.';
+                return;
+            }
+            try {
+                await createTeamWorkspaceNote({ player_user_id: Number(selectedTeamPlayer.id) || null, player_name: selectedTeamPlayer.name || '', position: position || selectedTeamPlayer.position || null, tag: tag || null, focus: focus || null, body });
+                document.getElementById('teamPlayerOpsNoteBody').value = '';
+                if (status) status.textContent = 'Kulup notu kaydedildi.';
+            } catch (error) {
+                if (status) status.textContent = error.message || 'Kulup notu kaydedilemedi.';
+            }
+        }
+
+        async function saveTeamPlayerOpsClip() {
+            if (!selectedTeamPlayer) return;
+            const videoUrl = String(document.getElementById('teamPlayerOpsClipUrl')?.value || '').trim();
+            const minuteMark = Math.max(0, Number(document.getElementById('teamPlayerOpsClipMinute')?.value || 0));
+            const secondMark = Math.max(0, Math.min(59, Number(document.getElementById('teamPlayerOpsClipSecond')?.value || 0)));
+            const body = String(document.getElementById('teamPlayerOpsClipBody')?.value || '').trim();
+            const status = document.getElementById('teamPlayerOpsStatus');
+            if (!videoUrl || body.length < 8) {
+                if (status) status.textContent = 'Video ve klip notu zorunlu.';
+                return;
+            }
+            try {
+                await createTeamWorkspaceClip({ player_user_id: Number(selectedTeamPlayer.id) || null, player_name: selectedTeamPlayer.name || '', video_url: videoUrl, minute_mark: minuteMark, second_mark: secondMark, body });
+                document.getElementById('teamPlayerOpsClipBody').value = '';
+                if (status) status.textContent = 'Kulup klip notu kaydedildi.';
+            } catch (error) {
+                if (status) status.textContent = error.message || 'Kulup klip notu kaydedilemedi.';
+            }
+        }
+
+        async function saveTeamPlayerOpsEvaluation() {
+            if (!selectedTeamPlayer) return;
+            const technical = Math.max(0, Math.min(100, Number(document.getElementById('teamPlayerOpsEvalTechnical')?.value || 0)));
+            const tactical = Math.max(0, Math.min(100, Number(document.getElementById('teamPlayerOpsEvalTactical')?.value || 0)));
+            const physical = Math.max(0, Math.min(100, Number(document.getElementById('teamPlayerOpsEvalPhysical')?.value || 0)));
+            const decision = String(document.getElementById('teamPlayerOpsEvalDecision')?.value || '').trim();
+            const status = document.getElementById('teamPlayerOpsStatus');
+            try {
+                await createTeamWorkspaceEvaluation({
+                    player_user_id: Number(selectedTeamPlayer.id) || null,
+                    player_name: selectedTeamPlayer.name || '',
+                    position: selectedTeamPlayer.position || null,
+                    decision_note: decision || null,
+                    scores: [
+                        { label: 'Teknik', value: technical },
+                        { label: 'Taktik', value: tactical },
+                        { label: 'Fizik', value: physical },
+                    ],
+                });
+                if (status) status.textContent = 'Degerlendirme kaydedildi.';
+            } catch (error) {
+                if (status) status.textContent = error.message || 'Degerlendirme kaydedilemedi.';
             }
         }
 
@@ -3010,6 +3203,7 @@
                             </div>
                         </div>` : ''}
                         <div class="card-actions">
+                            <button class="action-btn" onclick="openTeamPlayerOps(${Number(player.id) || 0})">Detay</button>
                             <button class="action-btn primary" onclick="openPlayerProfile(${Number(player.id) || 0})">Profil</button>
                             <button class="action-btn" onclick="sendOffer(${Number(player.id) || 0})">Teklif</button>
                             <button class="action-btn" style="grid-column: span 2; ${selected ? 'background:#4f46e5;color:#fff;border-color:#4f46e5;' : ''}" onclick="toggleComparePlayer(${Number(player.id) || 0})">${selected ? 'Kiyastan Cikar' : 'KÄ±yas Icin Ekle'}</button>
@@ -3434,6 +3628,33 @@
                 window.nsNotify?.success ? window.nsNotify.success(`Teklif gÃ¶nderildi: ${player.name}`) : nsnsAlert(`Teklif gÃ¶nderildi: ${player.name}`);
             } catch (error) {
                 window.nsNotify?.error ? window.nsNotify.error(error.message || 'Teklif gonderilemedi.') : nsnsAlert(error.message || 'Teklif gonderilemedi.');
+            }
+        }
+
+        async function runTeamPlayerNextStep() {
+            if (!selectedTeamPlayer) return;
+            const step = String(document.getElementById('teamPlayerOpsNextStep')?.value || '').trim();
+            const note = String(document.getElementById('teamPlayerOpsDecision')?.value || '').trim();
+            const status = document.getElementById('teamPlayerOpsStatus');
+            if (!step) {
+                if (status) status.textContent = 'Sonraki adim sec.';
+                return;
+            }
+            try {
+                if (step === 'offer') { await sendOffer(selectedTeamPlayer.id); return; }
+                if (step === 'watch') { await toggleTeamWatch(selectedTeamPlayer.id); return; }
+                if (step === 'message') { openTeamInteraction(selectedTeamPlayer.id, 'message'); return; }
+                if (step === 'interest') { sendTeamInterest(selectedTeamPlayer.id); return; }
+                if (step === 'trial') { openTrialCenter(); return; }
+                if (step === 'note') {
+                    const noteBox = document.getElementById('teamPlayerOpsNoteBody');
+                    if (noteBox && !noteBox.value.trim()) noteBox.value = note || `${selectedTeamPlayer.name || 'Oyuncu'} tekrar izlensin.`;
+                    await saveTeamPlayerOpsNote();
+                    return;
+                }
+                if (status) status.textContent = `${selectedTeamPlayer.name || 'Oyuncu'} icin "${step}" uygulandi.`;
+            } catch (error) {
+                if (status) status.textContent = error.message || 'Aksiyon uygulanamadi.';
             }
         }
 
@@ -4375,6 +4596,15 @@
             document.getElementById('teamWorkspaceClipSearch')?.addEventListener('input', renderTeamWorkspaceClips);
             document.getElementById('teamWorkspaceEvalSearch')?.addEventListener('input', renderTeamWorkspaceEvaluations);
             document.getElementById('teamWorkspaceEvalMinScore')?.addEventListener('input', renderTeamWorkspaceEvaluations);
+            document.getElementById('teamPlayerOpsProfileBtn')?.addEventListener('click', () => selectedTeamPlayer ? openPlayerProfile(selectedTeamPlayer.id) : null);
+            document.getElementById('teamPlayerOpsOfferBtn')?.addEventListener('click', () => selectedTeamPlayer ? sendOffer(selectedTeamPlayer.id) : null);
+            document.getElementById('teamPlayerOpsMessageBtn')?.addEventListener('click', () => selectedTeamPlayer ? openTeamInteraction(selectedTeamPlayer.id, 'message') : null);
+            document.getElementById('teamPlayerOpsWatchBtn')?.addEventListener('click', () => selectedTeamPlayer ? toggleTeamWatch(selectedTeamPlayer.id) : null);
+            document.getElementById('teamPlayerOpsTrialBtn')?.addEventListener('click', openTrialCenter);
+            document.getElementById('teamPlayerOpsRunBtn')?.addEventListener('click', runTeamPlayerNextStep);
+            document.getElementById('teamPlayerOpsSaveNoteBtn')?.addEventListener('click', saveTeamPlayerOpsNote);
+            document.getElementById('teamPlayerOpsSaveClipBtn')?.addEventListener('click', saveTeamPlayerOpsClip);
+            document.getElementById('teamPlayerOpsSaveEvalBtn')?.addEventListener('click', saveTeamPlayerOpsEvaluation);
             let authUser = null;
             try { authUser = JSON.parse(localStorage.getItem('nextscout_user') || '{}'); } catch (error) { authUser = null; }
             const teamHeroUser = document.getElementById('teamHeroUser');

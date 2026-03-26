@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Concerns\ApiResponds;
 use App\Http\Controllers\Controller;
 use App\Models\ScoutTip;
+use App\Models\ScoutTipWatchlist;
 use App\Models\User;
 use App\Models\VideoClip;
 use App\Services\ScoutTipWorkflowService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
@@ -88,6 +90,33 @@ class ScoutTipController extends Controller
             });
 
         return $this->successResponse($rows, 'Son ihbarlar hazir.');
+    }
+
+    public function resolvePlayer(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:160'],
+        ]);
+
+        $name = trim((string) $validated['name']);
+        $normalized = Str::lower(preg_replace('/\s+/u', '', $name) ?? $name);
+
+        $players = User::query()
+            ->where('role', 'player')
+            ->select(['id', 'name', 'role', 'city', 'position'])
+            ->get();
+
+        $exact = $players->first(function (User $player) use ($normalized) {
+            $playerNormalized = Str::lower(preg_replace('/\s+/u', '', (string) $player->name) ?? (string) $player->name);
+            return $playerNormalized === $normalized;
+        });
+
+        $loose = $exact ?: $players->first(function (User $player) use ($normalized) {
+            $playerNormalized = Str::lower(preg_replace('/\s+/u', '', (string) $player->name) ?? (string) $player->name);
+            return str_contains($playerNormalized, $normalized) || str_contains($normalized, $playerNormalized);
+        });
+
+        return $this->successResponse($loose, $loose ? 'Oyuncu eslesmesi bulundu.' : 'Oyuncu eslesmesi bulunamadi.');
     }
 
     public function store(Request $request): JsonResponse
@@ -182,7 +211,106 @@ class ScoutTipController extends Controller
 
         $this->authorize('view', $tip);
 
+        $tip = $this->attachResolvedPlayer($tip);
+
         return $this->successResponse($tip, 'Scout ihbar detayi hazir.');
+    }
+
+    public function saveManagerNote(Request $request, int $id): JsonResponse
+    {
+        if (! $this->canReview($request->user())) {
+            return $this->errorResponse('Scout tip review yetkiniz yok.', 403, 'forbidden');
+        }
+
+        $validated = $request->validate([
+            'note' => ['nullable', 'string', 'max:2000'],
+            'next_action' => ['nullable', 'string', 'max:80'],
+        ]);
+
+        $tip = ScoutTip::findOrFail($id);
+        $metadata = $tip->metadata ?? [];
+        $metadata['manager_review'] = array_filter([
+            'note' => trim((string) ($validated['note'] ?? '')),
+            'next_action' => trim((string) ($validated['next_action'] ?? '')),
+            'updated_at' => now()->toIso8601String(),
+            'updated_by' => Arr::only($request->user()->toArray(), ['id', 'name', 'role']),
+        ], static fn ($value) => ! (is_string($value) && $value === ''));
+
+        $tip->metadata = $metadata;
+        $tip->save();
+
+        return $this->successResponse(
+            $tip->fresh(['submitter:id,name,email,scout_points,scout_rank', 'player:id,name', 'videoClip', 'duplicateOf:id,player_name,status', 'events.actor:id,name', 'rewards']),
+            'Manager notu kaydedildi.'
+        );
+    }
+
+    public function watchlist(Request $request): JsonResponse
+    {
+        $rows = ScoutTipWatchlist::query()
+            ->with([
+                'scoutTip.submitter:id,name',
+                'player:id,name,role,city,position,age,rating',
+            ])
+            ->where('manager_user_id', $request->user()->id)
+            ->latest('id')
+            ->get();
+
+        return $this->successResponse($rows, 'Scout tip watchlist hazir.');
+    }
+
+    public function addToWatchlist(Request $request, int $id): JsonResponse
+    {
+        if (! $this->canReview($request->user())) {
+            return $this->errorResponse('Scout tip review yetkiniz yok.', 403, 'forbidden');
+        }
+
+        $validated = $request->validate([
+            'notes' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $tip = $this->attachResolvedPlayer(ScoutTip::findOrFail($id));
+        $entry = ScoutTipWatchlist::query()->firstOrCreate(
+            [
+                'manager_user_id' => $request->user()->id,
+                'scout_tip_id' => $tip->id,
+            ],
+            [
+                'player_id' => $tip->player_id,
+                'status' => 'active',
+                'notes' => $validated['notes'] ?? null,
+                'metadata' => [
+                    'source' => 'scout_tip',
+                    'player_name' => $tip->player_name,
+                    'position' => $tip->position,
+                    'city' => $tip->city,
+                ],
+            ]
+        );
+
+        if ($entry->player_id === null && $tip->player_id) {
+            $entry->player_id = $tip->player_id;
+        }
+        if (! empty($validated['notes'])) {
+            $entry->notes = $validated['notes'];
+        }
+        $entry->save();
+
+        return $this->successResponse(
+            $entry->fresh(['scoutTip.submitter:id,name', 'player:id,name,role,city,position,age,rating']),
+            'Scout tip watchlist kaydi olusturuldu.'
+        );
+    }
+
+    public function removeFromWatchlist(Request $request, int $id): JsonResponse
+    {
+        $entry = ScoutTipWatchlist::query()
+            ->where('manager_user_id', $request->user()->id)
+            ->findOrFail($id);
+
+        $entry->delete();
+
+        return $this->successResponse(['removed' => true], 'Scout tip watchlist kaydi kaldirildi.');
     }
 
     public function withdraw(Request $request, int $id): JsonResponse
@@ -278,5 +406,34 @@ class ScoutTipController extends Controller
                 'is_public' => false,
             ]
         );
+    }
+
+    private function attachResolvedPlayer(ScoutTip $tip): ScoutTip
+    {
+        if ($tip->player_id) {
+            return $tip->fresh(['submitter:id,name,email,scout_points,scout_rank', 'player:id,name', 'videoClip', 'duplicateOf:id,player_name,status', 'events.actor:id,name', 'rewards']);
+        }
+
+        $normalized = Str::lower(preg_replace('/\s+/u', '', (string) $tip->player_name) ?? (string) $tip->player_name);
+        if ($normalized === '') {
+            return $tip->fresh(['submitter:id,name,email,scout_points,scout_rank', 'player:id,name', 'videoClip', 'duplicateOf:id,player_name,status', 'events.actor:id,name', 'rewards']);
+        }
+
+        $player = User::query()
+            ->where('role', 'player')
+            ->get(['id', 'name'])
+            ->first(function (User $user) use ($normalized) {
+                $candidate = Str::lower(preg_replace('/\s+/u', '', (string) $user->name) ?? (string) $user->name);
+                return $candidate === $normalized
+                    || str_contains($candidate, $normalized)
+                    || str_contains($normalized, $candidate);
+            });
+
+        if ($player) {
+            $tip->player_id = $player->id;
+            $tip->save();
+        }
+
+        return $tip->fresh(['submitter:id,name,email,scout_points,scout_rank', 'player:id,name', 'videoClip', 'duplicateOf:id,player_name,status', 'events.actor:id,name', 'rewards']);
     }
 }

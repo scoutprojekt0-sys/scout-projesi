@@ -209,6 +209,11 @@ class User extends Authenticatable
         return $this->hasMany(ScoutReward::class);
     }
 
+    public function scoutTipWatchlistEntries()
+    {
+        return $this->hasMany(ScoutTipWatchlist::class, 'manager_user_id');
+    }
+
     public function requestedVideoAnalyses()
     {
         return $this->hasMany(VideoAnalysis::class, 'requested_by');
@@ -241,9 +246,10 @@ class User extends Authenticatable
 
         return match ($this->role) {
             'player' => array_merge($abilities, ['player', 'application:apply', 'application:outgoing']),
-            'team' => array_merge($abilities, ['team', 'opportunity:write', 'application:incoming']),
+            'team' => array_merge($abilities, ['team', 'staff', 'opportunity:write', 'application:incoming']),
             'manager' => array_merge($abilities, ['staff', 'opportunity:write', 'application:incoming']),
             'coach', 'scout' => array_merge($abilities, ['staff']),
+            'lawyer' => array_merge($abilities, ['staff']),
             default => $abilities,
         };
     }

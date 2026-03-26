@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scout İhbarları | NextScout</title>
-  <meta name="description" content="Son scout ihbarlarını tek ekranda inceleyin. Kulüp, menajer ve antrenör tarafı için canlı ihbar listesi.">
+  <title>Scout Ihbarlari | NextScout</title>
+  <meta name="description" content="Son scout ihbarlarini tek ekranda inceleyin. Manager, coach ve kulup taraflari icin canli ihbar listesi.">
   <meta name="theme-color" content="#08131d">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -96,6 +96,16 @@
       font-size: 15px;
     }
 
+    .hero-tools {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
     .hero-actions {
       margin-top: 18px;
       display: flex;
@@ -115,6 +125,7 @@
       color: var(--text);
       text-decoration: none;
       font-weight: 800;
+      cursor: pointer;
     }
 
     .btn-primary {
@@ -131,6 +142,13 @@
       gap: 10px;
     }
 
+    .board {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+      gap: 16px;
+      align-items: start;
+    }
+
     input,
     select {
       width: 100%;
@@ -145,6 +163,25 @@
 
     .list-card {
       padding: 18px;
+    }
+
+    .detail-shell {
+      position: relative;
+      overflow: hidden;
+      padding: 18px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, var(--panel-2), var(--panel));
+      box-shadow: var(--shadow);
+      border-radius: 24px;
+      min-height: 420px;
+    }
+
+    .detail-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-2), var(--accent));
     }
 
     .list-head {
@@ -166,6 +203,26 @@
       font-size: 13px;
     }
 
+    .detail-head,
+    .detail-topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .detail-title {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .detail-sub,
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
     .tip-list {
       display: grid;
       gap: 12px;
@@ -176,6 +233,11 @@
       border-radius: 18px;
       border: 1px solid rgba(99, 138, 174, 0.14);
       background: linear-gradient(180deg, rgba(18, 41, 61, 0.48), rgba(10, 22, 33, 0.78));
+    }
+
+    .tip-item.is-active {
+      border-color: rgba(255, 126, 34, 0.38);
+      box-shadow: inset 0 0 0 1px rgba(255, 126, 34, 0.2);
     }
 
     .tip-top {
@@ -198,11 +260,21 @@
       font-size: 14px;
     }
 
-    .tip-meta {
+    .tip-meta,
+    .tip-actions {
       margin-top: 10px;
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
+    }
+
+    .quick-actions,
+    .detail-actions,
+    .detail-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
     }
 
     .pill {
@@ -218,6 +290,130 @@
       font-weight: 700;
     }
 
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 11px;
+      border-radius: 12px;
+      border: 1px solid rgba(99, 138, 174, 0.18);
+      background: rgba(5, 14, 24, 0.7);
+      color: var(--text);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .action-btn:hover {
+      border-color: rgba(255, 126, 34, 0.45);
+      background: rgba(18, 36, 52, 0.9);
+    }
+
+    .action-btn[disabled] {
+      cursor: wait;
+      opacity: 0.6;
+    }
+
+    .detail-empty {
+      padding: 22px 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .detail-card {
+      display: grid;
+      gap: 14px;
+    }
+
+    .detail-player {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .score-badge {
+      min-width: 86px;
+      padding: 12px 10px;
+      border-radius: 18px;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(255, 90, 31, 0.18), rgba(96, 165, 250, 0.18));
+      border: 1px solid rgba(255, 126, 34, 0.28);
+    }
+
+    .score-badge strong {
+      display: block;
+      font-size: 28px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(5, 14, 24, 0.5);
+      border: 1px solid rgba(99, 138, 174, 0.14);
+    }
+
+    .metric-k {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+    }
+
+    .metric-v {
+      margin-top: 6px;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    .stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .detail-block {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(5, 14, 24, 0.46);
+      border: 1px solid rgba(99, 138, 174, 0.14);
+    }
+
+    .detail-block h3 {
+      margin: 0 0 10px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .detail-block p {
+      margin: 0;
+      line-height: 1.7;
+      color: var(--muted);
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+
+    .status-note {
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(96, 165, 250, 0.12);
+      border: 1px solid rgba(96, 165, 250, 0.18);
+      color: #dbeafe;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
     .empty {
       padding: 20px;
       border-radius: 18px;
@@ -227,7 +423,22 @@
     }
 
     @media (max-width: 900px) {
+      .hero-tools {
+        position: static;
+        margin-bottom: 14px;
+        justify-content: stretch;
+      }
+
+      .hero-tools .btn {
+        flex: 1 1 160px;
+      }
+
       .filters {
+        grid-template-columns: 1fr;
+      }
+
+      .board,
+      .detail-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -236,125 +447,727 @@
 <body>
   <main class="page">
     <section class="hero">
-      <span class="eyebrow">Canlı Scout Akışı</span>
-      <h1>Scout İhbarları</h1>
-      <p>Kulüp, menajer ve antrenör tarafı için son gelen scout ihbarlarını tek ekranda listele. Durum, skor, şehir ve pozisyon bilgileriyle hızlı tarama yap.</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="./index.html">Ana Sayfaya Dön</a>
-        <a class="btn" href="./scout-et.html">Yeni İhbar Gönder</a>
+      <div class="hero-tools">
+        <a class="btn btn-primary" href="./index.html">Ana Sayfaya</a>
+        <a class="btn" id="dashboardLink" href="./index.html">Dashboard</a>
       </div>
+      <span class="eyebrow" id="heroEyebrow">Canli Scout Akisi</span>
+      <h1 id="heroTitle">Scout Ihbarlari</h1>
+      <p id="heroSummary">Kulup, manager ve antrenor tarafi icin son gelen scout ihbarlarini tek ekranda listele. Durum, skor, sehir ve pozisyon bilgileriyle hizli tarama yap.</p>
     </section>
 
     <section class="filters">
-      <input id="tipSearch" type="text" placeholder="Oyuncu, şehir veya pozisyon ara">
+      <input id="tipSearch" type="text" placeholder="Oyuncu, sehir veya pozisyon ara">
       <select id="tipStatus">
-        <option value="">Tüm Durumlar</option>
+        <option value="">Tum Durumlar</option>
         <option value="pending">Beklemede</option>
-        <option value="screened">Tarandı</option>
-        <option value="shortlisted">Kısa Liste</option>
-        <option value="approved">Onaylandı</option>
+        <option value="screened">Tarandi</option>
+        <option value="shortlisted">Kisa Liste</option>
+        <option value="approved">Onaylandi</option>
+        <option value="trial">Deneme</option>
+        <option value="signed">Imza</option>
+        <option value="rejected">Reddedildi</option>
       </select>
       <select id="tipSource">
-        <option value="">Tüm Kaynaklar</option>
+        <option value="">Tum Kaynaklar</option>
         <option value="guest">Misafir</option>
-        <option value="account">Hesaplı</option>
+        <option value="account">Hesapli</option>
       </select>
       <button class="btn" type="button" id="tipRefreshBtn">Yenile</button>
     </section>
 
-    <section class="list-card">
-      <div class="list-head">
-        <h2 class="list-title">Son Gelen İhbarlar</h2>
-        <div class="list-meta" id="tipListMeta">Yükleniyor...</div>
-      </div>
-      <div class="tip-list" id="tipList">
-        <div class="empty">İhbarlar yükleniyor...</div>
-      </div>
+    <section class="board">
+      <section class="list-card">
+        <div class="list-head">
+          <h2 class="list-title">Son Gelen Ihbarlar</h2>
+          <div class="list-meta" id="tipListMeta">Yukleniyor...</div>
+        </div>
+        <div class="tip-list" id="tipList">
+          <div class="empty">Ihbarlar yukleniyor...</div>
+        </div>
+      </section>
+
+      <aside class="detail-shell">
+        <div class="detail-head">
+          <div>
+            <h2 class="detail-title">Tip Detayi</h2>
+            <div class="detail-sub">Manager aksiyonunu sec, oyuncuyu takip et ve sonraki adimi planla.</div>
+          </div>
+        </div>
+
+        <div class="detail-empty" id="detailEmpty">
+          Soldaki listeden bir scout ihbari sec. Burada tam notu, profil baglantisini, favori ve mesaj aksiyonlarini goreceksin.
+        </div>
+
+        <div class="detail-card" id="detailCard" hidden>
+          <div class="detail-topline">
+            <div>
+              <div class="eyebrow" id="detailScoutLabel">Scout Kaydi</div>
+              <h3 class="detail-player" id="detailPlayerName">-</h3>
+              <div class="detail-sub" id="detailPlayerSub">-</div>
+            </div>
+            <div class="score-badge">
+              <strong id="detailScore">0</strong>
+              <span class="muted">Skor</span>
+            </div>
+          </div>
+
+          <div class="detail-meta">
+            <span class="pill" id="detailStatusPill">Beklemede</span>
+            <span class="pill" id="detailSourcePill">Hesapli ihbar</span>
+            <span class="pill" id="detailDatePill">Bugun</span>
+          </div>
+
+          <div class="quick-actions">
+            <button class="action-btn" type="button" id="detailWatchlistBtn">Watchlist'e Al</button>
+            <button class="action-btn" type="button" id="detailFavoriteBtn">Favoriye Al</button>
+            <button class="action-btn" type="button" id="detailProfileBtn">Profili Ac</button>
+            <button class="action-btn" type="button" id="detailMessageBtn">Mesaj Taslagi</button>
+            <button class="action-btn" type="button" id="detailInterestBtn">Ilgi Bildir</button>
+            <button class="action-btn" type="button" id="detailTrialBtn">Trial Merkezi</button>
+            <button class="action-btn" type="button" id="detailVideoBtn">Videoyu Ac</button>
+          </div>
+
+          <div class="detail-grid">
+            <div class="metric">
+              <div class="metric-k">Scout</div>
+              <div class="metric-v" id="detailScoutName">-</div>
+            </div>
+            <div class="metric">
+              <div class="metric-k">Pozisyon</div>
+              <div class="metric-v" id="detailPosition">-</div>
+            </div>
+            <div class="metric">
+              <div class="metric-k">Sehir</div>
+              <div class="metric-v" id="detailCity">-</div>
+            </div>
+            <div class="metric">
+              <div class="metric-k">Kaynak</div>
+              <div class="metric-v" id="detailSource">-</div>
+            </div>
+          </div>
+
+          <div class="stack">
+            <div class="detail-block">
+              <h3>Scout Notu</h3>
+              <p id="detailDescription">-</p>
+            </div>
+
+            <div class="detail-block">
+              <h3>Manager Notu</h3>
+              <textarea id="managerNoteInput" placeholder="Bu oyuncu icin kisa manager notu yaz..."></textarea>
+              <div class="detail-actions">
+                <select id="managerNextAction">
+                  <option value="">Sonraki adim sec</option>
+                  <option value="watch">Takibe al</option>
+                  <option value="contact">Iletisime gec</option>
+                  <option value="trial">Deneme planla</option>
+                  <option value="shortlist">Kisa listeye al</option>
+                  <option value="reject">Uygun degil</option>
+                </select>
+                <button class="action-btn" type="button" id="saveManagerNoteBtn">Notu Kaydet</button>
+              </div>
+              <div class="status-note" id="managerNoteStatus">Manager notlari bu tarayicida saklanir. Operasyon akisi icin sonraki adimi isaretleyebilirsin.</div>
+            </div>
+
+            <div class="detail-block">
+              <h3>Durum Aksiyonlari</h3>
+              <div class="detail-actions" id="detailStatusActions"></div>
+            </div>
+          </div>
+        </div>
+      </aside>
     </section>
   </main>
 
   <script>
     const API_BASE = `${window.location.protocol === 'file:' ? 'http://127.0.0.1:8000' : window.location.origin}/api`;
+    const STATUS_ACTIONS = [
+      { key: 'screen', label: 'Tarandi' },
+      { key: 'shortlist', label: 'Shortlist' },
+      { key: 'approve', label: 'Onay' },
+      { key: 'mark-trial', label: 'Deneme' },
+      { key: 'mark-signed', label: 'Imza' },
+      { key: 'reject', label: 'Reddet' }
+    ];
+
     let allTips = [];
+    let selectedTipId = null;
+    let selectedTipDetail = null;
+    let pendingTipActionId = 0;
+    let selectedPlayerFavorite = false;
+
+    function getCurrentUser() {
+      try {
+        return JSON.parse(localStorage.getItem('nextscout_user') || '{}') || {};
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function getCurrentRole() {
+      return String(getCurrentUser()?.role || '').trim().toLowerCase();
+    }
+
+    function getViewMode() {
+      return String(new URLSearchParams(window.location.search).get('mode') || '').trim().toLowerCase();
+    }
+
+    function getDashboardHref() {
+      const role = getCurrentRole();
+      if (role === 'manager') return 'manager-dashboard.html';
+      if (role === 'coach') return 'coach-dashboard.html';
+      if (role === 'team' || role === 'club') return 'team-dashboard.html';
+      if (role === 'lawyer') return 'lawyer-dashboard.html';
+      if (role === 'scout') return 'scout-dashboard.html';
+      return 'index.html';
+    }
+
+    function isManagerRole() {
+      return getCurrentRole() === 'manager';
+    }
+
+    function canShortlistRole() {
+      return ['manager', 'coach', 'team', 'club'].includes(getCurrentRole());
+    }
+
+    function canUseOfficialWatchlist() {
+      return ['manager', 'coach', 'team', 'club', 'lawyer'].includes(getCurrentRole());
+    }
+
+    function getRoleNoteStorageKey(tipId) {
+      return `scout_tip_role_note_${getCurrentRole()}_${Number(tipId) || 0}`;
+    }
+
+    function getAuthToken() {
+      return (localStorage.getItem('nextscout_token') || '').trim();
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
 
     function formatStatus(value) {
-      const status = (value || '').toString().trim().toLowerCase();
-      if (status === 'screened') return 'Tarandı';
-      if (status === 'shortlisted') return 'Kısa Liste';
-      if (status === 'approved') return 'Onaylandı';
+      const status = String(value || '').trim().toLowerCase();
+      if (status === 'screened') return 'Tarandi';
+      if (status === 'shortlisted') return 'Kisa Liste';
+      if (status === 'approved') return 'Onaylandi';
+      if (status === 'trial') return 'Deneme';
+      if (status === 'signed') return 'Imza';
+      if (status === 'rejected') return 'Reddedildi';
+      if (status === 'withdrawn') return 'Geri cekildi';
       return 'Beklemede';
     }
 
     function formatDate(value) {
-      if (!value) return 'Bugün';
+      if (!value) return 'Bugun';
       const date = new Date(value);
-      if (Number.isNaN(date.getTime())) return 'Bugün';
+      if (Number.isNaN(date.getTime())) return 'Bugun';
       return date.toLocaleDateString('tr-TR', { day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function buildSourceLabel(row) {
+      return row.is_guest ? 'Misafir ihbari' : 'Hesapli ihbar';
+    }
+
+    function getVisibleTips(rows) {
+      const list = Array.isArray(rows) ? rows : [];
+      if (isManagerRole() || getViewMode() === 'manager_shortlist') {
+        return list.filter((row) => String(row?.status || '').trim().toLowerCase() === 'shortlisted');
+      }
+      return list;
+    }
+
+    function applyPageMode() {
+      if (getViewMode() !== 'manager_shortlist') return;
+      const eyebrow = document.getElementById('heroEyebrow');
+      const title = document.getElementById('heroTitle');
+      const summary = document.getElementById('heroSummary');
+      if (eyebrow) eyebrow.textContent = 'Manager Shortlist';
+      if (title) title.textContent = 'Shortlist';
+      if (summary) summary.textContent = 'Manager icin kisa listeye alinmis scout adaylarini tek ekranda ac.';
+      document.title = 'Manager Shortlist | NextScout';
+    }
+
+    function renderStatusActionButton(row, action, label) {
+      const isBusy = Number(pendingTipActionId) === Number(row.id);
+      return `<button class="action-btn" type="button" onclick="updateTipStatus(${Number(row.id)}, '${action}')" ${isBusy ? 'disabled' : ''}>${label}</button>`;
+    }
+
+    async function apiGet(path, useAuth = false) {
+      const headers = { Accept: 'application/json' };
+      if (useAuth) {
+        const token = getAuthToken();
+        if (!token) throw new Error('Islem yapmak icin giris yapman gerekiyor.');
+        headers.Authorization = `Bearer ${token}`;
+      }
+      const response = await fetch(`${API_BASE}${path}`, { headers });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || payload?.ok === false) {
+        throw new Error(payload?.message || 'Veri alinamadi.');
+      }
+      return payload?.data ?? payload;
+    }
+
+    async function postWithAuth(path, body) {
+      const token = getAuthToken();
+      if (!token) throw new Error('Islem yapmak icin giris yapman gerekiyor.');
+      const response = await fetch(`${API_BASE}${path}`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body || {})
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || payload?.ok === false) {
+        throw new Error(payload?.message || 'Islem tamamlanamadi.');
+      }
+      return payload?.data ?? payload;
+    }
+
+    async function resolvePlayerIdByName(name) {
+      const query = String(name || '').trim();
+      if (!query) return 0;
+      try {
+        const params = new URLSearchParams({ name: query });
+        const payload = await apiGet(`/scout-tips/resolve-player?${params.toString()}`, true);
+        return Number(payload?.id || 0);
+      } catch (error) {
+        return 0;
+      }
+    }
+
+    async function ensureTipPlayerId(detail) {
+      if (!detail) return 0;
+      const current = Number(detail.player_id || detail.player?.id || 0);
+      if (current > 0) return current;
+      const resolved = await resolvePlayerIdByName(detail.player_name || '');
+      if (resolved > 0) detail.player_id = resolved;
+      return resolved;
+    }
+
+    async function checkFavoriteState(playerId) {
+      if (!playerId) return false;
+      try {
+        const payload = await apiGet(`/favorites/${encodeURIComponent(playerId)}/check`, true);
+        return Boolean(payload?.is_favorited);
+      } catch (error) {
+        return false;
+      }
+    }
+
+    async function toggleFavoriteState(playerId) {
+      const payload = await postWithAuth(`/favorites/${encodeURIComponent(playerId)}/toggle`, {});
+      return Boolean(payload?.is_favorited);
+    }
+
+    async function addTipToWatchlist(tipId, notes) {
+      return postWithAuth(`/scout-tips/${encodeURIComponent(tipId)}/watchlist`, {
+        notes: String(notes || '').trim(),
+      });
+    }
+
+    function getNotificationComposeUrl(item, type) {
+      const playerId = Number(item?.player_id || 0);
+      const subjectMap = {
+        message: `${item.player_name || 'Oyuncu'} icin manager mesaji`,
+        interest: `${item.player_name || 'Oyuncu'} icin ilgi bildirimi`,
+      };
+      const bodyMap = {
+        message: `${item.player_name || 'Oyuncu'} merhaba,\n\nProfilini ve scout notlarini inceledik. Seninle kisa bir gorusme yapmak istiyoruz.`,
+        interest: `${item.player_name || 'Oyuncu'} merhaba,\n\nSeni kisa listeye aldik ve yakin takipteyiz. Uygunsan kisa bir gorusme planlayalim.`,
+      };
+      const params = new URLSearchParams({
+        compose: '1',
+        to_name: item.player_name || '',
+        to_user_id: playerId ? String(playerId) : '',
+        subject: subjectMap[type] || subjectMap.message,
+        message: bodyMap[type] || bodyMap.message,
+        notice: playerId
+          ? 'Alici ve mesaj scout ihbarindan otomatik dolduruldu.'
+          : 'Oyuncu hesabi bulunamadi. Alici adini scout ihbarindan doldurduk, gondermeden once kontrol et.',
+        return_to: getReturnToScoutTipsUrl(item?.tip_id || selectedTipId || 0),
+      });
+      return `notifications.html?${params.toString()}`;
+    }
+
+    function openNotificationCompose(item, type) {
+      window.location.href = getNotificationComposeUrl(item, type);
+    }
+
+    function openWatchlistPage() {
+      window.location.href = 'scout-watchlist.html';
+    }
+
+    function openFavoritesPage() {
+      window.location.href = 'favorites.html';
+    }
+
+    function getReturnToScoutTipsUrl(tipId) {
+      const params = new URLSearchParams();
+      if (Number(tipId) > 0) params.set('selected_tip_id', String(Number(tipId)));
+      return `scout-ihbarlari.html${params.toString() ? `?${params.toString()}` : ''}`;
+    }
+
+    function hydrateManagerNote(detail) {
+      const noteInput = document.getElementById('managerNoteInput');
+      const nextAction = document.getElementById('managerNextAction');
+      const status = document.getElementById('managerNoteStatus');
+      const saveBtn = document.getElementById('saveManagerNoteBtn');
+      if (!noteInput || !nextAction || !status || !saveBtn) return;
+
+      if (isManagerRole()) {
+        const row = detail?.metadata?.manager_review || {};
+        noteInput.value = row.note || '';
+        nextAction.value = row.next_action || '';
+        saveBtn.textContent = 'Notu Kaydet';
+        status.textContent = row.updated_at
+          ? `Son manager notu ${formatDate(row.updated_at)} tarihinde kaydedildi.`
+          : 'Manager notunu kaydedip sonraki adimi ekibe acik hale getirebilirsin.';
+        Array.from(nextAction.options).forEach((option) => {
+          option.hidden = false;
+        });
+        return;
+      }
+
+      const raw = localStorage.getItem(getRoleNoteStorageKey(detail?.id));
+      const row = raw ? JSON.parse(raw) : {};
+      noteInput.value = row.note || '';
+      nextAction.value = row.next_action || '';
+      saveBtn.textContent = 'Yorumu Kaydet';
+      status.textContent = row.updated_at
+        ? `Son yorum ${formatDate(row.updated_at)} tarihinde kaydedildi.`
+        : 'Bu rol icin yorum yerel olarak saklanir.';
+      Array.from(nextAction.options).forEach((option) => {
+        const value = String(option.value || '');
+        option.hidden = ['shortlist', 'reject'].includes(value);
+      });
+      if (['shortlist', 'reject'].includes(nextAction.value)) nextAction.value = '';
+    }
+
+    async function saveManagerNote() {
+      if (!selectedTipId) return;
+      if (!isManagerRole()) {
+        const payload = {
+          note: String(document.getElementById('managerNoteInput').value || '').trim(),
+          next_action: String(document.getElementById('managerNextAction').value || '').trim(),
+          updated_at: new Date().toISOString(),
+        };
+        localStorage.setItem(getRoleNoteStorageKey(selectedTipId), JSON.stringify(payload));
+        document.getElementById('managerNoteStatus').textContent = 'Yorum bu rolde yerel olarak kaydedildi.';
+        await applyNextAction({ id: selectedTipId, player_name: selectedTipDetail?.player_name || '', player_id: selectedTipDetail?.player_id || 0, metadata: { manager_review: payload } });
+        return;
+      }
+      try {
+        const detail = await postWithAuth(`/scout-tips/${encodeURIComponent(selectedTipId)}/manager-note`, {
+          note: String(document.getElementById('managerNoteInput').value || '').trim(),
+          next_action: String(document.getElementById('managerNextAction').value || '').trim(),
+        });
+        selectedTipDetail = detail;
+        hydrateManagerNote(detail);
+        document.getElementById('managerNoteStatus').textContent = 'Manager notu backend tarafina kaydedildi.';
+        await applyNextAction(detail);
+      } catch (error) {
+        document.getElementById('managerNoteStatus').textContent = error.message || 'Manager notu kaydedilemedi.';
+      }
+    }
+
+    async function applyNextAction(detail) {
+      const action = String(detail?.metadata?.manager_review?.next_action || '').trim();
+      if (!action) return;
+
+      const playerId = await ensureTipPlayerId(detail);
+
+      if (action === 'watch') {
+        if (canUseOfficialWatchlist()) {
+          await addTipToWatchlist(detail.id, detail?.metadata?.manager_review?.note || '');
+          document.getElementById('managerNoteStatus').textContent = 'Not kaydedildi ve tip resmi watchlist kaydina eklendi.';
+          openWatchlistPage();
+        } else if (playerId) {
+          selectedPlayerFavorite = await toggleFavoriteState(playerId);
+          document.getElementById('managerNoteStatus').textContent = 'Oyuncu izleme/favori listesine eklendi.';
+        } else {
+          document.getElementById('managerNoteStatus').textContent = 'Izleme icin bagli oyuncu profili bulunamadi.';
+        }
+        return;
+      }
+
+      if (action === 'contact') {
+        document.getElementById('managerNoteStatus').textContent = 'Not kaydedildi. Mesaj taslagi aciliyor.';
+        openNotificationCompose({ player_name: detail.player_name, player_id: playerId, tip_id: detail.id }, 'message');
+        return;
+      }
+
+      if (action === 'trial') {
+        document.getElementById('managerNoteStatus').textContent = 'Not kaydedildi. Trial merkezi aciliyor.';
+        document.getElementById('detailTrialBtn').click();
+        return;
+      }
+
+      if (action === 'shortlist') {
+        if (!canShortlistRole()) return;
+        await updateTipStatus(detail.id, 'shortlist', true);
+        document.getElementById('managerNoteStatus').textContent = 'Not kaydedildi ve tip kisa listeye alindi.';
+        return;
+      }
+
+      if (action === 'reject') {
+        if (!isManagerRole()) return;
+        await updateTipStatus(detail.id, 'reject', true);
+        document.getElementById('managerNoteStatus').textContent = 'Not kaydedildi ve tip reddedildi.';
+      }
     }
 
     function renderTips() {
       const root = document.getElementById('tipList');
       const meta = document.getElementById('tipListMeta');
-      const q = (document.getElementById('tipSearch')?.value || '').toString().trim().toLocaleLowerCase('tr-TR');
-      const status = (document.getElementById('tipStatus')?.value || '').toString().trim();
-      const source = (document.getElementById('tipSource')?.value || '').toString().trim();
+      const q = String(document.getElementById('tipSearch')?.value || '').trim().toLocaleLowerCase('tr-TR');
+      const status = String(document.getElementById('tipStatus')?.value || '').trim();
+      const source = String(document.getElementById('tipSource')?.value || '').trim();
 
-      const rows = allTips.filter((row) => {
+      const rows = getVisibleTips(allTips).filter((row) => {
         const text = `${row.player_name || ''} ${row.city || ''} ${row.position || ''}`.toLocaleLowerCase('tr-TR');
         const sourceMatch = !source || (source === 'guest' ? row.is_guest : !row.is_guest);
         return (!q || text.includes(q)) && (!status || row.status === status) && sourceMatch;
       });
 
-      if (meta) meta.textContent = `${rows.length} ihbar gösteriliyor`;
+      if (meta) meta.textContent = `${rows.length} ihbar gosteriliyor`;
 
       if (!rows.length) {
-        root.innerHTML = '<div class="empty">Filtreye uyan ihbar bulunamadı.</div>';
+        root.innerHTML = '<div class="empty">Filtreye uyan ihbar bulunamadi.</div>';
         return;
       }
 
-      root.innerHTML = rows.map((row) => `
-        <article class="tip-item">
-          <div class="tip-top">
-            <div>
-              <h3 class="tip-name">${row.player_name || '-'}</h3>
-              <div class="tip-desc">${row.city || '-'}${row.position ? ` / ${row.position}` : ''}</div>
+      root.innerHTML = rows.map((row) => {
+        const active = Number(row.id) === Number(selectedTipId);
+        const canShortlist = canShortlistRole();
+        const canManagerAdvance = isManagerRole();
+        return `
+          <article class="tip-item ${active ? 'is-active' : ''}">
+            <div class="tip-top">
+              <div>
+                <h3 class="tip-name">${escapeHtml(row.player_name || '-')}</h3>
+                <div class="tip-desc">${escapeHtml(row.city || '-')}${row.position ? ` / ${escapeHtml(row.position)}` : ''}</div>
+              </div>
+              <span class="pill">${escapeHtml(formatStatus(row.status))}</span>
             </div>
-            <span class="pill">${formatStatus(row.status)}</span>
-          </div>
-          <div class="tip-meta">
-            <span class="pill">${row.is_guest ? 'Misafir ihbarı' : 'Hesaplı ihbar'}</span>
-            <span class="pill">Skor: ${row.final_score || 0}</span>
-            <span class="pill">${formatDate(row.created_at)}</span>
-          </div>
-        </article>
-      `).join('');
+            <div class="tip-meta">
+              <span class="pill">${escapeHtml(buildSourceLabel(row))}</span>
+              <span class="pill">Skor: ${escapeHtml(row.final_score || 0)}</span>
+              <span class="pill">${escapeHtml(formatDate(row.created_at))}</span>
+            </div>
+            <div class="tip-actions">
+              <button class="action-btn" type="button" onclick="openTipDetail(${Number(row.id)})">Detay Ac</button>
+              ${canShortlist ? renderStatusActionButton(row, 'shortlist', 'Shortlist') : ''}
+              ${canManagerAdvance ? renderStatusActionButton(row, 'mark-trial', 'Deneme') : ''}
+              ${canManagerAdvance ? renderStatusActionButton(row, 'reject', 'Reddet') : ''}
+            </div>
+          </article>
+        `;
+      }).join('');
     }
 
-    async function loadTips() {
-      const root = document.getElementById('tipList');
-      const meta = document.getElementById('tipListMeta');
-      if (root) root.innerHTML = '<div class="empty">İhbarlar yükleniyor...</div>';
-      if (meta) meta.textContent = 'Yükleniyor...';
+    async function renderDetail(detail) {
+      if (!detail) return;
+      const playerId = await ensureTipPlayerId(detail);
+      selectedPlayerFavorite = await checkFavoriteState(playerId);
+
+      document.getElementById('detailEmpty').hidden = true;
+      document.getElementById('detailCard').hidden = false;
+      document.getElementById('detailPlayerName').textContent = detail.player_name || '-';
+      document.getElementById('detailPlayerSub').textContent = `${detail.city || '-'}${detail.position ? ` / ${detail.position}` : ''}`;
+      document.getElementById('detailScoutLabel').textContent = detail.submitter?.name ? `Scout: ${detail.submitter.name}` : 'Scout Kaydi';
+      document.getElementById('detailScore').textContent = String(detail.final_score || detail.ai_quality_score || 0);
+      document.getElementById('detailStatusPill').textContent = formatStatus(detail.status);
+      document.getElementById('detailSourcePill').textContent = buildSourceLabel({ is_guest: Boolean(detail.metadata?.guest_submission) });
+      document.getElementById('detailDatePill').textContent = formatDate(detail.created_at);
+      document.getElementById('detailScoutName').textContent = detail.submitter?.name || 'Scout Ekibi';
+      document.getElementById('detailPosition').textContent = detail.position || '-';
+      document.getElementById('detailCity').textContent = detail.city || '-';
+      document.getElementById('detailSource').textContent = detail.source_type || '-';
+      document.getElementById('detailDescription').textContent = detail.description || 'Scout notu girilmemis.';
+
+      const watchlistBtn = document.getElementById('detailWatchlistBtn');
+      watchlistBtn.textContent = canUseOfficialWatchlist() ? "Watchlist'e Al" : 'Izlemeye Al';
+      watchlistBtn.onclick = async () => {
+        try {
+          if (canUseOfficialWatchlist()) {
+            await addTipToWatchlist(detail.id, document.getElementById('managerNoteInput').value || '');
+            watchlistBtn.textContent = 'Watchlist Kaydedildi';
+            document.getElementById('managerNoteStatus').textContent = 'Tip resmi watchlist kaydina eklendi. Watchlist ekraninda gorebilirsin.';
+            openWatchlistPage();
+          } else if (playerId) {
+            const next = await toggleFavoriteState(playerId);
+            selectedPlayerFavorite = next;
+            watchlistBtn.textContent = next ? 'Izlemeden Cikar' : 'Izlemeye Al';
+            document.getElementById('managerNoteStatus').textContent = next
+              ? 'Oyuncu izleme/favori listesine eklendi.'
+              : 'Oyuncu izleme/favori listesinden cikarildi.';
+            if (next) openFavoritesPage();
+          } else {
+            window.alert('Izleme icin bagli oyuncu profili bulunamadi.');
+          }
+        } catch (error) {
+          window.alert(error.message || 'Watchlist kaydi olusturulamadi.');
+        }
+      };
+
+      const favoriteBtn = document.getElementById('detailFavoriteBtn');
+      favoriteBtn.textContent = selectedPlayerFavorite ? 'Favoriden Cikar' : 'Favoriye Al';
+      favoriteBtn.disabled = !playerId;
+      favoriteBtn.onclick = async () => {
+        try {
+          const next = await toggleFavoriteState(playerId);
+          selectedPlayerFavorite = next;
+          favoriteBtn.textContent = next ? 'Favoriden Cikar' : 'Favoriye Al';
+          document.getElementById('managerNoteStatus').textContent = next
+            ? 'Oyuncu favori listesine eklendi.'
+            : 'Oyuncu favori listesinden cikarildi.';
+          if (next) openFavoritesPage();
+        } catch (error) {
+          window.alert(error.message || 'Favori islemi tamamlanamadi.');
+        }
+      };
+
+      document.getElementById('detailProfileBtn').onclick = async () => {
+        const resolvedPlayerId = Number(detail.player_id || detail.player?.id || playerId || 0);
+        if (resolvedPlayerId) {
+          window.location.href = `player-profile.html?user_id=${encodeURIComponent(resolvedPlayerId)}`;
+          return;
+        }
+        window.alert('Bu tip henuz bir oyuncu profiline baglanmamis.');
+      };
+
+      document.getElementById('detailMessageBtn').onclick = () => {
+        openNotificationCompose({ player_name: detail.player_name, player_id: playerId, tip_id: detail.id }, 'message');
+      };
+
+      document.getElementById('detailInterestBtn').onclick = async () => {
+        try {
+          if (canShortlistRole()) {
+            await updateTipStatus(detail.id, 'shortlist', true);
+          }
+          openNotificationCompose({ player_name: detail.player_name, player_id: playerId, tip_id: detail.id }, 'interest');
+        } catch (error) {
+          window.alert(error.message || 'Ilgi aksiyonu tamamlanamadi.');
+        }
+      };
+
+      document.getElementById('detailTrialBtn').onclick = () => {
+        const params = new URLSearchParams({
+          player_name: detail.player_name || '',
+          player_id: String(playerId || ''),
+          source: 'scout_tip',
+          tip_id: String(detail.id || '')
+        });
+        window.location.href = `trial-center.html?${params.toString()}`;
+      };
+
+      document.getElementById('detailVideoBtn').onclick = () => {
+        const videoUrl = detail.video_clip?.video_url || '';
+        if (!videoUrl) {
+          window.alert('Bu tipte bagli video bulunmuyor.');
+          return;
+        }
+        window.location.href = videoUrl;
+      };
+
+      const detailActions = [];
+      if (canShortlistRole()) {
+        detailActions.push(renderStatusActionButton({ id: detail.id }, 'shortlist', 'Shortlist'));
+      }
+      if (isManagerRole()) {
+        detailActions.push(
+          renderStatusActionButton({ id: detail.id }, 'screen', 'Tarandi'),
+          renderStatusActionButton({ id: detail.id }, 'approve', 'Onay'),
+          renderStatusActionButton({ id: detail.id }, 'mark-trial', 'Deneme'),
+          renderStatusActionButton({ id: detail.id }, 'mark-signed', 'Imza'),
+          renderStatusActionButton({ id: detail.id }, 'reject', 'Reddet')
+        );
+      }
+      document.getElementById('detailStatusActions').innerHTML = detailActions.length
+        ? detailActions.join('')
+        : '<div class="status-note">Bu rolde durum aksiyonu acik degil.</div>';
+
+      hydrateManagerNote(detail);
+    }
+
+    async function openTipDetail(id) {
+      selectedTipId = Number(id) || 0;
+      renderTips();
+      document.getElementById('detailEmpty').textContent = 'Tip detayi yukleniyor...';
+      document.getElementById('detailEmpty').hidden = false;
+      document.getElementById('detailCard').hidden = true;
 
       try {
-        const response = await fetch(`${API_BASE}/scout-tips/feed?limit=50`, {
-          headers: { Accept: 'application/json' }
-        });
-        const payload = await response.json().catch(() => ({}));
-        allTips = Array.isArray(payload?.data) ? payload.data : [];
+        selectedTipDetail = await apiGet(`/scout-tips/${encodeURIComponent(id)}`, true);
+        await renderDetail(selectedTipDetail);
+      } catch (error) {
+        selectedTipDetail = null;
+        document.getElementById('detailEmpty').textContent = error.message || 'Tip detayi yuklenemedi.';
+        document.getElementById('detailCard').hidden = true;
+      }
+    }
+
+    async function updateTipStatus(id, action, silent) {
+      pendingTipActionId = Number(id) || 0;
+      renderTips();
+      try {
+        await postWithAuth(`/scout-tips/${encodeURIComponent(id)}/${action}`, {});
+        await loadTips(false);
+        if (selectedTipId && Number(selectedTipId) === Number(id)) {
+          await openTipDetail(id);
+        }
+        if (!silent) {
+          document.getElementById('managerNoteStatus').textContent = 'Tip durumu guncellendi.';
+        }
+      } finally {
+        pendingTipActionId = 0;
+        renderTips();
+      }
+    }
+
+    async function loadTips(resetSelection = true) {
+      const root = document.getElementById('tipList');
+      const meta = document.getElementById('tipListMeta');
+      if (root) root.innerHTML = '<div class="empty">Ihbarlar yukleniyor...</div>';
+      if (meta) meta.textContent = 'Yukleniyor...';
+
+      try {
+        const payload = await apiGet('/scout-tips/feed?limit=50');
+        allTips = getVisibleTips(Array.isArray(payload) ? payload : Array.isArray(payload?.data) ? payload.data : []);
+        if (resetSelection && !selectedTipId && allTips[0]) {
+          selectedTipId = 0;
+        }
         renderTips();
       } catch (error) {
-        if (root) root.innerHTML = '<div class="empty">İhbarlar alınamadı.</div>';
-        if (meta) meta.textContent = 'Bağlantı hatası';
+        if (root) root.innerHTML = `<div class="empty">${escapeHtml(error.message || 'Ihbarlar alinamadi.')}</div>`;
+        if (meta) meta.textContent = 'Baglanti hatasi';
       }
     }
 
     document.getElementById('tipSearch')?.addEventListener('input', renderTips);
     document.getElementById('tipStatus')?.addEventListener('change', renderTips);
     document.getElementById('tipSource')?.addEventListener('change', renderTips);
-    document.getElementById('tipRefreshBtn')?.addEventListener('click', loadTips);
+    document.getElementById('tipRefreshBtn')?.addEventListener('click', () => loadTips(false));
+    document.getElementById('saveManagerNoteBtn')?.addEventListener('click', saveManagerNote);
+    const dashboardLink = document.getElementById('dashboardLink');
+    if (dashboardLink) dashboardLink.href = getDashboardHref();
+    applyPageMode();
 
-    loadTips();
+    const initialTipId = Number(new URLSearchParams(window.location.search).get('selected_tip_id') || 0);
+    if (initialTipId > 0) selectedTipId = initialTipId;
+    loadTips().then(() => {
+      if (selectedTipId) openTipDetail(selectedTipId);
+    });
   </script>
 </body>
 </html>
