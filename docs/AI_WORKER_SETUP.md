@@ -39,6 +39,29 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8010
 ```
 
+Windows hizli baslatma:
+
+```bat
+START_AI_WORKER.bat
+START_AI_PIPELINE.bat
+```
+
+`START_AI_WORKER.bat`:
+
+- `mock` modda calisir
+- local gelistirme icin guvenli fallback verir
+
+`START_AI_PIPELINE.bat`:
+
+- `pipeline` modda calisir
+- `ai-worker/models/player_ball.pt` varsa `yolo` detector kullanir
+- model yoksa `heuristic` detector ile acilir
+
+Worker `.env` destegi:
+
+- `ai-worker/.env.example` dosyasini `ai-worker/.env` olarak kopyalayabilirsin
+- worker artik `ai-worker/.env` dosyasini otomatik okur
+
 ## 3. Akis
 
 1. Laravel `POST /api/video-analyses/start`
@@ -72,3 +95,25 @@ Bu repo icinde ilk gercek gecis iskeleti zaten var:
 Model format detayi:
 
 - [AI_MODEL_SPEC.md](AI_MODEL_SPEC.md)
+
+## 5. Gercek model checklist
+
+1. `ai-worker/models/player_ball.pt` dosyasini ekle
+2. `pip install -r ai-worker/requirements.txt` ile `ultralytics` dahil bagimliliklari yukle
+3. `ai-worker/.env` icinde:
+
+```env
+AI_WORKER_MODE=pipeline
+AI_WORKER_DETECTOR=yolo
+AI_WORKER_YOLO_MODEL_PATH=models/player_ball.pt
+```
+
+4. Laravel `.env` icinde:
+
+```env
+AI_ANALYSIS_MODE=external
+AI_ANALYSIS_WORKER_BASE_URL=http://127.0.0.1:8010
+AI_ANALYSIS_CALLBACK_SECRET=change-me
+```
+
+5. `START_AI_PIPELINE.bat` ile worker'i baslat

@@ -37,14 +37,14 @@ class VideoAnalysisController extends Controller
             ->first();
 
         if ($existingAnalysis) {
+            $existingAnalysisPayload = $existingAnalysis->fresh(['videoClip', 'targetPlayer', 'events.clips', 'metrics', 'targets']);
+
             return $this->successResponse(
-                $existingAnalysis->fresh(['videoClip', 'targetPlayer', 'events.clips', 'metrics', 'targets']),
+                $existingAnalysisPayload,
                 'Mevcut video analizi donduruldu.',
                 Response::HTTP_OK,
                 [
-                    'meta' => [
-                        'analysis_source' => 'cached',
-                    ],
+                    'meta' => $this->buildAnalysisMeta($existingAnalysisPayload, 'cached'),
                 ]
             );
         }
@@ -62,14 +62,14 @@ class VideoAnalysisController extends Controller
 
         RunVideoAnalysisJob::dispatchSync($analysis->id);
 
+        $analysisPayload = $analysis->fresh(['videoClip', 'targetPlayer', 'events.clips', 'metrics', 'targets']);
+
         return $this->successResponse(
-            $analysis->fresh(['videoClip', 'targetPlayer', 'events.clips', 'metrics', 'targets']),
+            $analysisPayload,
             'Video analizi baslatildi.',
             Response::HTTP_CREATED,
             [
-                'meta' => [
-                    'analysis_source' => 'fresh',
-                ],
+                'meta' => $this->buildAnalysisMeta($analysisPayload, 'fresh'),
             ]
         );
     }
@@ -81,7 +81,9 @@ class VideoAnalysisController extends Controller
 
         $this->authorizeView($request, $analysis);
 
-        return $this->successResponse($analysis, 'Video analiz detayi hazir.');
+        return $this->successResponse($analysis, 'Video analiz detayi hazir.', Response::HTTP_OK, [
+            'meta' => $this->buildAnalysisMeta($analysis),
+        ]);
     }
 
     public function events(Request $request, int $id): JsonResponse
@@ -156,5 +158,18 @@ class VideoAnalysisController extends Controller
         if (! hash_equals($configuredSecret, $providedSecret)) {
             abort(403, 'Gecersiz callback imzasi.');
         }
+    }
+
+    private function buildAnalysisMeta(VideoAnalysis $analysis, ?string $source = null): array
+    {
+        $rawOutput = (array) ($analysis->raw_output ?? []);
+
+        return array_filter([
+            'analysis_source' => $source,
+            'provider' => $analysis->provider,
+            'analysis_version' => $analysis->analysis_version,
+            'fallback_mode' => $rawOutput['fallback_mode'] ?? null,
+            'fallback_from' => $rawOutput['fallback_from'] ?? null,
+        ], static fn ($value) => $value !== null && $value !== '');
     }
 }

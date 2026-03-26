@@ -154,7 +154,7 @@
           '</div>' +
           '<div class="ai-video-lab-note">' +
             escapeHtml(event.payload?.successful ? 'Basarili aksiyon' : 'Tespit edilen aksiyon') +
-            ' · ' + escapeHtml(Number(event.start_second || 0)) + 's - ' + escapeHtml(Number(event.end_second || 0)) + 's' +
+            ' - ' + escapeHtml(Number(event.start_second || 0)) + 's - ' + escapeHtml(Number(event.end_second || 0)) + 's' +
           '</div>' +
         '</article>';
     }).join('');
@@ -294,9 +294,11 @@
       notice.textContent = '';
     }
 
-    function setSourceBadge(source) {
+    function setSourceBadge(source, meta) {
       if (!sourceBadge) return;
       const key = String(source || '').toLowerCase();
+      const provider = String(meta?.provider || '').toLowerCase();
+      const fallbackMode = String(meta?.fallback_mode || '').toLowerCase();
       if (!key) {
         sourceBadge.hidden = true;
         sourceBadge.className = 'ai-video-lab-source';
@@ -305,7 +307,10 @@
       }
       sourceBadge.hidden = false;
       sourceBadge.className = 'ai-video-lab-source ' + key;
-      sourceBadge.textContent = key === 'cached' ? 'Cached Analysis' : 'Fresh Analysis';
+      const labels = [key === 'cached' ? 'Cached Analysis' : 'Fresh Analysis'];
+      if (provider) labels.push(provider === 'mock' ? 'Mock' : provider === 'external' ? 'External' : provider);
+      if (fallbackMode) labels.push('Fallback ' + fallbackMode.toUpperCase());
+      sourceBadge.textContent = labels.join(' · ');
     }
 
     function renderCachedAnalysis(entry) {
@@ -316,7 +321,10 @@
       if (eventsRoot) {
         eventsRoot.innerHTML = createEventMarkup(entry.events || []);
       }
-      setSourceBadge('cached');
+      setSourceBadge('cached', {
+        provider: entry.provider || '',
+        fallback_mode: entry.fallback_mode || ''
+      });
       return true;
     }
 
@@ -355,14 +363,14 @@
     function createQuickChip(player) {
       return '<button type="button" class="ai-video-lab-chip" data-ai-quick-pick="' + escapeHtml(player.id) + '">' +
         escapeHtml(player.name || 'Oyuncu') +
-        (player.position ? ' · ' + escapeHtml(player.position) : '') +
+        (player.position ? ' - ' + escapeHtml(player.position) : '') +
       '</button>';
     }
 
     function createDiscoveryChip(player, metricKey) {
       const value = Number(player[metricKey] || 0);
       return '<button type="button" class="ai-video-lab-chip" data-ai-quick-pick="' + escapeHtml(player.player_id || player.id) + '">' +
-        escapeHtml(player.name || 'Oyuncu') + ' · ' + escapeHtml(value) +
+        escapeHtml(player.name || 'Oyuncu') + ' - ' + escapeHtml(value) +
       '</button>';
     }
 
@@ -521,7 +529,7 @@
       videoSelect.innerHTML = ['<option value="">Video sec</option>']
         .concat(videos.map(function (video) {
           const label = escapeHtml(video.title || ('Video #' + video.id));
-          const duration = video.duration_seconds ? ' · ' + escapeHtml(video.duration_seconds) + 's' : '';
+          const duration = video.duration_seconds ? ' - ' + escapeHtml(video.duration_seconds) + 's' : '';
           return '<option value="' + escapeHtml(video.id) + '">' + label + duration + '</option>';
         }))
         .join('');
@@ -576,7 +584,7 @@
           player.position || '-',
           player.city || '-',
           'Yas: ' + (player.age || '-')
-        ].join(' · ');
+        ].join(' - ');
       }
       if (targetInput) targetInput.value = player.id || '';
       clearNotice();
@@ -585,7 +593,7 @@
 
     async function runSearch() {
       clearNotice();
-      resultsRoot.innerHTML = '<div class="ai-video-lab-empty">Oyuncular aranıyor...</div>';
+      resultsRoot.innerHTML = '<div class="ai-video-lab-empty">Oyuncular araniyor...</div>';
       if (selectedRoot) selectedRoot.hidden = true;
       players = [];
       videos = [];
@@ -634,23 +642,24 @@
           analysis_type: 'scout_mvp'
         });
         const analysis = analysisResponse.data || {};
-        const analysisSource = analysisResponse.meta?.analysis_source || 'fresh';
+        const analysisMeta = analysisResponse.meta || {};
+        const analysisSource = analysisMeta.analysis_source || 'fresh';
         if (analysis.status && analysis.status !== 'completed') {
           if (summaryRoot) {
             summaryRoot.innerHTML = createSummaryMarkup(null);
           }
           if (eventsRoot) {
-            eventsRoot.innerHTML = '<div class="ai-video-lab-empty">Analiz worker kuyruğuna gonderildi. Sonuc bekleniyor...</div>';
+            eventsRoot.innerHTML = '<div class="ai-video-lab-empty">Analiz worker kuyruguna gonderildi. Sonuc bekleniyor...</div>';
           }
-          setSourceBadge(analysisSource);
-          setNotice('Analiz worker kuyruğuna gonderildi. Sonuc bekleniyor.', 'ok');
-          pollAnalysisUntilComplete(analysis.id, analysisSource, cacheKey, videoClipId);
+          setSourceBadge(analysisSource, analysisMeta);
+          setNotice('Analiz worker kuyruguna gonderildi. Sonuc bekleniyor.', 'ok');
+          pollAnalysisUntilComplete(analysis.id, analysisSource, analysisMeta, cacheKey, videoClipId);
           return;
         }
         if (summaryRoot) {
           summaryRoot.innerHTML = createSummaryMarkup(analysis.summary || {});
         }
-        setSourceBadge(analysisSource);
+        setSourceBadge(analysisSource, analysisMeta);
         const events = await apiGet('/video-analyses/' + analysis.id + '/events', true);
         if (eventsRoot) {
           eventsRoot.innerHTML = createEventMarkup(events);
@@ -662,6 +671,8 @@
           video_clip_id: videoClipId,
           summary: analysis.summary || null,
           events: Array.isArray(events) ? events : [],
+          provider: analysisMeta.provider || analysis.provider || '',
+          fallback_mode: analysisMeta.fallback_mode || '',
           cached_at: new Date().toISOString()
         };
         setAnalysisCache(cache);
@@ -683,7 +694,7 @@
       }
     }
 
-    async function pollAnalysisUntilComplete(analysisId, analysisSource, cacheKey, videoClipId) {
+    async function pollAnalysisUntilComplete(analysisId, analysisSource, initialMeta, cacheKey, videoClipId) {
       let attempts = 0;
       const maxAttempts = 6;
       const intervalMs = 2000;
@@ -691,7 +702,18 @@
       async function tick() {
         attempts += 1;
         try {
-          const analysis = await apiGet('/video-analyses/' + analysisId, true);
+          const response = await fetch(getApiBaseUrl() + '/video-analyses/' + analysisId, {
+            headers: {
+              Accept: 'application/json',
+              Authorization: 'Bearer ' + getToken()
+            }
+          });
+          const payload = await response.json().catch(function () { return {}; });
+          if (!response.ok || payload.ok === false) {
+            throw new Error(payload.message || 'Analiz durumu alinamadi.');
+          }
+          const analysis = payload.data ?? payload;
+          const analysisMeta = payload.meta || initialMeta || {};
           if (analysis.status === 'completed') {
             if (summaryRoot) {
               summaryRoot.innerHTML = createSummaryMarkup(analysis.summary || {});
@@ -707,10 +729,12 @@
               video_clip_id: videoClipId,
               summary: analysis.summary || null,
               events: Array.isArray(events) ? events : [],
+              provider: analysisMeta.provider || analysis.provider || '',
+              fallback_mode: analysisMeta.fallback_mode || '',
               cached_at: new Date().toISOString()
             };
             setAnalysisCache(cache);
-            setSourceBadge(analysisSource);
+            setSourceBadge(analysisSource, analysisMeta);
             setNotice('Analiz tamamlandi. Sonuc worker uzerinden geldi.', 'ok');
             return;
           }

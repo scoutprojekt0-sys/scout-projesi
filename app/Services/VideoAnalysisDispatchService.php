@@ -37,6 +37,22 @@ class VideoAnalysisDispatchService
         try {
             $response = $this->externalVideoAnalysisClient->submit($analysis->fresh('videoClip'));
         } catch (RuntimeException $exception) {
+            if (! app()->environment('production')) {
+                $mockedAnalysis = $this->mockVideoAnalysisService->run($analysis->fresh(['videoClip', 'targetPlayer']));
+                $rawOutput = (array) ($mockedAnalysis->raw_output ?? []);
+                $rawOutput['fallback_from'] = 'external-worker';
+                $rawOutput['fallback_reason'] = $exception->getMessage();
+                $rawOutput['fallback_mode'] = 'mock';
+
+                $mockedAnalysis->update([
+                    'provider' => 'mock',
+                    'analysis_version' => 'mock-v1-fallback',
+                    'raw_output' => $rawOutput,
+                ]);
+
+                return $mockedAnalysis->fresh(['videoClip', 'targetPlayer', 'events.clips', 'metrics', 'targets']);
+            }
+
             return $this->resultService->fail($analysis, $exception->getMessage(), [
                 'engine' => 'external-worker',
                 'stage' => 'submit',

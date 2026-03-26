@@ -15,7 +15,11 @@ class Settings(BaseSettings):
     ai_worker_max_sample_seconds: int = Field(default=180, alias="AI_WORKER_MAX_SAMPLE_SECONDS")
     ai_worker_download_timeout_seconds: int = Field(default=60, alias="AI_WORKER_DOWNLOAD_TIMEOUT_SECONDS")
 
-    model_config = SettingsConfigDict(extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
 
 
 settings = Settings()

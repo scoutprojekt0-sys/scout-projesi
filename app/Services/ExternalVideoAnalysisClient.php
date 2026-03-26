@@ -10,10 +10,7 @@ class ExternalVideoAnalysisClient
 {
     public function submit(VideoAnalysis $analysis): array
     {
-        $baseUrl = rtrim((string) config('scout.ai_analysis.worker_base_url'), '/');
-        if ($baseUrl === '') {
-            throw new RuntimeException('AI worker base URL tanimli degil.');
-        }
+        $baseUrl = $this->resolveBaseUrl();
 
         $response = Http::timeout((int) config('scout.ai_analysis.worker_timeout_seconds', 20))
             ->acceptJson()
@@ -34,5 +31,21 @@ class ExternalVideoAnalysisClient
         }
 
         return $response->json() ?: [];
+    }
+
+    private function resolveBaseUrl(): string
+    {
+        $configuredBaseUrl = trim((string) config('scout.ai_analysis.worker_base_url', ''));
+        $normalizedBaseUrl = rtrim($configuredBaseUrl, '/');
+
+        if ($normalizedBaseUrl !== '' && ! str_contains($normalizedBaseUrl, 'ai-worker-production-url')) {
+            return $normalizedBaseUrl;
+        }
+
+        if (! app()->environment('production')) {
+            return 'http://127.0.0.1:8010';
+        }
+
+        throw new RuntimeException('AI worker base URL tanimli degil.');
     }
 }
