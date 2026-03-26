@@ -761,6 +761,7 @@
     const composeRecipientId = document.getElementById('composeRecipientId');
     const composeSubject = document.getElementById('composeSubject');
     const composeBody = document.getElementById('composeBody');
+    const composePrefillParams = new URLSearchParams(window.location.search);
 
     async function resolveRecipientByName(name) {
       const query = String(name || '').trim();
@@ -792,6 +793,17 @@
 
     function closeComposeModal() {
       composeModal?.classList.remove('show');
+    }
+
+    function bootstrapComposeFromQuery() {
+      if (composePrefillParams.get('compose') !== '1') return;
+      openComposeModal({
+        to_name: String(composePrefillParams.get('to_name') || '').trim(),
+        to_user_id: String(composePrefillParams.get('to_user_id') || '').trim(),
+        subject: String(composePrefillParams.get('subject') || '').trim(),
+        message: String(composePrefillParams.get('message') || '').trim(),
+        notice: String(composePrefillParams.get('notice') || 'Alici ve metin otomatik dolduruldu.').trim(),
+      });
     }
 
     async function sendComposeMessage(event) {
@@ -1070,6 +1082,7 @@
     document.getElementById('composeCloseBtn')?.addEventListener('click', closeComposeModal);
     document.getElementById('composeCancelBtn')?.addEventListener('click', closeComposeModal);
     composeForm?.addEventListener('submit', sendComposeMessage);
+    bootstrapComposeFromQuery();
 
     async function init() {
       try {
