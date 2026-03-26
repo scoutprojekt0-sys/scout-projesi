@@ -785,6 +785,25 @@
             border-bottom: 1px solid rgba(148, 163, 184, 0.12);
         }
 
+        .listing-filters.hidden {
+            display: none;
+        }
+
+        .listing-subfilters {
+            display: none;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 0 18px 18px;
+        }
+
+        .listing-subfilters.active {
+            display: flex;
+        }
+
+        .listing-subfilters.hidden {
+            display: none;
+        }
+
         .listing-filter {
             appearance: none;
             border: 1px solid rgba(148, 163, 184, 0.2);
@@ -1487,9 +1506,14 @@
                 <button class="metric-modal-close" type="button" onclick="closeListingsModal()">×</button>
             </div>
             <div class="listing-filters">
-                <button type="button" class="listing-filter active" data-listing-filter="club" onclick="setListingsFilter('club')">Kulup</button>
+                <button type="button" class="listing-filter" data-listing-filter="club" onclick="setListingsFilter('club')">Kulup</button>
                 <button type="button" class="listing-filter" data-listing-filter="manager" onclick="setListingsFilter('manager')">Menajer</button>
                 <button type="button" class="listing-filter" data-listing-filter="coach" onclick="setListingsFilter('coach')">Antrenor</button>
+            </div>
+            <div class="listing-subfilters" id="listingSubfilters">
+                <button type="button" class="listing-filter" data-listing-type-filter="need" onclick="setListingsTypeFilter('need')">Ihtiyac</button>
+                <button type="button" class="listing-filter" data-listing-type-filter="event" onclick="setListingsTypeFilter('event')">Deneme / Idman</button>
+                <button type="button" class="listing-filter" data-listing-type-filter="message" onclick="setListingsTypeFilter('message')">Mesaj</button>
             </div>
             <div class="listings-body" id="listingsModalBody"></div>
         </div>
@@ -1612,7 +1636,8 @@
             selectedSchedule: null,
             boostPackages: [],
         };
-        let listingsFilterState = 'club';
+        let listingsFilterState = '';
+        let listingsTypeFilterState = '';
 
         function normalizeText(value) {
             return (value || '').toString().trim().toLowerCase();
@@ -2368,6 +2393,8 @@
                 grouped.club.push({
                     title: row?.title || row?.position || 'Kulup ilani',
                     meta: [row?.team_name || row?.club_name || row?.club || 'Kulup', row?.city || null, row?.created_at || null].filter(Boolean).join(' • '),
+                    kind_key: 'need',
+                    kind_label: 'Ihtiyac',
                     action_label: 'Basvur',
                     action_call: Number(row?.id || 0) ? `applyHeroOpportunity(${Number(row.id)})` : '',
                 });
@@ -2377,6 +2404,8 @@
                 grouped.manager.push({
                     title: row?.title || row?.position || 'Menajer ilani',
                     meta: [row?.club_name || row?.club || 'Kulup', row?.city || null, row?.created_at || null].filter(Boolean).join(' • '),
+                    kind_key: 'need',
+                    kind_label: 'Ihtiyac',
                     action_label: 'Basvur',
                     action_call: Number(row?.id || 0) ? `applyHeroOpportunity(${Number(row.id)})` : '',
                 });
@@ -2388,6 +2417,8 @@
                 grouped[targetGroup].push({
                     title: row?.title || row?.event_name || 'Deneme veya etkinlik',
                     meta: [row?.city || row?.location || 'Konum yok', row?.start_at || row?.event_date || null, row?.organizer_name || row?.club_name || null].filter(Boolean).join(' • '),
+                    kind_key: 'event',
+                    kind_label: 'Deneme / Idman',
                     action_label: 'Kayit Ol',
                     action_call: Number(row?.id || 0) ? `openHeroEventRegistration(${Number(row.id)})` : '',
                 });
@@ -2401,6 +2432,8 @@
                 grouped[targetGroup].push({
                     title: row?.subject || 'Ilan mesaji',
                     meta: [row?.from_name || row?.sender_name || 'Gonderen', row?.created_at || row?.time || null, row?.message || null].filter(Boolean).join(' • '),
+                    kind_key: 'message',
+                    kind_label: 'Mesaj',
                     action_label: '',
                     action_call: '',
                 });
@@ -2425,29 +2458,75 @@
             })[filterKey] || 'club-needs-board.html';
         }
 
-        function renderListingsModal(filterKey = listingsFilterState) {
+        function getListingTypeLabel(typeKey) {
+            return ({
+                need: 'Ihtiyac',
+                event: 'Deneme / Idman',
+                message: 'Mesaj',
+            })[typeKey] || 'Ilan';
+        }
+
+        function syncListingsPanels() {
+            const subfiltersEl = document.getElementById('listingSubfilters');
+            const filtersEl = document.querySelector('.listing-filters');
+            const showSourceFilters = !listingsTypeFilterState;
+            const showTypeFilters = Boolean(listingsFilterState) && !listingsTypeFilterState;
+
+            if (filtersEl) {
+                filtersEl.style.display = showSourceFilters ? 'flex' : 'none';
+            }
+            if (subfiltersEl) {
+                subfiltersEl.style.display = showTypeFilters ? 'flex' : 'none';
+            }
+        }
+
+        function renderListingsModal(filterKey = listingsFilterState, typeKey = listingsTypeFilterState) {
             const grouped = getPlayerListingRows();
             const summaryEl = document.getElementById('listingsModalSummary');
             const listEl = document.getElementById('listingsModalBody');
             const modal = document.getElementById('listingsModal');
             if (!summaryEl || !listEl || !modal) return;
 
-            listingsFilterState = ['club', 'manager', 'coach'].includes(filterKey) ? filterKey : 'club';
+            listingsFilterState = ['club', 'manager', 'coach'].includes(filterKey) ? filterKey : '';
+            listingsTypeFilterState = ['need', 'event', 'message'].includes(typeKey) ? typeKey : '';
             document.querySelectorAll('[data-listing-filter]').forEach((button) => {
                 button.classList.toggle('active', button.getAttribute('data-listing-filter') === listingsFilterState);
             });
+            document.querySelectorAll('[data-listing-type-filter]').forEach((button) => {
+                button.classList.toggle('active', button.getAttribute('data-listing-type-filter') === listingsTypeFilterState);
+            });
+            syncListingsPanels();
 
-            const rows = (grouped[listingsFilterState] || []).slice(0, 3);
+            if (!listingsFilterState) {
+                summaryEl.textContent = 'Once kaynak sec. Ardindan alt satirdan ilan turunu belirle.';
+                listEl.innerHTML = '<div class="metric-item-meta">Kulup, menajer veya antrenor secerek devam et.</div>';
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                return;
+            }
+
+            if (!listingsTypeFilterState) {
+                summaryEl.textContent = `${getListingFilterLabel(listingsFilterState)} icin bir tur sec.`;
+                listEl.innerHTML = `<div class="metric-item-meta">${getListingFilterLabel(listingsFilterState)} kayitlari acildi. Simdi Ihtiyac, Deneme / Idman veya Mesaj sec.</div>`;
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                return;
+            }
+
+            const rows = (grouped[listingsFilterState] || [])
+                .filter((item) => (item?.kind_key || 'need') === listingsTypeFilterState)
+                .slice(0, 3);
             const pageHref = getListingFilterPage(listingsFilterState);
 
             summaryEl.textContent = rows.length
-                ? `${getListingFilterLabel(listingsFilterState)} icin ${rows.length} aktif ilan veya firsat kaydi.`
-                : `${getListingFilterLabel(listingsFilterState)} icin aktif ilan bulunmuyor.`;
+                ? `${getListingFilterLabel(listingsFilterState)} icin ${getListingTypeLabel(listingsTypeFilterState)} turunde ${rows.length} aktif kayit.`
+                : `${getListingFilterLabel(listingsFilterState)} icin ${getListingTypeLabel(listingsTypeFilterState)} turunde aktif ilan bulunmuyor.`;
 
             listEl.innerHTML = rows.length
                 ? `<div class="listing-list">${rows.map((item) => `
                     <article class="metric-item">
                         <div class="metric-item-title">${escapeHtml(item.title)}</div>
+                        <div class="metric-item-meta">${escapeHtml(item.kind_label || 'Ilan')}</div>
                         <div class="metric-item-meta">${escapeHtml(item.meta || 'Detay bekleniyor')}</div>
                         ${item.action_call ? `
                         <div class="row-actions" style="justify-content:flex-start; margin-top:10px;">
@@ -2465,14 +2544,36 @@
         }
 
         function setListingsFilter(filterKey) {
-            renderListingsModal(filterKey);
+            listingsFilterState = ['club', 'manager', 'coach'].includes(filterKey) ? filterKey : '';
+            listingsTypeFilterState = '';
+            renderListingsModal(listingsFilterState, '');
+        }
+
+        function setListingsTypeFilter(typeKey) {
+            listingsTypeFilterState = ['need', 'event', 'message'].includes(typeKey) ? typeKey : '';
+            renderListingsModal(listingsFilterState);
+        }
+
+        function resetListingsFilter() {
+            listingsFilterState = '';
+            listingsTypeFilterState = '';
+            renderListingsModal('', '');
         }
 
         function openListingsModal() {
-            renderListingsModal('club');
+            listingsFilterState = '';
+            listingsTypeFilterState = '';
+            renderListingsModal('', '');
         }
 
         function closeListingsModal() {
+            if (listingsTypeFilterState) {
+                listingsFilterState = '';
+                listingsTypeFilterState = '';
+                renderListingsModal('', '');
+                return;
+            }
+
             const modal = document.getElementById('listingsModal');
             if (!modal) return;
             modal.classList.remove('active');
