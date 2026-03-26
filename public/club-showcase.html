@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kulup Vitrini - NextScout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #08131d;
+      --panel: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      --panel-soft: rgba(255, 255, 255, 0.05);
+      --line: #2b4660;
+      --text: #f5fbff;
+      --muted: #9bb5cb;
+      --accent: #ff7e22;
+      --accent-strong: #ff5a1f;
+      --shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+        radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-attachment: fixed;
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 22px 0 44px;
+    }
+
+    .header,
+    .summary,
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before,
+    .summary::before,
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 24px;
+      margin-bottom: 14px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .title {
+      margin: 10px 0 0;
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .sub {
+      margin: 8px 0 0;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .btn {
+      min-height: 44px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 126, 34, 0.45);
+      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+      color: #16325c;
+      padding: 0 14px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, var(--accent-strong) 0%, var(--accent) 100%);
+      color: #fff;
+      border-color: rgba(255, 126, 34, 0.6);
+      box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28);
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .metric {
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: var(--panel-soft);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .panel {
+      padding: 20px;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .panel-head p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 126, 34, 0.12);
+      color: #ffd5b5;
+      border: 1px solid rgba(255, 126, 34, 0.26);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .players-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+    }
+
+    .player-card {
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      box-shadow: 0 18px 28px rgba(8, 19, 29, 0.16);
+    }
+
+    .player-card-image {
+      width: 100%;
+      height: 150px;
+      background: linear-gradient(135deg, #ff7e22 0%, #f97316 48%, #1d4ed8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 58px;
+      color: #fff;
+    }
+
+    .player-card-content {
+      padding: 16px;
+      color: #111827;
+    }
+
+    .player-name {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .player-position {
+      color: #6b7280;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .player-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .player-info-item {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+    }
+
+    .player-info-label {
+      display: block;
+      color: #6b7280;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+
+    .player-info-value {
+      color: #111827;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .player-rating {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .rating-stars {
+      color: #f59e0b;
+      letter-spacing: 1px;
+    }
+
+    .rating-value {
+      font-weight: 800;
+      color: #1f2937;
+    }
+
+    .card-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .action-btn {
+      min-height: 40px;
+      border-radius: 12px;
+      border: 1px solid #dbe3f1;
+      background: #fff;
+      color: #1f2937;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .action-btn.primary {
+      border-color: #1d4ed8;
+      background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+      color: #fff;
+    }
+
+    .empty {
+      padding: 20px;
+      border-radius: 16px;
+      border: 1px dashed rgba(148, 163, 184, 0.3);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .header {
+        flex-direction: column;
+      }
+      .summary {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="header">
+      <div>
+        <div class="eyebrow"><i class="fas fa-bullhorn"></i><span>Kulup Vitrini</span></div>
+        <h1 class="title" id="showcaseTitle">Vitrine cikarilan grup yukleniyor</h1>
+        <p class="sub" id="showcaseSummary">Takim gruplari ekranindan vitrine cikarilan grup burada mevcut oyuncu profil kartlari ile listelenir.</p>
+      </div>
+      <div class="header-actions">
+        <a class="btn" href="team-dashboard.html"><i class="fas fa-arrow-left"></i><span>Dashboard</span></a>
+        <a class="btn primary" href="team-dashboard.html"><i class="fas fa-people-group"></i><span>Takim Gruplari</span></a>
+      </div>
+    </section>
+
+    <section class="summary">
+      <div class="metric"><strong id="metricPlayers">0</strong><span>Vitrindeki Oyuncu</span></div>
+      <div class="metric"><strong id="metricGroup">-</strong><span>Aktif Grup</span></div>
+      <div class="metric"><strong id="metricAverage">0.0</strong><span>Ortalama Rating</span></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Oyuncu Kartlari</h2>
+          <p>Takim dashboard’ta kullandigimiz profil kartlariyla ayni mantikta listelenir.</p>
+        </div>
+        <div class="badge" id="showcaseBadge"><i class="fas fa-signal"></i><span>Yukleniyor</span></div>
+      </div>
+      <div class="players-grid" id="showcaseGrid">
+        <div class="empty">Vitrin verisi yukleniyor...</div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function getApiBaseUrl() {
+      const configured = (window.NEXTSCOUT_API_BASE || '').toString().trim();
+      if (configured) return configured.replace(/\/$/, '');
+      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      return '/api';
+    }
+
+    function getAuthHeaders(includeJson = true) {
+      const token = (localStorage.getItem('nextscout_token') || '').trim();
+      if (!token) return null;
+      const headers = { Accept: 'application/json', Authorization: `Bearer ${token}` };
+      if (includeJson) headers['Content-Type'] = 'application/json';
+      return headers;
+    }
+
+    function escapeHtml(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function formatRating(value) {
+      const number = Number(value || 0);
+      return Number.isFinite(number) ? number.toFixed(1) : '0.0';
+    }
+
+    function buildPlayerCard(player) {
+      const rating = Number(player?.rating) || 0;
+      const starCount = Math.max(1, Math.min(5, Math.round(rating / 2)));
+      const stars = '★'.repeat(starCount) + '☆'.repeat(5 - starCount);
+
+      return `
+        <div class="player-card">
+          <div class="player-card-image">⚽</div>
+          <div class="player-card-content">
+            <div class="player-name">${escapeHtml(player?.name || '-')}</div>
+            <div class="player-position">${escapeHtml(player?.position || '-')}</div>
+            <div class="player-info">
+              <div class="player-info-item"><span class="player-info-label">Yas</span><span class="player-info-value">${escapeHtml(player?.age || '-')}</span></div>
+              <div class="player-info-item"><span class="player-info-label">Boy</span><span class="player-info-value">${escapeHtml(player?.height || '-')}</span></div>
+            </div>
+            <div class="player-rating"><span class="rating-stars">${stars}</span><span class="rating-value">${rating ? rating.toFixed(1) : '-'}</span></div>
+            <div class="card-actions">
+              <button class="action-btn" type="button" onclick="window.location.href='team-dashboard.html'">Dashboard'a Don</button>
+              <button class="action-btn primary" type="button" onclick="window.location.href='team-dashboard.html'">Gruplari Yonet</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function fetchJson(path) {
+      const headers = getAuthHeaders(false);
+      if (!headers) throw new Error('Aktif oturum bulunamadi.');
+      const response = await fetch(`${getApiBaseUrl()}${path}`, { headers });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || payload?.ok === false) {
+        throw new Error(payload?.message || 'Veri alinamadi.');
+      }
+      return payload;
+    }
+
+    async function loadShowcase() {
+      const title = document.getElementById('showcaseTitle');
+      const summary = document.getElementById('showcaseSummary');
+      const badge = document.getElementById('showcaseBadge');
+      const grid = document.getElementById('showcaseGrid');
+
+      try {
+        const [groupsPayload, playersPayload] = await Promise.all([
+          fetchJson('/club/groups'),
+          fetchJson('/club/internal-players'),
+        ]);
+
+        const groups = Array.isArray(groupsPayload?.data) ? groupsPayload.data : [];
+        const players = Array.isArray(playersPayload?.data?.data) ? playersPayload.data.data : [];
+        const group = groups.find((item) => item?.is_showcased) || null;
+
+        if (!group) {
+          title.textContent = 'Vitrine cikarilan grup yok';
+          summary.textContent = 'Takim dashboard icinden bir grubu vitrine cikarirsan burada gorunur.';
+          badge.innerHTML = '<i class="fas fa-bullhorn"></i><span>Vitrin Kapali</span>';
+          document.getElementById('metricPlayers').textContent = '0';
+          document.getElementById('metricGroup').textContent = '-';
+          document.getElementById('metricAverage').textContent = '0.0';
+          grid.innerHTML = '<div class="empty">Henuz vitrinde grup yok.</div>';
+          return;
+        }
+
+        const rows = players.filter((row) => row.group === group.group_key && row.profile_type === 'internal_profile');
+        const average = rows.length
+          ? rows.reduce((sum, row) => sum + (Number(row.rating) || 0), 0) / rows.length
+          : 0;
+
+        title.textContent = `${group.name || group.group_key} vitrinde`;
+        summary.textContent = group.note || 'Bu grup su anda kulubun one cikan vitrin grubu olarak sergileniyor.';
+        badge.innerHTML = `<i class="fas fa-bullhorn"></i><span>${escapeHtml(String(rows.length))} Oyuncu</span>`;
+        document.getElementById('metricPlayers').textContent = String(rows.length);
+        document.getElementById('metricGroup').textContent = group.name || group.group_key;
+        document.getElementById('metricAverage').textContent = formatRating(average);
+
+        if (!rows.length) {
+          grid.innerHTML = '<div class="empty">Bu vitrinde henuz oyuncu yok.</div>';
+          return;
+        }
+
+        grid.innerHTML = rows.map((row) => buildPlayerCard(row)).join('');
+      } catch (error) {
+        title.textContent = 'Kulup vitrini yuklenemedi';
+        summary.textContent = error.message || 'Veri alinirken hata olustu.';
+        badge.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span>Hata</span>';
+        grid.innerHTML = `<div class="empty">${escapeHtml(error.message || 'Veri alinamadi.')}</div>`;
+      }
+    }
+
+    loadShowcase();
+  </script>
+</body>
+</html>
