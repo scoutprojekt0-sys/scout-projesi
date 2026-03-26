@@ -150,6 +150,7 @@
     .action-btn { padding: 8px 10px; border: 1px solid #475569; background: #1f2937; color: #bfdbfe; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; transition: all .2s; }
     .action-btn:hover { background: #334155; color: white; border-color: #60a5fa; }
     .action-btn.primary { background: linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%); color: white; border-color: transparent; }
+    .action-btn.profile-link { display:inline-flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap; }
 .quick-report-section { background: #232a33; border:1px solid #334155; border-radius: 0 !important; padding: 20px; box-shadow: 0 12px 24px rgba(2,6,23,.2); }
     .quick-report-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
 .quick-report-result { border: 1px solid #475569; border-radius: 0 !important; background: #1f2937; padding: 10px 12px; font-size: 12px; color: #dbeafe; }
@@ -1989,15 +1990,14 @@ let selectedCoachPlayer = null;
               </div>
               <div class="player-rating"><span class="rating-stars">${stars}</span><span class="rating-value">${rating ? rating.toFixed(1) : '-'}</span></div>
               <div class="card-actions">
-                <button class="action-btn" onclick="openCoachPlayerOps(${Number(player.id) || 0})">Detay</button>
-                <button class="action-btn primary" onclick="openPlayerProfile(${Number(player.id) || 0})">Profil</button>
-                <button class="action-btn" onclick="addToWatchlist(${Number(player.id) || 0})">Takip Et</button>
+                <button class="action-btn" onclick="openCoachPlayerOps(${Number(player.id) || 0})">Operasyon</button>
+                <button class="action-btn primary profile-link" onclick="openPlayerProfile(${Number(player.id) || 0})"><i class="fas fa-id-card"></i><span>Profili Gor</span></button>
+                <button class="action-btn" onclick="addToWatchlist(${Number(player.id) || 0})">Takibe Al</button>
               </div>
               <div class="card-actions" style="margin-top:8px;">
                 <button class="action-btn" onclick="openCoachInteraction(${Number(player.id) || 0}, 'message')">Mesaj</button>
-                <button class="action-btn" onclick="addToWatchlist(${Number(player.id) || 0})">Izleme</button>
-                <button class="action-btn" onclick="sendCoachInterest(${Number(player.id) || 0})">Ilgi</button>
-                <button class="action-btn" onclick="openCoachInteraction(${Number(player.id) || 0}, 'invite')">Davet</button>
+                <button class="action-btn" onclick="sendCoachInterest(${Number(player.id) || 0})">Ilgi Gonder</button>
+                <button class="action-btn" onclick="openCoachInteraction(${Number(player.id) || 0}, 'invite')">Davet Et</button>
               </div>
             </div>
           </div>`;
