@@ -25,8 +25,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root{
-      --bg:#07111f; --card:linear-gradient(180deg, rgba(12, 21, 38, 0.94), rgba(9, 16, 29, 0.9)); --line:rgba(148, 163, 184, 0.2); --line-soft:rgba(148, 163, 184, 0.18);
-      --text:#f8fafc; --muted:#b8c4d9; --primary:#f97316; --accent:#38bdf8; --shadow:0 24px 60px rgba(2, 8, 23, 0.42);
+      --bg:#08131d; --card:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%); --line:#2b4660; --line-soft:rgba(148, 163, 184, 0.18);
+      --text:#f5fbff; --muted:#9bb5cb; --primary:#ff7e22; --accent:#60a5fa; --shadow:0 18px 36px rgba(8,19,29,.34);
     }
     *{box-sizing:border-box}
     html{
@@ -57,23 +57,23 @@
     .wrap{max-width:980px;margin:0 auto;padding:24px 16px 40px}
     .head{
       position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:14px;
-      border:1px solid var(--line);border-radius:26px;background:linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(10, 18, 32, 0.92));padding:28px 30px;
-      box-shadow:var(--shadow);backdrop-filter:blur(18px);
+      border:1px solid var(--line);border-radius:22px;background:var(--card);padding:24px;
+      box-shadow:var(--shadow);
     }
     .head::before{
-      content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--primary),var(--accent));
+      content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,#ff5a1f 0%,#ff7e22 55%,#60a5fa 100%);
     }
-    .title{margin:0;font-size:32px;font-weight:800;color:#f8fafc;font-family:Poppins,Inter,sans-serif;letter-spacing:-0.02em}
+    .title{margin:0;font-size:30px;font-weight:800;color:#f8fafc;font-family:Poppins,Inter,sans-serif;letter-spacing:-0.02em}
     .sub{margin-top:8px;color:var(--muted);font-size:14px;line-height:1.7}
     .head-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
     .btn{
-      border:1px solid rgba(148, 163, 184, 0.22);background:rgba(148, 163, 184, 0.12);color:#e2e8f0;padding:11px 16px;border-radius:12px;
+      border:1px solid rgba(255,126,34,.45);background:linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);color:#16325c;padding:11px 16px;border-radius:12px;
       text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;line-height:1;
-      box-shadow:0 16px 36px rgba(2, 8, 23, 0.25);transition:transform .18s ease,border-color .18s ease,background .18s ease,color .18s ease;
+      box-shadow:0 12px 24px rgba(8,19,29,.24);transition:transform .18s ease,border-color .18s ease,background .18s ease,color .18s ease;
     }
-    .btn:hover{transform:translateY(-1px);border-color:rgba(56, 189, 248, 0.4);background:rgba(148, 163, 184, 0.2);color:#fff}
+    .btn:hover{transform:translateY(-1px);border-color:rgba(255,126,34,.55);background:linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(219,234,254,0.96) 100%);color:#16325c}
     .home-btn{
-      background:linear-gradient(135deg,#f97316 0%,#fb923c 100%);border:1px solid rgba(255, 126, 34, 0.6);color:#fff;
+      background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);border:1px solid rgba(255, 126, 34, 0.6);color:#fff;
       box-shadow:0 16px 28px rgba(255,90,31,.28);
     }
     .dashboard-btn{
@@ -82,10 +82,10 @@
     }
     .card{
       position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px;margin-bottom:14px;
-      box-shadow:var(--shadow);backdrop-filter:blur(16px);
+      box-shadow:var(--shadow);
     }
     .card::before{
-      content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg, rgba(249, 115, 22, 0.95), rgba(56, 189, 248, 0.95));
+      content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,#ff5a1f 0%,#ff7e22 55%,#60a5fa 100%);
     }
     .card h3{margin:0 0 10px 0;font-size:18px;color:#f8fafc;font-family:Poppins,Inter,sans-serif}
     .row{display:grid;grid-template-columns:180px 1fr;gap:10px;align-items:center;margin:10px 0}
@@ -107,6 +107,13 @@
       .row{grid-template-columns:1fr}
       .actions .btn{width:100%;justify-content:center}
       .head-actions .btn{width:100%}
+    }
+    .head,
+    .card,
+    .btn,
+    input,
+    select {
+      border-radius: 0 !important;
     }
   </style>
     <link rel="stylesheet" href="assets/css/mobile-unified.css">
@@ -356,7 +363,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
 
 
 

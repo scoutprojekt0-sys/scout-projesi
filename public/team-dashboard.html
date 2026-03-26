@@ -2356,6 +2356,17 @@
             return { min: Math.min(parts[0], parts[1]), max: Math.max(parts[0], parts[1]) };
         }
 
+        function formatDate(value) {
+            if (!value) return '-';
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return String(value);
+            return date.toLocaleDateString('tr-TR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+            });
+        }
+
         function formatMoney(amount, currency) {
             const value = Number(amount || 0);
             if (!Number.isFinite(value)) return '-';
