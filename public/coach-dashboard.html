@@ -1876,6 +1876,12 @@
                 <button class="action-btn primary" onclick="openPlayerProfile(${Number(player.id) || 0})">Profil</button>
                 <button class="action-btn" onclick="addToWatchlist(${Number(player.id) || 0})">Takip Et</button>
               </div>
+              <div class="card-actions" style="margin-top:8px;">
+                <button class="action-btn" onclick="openCoachInteraction(${Number(player.id) || 0}, 'message')">Mesaj</button>
+                <button class="action-btn" onclick="addToWatchlist(${Number(player.id) || 0})">Izleme</button>
+                <button class="action-btn" onclick="sendCoachInterest(${Number(player.id) || 0})">Ilgi</button>
+                <button class="action-btn" onclick="openCoachInteraction(${Number(player.id) || 0}, 'invite')">Davet</button>
+              </div>
             </div>
           </div>`;
       }).join('');
@@ -1965,6 +1971,54 @@
     function openPlayerProfile(playerId) {
       if (!playerId) return;
       window.location.href = `player-profile.html?user_id=${encodeURIComponent(playerId)}`;
+    }
+
+    function getCoachInteractionPlayer(playerId) {
+      return allPlayers.find((p) => Number(p.id) === Number(playerId)) || null;
+    }
+
+    function buildCoachInteractionUrl(player, type) {
+      const coachName = String(document.getElementById('coachDashboardUserName')?.textContent || 'Antrenor Ekibi').trim() || 'Antrenor Ekibi';
+      const subjectMap = {
+        message: `${coachName} oyuncu iletisimi`,
+        invite: `${coachName} oyuncu daveti`,
+      };
+      const messageMap = {
+        message: `${player.name || 'Oyuncu'} merhaba,\n\n${coachName} olarak performansinla ilgileniyoruz. Uygun oldugunda iletisime gecmeni istiyoruz.`,
+        invite: `${player.name || 'Oyuncu'} merhaba,\n\n${coachName} olarak seni idman ve gorusme surecine davet etmek istiyoruz. Uygun oldugun zaman bize don.`,
+      };
+      const params = new URLSearchParams({
+        compose: '1',
+        to_name: player.name || '',
+        to_user_id: String(Number(player.id) || ''),
+        subject: subjectMap[type] || subjectMap.message,
+        message: messageMap[type] || messageMap.message,
+        notice: 'Alici ve metin antrenor panelinden otomatik dolduruldu.',
+        return_to: 'coach-dashboard.html',
+      });
+      return `notifications.html?${params.toString()}`;
+    }
+
+    function openCoachInteraction(playerId, type) {
+      const player = getCoachInteractionPlayer(playerId);
+      if (!player) { window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.'); return; }
+      window.location.href = buildCoachInteractionUrl(player, type);
+    }
+
+    function sendCoachInterest(playerId) {
+      const player = getCoachInteractionPlayer(playerId);
+      if (!player) { window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.'); return; }
+      const coachName = String(document.getElementById('coachDashboardUserName')?.textContent || 'Antrenor Ekibi').trim() || 'Antrenor Ekibi';
+      const params = new URLSearchParams({
+        compose: '1',
+        to_name: player.name || '',
+        to_user_id: String(Number(player.id) || ''),
+        subject: `${coachName} senden ilgi duyuyor`,
+        message: `${player.name || 'Oyuncu'} merhaba,\n\n${coachName} olarak seni yakindan takip ediyoruz ve gelisim profilinle ilgileniyoruz.`,
+        notice: 'Ilgi mesaji antrenor panelinden otomatik dolduruldu.',
+        return_to: 'coach-dashboard.html',
+      });
+      window.location.href = `notifications.html?${params.toString()}`;
     }
 
     async function addToWatchlist(playerId) {

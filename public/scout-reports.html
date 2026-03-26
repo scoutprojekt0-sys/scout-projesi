@@ -196,7 +196,7 @@
     .k { font-size: 11px; text-transform: uppercase; color: var(--muted); font-weight: 700; }
     .v { margin-top: 6px; font-size: 26px; font-weight: 800; }
     .stats-sub { margin-top: 8px; color: var(--muted); font-size: 12px; }
-    .board { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(340px, 0.95fr); gap: 14px; align-items: start; }
+    .board { display: grid; grid-template-columns: 1fr; gap: 14px; align-items: start; }
     .table-wrap { padding: 0; }
     .table-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 18px 18px 14px; border-bottom: 1px solid rgba(148, 163, 184, 0.12); }
     .panel-title { margin: 0; font-size: 18px; font-family: Poppins, Inter, sans-serif; }
@@ -227,7 +227,7 @@
     }
     .inline-btn:hover { border-color: rgba(56, 189, 248, 0.4); background: rgba(51, 65, 85, 0.86); color: #fff; }
     .empty { padding: 20px; color: var(--muted); }
-    .detail-card { padding: 20px; position: sticky; top: 18px; }
+    .detail-card { padding: 20px; position: static; }
     .detail-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
     .detail-name { margin: 0; font-size: 24px; font-family: Poppins, Inter, sans-serif; }
     .detail-role { margin-top: 6px; color: var(--muted); font-size: 13px; }
@@ -241,7 +241,7 @@
     }
     .score-badge strong { display: block; font-size: 24px; }
     .score-badge span { color: var(--muted); font-size: 11px; }
-    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .detail-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
     .metric {
       padding: 12px;
       border-radius: 16px;
@@ -264,6 +264,32 @@
       font-weight: 700;
     }
     .detail-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+    .detail-module {
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(15, 23, 42, 0.76);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+    .detail-module h3 {
+      margin: 0;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      color: #dbeafe;
+    }
+    .detail-module p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .detail-module-actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
     .detail-note {
       margin-top: 14px;
       padding: 14px;
@@ -274,13 +300,7 @@
       line-height: 1.7;
       font-size: 13px;
     }
-    .interaction-panel {
-      margin-top: 16px;
-      padding: 16px;
-      border-radius: 18px;
-      background: rgba(15, 23, 42, 0.76);
-      border: 1px solid rgba(148, 163, 184, 0.18);
-    }
+    .interaction-panel { margin-top: 16px; }
     .interaction-head {
       display: flex;
       justify-content: space-between;
@@ -303,7 +323,7 @@
     }
     .interaction-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 10px;
     }
     .interaction-status {
@@ -335,6 +355,9 @@
       .actions { width: 100%; }
       .board { grid-template-columns: 1fr; }
       .detail-card { position: static; }
+      .detail-grid { grid-template-columns: 1fr 1fr; }
+      .detail-module-actions { grid-template-columns: 1fr 1fr; }
+      .interaction-grid { grid-template-columns: 1fr 1fr; }
       table { display: block; overflow-x: auto; }
     }
     @media (max-width: 560px) {
@@ -344,7 +367,7 @@
       .title { font-size: 24px; }
       .btn { width: 100%; text-align: center; }
       .table-head { flex-direction: column; align-items: flex-start; }
-      .detail-grid, .detail-actions { grid-template-columns: 1fr; }
+      .detail-grid, .detail-actions, .detail-module-actions { grid-template-columns: 1fr; }
       .interaction-grid { grid-template-columns: 1fr; }
       .table-wrap { padding: 0; }
       table, thead, tbody, tr, td { display: block; width: 100%; }
@@ -532,23 +555,30 @@
 
           <div class="detail-note" id="detailNote">Scout notu burada görünecek.</div>
 
-          <div class="detail-actions">
-            <button class="btn btn-secondary" id="profileBtn">
-              <i class="fas fa-user"></i>
-              <span>Oyuncu Profili</span>
-            </button>
-            <button class="btn" id="contactBtn">
-              <i class="fas fa-comments"></i>
-              <span>İletişime Geç</span>
-            </button>
-            <button class="btn" id="compareBtn">
-              <i class="fas fa-code-compare"></i>
-              <span>Karşılaştır</span>
-            </button>
-            <button class="btn btn-primary" id="shortlistBtn">
-              <i class="fas fa-star"></i>
-              <span>Kısa Listeye Al</span>
-            </button>
+          <div class="detail-module">
+            <h3>Inceleme Araçları</h3>
+            <p>Profili aç, oyuncuyu karşılaştır ve detaylı gözlem akışını buradan sürdür.</p>
+            <div class="detail-module-actions">
+              <button class="btn btn-secondary" id="profileBtn">
+                <i class="fas fa-user"></i>
+                <span>Oyuncu Profili</span>
+              </button>
+              <button class="btn" id="compareBtn">
+                <i class="fas fa-code-compare"></i>
+                <span>Karşılaştır</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="detail-module">
+            <h3>Degerlendirme Kararı</h3>
+            <p>Scout kararını tek butondan netleştir ve oyuncuyu kısa liste akışına taşı.</p>
+            <div class="detail-module-actions">
+              <button class="btn btn-primary" id="shortlistBtn">
+                <i class="fas fa-star"></i>
+                <span>Kısa Listeye Al</span>
+              </button>
+            </div>
           </div>
 
           <div class="interaction-panel">
@@ -562,6 +592,10 @@
               <button class="btn btn-secondary" id="interactionMessageBtn">
                 <i class="fas fa-comments"></i>
                 <span>Mesaj Gonder</span>
+              </button>
+              <button class="btn" id="contactBtn">
+                <i class="fas fa-comment-dots"></i>
+                <span>Mesaj Merkezine Git</span>
               </button>
               <button class="btn" id="interactionWatchBtn">
                 <i class="fas fa-binoculars"></i>
@@ -798,6 +832,7 @@
       if (shortlistBtnEl) shortlistBtnEl.style.display = 'none';
     }
 
+    const reportsQueryParams = new URLSearchParams(window.location.search);
     let allReports = [];
     let visible = allReports.slice();
     let selectedReportId = visible[0] ? Number(visible[0].id) : null;
@@ -873,6 +908,9 @@
     }
 
     function buildNotificationsComposeUrl(item, type) {
+      const targetPlayerId = Number(item?.player_id) || 0;
+      const returnParams = new URLSearchParams({ mode: 'scout' });
+      if (Number(item?.id)) returnParams.set('report_id', String(Number(item.id)));
       const subjectMap = {
         message: `${item.player_name || 'Oyuncu'} icin scout mesaji`,
         invite: `${item.player_name || 'Oyuncu'} icin scout daveti`,
@@ -884,12 +922,22 @@
       const params = new URLSearchParams({
         compose: '1',
         to_name: item.player_name || '',
-        to_user_id: String(Number(item.player_id) || ''),
+        to_user_id: String(targetPlayerId || ''),
         subject: subjectMap[type] || subjectMap.message,
         message: bodyMap[type] || bodyMap.message,
         notice: 'Alici ve metin scout raporundan otomatik dolduruldu.',
+        return_to: `scout-reports.html?${returnParams.toString()}`,
       });
       return `notifications.html?${params.toString()}`;
+    }
+
+    async function resolveSelectedPlayerId(item) {
+      if (!item) return 0;
+      const numericId = Number(item.player_id) || 0;
+      if (numericId > 0) return numericId;
+      const resolved = await resolvePlayerIdByName(item.player_name || '');
+      if (resolved) item.player_id = resolved;
+      return Number(resolved) || 0;
     }
 
     async function refreshInteractionPanel(item) {
@@ -897,7 +945,8 @@
       const messageBtn = document.getElementById('interactionMessageBtn');
       const interestBtn = document.getElementById('interactionInterestBtn');
       const inviteBtn = document.getElementById('interactionInviteBtn');
-      const disabled = !item || !Number(item.player_id);
+      const playerId = await resolveSelectedPlayerId(item);
+      const disabled = !item || !playerId;
       [watchBtn, messageBtn, interestBtn, inviteBtn].forEach((button) => {
         if (button) button.disabled = disabled;
       });
@@ -907,7 +956,7 @@
         setInteractionStatus('Bir oyuncu sectiginde bu panel aktif olur.');
         return;
       }
-      selectedPlayerWatchState = await checkWatchState(item.player_id);
+      selectedPlayerWatchState = await checkWatchState(playerId);
       if (watchBtn) {
         watchBtn.innerHTML = selectedPlayerWatchState
           ? '<i class="fas fa-eye-slash"></i><span>Izlemeden Cikar</span>'
@@ -1076,7 +1125,16 @@
       const profileBtn = document.getElementById('profileBtn');
       if (profileBtn) profileBtn.onclick = () => openProfile(item.player_id, item.player_name);
       const contactBtn = document.getElementById('contactBtn');
-      if (contactBtn) contactBtn.onclick = () => { window.location.href = 'notifications.html'; };
+      if (contactBtn) {
+        contactBtn.onclick = async () => {
+          const playerId = await resolveSelectedPlayerId(item);
+          if (!playerId) {
+            window.alert('Bu raporda oyuncu hesabi baglanmamis.');
+            return;
+          }
+          window.location.href = buildNotificationsComposeUrl(Object.assign({}, item, { player_id: playerId }), 'message');
+        };
+      }
       const compareBtn = document.getElementById('compareBtn');
       if (compareBtn) compareBtn.onclick = () => { window.location.href = `professional-players.html?compare_player=${encodeURIComponent(item.player_id || '')}`; };
       const shortlistBtn = document.getElementById('shortlistBtn');
@@ -1099,25 +1157,40 @@
       }
       const messageBtn = document.getElementById('interactionMessageBtn');
       if (messageBtn) {
-        messageBtn.onclick = () => {
-          window.location.href = buildNotificationsComposeUrl(item, 'message');
+        messageBtn.onclick = async () => {
+          const playerId = await resolveSelectedPlayerId(item);
+          if (!playerId) {
+            window.alert('Bu raporda oyuncu hesabi baglanmamis.');
+            return;
+          }
+          window.location.href = buildNotificationsComposeUrl(Object.assign({}, item, { player_id: playerId }), 'message');
         };
       }
       const inviteBtn = document.getElementById('interactionInviteBtn');
       if (inviteBtn) {
-        inviteBtn.onclick = () => {
-          window.location.href = buildNotificationsComposeUrl(item, 'invite');
+        inviteBtn.onclick = async () => {
+          const playerId = await resolveSelectedPlayerId(item);
+          if (!playerId) {
+            window.alert('Bu raporda oyuncu hesabi baglanmamis.');
+            return;
+          }
+          window.location.href = buildNotificationsComposeUrl(Object.assign({}, item, { player_id: playerId }), 'invite');
         };
       }
       const watchBtn = document.getElementById('interactionWatchBtn');
       if (watchBtn) {
         watchBtn.onclick = async () => {
           try {
-            const nextState = await toggleWatchState(item.player_id);
+            const playerId = await resolveSelectedPlayerId(item);
+            if (!playerId) {
+              window.alert('Bu raporda oyuncu hesabi baglanmamis.');
+              return;
+            }
+            const nextState = await toggleWatchState(playerId);
             selectedPlayerWatchState = nextState;
             if (nextState) {
               await sendInteractionMessage(
-                item.player_id,
+                playerId,
                 `${getScoutName()} seni izlemeye aldi`,
                 `${item.player_name || 'Oyuncu'} merhaba,\n\n${getScoutName()} seni scout izleme listesine ekledi. Performansini takip etmeye devam edecegiz.`
               );
@@ -1135,6 +1208,11 @@
       if (interestBtn) {
         interestBtn.onclick = async () => {
           try {
+            const playerId = await resolveSelectedPlayerId(item);
+            if (!playerId) {
+              window.alert('Bu raporda oyuncu hesabi baglanmamis.');
+              return;
+            }
             const idx = allReports.findIndex((row) => Number(row.id) === Number(item.id));
             const updated = await updateReportStatus(item.id, 'shortlist');
             if (idx !== -1) {
@@ -1142,7 +1220,7 @@
               saveReportsCache(allReports);
             }
             await sendInteractionMessage(
-              item.player_id,
+              playerId,
               `${getScoutName()} senden ilgi duyuyor`,
               `${item.player_name || 'Oyuncu'} merhaba,\n\n${getScoutName()} seni kisa listeye aldi ve profilinle ilgileniyor. Gelisimini takip etmeye devam edecegiz.`
             );
@@ -1292,7 +1370,12 @@
       try {
         allReports = await fetchReports();
         visible = allReports.slice();
-        selectedReportId = visible[0] ? Number(visible[0].id) : null;
+        const requestedReportId = Number(reportsQueryParams.get('report_id') || 0);
+        if (requestedReportId && allReports.some((item) => Number(item.id) === requestedReportId)) {
+          selectedReportId = requestedReportId;
+        } else {
+          selectedReportId = visible[0] ? Number(visible[0].id) : null;
+        }
         render();
       } catch (error) {
         console.error(error);

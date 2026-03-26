@@ -1,119 +1,656 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scout Dashboard | NextScout</title>
-  <meta name="description" content="Scout paneli: kesif listeleri, canli akis ve teknik degerlendirme sureclerini takip edin.">
+  <title>Antrenör Profili | NextScout</title>
+  <meta name="description" content="Antrenör paneli: keşif listeleri, canlı akış ve teknik değerlendirme süreçlerini takip edin.">
   <meta name="robots" content="noindex,follow">
-  <link rel="canonical" href="https://nextscout.app/coach-dashboard.html">
+  <link rel="canonical" href="https://nextscout.pro/coach-dashboard.html">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="tr_TR">
   <meta property="og:site_name" content="NextScout">
-  <meta property="og:title" content="Scout Dashboard | NextScout">
-  <meta property="og:description" content="Scout paneli: kesif listeleri, canli akis ve teknik degerlendirme sureclerini takip edin.">
-  <meta property="og:url" content="https://nextscout.app/coach-dashboard.html">
-    <meta property="og:image" content="https://nextscout.app/assets/img/og-default.jpg">
+  <meta property="og:title" content="Antrenör Profili | NextScout">
+  <meta property="og:description" content="Antrenör paneli: keşif listeleri, canlı akış ve teknik değerlendirme süreçlerini takip edin.">
+  <meta property="og:url" content="https://nextscout.pro/coach-dashboard.html">
+    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://nextscout.app/assets/img/og-default.jpg">
+    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
   <meta name="theme-color" content="#4f46e5">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/mobile-unified.css">
+  <link rel="stylesheet" href="assets/css/ai-video-lab.css">
+  <script>
+    (function () {
+      var token = localStorage.getItem('nextscout_token');
+      if (!token) {
+        window.location.replace('index.html');
+      }
+    })();
+  </script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f3f4f6; color: #1f2937; }
+    body {
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.16), transparent 34%),
+        radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.14), transparent 36%),
+        #1f252d;
+      color: #e2e8f0;
+    }
 
-    .top-navbar { background: white; border-bottom: 1px solid #e5e7eb; padding: 0 20px; height: 70px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,.05); }
+    .top-navbar { background: rgba(31, 37, 45, 0.92); border-bottom: 1px solid #334155; padding: 0 20px; height: 70px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 8px 24px rgba(2,6,23,.35); backdrop-filter: blur(8px); }
     .navbar-left { display: flex; align-items: center; gap: 30px; flex: 1; }
-    .logo { font-size: 20px; font-weight: bold; background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; min-width: 150px; }
+    .logo { font-size: 20px; font-weight: 800; color: #bfdbfe; min-width: 150px; }
     .navbar-right { display: flex; align-items: center; gap: 15px; }
-    .btn-small { padding: 8px 14px; border: none; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all .2s; }
-    .btn-small.primary { background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); color: white; }
-    .btn-small.secondary { background: #f3f4f6; color: #667eea; border: 1px solid #e5e7eb; }
+    .btn-small { padding: 8px 14px; border: 1px solid transparent; border-radius: 999px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all .2s; display:inline-flex; align-items:center; gap:6px; }
+    .btn-small.primary { background: linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%); color: white; }
+    .btn-small.secondary { background: #2b3440; color: #e2e8f0; border-color: #475569; }
     .btn-small.success { background: linear-gradient(135deg,#0ea5a1 0%,#0f766e 100%); color: white; }
 
-    .need-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); z-index: 1500; align-items: center; justify-content: center; padding: 16px; }
+    .need-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(2, 6, 23, 0.62); z-index: 1500; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
     .need-modal-overlay.show { display: flex; }
-    .need-modal { width: min(700px, 100%); background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 40px rgba(15,23,42,.2); }
-    .live-modal { width: min(760px, 100%); }
-    .need-modal-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid #e5e7eb; }
-    .need-modal-head h3 { font-size: 18px; font-weight: 800; color: #1f2937; margin: 0; }
-    .need-modal-body { padding: 16px; display: grid; gap: 10px; }
-    .need-modal-body input, .need-modal-body textarea { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; font-family: inherit; }
+    .need-modal { width: min(860px, 100%); background: #232a33; border: 1px solid #334155; border-radius: 14px; overflow: hidden; box-shadow: 0 30px 60px rgba(2,6,23,.45); }
+    .live-modal { width: min(860px, 100%); }
+    .player-search-modal { width: min(980px, 100%); max-height: 92vh; display: flex; flex-direction: column; }
+    .player-search-modal .need-modal-body { overflow: auto; }
+    .player-search-results { margin-top: 12px; }
+    .need-modal-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 16px 18px; border-bottom: 1px solid #334155; }
+    .need-modal-head h3 { font-size: 18px; font-weight: 800; color: #dbeafe; margin: 0; }
+    .need-modal-body { padding: 16px 18px; display: grid; gap: 10px; }
+    .need-modal-body input, .need-modal-body textarea { width: 100%; padding: 10px; border: 1px solid #475569; border-radius: 8px; font-size: 14px; font-family: inherit; background:#1f2937; color:#f8fafc; }
     .need-modal-body textarea { min-height: 120px; resize: vertical; }
-    .need-modal-body select { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; font-family: inherit; }
+    .need-modal-body select { width: 100%; padding: 10px; border: 1px solid #475569; border-radius: 8px; font-size: 14px; font-family: inherit; background:#1f2937; color:#f8fafc; }
+    .need-modal-body input:focus, .need-modal-body textarea:focus, .need-modal-body select:focus { outline: none; border-color: #60a5fa; box-shadow: 0 0 0 3px rgba(96,165,250,.16); }
     .live-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .need-modal-actions { display: flex; justify-content: flex-end; gap: 8px; padding: 0 16px 16px; }
+    .need-modal-actions { display: flex; justify-content: flex-end; gap: 10px; padding: 0 18px 18px; }
 
     .main-container { display: grid; grid-template-columns: 240px 1fr; gap: 20px; padding: 20px; min-height: calc(100vh - 70px); }
-    .sidebar { background: white; border-radius: 12px; padding: 20px; height: fit-content; position: sticky; top: 90px; box-shadow: 0 2px 4px rgba(0,0,0,.05); }
+    .sidebar { background: #232a33; border: 1px solid #334155; border-radius: 12px; padding: 20px; height: fit-content; position: sticky; top: 90px; box-shadow: 0 12px 26px rgba(2,6,23,.24); }
     .sidebar-title { font-size: 11px; text-transform: uppercase; color: #9ca3af; font-weight: 600; margin-bottom: 12px; letter-spacing: .5px; }
     .sidebar-menu { list-style: none; }
-    .sidebar-item { padding: 10px 12px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; transition: all .2s; display: flex; align-items: center; gap: 10px; font-size: 14px; color: #6b7280; }
-    .sidebar-item:hover { background: #f3f4f6; color: #1f2937; }
-    .sidebar-item.active { background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); color: white; font-weight: 500; }
+    .sidebar-item { padding: 10px 12px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; transition: all .2s; display: flex; align-items: center; gap: 10px; font-size: 14px; color: #cbd5e1; border:1px solid #334155; background:#2b3440; }
+    .sidebar-item i { width: 18px; text-align: center; color: #93c5fd; font-size: 13px; }
+    .sidebar-item span:last-child { font-weight: 600; letter-spacing: 0.1px; }
+    .sidebar-item:hover { background: #1f2937; color: #f8fafc; }
+    .sidebar-item.active { background: linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%); color: white; font-weight: 500; border-color:#60a5fa; }
+    .sidebar-item.active i { color: #e0e7ff; }
 
     .content { display: grid; grid-template-columns: 1fr; gap: 20px; }
-    .welcome-card { background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); color: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 12px rgba(102,126,234,.15); }
+    .welcome-card { background: linear-gradient(135deg,#1e40af 0%,#0ea5e9 100%); color: white; border-radius: 12px; padding: 30px; box-shadow: 0 12px 28px rgba(2,6,23,.35); }
     .welcome-card h1 { font-size: 28px; margin-bottom: 10px; }
     .welcome-card p { margin: 0; opacity: .95; font-size: 15px; }
 
     .quick-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 15px; }
-    .stat-card { background: white; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,.05); border-top: 3px solid #667eea; }
-    .stat-card-value { font-size: 28px; font-weight: bold; color: #667eea; margin-bottom: 8px; }
+    .market-pulse-overlay { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.72); z-index: 2100; display: none; }
+    .market-pulse-overlay.active { display: block; }
+    .market-pulse-flyout { position: fixed; left: 50%; top: 7vh; transform: translateX(-50%); width: min(980px, calc(100vw - 28px)); max-height: 86vh; overflow: auto; z-index: 2110; display: none; }
+    .market-pulse-flyout.active { display: block; }
+    .flyout-overlay { position: fixed; inset: 0; background: rgba(6, 17, 27, 0.74); z-index: 2100; display: none; }
+    .flyout-overlay.active { display: block; }
+    .tips-flyout { position: fixed; left: 50%; top: 7vh; transform: translateX(-50%); width: min(980px, calc(100vw - 28px)); max-height: 86vh; overflow: auto; z-index: 2110; display: none; }
+    .tips-flyout.active { display: block; }
+    .tips-flyout-card { border: 1px solid #334155; background: #232a33; padding: 16px; position: relative; border-radius: 12px; box-shadow: 0 30px 80px rgba(2, 6, 23, 0.42); }
+    .tips-flyout-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, #2dd4bf 0%, #fbbf24 50%, #38bdf8 100%); }
+    .tips-flyout-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .tips-flyout-tools { display: flex; align-items: center; gap: 10px; }
+    .tips-flyout-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid rgba(96, 165, 250, 0.22); background: rgba(56, 189, 248, 0.08); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #bae6fd; border-radius: 10px; }
+    .tips-flyout-close { width: 40px; height: 40px; border: 1px solid #334155; background: #1f2937; color: #dbeafe; cursor: pointer; border-radius: 10px; }
+    .market-pulse { background: #232a33; border: 1px solid #334155; padding: 16px; position: relative; border-radius: 12px; box-shadow: 0 30px 80px rgba(2, 6, 23, 0.42); }
+    .market-pulse::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, #2dd4bf 0%, #fbbf24 50%, #38bdf8 100%); }
+    .market-pulse-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .market-pulse-copy { color: #9ca3af; font-size: 13px; line-height: 1.6; margin-top: 6px; }
+    .market-pulse-tools { display: flex; align-items: center; gap: 10px; }
+    .market-pulse-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid rgba(96, 165, 250, 0.22); background: rgba(56, 189, 248, 0.08); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #bae6fd; border-radius: 10px; }
+    .market-pulse-close { width: 40px; height: 40px; border: 1px solid #334155; background: #1f2937; color: #dbeafe; cursor: pointer; border-radius: 10px; }
+    .market-pulse-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 14px; }
+    .market-pulse-list, .market-pulse-side { display: grid; gap: 10px; min-width: 0; }
+    .market-pulse-item { display: grid; grid-template-columns: 56px minmax(0,1fr) auto; gap: 10px; align-items: center; padding: 12px; border: 1px solid #334155; background: #1f2937; border-radius: 10px; }
+    .market-pulse-time, .market-pulse-tag { display: inline-flex; align-items: center; justify-content: center; min-width: 48px; padding: 5px 6px; border: 1px solid #334155; font-size: 11px; color: #9ca3af; font-family: Consolas, monospace; }
+    .market-pulse-tag.up { color: #99f6e4; } .market-pulse-tag.watch { color: #fde68a; } .market-pulse-tag.info { color: #bae6fd; } .market-pulse-tag.hot { color: #fecdd3; }
+    .market-pulse-line { font-size: 13px; line-height: 1.45; color: #f8fafc; }
+    .market-pulse-sub { margin-top: 4px; color: #9ca3af; font-size: 12px; line-height: 1.55; }
+    .market-pulse-metric { min-width: 90px; padding: 10px; border: 1px solid #334155; background: #232a33; text-align: right; border-radius: 10px; }
+    .market-pulse-metric span { display: block; color: #9ca3af; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+    .market-pulse-metric strong { display: block; margin-top: 6px; font-size: 24px; color: #f8fafc; }
+    .market-pulse-metric em { display: block; margin-top: 4px; font: 700 11px/1.2 Consolas, monospace; color: #2dd4bf; font-style: normal; }
+    .market-pulse-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .market-pulse-stat { padding: 12px; border: 1px solid #334155; background: #1f2937; border-radius: 10px; }
+    .market-pulse-stat-label { color: #9ca3af; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+    .market-pulse-stat-value { margin-top: 8px; font-size: 24px; color: #f8fafc; font-weight: 800; }
+    .market-pulse-link, .market-pulse-launch { display: inline-flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border: 1px solid #334155; color: #dbeafe; text-decoration: none; border-radius: 10px; background: rgba(45, 212, 191, 0.12); }
+    .stat-card { background: #232a33; border: 1px solid #334155; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 12px 24px rgba(2,6,23,.2); border-top: 3px solid #1d4ed8; }
+    .stat-card-value { font-size: 28px; font-weight: bold; color: #60a5fa; margin-bottom: 8px; }
     .stat-card-label { font-size: 13px; color: #9ca3af; text-transform: uppercase; }
 
-    .search-section, .results-section { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,.05); }
+    .search-section, .results-section { background: #232a33; border:1px solid #334155; border-radius: 12px; padding: 20px; box-shadow: 0 12px 24px rgba(2,6,23,.2); }
     .search-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 15px; margin-bottom: 15px; }
     .form-group { display: flex; flex-direction: column; gap: 8px; }
-    .form-group label { font-weight: 600; font-size: 13px; color: #1f2937; }
-    .form-group input, .form-group select { padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; }
-    .form-group input:focus, .form-group select:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,.1); }
-    .search-btn { padding: 10px 16px; background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all .2s; }
-    .search-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102,126,234,.3); }
+    .form-group label { font-weight: 600; font-size: 13px; color: #e2e8f0; }
+    .form-group input, .form-group select { padding: 10px; border: 1px solid #475569; border-radius: 8px; font-size: 13px; background:#1f2937; color:#f8fafc; }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: #60a5fa; box-shadow: 0 0 0 3px rgba(96,165,250,.16); }
+    .search-btn { padding: 10px 16px; background: linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all .2s; }
+    .search-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(29,78,216,.35); }
 
     .players-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(250px,1fr)); gap: 20px; margin-top: 20px; }
-    .player-card { background: white; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb; transition: all .3s; }
-    .player-card:hover { transform: translateY(-8px); box-shadow: 0 12px 30px rgba(102,126,234,.2); border-color: #667eea; }
-    .player-card-image { width: 100%; height: 150px; background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); display: flex; align-items: center; justify-content: center; font-size: 60px; }
+    .player-card { background: #2b3440; border-radius: 12px; overflow: hidden; border: 1px solid #475569; transition: all .3s; }
+    .player-card:hover { transform: translateY(-8px); box-shadow: 0 12px 30px rgba(2,6,23,.35); border-color: #60a5fa; }
+    .player-card-image { width: 100%; height: 150px; background: linear-gradient(135deg,#1e40af 0%,#0ea5e9 100%); display: flex; align-items: center; justify-content: center; font-size: 60px; }
     .player-card-content { padding: 16px; }
-    .player-name { font-size: 16px; font-weight: 700; color: #1f2937; margin-bottom: 4px; }
-    .player-position { font-size: 12px; color: #667eea; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
+    .player-name { font-size: 16px; font-weight: 700; color: #f8fafc; margin-bottom: 4px; }
+    .player-position { font-size: 12px; color: #93c5fd; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
     .player-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; font-size: 12px; }
     .player-info-label { color: #9ca3af; font-size: 11px; }
-    .player-info-value { color: #1f2937; font-weight: 700; }
-    .player-rating { display: flex; align-items: center; gap: 8px; padding: 10px; background: #fff9e6; border-radius: 8px; margin-bottom: 12px; }
+    .player-info-value { color: #f8fafc; font-weight: 700; }
+    .player-rating { display: flex; align-items: center; gap: 8px; padding: 10px; background: #1f2937; border:1px solid #475569; border-radius: 8px; margin-bottom: 12px; }
     .rating-stars { color: #fbbf24; font-size: 14px; }
     .rating-value { color: #fbbf24; font-weight: 700; font-size: 13px; }
     .card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .action-btn { padding: 8px 10px; border: 1px solid #e5e7eb; background: #f9fafb; color: #667eea; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; transition: all .2s; }
-    .action-btn:hover { background: #667eea; color: white; border-color: #667eea; }
-    .action-btn.primary { background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); color: white; border-color: transparent; }
-    .quick-report-section { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,.05); }
+    .action-btn { padding: 8px 10px; border: 1px solid #475569; background: #1f2937; color: #bfdbfe; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; transition: all .2s; }
+    .action-btn:hover { background: #334155; color: white; border-color: #60a5fa; }
+    .action-btn.primary { background: linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%); color: white; border-color: transparent; }
+.quick-report-section { background: #232a33; border:1px solid #334155; border-radius: 0 !important; padding: 20px; box-shadow: 0 12px 24px rgba(2,6,23,.2); }
     .quick-report-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
-    .quick-report-result { border: 1px solid #e5e7eb; border-radius: 10px; background: #f9fafb; padding: 10px 12px; font-size: 12px; color: #1f2937; }
+.quick-report-result { border: 1px solid #475569; border-radius: 0 !important; background: #1f2937; padding: 10px 12px; font-size: 12px; color: #dbeafe; }
 
     @media (max-width: 1024px) {
       .search-grid { grid-template-columns: repeat(2,1fr); }
       .players-grid { grid-template-columns: repeat(2,1fr); }
+      .market-pulse-grid { grid-template-columns: 1fr; }
       .quick-report-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 768px) {
-      .main-container { grid-template-columns: 1fr; }
+      .top-navbar { height:auto; min-height:60px; padding:8px 10px; align-items:flex-start; flex-wrap:wrap; gap:8px; }
+      .navbar-left { width:100%; }
+      .navbar-right { width:100%; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; overflow:visible; }
+      .btn-small { width:100%; justify-content:center; white-space:normal; text-align:center; min-height:42px; padding:8px 10px; font-size:12px; line-height:1.2; }
+      .btn-small span { white-space:normal; }
+      .main-container { grid-template-columns: 1fr; padding:10px; gap:10px; }
+      .sidebar { position: static; top:auto; padding:12px; }
+      .sidebar-menu { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+      .sidebar-item { margin-bottom:0; font-size:13px; min-height:42px; }
       .search-grid { grid-template-columns: 1fr; }
       .players-grid { grid-template-columns: 1fr; }
-      .quick-stats { grid-template-columns: repeat(2,1fr); }
+      .quick-stats { grid-template-columns: repeat(2,1fr); gap:10px; }
+      .market-pulse-flyout { top: 10px; width: calc(100vw - 14px); max-height: calc(100vh - 20px); }
+      .quick-report-grid { grid-template-columns: 1fr; }
+      .live-grid { grid-template-columns: 1fr; }
+      .search-section h2,
+      .results-section h2,
+      .quick-report-section h2 { color:#e5e7eb !important; }
+      .need-modal-overlay { padding:10px; align-items:flex-end; }
+      .need-modal { width:100%; max-height:92vh; border-radius:14px 14px 0 0; display:grid; grid-template-rows:auto 1fr auto; }
+      .need-modal-head { border-bottom-color:#374151; }
+      .need-modal-body { overflow-y:auto; max-height:calc(92vh - 128px); }
+      .need-modal-actions { border-top:1px solid #374151; padding-top:10px; }
+    }
+    @media (max-width: 480px) {
+      .navbar-right { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .btn-small { font-size:11px; min-height:40px; }
+    }
+
+    :root {
+      --bg: #08131d;
+      --card: #0f1f2e;
+      --line: #2b4660;
+      --text: #f5fbff;
+      --muted: #9bb5cb;
+      --shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+      --cta: #ff5a1f;
+      --cta-2: #ff7e22;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+        radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    .top-navbar {
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+      box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+      backdrop-filter: blur(18px);
+      padding: 0 24px;
+    }
+
+    .logo {
+      font-family: 'Poppins', sans-serif;
+      font-size: 22px;
+      color: #bfdbfe;
+      letter-spacing: 0.2px;
+    }
+
+    .btn-small {
+      border-radius: 12px;
+      border: 1px solid rgba(255, 126, 34, 0.45);
+      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+      color: #16325c;
+      box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24);
+      font-weight: 800;
+    }
+
+    .btn-small.primary,
+    .btn-small.success,
+    .btn-small.home-btn-global {
+      background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
+      border-color: rgba(255, 126, 34, 0.6);
+      color: #fff;
+      box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28);
+    }
+
+    .btn-small.secondary {
+      background: rgba(59, 130, 246, 0.12);
+      color: #dbeafe;
+      border-color: rgba(96, 165, 250, 0.24);
+      box-shadow: none;
+    }
+
+    .main-container {
+      gap: 18px;
+      padding: 18px;
+      min-height: calc(100vh - 70px);
+    }
+
+    .sidebar,
+    .search-section,
+    .results-section,
+    .quick-report-section,
+    .stat-card,
+    .need-modal,
+    .quick-report-result {
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      color: var(--text);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sidebar,
+    .search-section,
+    .results-section,
+    .quick-report-section,
+    .need-modal {
+      border-radius: 18px;
+    }
+
+    .sidebar::before,
+    .search-section::before,
+    .results-section::before,
+    .quick-report-section::before,
+    .need-modal::before,
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+    }
+
+    .sidebar {
+      top: 88px;
+    }
+
+    .sidebar-title,
+    .stat-card-label,
+    .player-info-label,
+    .quick-report-result {
+      color: var(--muted);
+    }
+
+    .sidebar-item {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      color: #dbeafe;
+      border-radius: 12px;
+    }
+
+    .sidebar-item:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 126, 34, 0.42);
+    }
+
+    .sidebar-item.active {
+      background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
+      border-color: rgba(255, 126, 34, 0.6);
+      color: #fff;
+    }
+
+    .welcome-card {
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .welcome-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+    }
+
+    .welcome-card h1 {
+      font-size: clamp(24px, 3vw, 34px);
+      margin-bottom: 6px;
+    }
+
+    .welcome-card p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .hero { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    .hero-kicker {
+      display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; padding: 8px 12px; border-radius: 999px;
+      background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(96, 165, 250, 0.25); color: #dbeafe; font-size: 11px; font-weight: 800;
+      letter-spacing: 0.12em; text-transform: uppercase;
+    }
+    .hero-title { margin: 0; max-width: 720px; font: 800 clamp(2rem, 3vw, 3rem)/1.02 Inter, sans-serif; letter-spacing: -0.03em; color: var(--ink); }
+    .hero-sub { margin: 14px 0 0; max-width: 740px; color: var(--muted); font-size: 14px; line-height: 1.7; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .hero-actions .btn-small {
+      min-height: 44px;
+      padding: 10px 14px;
+      border-radius: 0;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      justify-content: center;
+    }
+    .hero-actions .btn-small i {
+      width: 16px;
+      text-align: center;
+      font-size: 13px;
+    }
+    .hero-actions .btn-small.primary {
+      background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
+      border-color: rgba(255, 126, 34, 0.6);
+      color: #fff;
+      box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28);
+    }
+    .hero-actions .btn-small.secondary {
+      background: rgba(59, 130, 246, 0.12);
+      color: #dbeafe;
+      border-color: rgba(96, 165, 250, 0.24);
+      box-shadow: none;
+    }
+    .hero-points { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; font-size: 12px; font-weight: 800; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--line); color: #dbeafe; }
+    .hero-side {
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-side::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+    }
+    .panel-title { font-size: 17px; font-weight: 800; margin-bottom: 10px; color: #dbeafe; }
+    .panel-sub { color: var(--muted); font-size: 14px; margin-bottom: 12px; }
+    .status-stack { display: grid; gap: 12px; }
+    .status-row { display: flex; justify-content: space-between; gap: 10px; padding: 14px; border: 1px solid var(--line); background: rgba(255, 255, 255, 0.04); }
+    .status-row span:first-child { color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+
+    .stat-card {
+      border-radius: 16px;
+      padding: 18px;
+      border-top: 0;
+    }
+
+    .stat-card-value {
+      color: var(--text);
+    }
+
+    .form-group label,
+    .search-section h2,
+    .results-section h2,
+    .quick-report-section h2,
+    .need-modal-head h3,
+    .player-name,
+    .player-info-value {
+      color: var(--text) !important;
+    }
+
+    .form-group input,
+    .form-group select,
+    .need-modal-body input,
+    .need-modal-body textarea,
+    .need-modal-body select,
+    textarea,
+    #quickReportNote {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--line);
+      color: var(--text);
+      border-radius: 12px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .need-modal-body input:focus,
+    .need-modal-body textarea:focus,
+    .need-modal-body select:focus,
+    textarea:focus,
+    #quickReportNote:focus {
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.18);
+    }
+
+    .search-btn,
+    .action-btn.primary {
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
+      color: #fff;
+      border: 1px solid rgba(255, 126, 34, 0.45);
+      box-shadow: 0 16px 28px rgba(255, 90, 31, 0.22);
+    }
+
+    .action-btn,
+    .quick-report-result,
+    .player-rating {
+      border-radius: 12px;
+    }
+
+    .action-btn {
+      border: 1px solid rgba(96, 165, 250, 0.24);
+      background: rgba(59, 130, 246, 0.12);
+      color: #dbeafe;
+    }
+
+    .workspace-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .workspace-tab {
+      appearance: none;
+      border: 1px solid rgba(96, 165, 250, 0.24);
+      background: rgba(59, 130, 246, 0.10);
+      color: #dbeafe;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background .2s ease, border-color .2s ease, transform .2s ease, color .2s ease;
+    }
+
+    .workspace-tab:hover {
+      background: rgba(59, 130, 246, 0.18);
+      border-color: rgba(96, 165, 250, 0.38);
+      transform: translateY(-1px);
+    }
+
+    .workspace-tab.active {
+      background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
+      border-color: rgba(255, 126, 34, 0.62);
+      color: #fff;
+      box-shadow: 0 14px 24px rgba(255, 90, 31, 0.22);
+    }
+    .opportunity-launcher-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .opportunity-launcher-card {
+      display: grid;
+      gap: 10px;
+      text-align: left;
+      padding: 16px;
+      border: 1px solid rgba(148,163,184,.18);
+      background: rgba(255,255,255,.04);
+      color: #dbeafe;
+      cursor: pointer;
+      border-radius: 14px;
+    }
+    .opportunity-launcher-card strong { font-size: 15px; color: #f8fafc; }
+    .opportunity-launcher-card span { font-size: 12px; line-height: 1.6; color: #9bb5cb; }
+    .opportunity-launcher-card i { font-size: 16px; color: #7dd3fc; }
+
+    .player-card {
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .player-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+    }
+
+    .player-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 126, 34, 0.42);
+      box-shadow: 0 18px 34px rgba(8, 19, 29, 0.34);
+    }
+
+    .player-card-image {
+      background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 100%);
+    }
+
+    .player-position,
+    .rating-value {
+      color: #9ec5ff;
+    }
+
+    .player-rating {
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(96, 165, 250, 0.24);
+    }
+
+    .need-modal-overlay {
+      background: rgba(2, 6, 23, 0.78);
+      backdrop-filter: blur(10px);
+    }
+
+    #coachMarketPulseModal {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 2200;
+    }
+
+    #coachMarketPulseModal.show {
+      display: flex;
+    }
+
+    #coachMarketPulseCard {
+      width: min(980px, 100%);
+      max-height: 88vh;
+      overflow: auto;
+      position: relative;
+    }
+
+    .need-modal-head {
+      border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+      padding: 16px 18px 12px;
+    }
+
+    @media (max-width: 768px) {
+      .top-navbar {
+        padding: 10px 12px;
+      }
+
+      .main-container {
+        padding: 12px;
+        gap: 12px;
+      }
+
+      .sidebar,
+      .search-section,
+      .results-section,
+      .quick-report-section,
+      .welcome-card,
+      .hero-side {
+        border-radius: 14px;
+      }
+      .hero { grid-template-columns: 1fr; }
+
+      .need-modal {
+        border-radius: 14px 14px 0 0;
+      }
+    }
+    .top-navbar,
+    .btn-small,
+    .need-modal,
+    .player-search-modal,
+    .need-modal-body input,
+    .need-modal-body textarea,
+    .need-modal-body select,
+    .sidebar,
+    .sidebar-item,
+    .welcome-card,
+    .stat-card,
+    .search-section,
+    .results-section,
+    .quick-report-section,
+    .quick-report-result,
+    .form-group input,
+    .form-group select,
+    .search-btn,
+    .player-card,
+    .player-rating,
+    .action-btn,
+    .player-card-image,
+    .card-actions,
+    .need-modal-actions button {
+      border-radius: 0 !important;
     }
   </style>
+    <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
 <body>
     <div class="top-navbar">
-      <div class="navbar-left"><div class="logo">NextScout Scout</div></div>
+    <div class="navbar-left"><div class="logo">NextScout Antrenor Profili</div></div>
       <div class="navbar-right">
-      <button class="btn-small success" onclick="openCoachNeedModal()">Ilan Ver</button>
-      <button class="btn-small success" onclick="openTrialPublishModal()">Deneme/Idman Ilani</button>
-      <button class="btn-small primary" onclick="openLiveScoutModal()">Canli Scout Baslat</button>
-      <button class="btn-small secondary" onclick="openScoutProfile()">Profilim</button>
-      <button class="btn-small primary" onclick="window.location.href='index.html'">Ana Sayfa</button>
-      <button class="btn-small secondary" onclick="logout()">Cikis</button>
+      <button class="btn-small success" onclick="openCoachNeedModal()"><i class="fas fa-plus-circle"></i><span>İlan Ver</span></button>
+      <button class="btn-small success" onclick="openTrialPublishModal()"><i class="fas fa-calendar-check"></i><span>Deneme/Idman Ilani</span></button>
+      <button class="btn-small primary" onclick="openLiveScoutModal()"><i class="fas fa-tower-broadcast"></i><span>Canlı Scout Baslat</span></button>
+      <button class="btn-small secondary" onclick="openScoutProfile()"><i class="fas fa-user-check"></i><span>Public Görünüm</span></button>
+      <button class="btn-small home-btn-global" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255, 126, 34, 0.6);background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 16px 28px rgba(255,90,31,0.28);" onclick="window.location.href='index.html'"><i class="fas fa-house"></i><span>Ana Sayfa</span></button>
+      <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Çıkış</span></button>
       </div>
     </div>
 
@@ -122,61 +659,225 @@
       <div class="sidebar-section">
         <div class="sidebar-title">MENU</div>
         <ul class="sidebar-menu">
-          <li class="sidebar-item active" onclick="location.reload()"><span style="font-size:18px;min-width:20px;">🔍</span><span>Oyuncu Ara</span></li>
-          <li class="sidebar-item" onclick="openScoutProfile()"><span style="font-size:18px;min-width:20px;">👤</span><span>Profilim</span></li>
-          <li class="sidebar-item" onclick="openWatchlist()"><span style="font-size:18px;min-width:20px;">📋</span><span>Takip Listem</span></li>
-          <li class="sidebar-item" onclick="openTrialCenter()"><span style="font-size:18px;min-width:20px;">📅</span><span>Deneme & Idmanlar</span></li>
-          <li class="sidebar-item" onclick="openPerformance()"><span style="font-size:18px;min-width:20px;">📊</span><span>Performans Analizi</span></li>
-          <li class="sidebar-item" onclick="openVideoAnalysis()"><span style="font-size:18px;min-width:20px;">🎥</span><span>Video Analiz</span></li>
-          <li class="sidebar-item" onclick="openLiveScoutModal()"><span style="font-size:18px;min-width:20px;">📡</span><span>Canli Scout</span></li>
-          <li class="sidebar-item" onclick="openMessages()"><span style="font-size:18px;min-width:20px;">💬</span><span>Mesajlarim</span></li>
-          <li class="sidebar-item" onclick="openSettings()"><span style="font-size:18px;min-width:20px;">⚙️</span><span>Ayarlar</span></li>
-          <li class="sidebar-item" onclick="openHelp()"><span style="font-size:18px;min-width:20px;">❓</span><span>Yardim</span></li>
+          <li class="sidebar-item active" onclick="openPlayerSearchModal()"><i class="fas fa-magnifying-glass"></i><span>Oyuncu Ara</span></li>
+          <li class="sidebar-item" onclick="window.location.href='ai-discovery.html'"><i class="fas fa-flask"></i><span>AI Discovery</span></li>
+          <li class="sidebar-item" onclick="window.location.href='review-center.html'"><i class="fas fa-comments"></i><span>Yorumlar</span></li>
+          <li class="sidebar-item" onclick="openScoutProfile()"><i class="fas fa-user"></i><span>Antrenor Profili</span></li>
+          <li class="sidebar-item" onclick="openCoachWorkspace('reviews')"><i class="fas fa-comments"></i><span>Profil Yorumları</span></li>
+          <li class="sidebar-item" onclick="openCoachSuccessStoriesHub()"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></li>
+                    <li class="sidebar-item" onclick="openLiveMatches()"><i class="fas fa-tower-broadcast"></i><span>Canli Mac Bildirimleri</span></li>
+                    <li class="sidebar-item" onclick="window.location.href='favorites.html'"><i class="fas fa-star"></i><span>Favorilerim</span></li>
+                    <li class="sidebar-item" onclick="window.location.href='live-watch-demand.html'"><i class="fas fa-location-crosshairs"></i><span>Canlı İzleme Talebi</span></li>
+        <li class="sidebar-item" onclick="openPerformance()"><i class="fas fa-chart-line"></i><span>Istatistikler</span></li>
+        <li class="sidebar-item" onclick="openScoutReports()"><i class="fas fa-file-lines"></i><span>Scout Raporları</span></li>
+          <li class="sidebar-item" onclick="openMessages()"><i class="fas fa-comments"></i><span>Mesajlarim</span></li>
+          <li class="sidebar-item" onclick="openSettings()"><i class="fas fa-gear"></i><span>Ayarlar</span></li>
+          <li class="sidebar-item" onclick="openHelp()"><i class="fas fa-circle-question"></i><span>Yardim</span></li>
         </ul>
       </div>
     </aside>
 
     <div class="content">
-      <div class="welcome-card">
-        <h1>Scout Dashboard</h1>
-        <p>Oyuncu izle, analiz et ve takip listene ekle.</p>
-      </div>
-
-      <div class="quick-stats">
-        <div class="stat-card"><div class="stat-card-value" id="statPool">0</div><div class="stat-card-label">Oyuncu Havuzu</div></div>
-        <div class="stat-card"><div class="stat-card-value" id="statFiltered">0</div><div class="stat-card-label">Filtre Sonucu</div></div>
-        <div class="stat-card"><div class="stat-card-value" id="statWatch">0</div><div class="stat-card-label">Takip Listem</div></div>
-        <div class="stat-card"><div class="stat-card-value" id="statAvg">0.0</div><div class="stat-card-label">Ortalama Rating</div></div>
-      </div>
-
-      <div class="quick-report-section">
-        <h2 style="margin-bottom:14px;font-size:18px;font-weight:800;color:#1f2937;">Mac Sonu Anlik Rapor</h2>
-        <div class="quick-report-grid">
-          <div class="form-group"><label>Mac Basligi</label><input type="text" id="quickReportTitle" placeholder="U19 Hazirlik Maci"></div>
-          <div class="form-group"><label>Oyuncu ID (ops.)</label><input type="number" id="quickReportPlayerId" placeholder="123"></div>
-          <div class="form-group"><label>Puan (1-100)</label><input type="number" id="quickReportRating" min="1" max="100" value="75"></div>
-          <div class="form-group">
-            <label>Oneri</label>
-            <select id="quickReportRecommendation">
-              <option value="recommended">Recommended</option>
-              <option value="highly_recommended">Highly Recommended</option>
-              <option value="neutral">Neutral</option>
-              <option value="not_recommended">Not Recommended</option>
-            </select>
+      <section class="hero" id="overview">
+        <div class="welcome-card">
+          <div class="hero-kicker">
+            <i class="fas fa-bullseye"></i>
+                <span>Crowdsourced antranör</span>
+          </div>
+          <h2 class="hero-title">Antrenor operasyonunu buradan yonet.</h2>
+          <p class="hero-sub">Oyuncu izle, analiz et ve takip listene ekle.</p>
+          <div class="hero-actions">
+            <button class="btn-small primary" type="button" onclick="openCoachTalentModal()"><i class="fas fa-video"></i><span>Yetenek Bildir</span></button>
+            <button class="btn-small secondary" type="button" onclick="openCoachOpportunityArea('needs')"><i class="fas fa-calendar-check"></i><span>Antranör Firsat Alani</span></button>
+            <button class="btn-small secondary" type="button" onclick="openCoachMarketPulse()"><i class="fas fa-chart-line"></i><span>Market Pulse</span></button>
+            <button class="btn-small secondary" type="button" onclick="openLiveMatches()"><i class="fas fa-tower-broadcast"></i><span>Canli Mac Bildirimleri</span></button>
+            <button class="btn-small secondary" type="button" onclick="openCoachWorkspace('notes')"><i class="fas fa-briefcase"></i><span>Antrenör Çalışma Alanı</span></button>
+            <button class="btn-small secondary" type="button" onclick="openCoachReportsHub('watchlist')"><i class="fas fa-bookmark"></i><span>Scout Watchlist & Raporlar</span></button>
+          </div>
+          <div class="hero-points">
+            <span class="pill"><i class="fas fa-circle-check"></i><span>Dogrulanan gozlemler karar gucunu artirir</span></span>
+            <span class="pill"><i class="fas fa-handshake-angle"></i><span>Trial akislarini tek yerden takip et</span></span>
           </div>
         </div>
-        <div class="form-group" style="margin-bottom:10px;">
-          <label>Kisa Teknik Not</label>
-          <textarea id="quickReportNote" style="min-height:80px;" placeholder="Kisa analiz notu..."></textarea>
+        <aside class="hero-side">
+          <h3 class="panel-title">Antrenor Durumu</h3>
+          <p class="panel-sub">Guncel kullanici ve panel sinyalleri tek alanda.</p>
+          <div class="status-stack">
+            <div class="status-row"><span>Kullanici</span><strong id="coachHeroUser">Misafir</strong></div>
+            <div class="status-row"><span>Rol</span><strong id="coachHeroRole">Coach</strong></div>
+            <div class="status-row"><span>Baglanti</span><strong id="coachHeroApi">Bekleniyor</strong></div>
+            <div class="status-row"><span>Odak</span><strong id="coachHeroFocus">Oyuncu izleme</strong></div>
+          </div>
+        </aside>
+      </section>
+
+      <div class="need-modal-overlay" id="coachWorkspaceModal" onclick="if(event.target.id==='coachWorkspaceModal'){closeCoachWorkspace();}">
+      <section class="need-modal live-modal" id="coachWorkspaceCard" onclick="event.stopPropagation()">
+        <div class="tips-flyout-card">
+        <div class="market-pulse-head tips-flyout-head">
+          <div>
+            <div class="sidebar-title">Antrenor Calisma Alani</div>
+            <h2 id="coachWorkspaceTitle" style="margin:0 0 6px 0;font-size:18px;color:#f8fafc;">Antrenor Calisma Alani</h2>
+            <div id="coachWorkspaceSummary" class="market-pulse-copy">Oyuncu bazli not, klip ve degerlendirme modullerini tek panelde yonet.</div>
+          </div>
+          <div class="market-pulse-tools tips-flyout-tools">
+            <a class="btn-small secondary" href="player-profile.html"><i class="fas fa-up-right-from-square"></i><span>Oyuncu Profiline Git</span></a>
+            <button class="market-pulse-close tips-flyout-close" type="button" onclick="closeCoachWorkspace()"><i class="fas fa-times"></i></button>
+          </div>
         </div>
-        <div style="display:flex; gap:10px; align-items:center;">
-          <button class="btn-small primary" type="button" onclick="saveQuickScoutReport()">Raporu Kaydet</button>
-          <div class="quick-report-result" id="quickReportResult">Henuz rapor kaydi yok.</div>
+        <div class="workspace-tabs" style="margin-bottom:14px;">
+          <button class="workspace-tab active" type="button" data-coach-workspace-tab="notes" onclick="openCoachWorkspace('notes')">Teknik Not Defteri</button>
+          <button class="workspace-tab" type="button" data-coach-workspace-tab="clips" onclick="openCoachWorkspace('clips')">Klip Isaretleme</button>
+          <button class="workspace-tab" type="button" data-coach-workspace-tab="evaluations" onclick="openCoachWorkspace('evaluations')">Kaydedilmis Degerlendirmeler</button>
         </div>
+        <div id="coachWorkspaceBody" style="display:grid; gap:14px;">
+          <section id="coachWorkspaceReviews" style="display:none; padding:18px;border:1px solid #475569;border-radius:12px;background:#1f2937;color:#dbeafe;">
+            <div class="quick-report-grid" style="grid-template-columns:repeat(3,1fr); margin-bottom:14px;">
+              <div class="quick-report-result"><strong id="coachReviewTotal">0</strong><br><span>Toplam</span></div>
+              <div class="quick-report-result"><strong id="coachReviewPositive">%0</strong><br><span>Olumlu</span></div>
+              <div class="quick-report-result"><strong id="coachReviewTrust">0/10</strong><br><span>Güven Skoru</span></div>
+            </div>
+            <div class="search-grid" style="grid-template-columns:1fr 1fr; margin-bottom:12px;">
+              <div class="form-group">
+                <label>İlişki</label>
+                <select id="coachDashboardReviewRelationship">
+                  <option value="teknik_ekip">Teknik ekip</option>
+                  <option value="birlikte_calistik">Birlikte çalıştık</option>
+                  <option value="izledim">İzledim</option>
+                  <option value="kulup_sureci">Kulüp süreci</option>
+                  <option value="rakiptik">Rakiptik</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Ton</label>
+                <select id="coachDashboardReviewSentiment">
+                  <option value="olumlu">Olumlu</option>
+                  <option value="notr">Nötr</option>
+                  <option value="dikkat">Dikkat</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+              <label>Yorum</label>
+              <textarea id="coachDashboardReviewBody" style="min-height:96px;" placeholder="Antrenörün teknik iletişimi ve süreç yönetimi hakkında yorum yaz..."></textarea>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
+              <button class="btn-small primary" type="button" id="coachDashboardReviewSubmit">Yorumu Gönder</button>
+              <div class="quick-report-result" id="coachDashboardReviewMessage">Yorumlar burada listelenir.</div>
+            </div>
+            <div id="coachDashboardReviewList" style="display:grid; gap:10px;"></div>
+          </section>
+
+          <section id="coachWorkspaceNotes" style="display:none; padding:18px;border:1px solid #475569;border-radius:12px;background:#1f2937;color:#dbeafe;">
+            <div class="search-grid" style="grid-template-columns:repeat(2,1fr);">
+              <div class="form-group"><label>Oyuncu</label><input type="text" id="coachDashboardNotePlayer" placeholder="Oyuncu adı"></div>
+              <div class="form-group"><label>Pozisyon</label><input type="text" id="coachDashboardNotePosition" placeholder="Forvet / Orta saha / Bek"></div>
+              <div class="form-group"><label>Etiket</label><select id="coachDashboardNoteTag"><option value="izlenecek">İzlenecek</option><option value="tekrar-bak">Tekrar Bak</option><option value="gelisim-var">Gelişim Var</option><option value="hazir">Hazır</option></select></div>
+              <div class="form-group"><label>Odak</label><select id="coachDashboardNoteFocus"><option value="teknik">Teknik</option><option value="taktik">Taktik</option><option value="fizik">Fizik</option><option value="zihinsel">Zihinsel</option></select></div>
+            </div>
+            <div class="form-group" style="margin:12px 0;">
+              <label>Not</label>
+              <textarea id="coachDashboardNoteBody" style="min-height:96px;" placeholder="Kısa teknik not..."></textarea>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
+              <button class="btn-small primary" type="button" id="coachDashboardNoteSubmit">Notu Kaydet</button>
+              <input type="text" id="coachDashboardNoteSearch" placeholder="Notlarda ara..." style="flex:1; padding:10px; border:1px solid #475569; border-radius:10px; background:#0f172a; color:#e2e8f0;">
+            </div>
+            <div id="coachDashboardNotesList" style="display:grid; gap:10px;"></div>
+          </section>
+
+          <section id="coachWorkspaceClips" style="display:none; padding:18px;border:1px solid #475569;border-radius:12px;background:#1f2937;color:#dbeafe;">
+            <div class="search-grid" style="grid-template-columns:repeat(2,1fr);">
+              <div class="form-group"><label>Oyuncu</label><input type="text" id="coachDashboardClipPlayer" placeholder="Oyuncu adı"></div>
+              <div class="form-group"><label>Video Linki</label><input type="url" id="coachDashboardClipUrl" placeholder="https://..."></div>
+              <div class="form-group"><label>Dakika</label><input type="number" id="coachDashboardClipMinute" min="0" max="180" placeholder="12"></div>
+              <div class="form-group"><label>Saniye</label><input type="number" id="coachDashboardClipSecond" min="0" max="59" placeholder="34"></div>
+            </div>
+            <div class="form-group" style="margin:12px 0;">
+              <label>Klip Notu</label>
+              <textarea id="coachDashboardClipBody" style="min-height:96px;" placeholder="Sahne bazlı kısa teknik not..."></textarea>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
+              <button class="btn-small primary" type="button" id="coachDashboardClipSubmit">Klibi Kaydet</button>
+              <input type="text" id="coachDashboardClipSearch" placeholder="Kliplerde ara..." style="flex:1; padding:10px; border:1px solid #475569; border-radius:10px; background:#0f172a; color:#e2e8f0;">
+            </div>
+            <div id="coachDashboardClipsList" style="display:grid; gap:10px;"></div>
+          </section>
+
+          <section id="coachWorkspaceEvaluations" style="display:none; padding:18px;border:1px solid #475569;border-radius:12px;background:#1f2937;color:#dbeafe;">
+            <div class="quick-report-grid" style="grid-template-columns:repeat(3,1fr); margin-bottom:14px;">
+              <div class="quick-report-result"><strong id="coachEvalTotal">0</strong><br><span>Toplam</span></div>
+              <div class="quick-report-result"><strong id="coachEvalLastPlayer">-</strong><br><span>Son Oyuncu</span></div>
+              <div class="quick-report-result"><strong id="coachEvalLastDate">-</strong><br><span>Son Kayıt</span></div>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
+              <input type="text" id="coachDashboardEvalSearch" placeholder="Oyuncu, pozisyon veya karar notu..." style="flex:1; padding:10px; border:1px solid #475569; border-radius:10px; background:#0f172a; color:#e2e8f0;">
+              <input type="number" id="coachDashboardEvalMinScore" min="0" max="100" placeholder="Min. ort." style="width:140px; padding:10px; border:1px solid #475569; border-radius:10px; background:#0f172a; color:#e2e8f0;">
+            </div>
+            <div id="coachDashboardEvaluationsList" style="display:grid; gap:10px;"></div>
+          </section>
+        </div>
+        </div>
+      </section>
       </div>
 
+      <div class="need-modal-overlay" id="coachMarketPulseModal" onclick="if(event.target.id==='coachMarketPulseModal'){closeCoachMarketPulse();}">
+      <section class="need-modal live-modal" id="coachMarketPulseCard" onclick="event.stopPropagation()">
+        <div class="tips-flyout-card">
+        <div class="market-pulse-head tips-flyout-head">
+          <div>
+            <div class="eyebrow">Market Pulse</div>
+            <h3 class="panel-title" style="margin:0;">Canli Piyasa Ozeti</h3>
+            <div class="market-pulse-copy">Scout ekranini bozmadan son video hareketi, favori sicakligi ve trial baskisini tek kartta toplar.</div>
+          </div>
+          <div class="market-pulse-tools tips-flyout-tools">
+            <div class="market-pulse-badge tips-flyout-badge" id="coachMarketPulseStatus"><i class="fas fa-signal"></i><span>Yukleniyor</span></div>
+            <button class="market-pulse-close tips-flyout-close" type="button" onclick="closeCoachMarketPulse()"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+        <div class="market-pulse-grid">
+          <div class="market-pulse-list" id="coachMarketPulseList"><div class="empty">Market pulse verisi yukleniyor...</div></div>
+          <div class="market-pulse-side">
+            <div class="market-pulse-stats" id="coachMarketPulseStats"></div>
+            <a class="market-pulse-link" href="platform-akisi.html"><span><i class="fas fa-chart-line"></i> Terminali Ac</span><i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+        </div>
+      </section>
+      </div>
+      <div class="need-modal-overlay" id="coachOpportunityModal" onclick="if(event.target.id==='coachOpportunityModal'){closeCoachOpportunityArea();}">
+      <section class="need-modal live-modal" id="coachOpportunityCard" onclick="event.stopPropagation()">
+        <div class="tips-flyout-card">
+        <div class="market-pulse-head tips-flyout-head">
+          <div>
+            <div class="sidebar-title">Firsat Alani</div>
+            <h2 id="coachOpportunityTitle" style="margin:0 0 6px 0;font-size:18px;color:#f8fafc;">Antranör Firsat Alani</h2>
+            <div class="market-pulse-copy" id="coachOpportunitySummary">Acik kulup arayislarini ve deneme akisini tek panelde ac.</div>
+          </div>
+          <div class="market-pulse-tools tips-flyout-tools">
+            <div class="market-pulse-badge tips-flyout-badge" id="coachOpportunityStatus"><i class="fas fa-signal"></i><span>Yukleniyor</span></div>
+            <button class="market-pulse-close tips-flyout-close" type="button" onclick="closeCoachOpportunityArea()"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+        <div class="opportunity-launcher-grid" id="coachOpportunityLauncher">
+          <button class="opportunity-launcher-card" type="button" onclick="openCoachOpportunityArea('needs')"><i class="fas fa-bullseye"></i><strong>Kulup Ihtiyaclari</strong><span>Acik kulup arayislarini tek karttan gor.</span></button>
+          <button class="opportunity-launcher-card" type="button" onclick="openCoachOpportunityArea('events')"><i class="fas fa-calendar-check"></i><strong>Deneme ve Idmanlar</strong><span>Deneme ve idman duyurularini kart olarak ac.</span></button>
+          <button class="opportunity-launcher-card" type="button" onclick="openCoachOpportunityArea('manager')"><i class="fas fa-briefcase"></i><strong>Menajer Ilanlari</strong><span>Menajerlerin acik oyuncu arayislarini gor.</span></button>
+        </div>
+        <div id="coachOpportunityDetail" hidden>
+        <div class="form-actions" style="margin-bottom:14px;">
+          <button class="btn-small secondary" type="button" onclick="openCoachOpportunityArea()"><i class="fas fa-arrow-left"></i><span>Geri</span></button>
+          <button class="btn-small secondary" type="button" id="coachOpportunityRefreshBtn" onclick="loadCoachOpportunityArea('needs')"><i class="fas fa-arrows-rotate"></i><span>Yenile</span></button>
+        </div>
+        <div class="market-pulse-list" id="coachOpportunityNeedsList"><div class="empty">Kulup ihtiyaclari yukleniyor...</div></div>
+        <div class="market-pulse-list" id="coachOpportunityEventsList" hidden><div class="empty">Deneme ve idmanlar yukleniyor...</div></div>
+        <div class="market-pulse-list" id="coachOpportunityManagerList" hidden><div class="empty">Menajer ilanlari yukleniyor...</div></div>
+        </div>
+        </div>
+      </section>
+      </div>
       <div class="search-section">
-        <h2 style="margin-bottom:20px;font-size:18px;font-weight:800;color:#1f2937;">Oyuncu Filtresi</h2>
+        <h2 style="margin-bottom:20px;font-size:18px;font-weight:800;color:#e5e7eb;">Oyuncu Filtresi</h2>
         <div class="search-grid">
           <div class="form-group"><label>Oyuncu Adi</label><input type="text" id="playerName" placeholder="Oyuncu adi gir"></div>
           <div class="form-group"><label>Pozisyon</label><select id="position"><option value="">Tumu</option><option value="Kaleci">Kaleci</option><option value="Defans">Defans</option><option value="Orta Saha">Orta Saha</option><option value="Forvet">Forvet</option></select></div>
@@ -187,7 +888,7 @@
       </div>
 
       <div class="results-section">
-        <h2 style="margin-bottom:20px;font-size:18px;font-weight:800;color:#1f2937;">Scout Sonuclari</h2>
+        <h2 style="margin-bottom:20px;font-size:18px;font-weight:800;color:#e5e7eb;">Scout Sonuclari</h2>
         <div class="players-grid" id="playersGrid"></div>
       </div>
     </div>
@@ -196,7 +897,7 @@
   <div class="need-modal-overlay" id="coachNeedModal" onclick="if(event.target.id==='coachNeedModal'){closeCoachNeedModal();}">
     <div class="need-modal" onclick="event.stopPropagation()">
       <div class="need-modal-head">
-        <h3>Antrenor Ilani Ver</h3>
+        <h3>ANTRENÖR Ilani Ver</h3>
         <button class="btn-small secondary" type="button" onclick="closeCoachNeedModal()">Kapat</button>
       </div>
       <form id="coachNeedForm">
@@ -212,10 +913,166 @@
     </div>
   </div>
 
+  <div class="need-modal-overlay" id="coachTalentModal" onclick="if(event.target.id==='coachTalentModal'){closeCoachTalentModal();}">
+    <div class="need-modal live-modal" onclick="event.stopPropagation()">
+      <div class="need-modal-head">
+        <h3>Yetenek Bildir</h3>
+        <button class="btn-small secondary" type="button" onclick="closeCoachTalentModal()">Kapat</button>
+      </div>
+      <div class="need-modal-body">
+        <p style="margin:0 0 4px 0;color:#9ca3af;font-size:14px;">Izledigin oyuncu icin hizli teknik bildirim veya mac sonu anlik rapor gir.</p>
+        <div class="quick-report-grid" style="margin-bottom:0;">
+          <div class="form-group"><label>Mac Basligi</label><input type="text" id="quickReportTitle" placeholder="U19 Hazirlik Maci"></div>
+          <div class="form-group"><label>Oyuncu Adi</label><input type="text" id="quickReportPlayerName" placeholder="Ali Yilmaz"></div>
+          <div class="form-group"><label>Pozisyon</label><input type="text" id="quickReportPosition" placeholder="Sol Bek"></div>
+          <div class="form-group"><label>Oyuncu ID (ops.)</label><input type="number" id="quickReportPlayerId" placeholder="123"></div>
+          <div class="form-group"><label>Puan (1-100)</label><input type="number" id="quickReportRating" min="1" max="100" value="75"></div>
+          <div class="form-group">
+            <label>Oneri</label>
+            <select id="quickReportRecommendation">
+              <option value="recommended">Recommended</option>
+              <option value="highly_recommended">Highly Recommended</option>
+              <option value="neutral">Neutral</option>
+              <option value="not_recommended">Not Recommended</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Kisa Teknik Not</label>
+          <textarea id="quickReportNote" style="min-height:80px;" placeholder="Kisa analiz notu..."></textarea>
+        </div>
+        <div class="quick-report-result" id="quickReportResult">Henuz rapor kaydi yok.</div>
+      </div>
+      <div class="need-modal-actions">
+        <button class="btn-small secondary" type="button" onclick="closeCoachTalentModal()">Iptal</button>
+        <button class="btn-small primary" type="button" onclick="saveQuickScoutReport()">Raporu Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="need-modal-overlay" id="coachReportsHubModal" onclick="if(event.target.id==='coachReportsHubModal'){closeCoachReportsHub();}">
+    <div class="need-modal live-modal" onclick="event.stopPropagation()">
+      <div class="need-modal-head">
+        <h3>Scout Watchlist & Raporlar</h3>
+        <button class="btn-small secondary" type="button" onclick="closeCoachReportsHub()">Kapat</button>
+      </div>
+      <div class="need-modal-body">
+        <div class="workspace-tabs" style="margin-bottom:14px;">
+          <button class="workspace-tab active" type="button" data-coach-reports-tab="watchlist" onclick="openCoachReportsHub('watchlist')">Scout Watchlist</button>
+          <button class="workspace-tab" type="button" data-coach-reports-tab="reports" onclick="openCoachReportsHub('reports')">Scout Raporlari</button>
+        </div>
+        <div id="coachReportsHubWatchlist">
+          <div class="quick-report-result" style="margin-bottom:12px;">Takip ettigin oyunculara hizli ulas.</div>
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <button class="btn-small secondary" type="button" onclick="window.location.href='scout-watchlist.html'">Scout Watchlist Ac</button>
+          </div>
+        </div>
+        <div id="coachReportsHubReports" hidden>
+          <div class="quick-report-result" style="margin-bottom:12px;">Kaydedilen scout raporlarini tek yerden ac.</div>
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <button class="btn-small secondary" type="button" onclick="window.location.href='scout-reports.html'">Scout Raporlarini Ac</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="need-modal-overlay" id="coachSuccessStoriesHubModal" onclick="if(event.target.id==='coachSuccessStoriesHubModal'){closeCoachSuccessStoriesHub();}">
+    <div class="need-modal live-modal" onclick="event.stopPropagation()">
+      <div class="need-modal-head">
+        <h3>Basari Hikayeleri</h3>
+        <button class="btn-small secondary" type="button" onclick="closeCoachSuccessStoriesHub()">Kapat</button>
+      </div>
+      <div class="need-modal-body">
+        <div class="quick-report-result" style="margin-bottom:12px;">Basari hikayesi gonder veya topluluktaki hikayeleri oku.</div>
+        <div class="quick-report-grid" style="grid-template-columns:repeat(2,1fr); margin-bottom:0;">
+          <button class="btn-small secondary" type="button" style="justify-content:flex-start; min-height:96px;" onclick="openCoachSuccessStoryModal()">
+            <i class="fas fa-paper-plane"></i><span>Gonder</span>
+          </button>
+          <button class="btn-small secondary" type="button" style="justify-content:flex-start; min-height:96px;" onclick="openCoachSuccessStoriesReadModal()">
+            <i class="fas fa-book-open"></i><span>Oku</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="need-modal-overlay" id="coachSuccessStoryModal" onclick="if(event.target.id==='coachSuccessStoryModal'){closeCoachSuccessStoryModal();}">
+    <div class="need-modal live-modal" onclick="event.stopPropagation()">
+      <div class="need-modal-head">
+        <h3>Basari Hikayesi Gonder</h3>
+        <button class="btn-small secondary" type="button" onclick="closeCoachSuccessStoryModal()">Kapat</button>
+      </div>
+      <form id="coachSuccessStoryForm">
+        <div class="need-modal-body">
+          <input type="text" name="full_name" placeholder="Ad Soyad" required maxlength="150">
+          <div class="live-grid">
+            <select name="sport" required>
+              <option value="">Spor Sec</option>
+              <option value="Futbol">Futbol</option>
+              <option value="Basketbol">Basketbol</option>
+              <option value="Voleybol">Voleybol</option>
+            </select>
+            <input type="text" name="old_club" placeholder="Eski Kulup" maxlength="160">
+          </div>
+          <input type="text" name="new_club" placeholder="Yeni Kulup" maxlength="160" required>
+          <textarea name="story_text" placeholder="Basari hikayeni yaz..." required maxlength="1200"></textarea>
+          <input type="url" name="image_url" placeholder="Gorsel linki (opsiyonel)">
+          <div class="quick-report-result" id="coachSuccessStoryResult">Yeni basari hikayesini dashboard icinden gonder.</div>
+        </div>
+        <div class="need-modal-actions">
+          <button class="btn-small secondary" type="button" onclick="closeCoachSuccessStoryModal()">Vazgec</button>
+          <button class="btn-small primary" type="submit">Gonder</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="need-modal-overlay" id="coachSuccessStoriesReadModal" onclick="if(event.target.id==='coachSuccessStoriesReadModal'){closeCoachSuccessStoriesReadModal();}">
+    <div class="need-modal live-modal" onclick="event.stopPropagation()">
+      <div class="need-modal-head">
+        <h3>Basari Hikayelerini Oku</h3>
+        <button class="btn-small secondary" type="button" onclick="closeCoachSuccessStoriesReadModal()">Kapat</button>
+      </div>
+      <div class="need-modal-body">
+        <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
+          <button class="btn-small secondary" type="button" onclick="closeCoachSuccessStoriesReadModal(); openCoachSuccessStoriesHub()"><i class="fas fa-arrow-left"></i><span>Geri</span></button>
+          <button class="btn-small secondary" type="button" onclick="loadCoachSuccessStories()"><i class="fas fa-arrows-rotate"></i><span>Yenile</span></button>
+        </div>
+        <div class="quick-report-result" id="coachSuccessStoriesStatus">Topluluktan gelen son basari hikayelerini burada oku.</div>
+        <div id="coachSuccessStoriesList" style="display:grid; gap:10px; margin-top:14px;">
+          <div class="empty">Basari hikayeleri yukleniyor...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="need-modal-overlay" id="playerSearchModal" onclick="if(event.target.id==='playerSearchModal'){closePlayerSearchModal();}">
+    <div class="need-modal player-search-modal" onclick="event.stopPropagation()">
+      <div class="need-modal-head">
+        <h3>Oyuncu Ara</h3>
+        <button class="btn-small secondary" type="button" onclick="closePlayerSearchModal()">Kapat</button>
+      </div>
+      <div class="need-modal-body">
+        <div class="search-grid">
+          <div class="form-group"><label>Oyuncu Adi</label><input type="text" id="modalPlayerName" placeholder="Oyuncu adi gir"></div>
+          <div class="form-group"><label>Pozisyon</label><select id="modalPosition"><option value="">Tumu</option><option value="Kaleci">Kaleci</option><option value="Defans">Defans</option><option value="Orta Saha">Orta Saha</option><option value="Forvet">Forvet</option></select></div>
+          <div class="form-group"><label>Yas Araligi</label><input type="text" id="modalAgeRange" placeholder="18-30"></div>
+          <div class="form-group"><label>Min. Rating</label><select id="modalRating"><option value="">Tumu</option><option value="7.0">7.0+</option><option value="7.5">7.5+</option><option value="8.0">8.0+</option><option value="8.5">8.5+</option></select></div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <button class="search-btn" type="button" onclick="searchPlayersModal()">Ara</button>
+          <button class="btn-small secondary" type="button" onclick="resetPlayersModal()">Sıfırla</button>
+        </div>
+        <div class="players-grid player-search-results" id="playersGridModal"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="need-modal-overlay" id="liveScoutModal" onclick="if(event.target.id==='liveScoutModal'){closeLiveScoutModal();}">
     <div class="need-modal live-modal" onclick="event.stopPropagation()">
       <div class="need-modal-head">
-        <h3>Canli Scout Baslat</h3>
+        <h3>Canlı Scout Baslat</h3>
         <button class="btn-small secondary" type="button" onclick="closeLiveScoutModal()">Kapat</button>
       </div>
       <form id="liveScoutForm">
@@ -232,7 +1089,7 @@
             </select>
             <input type="text" id="liveFocusPlayer" placeholder="Odak oyuncu / pozisyon (or: Sol Bek #3)">
           </div>
-          <input type="url" id="liveStreamUrl" placeholder="Ana yayin linki (opsiyonel)">
+          <input type="url" id="liveStreamUrl" placeholder="Ana yayın linki (opsiyonel)">
           <div class="live-grid">
             <input type="url" id="liveStreamYoutube" placeholder="YouTube linki">
             <input type="url" id="liveStreamInstagram" placeholder="Instagram linki">
@@ -273,8 +1130,34 @@
           </div>
           <div class="live-grid">
             <input type="text" id="trialEventCity" placeholder="Sehir" required>
-            <input type="text" id="trialEventVenue" placeholder="Saha / Tesis">
+            <input type="text" id="trialEventVenue" placeholder="Saha / Tesis" required>
           </div>
+          <div class="live-grid">
+            <select id="trialEventAgeGroup">
+              <option value="">Yas Grubu</option>
+              <option value="U9">U9</option>
+              <option value="U10">U10</option>
+              <option value="U11">U11</option>
+              <option value="U12">U12</option>
+              <option value="U13">U13</option>
+              <option value="U14">U14</option>
+              <option value="U15">U15</option>
+              <option value="U16">U16</option>
+              <option value="U17">U17</option>
+              <option value="U19">U19</option>
+              <option value="A Takim">A Takim</option>
+            </select>
+            <select id="trialEventSport">
+              <option value="futbol">Futbol</option>
+              <option value="basketbol">Basketbol</option>
+              <option value="voleybol">Voleybol</option>
+            </select>
+          </div>
+          <div class="live-grid">
+            <input type="text" id="trialEventPositionNeed" placeholder="Pozisyon Ihtiyaci (opsiyonel)">
+            <input type="number" id="trialEventCapacity" min="1" placeholder="Kontenjan (opsiyonel)">
+          </div>
+          <textarea id="trialEventDescription" placeholder="Aciklama (opsiyonel): seviye, hedef grup, notlar"></textarea>
         </div>
         <div class="need-modal-actions">
           <button class="btn-small secondary" type="button" onclick="closeTrialPublishModal()">Iptal</button>
@@ -285,11 +1168,16 @@
   </div>
 
   <script>
-    const WATCH_KEY = 'nextscout_scout_watchlist';
     let allPlayers = [];
     let filteredPlayers = [];
+    let watchlistState = [];
 
     function getApiBaseUrl() {
+      if (window.NextScoutApi && typeof window.NextScoutApi.base === 'function') {
+        return window.NextScoutApi.base();
+      }
+      const configured = (window.NEXTSCOUT_API_BASE || '').toString().trim();
+      if (configured) return configured.replace(/\/$/, '');
       const query = new URLSearchParams(window.location.search);
       const fromQuery = (query.get('api_base') || '').trim();
       if (fromQuery) return fromQuery.replace(/\/$/, '');
@@ -306,6 +1194,580 @@
         .replace(/'/g, '&#39;');
     }
 
+    function getToken() {
+      return (localStorage.getItem('nextscout_token') || '').trim();
+    }
+
+    function openCoachTalentModal() {
+      const modal = document.getElementById('coachTalentModal');
+      if (modal) modal.classList.add('show');
+    }
+
+    function closeCoachTalentModal() {
+      const modal = document.getElementById('coachTalentModal');
+      if (modal) modal.classList.remove('show');
+    }
+
+    function openCoachReportsHub(type = 'watchlist') {
+      const modal = document.getElementById('coachReportsHubModal');
+      const watchlist = document.getElementById('coachReportsHubWatchlist');
+      const reports = document.getElementById('coachReportsHubReports');
+      const tabs = Array.from(document.querySelectorAll('[data-coach-reports-tab]'));
+      const activeType = type === 'reports' ? 'reports' : 'watchlist';
+      if (!modal || !watchlist || !reports) return;
+      watchlist.hidden = activeType !== 'watchlist';
+      reports.hidden = activeType !== 'reports';
+      tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.coachReportsTab === activeType));
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCoachReportsHub() {
+      document.getElementById('coachReportsHubModal')?.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    function openCoachSuccessStoriesHub() {
+      document.getElementById('coachSuccessStoriesHubModal')?.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCoachSuccessStoriesHub() {
+      document.getElementById('coachSuccessStoriesHubModal')?.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    function openCoachSuccessStoryModal() {
+      closeCoachSuccessStoriesHub();
+      const modal = document.getElementById('coachSuccessStoryModal');
+      if (!modal) return;
+      try {
+        const userRaw = localStorage.getItem('nextscout_user');
+        const user = userRaw ? JSON.parse(userRaw) : null;
+        const input = document.querySelector('#coachSuccessStoryForm input[name="full_name"]');
+        if (input && !input.value && user?.name) input.value = String(user.name);
+      } catch (error) {}
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCoachSuccessStoryModal() {
+      document.getElementById('coachSuccessStoryModal')?.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    function openCoachSuccessStoriesReadModal() {
+      closeCoachSuccessStoriesHub();
+      document.getElementById('coachSuccessStoriesReadModal')?.classList.add('show');
+      document.body.style.overflow = 'hidden';
+      loadCoachSuccessStories();
+    }
+
+    function closeCoachSuccessStoriesReadModal() {
+      document.getElementById('coachSuccessStoriesReadModal')?.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    async function fetchCoachSuccessStories() {
+      const response = await fetch(`${getApiBaseUrl()}/success-stories?limit=8`, {
+        headers: { Accept: 'application/json' },
+        cache: 'no-store',
+        credentials: 'same-origin',
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || payload?.ok === false) throw new Error(payload?.message || 'Basari hikayeleri alinamadi.');
+      return payload;
+    }
+
+    function renderCoachSuccessStories(payload) {
+      const root = document.getElementById('coachSuccessStoriesList');
+      const status = document.getElementById('coachSuccessStoriesStatus');
+      const rows = Array.isArray(payload?.data) ? payload.data.slice(0, 8) : [];
+      if (!root || !status) return;
+      if (!rows.length) {
+        status.textContent = 'Bos';
+        root.innerHTML = '<div class="empty">Basari hikayesi bulunmuyor.</div>';
+        return;
+      }
+      status.textContent = `${rows.length} kayit`;
+      root.innerHTML = rows.map((item) => `
+        <article class="point-item">
+          <div class="row-top">
+            <div>
+              <div class="row-title">${escapeHtml(item.full_name || 'Basari Hikayesi')}</div>
+              <div class="row-copy">${escapeHtml(item.story_text || 'Hikaye metni yok.')}</div>
+            </div>
+            <span class="badge approved">${escapeHtml(item.sport || '-')}</span>
+          </div>
+          <div class="row-meta">
+            <span><i class="fas fa-building"></i> ${escapeHtml(item.old_club || '-')} -> ${escapeHtml(item.new_club || '-')}</span>
+            <span><i class="fas fa-calendar"></i> ${formatDate(item.created_at)}</span>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    async function loadCoachSuccessStories() {
+      const root = document.getElementById('coachSuccessStoriesList');
+      const status = document.getElementById('coachSuccessStoriesStatus');
+      if (!root || !status) return;
+      status.textContent = 'Yukleniyor';
+      root.innerHTML = '<div class="empty">Basari hikayeleri yukleniyor...</div>';
+      try {
+        renderCoachSuccessStories(await fetchCoachSuccessStories());
+      } catch (error) {
+        status.textContent = 'Hata';
+        root.innerHTML = `<div class="empty">${escapeHtml(error.message || 'Basari hikayeleri yuklenemedi.')}</div>`;
+      }
+    }
+
+    async function submitCoachSuccessStoryForm(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const root = document.getElementById('coachSuccessStoryResult');
+      const token = getToken();
+      if (!token) {
+        if (root) root.textContent = 'Hikaye gondermek icin giris yapman gerekiyor.';
+        return;
+      }
+
+      const formData = new FormData(form);
+      const payload = {
+        full_name: (formData.get('full_name') || '').toString().trim(),
+        sport: (formData.get('sport') || '').toString().trim(),
+        old_club: (formData.get('old_club') || '').toString().trim(),
+        new_club: (formData.get('new_club') || '').toString().trim(),
+        story_text: (formData.get('story_text') || '').toString().trim(),
+        image_url: (formData.get('image_url') || '').toString().trim(),
+      };
+
+      if (!payload.full_name || !payload.sport || !payload.new_club || !payload.story_text) {
+        if (root) root.textContent = 'Ad, spor, yeni kulup ve hikaye zorunlu.';
+        return;
+      }
+
+      try {
+        const response = await fetch(`${getApiBaseUrl()}/success-stories`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || !result?.ok) {
+          throw new Error(result?.message || 'Hikaye gonderilemedi.');
+        }
+        if (root) root.textContent = 'Hikayen alindi. Admin onayindan sonra yayinlanacak.';
+        window.nsNotify?.success ? window.nsNotify.success('Hikayen alindi. Admin onayindan sonra yayinlanacak.') : null;
+        form.reset();
+        closeCoachSuccessStoryModal();
+      } catch (error) {
+        if (root) root.textContent = error?.message || 'Hikaye gonderilemedi.';
+        window.nsNotify?.error ? window.nsNotify.error(error?.message || 'Hikaye gonderilemedi.') : nsnsAlert(error?.message || 'Hikaye gonderilemedi.');
+      }
+    }
+
+    async function coachMarketPulseGet() {
+      const response = await fetch(`${getApiBaseUrl()}/market/live-feed?_t=${Date.now()}`, {
+        headers: { Accept: 'application/json' },
+        cache: 'no-store',
+        credentials: 'same-origin',
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || payload?.ok === false) throw new Error(payload?.message || 'Market pulse yuklenemedi.');
+      return payload;
+    }
+
+    function renderCoachMarketPulse(payload) {
+      const root = document.getElementById('coachMarketPulseList');
+      const statsRoot = document.getElementById('coachMarketPulseStats');
+      const statusRoot = document.getElementById('coachMarketPulseStatus');
+      if (!root || !statsRoot || !statusRoot) return;
+      const ticker = Array.isArray(payload?.data?.ticker) ? payload.data.ticker.slice(0, 3) : [];
+      const summary = payload?.data?.summary || {};
+      root.innerHTML = ticker.length ? ticker.map((item) => `
+        <article class="market-pulse-item">
+          <div><div class="market-pulse-time">${escapeHtml(item.market_time || 'Simdi')}</div><div class="market-pulse-tag ${escapeHtml(item.tone || 'neutral')}">${escapeHtml(item.badge || 'FLOW')}</div></div>
+          <div><div class="market-pulse-line"><strong>${escapeHtml(item.player_name || 'Oyuncu')}</strong> (${escapeHtml(item.position || 'Oyuncu')})</div><div class="market-pulse-sub">${escapeHtml(item.headline || '')} -> ${escapeHtml(item.detail || '')}</div></div>
+          <div class="market-pulse-metric"><span>${escapeHtml(item.metric_label || 'Metrik')}</span><strong>${escapeHtml(item.metric_value ?? 0)}</strong><em>${Number(item.change_percent || 0) > 0 ? '+' : ''}${escapeHtml(item.change_percent ?? 0)}%</em></div>
+        </article>
+      `).join('') : '<div class="empty">Canli piyasa sinyali olusmadi.</div>';
+      statsRoot.innerHTML = [
+        ['Acik Firsat', summary.open_opportunities || 0],
+        ['Video', summary.videos_today || 0],
+        ['Favori', summary.favorites_today || 0],
+        ['Trial', summary.trial_invites_today || 0],
+      ].map(([label, value]) => `<article class="market-pulse-stat"><div class="market-pulse-stat-label">${escapeHtml(label)}</div><div class="market-pulse-stat-value">${escapeHtml(value)}</div></article>`).join('');
+      statusRoot.innerHTML = '<i class="fas fa-signal"></i><span>Canli</span>';
+    }
+
+    async function loadCoachMarketPulse() {
+      const root = document.getElementById('coachMarketPulseList');
+      const statusRoot = document.getElementById('coachMarketPulseStatus');
+      if (!root || !statusRoot) return;
+      try {
+        statusRoot.innerHTML = '<i class="fas fa-signal"></i><span>Senkron</span>';
+        renderCoachMarketPulse(await coachMarketPulseGet());
+      } catch (error) {
+        statusRoot.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span>Beklemede</span>';
+        root.innerHTML = '<div class="empty">Market pulse su an yuklenemedi.</div>';
+      }
+    }
+
+    function openCoachMarketPulse() {
+      document.getElementById('coachMarketPulseModal')?.classList.add('show');
+      document.body.style.overflow = 'hidden';
+      loadCoachMarketPulse();
+    }
+
+    function closeCoachMarketPulse() {
+      document.getElementById('coachMarketPulseModal')?.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    let activeCoachOpportunityTab = 'hub';
+
+    function openCoachOpportunityArea(type = 'hub') {
+      const card = document.getElementById('coachOpportunityCard');
+      const modal = document.getElementById('coachOpportunityModal');
+      const title = document.getElementById('coachOpportunityTitle');
+      const summary = document.getElementById('coachOpportunitySummary');
+      const status = document.getElementById('coachOpportunityStatus');
+      const launcher = document.getElementById('coachOpportunityLauncher');
+      const detail = document.getElementById('coachOpportunityDetail');
+      const refresh = document.getElementById('coachOpportunityRefreshBtn');
+      const needs = document.getElementById('coachOpportunityNeedsList');
+      const events = document.getElementById('coachOpportunityEventsList');
+      const manager = document.getElementById('coachOpportunityManagerList');
+      if (!card || !modal || !title || !summary || !status || !launcher || !detail || !refresh || !needs || !events || !manager) return;
+
+      const map = {
+        hub: {
+          title: 'AntranÃ¶r Firsat Alani',
+          summary: 'Ihtiyac, deneme ve menajer ilanlarini kart secerek ac.'
+        },
+        needs: {
+          title: 'Antranör Firsat Alani',
+          summary: 'Acik kulup arayislarini antrenor ekranindan hizlica tara.'
+        },
+        events: {
+          title: 'Deneme ve Idmanlar',
+          summary: 'Acik deneme ve idman duyurularini tek panelden izle.'
+        },
+        manager: {
+          title: 'Menajer Ilanlari',
+          summary: 'Menajerlerin acik oyuncu arayislarini tek panelden tara.'
+        }
+      };
+
+      if (!modal.classList.contains('show') && type === 'needs') type = 'hub';
+
+      activeCoachOpportunityTab = map[type] ? type : 'hub';
+      const selected = map[activeCoachOpportunityTab];
+      title.textContent = selected.title;
+      summary.textContent = selected.summary;
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+
+      if (activeCoachOpportunityTab === 'hub') {
+        status.hidden = true;
+        launcher.hidden = false;
+        detail.hidden = true;
+        needs.hidden = true;
+        events.hidden = true;
+        manager.hidden = true;
+        return;
+      }
+
+      status.hidden = false;
+      status.innerHTML = '<i class="fas fa-signal"></i><span>Hazirlaniyor</span>';
+      launcher.hidden = true;
+      detail.hidden = false;
+      refresh.setAttribute('onclick', `loadCoachOpportunityArea('${activeCoachOpportunityTab}')`);
+      needs.hidden = activeCoachOpportunityTab !== 'needs';
+      events.hidden = activeCoachOpportunityTab !== 'events';
+      manager.hidden = activeCoachOpportunityTab !== 'manager';
+      loadCoachOpportunityArea(activeCoachOpportunityTab);
+    }
+
+    function closeCoachOpportunityArea() {
+      document.getElementById('coachOpportunityModal')?.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    async function coachOpportunityGet(path) {
+      const response = await fetch(`${getApiBaseUrl()}${path}`, {
+        headers: {
+          Accept: 'application/json',
+          ...(getToken() ? { Authorization: `Bearer ${getToken()}` } : {})
+        }
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || payload?.ok === false) throw new Error(payload?.message || 'Firsat verisi yuklenemedi.');
+      return payload.data ?? payload;
+    }
+
+    function renderCoachOpportunityNeeds(rows) {
+      const root = document.getElementById('coachOpportunityNeedsList');
+      const status = document.getElementById('coachOpportunityStatus');
+      if (!root || activeCoachOpportunityTab !== 'needs') return;
+      if (!Array.isArray(rows) || !rows.length) {
+        root.innerHTML = '<div class="empty">Acik kulup ihtiyaci yok.</div>';
+        if (status) status.innerHTML = '<i class="fas fa-bullseye"></i><span>Bos</span>';
+        return;
+      }
+      root.innerHTML = rows.slice(0, 8).map((item) => `
+        <article class="point-item">
+          <div class="row-top">
+            <div>
+              <div class="row-title">${escapeHtml(item.title || item.position || 'Kulup ihtiyaci')}</div>
+              <div class="row-copy">${escapeHtml(item.team_name || 'Kulup')} · ${escapeHtml(item.city || 'Sehir yok')}</div>
+            </div>
+            <span class="badge screened">${escapeHtml(item.status || 'open')}</span>
+          </div>
+          <div class="row-meta">
+            <span><i class="fas fa-bullseye"></i> ${escapeHtml(item.position || '-')}</span>
+            <span><i class="fas fa-user-clock"></i> ${escapeHtml(item.age_min ?? '-')} - ${escapeHtml(item.age_max ?? '-')}</span>
+            <span><i class="fas fa-calendar"></i> ${formatDate(item.created_at)}</span>
+          </div>
+        </article>
+      `).join('');
+      if (status) status.innerHTML = `<i class="fas fa-bullseye"></i><span>${rows.slice(0, 8).length} kayit</span>`;
+    }
+
+    function renderCoachOpportunityEvents(rows) {
+      const root = document.getElementById('coachOpportunityEventsList');
+      const status = document.getElementById('coachOpportunityStatus');
+      if (!root || activeCoachOpportunityTab !== 'events') return;
+      if (!Array.isArray(rows) || !rows.length) {
+        root.innerHTML = '<div class="empty">Acik deneme veya idman bulunmuyor.</div>';
+        if (status) status.innerHTML = '<i class="fas fa-calendar"></i><span>Bos</span>';
+        return;
+      }
+      root.innerHTML = rows.slice(0, 8).map((item) => `
+        <article class="point-item">
+          <div class="row-top">
+            <div>
+              <div class="row-title">${escapeHtml(item.title || 'Etkinlik')}</div>
+              <div class="row-copy">${escapeHtml(item.organizer?.club_name || item.organizer?.name || 'Organizator')} · ${escapeHtml(item.city || 'Sehir yok')}</div>
+            </div>
+            <span class="badge approved">${escapeHtml(item.event_type || 'event')}</span>
+          </div>
+          <div class="row-meta">
+            <span><i class="fas fa-location-dot"></i> ${escapeHtml(item.venue || '-')}</span>
+            <span><i class="fas fa-user-group"></i> ${escapeHtml(item.organizer?.role || '-')}</span>
+            <span><i class="fas fa-calendar"></i> ${formatDate(item.event_date)}</span>
+          </div>
+        </article>
+      `).join('');
+      if (status) status.innerHTML = `<i class="fas fa-calendar"></i><span>${rows.slice(0, 8).length} kayit</span>`;
+    }
+
+    function renderCoachOpportunityManager(rows) {
+      const root = document.getElementById('coachOpportunityManagerList');
+      const status = document.getElementById('coachOpportunityStatus');
+      const items = Array.isArray(rows?.data) ? rows.data : (Array.isArray(rows) ? rows : []);
+      if (!root || activeCoachOpportunityTab !== 'manager') return;
+      if (!items.length) {
+        root.innerHTML = '<div class="empty">Acik menajer ilani yok.</div>';
+        if (status) status.innerHTML = '<i class="fas fa-briefcase"></i><span>Bos</span>';
+        return;
+      }
+      root.innerHTML = items.slice(0, 8).map((item) => `
+        <article class="point-item">
+          <div class="row-top">
+            <div>
+              <div class="row-title">${escapeHtml(item.title || item.position || 'Menajer ilani')}</div>
+              <div class="row-copy">${escapeHtml(item.city || 'Sehir yok')} Â· ${escapeHtml(item.status || 'open')}</div>
+            </div>
+            <span class="badge approved">${escapeHtml(item.position || '-')}</span>
+          </div>
+          <div class="row-meta">
+            <span><i class="fas fa-user-clock"></i> ${escapeHtml(item.age_min ?? '-')} - ${escapeHtml(item.age_max ?? '-')}</span>
+            <span><i class="fas fa-calendar"></i> ${formatDate(item.created_at)}</span>
+          </div>
+        </article>
+      `).join('');
+      if (status) status.innerHTML = `<i class="fas fa-briefcase"></i><span>${items.slice(0, 8).length} kayit</span>`;
+    }
+
+    async function loadCoachOpportunityArea(type = 'needs') {
+      const status = document.getElementById('coachOpportunityStatus');
+      const root = document.getElementById(type === 'events'
+        ? 'coachOpportunityEventsList'
+        : type === 'manager'
+          ? 'coachOpportunityManagerList'
+          : 'coachOpportunityNeedsList');
+      if (status) status.innerHTML = '<i class="fas fa-signal"></i><span>Senkron</span>';
+      if (root) root.innerHTML = '<div class="empty">Yukleniyor...</div>';
+      try {
+        if (type === 'events') {
+          renderCoachOpportunityEvents(await coachOpportunityGet('/community-events'));
+        } else if (type === 'manager') {
+          renderCoachOpportunityManager(await coachOpportunityGet('/discovery/manager-needs'));
+        } else {
+          renderCoachOpportunityNeeds(await coachOpportunityGet('/club-needs'));
+        }
+      } catch (error) {
+        if (status) status.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span>Hata</span>';
+        if (root) root.innerHTML = `<div class="empty">${type === 'events' ? 'Deneme ve idmanlar' : type === 'manager' ? 'Menajer ilanlari' : 'Kulup ihtiyaclari'} su an yuklenemedi.</div>`;
+      }
+    }
+
+    function getCurrentAuthUserFromStorage() {
+      try {
+        const raw = localStorage.getItem('nextscout_user');
+        const user = raw ? JSON.parse(raw) : null;
+        return user && typeof user === 'object' ? user : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function getCoachReviewTargetId() {
+      const authUser = getCurrentAuthUserFromStorage();
+      const id = Number(authUser?.id || 0);
+      return Number.isFinite(id) ? id : null;
+    }
+
+    function formatReviewDate(value) {
+      if (!value) return '-';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '-';
+      return date.toLocaleDateString('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function reviewLabelMap() {
+      return {
+        birlikte_calistik: 'Birlikte çalıştık',
+        rakiptik: 'Rakiptik',
+        izledim: 'İzledim',
+        kulup_sureci: 'Kulüp süreci',
+        teknik_ekip: 'Teknik ekip',
+        olumlu: 'Olumlu',
+        notr: 'Nötr',
+        dikkat: 'Dikkat',
+      };
+    }
+
+    let coachDashboardNotesState = [];
+    let coachDashboardClipsState = [];
+
+    function loadCoachNotesWorkspace() {
+      return Array.isArray(coachDashboardNotesState) ? coachDashboardNotesState : [];
+    }
+
+    function saveCoachNotesWorkspace(rows) {
+      coachDashboardNotesState = Array.isArray(rows) ? rows.slice(0, 200) : [];
+    }
+
+    async function fetchCoachNotesWorkspace(search) {
+      const token = getToken();
+      if (!token) throw new Error('Oturum bulunamadi.');
+
+      const params = new URLSearchParams();
+      params.set('per_page', '100');
+      if (search) params.set('search', search);
+
+      const response = await fetch(`${getApiBaseUrl()}/coach/player-notes?${params.toString()}`, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json().catch(() => null);
+      if (!response.ok || !data?.ok) {
+        throw new Error(data?.message || 'Teknik notlar alinamadi.');
+      }
+
+      coachDashboardNotesState = Array.isArray(data?.data?.data) ? data.data.data : [];
+      return coachDashboardNotesState;
+    }
+
+    async function createCoachNoteApi(payload) {
+      const token = getToken();
+      if (!token) throw new Error('Oturum bulunamadi.');
+
+      const response = await fetch(`${getApiBaseUrl()}/coach/player-notes`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json().catch(() => null);
+      if (!response.ok || !data?.ok) {
+        throw new Error(data?.message || 'Teknik not kaydedilemedi.');
+      }
+
+      return data.data || null;
+    }
+
+    function loadCoachClipsWorkspace() {
+      return Array.isArray(coachDashboardClipsState) ? coachDashboardClipsState : [];
+    }
+
+    function saveCoachClipsWorkspace(rows) {
+      coachDashboardClipsState = Array.isArray(rows) ? rows.slice(0, 200) : [];
+    }
+
+    async function fetchCoachClipsWorkspace(search) {
+      const token = getToken();
+      if (!token) throw new Error('Oturum bulunamadi.');
+
+      const params = new URLSearchParams();
+      params.set('per_page', '100');
+      if (search) params.set('search', search);
+
+      const response = await fetch(`${getApiBaseUrl()}/coach/player-clips?${params.toString()}`, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json().catch(() => null);
+      if (!response.ok || !data?.ok) {
+        throw new Error(data?.message || 'Klip notlari alinamadi.');
+      }
+
+      coachDashboardClipsState = Array.isArray(data?.data?.data) ? data.data.data : [];
+      return coachDashboardClipsState;
+    }
+
+    async function createCoachClipApi(payload) {
+      const token = getToken();
+      if (!token) throw new Error('Oturum bulunamadi.');
+
+      const response = await fetch(`${getApiBaseUrl()}/coach/player-clips`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json().catch(() => null);
+      if (!response.ok || !data?.ok) {
+        throw new Error(data?.message || 'Klip notu kaydedilemedi.');
+      }
+
+      return data.data || null;
+    }
+
+    function loadCoachEvaluationsWorkspace() {
+      return [];
+    }
+
     function parseAgeRange(value) {
       const raw = (value || '').toString().trim();
       if (!raw || !raw.includes('-')) return null;
@@ -315,16 +1777,63 @@
     }
 
     function getWatchlist() {
-      try {
-        const parsed = JSON.parse(localStorage.getItem(WATCH_KEY) || '[]');
-        return Array.isArray(parsed) ? parsed : [];
-      } catch (error) {
-        return [];
+      return Array.isArray(watchlistState) ? watchlistState : [];
+    }
+
+    async function fetchCoachEvaluationsWorkspace(search) {
+      const token = getToken();
+      if (!token) throw new Error('Oturum bulunamadi.');
+
+      const params = new URLSearchParams();
+      params.set('per_page', '100');
+      if (search) params.set('search', search);
+
+      const response = await fetch(`${getApiBaseUrl()}/coach/player-evaluations?${params.toString()}`, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json().catch(() => null);
+      if (!response.ok || !data?.ok) {
+        throw new Error(data?.message || 'Degerlendirmeler alinamadi.');
       }
+
+      return Array.isArray(data?.data?.data) ? data.data.data : [];
     }
 
     function saveWatchlist(items) {
-      localStorage.setItem(WATCH_KEY, JSON.stringify(Array.isArray(items) ? items : []));
+      watchlistState = Array.isArray(items) ? items : [];
+    }
+
+    async function fetchWatchlistFromApi() {
+      const token = getToken();
+      if (!token) return [];
+
+      const response = await fetch(`${getApiBaseUrl()}/favorites`, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const payload = await response.json().catch(() => null);
+      if (!response.ok || !payload?.ok) {
+        throw new Error(payload?.message || 'Takip listesi alinamadi.');
+      }
+
+      const rows = Array.isArray(payload?.data?.data) ? payload.data.data : [];
+      return rows.map((row) => {
+        const target = row?.target_user || row?.targetUser || {};
+        return {
+          id: Number(target?.id || row?.target_user_id || 0),
+          name: target?.name || '-',
+          position: target?.position || target?.role || '-',
+          age: target?.age || '-',
+          rating: target?.rating || 0,
+          club: target?.city || '-',
+        };
+      }).filter((row) => row.id);
     }
 
     function updateStats() {
@@ -340,10 +1849,11 @@
       document.getElementById('statAvg').textContent = String(avg);
     }
 
-    function renderPlayers(players) {
-      const grid = document.getElementById('playersGrid');
+    function renderPlayersTo(players, gridId) {
+      const grid = document.getElementById(gridId);
+      if (!grid) return;
       if (!Array.isArray(players) || players.length === 0) {
-        grid.innerHTML = '<div style="padding:18px;border:1px solid #e5e7eb;border-radius:10px;background:#f9fafb;color:#6b7280;">Filtreye uygun oyuncu bulunamadi.</div>';
+        grid.innerHTML = '<div style="padding:18px;border:1px solid #475569;border-radius:10px;background:#1f2937;color:#cbd5e1;">Filtreye uygun oyuncu bulunamadi.</div>';
         return;
       }
 
@@ -366,9 +1876,19 @@
                 <button class="action-btn primary" onclick="openPlayerProfile(${Number(player.id) || 0})">Profil</button>
                 <button class="action-btn" onclick="addToWatchlist(${Number(player.id) || 0})">Takip Et</button>
               </div>
+              <div class="card-actions" style="margin-top:8px;">
+                <button class="action-btn" onclick="openCoachInteraction(${Number(player.id) || 0}, 'message')">Mesaj</button>
+                <button class="action-btn" onclick="addToWatchlist(${Number(player.id) || 0})">Izleme</button>
+                <button class="action-btn" onclick="sendCoachInterest(${Number(player.id) || 0})">Ilgi</button>
+                <button class="action-btn" onclick="openCoachInteraction(${Number(player.id) || 0}, 'invite')">Davet</button>
+              </div>
             </div>
           </div>`;
       }).join('');
+    }
+
+    function renderPlayers(players) {
+      renderPlayersTo(players, 'playersGrid');
     }
 
     function normalizePlayer(raw) {
@@ -425,43 +1945,556 @@
       updateStats();
     }
 
+    function searchPlayersModal() {
+      const name = document.getElementById('modalPlayerName').value.trim().toLowerCase();
+      const position = document.getElementById('modalPosition').value.trim().toLowerCase();
+      const ageText = document.getElementById('modalAgeRange').value.trim();
+      const ratingMin = Number(document.getElementById('modalRating').value || 0);
+      const parsedAge = parseAgeRange(ageText);
+
+      const modalFiltered = allPlayers.filter((p) => {
+        const pName = String(p.name || '').toLowerCase();
+        const pPos = String(p.position || '').toLowerCase();
+        const pAge = Number(p.age) || 0;
+        const pRating = Number(p.rating) || 0;
+
+        if (name && !pName.includes(name)) return false;
+        if (position && pPos !== position) return false;
+        if (ratingMin && pRating < ratingMin) return false;
+        if (parsedAge && (pAge < parsedAge.min || pAge > parsedAge.max)) return false;
+        return true;
+      });
+
+      renderPlayersTo(modalFiltered, 'playersGridModal');
+    }
+
     function openPlayerProfile(playerId) {
       if (!playerId) return;
       window.location.href = `player-profile.html?user_id=${encodeURIComponent(playerId)}`;
     }
 
-    function addToWatchlist(playerId) {
-      const player = allPlayers.find((p) => Number(p.id) === Number(playerId));
-      if (!player) { alert('Oyuncu bulunamadi.'); return; }
+    function getCoachInteractionPlayer(playerId) {
+      return allPlayers.find((p) => Number(p.id) === Number(playerId)) || null;
+    }
 
-      const items = getWatchlist();
-      if (items.some((x) => Number(x.id) === Number(player.id))) {
-        alert('Bu oyuncu zaten takip listesinde.');
+    function buildCoachInteractionUrl(player, type) {
+      const coachName = String(document.getElementById('coachDashboardUserName')?.textContent || 'Antrenor Ekibi').trim() || 'Antrenor Ekibi';
+      const subjectMap = {
+        message: `${coachName} oyuncu iletisimi`,
+        invite: `${coachName} oyuncu daveti`,
+      };
+      const messageMap = {
+        message: `${player.name || 'Oyuncu'} merhaba,\n\n${coachName} olarak performansinla ilgileniyoruz. Uygun oldugunda iletisime gecmeni istiyoruz.`,
+        invite: `${player.name || 'Oyuncu'} merhaba,\n\n${coachName} olarak seni idman ve gorusme surecine davet etmek istiyoruz. Uygun oldugun zaman bize don.`,
+      };
+      const params = new URLSearchParams({
+        compose: '1',
+        to_name: player.name || '',
+        to_user_id: String(Number(player.id) || ''),
+        subject: subjectMap[type] || subjectMap.message,
+        message: messageMap[type] || messageMap.message,
+        notice: 'Alici ve metin antrenor panelinden otomatik dolduruldu.',
+        return_to: 'coach-dashboard.html',
+      });
+      return `notifications.html?${params.toString()}`;
+    }
+
+    function openCoachInteraction(playerId, type) {
+      const player = getCoachInteractionPlayer(playerId);
+      if (!player) { window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.'); return; }
+      window.location.href = buildCoachInteractionUrl(player, type);
+    }
+
+    function sendCoachInterest(playerId) {
+      const player = getCoachInteractionPlayer(playerId);
+      if (!player) { window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.'); return; }
+      const coachName = String(document.getElementById('coachDashboardUserName')?.textContent || 'Antrenor Ekibi').trim() || 'Antrenor Ekibi';
+      const params = new URLSearchParams({
+        compose: '1',
+        to_name: player.name || '',
+        to_user_id: String(Number(player.id) || ''),
+        subject: `${coachName} senden ilgi duyuyor`,
+        message: `${player.name || 'Oyuncu'} merhaba,\n\n${coachName} olarak seni yakindan takip ediyoruz ve gelisim profilinle ilgileniyoruz.`,
+        notice: 'Ilgi mesaji antrenor panelinden otomatik dolduruldu.',
+        return_to: 'coach-dashboard.html',
+      });
+      window.location.href = `notifications.html?${params.toString()}`;
+    }
+
+    async function addToWatchlist(playerId) {
+      const player = allPlayers.find((p) => Number(p.id) === Number(playerId));
+      if (!player) { window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.'); return; }
+
+      const token = (localStorage.getItem('nextscout_token') || '').trim();
+      const apiBase = getApiBaseUrl();
+      if (!token || token === 'local-session-token') {
+        window.nsNotify?.error ? window.nsNotify.error('Takip listesi icin giris yap.') : nsnsAlert('Takip listesi icin giris yap.');
         return;
       }
+      try {
+        const response = await fetch(`${apiBase}/favorites/${encodeURIComponent(player.id)}/toggle`, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok || body?.ok === false) {
+          throw new Error(body?.message || `HTTP ${response.status}`);
+        }
 
-      items.unshift({
-        id: player.id,
-        name: player.name,
-        position: player.position,
-        age: player.age,
-        rating: player.rating,
-        club: player.club,
-        added_at: new Date().toISOString(),
-      });
-      saveWatchlist(items.slice(0, 500));
-      updateStats();
-      alert(`Takip listesine eklendi: ${player.name}`);
+        const items = getWatchlist();
+        const exists = items.some((x) => Number(x.id) === Number(player.id));
+        if (exists) {
+          saveWatchlist(items.filter((x) => Number(x.id) !== Number(player.id)));
+          window.nsNotify?.info ? window.nsNotify.info('Takip listesinden cikarildi.') : nsnsAlert('Takip listesinden cikarildi.');
+        } else {
+          saveWatchlist([{ id: player.id, name: player.name, position: player.position, age: player.age, rating: player.rating, club: player.club }, ...items].slice(0, 500));
+          window.nsNotify?.success ? window.nsNotify.success(`Takip listesine eklendi: ${player.name}`) : nsnsAlert(`Takip listesine eklendi: ${player.name}`);
+        }
+        updateStats();
+      } catch (error) {
+        window.nsNotify?.error ? window.nsNotify.error(error?.message || 'Takip listesi guncellenemedi.') : nsnsAlert(error?.message || 'Takip listesi guncellenemedi.');
+      }
     }
 
     function openWatchlist() { window.location.href = 'scout-watchlist.html'; }
+    function openCoachWorkspace(type) {
+      const card = document.getElementById('coachWorkspaceCard');
+      const title = document.getElementById('coachWorkspaceTitle');
+      const summary = document.getElementById('coachWorkspaceSummary');
+      const body = document.getElementById('coachWorkspaceBody');
+      if (!card || !title || !summary || !body) return;
+
+      const contentMap = {
+        reviews: {
+          title: 'Profil Yorumları',
+          summary: 'Antrenör hakkındaki geri bildirimleri bu alanda takip edebilirsin.',
+          body: 'Profil yorumları dashboard modülü burada açılacak.',
+        },
+        notes: {
+          title: 'Teknik Not Defteri',
+          summary: 'Oyuncu bazlı teknik gözlem ve kısa karar notlarını buradan yöneteceksin.',
+          body: 'Teknik not defteri dashboard modülü burada açılacak.',
+        },
+        clips: {
+          title: 'Video Üzerinden Klip İşaretleme',
+          summary: 'İşaretlenen klipler ve sahne bazlı teknik notlar burada toplanacak.',
+          body: 'Klip işaretleme dashboard modülü burada açılacak.',
+        },
+      };
+
+      const selected = contentMap[type];
+      if (!selected) return;
+      title.textContent = selected.title;
+      summary.textContent = selected.summary;
+      body.textContent = selected.body;
+      card.style.display = 'block';
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    function openCoachWorkspace(type) {
+      const card = document.getElementById('coachWorkspaceCard');
+      const title = document.getElementById('coachWorkspaceTitle');
+      const summary = document.getElementById('coachWorkspaceSummary');
+      const reviews = document.getElementById('coachWorkspaceReviews');
+      const notes = document.getElementById('coachWorkspaceNotes');
+      const clips = document.getElementById('coachWorkspaceClips');
+      const evaluations = document.getElementById('coachWorkspaceEvaluations');
+      if (!card || !title || !summary || !reviews || !notes || !clips || !evaluations) return;
+
+      const contentMap = {
+        reviews: {
+          title: 'Profil Yorumları',
+          summary: 'Antrenör hakkındaki geri bildirimleri bu alanda takip edebilirsin.',
+        },
+        notes: {
+          title: 'Antrenor Calisma Alani',
+          summary: 'Oyuncu bazlı teknik gözlem ve kısa karar notlarını buradan yöneteceksin.',
+        },
+        clips: {
+          title: 'Video Üzerinden Klip İşaretleme',
+          summary: 'İşaretlenen klipler ve sahne bazlı teknik notlar burada toplanacak.',
+        },
+        evaluations: {
+          title: 'Kaydedilmiş Değerlendirmeler',
+          summary: 'Oyuncu profillerinde kaydettiğin teknik değerlendirmeleri burada toplu görürsün.',
+        },
+      };
+
+      const selected = contentMap[type];
+      if (!selected) return;
+
+      title.textContent = selected.title;
+      summary.textContent = selected.summary;
+      reviews.style.display = type === 'reviews' ? 'block' : 'none';
+      notes.style.display = type === 'notes' ? 'block' : 'none';
+      clips.style.display = type === 'clips' ? 'block' : 'none';
+      evaluations.style.display = type === 'evaluations' ? 'block' : 'none';
+      card.style.display = 'block';
+
+      if (type === 'reviews') loadDashboardCoachReviews();
+      if (type === 'notes') renderDashboardCoachNotes();
+      if (type === 'clips') renderDashboardCoachClips();
+      if (type === 'evaluations') renderDashboardCoachEvaluations();
+
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function openCoachWorkspace(type) {
+      const card = document.getElementById('coachWorkspaceCard');
+      const modal = document.getElementById('coachWorkspaceModal');
+      const title = document.getElementById('coachWorkspaceTitle');
+      const summary = document.getElementById('coachWorkspaceSummary');
+      const notes = document.getElementById('coachWorkspaceNotes');
+      const clips = document.getElementById('coachWorkspaceClips');
+      const evaluations = document.getElementById('coachWorkspaceEvaluations');
+      const tabs = Array.from(document.querySelectorAll('[data-coach-workspace-tab]'));
+      if (!card || !modal || !title || !summary || !notes || !clips || !evaluations) return;
+
+      const contentMap = {
+        notes: {
+          title: 'Antrenor Calisma Alani',
+          summary: 'Oyuncu bazli teknik gozlem ve kisa karar notlarini buradan yoneteceksin.',
+        },
+        clips: {
+          title: 'Video Uzerinden Klip Isaretleme',
+          summary: 'Isaretlenen klipler ve sahne bazli teknik notlar burada toplanacak.',
+        },
+        evaluations: {
+          title: 'Kaydedilmis Degerlendirmeler',
+          summary: 'Oyuncu profillerinde kaydettigin teknik degerlendirmeleri burada toplu gorursun.',
+        },
+      };
+
+      const activeType = contentMap[type] ? type : 'notes';
+      const selected = contentMap[activeType];
+      title.textContent = selected.title;
+      summary.textContent = selected.summary;
+      notes.style.display = activeType === 'notes' ? 'block' : 'none';
+      clips.style.display = activeType === 'clips' ? 'block' : 'none';
+      evaluations.style.display = activeType === 'evaluations' ? 'block' : 'none';
+      tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.coachWorkspaceTab === activeType));
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+
+      if (activeType === 'notes') renderDashboardCoachNotes();
+      if (activeType === 'clips') renderDashboardCoachClips();
+      if (activeType === 'evaluations') renderDashboardCoachEvaluations();
+    }
+
+    function closeCoachWorkspace() {
+      document.getElementById('coachWorkspaceModal')?.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    function openLiveMatches() { window.location.href = 'scout-live-matches.html'; }
     function openTrialCenter() { window.location.href = 'trial-center.html?view=coach'; }
-    function openScoutProfile() { window.location.href = 'scout-profile.html'; }
+    function openScoutProfile() { window.location.href = 'coach-profile.html'; }
     function openPerformance() { window.location.href = 'statistics.html'; }
-    function openVideoAnalysis() { window.location.href = 'scout-live-matches.html'; }
+    function openScoutReports() { window.location.href = 'scout-reports.html'; }
     function openMessages() { window.location.href = 'notifications.html'; }
     function openSettings() { window.location.href = 'settings.html'; }
     function openHelp() { window.location.href = 'help.html'; }
+
+    function renderDashboardCoachReviews(items) {
+      const rows = Array.isArray(items) ? items : [];
+      const list = document.getElementById('coachDashboardReviewList');
+      const total = document.getElementById('coachReviewTotal');
+      const positive = document.getElementById('coachReviewPositive');
+      const trust = document.getElementById('coachReviewTrust');
+      if (!list || !total || !positive || !trust) return;
+
+      const labels = reviewLabelMap();
+      const positiveCount = rows.filter((row) => row?.sentiment === 'olumlu').length;
+      const positiveRate = rows.length ? Math.round((positiveCount / rows.length) * 100) : 0;
+      const trustScore = rows.length ? ((positiveCount * 10) + ((rows.length - positiveCount) * 5)) / rows.length / 10 : 0;
+
+      total.textContent = String(rows.length);
+      positive.textContent = `%${positiveRate}`;
+      trust.textContent = `${trustScore.toFixed(1)}/10`;
+
+      if (!rows.length) {
+        list.innerHTML = '<div class="quick-report-result">Henüz yorum yok.</div>';
+        return;
+      }
+
+      list.innerHTML = rows.map((review) => `
+        <div class="quick-report-result" style="text-align:left;">
+          <strong>${escapeHtml(review?.author_name || 'Kullanıcı')}</strong>
+          <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(review?.author_role || 'rol belirtilmedi')} • ${escapeHtml(formatReviewDate(review?.created_at))}</div>
+          <div style="margin-top:8px;"><span>${escapeHtml(labels[review?.relationship_type] || review?.relationship_type || '-')}</span> • <span>${escapeHtml(labels[review?.sentiment] || review?.sentiment || '-')}</span></div>
+          <div style="margin-top:8px; color:#e2e8f0;">${escapeHtml(review?.body || '')}</div>
+        </div>
+      `).join('');
+    }
+
+    async function loadDashboardCoachReviews() {
+      const list = document.getElementById('coachDashboardReviewList');
+      const targetId = getCoachReviewTargetId();
+      if (!list || !targetId) return;
+      list.innerHTML = '<div class="quick-report-result">Yorumlar yükleniyor...</div>';
+      try {
+        const res = await fetch(`${getApiBaseUrl()}/profiles/${encodeURIComponent(targetId)}/reviews`, {
+          headers: { Accept: 'application/json' },
+        });
+        const data = await res.json().catch(() => null);
+        const items = Array.isArray(data?.data?.data)
+          ? data.data.data
+          : Array.isArray(data?.data?.items)
+          ? data.data.items
+          : Array.isArray(data?.data)
+          ? data.data
+          : [];
+        renderDashboardCoachReviews(items);
+      } catch (error) {
+        list.innerHTML = '<div class="quick-report-result">Yorumlar şu an alınamıyor.</div>';
+      }
+    }
+
+    async function submitDashboardCoachReview() {
+      const token = getToken();
+      const targetId = getCoachReviewTargetId();
+      const relationship = document.getElementById('coachDashboardReviewRelationship');
+      const sentiment = document.getElementById('coachDashboardReviewSentiment');
+      const body = document.getElementById('coachDashboardReviewBody');
+      const message = document.getElementById('coachDashboardReviewMessage');
+      if (!token || !targetId || !relationship || !sentiment || !body || !message) return;
+
+      const payload = {
+        relationship_type: relationship.value,
+        sentiment: sentiment.value,
+        body: String(body.value || '').trim(),
+      };
+
+      if (payload.body.length < 10) {
+        message.textContent = 'Yorum en az 10 karakter olmalı.';
+        return;
+      }
+
+      try {
+        const res = await fetch(`${getApiBaseUrl()}/profiles/${encodeURIComponent(targetId)}/reviews`, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data?.ok) throw new Error(data?.message || 'Yorum kaydedilemedi');
+        body.value = '';
+        message.textContent = data?.message || 'Yorum kaydedildi.';
+        loadDashboardCoachReviews();
+      } catch (error) {
+        message.textContent = error?.message || 'Yorum kaydedilemedi.';
+      }
+    }
+
+    async function renderDashboardCoachNotes() {
+      const list = document.getElementById('coachDashboardNotesList');
+      const search = String(document.getElementById('coachDashboardNoteSearch')?.value || '').trim().toLowerCase();
+      if (!list) return;
+      list.innerHTML = '<div class="quick-report-result">Teknik notlar yukleniyor...</div>';
+      let rows = [];
+      try {
+        rows = await fetchCoachNotesWorkspace(search);
+      } catch (error) {
+        rows = loadCoachNotesWorkspace().filter((row) => {
+          const haystack = `${row.player} ${row.position} ${row.body}`.toLowerCase();
+          return !search || haystack.includes(search);
+        });
+      }
+      if (!rows.length) {
+        list.innerHTML = '<div class="quick-report-result">Henüz teknik not yok.</div>';
+        return;
+      }
+      list.innerHTML = rows.map((row) => `
+        <div class="quick-report-result" style="text-align:left;">
+          <strong>${escapeHtml(row.player || 'Oyuncu')}</strong>
+          <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(row.position || '-')} • ${escapeHtml(row.tag || '-')} • ${escapeHtml(row.focus || '-')}</div>
+          <div style="margin-top:8px; color:#e2e8f0;">${escapeHtml(row.body || '')}</div>
+        </div>
+      `).join('');
+    }
+
+    async function submitDashboardCoachNote() {
+      const player = document.getElementById('coachDashboardNotePlayer');
+      const position = document.getElementById('coachDashboardNotePosition');
+      const tag = document.getElementById('coachDashboardNoteTag');
+      const focus = document.getElementById('coachDashboardNoteFocus');
+      const body = document.getElementById('coachDashboardNoteBody');
+      if (!player || !position || !tag || !focus || !body) return;
+      const note = {
+        player: String(player.value || '').trim(),
+        position: String(position.value || '').trim(),
+        tag: String(tag.value || '').trim(),
+        focus: String(focus.value || '').trim(),
+        body: String(body.value || '').trim(),
+      };
+      if (!note.player || !note.body || note.body.length < 8) return;
+      try {
+        const saved = await createCoachNoteApi({
+          player_name: note.player,
+          position: note.position || null,
+          tag: note.tag || null,
+          focus: note.focus || null,
+          body: note.body,
+        });
+        const rows = loadCoachNotesWorkspace();
+        if (saved) {
+          rows.unshift(saved);
+          saveCoachNotesWorkspace(rows);
+        }
+        player.value = '';
+        position.value = '';
+        tag.value = '';
+        focus.value = '';
+        body.value = '';
+        renderDashboardCoachNotes();
+        window.nsNotify?.success ? window.nsNotify.success('Teknik not kaydedildi.') : null;
+      } catch (error) {
+        window.nsNotify?.error ? window.nsNotify.error(error.message || 'Teknik not kaydedilemedi.') : nsnsAlert(error.message || 'Teknik not kaydedilemedi.');
+      }
+    }
+
+    async function renderDashboardCoachClips() {
+      const list = document.getElementById('coachDashboardClipsList');
+      const search = String(document.getElementById('coachDashboardClipSearch')?.value || '').trim().toLowerCase();
+      if (!list) return;
+      list.innerHTML = '<div class="quick-report-result">Klip notlari yukleniyor...</div>';
+      let rows = [];
+      try {
+        rows = await fetchCoachClipsWorkspace(search);
+      } catch (error) {
+        rows = loadCoachClipsWorkspace().filter((row) => {
+          const haystack = `${row.player} ${row.url} ${row.body} ${row.stamp}`.toLowerCase();
+          return !search || haystack.includes(search);
+        });
+      }
+      if (!rows.length) {
+        list.innerHTML = '<div class="quick-report-result">Henüz klip kaydı yok.</div>';
+        return;
+      }
+      list.innerHTML = rows.map((row) => `
+        <div class="quick-report-result" style="text-align:left;">
+          <strong>${escapeHtml(row.player || 'Oyuncu')}</strong>
+          <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(row.stamp || '-')} • ${escapeHtml(row.url || '-')}</div>
+          <div style="margin-top:8px; color:#e2e8f0;">${escapeHtml(row.body || '')}</div>
+        </div>
+      `).join('');
+    }
+
+    async function renderDashboardCoachEvaluations() {
+      const list = document.getElementById('coachDashboardEvaluationsList');
+      const total = document.getElementById('coachEvalTotal');
+      const lastPlayer = document.getElementById('coachEvalLastPlayer');
+      const lastDate = document.getElementById('coachEvalLastDate');
+      const search = String(document.getElementById('coachDashboardEvalSearch')?.value || '').trim().toLowerCase();
+      const minScore = Math.max(0, Number(document.getElementById('coachDashboardEvalMinScore')?.value || 0));
+      if (!list || !total || !lastPlayer || !lastDate) return;
+
+      list.innerHTML = '<div class="quick-report-result">Degerlendirmeler yukleniyor...</div>';
+      let rows = [];
+      try {
+        rows = await fetchCoachEvaluationsWorkspace(search);
+      } catch (error) {
+        rows = loadCoachEvaluationsWorkspace();
+      }
+      const filtered = rows.filter((row) => {
+        const haystack = `${row.player_name} ${row.position} ${row.decision_note}`.toLowerCase();
+        const searchMatch = !search || haystack.includes(search);
+        const scoreMatch = !minScore || row.average >= minScore;
+        return searchMatch && scoreMatch;
+      });
+
+      total.textContent = String(rows.length);
+      lastPlayer.textContent = rows[0]?.player_name || '-';
+      lastDate.textContent = rows[0]?.saved_at || '-';
+
+      if (!rows.length) {
+        list.innerHTML = '<div class="quick-report-result">Henüz kaydedilmiş değerlendirme yok.</div>';
+        return;
+      }
+
+      if (!filtered.length) {
+        list.innerHTML = '<div class="quick-report-result">Bu filtreyle eşleşen değerlendirme yok.</div>';
+        return;
+      }
+
+      list.innerHTML = filtered.map((row) => `
+        <div class="quick-report-result" style="text-align:left;">
+          <strong>${escapeHtml(row.player_name || 'Oyuncu')}</strong>
+          <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(row.position || '-')} • Ortalama ${escapeHtml(row.average)}</div>
+          <div style="margin-top:8px; color:#e2e8f0;">${escapeHtml(row.decision_note || '-')}</div>
+          <div style="margin-top:8px; color:#9bb5cb;">${escapeHtml(row.saved_at || '-')}</div>
+        </div>
+      `).join('');
+    }
+
+    async function submitDashboardCoachClip() {
+      const player = document.getElementById('coachDashboardClipPlayer');
+      const url = document.getElementById('coachDashboardClipUrl');
+      const minute = document.getElementById('coachDashboardClipMinute');
+      const second = document.getElementById('coachDashboardClipSecond');
+      const body = document.getElementById('coachDashboardClipBody');
+      if (!player || !url || !minute || !second || !body) return;
+      const clip = {
+        player: String(player.value || '').trim(),
+        url: String(url.value || '').trim(),
+        stamp: `${String(Math.max(0, Number(minute.value || 0))).padStart(2, '0')}:${String(Math.max(0, Math.min(59, Number(second.value || 0)))).padStart(2, '0')}`,
+        body: String(body.value || '').trim(),
+      };
+      if (!clip.player || !clip.url || !clip.body || clip.body.length < 8) return;
+      try {
+        const saved = await createCoachClipApi({
+          player_name: clip.player,
+          video_url: clip.url,
+          minute_mark: Number(minute.value || 0),
+          second_mark: Number(second.value || 0),
+          body: clip.body,
+        });
+        const rows = loadCoachClipsWorkspace();
+        if (saved) {
+          rows.unshift(saved);
+          saveCoachClipsWorkspace(rows);
+        }
+        player.value = '';
+        url.value = '';
+        minute.value = '';
+        second.value = '';
+        body.value = '';
+        renderDashboardCoachClips();
+        window.nsNotify?.success ? window.nsNotify.success('Klip notu kaydedildi.') : null;
+      } catch (error) {
+        window.nsNotify?.error ? window.nsNotify.error(error.message || 'Klip notu kaydedilemedi.') : nsnsAlert(error.message || 'Klip notu kaydedilemedi.');
+      }
+    }
+
+    function openPlayerSearchModal() {
+      const modal = document.getElementById('playerSearchModal');
+      if (!modal) return;
+      modal.classList.add('show');
+      resetPlayersModal();
+    }
+
+    function closePlayerSearchModal() {
+      const modal = document.getElementById('playerSearchModal');
+      if (modal) modal.classList.remove('show');
+    }
+
+    function resetPlayersModal() {
+      const name = document.getElementById('modalPlayerName');
+      const pos = document.getElementById('modalPosition');
+      const age = document.getElementById('modalAgeRange');
+      const rating = document.getElementById('modalRating');
+      if (name) name.value = '';
+      if (pos) pos.value = '';
+      if (age) age.value = '';
+      if (rating) rating.value = '';
+      renderPlayersTo(allPlayers, 'playersGridModal');
+    }
 
     function openCoachNeedModal() {
       const modal = document.getElementById('coachNeedModal');
@@ -494,44 +2527,96 @@
     }
 
     function pushLocalNotification(title, message) {
-      try {
-        const key = 'nextscout_local_notifications';
-        const rows = JSON.parse(localStorage.getItem(key) || '[]');
-        rows.unshift({
-          id: Date.now(),
-          title,
-          message,
-          type: 'trial_event',
-          created_at: new Date().toISOString(),
-          read: false,
-        });
-        localStorage.setItem(key, JSON.stringify(rows.slice(0, 300)));
-      } catch (error) {}
+      const text = [title, message].filter(Boolean).join(': ');
+      if (text) {
+        window.nsNotify?.info ? window.nsNotify.info(text) : null;
+      }
     }
 
     async function publishTrialEventApi(payload) {
       const apiBase = getApiBaseUrl();
       const token = (localStorage.getItem('nextscout_token') || '').trim();
       if (!token || token === 'local-session-token') {
-        const rows = JSON.parse(localStorage.getItem('nextscout_trial_events') || '[]');
-        rows.unshift({
-          id: Date.now(),
-          type: payload.event_type === 'trial_day' ? 'trial' : (payload.event_type === 'training_session' ? 'training' : 'match'),
-          title: payload.title,
-          date: payload.event_date.slice(0, 10),
-          time: payload.event_date.slice(11, 16),
-          city: payload.city,
-          venue: payload.venue,
-          owner: 'Scout',
-          owner_role: 'coach',
-          club_name: '',
-          status: 'registration_open',
-        });
-        localStorage.setItem('nextscout_trial_events', JSON.stringify(rows));
-        return rows[0];
+        throw new Error('Deneme/idman ilani icin giris yapman gerekiyor.');
       }
 
-      const response = await fetch(`${apiBase}/community-events`, {
+      const details = [
+        `Etkinlik tipi: ${payload?.event_type || 'trial_day'}`,
+        payload?.event_date ? `Tarih: ${payload.event_date}` : '',
+        payload?.venue ? `Saha/Tesis: ${payload.venue}` : '',
+        payload?.position_need ? `Pozisyon ihtiyaci: ${payload.position_need}` : '',
+        payload?.age_group ? `Yas grubu: ${payload.age_group}` : '',
+        payload?.sport ? `Brans: ${payload.sport}` : '',
+        payload?.max_participants ? `Kontenjan: ${payload.max_participants}` : '',
+        payload?.description || '',
+      ].filter(Boolean).join('\n');
+
+      const response = await fetch(`${apiBase}/opportunities`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: payload.title,
+          position: payload.position_need || null,
+          city: payload.city || null,
+          details,
+          status: 'open',
+        }),
+      });
+
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok || body?.ok === false) {
+        throw new Error(body?.message || 'Deneme/idman ilani kaydedilemedi.');
+      }
+      return body?.data || null;
+    }
+
+    async function saveCoachNeed(payload) {
+      const apiBase = getApiBaseUrl();
+      const token = (localStorage.getItem('nextscout_token') || '').trim();
+      if (!token || token === 'local-session-token') {
+        throw new Error('Ilan vermek icin giris yapman gerekiyor.');
+      }
+
+      let city = null;
+      try {
+        const raw = localStorage.getItem('nextscout_user');
+        const user = raw ? JSON.parse(raw) : null;
+        city = (user?.city || '').toString().trim() || null;
+      } catch (error) {}
+
+      const response = await fetch(`${apiBase}/opportunities`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: payload?.title || '',
+          city,
+          details: payload?.description || '',
+          status: 'open',
+        }),
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok || body?.ok === false) {
+        throw new Error(body?.message || 'Ilan kaydedilemedi.');
+      }
+      return body?.data || null;
+    }
+
+    async function saveLiveScoutMatch(payload) {
+      const apiBase = getApiBaseUrl();
+      const token = (localStorage.getItem('nextscout_token') || '').trim();
+      if (!token || token === 'local-session-token') {
+        throw new Error('Canli mac kaydi icin giris yapman gerekiyor.');
+      }
+
+      const response = await fetch(`${apiBase}/live-matches`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -540,66 +2625,17 @@
         },
         body: JSON.stringify(payload),
       });
-
       const body = await response.json().catch(() => ({}));
       if (!response.ok || body?.ok === false) {
-        throw new Error(body?.message || `HTTP ${response.status}`);
+        throw new Error(body?.message || 'Canli mac kaydedilemedi.');
       }
       return body?.data || null;
-    }
-
-    async function saveCoachNeed(payload) {
-      const apiBase = getApiBaseUrl();
-      const response = await fetch(`${apiBase}/discovery/coach-needs`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body?.message || `HTTP ${response.status}`);
-      }
-      const body = await response.json();
-      return body?.data || null;
-    }
-
-    async function saveLiveScoutMatch(payload) {
-      const apiBase = getApiBaseUrl();
-      const response = await fetch(`${apiBase}/live-matches`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body?.message || `HTTP ${response.status}`);
-      }
-      const body = await response.json();
-      return body?.data || null;
-    }
-
-    function getQuickScoutReports() {
-      try {
-        const raw = localStorage.getItem('nextscout_quick_scout_reports');
-        const parsed = raw ? JSON.parse(raw) : [];
-        return Array.isArray(parsed) ? parsed : [];
-      } catch (error) {
-        return [];
-      }
-    }
-
-    function setQuickScoutReports(items) {
-      localStorage.setItem('nextscout_quick_scout_reports', JSON.stringify(items.slice(0, 200)));
     }
 
     async function saveQuickScoutReport() {
       const title = (document.getElementById('quickReportTitle')?.value || '').trim();
+      const playerName = (document.getElementById('quickReportPlayerName')?.value || '').trim();
+      const position = (document.getElementById('quickReportPosition')?.value || '').trim();
       const playerId = Number(document.getElementById('quickReportPlayerId')?.value || 0);
       const rating = Number(document.getElementById('quickReportRating')?.value || 0);
       const recommendation = (document.getElementById('quickReportRecommendation')?.value || 'recommended').trim();
@@ -607,76 +2643,98 @@
       const root = document.getElementById('quickReportResult');
 
       if (!title) {
-        if (root) root.textContent = 'Baslik zorunlu.';
+        if (root) root.textContent = 'Mac basligi zorunlu.';
+        return;
+      }
+      if (!playerName) {
+        if (root) root.textContent = 'Oyuncu adi zorunlu.';
+        return;
+      }
+      if (!position) {
+        if (root) root.textContent = 'Pozisyon zorunlu.';
         return;
       }
       if (!rating || rating < 1 || rating > 100) {
-        if (root) root.textContent = 'Puan 1-100 arasi olmali.';
+        if (root) root.textContent = 'Puan 1-100 arasinda olmali.';
         return;
       }
-
-      const localRecord = {
-        id: Date.now(),
-        title,
-        player_user_id: playerId || null,
-        overall_rating: rating,
-        recommendation,
-        technical_assessment: note,
-        watched_location: (document.getElementById('liveLocation')?.value || '').trim() || null,
-        created_at: new Date().toISOString(),
-      };
-
-      const all = getQuickScoutReports();
-      all.unshift(localRecord);
-      setQuickScoutReports(all);
+      if (!note || note.length < 8) {
+        if (root) root.textContent = 'Teknik not en az 8 karakter olmali.';
+        return;
+      }
 
       const token = (localStorage.getItem('nextscout_token') || '').trim();
       const apiBase = getApiBaseUrl();
-      let sentToApi = false;
-
-      if (token && playerId > 0) {
-        try {
-          const response = await fetch(`${apiBase}/scout-reports`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              player_user_id: playerId,
-              title,
-              technical_assessment: note || null,
-              overall_rating: rating,
-              recommendation,
-              watched_location: localRecord.watched_location,
-              watched_date: new Date().toISOString().slice(0, 10),
-              is_private: false,
-            }),
-          });
-          sentToApi = response.ok;
-        } catch (error) {
-          sentToApi = false;
-        }
-      }
-
-      if (root) {
-        root.textContent = sentToApi
-          ? `Rapor kaydedildi ve APIye gonderildi. (${title})`
-          : `Rapor local kaydedildi. API gonderimi icin Oyuncu ID + giris gerekli.`;
-      }
-    }
-
-    function initQuickScoutReportWidget() {
-      const root = document.getElementById('quickReportResult');
-      if (!root) return;
-      const first = getQuickScoutReports()[0];
-      if (!first) {
-        root.textContent = 'Henuz rapor kaydi yok.';
+      if (!token || token === 'local-session-token') {
+        if (root) root.textContent = 'Rapor kaydi icin giris yapman gerekiyor.';
         return;
       }
-      root.textContent = `Son rapor: ${first.title} • ${first.overall_rating}/100`;
+
+      try {
+        const response = await fetch(`${apiBase}/scout/player-reports`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            player_user_id: playerId || null,
+            player_name: playerName,
+            position,
+            title,
+            technical_assessment: note,
+            overall_rating: rating,
+            recommendation,
+            watched_location: (document.getElementById('liveLocation')?.value || '').trim() || null,
+            watched_date: new Date().toISOString().slice(0, 10),
+          }),
+        });
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok || body?.ok === false) {
+          throw new Error(body?.message || 'Rapor kaydedilemedi.');
+        }
+        if (root) root.textContent = `Rapor kaydedildi. (${title})`;
+        document.getElementById('quickReportTitle').value = '';
+        document.getElementById('quickReportPlayerName').value = '';
+        document.getElementById('quickReportPosition').value = '';
+        document.getElementById('quickReportPlayerId').value = '';
+        document.getElementById('quickReportRating').value = '75';
+        document.getElementById('quickReportRecommendation').value = 'recommended';
+        document.getElementById('quickReportNote').value = '';
+        closeCoachTalentModal();
+      } catch (error) {
+        if (root) root.textContent = error?.message || 'Rapor kaydedilemedi.';
+      }
     }
+
+    async function initQuickScoutReportWidget() {
+      const root = document.getElementById('quickReportResult');
+      if (!root) return;
+      const token = (localStorage.getItem('nextscout_token') || '').trim();
+      if (!token || token === 'local-session-token') {
+        root.textContent = 'Raporlari gormek icin giris yapman gerekiyor.';
+        return;
+      }
+      try {
+        const response = await fetch(`${getApiBaseUrl()}/scout/player-reports?per_page=1`, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const body = await response.json().catch(() => ({}));
+        const first = Array.isArray(body?.data?.data) ? body.data.data[0] : null;
+        if (!response.ok || body?.ok === false || !first) {
+          root.textContent = 'Henuz rapor kaydi yok.';
+          return;
+        }
+        root.textContent = `Son rapor: ${first.player_name || '-'} ? ${(Number(first.rating || 0) * 10).toFixed(0)}/100`;
+      } catch (error) {
+        root.textContent = 'Raporlar su an alinamiyor.';
+      }
+    }
+
 
     function logout() {
       localStorage.removeItem('nextscout_token');
@@ -693,7 +2751,7 @@
       const title = (document.getElementById('coachNeedTitle').value || '').trim();
       const text = (document.getElementById('coachNeedText').value || '').trim();
       if (!title || !text) {
-        alert('Baslik ve ilan aciklamasi zorunlu.');
+        window.nsNotify?.error ? window.nsNotify.error('Baslik ve ilan aciklamasi zorunlu.') : nsnsAlert('Baslik ve ilan aciklamasi zorunlu.');
         return;
       }
 
@@ -705,7 +2763,7 @@
       } catch (error) {}
 
       const row = {
-        author_name: coachName || 'Antrenor',
+        author_name: coachName || 'ANTRENÖR',
         title,
         description: text,
       };
@@ -714,9 +2772,9 @@
         await saveCoachNeed(row);
         this.reset();
         closeCoachNeedModal();
-        alert('Ilan kaydedildi.');
+        window.nsNotify?.success ? window.nsNotify.success('İlan APIye kaydedildi. Anasayfa 4. ikonda gorunecek.') : nsnsAlert('İlan APIye kaydedildi. Anasayfa 4. ikonda gorunecek.');
       } catch (error) {
-        alert(`Ilan kaydedilemedi: ${error.message}`);
+        window.nsNotify?.error ? window.nsNotify.error(`İlan APIye kaydedilemedi: ${error.message}`) : nsnsAlert(`İlan APIye kaydedilemedi: ${error.message}`);
       }
     });
 
@@ -761,36 +2819,36 @@
       }
 
       if (!matchName) {
-        alert('Mac adi zorunlu.');
+        window.nsNotify?.error ? window.nsNotify.error('Mac adi zorunlu.') : nsnsAlert('Mac adi zorunlu.');
         return;
       }
       if (stream && /(^|:\/\/)(www\.)?example\.com(\/|$)/i.test(stream)) {
-        alert('Lutfen gercek bir yayin linki girin. example.com test alanidir.');
+        window.nsNotify?.error ? window.nsNotify.error('Lütfen gercek bir yayın linki girin. example.com test alanidir.') : nsnsAlert('Lütfen gercek bir yayın linki girin. example.com test alanidir.');
         return;
       }
       const allStreams = [streamYoutube, streamInstagram, streamFacebook, streamX];
       if (allStreams.some((url) => url && /(^|:\/\/)(www\.)?example\.com(\/|$)/i.test(url))) {
-        alert('Platform linklerinde example.com kullanmayin.');
+        window.nsNotify?.error ? window.nsNotify.error('Platform linklerinde example.com kullanmayin.') : nsnsAlert('Platform linklerinde example.com kullanmayin.');
         return;
       }
       if (stream && !isValidHttpUrl(stream)) {
-        alert('Ana yayin linki http/https formatinda olmali.');
+        window.nsNotify?.error ? window.nsNotify.error('Ana yayın linki http/https formatinda olmali.') : nsnsAlert('Ana yayın linki http/https formatinda olmali.');
         return;
       }
       if (streamYoutube && (!isValidHttpUrl(streamYoutube) || !isAllowedPlatformUrl(streamYoutube, 'youtube'))) {
-        alert('YouTube linki gecersiz. youtube.com veya youtu.be kullanin.');
+        window.nsNotify?.error ? window.nsNotify.error('YouTube linki gecersiz. youtube.com veya youtu.be kullanin.') : nsnsAlert('YouTube linki gecersiz. youtube.com veya youtu.be kullanin.');
         return;
       }
       if (streamInstagram && (!isValidHttpUrl(streamInstagram) || !isAllowedPlatformUrl(streamInstagram, 'instagram'))) {
-        alert('Instagram linki gecersiz. instagram.com kullanin.');
+        window.nsNotify?.error ? window.nsNotify.error('Instagram linki gecersiz. instagram.com kullanin.') : nsnsAlert('Instagram linki gecersiz. instagram.com kullanin.');
         return;
       }
       if (streamFacebook && (!isValidHttpUrl(streamFacebook) || !isAllowedPlatformUrl(streamFacebook, 'facebook'))) {
-        alert('Facebook linki gecersiz. facebook.com veya fb.watch kullanin.');
+        window.nsNotify?.error ? window.nsNotify.error('Facebook linki gecersiz. facebook.com veya fb.watch kullanin.') : nsnsAlert('Facebook linki gecersiz. facebook.com veya fb.watch kullanin.');
         return;
       }
       if (streamX && (!isValidHttpUrl(streamX) || !isAllowedPlatformUrl(streamX, 'x'))) {
-        alert('X linki gecersiz. x.com veya twitter.com kullanin.');
+        window.nsNotify?.error ? window.nsNotify.error('X linki gecersiz. x.com veya twitter.com kullanin.') : nsnsAlert('X linki gecersiz. x.com veya twitter.com kullanin.');
         return;
       }
 
@@ -827,7 +2885,7 @@
         closeLiveScoutModal();
         window.location.href = 'scout-live-matches.html';
       } catch (error) {
-        alert(`Canli mac kaydedilemedi: ${error.message}`);
+        window.nsNotify?.error ? window.nsNotify.error(`Canlı mac kaydedilemedi: ${error.message}`) : nsnsAlert(`Canlı mac kaydedilemedi: ${error.message}`);
       }
     });
 
@@ -839,9 +2897,14 @@
       const time = (document.getElementById('trialEventTime').value || '').trim();
       const city = (document.getElementById('trialEventCity').value || '').trim();
       const venue = (document.getElementById('trialEventVenue').value || '').trim();
+      const ageGroup = (document.getElementById('trialEventAgeGroup').value || '').trim();
+      const sport = (document.getElementById('trialEventSport').value || 'futbol').trim();
+      const positionNeed = (document.getElementById('trialEventPositionNeed').value || '').trim();
+      const capacity = Number(document.getElementById('trialEventCapacity').value || 0);
+      const description = (document.getElementById('trialEventDescription').value || '').trim();
 
-      if (!title || !date || !time || !city) {
-        alert('Baslik, tarih, saat ve sehir zorunlu.');
+      if (!title || !date || !time || !city || !venue) {
+        window.nsNotify?.error ? window.nsNotify.error('Baslik, tarih, saat, sehir ve saha zorunlu.') : nsnsAlert('Baslik, tarih, saat, sehir ve saha zorunlu.');
         return;
       }
 
@@ -850,39 +2913,236 @@
 
       const payload = {
         title,
-        description: 'Dashboard ilani',
+        description: description || 'DASHBOARD ilani',
         event_type: typeMap[type] || 'trial_day',
         city,
         district: null,
-        venue: venue || 'Belirtilecek',
+        venue,
         event_date: eventDateIso,
-        max_participants: 40,
+        max_participants: capacity > 0 ? capacity : 40,
         entry_fee: 0,
         is_free: true,
-        skill_level: 'all_levels',
+        skill_level: ageGroup || 'all_levels',
         contact_info: '',
+        sport_type: sport,
+        position_need: positionNeed || null,
       };
 
       publishTrialEventApi(payload)
         .then(() => {
           this.reset();
           closeTrialPublishModal();
-          pushLocalNotification('Yeni Deneme/Idman Ilani', `${title} yayina alindi.`);
-          alert('Deneme/Idman ilani yayina alindi.');
+          pushLocalNotification('Yeni Deneme/Idman Ilani', `${title} yayına alindi.`);
+          window.nsNotify?.success ? window.nsNotify.success('Deneme/Idman ilani yayına alindi.') : nsnsAlert('Deneme/Idman ilani yayına alindi.');
         })
         .catch((error) => {
-          alert(`Ilan yayinlanamadi: ${error.message}`);
+          window.nsNotify?.error ? window.nsNotify.error(`İlan yayınlanamadi: ${error.message}`) : nsnsAlert(`İlan yayınlanamadi: ${error.message}`);
         });
     });
 
+    function applyTurkishTextFixes() {
+      const replacements = new Map([
+        ['Ä°lan Ver', 'İlan Ver'],
+        ['Deneme/Idman Ilani', 'Deneme/İdman İlanı'],
+        ['CanlÄ± Scout Baslat', 'Canlı Scout Başlat'],
+        ['Ã‡Ä±kÄ±ÅŸ', 'Çıkış'],
+        ['Deneme & Idmanlar', 'Deneme & İdmanlar'],
+        ['CanlÄ± Scout', 'Canlı Scout'],
+        ['Mesajlarim', 'Mesajlarım'],
+        ['Yardim', 'Yardım'],
+        ['Henuz rapor kaydi yok.', 'Henüz rapor kaydı yok.'],
+        ['Mac Sonu Anlik Rapor', 'Maç Sonu Anlık Rapor'],
+        ['Mac Basligi', 'Maç Başlığı'],
+        ['Tumu', 'Tümü'],
+        ['Yas Araligi', 'Yaş Aralığı'],
+        ['ANTRENÃ–R Ilani Ver', 'Antrenör İlanı Ver'],
+        ['Baslik (or: U19 icin hizli sol kanat araniyor)', 'Başlık (ör: U19 için hızlı sol kanat aranıyor)'],
+        ['Ne aradigini yaz... (pozisyon, yas, fizik, oyun tarzi vb.)', 'Ne aradığını yaz... (pozisyon, yaş, fizik, oyun tarzı vb.)'],
+        ['Iptal', 'İptal'],
+        ['Oyuncu Adi', 'Oyuncu Adı'],
+        ['Oyuncu adi gir', 'Oyuncu adı gir'],
+        ['SÄ±fÄ±rla', 'Sıfırla'],
+        ['Mac adi (or: U19 Hazirlik Maci)', 'Maç adı (ör: U19 Hazırlık Maçı)'],
+        ['Ana yayÄ±n linki (opsiyonel)', 'Ana yayın linki (opsiyonel)'],
+        ['Kisa not (opsiyonel): Bu oyuncu hizli gecislerde etkili.', 'Kısa not (opsiyonel): Bu oyuncu hızlı geçişlerde etkili.'],
+        ['Yayini Baslat', 'Yayını Başlat'],
+        ['Deneme / Idman Ilani', 'Deneme / İdman İlanı'],
+        ['Idman', 'İdman'],
+        ['Deneme Maci', 'Deneme Maçı'],
+        ['Baslik (or: U19 Acik Deneme)', 'Başlık (ör: U19 Açık Deneme)'],
+        ['Sehir', 'Şehir'],
+        ['Yayina Al', 'Yayına Al'],
+        ['Yas', 'Yaş']
+      ]);
+
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      const textNodes = [];
+      while (walker.nextNode()) textNodes.push(walker.currentNode);
+      textNodes.forEach((node) => {
+        let value = node.nodeValue;
+        if (!value || !value.trim()) return;
+        replacements.forEach((next, prev) => {
+          if (value.includes(prev)) value = value.split(prev).join(next);
+        });
+        node.nodeValue = value;
+      });
+
+      document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach((el) => {
+        let value = el.getAttribute('placeholder') || '';
+        replacements.forEach((next, prev) => {
+          if (value.includes(prev)) value = value.split(prev).join(next);
+        });
+        el.setAttribute('placeholder', value);
+      });
+    }
+
+    function applyTurkishTextFixesFinal() {
+document.title = 'Antrenör Profili | NextScout';
+
+      const setText = (selector, text) => {
+        const el = document.querySelector(selector);
+        if (el) el.textContent = text;
+      };
+
+setText('.navbar-left .logo', 'NextScout Antrenör Profili');
+      setText('.navbar-right button[onclick="openScoutProfile()"] span', 'Antrenör Profili');
+      setText('.sidebar-item[onclick="openScoutProfile()"] span', 'Antrenör Profili');
+      setText('.sidebar-item:nth-of-type(4) span', 'Deneme & \u0130dmanlar');
+      setText('.sidebar-item:nth-of-type(5) span', 'Canl\u0131 \u0130zleme Talebi');
+      setText('.sidebar-item:nth-of-type(6) span', '\u0130statistikler');
+      setText('.sidebar-item:nth-of-type(7) span', 'Scout Raporlar\u0131');
+      setText('.sidebar-item:nth-of-type(8) span', 'Mesajlar\u0131m');
+      setText('.sidebar-item:nth-of-type(10) span', 'Yard\u0131m');
+setText('.content h1', 'Antrenör Profili');
+      setText('.quick-report-result', 'Hen\u00fcz rapor kayd\u0131 yok.');
+      setText('.navbar-left .logo', 'NextScout Antrenör Profili');
+      setText('.navbar-right button[onclick="openCoachNeedModal()"] span', 'İlan Ver');
+      setText('.navbar-right button[onclick="openTrialPublishModal()"] span', 'Deneme/İdman İlanı');
+      setText('.navbar-right button[onclick="openLiveScoutModal()"] span', 'Canlı Scout Başlat');
+      setText('.navbar-right button[onclick="openScoutProfile()"] span', 'Antrenör Profili');
+      setText('.sidebar-item[onclick="openScoutProfile()"] span', 'Antrenör Profili');
+      setText('.content h1', 'Antrenör Profili');
+
+      document.querySelectorAll('label').forEach((label) => {
+        const value = (label.textContent || '').trim();
+        if (value === 'Yas Araligi') label.textContent = 'Ya\u015f Aral\u0131\u011f\u0131';
+        if (value === 'Yas') label.textContent = 'Ya\u015f';
+      });
+
+      document.querySelectorAll('button, span, h2, h3, option').forEach((el) => {
+        const value = (el.textContent || '').trim();
+        if (value === 'Deneme/Idman Ilani') el.textContent = 'Deneme/\u0130dman \u0130lan\u0131';
+        if (value === 'Canlı Scout Baslat' || value === 'Canl\u0131 Scout Baslat') el.textContent = 'Canl\u0131 Scout Ba\u015flat';
+        if (value === 'Mesajlarim') el.textContent = 'Mesajlar\u0131m';
+        if (value === 'Yardim') el.textContent = 'Yard\u0131m';
+        if (value === 'Scout Sonuclari') el.textContent = 'Scout Sonu\u00e7lar\u0131';
+        if (value === 'Canlı Scout Baslat' || value === 'Canli Scout Baslat') el.textContent = 'Canl\u0131 Scout Ba\u015flat';
+        if (value === 'Iptal') el.textContent = '\u0130ptal';
+        if (value === 'Yayini Baslat') el.textContent = 'Yay\u0131n\u0131 Ba\u015flat';
+        if (value === 'Deneme / Idman Ilani') el.textContent = 'Deneme / \u0130dman \u0130lan\u0131';
+        if (value === 'Idman') el.textContent = '\u0130dman';
+        if (value === 'Deneme Maci') el.textContent = 'Deneme Ma\u00e7\u0131';
+        if (value === 'Yayina Al') el.textContent = 'Yay\u0131na Al';
+      });
+
+      document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach((el) => {
+        const value = el.getAttribute('placeholder') || '';
+        if (value === 'Oyuncu adi gir') el.setAttribute('placeholder', 'Oyuncu ad\u0131 gir');
+        if (value === 'Baslik (or: U19 icin hizli sol kanat araniyor)') el.setAttribute('placeholder', 'Ba\u015fl\u0131k (\u00f6r: U19 i\u00e7in h\u0131zl\u0131 sol kanat aran\u0131yor)');
+        if (value === 'Ne aradigini yaz... (pozisyon, yas, fizik, oyun tarzi vb.)') el.setAttribute('placeholder', 'Ne arad\u0131\u011f\u0131n\u0131 yaz... (pozisyon, ya\u015f, fizik, oyun tarz\u0131 vb.)');
+        if (value === 'Mac adi (or: U19 Hazirlik Maci)') el.setAttribute('placeholder', 'Ma\u00e7 ad\u0131 (\u00f6r: U19 Haz\u0131rl\u0131k Ma\u00e7\u0131)');
+        if (value === 'Ana yayin linki (opsiyonel)') el.setAttribute('placeholder', 'Ana yay\u0131n linki (opsiyonel)');
+        if (value === 'Baslik (or: U19 Acik Deneme)') el.setAttribute('placeholder', 'Ba\u015fl\u0131k (\u00f6r: U19 A\u00e7\u0131k Deneme)');
+      });
+    }
+
+    function applyTurkishTextFixesFinal() {
+      document.title = 'Antrenör Profili | NextScout';
+
+      const setText = (selector, text) => {
+        const el = document.querySelector(selector);
+        if (el) el.textContent = text;
+      };
+
+      setText('.navbar-left .logo', 'NextScout Antrenör Profili');
+      setText('.navbar-right button[onclick="openCoachNeedModal()"] span', 'İlan Ver');
+      setText('.navbar-right button[onclick="openTrialPublishModal()"] span', 'Deneme/İdman İlanı');
+      setText('.navbar-right button[onclick="openLiveScoutModal()"] span', 'Canlı Scout Başlat');
+      setText('.navbar-right button[onclick="openScoutProfile()"] span', 'Antrenör Profili');
+
+      setText('.sidebar-item[onclick="openScoutProfile()"] span', 'Antrenör Profili');
+      setText('.sidebar-item[onclick="openCoachWorkspace(\'notes\')"] span', 'Antrenor Calisma Alani');
+      setText('.sidebar-item[onclick="window.location.href=\'live-watch-demand.html\'"] span', 'Canlı İzleme Talebi');
+      setText('.sidebar-item[onclick="openPerformance()"] span', 'İstatistikler');
+      setText('.sidebar-item[onclick="openMessages()"] span', 'Mesajlarım');
+      setText('.sidebar-item[onclick="openSettings()"] span', 'Ayarlar');
+      setText('.sidebar-item[onclick="openHelp()"] span', 'Yardım');
+      const watchlistMenu = document.querySelector('.sidebar-item[onclick="openWatchlist()"]');
+      if (watchlistMenu) watchlistMenu.style.display = 'none';
+      const reportsMenu = document.querySelector('.sidebar-item[onclick="openScoutReports()"]');
+      if (reportsMenu) reportsMenu.style.display = 'none';
+
+      setText('.content h1', 'Antrenör Profili');
+      setText('.quick-report-result', 'Henüz rapor kaydı yok.');
+
+      document.querySelectorAll('label').forEach((label) => {
+        const value = (label.textContent || '').trim();
+        if (value === 'Yas Araligi') label.textContent = 'Yaş Aralığı';
+        if (value === 'Yas') label.textContent = 'Yaş';
+      });
+
+      document.querySelectorAll('button, span, h2, h3, option').forEach((el) => {
+        const value = (el.textContent || '').trim();
+        if (value === 'Deneme/Idman Ilani') el.textContent = 'Deneme/İdman İlanı';
+        if (value === 'Canlı Scout Baslat' || value === 'Canli Scout Baslat') el.textContent = 'Canlı Scout Başlat';
+        if (value === 'Mesajlarim') el.textContent = 'Mesajlarım';
+        if (value === 'Yardim') el.textContent = 'Yardım';
+        if (value === 'Scout Sonuclari') el.textContent = 'Scout Sonuçları';
+        if (value === 'Iptal') el.textContent = 'İptal';
+        if (value === 'Yayini Baslat') el.textContent = 'Yayını Başlat';
+        if (value === 'Deneme / Idman Ilani') el.textContent = 'Deneme / İdman İlanı';
+        if (value === 'Idman') el.textContent = 'İdman';
+        if (value === 'Deneme Maci') el.textContent = 'Deneme Maçı';
+        if (value === 'Yayina Al') el.textContent = 'Yayına Al';
+      });
+
+      document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach((el) => {
+        const value = el.getAttribute('placeholder') || '';
+        if (value === 'Oyuncu adi gir') el.setAttribute('placeholder', 'Oyuncu adı gir');
+        if (value === 'Baslik (or: U19 icin hizli sol kanat araniyor)') el.setAttribute('placeholder', 'Başlık (ör: U19 için hızlı sol kanat aranıyor)');
+        if (value === 'Ne aradigini yaz... (pozisyon, yas, fizik, oyun tarzi vb.)') el.setAttribute('placeholder', 'Ne aradığını yaz... (pozisyon, yaş, fizik, oyun tarzı vb.)');
+        if (value === 'Mac adi (or: U19 Hazirlik Maci)') el.setAttribute('placeholder', 'Maç adı (ör: U19 Hazırlık Maçı)');
+        if (value === 'Ana yayin linki (opsiyonel)') el.setAttribute('placeholder', 'Ana yayın linki (opsiyonel)');
+        if (value === 'Baslik (or: U19 Acik Deneme)') el.setAttribute('placeholder', 'Başlık (ör: U19 Açık Deneme)');
+      });
+    }
+
     async function init() {
+      applyTurkishTextFixesFinal();
+      const authUser = getCurrentAuthUserFromStorage();
+      const coachHeroUser = document.getElementById('coachHeroUser');
+      const coachHeroRole = document.getElementById('coachHeroRole');
+      const coachHeroApi = document.getElementById('coachHeroApi');
+      if (coachHeroUser && authUser?.name) coachHeroUser.textContent = String(authUser.name);
+      if (coachHeroRole && authUser?.role) coachHeroRole.textContent = String(authUser.role);
+      if (coachHeroApi) coachHeroApi.textContent = 'Baglaniyor';
+      loadCoachMarketPulse();
+      setInterval(loadCoachMarketPulse, 30000);
       const grid = document.getElementById('playersGrid');
-      grid.innerHTML = '<div style="padding:18px;border:1px solid #e5e7eb;border-radius:10px;background:#f9fafb;color:#6b7280;">Oyuncular yukleniyor...</div>';
+      grid.innerHTML = '<div style="padding:18px;border:1px solid #475569;border-radius:10px;background:#1f2937;color:#cbd5e1;">Oyuncular yukleniyor...</div>';
 
       try {
         allPlayers = await loadPlayersFromApi();
+        if (coachHeroApi) coachHeroApi.textContent = 'API baglandi';
       } catch (error) {
         allPlayers = getFallbackPlayers();
+        if (coachHeroApi) coachHeroApi.textContent = 'Yerel yedek';
+      }
+
+      try {
+        saveWatchlist(await fetchWatchlistFromApi());
+      } catch (error) {
+        saveWatchlist([]);
       }
 
       filteredPlayers = allPlayers.slice();
@@ -894,16 +3154,23 @@
         openLiveScoutModal();
       }
       initQuickScoutReportWidget();
+
+      document.getElementById('coachDashboardReviewSubmit')?.addEventListener('click', submitDashboardCoachReview);
+      document.getElementById('coachDashboardNoteSubmit')?.addEventListener('click', submitDashboardCoachNote);
+      document.getElementById('coachDashboardNoteSearch')?.addEventListener('input', renderDashboardCoachNotes);
+      document.getElementById('coachDashboardClipSubmit')?.addEventListener('click', submitDashboardCoachClip);
+      document.getElementById('coachDashboardClipSearch')?.addEventListener('input', renderDashboardCoachClips);
+      document.getElementById('coachDashboardEvalSearch')?.addEventListener('input', renderDashboardCoachEvaluations);
+      document.getElementById('coachDashboardEvalMinScore')?.addEventListener('input', renderDashboardCoachEvaluations);
+      document.getElementById('coachSuccessStoryForm')?.addEventListener('submit', submitCoachSuccessStoryForm);
     }
 
     window.addEventListener('DOMContentLoaded', init);
   </script>
-    <script src="assets/js/core-stability.js"></script>
+  <script src="assets/js/api-base.js"></script>
+  <script src="assets/js/ai-video-lab.js"></script>
+  <script src="assets/js/core-stability.js"></script>
+    <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
-
 

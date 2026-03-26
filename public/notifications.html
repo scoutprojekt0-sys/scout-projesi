@@ -762,6 +762,9 @@
     const composeSubject = document.getElementById('composeSubject');
     const composeBody = document.getElementById('composeBody');
     const composePrefillParams = new URLSearchParams(window.location.search);
+    const composeReturnUrl = String(composePrefillParams.get('return_to') || '').trim();
+    let composeCloseBtn = document.getElementById('composeCloseBtn');
+    let composeCancelBtn = document.getElementById('composeCancelBtn');
 
     async function resolveRecipientByName(name) {
       const query = String(name || '').trim();
@@ -791,12 +794,55 @@
       composeModal?.classList.add('show');
     }
 
-    function closeComposeModal() {
+    function returnToComposeOrigin() {
+      if (composePrefillParams.get('compose') !== '1' || !composeReturnUrl) return false;
+      const absoluteReturnUrl = new URL(composeReturnUrl, window.location.href).href;
+      window.location.replace(absoluteReturnUrl);
+      return true;
+    }
+
+    function closeComposeModal(skipRedirect = false) {
       composeModal?.classList.remove('show');
+      if (!skipRedirect) {
+        returnToComposeOrigin();
+      }
     }
 
     function bootstrapComposeFromQuery() {
       if (composePrefillParams.get('compose') !== '1') return;
+      const absoluteReturnUrl = composeReturnUrl ? new URL(composeReturnUrl, window.location.href).href : '';
+      if (composeModal && composeReturnUrl) {
+        composeModal.onclick = function (event) {
+          if (event.target && event.target.id === 'composeModal') {
+            returnToComposeOrigin();
+          }
+        };
+      }
+      if (composeCloseBtn && absoluteReturnUrl) {
+        const closeLink = document.createElement('a');
+        closeLink.id = 'composeCloseBtn';
+        closeLink.className = composeCloseBtn.className;
+        closeLink.href = absoluteReturnUrl;
+        closeLink.textContent = composeCloseBtn.textContent || 'Kapat';
+        composeCloseBtn.replaceWith(closeLink);
+        composeCloseBtn = closeLink;
+      }
+      if (composeCancelBtn && absoluteReturnUrl) {
+        const cancelLink = document.createElement('a');
+        cancelLink.id = 'composeCancelBtn';
+        cancelLink.className = composeCancelBtn.className;
+        cancelLink.href = absoluteReturnUrl;
+        cancelLink.textContent = composeCancelBtn.textContent || 'Vazgec';
+        composeCancelBtn.replaceWith(cancelLink);
+        composeCancelBtn = cancelLink;
+      }
+      if (absoluteReturnUrl) {
+        window.addEventListener('keydown', function (event) {
+          if (event.key === 'Escape') {
+            window.location.href = absoluteReturnUrl;
+          }
+        });
+      }
       openComposeModal({
         to_name: String(composePrefillParams.get('to_name') || '').trim(),
         to_user_id: String(composePrefillParams.get('to_user_id') || '').trim(),
@@ -859,9 +905,12 @@
         });
         state.tab = 'sent';
         state.selectedId = state.messages[0].id;
-        closeComposeModal();
+        closeComposeModal(true);
         composeForm?.reset();
         render();
+        if (returnToComposeOrigin()) {
+          return;
+        }
       } catch (error) {
         if (composeNotice) composeNotice.textContent = `Mesaj gonderilemedi: ${String(error.message || 'Bilinmeyen hata')}`;
       }
@@ -1079,8 +1128,10 @@
     });
 
     document.getElementById('composeBtn')?.addEventListener('click', () => openComposeModal());
-    document.getElementById('composeCloseBtn')?.addEventListener('click', closeComposeModal);
-    document.getElementById('composeCancelBtn')?.addEventListener('click', closeComposeModal);
+    if (composePrefillParams.get('compose') !== '1') {
+      composeCloseBtn?.addEventListener('click', () => closeComposeModal());
+      composeCancelBtn?.addEventListener('click', () => closeComposeModal());
+    }
     composeForm?.addEventListener('submit', sendComposeMessage);
     bootstrapComposeFromQuery();
 

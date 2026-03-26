@@ -2689,6 +2689,12 @@
                             <button class="action-btn" onclick="sendOffer(${Number(player.id) || 0})">Teklif</button>
                             <button class="action-btn" style="grid-column: span 2; ${selected ? 'background:#4f46e5;color:#fff;border-color:#4f46e5;' : ''}" onclick="toggleComparePlayer(${Number(player.id) || 0})">${selected ? 'Kiyastan Cikar' : 'KÄ±yas Icin Ekle'}</button>
                         </div>
+                        <div class="card-actions" style="margin-top:8px;">
+                            <button class="action-btn" onclick="openTeamInteraction(${Number(player.id) || 0}, 'message')">Mesaj</button>
+                            <button class="action-btn" onclick="toggleTeamWatch(${Number(player.id) || 0})">Izleme</button>
+                            <button class="action-btn" onclick="sendTeamInterest(${Number(player.id) || 0})">Ilgi</button>
+                            <button class="action-btn" onclick="openTeamInteraction(${Number(player.id) || 0}, 'invite')">Davet</button>
+                        </div>
                     </div>
                 </div>`;
             }).join('');
@@ -3003,6 +3009,81 @@
         function openPlayerProfile(playerId) {
             if (!playerId) return;
             window.location.href = `player-profile.html?user_id=${encodeURIComponent(playerId)}`;
+        }
+
+        function getTeamInteractionPlayer(playerId) {
+            return allPlayers.find((p) => Number(p.id) === Number(playerId)) || null;
+        }
+
+        function buildTeamInteractionUrl(player, type) {
+            const teamName = String(document.getElementById('teamNameDisplay')?.textContent || 'Kulup Ekibi').trim() || 'Kulup Ekibi';
+            const subjectMap = {
+                message: `${teamName} oyuncu iletisimi`,
+                invite: `${teamName} oyuncu daveti`,
+            };
+            const messageMap = {
+                message: `${player.name || 'Oyuncu'} merhaba,\n\n${teamName} olarak profilinle ilgileniyoruz. Uygun oldugunda bizimle iletisime gecmeni istiyoruz.`,
+                invite: `${player.name || 'Oyuncu'} merhaba,\n\n${teamName} olarak seni gorusme ve deneme surecine davet etmek istiyoruz. Uygun oldugun zaman bize don.`,
+            };
+            const params = new URLSearchParams({
+                compose: '1',
+                to_name: player.name || '',
+                to_user_id: String(Number(player.id) || ''),
+                subject: subjectMap[type] || subjectMap.message,
+                message: messageMap[type] || messageMap.message,
+                notice: 'Alici ve metin kulup panelinden otomatik dolduruldu.',
+                return_to: 'team-dashboard.html',
+            });
+            return `notifications.html?${params.toString()}`;
+        }
+
+        function openTeamInteraction(playerId, type) {
+            const player = getTeamInteractionPlayer(playerId);
+            if (!player) { window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.'); return; }
+            window.location.href = buildTeamInteractionUrl(player, type);
+        }
+
+        async function toggleTeamWatch(playerId) {
+            const player = getTeamInteractionPlayer(playerId);
+            if (!player) { window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.'); return; }
+            const token = (localStorage.getItem('nextscout_token') || '').trim();
+            const apiBase = getApiBaseUrl();
+            if (!token || token === 'local-session-token') {
+                window.nsNotify?.error ? window.nsNotify.error('Izleme listesi icin giris yap.') : nsnsAlert('Izleme listesi icin giris yap.');
+                return;
+            }
+            try {
+                const response = await fetch(`${apiBase}/favorites/${encodeURIComponent(player.id)}/toggle`, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const body = await response.json().catch(() => ({}));
+                if (!response.ok || body?.ok === false) throw new Error(body?.message || `HTTP ${response.status}`);
+                const active = Boolean(body?.data?.is_favorited);
+                const note = active ? `${player.name} izleme listesine eklendi.` : `${player.name} izleme listesinden cikarildi.`;
+                window.nsNotify?.success ? window.nsNotify.success(note) : nsnsAlert(note);
+            } catch (error) {
+                window.nsNotify?.error ? window.nsNotify.error(error?.message || 'Izleme listesi guncellenemedi.') : nsnsAlert(error?.message || 'Izleme listesi guncellenemedi.');
+            }
+        }
+
+        function sendTeamInterest(playerId) {
+            const player = getTeamInteractionPlayer(playerId);
+            if (!player) { window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.'); return; }
+            const teamName = String(document.getElementById('teamNameDisplay')?.textContent || 'Kulup Ekibi').trim() || 'Kulup Ekibi';
+            const params = new URLSearchParams({
+                compose: '1',
+                to_name: player.name || '',
+                to_user_id: String(Number(player.id) || ''),
+                subject: `${teamName} senden ilgi duyuyor`,
+                message: `${player.name || 'Oyuncu'} merhaba,\n\n${teamName} olarak seni yakindan takip ediyoruz ve profilinle ilgileniyoruz.`,
+                notice: 'Ilgi mesaji kulup panelinden otomatik dolduruldu.',
+                return_to: 'team-dashboard.html',
+            });
+            window.location.href = `notifications.html?${params.toString()}`;
         }
 
         async function sendOffer(playerId) {

@@ -3089,6 +3089,12 @@
                             <button class="action-btn" onclick="sendApplication(${Number(player.id) || 0})"><i class="fas fa-paper-plane"></i><span>Basvur</span></button>
                             <button class="action-btn" onclick="toggleFavorite(${Number(player.id) || 0})"><i class="fas fa-star"></i><span>Favori</span></button>
                         </div>
+                        <div class="card-actions" style="margin-top:8px;">
+                            <button class="action-btn" onclick="openManagerInteraction(${Number(player.id) || 0}, 'message')"><i class="fas fa-comments"></i><span>Mesaj</span></button>
+                            <button class="action-btn" onclick="toggleFavorite(${Number(player.id) || 0})"><i class="fas fa-binoculars"></i><span>Izleme</span></button>
+                            <button class="action-btn" onclick="sendManagerInterest(${Number(player.id) || 0})"><i class="fas fa-heart"></i><span>Ilgi</span></button>
+                            <button class="action-btn" onclick="openManagerInteraction(${Number(player.id) || 0}, 'invite')"><i class="fas fa-paper-plane"></i><span>Davet</span></button>
+                        </div>
                     </div>
                 </div>`;
             }).join('');
@@ -3146,6 +3152,54 @@
 
             renderPlayers(filteredPlayers);
             updateStats();
+        }
+
+        function getManagerInteractionPlayer(playerId) {
+            return allPlayers.find((p) => Number(p.id) === Number(playerId)) || null;
+        }
+
+        function buildManagerInteractionUrl(player, type) {
+            const managerName = String(document.getElementById('managerHeroName')?.textContent || 'Menajer Ekibi').trim() || 'Menajer Ekibi';
+            const subjectMap = {
+                message: `${managerName} oyuncu iletisimi`,
+                invite: `${managerName} gorusme daveti`,
+            };
+            const messageMap = {
+                message: `${player.name || 'Oyuncu'} merhaba,\n\n${managerName} olarak profilin ve kariyer yolunla ilgileniyoruz. Uygun oldugunda iletisime gecmeni istiyoruz.`,
+                invite: `${player.name || 'Oyuncu'} merhaba,\n\n${managerName} olarak seninle temsil ve kariyer sureci icin bir gorusme planlamak istiyoruz.`,
+            };
+            const params = new URLSearchParams({
+                compose: '1',
+                to_name: player.name || '',
+                to_user_id: String(Number(player.id) || ''),
+                subject: subjectMap[type] || subjectMap.message,
+                message: messageMap[type] || messageMap.message,
+                notice: 'Alici ve metin menajer panelinden otomatik dolduruldu.',
+                return_to: 'manager-dashboard.html',
+            });
+            return `notifications.html?${params.toString()}`;
+        }
+
+        function openManagerInteraction(playerId, type) {
+            const player = getManagerInteractionPlayer(playerId);
+            if (!player) { window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.'); return; }
+            window.location.href = buildManagerInteractionUrl(player, type);
+        }
+
+        function sendManagerInterest(playerId) {
+            const player = getManagerInteractionPlayer(playerId);
+            if (!player) { window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.'); return; }
+            const managerName = String(document.getElementById('managerHeroName')?.textContent || 'Menajer Ekibi').trim() || 'Menajer Ekibi';
+            const params = new URLSearchParams({
+                compose: '1',
+                to_name: player.name || '',
+                to_user_id: String(Number(player.id) || ''),
+                subject: `${managerName} senden ilgi duyuyor`,
+                message: `${player.name || 'Oyuncu'} merhaba,\n\n${managerName} olarak seni yakindan takip ediyoruz ve kariyer profilinle ilgileniyoruz.`,
+                notice: 'Ilgi mesaji menajer panelinden otomatik dolduruldu.',
+                return_to: 'manager-dashboard.html',
+            });
+            window.location.href = `notifications.html?${params.toString()}`;
         }
 
         function openPlayerProfile(playerId) {
