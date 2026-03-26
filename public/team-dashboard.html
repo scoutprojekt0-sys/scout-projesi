@@ -892,15 +892,19 @@
             padding: 16px;
             backdrop-filter: blur(4px);
         }
-        .need-modal-overlay.show { display: flex; }
+        .need-modal-overlay.show,
+        .need-modal-overlay.active { display: flex; }
         .need-modal {
             width: min(860px, 100%);
+            max-height: 92vh;
             background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
             border: 1px solid var(--ns-line);
             box-shadow: var(--ns-shadow);
             color: var(--ns-text);
             position: relative;
             overflow: hidden;
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr) auto;
             border-radius: 0;
         }
         .need-modal::before {
@@ -929,6 +933,17 @@
             padding: 16px 18px;
             display: grid;
             gap: 10px;
+            overflow-y: auto;
+            min-height: 0;
+        }
+        .need-modal-body label {
+            display: block;
+            margin-bottom: 6px;
+            color: #dbeafe;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: .06em;
+            text-transform: uppercase;
         }
         .need-modal-body input,
         .need-modal-body textarea,
@@ -959,6 +974,20 @@
             justify-content: flex-end;
             gap: 10px;
             padding: 0 18px 18px;
+        }
+        #teamOfferComposerForm {
+            display: grid;
+            grid-template-rows: minmax(0, 1fr) auto;
+            min-height: 0;
+            height: 100%;
+        }
+        #teamOfferComposerSummary {
+            color: #cbd5e1 !important;
+        }
+        #teamOfferComposerStatus {
+            color: #dbeafe;
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            background: rgba(255, 255, 255, 0.04);
         }
         .quick-report-result {
             border: 1px solid var(--ns-line);
@@ -2007,6 +2036,95 @@
         </div>
     </div>
 
+    <div class="need-modal-overlay" id="teamOfferComposerOverlay" onclick="if (event.target.id === 'teamOfferComposerOverlay') closeTeamOfferComposer();">
+        <div class="need-modal live-modal" onclick="event.stopPropagation()">
+            <div class="need-modal-head">
+                <div>
+                    <h3 id="teamOfferComposerTitle">Profesyonel Teklif Olustur</h3>
+                    <p id="teamOfferComposerSummary" style="margin:6px 0 0 0;color:#6b7280;font-size:13px;">Oyuncu icin para, sezon ve sozlesme detaylarini net gir.</p>
+                </div>
+                <button class="btn-small secondary" type="button" onclick="closeTeamOfferComposer()">Kapat</button>
+            </div>
+            <form id="teamOfferComposerForm">
+                <div class="need-modal-body" style="display:grid;gap:14px;">
+                    <div class="search-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:0;">
+                        <div class="form-group">
+                            <label>Oyuncu</label>
+                            <input type="text" id="teamOfferPlayerName" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Teklif Tipi</label>
+                            <select id="teamOfferType" required>
+                                <option value="permanent">Kalici Transfer</option>
+                                <option value="loan">Kiralik</option>
+                                <option value="trial">Deneme / Trial</option>
+                                <option value="pre_contract">On Protokol</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Bonservis / Teklif Bedeli</label>
+                            <input type="number" id="teamOfferAmount" min="1" step="0.01" placeholder="250000" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Para Birimi</label>
+                            <select id="teamOfferCurrency">
+                                <option value="EUR">EUR</option>
+                                <option value="USD">USD</option>
+                                <option value="TRY">TRY</option>
+                                <option value="GBP">GBP</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Sezon</label>
+                            <input type="text" id="teamOfferSeason" placeholder="2026-27" maxlength="20">
+                        </div>
+                        <div class="form-group">
+                            <label>Sozlesme Suresi (Yil)</label>
+                            <input type="number" id="teamOfferContractYears" min="1" max="7" step="1" placeholder="3">
+                        </div>
+                        <div class="form-group">
+                            <label>Yillik Maas</label>
+                            <input type="number" id="teamOfferSalaryAmount" min="0" step="0.01" placeholder="120000">
+                        </div>
+                        <div class="form-group">
+                            <label>Imza Parasi</label>
+                            <input type="number" id="teamOfferSigningFee" min="0" step="0.01" placeholder="50000">
+                        </div>
+                        <div class="form-group">
+                            <label>Baslangic Tarihi</label>
+                            <input type="date" id="teamOfferStartDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Bitis Tarihi</label>
+                            <input type="date" id="teamOfferEndDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Son Gecerlilik Tarihi</label>
+                            <input type="date" id="teamOfferExpiresAt">
+                        </div>
+                        <div class="form-group">
+                            <label>Bonus Ozeti</label>
+                            <input type="text" id="teamOfferBonusSummary" maxlength="255" placeholder="Mac basi bonus, ilk 11 primi">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Ozel Maddeler</label>
+                        <textarea id="teamOfferClauses" maxlength="3000" placeholder="Serbest kalma bedeli, performans bonusu, kiralik opsiyonu gibi maddeler"></textarea>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Kulup Notu</label>
+                        <textarea id="teamOfferNote" maxlength="2000" placeholder="Oyuncuya iletilecek kisa teklif notu"></textarea>
+                    </div>
+                    <div class="need-item" id="teamOfferComposerStatus" style="margin:0;">Teklif detaylarini girip gonder.</div>
+                </div>
+                <div class="need-modal-actions">
+                    <button class="btn-small secondary" type="button" onclick="closeTeamOfferComposer()">Vazgec</button>
+                    <button class="btn-small primary" type="submit">Teklifi Gonder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="need-modal-overlay" id="teamSuccessStorySubmitOverlay" onclick="if (event.target.id === 'teamSuccessStorySubmitOverlay') closeTeamSuccessStorySubmitModal();">
         <div class="need-modal live-modal" onclick="event.stopPropagation()">
             <div class="need-modal-head">
@@ -2199,6 +2317,7 @@
         let searchDebounceTimer = null;
         let activeTeamGroup = 'u9';
         let clubOffers = [];
+        let teamOfferComposerPlayer = null;
         let clubInternalPlayers = [];
         let editingClubPlayerId = null;
         let teamCachedScoutVideos = [];
@@ -3605,30 +3724,151 @@
             window.location.href = `notifications.html?${params.toString()}`;
         }
 
-        async function sendOffer(playerId) {
+        function inferOfferSeason(dateValue) {
+            const targetDate = dateValue ? new Date(dateValue) : new Date();
+            const year = Number.isNaN(targetDate.getTime()) ? new Date().getFullYear() : targetDate.getFullYear();
+            const month = Number.isNaN(targetDate.getTime()) ? (new Date().getMonth() + 1) : (targetDate.getMonth() + 1);
+            const startYear = month >= 7 ? year : year - 1;
+            return `${startYear}-${String((startYear + 1) % 100).padStart(2, '0')}`;
+        }
+
+        function suggestOfferDates() {
+            const start = new Date();
+            const expiry = new Date(start);
+            expiry.setDate(expiry.getDate() + 7);
+            const end = new Date(start);
+            end.setFullYear(end.getFullYear() + 3);
+            return {
+                start: start.toISOString().slice(0, 10),
+                end: end.toISOString().slice(0, 10),
+                expiry: expiry.toISOString().slice(0, 10),
+            };
+        }
+
+        function openTeamOfferComposer(playerId) {
             const player = allPlayers.find((p) => Number(p.id) === Number(playerId));
             if (!player) { window.nsNotify?.error ? window.nsNotify.error('Oyuncu bulunamadi.') : nsnsAlert('Oyuncu bulunamadi.'); return; }
+            teamOfferComposerPlayer = player;
+            const overlay = document.getElementById('teamOfferComposerOverlay');
+            const title = document.getElementById('teamOfferComposerTitle');
+            const summary = document.getElementById('teamOfferComposerSummary');
+            const status = document.getElementById('teamOfferComposerStatus');
+            const defaults = suggestOfferDates();
+            const contractYears = document.getElementById('teamOfferContractYears');
+            const startDate = document.getElementById('teamOfferStartDate');
+            const endDate = document.getElementById('teamOfferEndDate');
+            const expiresAt = document.getElementById('teamOfferExpiresAt');
+            document.getElementById('teamOfferPlayerName').value = player.name || '';
+            document.getElementById('teamOfferType').value = 'permanent';
+            document.getElementById('teamOfferAmount').value = '';
+            document.getElementById('teamOfferCurrency').value = 'EUR';
+            document.getElementById('teamOfferSeason').value = inferOfferSeason(defaults.start);
+            if (contractYears) contractYears.value = '3';
+            if (startDate) startDate.value = defaults.start;
+            if (endDate) endDate.value = defaults.end;
+            if (expiresAt) expiresAt.value = defaults.expiry;
+            document.getElementById('teamOfferSalaryAmount').value = '';
+            document.getElementById('teamOfferSigningFee').value = '';
+            document.getElementById('teamOfferBonusSummary').value = '';
+            document.getElementById('teamOfferClauses').value = '';
+            document.getElementById('teamOfferNote').value = '';
+            if (title) title.textContent = `${player.name || 'Oyuncu'} icin profesyonel teklif`;
+            if (summary) summary.textContent = 'Bonservis, sezon, sozlesme ve odeme detaylarini tek formda gonder.';
+            if (status) status.textContent = 'Teklif detaylarini girip gonder.';
+            overlay?.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
 
-            const amountInput = prompt(`${player.name} icin teklif tutari (EUR):`, '250000');
-            if (amountInput === null) return;
-            const amount = Number(String(amountInput).replace(/[^\d.]/g, ''));
-            if (!amount || amount <= 0) { window.nsNotify?.error ? window.nsNotify.error('Gecerli tutar gir.') : nsnsAlert('Gecerli tutar gir.'); return; }
+        function closeTeamOfferComposer() {
+            document.getElementById('teamOfferComposerOverlay')?.classList.remove('active');
+            document.body.style.overflow = '';
+            teamOfferComposerPlayer = null;
+        }
 
-            const note = prompt('Kisa not (opsiyonel):', '') || '';
+        function syncTeamOfferDerivedFields() {
+            const startInput = document.getElementById('teamOfferStartDate');
+            const yearsInput = document.getElementById('teamOfferContractYears');
+            const seasonInput = document.getElementById('teamOfferSeason');
+            const endInput = document.getElementById('teamOfferEndDate');
+            const typeInput = document.getElementById('teamOfferType');
+            const startValue = String(startInput?.value || '').trim();
+            const years = Number(yearsInput?.value || 0);
+            const offerType = String(typeInput?.value || 'permanent').trim();
+            if (seasonInput && startValue) {
+                seasonInput.value = inferOfferSeason(startValue);
+            }
+            if (endInput && startValue && years > 0 && offerType !== 'trial') {
+                const endDate = new Date(startValue);
+                if (!Number.isNaN(endDate.getTime())) {
+                    endDate.setFullYear(endDate.getFullYear() + years);
+                    endDate.setDate(endDate.getDate() - 1);
+                    endInput.value = endDate.toISOString().slice(0, 10);
+                }
+            }
+        }
+
+        async function submitTeamOfferComposer(event) {
+            if (event) event.preventDefault();
+            const player = teamOfferComposerPlayer;
+            const status = document.getElementById('teamOfferComposerStatus');
+            if (!player) {
+                if (status) status.textContent = 'Oyuncu secimi bulunamadi.';
+                return;
+            }
+
+            const amount = Number(document.getElementById('teamOfferAmount')?.value || 0);
+            const contractYears = Number(document.getElementById('teamOfferContractYears')?.value || 0);
+            const startDate = String(document.getElementById('teamOfferStartDate')?.value || '').trim();
+            const endDate = String(document.getElementById('teamOfferEndDate')?.value || '').trim();
+            const expiresAt = String(document.getElementById('teamOfferExpiresAt')?.value || '').trim();
+            const offerType = String(document.getElementById('teamOfferType')?.value || 'permanent').trim();
+            const payload = {
+                target_player_user_id: Number(player.id) || null,
+                player_name: player.name,
+                offer_type: offerType,
+                amount_eur: amount,
+                currency: String(document.getElementById('teamOfferCurrency')?.value || 'EUR').trim().toUpperCase(),
+                season: String(document.getElementById('teamOfferSeason')?.value || inferOfferSeason(startDate)).trim(),
+                contract_years: contractYears > 0 ? contractYears : null,
+                salary_amount: Number(document.getElementById('teamOfferSalaryAmount')?.value || 0) || null,
+                signing_fee: Number(document.getElementById('teamOfferSigningFee')?.value || 0) || null,
+                bonus_summary: String(document.getElementById('teamOfferBonusSummary')?.value || '').trim(),
+                contract_start_date: startDate || null,
+                contract_end_date: endDate || null,
+                expires_at: expiresAt ? `${expiresAt}T23:59:00` : null,
+                clauses: String(document.getElementById('teamOfferClauses')?.value || '').trim(),
+                status: 'sent',
+                note: String(document.getElementById('teamOfferNote')?.value || '').trim(),
+            };
+
+            if (!amount || amount <= 0) {
+                if (status) status.textContent = 'Gecerli teklif bedeli gir.';
+                return;
+            }
+            if (!payload.season) {
+                if (status) status.textContent = 'Sezon bilgisi gir.';
+                return;
+            }
+            if (offerType !== 'trial' && !contractYears && !endDate) {
+                if (status) status.textContent = 'Sozlesme suresi veya bitis tarihi gir.';
+                return;
+            }
+
             try {
-                const created = await createClubOffer({
-                    target_player_user_id: Number(player.id) || null,
-                    player_name: player.name,
-                    amount_eur: amount,
-                    status: 'sent',
-                    note: note.trim(),
-                });
+                if (status) status.textContent = 'Teklif gonderiliyor...';
+                const created = await createClubOffer(payload);
                 saveOffers([created, ...getOffers()].slice(0, 500));
                 updateStats();
-                window.nsNotify?.success ? window.nsNotify.success(`Teklif gÃ¶nderildi: ${player.name}`) : nsnsAlert(`Teklif gÃ¶nderildi: ${player.name}`);
+                closeTeamOfferComposer();
+                window.nsNotify?.success ? window.nsNotify.success(`Teklif gonderildi: ${player.name}`) : nsnsAlert(`Teklif gonderildi: ${player.name}`);
             } catch (error) {
+                if (status) status.textContent = error.message || 'Teklif gonderilemedi.';
                 window.nsNotify?.error ? window.nsNotify.error(error.message || 'Teklif gonderilemedi.') : nsnsAlert(error.message || 'Teklif gonderilemedi.');
             }
+        }
+
+        async function sendOffer(playerId) {
+            openTeamOfferComposer(playerId);
         }
 
         async function runTeamPlayerNextStep() {
@@ -4605,6 +4845,10 @@
             document.getElementById('teamPlayerOpsSaveNoteBtn')?.addEventListener('click', saveTeamPlayerOpsNote);
             document.getElementById('teamPlayerOpsSaveClipBtn')?.addEventListener('click', saveTeamPlayerOpsClip);
             document.getElementById('teamPlayerOpsSaveEvalBtn')?.addEventListener('click', saveTeamPlayerOpsEvaluation);
+            document.getElementById('teamOfferComposerForm')?.addEventListener('submit', submitTeamOfferComposer);
+            document.getElementById('teamOfferStartDate')?.addEventListener('change', syncTeamOfferDerivedFields);
+            document.getElementById('teamOfferContractYears')?.addEventListener('input', syncTeamOfferDerivedFields);
+            document.getElementById('teamOfferType')?.addEventListener('change', syncTeamOfferDerivedFields);
             let authUser = null;
             try { authUser = JSON.parse(localStorage.getItem('nextscout_user') || '{}'); } catch (error) { authUser = null; }
             const teamHeroUser = document.getElementById('teamHeroUser');

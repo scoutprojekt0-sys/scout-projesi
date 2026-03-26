@@ -7,9 +7,12 @@ use App\Http\Controllers\Controller;
 use App\Models\ClubInternalPlayer;
 use App\Models\ClubOffer;
 use App\Models\ClubPromo;
+use App\Models\PlayerTransfer;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class ClubWorkspaceController extends Controller
@@ -24,6 +27,7 @@ class ClubWorkspaceController extends Controller
         }
 
         $offers = ClubOffer::query()
+            ->with(['transfer:id,negotiation_status,verification_status,counter_fee,updated_at'])
             ->where('club_user_id', (int) $user->id)
             ->latest('id')
             ->paginate(50)
@@ -42,7 +46,18 @@ class ClubWorkspaceController extends Controller
         $validated = $request->validate([
             'target_player_user_id' => ['nullable', 'integer', 'exists:users,id'],
             'player_name' => ['required', 'string', 'min:2', 'max:120'],
+            'offer_type' => ['required', 'string', 'in:permanent,loan,trial,pre_contract'],
             'amount_eur' => ['required', 'numeric', 'min:1', 'max:999999999'],
+            'currency' => ['nullable', 'string', 'size:3'],
+            'season' => ['nullable', 'string', 'max:20'],
+            'contract_years' => ['nullable', 'integer', 'min:1', 'max:7'],
+            'salary_amount' => ['nullable', 'numeric', 'min:0', 'max:999999999'],
+            'signing_fee' => ['nullable', 'numeric', 'min:0', 'max:999999999'],
+            'bonus_summary' => ['nullable', 'string', 'max:255'],
+            'contract_start_date' => ['nullable', 'date'],
+            'contract_end_date' => ['nullable', 'date', 'after_or_equal:contract_start_date'],
+            'expires_at' => ['nullable', 'date', 'after:today'],
+            'clauses' => ['nullable', 'string', 'max:3000'],
             'status' => ['nullable', 'string', 'max:40'],
             'note' => ['nullable', 'string', 'max:2000'],
         ]);
@@ -55,16 +70,32 @@ class ClubWorkspaceController extends Controller
             }
         }
 
-        $offer = ClubOffer::query()->create([
-            'club_user_id' => (int) $user->id,
-            'target_player_user_id' => $targetPlayerId,
-            'player_name' => trim((string) $validated['player_name']),
-            'amount_eur' => $validated['amount_eur'],
-            'status' => trim((string) ($validated['status'] ?? 'sent')),
-            'note' => $this->nullableString($validated['note'] ?? null),
-        ]);
+        $offer = DB::transaction(function () use ($user, $validated, $targetPlayerId) {
+            $transfer = $targetPlayerId ? $this->createLinkedTransfer($user, $validated, $targetPlayerId) : null;
 
-        return $this->successResponse($this->transformOffer($offer), 'Teklif kaydedildi.', Response::HTTP_CREATED);
+            return ClubOffer::query()->create([
+                'club_user_id' => (int) $user->id,
+                'transfer_id' => $transfer?->id,
+                'target_player_user_id' => $targetPlayerId,
+                'player_name' => trim((string) $validated['player_name']),
+                'offer_type' => trim((string) $validated['offer_type']),
+                'amount_eur' => $validated['amount_eur'],
+                'currency' => strtoupper(trim((string) ($validated['currency'] ?? 'EUR'))),
+                'season' => $this->nullableString($validated['season'] ?? null),
+                'contract_years' => $validated['contract_years'] ?? null,
+                'salary_amount' => $validated['salary_amount'] ?? null,
+                'signing_fee' => $validated['signing_fee'] ?? null,
+                'bonus_summary' => $this->nullableString($validated['bonus_summary'] ?? null),
+                'contract_start_date' => $validated['contract_start_date'] ?? null,
+                'contract_end_date' => $validated['contract_end_date'] ?? null,
+                'expires_at' => $validated['expires_at'] ?? null,
+                'clauses' => $this->nullableString($validated['clauses'] ?? null),
+                'status' => trim((string) ($validated['status'] ?? 'sent')),
+                'note' => $this->nullableString($validated['note'] ?? null),
+            ]);
+        });
+
+        return $this->successResponse($this->transformOffer($offer->load('transfer')), 'Teklif kaydedildi.', Response::HTTP_CREATED);
     }
 
     public function promosIndex(Request $request): JsonResponse
@@ -246,13 +277,74 @@ class ClubWorkspaceController extends Controller
     {
         return [
             'id' => $offer->id,
+            'transfer_id' => $offer->transfer_id,
             'target_player_user_id' => $offer->target_player_user_id,
             'player_name' => $offer->player_name,
+            'offer_type' => $offer->offer_type,
             'amount_eur' => (float) $offer->amount_eur,
+            'currency' => $offer->currency ?: 'EUR',
+            'season' => $offer->season,
+            'contract_years' => $offer->contract_years,
+            'salary_amount' => $offer->salary_amount !== null ? (float) $offer->salary_amount : null,
+            'signing_fee' => $offer->signing_fee !== null ? (float) $offer->signing_fee : null,
+            'bonus_summary' => $offer->bonus_summary,
+            'contract_start_date' => optional($offer->contract_start_date)->toDateString(),
+            'contract_end_date' => optional($offer->contract_end_date)->toDateString(),
+            'expires_at' => optional($offer->expires_at)->toIso8601String(),
+            'clauses' => $offer->clauses,
             'status' => $offer->status,
             'note' => $offer->note,
+            'negotiation_status' => $offer->transfer?->negotiation_status,
+            'verification_status' => $offer->transfer?->verification_status,
+            'counter_fee' => $offer->transfer?->counter_fee !== null ? (float) $offer->transfer->counter_fee : null,
             'created_at' => optional($offer->created_at)->toIso8601String(),
         ];
+    }
+
+    private function createLinkedTransfer(User $user, array $validated, int $targetPlayerId): PlayerTransfer
+    {
+        $transferDate = Carbon::now();
+        $month = (int) $transferDate->format('n');
+        $seasonStart = $month >= 7 ? (int) $transferDate->format('Y') : ((int) $transferDate->format('Y') - 1);
+        $season = sprintf('%d-%d', $seasonStart, ($seasonStart + 1) % 100);
+        $window = in_array($month, [1, 2], true) ? 'winter' : 'summer';
+        $note = $this->nullableString($validated['note'] ?? null);
+        $offerType = trim((string) ($validated['offer_type'] ?? 'permanent'));
+        $currency = strtoupper(trim((string) ($validated['currency'] ?? 'EUR')));
+        $season = $this->nullableString($validated['season'] ?? null) ?: $season;
+        $contractEndDate = $validated['contract_end_date'] ?? null;
+        $summaryLines = array_filter([
+            $note ? 'Kulup teklifi notu: '.$note : null,
+            !empty($validated['salary_amount']) ? 'Yillik maas: '.$validated['salary_amount'].' '.$currency : null,
+            !empty($validated['signing_fee']) ? 'Imza parasi: '.$validated['signing_fee'].' '.$currency : null,
+            !empty($validated['bonus_summary']) ? 'Bonus: '.trim((string) $validated['bonus_summary']) : null,
+            !empty($validated['clauses']) ? 'Ozel maddeler: '.trim((string) $validated['clauses']) : null,
+            !empty($validated['expires_at']) ? 'Son cevap tarihi: '.Carbon::parse($validated['expires_at'])->toDateString() : null,
+        ]);
+
+        return PlayerTransfer::query()->create([
+            'player_id' => $targetPlayerId,
+            'from_club_id' => null,
+            'to_club_id' => (int) $user->id,
+            'fee' => $validated['amount_eur'],
+            'currency' => $currency,
+            'transfer_date' => $transferDate->toDateString(),
+            'transfer_type' => $offerType === 'trial' ? 'unknown' : ($offerType === 'pre_contract' ? 'unknown' : $offerType),
+            'contract_until' => $contractEndDate,
+            'season' => $season,
+            'window' => $window,
+            'source_url' => null,
+            'confidence_score' => 0.9,
+            'verification_status' => 'pending',
+            'negotiation_status' => 'open',
+            'notes' => $summaryLines ? implode("\n", $summaryLines) : 'Kulup panelinden teklif olusturuldu.',
+            'negotiation_notes' => $note,
+            'created_by' => (int) $user->id,
+            'verified_by' => null,
+            'verified_at' => null,
+            'negotiation_updated_by' => (int) $user->id,
+            'negotiation_updated_at' => $transferDate,
+        ]);
     }
 
     private function transformPromo(ClubPromo $promo): array

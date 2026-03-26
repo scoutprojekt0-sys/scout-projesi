@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\ClubOffer;
 use App\Models\DataAuditLog;
 use App\Models\ModerationQueue;
 use App\Models\PlayerTransfer;
@@ -196,6 +197,17 @@ class PlayerTransferController extends Controller
         $transfer->negotiation_updated_by = $user->id;
         $transfer->negotiation_updated_at = now();
         $transfer->save();
+
+        ClubOffer::query()
+            ->where('transfer_id', (int) $transfer->id)
+            ->get()
+            ->each(function (ClubOffer $offer) use ($transfer, $note): void {
+                $offer->status = $transfer->negotiation_status ?: $transfer->verification_status;
+                if ($note !== '') {
+                    $offer->note = $note;
+                }
+                $offer->save();
+            });
 
         return response()->json([
             'ok' => true,
