@@ -1,1506 +1,950 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profili Düzenle | NextScout</title>
-    <meta name="description" content="NextScout profile edit sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
-    <meta name="robots" content="noindex,follow">
-    <link rel="canonical" href="https://nextscout.pro/profile-edit.html">
-    <meta property="og:type" content="website">
-    <meta property="og:locale" content="tr_TR">
-    <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="Profili Düzenle | NextScout">
-    <meta property="og:description" content="NextScout profile edit sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
-    <meta property="og:url" content="https://nextscout.pro/profile-edit.html">
-    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Profili Düzenle | NextScout">
-    <meta name="twitter:description" content="NextScout profile edit sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
-    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
-    <meta name="theme-color" content="#0B3B8A">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f3f4f6;
-            color: #1f2937;
-        }
-
-        .header {
-            background: white;
-            padding: 20px;
-            border-bottom: 1px solid #e5e7eb;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-            font-weight: 800;
-        }
-
-        .header-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn {
-            padding: 10px 16px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-save {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-save:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn-cancel {
-            background: #f3f4f6;
-            color: #667eea;
-            border: 1px solid #e5e7eb;
-        }
-
-        .btn-cancel:hover {
-            background: #e5e7eb;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        .edit-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-
-        /* PROFIL RESMI */
-        .profile-photo-section {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 800;
-            margin-bottom: 20px;
-            color: #1f2937;
-        }
-
-        .photo-preview {
-            width: 100%;
-            height: 250px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 80px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        .photo-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .upload-zone {
-            border: 2px dashed #667eea;
-            border-radius: 12px;
-            padding: 30px;
-            text-align: center;
-            background: #f9fafb;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 15px;
-        }
-
-        .upload-zone:hover {
-            background: #f0f4ff;
-            border-color: #764ba2;
-        }
-
-        .upload-zone.dragover {
-            background: #f0f4ff;
-            border-color: #764ba2;
-            transform: scale(1.02);
-        }
-
-        .upload-icon {
-            font-size: 40px;
-            margin-bottom: 10px;
-        }
-
-        .upload-text {
-            color: #667eea;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .upload-subtext {
-            font-size: 12px;
-            color: #9ca3af;
-        }
-
-        .file-input {
-            display: none;
-        }
-
-        /* FORMUlAR */
-        .form-section {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #1f2937;
-            font-size: 14px;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        /* GALERI */
-        .gallery-section {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .gallery-item {
-            aspect-ratio: 1;
-            border: 2px dashed #e5e7eb;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            background: #f9fafb;
-            transition: all 0.2s;
-            font-size: 30px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .gallery-item:hover {
-            border-color: #667eea;
-            background: #f0f4ff;
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .gallery-upload-btn {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #e5e7eb;
-            background: #f9fafb;
-            color: #667eea;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .gallery-upload-btn:hover {
-            background: #f0f4ff;
-            border-color: #667eea;
-        }
-
-        /* VIDEOLAR */
-        .videos-section {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
-
-        .video-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px;
-            background: #f9fafb;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            justify-content: space-between;
-        }
-
-        .video-info {
-            flex: 1;
-        }
-
-        .video-title {
-            font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 4px;
-        }
-
-        .video-url {
-            font-size: 12px;
-            color: #667eea;
-            word-break: break-all;
-        }
-
-        .remove-btn {
-            padding: 6px 12px;
-            background: #fee2e2;
-            color: #dc2626;
-            border: none;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .remove-btn:hover {
-            background: #fca5a5;
-        }
-
-        .add-video-form {
-            display: grid;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .add-video-form input {
-            padding: 10px 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-        }
-
-        .add-video-btn {
-            padding: 10px;
-            background: #dbeafe;
-            color: #667eea;
-            border: 1px solid #667eea;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .add-video-btn:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        /* ISTATISTIKLER */
-        .stats-section {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .stat-input {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        /* THEME OVERRIDES (player-dashboard ile uyumlu antrasit) */
-        body {
-            background:
-                radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.14), transparent 34%),
-                radial-gradient(circle at 100% 0%, rgba(96, 165, 250, 0.12), transparent 36%),
-                #1f252d;
-            color: #e2e8f0;
-        }
-
-        .header {
-            background: rgba(31, 37, 45, 0.92);
-            border-bottom: 1px solid #334155;
-            box-shadow: 0 10px 24px rgba(2, 6, 23, 0.3);
-            backdrop-filter: blur(8px);
-        }
-
-        .header h1,
-        .section-title,
-        .video-title,
-        .form-group label {
-            color: #e2e8f0;
-        }
-
-        .profile-photo-section,
-        .form-section,
-        .gallery-section,
-        .videos-section,
-        .stats-section {
-            background: #232a33;
-            border: 1px solid #334155;
-            box-shadow: 0 12px 24px rgba(2, 6, 23, 0.24);
-        }
-
-        .btn-cancel {
-            background: #2b3440;
-            color: #dbeafe;
-            border: 1px solid #475569;
-        }
-
-        .btn-cancel:hover {
-            background: #334155;
-            border-color: #60a5fa;
-            color: #ffffff;
-        }
-
-        .btn-save {
-            background: linear-gradient(135deg, #1d4ed8 0%, #0ea5e9 100%);
-        }
-
-        .upload-zone,
-        .gallery-item,
-        .video-item,
-        .add-video-form input {
-            background: #2b3440;
-            border-color: #475569;
-            color: #e2e8f0;
-        }
-
-        .upload-zone:hover,
-        .upload-zone.dragover,
-        .gallery-item:hover {
-            background: #334155;
-            border-color: #60a5fa;
-        }
-
-        .upload-text,
-        .video-url {
-            color: #93c5fd;
-        }
-
-        .upload-subtext {
-            color: #94a3b8;
-        }
-
-        .gallery-upload-btn,
-        .add-video-btn {
-            background: #2b3440;
-            color: #dbeafe;
-            border: 1px solid #60a5fa;
-        }
-
-        .gallery-upload-btn:hover,
-        .add-video-btn:hover {
-            background: #1d4ed8;
-            color: #ffffff;
-            border-color: #1d4ed8;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            background: #2b3440;
-            border: 1px solid #475569;
-            color: #e2e8f0;
-        }
-
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
-            color: #94a3b8;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            border-color: #60a5fa;
-            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
-        }
-
-        @media (max-width: 1024px) {
-            .edit-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .gallery-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header {
-                padding: 12px;
-            }
-
-            .header-content {
-                flex-direction: column;
-                gap: 10px;
-                align-items: stretch;
-            }
-
-            .header-buttons {
-                width: 100%;
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .header-buttons .btn {
-                flex: 1;
-                text-align: center;
-            }
-
-            .container {
-                padding: 14px 12px 24px;
-            }
-
-            .profile-photo-section,
-            .form-section,
-            .gallery-section,
-            .videos-section,
-            .stats-section {
-                padding: 14px;
-                border-radius: 12px;
-            }
-
-            .photo-preview {
-                height: 190px;
-                font-size: 64px;
-            }
-
-            .upload-zone {
-                padding: 18px 12px;
-            }
-
-            .video-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-
-            .gallery-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        :root {
-            --bg: #08131d;
-            --card: #0f1f2e;
-            --line: #2b4660;
-            --text: #f5fbff;
-            --muted: #9bb5cb;
-            --shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
-        }
-
-        body {
-            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-            background:
-                radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
-                radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
-                var(--bg);
-            color: var(--text);
-        }
-
-        .header {
-            background: transparent;
-            border-bottom: 0;
-            box-shadow: none;
-            padding: 22px 16px 0;
-            position: static;
-        }
-
-        .header-content {
-            max-width: 1100px;
-            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
-            border: 1px solid var(--line);
-            border-radius: 22px;
-            box-shadow: var(--shadow);
-            padding: 24px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header-content::before {
-            content: "";
-            position: absolute;
-            inset: 0 0 auto 0;
-            height: 4px;
-            background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
-        }
-
-        .header-copy h1 {
-            margin: 0;
-            font-size: 30px;
-            font-weight: 800;
-            color: var(--text);
-        }
-
-        .header-subtitle {
-            margin-top: 6px;
-            color: var(--muted);
-            font-size: 14px;
-        }
-
-        .btn {
-            border: 1px solid rgba(255, 126, 34, 0.45);
-            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
-            color: #16325c;
-            padding: 10px 14px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 800;
-            font-size: 13px;
-            box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24);
-        }
-
-        .btn-save {
-            background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
-            border-color: rgba(255, 126, 34, 0.6);
-            color: #fff;
-            box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28);
-        }
-
-        .btn-cancel {
-            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
-            color: #16325c;
-            border: 1px solid rgba(255, 126, 34, 0.45);
-        }
-
-        .container {
-            max-width: 1100px;
-            padding: 18px 16px 28px;
-        }
-
-        .profile-photo-section,
-        .form-section,
-        .gallery-section,
-        .videos-section,
-        .stats-section {
-            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
-            border: 1px solid var(--line);
-            border-radius: 18px;
-            box-shadow: var(--shadow);
-            color: var(--text);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .profile-photo-section::before,
-        .form-section::before,
-        .gallery-section::before,
-        .videos-section::before,
-        .stats-section::before {
-            content: "";
-            position: absolute;
-            inset: 0 0 auto 0;
-            height: 4px;
-            background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
-        }
-
-        .section-title,
-        .form-group label,
-        .stat-input label,
-        .video-title {
-            color: var(--text);
-        }
-
-        .upload-zone,
-        .gallery-item,
-        .video-item,
-        .stat-input {
-            background: rgba(255, 255, 255, 0.04);
-            border-color: var(--line);
-            color: var(--text);
-        }
-
-        .upload-text,
-        .upload-subtext,
-        .video-url {
-            color: var(--muted);
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea,
-        .add-video-form input,
-        .stat-input input {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--line);
-            color: var(--text);
-            border-radius: 12px;
-        }
-
-        .form-group input::placeholder,
-        .form-group textarea::placeholder,
-        .add-video-form input::placeholder {
-            color: var(--muted);
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus,
-        .add-video-form input:focus,
-        .stat-input input:focus {
-            border-color: #60a5fa;
-            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.18);
-        }
-
-        .photo-preview {
-            background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 100%);
-        }
-
-        .add-video-btn,
-        .remove-btn {
-            border: 1px solid rgba(255, 126, 34, 0.45);
-            background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
-            color: #fff;
-            border-radius: 12px;
-            font-weight: 800;
-            box-shadow: 0 16px 28px rgba(255, 90, 31, 0.2);
-        }
-
-        @media (max-width: 768px) {
-            .header {
-                padding: 14px 10px 0;
-            }
-
-            .header-content {
-                padding: 16px 14px;
-                border-radius: 14px;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-            }
-
-            .header-copy h1 {
-                font-size: 24px;
-            }
-
-            .header-buttons {
-                width: 100%;
-                grid-template-columns: 1fr;
-            }
-
-            .header-buttons .btn {
-                width: 100%;
-                text-align: center;
-            }
-
-            .container {
-                padding: 14px 10px 24px;
-            }
-        }
-    </style>
-    <link rel="stylesheet" href="assets/css/mobile-unified.css">
-    <link rel="stylesheet" href="assets/css/mobile-polish.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profili Duzenle | NextScout</title>
+  <meta name="description" content="NextScout oyuncu profil editoru: profil, medya, istatistik, transfer, sozlesme, scout notlari ve basarilar.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #08131d;
+      --surface: #0f1f2e;
+      --card: #12293d;
+      --line: #2b4660;
+      --text: #f5fbff;
+      --muted: #9bb5cb;
+      --primary: #ff5a1f;
+      --accent: #2fd4b0;
+      --cta-2: #ff7e22;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Space Grotesk", "Inter", "Segoe UI", Tahoma, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+        radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+        var(--bg);
+      min-height: 100vh;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.96) 0%, rgba(15, 31, 46, 0.94) 100%);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+      box-shadow: 0 18px 36px rgba(8,19,29,.24);
+    }
+    .topbar-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand { font-weight: 800; color: #bfdbfe; font-family: "Poppins", "Space Grotesk", sans-serif; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn {
+      border: 1px solid rgba(255, 126, 34, 0.45);
+      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+      color: #16325c;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 9px 12px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .btn.primary {
+      border-color: #ff7e22;
+      background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+      color: #fff;
+    }
+    .save-status {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      margin-left: 4px;
+    }
+    .page { max-width: 1320px; margin: 22px auto 48px; padding: 0 20px; }
+    .shell {
+      position: relative;
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid #2b4660;
+      border-radius: 26px;
+      box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+      overflow: hidden;
+    }
+    .shell::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--cta-2) 55%, #60a5fa 100%);
+      z-index: 1;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 18px;
+      padding: 22px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+    }
+    .photo-card {
+      background: rgba(255,255,255,.03);
+      border: 1px solid #35507e;
+      border-radius: 18px;
+      padding: 14px;
+    }
+    .photo-preview {
+      height: 210px;
+      border-radius: 14px;
+      border: 1px dashed #2b4660;
+      background: rgba(255,255,255,.04);
+      display: grid;
+      place-items: center;
+      font-size: 56px;
+      font-weight: 800;
+      color: #cbe0ff;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .photo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+    .upload {
+      border: 1px dashed #2b4660;
+      border-radius: 10px;
+      padding: 9px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .hero-form h1 {
+      font-size: 26px;
+      margin-bottom: 10px;
+      letter-spacing: -0.2px;
+    }
+    .quality-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .quality-badge {
+      border: 1px solid rgba(47, 212, 176, 0.4);
+      background: rgba(47, 212, 176, 0.12);
+      color: #9ef0dc;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 11px;
+    }
+    .quality-bar {
+      height: 8px;
+      flex: 1;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      overflow: hidden;
+      border: 1px solid #2b4660;
+    }
+    .quality-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #2fd4b0 100%);
+      transition: width .25s ease;
+    }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .field { margin-bottom: 10px; }
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .field input, .field select, .field textarea {
+      width: 100%;
+      background: rgba(255,255,255,.04);
+      border: 1px solid #2b4660;
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px 11px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    .field textarea { min-height: 90px; resize: vertical; }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      outline: none;
+      border-color: #ff7e22;
+      box-shadow: 0 0 0 2px rgba(255, 126, 34, 0.18);
+    }
+    .tab-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 14px 16px;
+      background: transparent;
+      border-bottom: 1px solid var(--line);
+      scrollbar-width: thin;
+    }
+    .tab-btn {
+      border: 1px solid #2b4660;
+      background: rgba(255,255,255,.04);
+      color: #d6e8f7;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .tab-btn.active {
+      color: #fff;
+      border-color: #ff7e22;
+      background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+    }
+    .tab-content { display: none; padding: 18px; }
+    .tab-content.active { display: block; animation: in 0.2s ease; }
+    @keyframes in { from { opacity: 0; transform: translateY(4px);} to { opacity: 1; transform: translateY(0);} }
+    .panel {
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid #2b4660;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .panel h2 {
+      font-size: 16px;
+      margin-bottom: 10px;
+      color: #f8fbff;
+    }
+    .repeat-item {
+      border: 1px solid #2b4660;
+      background: rgba(255,255,255,.04);
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .repeat-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: #d6e8f7;
+      font-weight: 700;
+    }
+    .small { font-size: 12px; padding: 7px 10px; border-radius: 8px; }
+    .footer-note {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .toast-wrap {
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      z-index: 9999;
+      display: grid;
+      gap: 8px;
+    }
+    .toast {
+      min-width: 240px;
+      max-width: 320px;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 10px 24px rgba(8,19,29,.3);
+      border: 1px solid #2b4660;
+      background: #12293d;
+      color: #f5fbff;
+      animation: toastIn .18s ease;
+    }
+    .toast.ok { border-color: rgba(47,212,176,.5); }
+    .toast.warn { border-color: rgba(255,126,34,.5); }
+    .toast.err { border-color: rgba(248,113,113,.5); }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 1040px) {
+      .hero { grid-template-columns: 1fr; }
+      .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-3 { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-    <!-- HEADER -->
-    <div class="header">
-        <div class="header-content">
-            <div class="header-copy">
-                <h1>Profili Düzenle</h1>
-                <div class="header-subtitle">Profil bilgilerini, vitrin gorsellerini ve video portfolyonu tek panelden guncelle.</div>
-            </div>
-            <div class="header-buttons">
-                <a href="player-dashboard.html" class="btn btn-cancel">Dashboard</a>
-                <button class="btn btn-save" onclick="saveProfile()">Kaydet</button>
-            </div>
-        </div>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">NEXTSCOUT | PROFIL EDITOR</div>
+      <div class="actions">
+        <a href="player-profile.html" class="btn">Profili Gor</a>
+        <button id="btnSaveDraft" class="btn">Taslak Kaydet</button>
+        <button id="btnReset" class="btn">Sifirla</button>
+        <button id="btnSave" class="btn primary">Kaydet</button>
+        <span id="saveStatus" class="save-status">Hazir</span>
+      </div>
     </div>
+  </header>
 
-    <!-- CONTENT -->
-    <div class="container">
-        <div class="edit-grid">
-            <!-- SOL: PROFIL RESMI -->
-            <div class="profile-photo-section">
-                <h2 class="section-title">Profil Resmi</h2>
-                <div class="photo-preview" id="photoPreview">TOP</div>
-                <div class="upload-zone" id="uploadZone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
-                    <div class="upload-icon">YUKLE</div>
-                    <div class="upload-text">Resmi surukle veya tikla</div>
-                    <div class="upload-subtext">JPG, PNG (Maks 5MB)</div>
-                    <input type="file" id="photoInput" class="file-input" accept="image/*">
-                </div>
-                <button class="btn btn-cancel" style="width: 100%; margin-bottom: 10px;" onclick="document.getElementById('photoInput').click()">Dosya Sec</button>
-                <button class="btn btn-cancel" style="width: 100%;" onclick="removePhoto()">Kaldir</button>
-            </div>
+  <main class="page">
+    <section class="shell">
+      <div class="hero">
+        <aside class="photo-card">
+          <div class="photo-preview" id="photoPreview">
+            <span id="photoFallback">AD</span>
+            <img id="photoImg" alt="Profil fotografi">
+          </div>
+          <label class="upload" for="photoInput">Profil fotografi yukle (jpg/png)</label>
+          <input id="photoInput" type="file" accept="image/*" style="display:none;">
+          <p class="footer-note">Bu fotograf profil kartinda kapak olarak gorunur.</p>
+        </aside>
 
-            <!-- SAG: TEMEL BILGILER -->
-            <div class="form-section">
-                <h2 class="section-title">Temel Bilgiler</h2>
-                <form id="profileForm">
-                    <div class="form-group">
-                        <label>Ad Soyad</label>
-                        <input type="text" id="nameInput" value="" placeholder="Ad Soyad">
-                    </div>
+        <section class="hero-form">
+          <h1>Ana Profil Bilgileri</h1>
+          <div class="quality-wrap">
+            <span id="qualityBadge" class="quality-badge">Profil Tamamlanma: %0</span>
+            <div class="quality-bar"><div id="qualityFill" class="quality-fill"></div></div>
+          </div>
+          <div class="grid-4">
+            <div class="field"><label>Ad Soyad</label><input id="fName" value="Arda Demir"></div>
+            <div class="field"><label>Yas</label><input id="fAge" value="19"></div>
+            <div class="field"><label>Pozisyon</label><input id="fPos" value="Merkez Orta Saha"></div>
+            <div class="field"><label>Kulup</label><input id="fClub" value="Istanbul FK U21"></div>
+          </div>
+          <div class="grid-4">
+            <div class="field"><label>Boy (cm)</label><input id="fHeight" value="182"></div>
+            <div class="field"><label>Kilo (kg)</label><input id="fWeight" value="75"></div>
+            <div class="field"><label>Ayak</label><select id="fFoot"><option>Sag Ayak</option><option>Sol Ayak</option></select></div>
+            <div class="field"><label>Milliyet</label><input id="fNation" value="Turkiye"></div>
+          </div>
+          <div class="grid-4">
+            <div class="field"><label>Genel Puan</label><input id="fRating" value="87"></div>
+            <div class="field"><label>Mac</label><input id="fMatches" value="34"></div>
+            <div class="field"><label>Gol+Asist</label><input id="fGA" value="19"></div>
+            <div class="field"><label>Dakika</label><input id="fMinutes" value="2680"></div>
+          </div>
+        </section>
+      </div>
 
-                    <div class="form-group">
-                        <label>Pozisyon</label>
-                        <select id="positionSelect">
-                            <option>Kaleci</option>
-                            <option selected>Forvet</option>
-                            <option>Defans</option>
-                            <option>Orta Saha</option>
-                        </select>
-                    </div>
+      <div class="tab-bar">
+        <button class="tab-btn active" data-tab="tab-profile">Profil</button>
+        <button class="tab-btn" data-tab="tab-media">Medya</button>
+        <button class="tab-btn" data-tab="tab-talent">Yetenek Karti</button>
+        <button class="tab-btn" data-tab="tab-stats">Istatistik</button>
+        <button class="tab-btn" data-tab="tab-transfer">Transfer</button>
+        <button class="tab-btn" data-tab="tab-contract">Sozlesme</button>
+        <button class="tab-btn" data-tab="tab-notes">Scout Notlari</button>
+        <button class="tab-btn" data-tab="tab-awards">Basarilar</button>
+      </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Cinsiyet</label>
-                            <select id="genderSelect">
-                                <option value="bay">Bay</option>
-                                <option value="bayan">Bayan</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Brans</label>
-                            <select id="sportSelect">
-                                <option value="futbol">Futbol</option>
-                                <option value="basketbol">Basketbol</option>
-                                <option value="voleybol">Voleybol</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Yas</label>
-                            <input type="number" id="ageInput" value="24" min="15" max="50">
-                        </div>
-                        <div class="form-group">
-                            <label>Boy (cm)</label>
-                            <input type="number" id="heightInput" value="180" min="150" max="210">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Sozlesme Durumu</label>
-                            <select id="contractStatusSelect">
-                                <option value="active">Sozlesmeli</option>
-                                <option value="free">Bosta</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>KULÜP Ariyor mu?</label>
-                            <select id="seekingClubSelect">
-                                <option value="false">Hayir</option>
-                                <option value="true">Evet</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Mevcut KULÜP</label>
-                        <input type="text" id="currentClubInput" value="" placeholder="KULÜP adi (bostaysan bos birakabilirsin)">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Hakkında</label>
-                        <textarea id="bioInput">Türkiye'nin en yetenekli forvet oyuncularindan biri. Guclu fizik yapisi, hizi ve gol yetenegi ile biliniyor.</textarea>
-                    </div>
-                </form>
-            </div>
+      <section id="tab-profile" class="tab-content active">
+        <div class="panel">
+          <h2>Profil Ozet Metni</h2>
+          <div class="field"><label>Scout Ozeti</label><textarea id="fSummary">Oyuncu top yonunde dogru pozisyon alma ve oyunu hizlandirma konusunda ust seviyede.</textarea></div>
+          <div class="grid-3">
+            <div class="field"><label>Ajan</label><input id="fAgent" value="NS Agency"></div>
+            <div class="field"><label>Email</label><input id="fEmail" value="arda.demir@example.com"></div>
+            <div class="field"><label>Telefon</label><input id="fPhone" value="+90 5xx xxx xx xx"></div>
+          </div>
         </div>
+      </section>
 
-        <!-- ISTATISTIKLER -->
-        <div class="stats-section" style="margin-top: 30px;">
-            <h2 class="section-title">Istatistikler</h2>
-            <div class="stats-grid">
-                <div class="stat-input">
-                    <label>Oynanan Maclar</label>
-                    <input type="number" id="matchesInput" value="28" min="0">
-                </div>
-                <div class="stat-input">
-                    <label>Dakika</label>
-                    <input type="number" id="minutesInput" value="1980" min="0">
-                </div>
-                <div class="stat-input">
-                    <label>Rating (0-10)</label>
-                    <input type="number" id="ratingInput" value="4.8" min="0" max="10" step="0.1">
-                </div>
+      <section id="tab-media" class="tab-content">
+        <div class="panel">
+          <h2>Video Portfolyo</h2>
+          <div id="videosList">
+          <div class="repeat-item video-item-edit">
+            <div class="repeat-head">Video 1 <button class="btn small">Sil</button></div>
+            <div class="grid-3">
+              <div class="field"><label>Baslik</label><input class="video-title" value="Lig Maci Analiz"></div>
+              <div class="field"><label>URL</label><input class="video-url" value="https://..."></div>
+              <div class="field"><label>Etiket</label><input class="video-tag" value="Trend"></div>
             </div>
-            <div class="stats-grid" id="footballStatsGroup">
-                <div class="stat-input">
-                    <label>Goller</label>
-                    <input type="number" id="goalsInput" value="15" min="0">
-                </div>
-                <div class="stat-input">
-                    <label>Asistler</label>
-                    <input type="number" id="assistsInput" value="6" min="0">
-                </div>
-            </div>
-            <div class="stats-grid" id="basketballStatsGroup" style="display: none;">
-                <div class="stat-input">
-                    <label>Sayi</label>
-                    <input type="number" id="pointsInput" value="420" min="0">
-                </div>
-                <div class="stat-input">
-                    <label>Ribaund</label>
-                    <input type="number" id="reboundsInput" value="110" min="0">
-                </div>
-                <div class="stat-input">
-                    <label>Asist</label>
-                    <input type="number" id="basketAssistsInput" value="96" min="0">
-                </div>
-            </div>
-            <div class="stats-grid" id="volleyballStatsGroup" style="display: none;">
-                <div class="stat-input">
-                    <label>Sayi</label>
-                    <input type="number" id="volleyballPointsInput" value="188" min="0">
-                </div>
-                <div class="stat-input">
-                    <label>Ace</label>
-                    <input type="number" id="acesInput" value="21" min="0">
-                </div>
-                <div class="stat-input">
-                    <label>Blok</label>
-                    <input type="number" id="blocksInput" value="33" min="0">
-                </div>
-                <div class="stat-input">
-                    <label>Set</label>
-                    <input type="number" id="setsInput" value="72" min="0">
-                </div>
-            </div>
+          </div>
+          </div>
+          <button id="btnAddVideo" class="btn small">Yeni Video Ekle</button>
         </div>
+      </section>
 
-        <!-- GALERI -->
-        <div class="gallery-section" style="margin-top: 30px;">
-            <h2 class="section-title">Foto Galerisi</h2>
-            <div class="gallery-grid" id="galleryGrid">
-                <div class="gallery-item" onclick="uploadGalleryPhoto(0)">+</div>
-                <div class="gallery-item" onclick="uploadGalleryPhoto(1)">+</div>
-                <div class="gallery-item" onclick="uploadGalleryPhoto(2)">+</div>
-                <div class="gallery-item" onclick="uploadGalleryPhoto(3)">+</div>
-                <div class="gallery-item" onclick="uploadGalleryPhoto(4)">+</div>
-                <div class="gallery-item" onclick="uploadGalleryPhoto(5)">+</div>
-            </div>
-            <input type="file" id="galleryInput" class="file-input" accept="image/*">
+      <section id="tab-talent" class="tab-content">
+        <div class="panel">
+          <h2>Yetenek Karti Puanlari</h2>
+          <div class="grid-4">
+            <div class="field"><label>Pas</label><input value="90"></div>
+            <div class="field"><label>Top Kontrol</label><input value="88"></div>
+            <div class="field"><label>Dribbling</label><input value="84"></div>
+            <div class="field"><label>Zayif Ayak</label><input value="72"></div>
+          </div>
+          <div class="grid-4">
+            <div class="field"><label>Dayaniklilik</label><input value="86"></div>
+            <div class="field"><label>Hiz</label><input value="79"></div>
+            <div class="field"><label>Kuvvet</label><input value="77"></div>
+            <div class="field"><label>Karar Verme</label><input value="85"></div>
+          </div>
         </div>
+      </section>
 
-        <!-- VIDEOLAR -->
-        <div class="videos-section" style="margin-top: 30px;">
-            <h2 class="section-title">Video Portfolio</h2>
-            <div class="add-video-form">
-                <input type="text" id="videoTitleInput" placeholder="Video Basligi (or: Sezon Ozetleri)">
-                <input type="url" id="videoUrlInput" placeholder="Video Linki (YouTube, Vimeo vb)">
-                <button type="button" class="add-video-btn" onclick="addVideo()">+ Video Ekle</button>
-            </div>
-            <div id="videosList"></div>
+      <section id="tab-stats" class="tab-content">
+        <div class="panel">
+          <h2>Istatistik Alanlari</h2>
+          <div class="grid-3">
+            <div class="field"><label>Ileri Pas Basari %</label><input value="88"></div>
+            <div class="field"><label>Kilit Pas / mac</label><input value="2.1"></div>
+            <div class="field"><label>Top Kapma / mac</label><input value="6.4"></div>
+          </div>
+          <div class="grid-3">
+            <div class="field"><label>xG Katkisi / mac</label><input value="0.39"></div>
+            <div class="field"><label>Ceza Sahasi Girisi / mac</label><input value="4.8"></div>
+            <div class="field"><label>Sakatlik Notu</label><input value="Dusuk risk"></div>
+          </div>
         </div>
-    </div>
+      </section>
 
-    <script>
-        let currentGalleryIndex = 0;
-        let currentUserId = null;
-        let currentProfilePhotoUrl = '';
-        let currentProfilePhotoMediaId = null;
-        let pendingPhotoFile = null;
-        let pendingPhotoDelete = false;
-        const removedMediaIds = new Set();
-        const removedVideoIds = new Set();
-        const galleryImages = new Array(6).fill(null);
-        let videos = [];
+      <section id="tab-transfer" class="tab-content">
+        <div class="panel">
+          <h2>Transfer Gecmisi</h2>
+          <div id="transferList">
+          <div class="repeat-item transfer-item-edit">
+            <div class="repeat-head">Kayit 1 <button class="btn small">Sil</button></div>
+            <div class="grid-4">
+              <div class="field"><label>Sezon</label><input class="transfer-season" value="2025/26"></div>
+              <div class="field"><label>Geldigi</label><input class="transfer-from" value="Istanbul FK U19"></div>
+              <div class="field"><label>Gittigi</label><input class="transfer-to" value="Istanbul FK U21"></div>
+              <div class="field"><label>Ucret</label><input class="transfer-fee" value="Dahil Terfi"></div>
+            </div>
+          </div>
+          </div>
+          <button id="btnAddTransfer" class="btn small">Transfer Kaydi Ekle</button>
+        </div>
+      </section>
 
-        function syncSportStatsFields() {
-            const sport = document.getElementById('sportSelect')?.value || 'futbol';
-            const footballGroup = document.getElementById('footballStatsGroup');
-            const basketballGroup = document.getElementById('basketballStatsGroup');
-            const volleyballGroup = document.getElementById('volleyballStatsGroup');
-            if (!footballGroup || !basketballGroup || !volleyballGroup) return;
+      <section id="tab-contract" class="tab-content">
+        <div class="panel">
+          <h2>Sozlesme Bilgileri</h2>
+          <div class="grid-4">
+            <div class="field"><label>Durum</label><select id="fContractStatus"><option>Sozlesmeli</option><option>Bosta</option></select></div>
+            <div class="field"><label>Bitis Tarihi</label><input id="fContractEnd" value="2028-06-30"></div>
+            <div class="field"><label>Opsiyon</label><input id="fContractOption" value="+1 yil kulup opsiyonu"></div>
+            <div class="field"><label>Serbest Kalma</label><input id="fRelease" value="4.5M EUR"></div>
+          </div>
+        </div>
+      </section>
 
-            footballGroup.style.display = sport === 'futbol' ? 'grid' : 'none';
-            basketballGroup.style.display = sport === 'basketbol' ? 'grid' : 'none';
-            volleyballGroup.style.display = sport === 'voleybol' ? 'grid' : 'none';
-        }
+      <section id="tab-notes" class="tab-content">
+        <div class="panel">
+          <h2>Scout Notlari</h2>
+          <div id="notesList">
+            <div class="field note-item-edit"><label>Not 1</label><textarea class="note-text">Bitiricilik guclu, hizli gecis oyununa uygun.</textarea></div>
+            <div class="field note-item-edit"><label>Not 2</label><textarea class="note-text">Oyun kurulumunda 2. bolgede top alma cesareti yuksek.</textarea></div>
+          </div>
+          <button id="btnAddNote" class="btn small">Not Ekle</button>
+        </div>
+      </section>
 
-        function getApiBaseUrl() {
-            if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
-                return `${window.location.origin}/api`;
-            }
-            const params = new URLSearchParams(window.location.search);
-            return params.get('api_base') || 'http://localhost:8000/api';
-        }
+      <section id="tab-awards" class="tab-content">
+        <div class="panel">
+          <h2>Basari Kayitlari</h2>
+          <div id="awardsList">
+          <div class="repeat-item award-item-edit">
+            <div class="repeat-head">Basari 1 <button class="btn small">Sil</button></div>
+            <div class="grid-3">
+              <div class="field"><label>Baslik</label><input class="award-title" value="Sezon XI"></div>
+              <div class="field"><label>Donem</label><input class="award-season" value="2025/26"></div>
+              <div class="field"><label>Aciklama</label><input class="award-desc" value="U21 Ligi"></div>
+            </div>
+          </div>
+          </div>
+          <button id="btnAddAward" class="btn small">Basari Ekle</button>
+        </div>
+      </section>
+    </section>
+  </main>
 
-        function getAuthHeaders(options = {}) {
-            const headers = { Accept: 'application/json' };
-            const token = (localStorage.getItem('nextscout_token') || '').trim();
-            if (token) headers.Authorization = `Bearer ${token}`;
-            if (options.json !== false) headers['Content-Type'] = 'application/json';
-            return headers;
-        }
+  <div id="toastWrap" class="toast-wrap"></div>
 
-        async function fetchJsonSafe(url, options = {}) {
-            const response = await fetch(url, options);
-            const payload = await response.json().catch(() => null);
-            if (!response.ok) {
-                throw new Error(payload?.message || 'API istegi basarisiz oldu.');
-            }
-            return payload;
-        }
+  <script>
+    (function () {
+      var KEY = "nextscout_profile_edit_v3";
+      var PROFILE_KEY = "nextscout_profile_payload_v3";
+      var buttons = document.querySelectorAll(".tab-btn");
+      var tabs = document.querySelectorAll(".tab-content");
+      var photoInput = document.getElementById("photoInput");
+      var photoImg = document.getElementById("photoImg");
+      var photoFallback = document.getElementById("photoFallback");
+      var saveBtn = document.getElementById("btnSave");
+      var saveDraftBtn = document.getElementById("btnSaveDraft");
+      var resetBtn = document.getElementById("btnReset");
+      var saveStatus = document.getElementById("saveStatus");
+      var qualityFill = document.getElementById("qualityFill");
+      var qualityBadge = document.getElementById("qualityBadge");
+      var toastWrap = document.getElementById("toastWrap");
+      var dirty = false;
+      var autosaveTimer = null;
 
-        function extractRows(payload) {
-            if (Array.isArray(payload?.data?.data)) return payload.data.data;
-            if (Array.isArray(payload?.data)) return payload.data;
-            return [];
-        }
+      function getApiBaseUrl() {
+        var query = new URLSearchParams(window.location.search);
+        var fromQuery = (query.get("api_base") || "").trim();
+        if (fromQuery) return fromQuery.replace(/\/$/, "");
+        if (window.location.protocol === "file:") return "http://127.0.0.1:8000/api";
+        return "/api";
+      }
 
-        function inferVideoPlatform(url) {
-            const normalized = String(url || '').toLowerCase();
-            if (normalized.includes('youtube.com') || normalized.includes('youtu.be')) return 'youtube';
-            if (normalized.includes('vimeo.com')) return 'vimeo';
-            return 'custom';
-        }
+      function getToken() {
+        return (localStorage.getItem("nextscout_token") || "").trim();
+      }
 
-        function readFileAsDataUrl(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = (event) => resolve(event?.target?.result || '');
-                reader.onerror = () => reject(new Error('Dosya onizlemesi olusturulamadi.'));
-                reader.readAsDataURL(file);
-            });
-        }
+      function toast(message, type) {
+        var el = document.createElement("div");
+        el.className = "toast " + (type || "ok");
+        el.textContent = message;
+        toastWrap.appendChild(el);
+        setTimeout(function () { el.remove(); }, 2800);
+      }
 
-        function renderPhotoPreview(url) {
-            const preview = document.getElementById('photoPreview');
-            preview.innerHTML = url
-                ? `<img src="${url}" style="width: 100%; height: 100%; object-fit: cover;">`
-                : 'TOP';
-        }
+      function setStatus(text) {
+        saveStatus.textContent = text;
+      }
 
-        function renderGallery() {
-            const items = document.querySelectorAll('.gallery-item');
-            items.forEach((item, index) => {
-                const media = galleryImages[index];
-                item.innerHTML = media?.url
-                    ? `<img src="${media.url}" style="width: 100%; height: 100%; object-fit: cover;">`
-                    : '+';
-            });
-        }
-
-        function normalizeMediaItem(media) {
-            if (!media?.url) return null;
-            return {
-                id: media.id || null,
-                url: media.url,
-                title: media.title || '',
-                file: null,
-            };
-        }
-
-        function renderVideos() {
-            const videosList = document.getElementById('videosList');
-            videosList.innerHTML = videos.map((video, index) => `
-                <div class="video-item">
-                    <div class="video-info">
-                        <div class="video-title">Video: ${video.title}</div>
-                        <div class="video-url">${video.url}</div>
-                    </div>
-                    <button type="button" class="remove-btn" onclick="removeVideo(${index})">Sil</button>
-                </div>
-            `).join('');
-        }
-
-        async function uploadMediaFile(file, title) {
-            const formData = new FormData();
-            formData.append('file', file);
-            if (title) formData.append('title', title);
-            const payload = await fetchJsonSafe(`${getApiBaseUrl()}/media`, {
-                method: 'POST',
-                headers: getAuthHeaders({ json: false }),
-                body: formData,
-            });
-            return payload?.data || null;
-        }
-
-        async function deleteMediaItem(id) {
-            if (!id) return;
-            await fetchJsonSafe(`${getApiBaseUrl()}/media/${encodeURIComponent(id)}`, {
-                method: 'DELETE',
-                headers: getAuthHeaders(),
-            });
-        }
-
-        async function createVideoClip(video) {
-            const payload = await fetchJsonSafe(`${getApiBaseUrl()}/videos`, {
-                method: 'POST',
-                headers: getAuthHeaders(),
-                body: JSON.stringify({
-                    title: video.title,
-                    description: video.description || null,
-                    video_url: video.url,
-                    platform: inferVideoPlatform(video.url),
-                }),
-            });
-            return payload?.data || null;
-        }
-
-        async function deleteVideoClip(id) {
-            if (!id) return;
-            await fetchJsonSafe(`${getApiBaseUrl()}/videos/${encodeURIComponent(id)}`, {
-                method: 'DELETE',
-                headers: getAuthHeaders(),
-            });
-        }
-
-        async function resolveCurrentUserId() {
-            try {
-                const raw = localStorage.getItem('nextscout_user');
-                const user = raw ? JSON.parse(raw) : null;
-                if (user?.id) return Number(user.id);
-            } catch (e) {}
-
-            try {
-                const response = await fetch(`${getApiBaseUrl()}/auth/me`, { headers: getAuthHeaders() });
-                const payload = await response.json().catch(() => null);
-                const me = payload?.data?.user || payload?.data || payload?.user || null;
-                if (response.ok && me?.id) {
-                    try {
-                        const raw = localStorage.getItem('nextscout_user');
-                        const current = raw ? JSON.parse(raw) : {};
-                        localStorage.setItem('nextscout_user', JSON.stringify({ ...current, id: me.id }));
-                    } catch (e) {}
-                    return Number(me.id);
-                }
-            } catch (e) {}
-
-            return null;
-        }
-
-        // Profil resmini yukle
-        const uploadZone = document.getElementById('uploadZone');
-        const photoInput = document.getElementById('photoInput');
-
-        uploadZone.addEventListener('click', () => photoInput.click());
-
-        photoInput.addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            pendingPhotoFile = file;
-            pendingPhotoDelete = false;
-            renderPhotoPreview(await readFileAsDataUrl(file));
+      function activate(targetId) {
+        buttons.forEach(function (b) {
+          b.classList.toggle("active", b.getAttribute("data-tab") === targetId);
         });
-
-        function handleDragOver(e) {
-            e.preventDefault();
-            document.getElementById('uploadZone').classList.add('dragover');
-        }
-
-        function handleDragLeave(e) {
-            document.getElementById('uploadZone').classList.remove('dragover');
-        }
-
-        function handleDrop(e) {
-            e.preventDefault();
-            document.getElementById('uploadZone').classList.remove('dragover');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                photoInput.files = files;
-                photoInput.dispatchEvent(new Event('change'));
-            }
-        }
-
-        function removePhoto() {
-            photoInput.value = '';
-            pendingPhotoFile = null;
-            pendingPhotoDelete = true;
-            renderPhotoPreview('');
-        }
-
-        // Galeri fotografi yukle
-        const galleryInput = document.getElementById('galleryInput');
-
-        function uploadGalleryPhoto(index) {
-            currentGalleryIndex = index;
-            galleryInput.click();
-        }
-
-        galleryInput.addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const existing = galleryImages[currentGalleryIndex];
-            if (existing?.id) removedMediaIds.add(existing.id);
-
-            galleryImages[currentGalleryIndex] = {
-                id: null,
-                file,
-                url: await readFileAsDataUrl(file),
-                title: file.name || `gallery-${currentGalleryIndex + 1}`,
-            };
-            renderGallery();
-            galleryInput.value = '';
+        tabs.forEach(function (t) {
+          t.classList.toggle("active", t.id === targetId);
         });
+      }
 
-        function addVideo() {
-            const title = document.getElementById('videoTitleInput').value;
-            const url = document.getElementById('videoUrlInput').value;
-
-            if (title && url) {
-                videos.push({ id: null, title, url });
-                document.getElementById('videoTitleInput').value = '';
-                document.getElementById('videoUrlInput').value = '';
-                renderVideos();
-            }
-        }
-
-        function removeVideo(index) {
-            const [removed] = videos.splice(index, 1);
-            if (removed?.id) removedVideoIds.add(removed.id);
-            renderVideos();
-        }
-
-        // Profil Kaydet
-        async function saveProfile() {
-            currentUserId = currentUserId || await resolveCurrentUserId();
-            if (!currentUserId) {
-                nsAlert('Profili kaydetmek icin once giris yapmalisin.');
-                return;
-            }
-
-            const sport = document.getElementById('sportSelect').value;
-            const baseProfileData = {
-                name: document.getElementById('nameInput').value,
-                position: document.getElementById('positionSelect').value,
-                gender: document.getElementById('genderSelect').value,
-                sport,
-                age: document.getElementById('ageInput').value,
-                height: document.getElementById('heightInput').value,
-                contract_status: document.getElementById('contractStatusSelect').value,
-                seeking_club: document.getElementById('seekingClubSelect').value === 'true',
-                current_club: document.getElementById('currentClubInput').value,
-                bio: document.getElementById('bioInput').value,
-                matches: document.getElementById('matchesInput').value,
-                minutes: document.getElementById('minutesInput').value,
-                rating: document.getElementById('ratingInput').value,
-            };
-
-            const profileData = {
-                ...baseProfileData
-            };
-
-            if (sport === 'basketbol') {
-                profileData.points = document.getElementById('pointsInput').value;
-                profileData.rebounds = document.getElementById('reboundsInput').value;
-                profileData.assists = document.getElementById('basketAssistsInput').value;
-                profileData.goals = profileData.points;
-            } else if (sport === 'voleybol') {
-                profileData.points = document.getElementById('volleyballPointsInput').value;
-                profileData.aces = document.getElementById('acesInput').value;
-                profileData.blocks = document.getElementById('blocksInput').value;
-                profileData.sets = document.getElementById('setsInput').value;
-                profileData.goals = profileData.points;
-                profileData.assists = profileData.aces;
-            } else {
-                profileData.goals = document.getElementById('goalsInput').value;
-                profileData.assists = document.getElementById('assistsInput').value;
-            }
-
-            try {
-                for (const mediaId of Array.from(removedMediaIds)) {
-                    await deleteMediaItem(mediaId);
-                    removedMediaIds.delete(mediaId);
-                }
-
-                if (pendingPhotoDelete && currentProfilePhotoMediaId && !pendingPhotoFile) {
-                    await deleteMediaItem(currentProfilePhotoMediaId);
-                    currentProfilePhotoMediaId = null;
-                    currentProfilePhotoUrl = '';
-                }
-
-                if (pendingPhotoFile) {
-                    const uploadedPhoto = await uploadMediaFile(pendingPhotoFile, 'player-profile-photo');
-                    if (currentProfilePhotoMediaId && currentProfilePhotoMediaId !== uploadedPhoto?.id) {
-                        await deleteMediaItem(currentProfilePhotoMediaId);
-                    }
-                    currentProfilePhotoMediaId = uploadedPhoto?.id || null;
-                    currentProfilePhotoUrl = uploadedPhoto?.url || '';
-                    pendingPhotoFile = null;
-                    pendingPhotoDelete = false;
-                }
-
-                for (let index = 0; index < galleryImages.length; index += 1) {
-                    const item = galleryImages[index];
-                    if (!item?.file) continue;
-                    const uploadedMedia = await uploadMediaFile(item.file, item.title || `player-gallery-${index + 1}`);
-                    galleryImages[index] = normalizeMediaItem(uploadedMedia);
-                }
-
-                for (const videoId of Array.from(removedVideoIds)) {
-                    await deleteVideoClip(videoId);
-                    removedVideoIds.delete(videoId);
-                }
-
-                for (let index = 0; index < videos.length; index += 1) {
-                    const video = videos[index];
-                    if (video?.id) continue;
-                    const createdVideo = await createVideoClip(video);
-                    videos[index] = {
-                        id: createdVideo?.id || null,
-                        title: createdVideo?.title || video.title,
-                        url: createdVideo?.video_url || video.url,
-                    };
-                }
-
-                const nowYear = new Date().getFullYear();
-                const ageNum = Number(profileData.age || 0);
-                const birthYear = ageNum > 0 ? (nowYear - ageNum) : null;
-                const dominantFoot = (profileData.position || '').toLowerCase().includes('sol') ? 'left' : 'right';
-
-                const payload = {
-                    name: (profileData.name || '').toString().trim(),
-                    sport: (profileData.sport || 'futbol').toString().trim() || 'futbol',
-                    age: ageNum || null,
-                    rating: Number(profileData.rating || 0) || null,
-                    photo_url: currentProfilePhotoUrl || null,
-                    position: (profileData.position || '').toString().trim() || null,
-                    birth_year: birthYear,
-                    dominant_foot: dominantFoot,
-                    height_cm: Number(profileData.height || 0) || null,
-                    current_team: (profileData.current_club || '').toString().trim() || null,
-                    bio: (profileData.bio || '').toString().trim() || null,
-                };
-
-                await fetchJsonSafe(`${getApiBaseUrl()}/players/${encodeURIComponent(currentUserId)}`, {
-                    method: 'PUT',
-                    headers: getAuthHeaders(),
-                    body: JSON.stringify(payload),
-                });
-
-                try {
-                    const currentUserRaw = localStorage.getItem('nextscout_user');
-                    const currentUser = currentUserRaw ? JSON.parse(currentUserRaw) : {};
-                    localStorage.setItem('nextscout_user', JSON.stringify({
-                        ...currentUser,
-                        id: currentUserId,
-                        name: payload.name || currentUser.name || 'Oyuncu',
-                        photo_url: payload.photo_url || currentUser.photo_url || '',
-                        role: currentUser.role || 'player',
-                        email: currentUser.email || '',
-                    }));
-                } catch (e) {}
-
-                nsAlert('Profil basariyla kaydedildi!');
-                window.location.href = 'player-dashboard.html';
-            } catch (error) {
-                nsAlert(error?.message || 'Profil kaydedilirken bir hata olustu.');
-            }
-        }
-
-        function populateProfileForm(data) {
-            document.getElementById('nameInput').value = data.name || '';
-            document.getElementById('positionSelect').value = data.position || data.user_position || 'Forvet';
-            document.getElementById('genderSelect').value = data.gender || 'bay';
-            document.getElementById('sportSelect').value = data.sport || 'futbol';
-            document.getElementById('ageInput').value = data.age || (data.birth_year ? new Date().getFullYear() - Number(data.birth_year) : '24');
-            document.getElementById('heightInput').value = data.height_cm || data.height || '180';
-            document.getElementById('contractStatusSelect').value = data.contract_status || 'active';
-            document.getElementById('seekingClubSelect').value = data.seeking_club ? 'true' : 'false';
-            document.getElementById('currentClubInput').value = data.current_team || data.current_club || '';
-            document.getElementById('bioInput').value = data.bio || '';
-            document.getElementById('matchesInput').value = data.matches || '0';
-            document.getElementById('minutesInput').value = data.minutes || '0';
-            document.getElementById('goalsInput').value = data.goals || '0';
-            document.getElementById('assistsInput').value = data.assists || '0';
-            document.getElementById('ratingInput').value = data.rating || data.user_rating || '0';
-            document.getElementById('pointsInput').value = data.points || data.goals || '0';
-            document.getElementById('reboundsInput').value = data.rebounds || '0';
-            document.getElementById('basketAssistsInput').value = data.assists || '0';
-            document.getElementById('volleyballPointsInput').value = data.points || data.goals || '0';
-            document.getElementById('acesInput').value = data.aces || data.assists || '0';
-            document.getElementById('blocksInput').value = data.blocks || '0';
-            document.getElementById('setsInput').value = data.sets || '0';
-            syncSportStatsFields();
-        }
-
-        function flattenPublicProfilePayload(payload) {
-            const root = payload?.data || {};
-            const user = root?.user || {};
-            const profile = root?.profile || {};
-            const card = root?.card || {};
-
-            return {
-                ...user,
-                ...profile,
-                ...card,
-                photo_url: card.profile_photo_url || user.photo_url || '',
-                current_team: profile.current_team || profile.current_club || card.club_name || '',
-                rating: card.overall_rating || user.rating || null,
-            };
-        }
-
-        async function loadProfileEditorData() {
-            currentUserId = await resolveCurrentUserId();
-            let sessionUser = null;
-            try {
-                const rawUser = localStorage.getItem('nextscout_user');
-                sessionUser = rawUser ? JSON.parse(rawUser) : null;
-            } catch (e) {
-                sessionUser = null;
-            }
-
-            if (sessionUser?.name) {
-                document.getElementById('nameInput').value = sessionUser.name;
-            }
-
-            if (!currentUserId) {
-                syncSportStatsFields();
-                renderGallery();
-                renderVideos();
-                renderPhotoPreview('');
-                return;
-            }
-
-            try {
-                const [privatePayload, publicPayload] = await Promise.all([
-                    fetchJsonSafe(`${getApiBaseUrl()}/players/${encodeURIComponent(currentUserId)}`, { headers: getAuthHeaders() }),
-                    fetchJsonSafe(`${getApiBaseUrl()}/public/players/${encodeURIComponent(currentUserId)}/profile`, { headers: getAuthHeaders() }),
-                ]);
-
-                const privateData = privatePayload?.data || {};
-                const publicData = flattenPublicProfilePayload(publicPayload);
-                populateProfileForm({
-                    ...publicData,
-                    ...privateData,
-                    name: privateData.name || publicData.name || sessionUser?.name || '',
-                });
-
-                currentProfilePhotoUrl = privateData.photo_url || publicData.photo_url || '';
-                renderPhotoPreview(currentProfilePhotoUrl);
-
-                galleryImages.fill(null);
-                renderGallery();
-                videos = [];
-                renderVideos();
-
-                const [mediaPayload, videoPayload] = await Promise.all([
-                    fetchJsonSafe(`${getApiBaseUrl()}/users/${encodeURIComponent(currentUserId)}/media?type=image&per_page=12`, { headers: getAuthHeaders() }).catch(() => null),
-                    fetchJsonSafe(`${getApiBaseUrl()}/users/${encodeURIComponent(currentUserId)}/videos`, { headers: getAuthHeaders() }).catch(() => null),
-                ]);
-
-                const imageRows = extractRows(mediaPayload).filter((row) => row?.type === 'image');
-                const photoMedia = imageRows.find((row) => row?.url === currentProfilePhotoUrl) || null;
-                currentProfilePhotoMediaId = photoMedia?.id || null;
-
-                const galleryRows = imageRows.filter((row) => row?.id !== currentProfilePhotoMediaId).slice(0, galleryImages.length);
-                galleryImages.fill(null);
-                galleryRows.forEach((row, index) => {
-                    galleryImages[index] = normalizeMediaItem(row);
-                });
-                renderGallery();
-
-                videos = extractRows(videoPayload).map((row) => ({
-                    id: row.id,
-                    title: row.title || 'Video',
-                    url: row.video_url || '',
-                }));
-                renderVideos();
-            } catch (error) {
-                syncSportStatsFields();
-                renderGallery();
-                renderVideos();
-                renderPhotoPreview('');
-                nsAlert(error?.message || 'Profil verileri yuklenemedi.');
-            }
-        }
-
-        window.addEventListener('load', () => {
-            document.getElementById('sportSelect').addEventListener('change', syncSportStatsFields);
-            loadProfileEditorData();
+      function collectFields() {
+        var fields = document.querySelectorAll("input, select, textarea");
+        var data = {};
+        fields.forEach(function (f) {
+          if (!f.id) return;
+          data[f.id] = f.value;
         });
-    </script>
-    <script src="assets/js/core-stability.js"></script>
-    <script src="assets/js/mobile-professional.js" defer></script>
+        return data;
+      }
+
+      function collectListItems(rootSelector, mapFn) {
+        return Array.from(document.querySelectorAll(rootSelector)).map(mapFn).filter(Boolean);
+      }
+
+      function collectPayload() {
+        return {
+          fields: collectFields(),
+          photo: photoImg.getAttribute("src") || "",
+          videos: collectListItems("#videosList .video-item-edit", function (node) {
+            var title = (node.querySelector(".video-title") || {}).value || "";
+            var url = (node.querySelector(".video-url") || {}).value || "";
+            var tag = (node.querySelector(".video-tag") || {}).value || "";
+            if (!title.trim() && !url.trim()) return null;
+            return { title: title.trim(), url: url.trim(), tag: tag.trim() || "Video" };
+          }),
+          transfers: collectListItems("#transferList .transfer-item-edit", function (node) {
+            var season = (node.querySelector(".transfer-season") || {}).value || "";
+            var from = (node.querySelector(".transfer-from") || {}).value || "";
+            var to = (node.querySelector(".transfer-to") || {}).value || "";
+            var fee = (node.querySelector(".transfer-fee") || {}).value || "";
+            if (!season.trim() && !from.trim() && !to.trim()) return null;
+            return { season: season.trim(), from: from.trim(), to: to.trim(), fee: fee.trim() || "-" };
+          }),
+          notes: collectListItems("#notesList .note-text", function (node) {
+            var text = (node.value || "").trim();
+            if (!text) return null;
+            return { text: text, source: "Manuel" };
+          }),
+          awards: collectListItems("#awardsList .award-item-edit", function (node) {
+            var title = (node.querySelector(".award-title") || {}).value || "";
+            var season = (node.querySelector(".award-season") || {}).value || "";
+            var desc = (node.querySelector(".award-desc") || {}).value || "";
+            if (!title.trim()) return null;
+            return { title: title.trim(), season: season.trim(), description: desc.trim() };
+          })
+        };
+      }
+
+      function applyFields(data) {
+        if (!data) return;
+        Object.keys(data).forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el) el.value = data[id];
+        });
+      }
+
+      function renderVideos(videos) {
+        var root = document.getElementById("videosList");
+        root.innerHTML = "";
+        videos.forEach(function (v, idx) {
+          var wrap = document.createElement("div");
+          wrap.className = "repeat-item video-item-edit";
+          wrap.innerHTML = '<div class="repeat-head">Video ' + (idx + 1) + ' <button class="btn small" type="button">Sil</button></div>' +
+            '<div class="grid-3">' +
+            '<div class="field"><label>Baslik</label><input class="video-title" value="' + (v.title || "").replace(/"/g, "&quot;") + '"></div>' +
+            '<div class="field"><label>URL</label><input class="video-url" value="' + (v.url || "").replace(/"/g, "&quot;") + '"></div>' +
+            '<div class="field"><label>Etiket</label><input class="video-tag" value="' + (v.tag || "Video").replace(/"/g, "&quot;") + '"></div>' +
+            '</div>';
+          root.appendChild(wrap);
+        });
+      }
+
+      function renderTransfers(rows) {
+        var root = document.getElementById("transferList");
+        root.innerHTML = "";
+        rows.forEach(function (r, idx) {
+          var wrap = document.createElement("div");
+          wrap.className = "repeat-item transfer-item-edit";
+          wrap.innerHTML = '<div class="repeat-head">Kayit ' + (idx + 1) + ' <button class="btn small" type="button">Sil</button></div>' +
+            '<div class="grid-4">' +
+            '<div class="field"><label>Sezon</label><input class="transfer-season" value="' + (r.season || "").replace(/"/g, "&quot;") + '"></div>' +
+            '<div class="field"><label>Geldigi</label><input class="transfer-from" value="' + (r.from || "").replace(/"/g, "&quot;") + '"></div>' +
+            '<div class="field"><label>Gittigi</label><input class="transfer-to" value="' + (r.to || "").replace(/"/g, "&quot;") + '"></div>' +
+            '<div class="field"><label>Ucret</label><input class="transfer-fee" value="' + (r.fee || "").replace(/"/g, "&quot;") + '"></div>' +
+            '</div>';
+          root.appendChild(wrap);
+        });
+      }
+
+      function renderNotes(notes) {
+        var root = document.getElementById("notesList");
+        root.innerHTML = "";
+        notes.forEach(function (n, idx) {
+          var wrap = document.createElement("div");
+          wrap.className = "field note-item-edit";
+          wrap.innerHTML = '<label>Not ' + (idx + 1) + '</label><textarea class="note-text">' + (n.text || "") + '</textarea>';
+          root.appendChild(wrap);
+        });
+      }
+
+      function renderAwards(awards) {
+        var root = document.getElementById("awardsList");
+        root.innerHTML = "";
+        awards.forEach(function (a, idx) {
+          var wrap = document.createElement("div");
+          wrap.className = "repeat-item award-item-edit";
+          wrap.innerHTML = '<div class="repeat-head">Basari ' + (idx + 1) + ' <button class="btn small" type="button">Sil</button></div>' +
+            '<div class="grid-3">' +
+            '<div class="field"><label>Baslik</label><input class="award-title" value="' + (a.title || "").replace(/"/g, "&quot;") + '"></div>' +
+            '<div class="field"><label>Donem</label><input class="award-season" value="' + (a.season || "").replace(/"/g, "&quot;") + '"></div>' +
+            '<div class="field"><label>Aciklama</label><input class="award-desc" value="' + (a.description || "").replace(/"/g, "&quot;") + '"></div>' +
+            '</div>';
+          root.appendChild(wrap);
+        });
+      }
+
+      function applyPayload(payload) {
+        if (!payload) return;
+        applyFields(payload.fields || {});
+        if (payload.photo) {
+          photoImg.src = payload.photo;
+          photoImg.style.display = "block";
+          photoFallback.style.display = "none";
+        }
+        if (Array.isArray(payload.videos) && payload.videos.length) renderVideos(payload.videos);
+        if (Array.isArray(payload.transfers) && payload.transfers.length) renderTransfers(payload.transfers);
+        if (Array.isArray(payload.notes) && payload.notes.length) renderNotes(payload.notes);
+        if (Array.isArray(payload.awards) && payload.awards.length) renderAwards(payload.awards);
+      }
+
+      function persistLocal(payload) {
+        localStorage.setItem(KEY, JSON.stringify(payload));
+        localStorage.setItem(PROFILE_KEY, JSON.stringify(profileFromPayload(payload)));
+      }
+
+      function computeCompletion(payload) {
+        var f = payload.fields || {};
+        var checks = [!!f.fName, !!f.fAge, !!f.fPos, !!f.fClub, !!f.fHeight, !!f.fWeight, !!f.fNation, !!f.fRating, !!f.fSummary, !!f.fContractEnd, !!f.fAgent];
+        var base = checks.filter(Boolean).length / checks.length;
+        var extra = 0;
+        if (payload.videos.length) extra += 0.08;
+        if (payload.transfers.length) extra += 0.08;
+        if (payload.notes.length) extra += 0.07;
+        if (payload.awards.length) extra += 0.07;
+        if (payload.photo) extra += 0.05;
+        var score = Math.min(1, base + extra);
+        var percent = Math.round(score * 100);
+        qualityFill.style.width = percent + "%";
+        qualityBadge.textContent = "Profil Tamamlanma: %" + percent;
+      }
+
+      function validate(payload) {
+        var f = payload.fields || {};
+        if (!f.fName || !f.fPos || !f.fClub || !f.fAge) return "Ad, yas, pozisyon ve kulup zorunlu.";
+        if (Number(f.fAge) <= 0 || Number(f.fAge) > 50) return "Yas degeri gecersiz.";
+        if (Number(f.fRating) < 0 || Number(f.fRating) > 100) return "Genel puan 0-100 olmali.";
+        return "";
+      }
+
+      function profileFromPayload(payload) {
+        var f = payload.fields || {};
+        return {
+          name: f.fName || "Oyuncu",
+          initials: (f.fName || "OY").split(" ").map(function (x) { return x[0] || ""; }).join("").slice(0, 2).toUpperCase(),
+          age: Number(f.fAge || 0) || "-",
+          club: f.fClub || "-",
+          position: f.fPos || "-",
+          foot: f.fFoot || "-",
+          rating: Number(f.fRating || 0) || 0,
+          matches: Number(f.fMatches || 0) || 0,
+          ga: Number(f.fGA || 0) || 0,
+          minutes: Number(f.fMinutes || 0) || 0,
+          marketValue: f.fRelease || "-",
+          contractStatus: f.fContractStatus || "Sozlesmeli",
+          contractEnd: f.fContractEnd || "-",
+          nation: f.fNation || "-",
+          summary: f.fSummary || "",
+          agent: f.fAgent || "-",
+          email: f.fEmail || "-",
+          phone: f.fPhone || "-",
+          option: f.fContractOption || "-",
+          release: f.fRelease || "-",
+          wage: "Gelistirme seviyesinde",
+          photo: payload.photo || "",
+          videos: payload.videos || [],
+          transfers: payload.transfers || [],
+          notes: payload.notes || [],
+          awards: payload.awards || []
+        };
+      }
+
+      async function fetchJson(url, options) {
+        var res = await fetch(url, options || {});
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      }
+
+      async function loadFromApi() {
+        var token = getToken();
+        if (!token) return;
+        var apiBase = getApiBaseUrl();
+        try {
+          var meRes = await fetchJson(apiBase + "/auth/me", { headers: { Accept: "application/json", Authorization: "Bearer " + token } });
+          var me = meRes && meRes.data ? meRes.data : meRes;
+          if (!me || !me.id) return;
+          var pRes = await fetchJson(apiBase + "/players/" + encodeURIComponent(me.id), { headers: { Accept: "application/json", Authorization: "Bearer " + token } });
+          var p = pRes && pRes.data ? pRes.data : pRes;
+          var payload = {
+            fields: {
+              fName: p.name || "",
+              fAge: p.age || "",
+              fPos: p.position || "",
+              fClub: p.current_club || "",
+              fHeight: p.height_cm || "",
+              fWeight: p.weight_kg || "",
+              fFoot: p.dominant_foot || "Sag Ayak",
+              fNation: p.nationality || "",
+              fRating: p.overall_rating || "",
+              fMatches: p.matches_played || "",
+              fGA: (Number(p.goals || 0) + Number(p.assists || 0)) || "",
+              fMinutes: p.minutes_played || "",
+              fSummary: p.bio || "",
+              fAgent: p.agent_name || "",
+              fEmail: p.email || "",
+              fPhone: p.phone || "",
+              fContractStatus: p.contract_status === "free" ? "Bosta" : "Sozlesmeli",
+              fContractEnd: p.contract_end_date || "",
+              fContractOption: p.contract_option || "",
+              fRelease: p.release_clause || ""
+            },
+            photo: p.profile_photo_url || "",
+            videos: [],
+            transfers: [],
+            notes: [],
+            awards: []
+          };
+          applyPayload(payload);
+          persistLocal(payload);
+          computeCompletion(payload);
+          toast("API verileri yuklendi", "ok");
+        } catch (e) {
+          toast("API veri cekimi atlandi", "warn");
+        }
+      }
+
+      async function saveToApi(payload) {
+        var token = getToken();
+        if (!token) return { ok: false };
+        var apiBase = getApiBaseUrl();
+        try {
+          var meRes = await fetchJson(apiBase + "/auth/me", { headers: { Accept: "application/json", Authorization: "Bearer " + token } });
+          var me = meRes && meRes.data ? meRes.data : meRes;
+          if (!me || !me.id) return { ok: false };
+          var f = payload.fields || {};
+          await fetch(apiBase + "/players/" + encodeURIComponent(me.id), {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json", Accept: "application/json", Authorization: "Bearer " + token },
+            body: JSON.stringify({
+              name: f.fName,
+              age: Number(f.fAge) || null,
+              position: f.fPos,
+              current_club: f.fClub,
+              height_cm: Number(f.fHeight) || null,
+              weight_kg: Number(f.fWeight) || null,
+              dominant_foot: f.fFoot,
+              nationality: f.fNation,
+              overall_rating: Number(f.fRating) || null,
+              matches_played: Number(f.fMatches) || null,
+              minutes_played: Number(f.fMinutes) || null,
+              bio: f.fSummary,
+              agent_name: f.fAgent,
+              phone: f.fPhone
+            })
+          });
+          return { ok: true };
+        } catch (e) {
+          return { ok: false };
+        }
+      }
+
+      function loadAll() {
+        try {
+          var raw = localStorage.getItem(KEY);
+          if (!raw) return false;
+          var payload = JSON.parse(raw || "{}");
+          applyPayload(payload);
+          computeCompletion(payload);
+          return true;
+        } catch (e) {
+          return false;
+        }
+      }
+
+      function queueAutosave() {
+        clearTimeout(autosaveTimer);
+        autosaveTimer = setTimeout(function () {
+          var payload = collectPayload();
+          persistLocal(payload);
+          computeCompletion(payload);
+          setStatus("Taslak otomatik kaydedildi");
+          dirty = false;
+        }, 1200);
+      }
+
+      function markDirty() {
+        dirty = true;
+        setStatus("Kaydedilmemis degisiklik var");
+        queueAutosave();
+      }
+
+      function resetAll() {
+        localStorage.removeItem(KEY);
+        localStorage.removeItem(PROFILE_KEY);
+        location.reload();
+      }
+
+      function bindRemove(rootSelector) {
+        document.querySelector(rootSelector).addEventListener("click", function (e) {
+          var btn = e.target.closest("button");
+          if (!btn || btn.textContent.trim() !== "Sil") return;
+          var item = btn.closest(".repeat-item") || btn.closest(".field");
+          if (item) item.remove();
+          markDirty();
+        });
+      }
+
+      buttons.forEach(function (btn) {
+        btn.addEventListener("click", function () { activate(btn.getAttribute("data-tab")); });
+      });
+
+      photoInput.addEventListener("change", function (e) {
+        var file = e.target.files && e.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+          photoImg.src = ev.target.result;
+          photoImg.style.display = "block";
+          photoFallback.style.display = "none";
+          markDirty();
+        };
+        reader.readAsDataURL(file);
+      });
+
+      document.getElementById("btnAddVideo").addEventListener("click", function () {
+        renderVideos(collectPayload().videos.concat([{ title: "", url: "", tag: "Video" }]));
+        markDirty();
+      });
+      document.getElementById("btnAddTransfer").addEventListener("click", function () {
+        renderTransfers(collectPayload().transfers.concat([{ season: "", from: "", to: "", fee: "" }]));
+        markDirty();
+      });
+      document.getElementById("btnAddNote").addEventListener("click", function () {
+        renderNotes(collectPayload().notes.concat([{ text: "", source: "Manuel" }]));
+        markDirty();
+      });
+      document.getElementById("btnAddAward").addEventListener("click", function () {
+        renderAwards(collectPayload().awards.concat([{ title: "", season: "", description: "" }]));
+        markDirty();
+      });
+
+      bindRemove("#videosList");
+      bindRemove("#transferList");
+      bindRemove("#awardsList");
+      bindRemove("#notesList");
+
+      document.addEventListener("input", function () {
+        computeCompletion(collectPayload());
+        markDirty();
+      });
+      document.addEventListener("change", function () { markDirty(); });
+
+      saveDraftBtn.addEventListener("click", function () {
+        var payload = collectPayload();
+        persistLocal(payload);
+        computeCompletion(payload);
+        dirty = false;
+        setStatus("Taslak kaydedildi");
+        toast("Taslak kaydedildi", "ok");
+      });
+
+      saveBtn.addEventListener("click", async function () {
+        var payload = collectPayload();
+        var err = validate(payload);
+        if (err) {
+          toast(err, "err");
+          setStatus("Kayit hatasi");
+          return;
+        }
+        persistLocal(payload);
+        computeCompletion(payload);
+        setStatus("Kaydediliyor...");
+        var apiResult = await saveToApi(payload);
+        if (apiResult.ok) {
+          setStatus("API + taslak kaydedildi");
+          toast("Profil backend'e kaydedildi", "ok");
+        } else {
+          setStatus("Sadece yerel kayit");
+          toast("API kaydi atlandi, taslak saklandi", "warn");
+        }
+        dirty = false;
+      });
+
+      resetBtn.addEventListener("click", resetAll);
+
+      var hasDraft = loadAll();
+      if (!hasDraft) computeCompletion(collectPayload());
+      loadFromApi();
+
+      window.addEventListener("beforeunload", function (e) {
+        if (!dirty) return;
+        e.preventDefault();
+        e.returnValue = "";
+      });
+    })();
+  </script>
 </body>
 </html>
-
-
