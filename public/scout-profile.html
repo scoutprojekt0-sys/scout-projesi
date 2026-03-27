@@ -48,7 +48,7 @@
       background-size:cover;
       background-attachment:fixed;
     }
-    .wrap{max-width:1100px;margin:0 auto;padding:22px 16px}
+    .wrap{max-width:1320px;margin:0 auto;padding:22px 16px}
     .head{
       display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px;
       border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);padding:24px;
@@ -57,6 +57,7 @@
     .head::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--cta) 0%,var(--cta-2) 55%,#60a5fa 100%)}
     .title{margin:0;font-size:30px;font-weight:800;color:var(--ink)}
     .sub{margin-top:6px;color:var(--muted);font-size:14px}
+    .head-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
     .btn{
       border:1px solid rgba(255, 126, 34, 0.45);background:linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);color:#16325c;padding:10px 14px;border-radius:12px;
       text-decoration:none;font-weight:800;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;box-shadow:0 12px 24px rgba(8,19,29,.24);
@@ -82,6 +83,33 @@
     .row:last-child{border-bottom:0}
     .muted{color:var(--muted)}
     .ok{color:#34d399;font-size:12px;min-height:16px;margin-top:8px;font-weight:700}
+    .data-meta{
+      margin:0 0 12px;
+      font-size:12px;
+      color:#94a3b8;
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:8px 10px;
+    }
+    .profile-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+    .profile-tab{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:#e2e8f0;
+      border-radius:999px;
+      padding:7px 12px;
+      font-size:12px;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .profile-tab.active{
+      background:linear-gradient(135deg,var(--cta) 0%,var(--cta-2) 100%);
+      border-color:rgba(255,126,34,.6);
+      color:#fff;
+    }
+    .tab-panel{display:none;content-visibility:auto;contain-intrinsic-size:380px}
+    .tab-panel.active{display:block}
     .review-shell{display:grid;gap:16px}
     .review-form{display:grid;gap:14px;padding:18px;border-radius:20px;background:linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(15,23,42,.18) 100%);border:1px solid rgba(96,165,250,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 18px 30px rgba(2,6,23,.18)}
     .review-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -228,12 +256,19 @@
         <h1 class="title">Scout Profili</h1>
         <div class="sub">Scout profilini düzenle ve kaydet.</div>
       </div>
-      <div class="act" style="margin-top:0;">
+      <div class="head-actions">
         <a class="btn btn-primary" href="index.html"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
         <a class="btn btn-secondary" href="scout-dashboard.html"><i class="fas fa-table-columns"></i><span>Dashboard</span></a>
       </div>
     </div>
 
+    <div class="data-meta" id="scoutDataMeta">Kaynak: Scout Profili • Son güncelleme: -</div>
+    <div class="profile-tabs" id="scoutProfileTabs">
+      <button class="profile-tab active" type="button" data-tab="overview">Genel</button>
+      <button class="profile-tab" type="button" data-tab="reviews">Yorumlar</button>
+    </div>
+
+    <section class="tab-panel active" data-tab-panel="overview">
     <div class="layout">
       <div class="card">
         <h2 class="section-title">Profil Bilgileri</h2>
@@ -264,6 +299,11 @@
         <div class="row"><span class="muted">Ülke</span><strong id="sumCountry">-</strong></div>
         <div class="row"><span class="muted">Sehir</span><strong id="sumCity">-</strong></div>
       </div>
+    </div>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="reviews">
+    <div class="layout">
       <div class="card" id="scoutReviewsCard">
         <h2 class="section-title">Profil Yorumlari</h2>
         <div class="review-shell">
@@ -306,6 +346,7 @@
         </div>
       </div>
     </div>
+    </section>
   </div>
 
   <!-- PROFESYONEL PROFİL KART MODAL (GÖRSELDEKİYLE BİREBİR) -->
@@ -577,6 +618,20 @@
       document.getElementById('sumBranch').textContent = p.branch || '-';
       document.getElementById('sumCountry').textContent = p.country || '-';
       document.getElementById('sumCity').textContent = p.city || '-';
+      const meta = document.getElementById('scoutDataMeta');
+      if (meta) meta.textContent = `Kaynak: Scout Profili • Son güncelleme: ${new Date().toLocaleString('tr-TR')}`;
+    }
+
+    function bindTabs() {
+      const root = document.getElementById('scoutProfileTabs');
+      if (!root) return;
+      const tabs = Array.from(root.querySelectorAll('.profile-tab'));
+      const panels = Array.from(document.querySelectorAll('[data-tab-panel]'));
+      const activate = (key) => {
+        tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.tab === key));
+        panels.forEach((panel) => panel.classList.toggle('active', panel.dataset.tabPanel === key));
+      };
+      tabs.forEach((tab) => tab.addEventListener('click', () => activate(tab.dataset.tab || 'overview')));
     }
 
     async function loadBackendProfile() {
@@ -630,6 +685,7 @@
       }
       setForm(profile);
       renderSummary(profile);
+      bindTabs();
       updateScoutReviewVisibility();
       loadScoutProfileReviews();
     }

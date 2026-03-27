@@ -104,6 +104,34 @@
     .act{display:flex;gap:8px;margin-top:12px}
     .summary-row{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #334155;font-size:13px}
     .summary-row:last-child{border-bottom:0}
+    .summary-row-needs{align-items:flex-start}
+    .need-badges{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+    .need-badge{
+      display:inline-flex;
+      align-items:center;
+      min-height:24px;
+      padding:0 9px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+      color:#dbeafe;
+      font-size:11px;
+      font-weight:700;
+    }
+    .need-badge-index{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:16px;
+      height:16px;
+      margin-right:6px;
+      border-radius:999px;
+      background:rgba(96,165,250,.2);
+      color:#bfdbfe;
+      font-size:10px;
+      font-weight:800;
+      line-height:1;
+    }
     .muted{color:var(--muted)}
     .ok{color:#34d399;font-size:12px;min-height:16px;margin-top:8px;font-weight:700}
     .data-meta{
@@ -415,6 +443,7 @@
         <div class="sub">Kulube ozel bilgiler: butce, kadro ihtiyaçi, sehir ve tesis.</div>
       </div>
       <div class="head-actions">
+        <a class="btn btn-secondary" id="publicProfileBtn" href="#" style="display:none;"><i class="fas fa-up-right-from-square"></i><span>Public Profil</span></a>
         <a class="btn home-btn" href="team-dashboard.html"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
       </div>
     </div>
@@ -422,10 +451,10 @@
     <div class="data-meta" id="clubDataMeta">Kaynak: Sistem • Son güncelleme: -</div>
     <div class="profile-tabs" id="clubProfileTabs">
       <button class="profile-tab active" type="button" data-tab="overview">Genel</button>
+      <button class="profile-tab" type="button" data-tab="reviews">Yorumlar</button>
       <button class="profile-tab" type="button" data-tab="finance">Finans</button>
       <button class="profile-tab" type="button" data-tab="recruitment">Kadro/İhtiyaç</button>
       <button class="profile-tab" type="button" data-tab="plan">Transfer Plani</button>
-      <button class="profile-tab" type="button" data-tab="workspace">Teknik Workspace</button>
     </div>
 
     <section class="tab-panel active" data-tab-panel="overview">
@@ -470,9 +499,8 @@
           </div>
 
           <div class="field full">
-            <label class="label" for="squadNeed">Kadro Ihtiyaci</label>
-            <select class="select" id="squadNeed" name="squadNeed" required>
-              <option value="">Seciniz</option>
+            <label class="label" for="squadNeed">Kadro Ihtiyaclari (Coklu Secim)</label>
+            <select class="select" id="squadNeed" name="squadNeed" multiple size="8" required>
               <option value="Stoper">Stoper</option>
               <option value="Sol Bek">Sol Bek</option>
               <option value="Sag Bek">Sag Bek</option>
@@ -487,6 +515,7 @@
               <option value="Tecrubeli Lider">Tecrubeli Lider</option>
               <option value="Coklu Pozisyon">Coklu Pozisyon</option>
             </select>
+            <div class="muted">Ctrl/Cmd ile birden fazla pozisyon sec.</div>
           </div>
 
           <div class="field full">
@@ -524,7 +553,7 @@
             <textarea class="textarea" id="notes" name="notes" placeholder="Transfer stratejisi, hedef yas araligi, oyun tarzi..."></textarea>
           </div>
 
-          <div class="act full">
+          <div class="act full" id="clubFormActions">
             <button type="submit" class="btn btn-primary">Kaydet</button>
             <button type="button" id="resetBtn" class="btn">Sıfırla</button>
           </div>
@@ -540,7 +569,7 @@
         <div class="summary-row"><span class="muted">Brans</span><strong id="sumBranch">-</strong></div>
         <div class="summary-row"><span class="muted">Transfer Butcesi</span><strong id="sumBudget">-</strong></div>
         <div class="summary-row"><span class="muted">Maas Butcesi</span><strong id="sumWage">-</strong></div>
-        <div class="summary-row"><span class="muted">Kadro Ihtiyaci</span><strong id="sumNeed">-</strong></div>
+        <div class="summary-row summary-row-needs"><span class="muted">Kadro Ihtiyaclari</span><div id="sumNeed" class="need-badges"><span class="need-badge">-</span></div></div>
         <div class="summary-row"><span class="muted">Oyun Sistemi</span><strong id="sumSystem">-</strong></div>
         <div class="summary-row"><span class="muted">Tesis Seviyesi</span><strong id="sumFacilityLevel">-</strong></div>
 
@@ -550,6 +579,10 @@
           <a class="btn btn-primary" id="systemScoutLink" href="professional-players.html?visibility_role=club">Sisteme Uygun Oyunculari Gor</a>
         </div>
       </div>
+    </div>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="reviews">
       <div class="card" id="clubReviewsCard">
         <h2 class="section-title">Profil Yorumlari</h2>
         <div class="review-shell">
@@ -591,7 +624,6 @@
           <div class="review-list" id="clubReviewList"></div>
         </div>
       </div>
-    </div>
     </section>
 
     <section class="tab-panel" data-tab-panel="finance">
@@ -620,59 +652,6 @@
         </table>
       </div>
     </section>
-    <section class="tab-panel" data-tab-panel="workspace">
-      <div class="card">
-        <h2 class="section-title" id="clubWorkspaceTitle">Kulup Teknik Workspace</h2>
-        <div class="muted" id="clubWorkspaceSummary" style="margin-bottom:12px;">Oyuncu bazli not, klip ve kaydedilmis degerlendirmeleri bu alanda yonet.</div>
-        <div class="workspace-tabs">
-          <button class="workspace-tab active" type="button" data-club-workspace-tab="notes" onclick="openClubWorkspace('notes')">Teknik Not Defteri</button>
-          <button class="workspace-tab" type="button" data-club-workspace-tab="clips" onclick="openClubWorkspace('clips')">Klip Isaretleme</button>
-          <button class="workspace-tab" type="button" data-club-workspace-tab="evaluations" onclick="openClubWorkspace('evaluations')">Kaydedilmis Degerlendirmeler</button>
-        </div>
-        <section class="workspace-panel active" id="clubWorkspaceNotes">
-          <div class="form-grid">
-            <div class="field"><label class="label">Oyuncu Adi</label><input class="input" id="clubWorkspaceNotePlayer" type="text" placeholder="Oyuncu adi"></div>
-            <div class="field"><label class="label">Oyuncu ID</label><input class="input" id="clubWorkspaceNotePlayerId" type="number" min="1" placeholder="Opsiyonel"></div>
-            <div class="field"><label class="label">Pozisyon</label><input class="input" id="clubWorkspaceNotePosition" type="text" placeholder="Stoper / Forvet"></div>
-            <div class="field"><label class="label">Etiket</label><select class="select" id="clubWorkspaceNoteTag"><option value="izlenecek">Izlenecek</option><option value="tekrar-bak">Tekrar Bak</option><option value="shortlist">Shortlist</option><option value="hazir">Hazir</option></select></div>
-            <div class="field"><label class="label">Odak</label><select class="select" id="clubWorkspaceNoteFocus"><option value="teknik">Teknik</option><option value="taktik">Taktik</option><option value="fizik">Fizik</option><option value="zihinsel">Zihinsel</option></select></div>
-            <div class="field full"><label class="label">Not</label><textarea class="textarea" id="clubWorkspaceNoteBody" placeholder="Oyuncu icin kisa kulup notu..."></textarea></div>
-          </div>
-          <div class="act">
-            <button type="button" class="btn btn-primary" id="clubWorkspaceNoteSubmit">Notu Kaydet</button>
-            <input class="input" id="clubWorkspaceNoteSearch" type="text" placeholder="Oyuncu, etiket veya not ara...">
-          </div>
-          <div class="workspace-list" id="clubWorkspaceNotesList" style="margin-top:14px;"><div class="workspace-empty">Teknik notlar yukleniyor...</div></div>
-        </section>
-        <section class="workspace-panel" id="clubWorkspaceClips">
-          <div class="form-grid">
-            <div class="field"><label class="label">Oyuncu Adi</label><input class="input" id="clubWorkspaceClipPlayer" type="text" placeholder="Oyuncu adi"></div>
-            <div class="field"><label class="label">Oyuncu ID</label><input class="input" id="clubWorkspaceClipPlayerId" type="number" min="1" placeholder="Opsiyonel"></div>
-            <div class="field full"><label class="label">Video Linki</label><input class="input" id="clubWorkspaceClipUrl" type="url" placeholder="https://..."></div>
-            <div class="field"><label class="label">Dakika</label><input class="input" id="clubWorkspaceClipMinute" type="number" min="0" max="180" placeholder="12"></div>
-            <div class="field"><label class="label">Saniye</label><input class="input" id="clubWorkspaceClipSecond" type="number" min="0" max="59" placeholder="34"></div>
-            <div class="field full"><label class="label">Klip Notu</label><textarea class="textarea" id="clubWorkspaceClipBody" placeholder="Bu sahnede dikkat ceken nokta..."></textarea></div>
-          </div>
-          <div class="act">
-            <button type="button" class="btn btn-primary" id="clubWorkspaceClipSubmit">Klibi Kaydet</button>
-            <input class="input" id="clubWorkspaceClipSearch" type="text" placeholder="Oyuncu, link veya not ara...">
-          </div>
-          <div class="workspace-list" id="clubWorkspaceClipsList" style="margin-top:14px;"><div class="workspace-empty">Klip notlari yukleniyor...</div></div>
-        </section>
-        <section class="workspace-panel" id="clubWorkspaceEvaluations">
-          <div class="workspace-metrics">
-            <div class="workspace-metric"><div class="workspace-metric-label">Toplam</div><div class="workspace-metric-value" id="clubEvalTotal">0</div></div>
-            <div class="workspace-metric"><div class="workspace-metric-label">Son Oyuncu</div><div class="workspace-metric-value" id="clubEvalLastPlayer">-</div></div>
-            <div class="workspace-metric"><div class="workspace-metric-label">Son Kayit</div><div class="workspace-metric-value" id="clubEvalLastDate">-</div></div>
-          </div>
-          <div class="act">
-            <input class="input" id="clubWorkspaceEvalSearch" type="text" placeholder="Oyuncu, pozisyon veya karar notu ara...">
-            <input class="input" id="clubWorkspaceEvalMinScore" type="number" min="0" max="100" placeholder="Min. ortalama">
-          </div>
-          <div class="workspace-list" id="clubWorkspaceEvaluationsList" style="margin-top:14px;"><div class="workspace-empty">Degerlendirmeler yukleniyor...</div></div>
-        </section>
-      </div>
-    </section>
   </div>
 
   <script src="assets/js/site-core.js"></script>
@@ -685,6 +664,61 @@
       transition_play: 'Gecis Oyunu | 3-4-3 Direkt',
     };
     let currentUserId = null;
+    let currentUserRole = '';
+    let viewedTeamId = null;
+    let isProfileReadOnly = false;
+
+    function resolveCurrentRole(user) {
+      return String(
+        user?.role
+        || user?.user_role
+        || localStorage.getItem('nextscout_user_role')
+        || localStorage.getItem('nextscout_role')
+        || localStorage.getItem('userRole')
+        || ''
+      ).trim().toLowerCase();
+    }
+
+    function resolveCurrentUserIdFromLocal() {
+      try {
+        const rawUser = localStorage.getItem('nextscout_user');
+        const parsed = rawUser ? JSON.parse(rawUser) : null;
+        const fromUser = String(parsed?.id || parsed?.user_id || '').trim();
+        if (fromUser) return fromUser;
+      } catch (error) {
+        // noop
+      }
+      const fromKey = String(localStorage.getItem('nextscout_user_id') || '').trim();
+      return fromKey || null;
+    }
+
+    function getViewedTeamIdFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const raw = String(params.get('user_id') || params.get('team_id') || '').trim();
+      return raw || null;
+    }
+
+    function applyProfileReadOnlyState(readOnly) {
+      isProfileReadOnly = !!readOnly;
+      const form = document.getElementById('clubForm');
+      const actions = document.getElementById('clubFormActions');
+      if (form) {
+        Array.from(form.elements || []).forEach((el) => {
+          const tag = (el.tagName || '').toLowerCase();
+          if (tag === 'button') return;
+          el.disabled = !!readOnly;
+        });
+      }
+      if (actions) actions.style.display = readOnly ? 'none' : '';
+      const saveMsg = document.getElementById('saveMsg');
+      if (saveMsg) {
+        saveMsg.textContent = readOnly ? 'Bu profil salt okunur gorunumde acildi.' : '';
+      }
+      const meta = document.getElementById('clubDataMeta');
+      if (meta && readOnly) {
+        meta.textContent = `${meta.textContent} • Gorunum: Salt okunur`;
+      }
+    }
 
     function getApiBaseUrl() {
       const params = new URLSearchParams(window.location.search);
@@ -1154,12 +1188,26 @@ await clubApiPost('/staff/player-clips', {
         branch: 'Futbol',
         budget: 5000000,
         wageBudget: 300000,
-        squadNeed: 'Forvet',
+        squadNeed: ['Forvet'],
         preferredSystem: 'gegenpressing',
         facilityLevel: 'Gelismis',
         facilities: '2 antrenman sahasi, performans laboratuvari, video analiz odasi',
         notes: '22-27 yas bandinda oyuncu onceligi.',
       };
+    }
+
+    function normalizeSquadNeeds(value) {
+      const raw = Array.isArray(value)
+        ? value
+        : typeof value === 'string'
+        ? value.split(',').map((item) => item.trim()).filter(Boolean)
+        : [];
+      return Array.from(new Set(raw.map((item) => String(item).trim()).filter(Boolean)));
+    }
+
+    function squadNeedsText(value) {
+      const needs = normalizeSquadNeeds(value);
+      return needs.length ? needs.join(', ') : '-';
     }
 
     function ensureClubProfileSelectOptions() {
@@ -1184,8 +1232,7 @@ await clubApiPost('/staff/player-clips', {
         { value: 'Coklu Brans', label: 'Çoklu Branş' },
       ]);
 
-      fillSelect('squadNeed', document.getElementById('squadNeed')?.value || 'Forvet', [
-        { value: '', label: 'Seçiniz' },
+      fillSelect('squadNeed', '', [
         { value: 'Stoper', label: 'Stoper' },
         { value: 'Sol Bek', label: 'Sol Bek' },
         { value: 'Sag Bek', label: 'Sağ Bek' },
@@ -1233,11 +1280,13 @@ await clubApiPost('/staff/player-clips', {
     }
 
     function buildNeedsText(profile) {
+      const needs = normalizeSquadNeeds(profile.squadNeed);
       return JSON.stringify({
         branch: profile.branch || '',
         budget: Number(profile.budget) || 0,
         wageBudget: Number(profile.wageBudget) || 0,
-        squadNeed: profile.squadNeed || '',
+        squadNeed: needs[0] || '',
+        squadNeeds: needs,
         preferredSystem: profile.preferredSystem || '',
         facilityLevel: profile.facilityLevel || '',
         facilities: profile.facilities || '',
@@ -1247,10 +1296,12 @@ await clubApiPost('/staff/player-clips', {
 
     function profileFromApi(user, team) {
       const parsedNeeds = parseNeedsText(team?.needs_text || '');
-      return Object.assign(getDefaultProfile(), parsedNeeds, {
+      const merged = Object.assign(getDefaultProfile(), parsedNeeds, {
         clubName: team?.team_name || user?.name || parsedNeeds.clubName,
         city: team?.team_city || user?.user_city || user?.city || parsedNeeds.city,
       });
+      merged.squadNeed = normalizeSquadNeeds(merged.squadNeeds || merged.squadNeed);
+      return merged;
     }
 
     function setForm(profile) {
@@ -1259,7 +1310,13 @@ await clubApiPost('/staff/player-clips', {
       document.getElementById('branch').value = profile.branch || '';
       document.getElementById('budget').value = Number(profile.budget) || 0;
       document.getElementById('wageBudget').value = Number(profile.wageBudget) || 0;
-      document.getElementById('squadNeed').value = profile.squadNeed || '';
+      const needSet = new Set(normalizeSquadNeeds(profile.squadNeed));
+      const needSelect = document.getElementById('squadNeed');
+      if (needSelect) {
+        Array.from(needSelect.options).forEach((opt) => {
+          opt.selected = needSet.has(opt.value);
+        });
+      }
       document.getElementById('preferredSystem').value = profile.preferredSystem || '';
       document.getElementById('facilityLevel').value = profile.facilityLevel || '';
       document.getElementById('facilities').value = profile.facilities || '';
@@ -1267,13 +1324,17 @@ await clubApiPost('/staff/player-clips', {
     }
 
     function readForm() {
+      const needSelect = document.getElementById('squadNeed');
+      const selectedNeeds = needSelect
+        ? Array.from(needSelect.selectedOptions).map((opt) => opt.value).filter(Boolean)
+        : [];
       return {
         clubName: document.getElementById('clubName').value.trim(),
         city: document.getElementById('city').value.trim(),
         branch: document.getElementById('branch').value,
         budget: Number(document.getElementById('budget').value || 0),
         wageBudget: Number(document.getElementById('wageBudget').value || 0),
-        squadNeed: document.getElementById('squadNeed').value,
+        squadNeed: selectedNeeds,
         preferredSystem: document.getElementById('preferredSystem').value,
         facilityLevel: document.getElementById('facilityLevel').value,
         facilities: document.getElementById('facilities').value.trim(),
@@ -1282,18 +1343,22 @@ await clubApiPost('/staff/player-clips', {
     }
 
     function renderSummary(profile) {
+      const needs = normalizeSquadNeeds(profile.squadNeed);
+      const needsText = squadNeedsText(profile.squadNeed);
       document.getElementById('sumClub').textContent = profile.clubName || '-';
       document.getElementById('sumCity').textContent = profile.city || '-';
       document.getElementById('sumBranch').textContent = profile.branch || '-';
       document.getElementById('sumBudget').textContent = formatMoney(profile.budget);
       document.getElementById('sumWage').textContent = formatMoney(profile.wageBudget);
-      document.getElementById('sumNeed').textContent = profile.squadNeed || '-';
+      document.getElementById('sumNeed').innerHTML = needs.length
+        ? needs.map((need, idx) => `<span class="need-badge"><span class="need-badge-index">${idx + 1}</span>${esc(need)}</span>`).join('')
+        : '<span class="need-badge">-</span>';
       document.getElementById('sumSystem').textContent = SYSTEM_LABELS[profile.preferredSystem] || '-';
       document.getElementById('sumFacilityLevel').textContent = profile.facilityLevel || '-';
 
       const chips = [];
       if (profile.branch) chips.push(`Brans: ${profile.branch}`);
-      if (profile.squadNeed) chips.push(`İhtiyaç: ${profile.squadNeed}`);
+      if (needsText !== '-') chips.push(`İhtiyaç: ${needsText}`);
       if (profile.facilityLevel) chips.push(`Tesis: ${profile.facilityLevel}`);
       if (profile.city) chips.push(`Sehir: ${profile.city}`);
       chips.push(profile.budget >= 10000000 ? 'Yuksek Butce' : 'Kontrollu Butce');
@@ -1304,11 +1369,15 @@ await clubApiPost('/staff/player-clips', {
         const params = new URLSearchParams({ visibility_role: 'club' });
         if (profile.preferredSystem) params.set('system', profile.preferredSystem);
         scoutLink.href = `professional-players.html?${params.toString()}`;
+        const canSeeScoutLink = currentUserRole === 'club' || currentUserRole === 'team';
+        scoutLink.style.display = canSeeScoutLink ? 'inline-flex' : 'none';
       }
       renderAdvancedSummary(profile);
     }
 
     function renderAdvancedSummary(profile) {
+      const needs = normalizeSquadNeeds(profile.squadNeed);
+      const needsText = squadNeedsText(needs);
       const meta = document.getElementById('clubDataMeta');
       const stamp = window.NextScoutData?.sourceStamp
         ? window.NextScoutData.sourceStamp('KULÜP Profili', new Date())
@@ -1347,7 +1416,7 @@ await clubApiPost('/staff/player-clips', {
           'Coklu Brans': 'Branş bazlı ayrı bütçe ve kadro ihtiyacı takibi önerilir.'
         };
         const items = [
-          `Öncelikli ihtiyaç: ${profile.squadNeed || '-'}`,
+          `Öncelikli ihtiyaç: ${needsText}`,
           `Hedef branş: ${profile.branch || '-'}`,
           `Tesis seviyesi: ${profile.facilityLevel || '-'}`,
           facilityHint[profile.facilityLevel] || 'Tesis seviyesi seçimine göre detaylı yatırım planı tanımlanabilir.',
@@ -1360,7 +1429,7 @@ await clubApiPost('/staff/player-clips', {
       const planBody = document.getElementById('transferPlanBody');
       if (planBody) {
         const rows = [
-          ['2026 Yaz', profile.squadNeed || 'Forvet', formatMoney(profile.budget), 'Planlandi'],
+          ['2026 Yaz', needs[0] || 'Forvet', formatMoney(profile.budget), 'Planlandi'],
           ['2026 Kis', 'Genc oyuncu takviyesi', formatMoney(Math.round((Number(profile.budget || 0)) * 0.35)), 'Izleniyor'],
         ];
         planBody.innerHTML = rows.map((r) => `<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td></tr>`).join('');
@@ -1377,11 +1446,25 @@ await clubApiPost('/staff/player-clips', {
       const user = meData?.data || null;
       if (!user?.id) return null;
       currentUserId = user.id;
+      currentUserRole = resolveCurrentRole(user);
 
       const teamRes = await fetch(`${api}/teams/${encodeURIComponent(user.id)}`, { headers: { 'Accept': 'application/json', 'Authorization': headers.Authorization } });
       if (!teamRes.ok) return { user, team: null };
       const teamData = await teamRes.json();
       return { user, team: teamData?.data || null };
+    }
+
+    async function fetchTeamById(teamId) {
+      if (!teamId) return null;
+      const api = getApiBaseUrl();
+      const headers = authHeaders();
+      const reqHeaders = headers
+        ? { 'Accept': 'application/json', 'Authorization': headers.Authorization }
+        : { 'Accept': 'application/json' };
+      const res = await fetch(`${api}/teams/${encodeURIComponent(teamId)}`, { headers: reqHeaders });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data?.data || null;
     }
 
     async function saveProfileBackend(profile) {
@@ -1417,13 +1500,17 @@ await clubApiPost('/staff/player-clips', {
 
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        if (isProfileReadOnly) {
+          saveMsg.textContent = 'Bu profil salt okunur. Duzenleme yalnizca profil sahibine aciktir.';
+          return;
+        }
         const data = readForm();
-        if (!data.clubName || !data.city || !data.squadNeed || !data.facilityLevel) {
+        if (!data.clubName || !data.city || !normalizeSquadNeeds(data.squadNeed).length || !data.facilityLevel) {
           saveMsg.textContent = 'Zorunlu alanlari doldurun.';
           return;
         }
         const checklist = window.NextScoutData?.editorialChecklist
-          ? window.NextScoutData.editorialChecklist({ title: data.clubName, body: data.notes || `${data.branch} ${data.squadNeed}` })
+          ? window.NextScoutData.editorialChecklist({ title: data.clubName, body: data.notes || `${data.branch} ${squadNeedsText(data.squadNeed)}` })
           : { ok: true, warnings: [] };
         if (!checklist.ok) {
           saveMsg.textContent = `Icerik kontrolu: ${checklist.warnings.join(', ')}`;
@@ -1450,6 +1537,10 @@ await clubApiPost('/staff/player-clips', {
       });
 
       document.getElementById('resetBtn')?.addEventListener('click', async () => {
+        if (isProfileReadOnly) {
+          saveMsg.textContent = 'Bu profil salt okunur.';
+          return;
+        }
         const defaults = getDefaultProfile();
         const backendSaved = await saveProfileBackend(defaults).catch(() => false);
         if (!backendSaved) {
@@ -1466,29 +1557,44 @@ await clubApiPost('/staff/player-clips', {
 
     async function init() {
       let profile = getDefaultProfile();
+      currentUserRole = resolveCurrentRole(null);
+      viewedTeamId = getViewedTeamIdFromQuery();
+      let ownUserId = resolveCurrentUserIdFromLocal();
       try {
         const remote = await fetchMeAndTeam();
         if (remote?.user) {
-          const merged = profileFromApi(remote.user, remote.team);
-          profile = Object.assign(profile, merged);
+          ownUserId = String(remote.user.id);
+          const ownMerged = profileFromApi(remote.user, remote.team);
+          profile = Object.assign(profile, ownMerged);
+        }
+        if (viewedTeamId && (!ownUserId || String(viewedTeamId) !== ownUserId)) {
+          const team = await fetchTeamById(viewedTeamId);
+          if (team) {
+            const merged = profileFromApi(null, team);
+            profile = Object.assign(profile, merged);
+          }
         }
       } catch (error) {
         // local fallback
       }
+      const canEditOwnProfile = !viewedTeamId || (!!ownUserId && String(viewedTeamId) === String(ownUserId));
       ensureClubProfileSelectOptions();
       setForm(profile);
       renderSummary(profile);
+      applyProfileReadOnlyState(!canEditOwnProfile);
+      const publicBtn = document.getElementById('publicProfileBtn');
+      if (publicBtn) {
+        const publicTargetId = String(ownUserId || currentUserId || viewedTeamId || '').trim();
+        publicBtn.href = publicTargetId
+          ? `club-profile.html?user_id=${encodeURIComponent(publicTargetId)}`
+          : 'club-profile.html';
+        publicBtn.style.display = 'inline-flex';
+      }
       bindTabs();
       bind();
       updateClubReviewVisibility();
       loadClubProfileReviews();
-      if (getToken()) {
-        await renderClubWorkspaceNotes();
-      } else {
-        document.getElementById('clubWorkspaceNotesList').innerHTML = '<div class="workspace-empty">Giris yaptiginda teknik notlar burada gorunur.</div>';
-        document.getElementById('clubWorkspaceClipsList').innerHTML = '<div class="workspace-empty">Giris yaptiginda klip notlari burada gorunur.</div>';
-        document.getElementById('clubWorkspaceEvaluationsList').innerHTML = '<div class="workspace-empty">Giris yaptiginda kaydedilmis degerlendirmeler burada gorunur.</div>';
-      }
+      // Teknik workspace bu sayfadan kaldirildi (team-dashboard'da devam ediyor).
     }
 
     function applyTurkishTextFixes() {
