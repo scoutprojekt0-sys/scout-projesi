@@ -3,312 +3,464 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manager Profili - NextScout</title>
-    <meta name="description" content="NextScout manager profile sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
-    <meta name="robots" content="noindex,follow">
-    <link rel="canonical" href="https://nextscout.pro/manager-profile.html">
-    <meta property="og:type" content="website">
-    <meta property="og:locale" content="tr_TR">
-    <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="Manager Profili - NextScout">
-    <meta property="og:description" content="NextScout manager profile sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
-    <meta property="og:url" content="https://nextscout.pro/manager-profile.html">
-    <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Manager Profili - NextScout">
-    <meta name="twitter:description" content="NextScout manager profile sayfasi: futbol scout, KUL�P ve oyuncu odakli platform icerigi.">
-    <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
-    <meta name="theme-color" content="#0B3B8A">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <title>Manager Profili | NextScout</title>
+  <meta name="description" content="Manager profil workspace: profil duzenleme, public onizleme ve profil yorumlari.">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --bg:#08131d;
-      --ink:#f5fbff;
-      --muted:#9bb5cb;
-      --line:#2b4660;
-      --panel:#0f1f2e;
-      --panel-soft:#12293d;
-      --primary:#60a5fa;
-      --primary-strong:#16325c;
-      --success:#14b8a6;
-      --cta:#ff5a1f;
-      --cta-2:#ff7e22;
-      --shadow:0 18px 36px rgba(8,19,29,.34);
+      --bg: #0b1220;
+      --surface: #121a2b;
+      --card: #192339;
+      --line: #2c3a57;
+      --text: #e5ecfa;
+      --muted: #9fb0d1;
+      --primary: #4f8cff;
+      --accent: #17c9a5;
+      --warn: #f2b84b;
+      --danger: #f87171;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:Inter,Segoe UI,Arial,sans-serif;
-      color:var(--ink);
-      min-height:100vh;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(79, 140, 255, 0.25), transparent 34%),
+        radial-gradient(circle at 90% 20%, rgba(23, 201, 165, 0.22), transparent 36%),
+        var(--bg);
+      min-height: 100vh;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(10px);
+      background: rgba(11, 18, 32, 0.72);
+      border-bottom: 1px solid #213150;
+    }
+    .topbar-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand { font-weight: 800; color: #cfe0ff; letter-spacing: 0.2px; }
+    .back {
+      border: 1px solid #33486f;
+      color: #d4e4ff;
+      background: #17243d;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 14px;
+      transition: 0.2s ease;
+    }
+    .back:hover { background: #213252; }
+    .page { max-width: 1320px; margin: 28px auto 48px; padding: 0 20px; }
+    .profile-shell {
+      position: relative;
+      background: linear-gradient(180deg, rgba(29, 44, 72, 0.96), rgba(18, 26, 43, 0.96));
+      border: 1px solid #2d4167;
+      border-radius: 28px;
+      box-shadow: 0 24px 80px rgba(4, 10, 20, 0.55);
+      overflow: hidden;
+    }
+    .floating-actions {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      z-index: 5;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      max-width: 420px;
+    }
+    .fbtn {
+      border: 1px solid #3a5583;
+      background: rgba(18, 31, 52, 0.88);
+      color: #d9e7ff;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 7px 12px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .fbtn.primary {
+      border-color: #4d7cda;
+      background: linear-gradient(145deg, #2f58b9, #2767ca);
+      color: #fff;
+    }
+    .header-grid {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 24px;
+      padding: 26px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(160deg, rgba(79, 140, 255, 0.16), rgba(23, 201, 165, 0.08));
+    }
+    .avatar-box {
+      background: rgba(10, 20, 35, 0.55);
+      border: 1px solid #35507e;
+      border-radius: 22px;
+      padding: 18px;
+      display: grid;
+      place-items: center;
+      min-height: 250px;
+    }
+    .avatar {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid #3b5d93;
+      box-shadow: 0 14px 30px rgba(13, 33, 66, 0.5);
+      background: #1a2e4f;
+    }
+    .identity h1 { font-size: 38px; line-height: 1.1; margin-bottom: 8px; letter-spacing: -0.4px; }
+    .identity .meta { color: #c0d0ee; font-size: 15px; margin-bottom: 12px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+    .chip {
+      border: 1px solid #385684;
+      background: rgba(23, 37, 62, 0.9);
+      color: #cfe0ff;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+    }
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .stat {
+      background: rgba(9, 17, 30, 0.6);
+      border: 1px solid #31486f;
+      border-radius: 14px;
+      padding: 11px;
+    }
+    .stat .label { color: var(--muted); font-size: 11px; text-transform: uppercase; }
+    .stat .value { margin-top: 4px; font-size: 23px; font-weight: 800; }
+    .tab-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 14px 16px;
+      background: #131d31;
+      border-bottom: 1px solid var(--line);
+      scrollbar-width: thin;
+    }
+    .tab-btn {
+      border: 1px solid #304568;
+      background: #1a2842;
+      color: #bfd3f5;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: 0.2s ease;
+    }
+    .tab-btn:hover { background: #24375b; }
+    .tab-btn.active {
+      color: #fff;
+      border-color: #4c7fe0;
+      background: linear-gradient(145deg, #2d55b2, #266dce);
+    }
+    .tab-content { display: none; padding: 22px; opacity: 0; transform: translateY(5px); }
+    .tab-content.active { display: block; animation: tabEnter 0.22s ease forwards; }
+    @keyframes tabEnter { to { opacity: 1; transform: translateY(0); } }
+    .section-title { font-size: 21px; margin-bottom: 14px; }
+    .grid-two { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; }
+    .grid-three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .card {
+      background: var(--card);
+      border: 1px solid #31496e;
+      border-radius: 16px;
+      padding: 14px;
+    }
+    .card h3 { font-size: 15px; margin-bottom: 8px; color: #d9e6ff; }
+    .card p { color: #b7c8e9; line-height: 1.55; font-size: 14px; }
+    .field { display: grid; gap: 6px; margin-bottom: 10px; }
+    .label { color: var(--muted); font-size: 12px; font-weight: 700; }
+    .input, .textarea, .select {
+      width: 100%;
+      border: 1px solid #31496e;
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: rgba(9, 17, 30, 0.52);
+      color: #dce8ff;
+      font-size: 14px;
+    }
+    .input:focus, .textarea:focus, .select:focus { outline: none; border-color: #4f8cff; box-shadow: 0 0 0 3px rgba(79,140,255,.14); }
+    .textarea { min-height: 100px; resize: vertical; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .full { grid-column: 1 / -1; }
+    .action-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+    .btn {
+      border: 1px solid #3a5583;
+      background: rgba(18, 31, 52, 0.88);
+      color: #d9e7ff;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .btn.primary { border-color: #4d7cda; background: linear-gradient(145deg, #2f58b9, #2767ca); color: #fff; }
+    .ok { min-height: 16px; margin-top: 8px; font-size: 12px; color: #86efac; font-weight: 700; }
+    .review-shell { display: grid; gap: 16px; }
+    .review-list { display: grid; gap: 14px; }
+    .review-summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .review-summary-card { padding: 14px 15px; border-radius: 12px; border: 1px solid rgba(96,165,250,.14); background: linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%); }
+    .review-summary-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: #9bb5cb; margin-bottom: 8px; }
+    .review-summary-value { font-size: 26px; font-weight: 900; color: #f8fbff; }
+    .review-item {
+      position: relative;
+      padding: 18px;
+      border-radius: 12px;
+      border: 1px solid rgba(96,165,250,.14);
+      background: linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%);
+      box-shadow: 0 18px 32px rgba(2,6,23,.16);
+    }
+    .review-item::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 4px; background: linear-gradient(180deg, #4f8cff 0%, #17c9a5 100%); border-radius: 12px 0 0 12px; }
+    .review-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; margin-bottom: 8px; }
+    .review-author { display: grid; gap: 4px; }
+    .review-author strong { font-size: 15px; color: #f5fbff; }
+    .review-author span, .review-empty, .review-meta { font-size: 12px; color: var(--muted); line-height: 1.6; }
+    .review-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 14px; }
+    .review-pill { display: inline-flex; align-items: center; min-height: 28px; padding: 0 11px; border-radius: 999px; border: 1px solid rgba(148,163,184,.16); background: rgba(255,255,255,.06); color: #dbeafe; font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .review-pill.sentiment-olumlu { color: #bbf7d0; }
+    .review-pill.sentiment-notr { color: #bfdbfe; }
+    .review-pill.sentiment-dikkat { color: #fde68a; }
+    .review-body { color: #e2e8f0; font-size: 14px; line-height: 1.72; }
+    .review-reply { margin-top: 12px; padding: 14px 15px; border-radius: 12px; background: linear-gradient(180deg, rgba(11,59,138,.18) 0%, rgba(15,23,42,.16) 100%); border: 1px solid rgba(96,165,250,.2); box-shadow: inset 0 1px 0 rgba(255,255,255,.04); }
+
+    @media (max-width: 1100px) {
+      .header-grid { grid-template-columns: 1fr; padding-top: 82px; }
+      .floating-actions { top: 14px; right: 14px; max-width: calc(100% - 28px); }
+      .stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .grid-two { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 800px) {
+      .topbar-inner { padding: 12px; }
+      .page { margin-top: 14px; padding: 0 10px; }
+      .profile-shell { border-radius: 16px; }
+      .identity h1 { font-size: 28px; }
+      .tab-content { padding: 14px; }
+      .review-summary-grid { grid-template-columns: 1fr; }
+    }
+    /* align to project page style (manager-needs theme) */
+    :root {
+      --bg: #08131d;
+      --surface: #0f1f2e;
+      --card: #12293d;
+      --line: #2b4660;
+      --text: #f5fbff;
+      --muted: #9bb5cb;
+      --primary: #ff5a1f;
+      --accent: #2fd4b0;
+    }
+    body {
+      font-family: "Space Grotesk", sans-serif;
       background:
         radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
         radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
         var(--bg);
-      background-repeat:no-repeat;
-      background-size:cover;
-      background-attachment:fixed;
     }
-    .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 24px}
-    .head{
-      position:relative;
-      display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px;
-      border:1px solid var(--line);border-radius:0 !important;background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);padding:24px;
-      box-shadow:var(--shadow);overflow:hidden;
+    .topbar {
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.96) 0%, rgba(15, 31, 46, 0.94) 100%);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+      box-shadow: 0 18px 36px rgba(8,19,29,.24);
     }
-    .head::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--cta) 0%,var(--cta-2) 55%,#60a5fa 100%)}
-    .title{margin:0;font-size:32px;font-weight:800;font-family:Poppins,Inter,sans-serif;color:#dbeafe;line-height:1.1}
-    .sub{margin-top:8px;color:var(--muted);font-size:14px;line-height:1.7}
-    .head-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-    .btn{
-      border:1px solid rgba(255,126,34,.45);background:linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);color:#16325c;padding:10px 14px;border-radius:12px;
-      text-decoration:none;font-weight:800;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;
-      transition:all .2s ease;line-height:1;box-shadow:0 12px 24px rgba(8,19,29,.24);
-      border-radius:0 !important;
+    .profile-shell {
+      border-radius: 22px;
+      border-color: #2b4660;
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
     }
-    .btn:hover{transform:translateY(-1px);border-color:rgba(255,126,34,.6)}
-    .btn-primary{background:linear-gradient(135deg,var(--cta) 0%,var(--cta-2) 100%);color:#fff;border-color:rgba(255,126,34,.6);box-shadow:0 16px 28px rgba(255,90,31,.28)}
-    .btn-secondary{background:linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);color:#16325c;border:1px solid rgba(255,126,34,.45)}
-    .home-btn{
-      background:linear-gradient(135deg,var(--cta) 0%,var(--cta-2) 100%);
-      border:1px solid rgba(255,126,34,.6);
-      color:#fff;
-      border-radius:0 !important;
-      padding:10px 14px;
-      box-shadow:0 16px 28px rgba(255,90,31,.28);
+    .fbtn {
+      border: 1px solid rgba(255, 126, 34, 0.45);
+      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+      color: #16325c;
+      border-radius: 12px;
+      box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24);
     }
-    .layout{display:grid;grid-template-columns:1.8fr 1fr;gap:12px}
-    .card{
-      position:relative;background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);border:1px solid var(--line);border-radius:0 !important;box-shadow:var(--shadow);padding:18px;overflow:hidden;
+    .fbtn.primary {
+      background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+      border-color: #ff7e22;
+      color: #fff;
+      box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28);
     }
-    .card::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--cta) 0%,var(--cta-2) 55%,#60a5fa 100%)}
-    .section-title{margin:0 0 10px 0;font-size:16px;font-weight:800;color:#dbeafe}
-    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .field{display:flex;flex-direction:column;gap:6px}
-    .label{font-size:12px;font-weight:700;color:#cbd5e1}
-    .input,.textarea,.select{
-      border:1px solid var(--line);border-radius:0 !important;padding:10px 12px;font-size:13px;background:rgba(255,255,255,.04);color:#f8fafc;
+    .tab-bar {
+      background: #131d31;
+      border-bottom-color: #2b4660;
     }
-    .input::placeholder,.textarea::placeholder{color:#94a3b8}
-    .input:focus,.textarea:focus,.select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(96,165,250,.16)}
-    .textarea{min-height:100px;resize:vertical}
-    .full{grid-column:1/-1}
-    .act{display:flex;gap:8px;margin-top:12px}
-    .photo-box{display:flex;flex-direction:column;align-items:center;gap:10px}
-    .photo{width:132px;height:132px;border-radius:0 !important;border:1px solid var(--line);object-fit:cover;background:rgba(255,255,255,.04)}
-    .row{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid rgba(148,163,184,.14);font-size:13px}
-    .row:last-child{border-bottom:0}
-    .muted{color:var(--muted)}
-    .ok{color:#34d399;font-size:12px;min-height:16px;margin-top:8px;font-weight:700}
-    .preview-modal{
-      position:fixed;inset:0;background:rgba(2,6,23,.62);backdrop-filter:blur(4px);
-      display:none;align-items:center;justify-content:center;padding:14px;z-index:9999;
+    .tab-btn {
+      border-color: #304568;
+      background: #1a2842;
+      color: #bfd3f5;
+      border-radius: 12px;
     }
-    .preview-modal.show{display:flex}
-    .preview-card{
-      width:min(560px,100%);max-height:90vh;overflow:auto;background:linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);border:1px solid var(--line);
-      border-radius:0 !important;box-shadow:0 24px 50px rgba(2,6,23,.45);position:relative;
+    .tab-btn.active {
+      border-color: #ff7e22;
+      background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+      color: #fff;
     }
-    .preview-card::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--cta) 0%,var(--cta-2) 55%,#60a5fa 100%)}
-    .preview-head{
-      display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 14px 10px;border-bottom:1px solid var(--line);
+    .card {
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border-color: #2b4660;
     }
-    .preview-title{margin:0;font-size:18px;font-weight:800;color:#dbeafe}
-    .preview-close{
-      width:34px;height:34px;border-radius:0 !important;border:1px solid var(--line);background:rgba(255,255,255,.06);color:#dbeafe;cursor:pointer;
-      display:inline-flex;align-items:center;justify-content:center;
+    .input, .textarea, .select {
+      border-color: #2b4660;
+      background: rgba(255,255,255,.04);
+      color: #f5fbff;
     }
-    .preview-body{padding:14px;display:grid;gap:12px}
-    .preview-top{
-      display:flex;align-items:center;gap:12px;padding:10px;border:1px solid var(--line);border-radius:0 !important;background:rgba(255,255,255,.04);
-    }
-    .preview-photo{
-      width:78px;height:78px;border-radius:0 !important;border:1px solid var(--line);object-fit:cover;background:#111827;flex:0 0 auto;
-    }
-    .preview-name{font-size:17px;font-weight:800;color:#f8fafc}
-    .preview-branch{font-size:12px;color:#93c5fd;font-weight:700}
-    .preview-bio{
-      border:1px solid var(--line);border-radius:0 !important;background:rgba(255,255,255,.04);padding:10px;font-size:13px;color:#cbd5e1;line-height:1.45;
-    }
-    .preview-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-    .preview-item{
-      border:1px solid var(--line);border-radius:0 !important;background:rgba(255,255,255,.04);padding:9px 10px;
-    }
-    .preview-k{font-size:10px;color:#94a3b8;text-transform:uppercase;font-weight:700;margin-bottom:4px}
-    .preview-v{font-size:13px;color:#f8fafc;font-weight:700;word-break:break-word}
-    .review-shell{display:grid;gap:16px}
-    .review-list{display:grid;gap:14px}
-    .review-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-    .review-summary-card{padding:14px 15px;border-radius:0 !important;border:1px solid rgba(96,165,250,.14);background:linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%)}
-    .review-summary-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#9bb5cb;margin-bottom:8px}
-    .review-summary-value{font-size:26px;font-weight:900;color:#f8fbff}
-    .review-item{
-      position:relative;padding:18px;border-radius:0 !important;border:1px solid rgba(96,165,250,.14);
-      background:linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%);box-shadow:0 18px 32px rgba(2,6,23,.16)
-    }
-    .review-item::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:linear-gradient(180deg,#ff7e22 0%,#60a5fa 100%)}
-    .review-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}
-    .review-author{display:grid;gap:4px}
-    .review-author strong{font-size:15px;color:#f5fbff}
-    .review-author span,.review-empty,.review-meta{font-size:12px;color:var(--muted);line-height:1.6}
-    .review-tags{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 14px}
-    .review-pill{
-      display:inline-flex;align-items:center;min-height:28px;padding:0 11px;border-radius:0 !important;border:1px solid rgba(148,163,184,.16);
-      background:rgba(255,255,255,.06);color:#dbeafe;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase
-    }
-    .review-pill.sentiment-olumlu{color:#bbf7d0}
-    .review-pill.sentiment-notr{color:#bfdbfe}
-    .review-pill.sentiment-dikkat{color:#fde68a}
-    .review-body{color:#e2e8f0;font-size:14px;line-height:1.72}
-    .review-reply{
-      margin-top:12px;padding:14px 15px;border-radius:0 !important;background:linear-gradient(180deg, rgba(11,59,138,.18) 0%, rgba(15,23,42,.16) 100%);
-      border:1px solid rgba(96,165,250,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)
-    }
-
-    @media (max-width:900px){
-      .layout{grid-template-columns:1fr}
-      .form-grid{grid-template-columns:1fr}
-      .review-summary-grid{grid-template-columns:1fr}
-    }
-    @media (max-width:768px){
-      .wrap{padding:10px 10px 18px}
-      .head{padding:12px;gap:10px;flex-direction:column}
-      .title{font-size:24px}
-      .sub{font-size:12px}
-      .head-actions{width:100%;justify-content:flex-start}
-      .btn{padding:9px 12px}
-      .card{padding:12px}
-      .section-title{font-size:15px}
-      .act{display:grid;grid-template-columns:1fr 1fr}
-      .photo{width:120px;height:120px}
-      .row{font-size:12px}
-      .preview-card{max-height:94vh;border-radius:14px}
-      .preview-grid{grid-template-columns:1fr}
-    }
-    @media (max-width:480px){
-      .act{grid-template-columns:1fr}
-      .btn{width:100%;justify-content:center}
-      .head-actions .btn{width:auto}
-      .input,.textarea,.select{font-size:16px}
+    .input:focus, .textarea:focus, .select:focus {
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 3px rgba(96,165,250,.18);
     }
   </style>
-    <link rel="stylesheet" href="assets/css/mobile-unified.css">
-    <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
 <body>
-  <div class="wrap">
-    <div class="head">
-      <div>
-        <h1 class="title">Manager Profili</h1>
-                        <div class="sub">Isim ve foto d�hil profil bilgilerini d�zenle.</div>
-      </div>
-      <div class="head-actions">
-        <button type="button" class="btn" id="openPublicPreviewBtn"><i class="fas fa-user-check"></i><span>Public Gorunum</span></button>
-        <a class="btn btn-secondary" href="manager-dashboard.html"><i class="fas fa-table-columns"></i><span>Dashboard</span></a>
-        <a class="btn home-btn" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,126,34,.6);background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;box-shadow:0 16px 28px rgba(255,90,31,.28);"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
-      </div>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">NextScout Manager Workspace</div>
+      <a class="back" href="manager-dashboard.html"><i class="fas fa-arrow-left"></i> Dashboard</a>
     </div>
+  </header>
 
-    <div class="layout">
-      <div class="card">
-        <h2 class="section-title">Profil Bilgileri</h2>
-        <form id="managerForm" class="form-grid">
-          <div class="field">
-            <label class="label" for="name">Isim Soyisim</label>
-            <input class="input" id="name" required placeholder="Ad Soyad">
-          </div>
-          <div class="field">
-            <label class="label" for="agency">Sirket / Ajans</label>
-            <input class="input" id="agency" placeholder="Ornek Sports Management">
-          </div>
-          <div class="field">
-            <label class="label" for="city">Sehir</label>
-            <input class="input" id="city" placeholder="Istanbul">
-          </div>
-          <div class="field">
-            <label class="label" for="country">�lke</label>
-            <input class="input" id="country" placeholder="T�rkiye">
-          </div>
-          <div class="field">
-            <label class="label" for="phone">Telefon</label>
-            <input class="input" id="phone" placeholder="+90 5xx xxx xx xx">
-          </div>
-          <div class="field full">
-            <label class="label" for="branch">Brans</label>
-            <select class="select" id="branch">
-              <option value="">Seciniz</option>
-              <option value="Futbol">Futbol</option>
-              <option value="Basketbol">Basketbol</option>
-              <option value="Voleybol">Voleybol</option>
-              <option value="Coklu Brans">Coklu Brans</option>
-            </select>
-          </div>
-          <div class="field full">
-            <label class="label" for="bio">Hakkimda</label>
-            <textarea class="textarea" id="bio" placeholder="Kisa manager tanitimi..."></textarea>
-          </div>
-          <div class="act full">
-            <button class="btn btn-primary" type="submit"><i class="fas fa-floppy-disk"></i><span>Kaydet</span></button>
-            <button class="btn" type="button" id="resetBtn"><i class="fas fa-rotate-left"></i><span>Sifirla</span></button>
-          </div>
-        </form>
-        <div id="saveMsg" class="ok"></div>
+  <main class="page">
+    <section class="profile-shell">
+      <div class="floating-actions">
+        <button type="button" class="fbtn primary" id="openPublicPreviewBtn"><i class="fas fa-globe"></i> Public Onizleme</button>
+        <a class="fbtn" href="manager-dashboard.html"><i class="fas fa-table-columns"></i> Dashboard</a>
+        <a class="fbtn" href="index.html"><i class="fas fa-house"></i> Ana Sayfa</a>
       </div>
 
-      <div class="card">
-        <h2 class="section-title">Profil Fotografi</h2>
-        <div class="photo-box">
-          <img id="photoPreview" class="photo" alt="Manager Fotograf">
-          <input type="file" id="photoInput" accept="image/*">
-          <button class="btn" type="button" id="clearPhotoBtn"><i class="fas fa-trash"></i><span>Fotografi Kaldir</span></button>
-        </div>
-
-        <h2 class="section-title" style="margin-top:14px;">Public Ozet</h2>
-        <div class="row"><span class="muted">Isim</span><strong id="sumName">-</strong></div>
-        <div class="row"><span class="muted">Brans</span><strong id="sumBranch">-</strong></div>
-        <div class="row"><span class="muted">Ajans</span><strong id="sumAgency">-</strong></div>
-        <div class="row"><span class="muted">Sehir</span><strong id="sumCity">-</strong></div>
-        <div class="row"><span class="muted">�lke</span><strong id="sumCountry">-</strong></div>
-      </div>
-    </div>
-    <div class="card" style="margin-top:12px;">
-      <h2 class="section-title">Profil Yorumlari</h2>
-      <div class="review-shell">
-        <div class="review-summary-grid" id="managerReviewSummary">
-          <div class="review-summary-card"><div class="review-summary-label">Toplam</div><div class="review-summary-value">0</div></div>
-          <div class="review-summary-card"><div class="review-summary-label">Olumlu Oran</div><div class="review-summary-value">%0</div></div>
-          <div class="review-summary-card"><div class="review-summary-label">Guven Skoru</div><div class="review-summary-value">0/10</div></div>
-        </div>
-        <div class="review-list" id="managerReviewList"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="preview-modal" id="publicPreviewModal" onclick="if(event.target===this) closePublicPreviewModal()">
-    <div class="preview-card">
-      <div class="preview-head">
-        <h3 class="preview-title">Public Profil Onizleme</h3>
-        <button type="button" class="preview-close" onclick="closePublicPreviewModal()"><i class="fas fa-times"></i></button>
-      </div>
-      <div class="preview-body">
-        <div class="preview-top">
-          <img id="previewPhoto" class="preview-photo" alt="Manager">
-          <div>
-            <div id="previewName" class="preview-name">-</div>
-            <div id="previewBranch" class="preview-branch">-</div>
+      <section class="header-grid">
+        <aside class="avatar-box">
+          <img id="photoPreview" class="avatar" alt="Manager Fotograf" src="https://via.placeholder.com/140x140?text=Manager">
+        </aside>
+        <div class="identity">
+          <h1 id="headName">Manager</h1>
+          <div class="meta" id="headMeta">Manager profili bilgilerini duzenle ve public sunumu yonet.</div>
+          <div class="chips">
+            <span class="chip" id="sumBranchChip">Brans: -</span>
+            <span class="chip" id="sumAgencyChip">Ajans: -</span>
+            <span class="chip" id="sumCityChip">Sehir: -</span>
+          </div>
+          <div class="stats">
+            <div class="stat"><div class="label">Brans</div><div class="value" id="sumBranch">-</div></div>
+            <div class="stat"><div class="label">Ajans</div><div class="value" id="sumAgency">-</div></div>
+            <div class="stat"><div class="label">Sehir</div><div class="value" id="sumCity">-</div></div>
+            <div class="stat"><div class="label">Ulke</div><div class="value" id="sumCountry">-</div></div>
           </div>
         </div>
-        <div id="previewBio" class="preview-bio">-</div>
-        <div class="preview-grid">
-          <div class="preview-item"><div class="preview-k">Ajans</div><div class="preview-v" id="previewAgency">-</div></div>
-          <div class="preview-item"><div class="preview-k">Sehir</div><div class="preview-v" id="previewCity">-</div></div>
-          <div class="preview-item"><div class="preview-k">�lke</div><div class="preview-v" id="previewCountry">-</div></div>
-          <div class="preview-item"><div class="preview-k">Telefon</div><div class="preview-v" id="previewPhone">-</div></div>
+      </section>
+
+      <nav class="tab-bar">
+        <button class="tab-btn active" type="button" data-tab-target="manager-edit">Profil Duzenle</button>
+        <button class="tab-btn" type="button" data-tab-target="manager-preview">Public Onizleme</button>
+        <button class="tab-btn" type="button" data-tab-target="manager-reviews">Profil Yorumlari</button>
+      </nav>
+
+      <section class="tab-content active" id="manager-edit">
+        <div class="grid-two">
+          <article class="card">
+            <h3>Profil Bilgileri</h3>
+            <form id="managerForm" class="form-grid">
+              <div class="field">
+                <label class="label" for="name">Isim Soyisim</label>
+                <input class="input" id="name" required placeholder="Ad Soyad">
+              </div>
+              <div class="field">
+                <label class="label" for="agency">Sirket / Ajans</label>
+                <input class="input" id="agency" placeholder="Ornek Sports Management">
+              </div>
+              <div class="field">
+                <label class="label" for="city">Sehir</label>
+                <input class="input" id="city" placeholder="Istanbul">
+              </div>
+              <div class="field">
+                <label class="label" for="country">Ulke</label>
+                <input class="input" id="country" placeholder="Turkiye">
+              </div>
+              <div class="field">
+                <label class="label" for="phone">Telefon</label>
+                <input class="input" id="phone" placeholder="+90 5xx xxx xx xx">
+              </div>
+              <div class="field">
+                <label class="label" for="branch">Brans</label>
+                <select class="select" id="branch">
+                  <option value="">Seciniz</option>
+                  <option value="Futbol">Futbol</option>
+                  <option value="Basketbol">Basketbol</option>
+                  <option value="Voleybol">Voleybol</option>
+                  <option value="Coklu Brans">Coklu Brans</option>
+                </select>
+              </div>
+              <div class="field full">
+                <label class="label" for="bio">Hakkimda</label>
+                <textarea class="textarea" id="bio" placeholder="Kisa manager tanitimi..."></textarea>
+              </div>
+              <div class="field full">
+                <label class="label" for="photoInput">Profil Fotografi</label>
+                <input class="input" type="file" id="photoInput" accept="image/*">
+              </div>
+              <div class="action-row full">
+                <button class="btn primary" type="submit"><i class="fas fa-floppy-disk"></i> Kaydet</button>
+                <button class="btn" type="button" id="resetBtn"><i class="fas fa-rotate-left"></i> Sifirla</button>
+                <button class="btn" type="button" id="clearPhotoBtn"><i class="fas fa-trash"></i> Fotografi Kaldir</button>
+              </div>
+            </form>
+            <div id="saveMsg" class="ok"></div>
+          </article>
+
+          <article class="card">
+            <h3>Public Ozet</h3>
+            <p id="headBio">Tanitim metni yok.</p>
+          </article>
         </div>
-      </div>
-    </div>
-  </div>
+      </section>
+
+      <section class="tab-content" id="manager-preview">
+        <div class="grid-two">
+          <article class="card">
+            <h3 id="previewName">-</h3>
+            <p id="previewBranch">-</p>
+            <p id="previewBio">-</p>
+          </article>
+          <article class="card">
+            <div class="field"><div class="label">Ajans</div><div id="previewAgency">-</div></div>
+            <div class="field"><div class="label">Sehir</div><div id="previewCity">-</div></div>
+            <div class="field"><div class="label">Ulke</div><div id="previewCountry">-</div></div>
+            <div class="field"><div class="label">Telefon</div><div id="previewPhone">-</div></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="tab-content" id="manager-reviews">
+        <div class="review-shell">
+          <div class="review-summary-grid" id="managerReviewSummary">
+            <div class="review-summary-card"><div class="review-summary-label">Toplam</div><div class="review-summary-value">0</div></div>
+            <div class="review-summary-card"><div class="review-summary-label">Olumlu Oran</div><div class="review-summary-value">%0</div></div>
+            <div class="review-summary-card"><div class="review-summary-label">Guven Skoru</div><div class="review-summary-value">0/10</div></div>
+          </div>
+          <div class="review-list" id="managerReviewList"></div>
+        </div>
+      </section>
+    </section>
+  </main>
 
   <script>
     function getApiBaseUrl() {
@@ -333,11 +485,11 @@
       };
     }
 
-    function defaults(){
-      return { name:'Manager', agency:'', city:'', country:'T�rkiye', phone:'', branch:'Futbol', bio:'', photo:'' };
+    function defaults() {
+      return { name: 'Manager', agency: '', city: '', country: 'Turkiye', phone: '', branch: 'Futbol', bio: '', photo: '' };
     }
 
-    function setForm(p){
+    function setForm(p) {
       document.getElementById('name').value = p.name || '';
       document.getElementById('agency').value = p.agency || '';
       document.getElementById('city').value = p.city || '';
@@ -345,10 +497,10 @@
       document.getElementById('phone').value = p.phone || '';
       document.getElementById('branch').value = p.branch || '';
       document.getElementById('bio').value = p.bio || '';
-      document.getElementById('photoPreview').src = p.photo || 'https://via.placeholder.com/120x120?text=Manager';
+      document.getElementById('photoPreview').src = p.photo || 'https://via.placeholder.com/140x140?text=Manager';
     }
 
-    function readForm(current){
+    function readForm(current) {
       return {
         name: document.getElementById('name').value.trim(),
         agency: document.getElementById('agency').value.trim(),
@@ -357,21 +509,25 @@
         phone: document.getElementById('phone').value.trim(),
         branch: document.getElementById('branch').value,
         bio: document.getElementById('bio').value.trim(),
-        photo: current.photo || ''
+        photo: current.photo || '',
       };
     }
 
-    function renderSummary(p){
-      document.getElementById('sumName').textContent = p.name || '-';
+    function renderSummary(p) {
+      document.getElementById('headName').textContent = p.name || 'Manager';
+      document.getElementById('headMeta').textContent = `${p.branch || '-'} • ${p.city || '-'} • ${p.country || '-'}`;
+      document.getElementById('headBio').textContent = p.bio || 'Tanitim metni yok.';
       document.getElementById('sumBranch').textContent = p.branch || '-';
       document.getElementById('sumAgency').textContent = p.agency || '-';
       document.getElementById('sumCity').textContent = p.city || '-';
       document.getElementById('sumCountry').textContent = p.country || '-';
+      document.getElementById('sumBranchChip').textContent = `Brans: ${p.branch || '-'}`;
+      document.getElementById('sumAgencyChip').textContent = `Ajans: ${p.agency || '-'}`;
+      document.getElementById('sumCityChip').textContent = `Sehir: ${p.city || '-'}`;
+      renderPublicPreview(p);
     }
 
-    function renderPublicPreviewModal(p){
-      const photo = p.photo || 'https://via.placeholder.com/120x120?text=Manager';
-      document.getElementById('previewPhoto').src = photo;
+    function renderPublicPreview(p) {
       document.getElementById('previewName').textContent = p.name || '-';
       document.getElementById('previewBranch').textContent = p.branch || '-';
       document.getElementById('previewBio').textContent = p.bio || 'Tanitim metni yok.';
@@ -379,78 +535,6 @@
       document.getElementById('previewCity').textContent = p.city || '-';
       document.getElementById('previewCountry').textContent = p.country || '-';
       document.getElementById('previewPhone').textContent = p.phone || '-';
-    }
-
-    function openPublicPreviewModal(){
-      const modal = document.getElementById('publicPreviewModal');
-      if (!modal) return;
-      profile = readForm(profile);
-      renderPublicPreviewModal(profile);
-      modal.classList.add('show');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closePublicPreviewModal(){
-      const modal = document.getElementById('publicPreviewModal');
-      if (!modal) return;
-      modal.classList.remove('show');
-      document.body.style.overflow = '';
-    }
-
-    async function resolveCurrentUserId() {
-      const headers = authHeaders();
-      if (!headers) return 0;
-      const res = await fetch(`${getApiBaseUrl()}/auth/me`, {
-        headers: { 'Accept': 'application/json', 'Authorization': headers.Authorization },
-      });
-      if (!res.ok) return 0;
-      const payload = await res.json();
-      return Number(payload?.data?.id || 0);
-    }
-
-    async function loadBackendProfile() {
-      const headers = authHeaders();
-      if (!headers) return null;
-      const userId = await resolveCurrentUserId();
-      if (!userId) return null;
-      const res = await fetch(`${getApiBaseUrl()}/staff/${encodeURIComponent(userId)}`, { headers: { 'Accept': 'application/json', 'Authorization': headers.Authorization } });
-      if (!res.ok) return null;
-      const payload = await res.json();
-      const data = payload?.data || {};
-      return {
-        name: data.name || '',
-        agency: data.organization || '',
-        city: data.city || '',
-        country: data.country || '',
-        phone: data.phone || '',
-        branch: data.branch || '',
-        bio: data.bio || '',
-        photo: data.profile_photo_url || '',
-      };
-    }
-
-    async function saveBackendProfile(p) {
-      const headers = authHeaders();
-      if (!headers) return false;
-      const userId = await resolveCurrentUserId();
-      if (!userId) return false;
-      const body = {
-        name: p.name,
-        city: p.city,
-        phone: p.phone,
-        organization: p.agency,
-        experience_years: null,
-        bio: p.bio,
-        country: p.country,
-        branch: p.branch,
-        profile_photo_url: p.photo || '',
-      };
-      const res = await fetch(`${getApiBaseUrl()}/staff/${encodeURIComponent(userId)}`, {
-        method: 'PUT',
-        headers,
-        body: JSON.stringify(body),
-      });
-      return res.ok;
     }
 
     function esc(value) {
@@ -527,6 +611,62 @@
       `).join('');
     }
 
+    async function resolveCurrentUserId() {
+      const headers = authHeaders();
+      if (!headers) return 0;
+      const res = await fetch(`${getApiBaseUrl()}/auth/me`, {
+        headers: { 'Accept': 'application/json', 'Authorization': headers.Authorization },
+      });
+      if (!res.ok) return 0;
+      const payload = await res.json();
+      return Number(payload?.data?.id || 0);
+    }
+
+    async function loadBackendProfile() {
+      const headers = authHeaders();
+      if (!headers) return null;
+      const userId = await resolveCurrentUserId();
+      if (!userId) return null;
+      const res = await fetch(`${getApiBaseUrl()}/staff/${encodeURIComponent(userId)}`, { headers: { 'Accept': 'application/json', 'Authorization': headers.Authorization } });
+      if (!res.ok) return null;
+      const payload = await res.json();
+      const data = payload?.data || {};
+      return {
+        name: data.name || '',
+        agency: data.organization || '',
+        city: data.city || '',
+        country: data.country || '',
+        phone: data.phone || '',
+        branch: data.branch || '',
+        bio: data.bio || '',
+        photo: data.profile_photo_url || '',
+      };
+    }
+
+    async function saveBackendProfile(p) {
+      const headers = authHeaders();
+      if (!headers) return false;
+      const userId = await resolveCurrentUserId();
+      if (!userId) return false;
+      const body = {
+        name: p.name,
+        city: p.city,
+        phone: p.phone,
+        organization: p.agency,
+        experience_years: null,
+        bio: p.bio,
+        country: p.country,
+        branch: p.branch,
+        profile_photo_url: p.photo || '',
+      };
+      const res = await fetch(`${getApiBaseUrl()}/staff/${encodeURIComponent(userId)}`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify(body),
+      });
+      return res.ok;
+    }
+
     async function loadManagerProfileReviews() {
       const root = document.getElementById('managerReviewList');
       if (!root) return;
@@ -554,69 +694,41 @@
       }
     }
 
-    let profile = defaults();
-
-    function applyTurkishTextFixes() {
-      document.title = 'Manager Profili - NextScout';
-      const mapTexts = [
-        ['.sub', 'İsim ve foto dahil profil bilgilerini düzenle.'],
-        ['#openPublicPreviewBtn span', 'Public Görünüm'],
-        ['label[for="name"]', 'İsim Soyisim'],
-        ['label[for="agency"]', 'Şirket / Ajans'],
-        ['label[for="city"]', 'Şehir'],
-        ['label[for="country"]', 'Ülke'],
-        ['label[for="branch"]', 'Branş'],
-        ['label[for="bio"]', 'Hakkımda'],
-        ['#resetBtn span', 'Sıfırla'],
-        ['#clearPhotoBtn span', 'Fotoğrafı Kaldır'],
-        ['#sumName', '-'],
-        ['.preview-title', 'Public Profil Önizleme']
-      ];
-      mapTexts.forEach(([selector, text]) => {
-        const el = document.querySelector(selector);
-        if (el) el.textContent = text;
-      });
-      document.querySelectorAll('.row .muted, .preview-k').forEach((el) => {
-        el.textContent = (el.textContent || '')
-          .replace('Isim', 'İsim')
-          .replace('Brans', 'Branş')
-          .replace('Sehir', 'Şehir')
-          .replace('Ulke', 'Ülke')
-          .replace('Ajans', 'Ajans');
-      });
-      document.querySelectorAll('input[placeholder], textarea[placeholder], option').forEach((el) => {
-        if (el.tagName === 'OPTION') {
-          el.textContent = (el.textContent || '')
-            .replace('Seciniz', 'Seçiniz')
-            .replace('Coklu Brans', 'Çoklu Branş');
-          return;
-        }
-        const placeholder = el.getAttribute('placeholder') || '';
-        el.setAttribute('placeholder', placeholder
-          .replace('Ornek Sports Management', 'Örnek Sports Management')
-          .replace('Istanbul', 'İstanbul')
-          .replace('Turkiye', 'Türkiye')
-          .replace('Tï¿½rkiye', 'Türkiye')
-          .replace('Kisa manager tanitimi...', 'Kısa menajer tanıtımı...'));
+    function initTabs() {
+      const tabButtons = Array.from(document.querySelectorAll('[data-tab-target]'));
+      const tabContents = Array.from(document.querySelectorAll('.tab-content'));
+      tabButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.getAttribute('data-tab-target');
+          tabButtons.forEach((x) => x.classList.remove('active'));
+          tabContents.forEach((x) => x.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById(targetId)?.classList.add('active');
+        });
       });
     }
 
+    function openPreviewTab() {
+      const btn = document.querySelector('[data-tab-target="manager-preview"]');
+      if (btn) btn.click();
+    }
+
+    let profile = defaults();
+
     async function init() {
+      initTabs();
       const remote = await loadBackendProfile();
-      if (remote) {
-        profile = Object.assign(defaults(), remote);
-      }
+      if (remote) profile = Object.assign(defaults(), remote);
       setForm(profile);
       renderSummary(profile);
-      applyTurkishTextFixes();
       await loadManagerProfileReviews();
     }
 
-    document.getElementById('managerForm')?.addEventListener('submit', async function(e){
+    document.getElementById('managerForm')?.addEventListener('submit', async (e) => {
       e.preventDefault();
       profile = readForm(profile);
-      if(!profile.name){
-        document.getElementById('saveMsg').textContent = 'İsim zorunlu.';
+      if (!profile.name) {
+        document.getElementById('saveMsg').textContent = 'Isim zorunlu.';
         return;
       }
 
@@ -626,49 +738,45 @@
       } catch (error) {
         backendSaved = false;
       }
-
       renderSummary(profile);
-      renderPublicPreviewModal(profile);
       document.getElementById('saveMsg').textContent = backendSaved ? 'Profil backend kaydedildi.' : 'Profil kaydedilemedi.';
       setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 1800);
     });
 
-    document.getElementById('resetBtn')?.addEventListener('click', function(){
+    document.getElementById('resetBtn')?.addEventListener('click', () => {
       profile = defaults();
       setForm(profile);
       renderSummary(profile);
-      renderPublicPreviewModal(profile);
-      document.getElementById('saveMsg').textContent = 'Profil sıfırlandı.';
+      document.getElementById('saveMsg').textContent = 'Profil sifirlandi.';
       setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 1500);
     });
 
-    document.getElementById('photoInput')?.addEventListener('change', async function(e){
+    document.getElementById('photoInput')?.addEventListener('change', async (e) => {
       const file = e.target.files && e.target.files[0];
-      if(!file) return;
+      if (!file) return;
       const reader = new FileReader();
-      reader.onload = async function(evt){
+      reader.onload = async (evt) => {
         profile.photo = String((evt.target && evt.target.result) || '');
-        document.getElementById('photoPreview').src = profile.photo || 'https://via.placeholder.com/120x120?text=Manager';
-        renderPublicPreviewModal(profile);
+        document.getElementById('photoPreview').src = profile.photo || 'https://via.placeholder.com/140x140?text=Manager';
+        renderSummary(profile);
         try { await saveBackendProfile(profile); } catch (error) {}
       };
       reader.readAsDataURL(file);
     });
 
-    document.getElementById('clearPhotoBtn')?.addEventListener('click', async function(){
+    document.getElementById('clearPhotoBtn')?.addEventListener('click', async () => {
       profile.photo = '';
-      document.getElementById('photoPreview').src = 'https://via.placeholder.com/120x120?text=Manager';
+      document.getElementById('photoPreview').src = 'https://via.placeholder.com/140x140?text=Manager';
       document.getElementById('photoInput').value = '';
-      renderPublicPreviewModal(profile);
+      renderSummary(profile);
       try { await saveBackendProfile(profile); } catch (error) {}
     });
 
-    document.getElementById('openPublicPreviewBtn')?.addEventListener('click', openPublicPreviewModal);
+    document.getElementById('openPublicPreviewBtn')?.addEventListener('click', openPreviewTab);
 
     init();
   </script>
-    <script src="assets/js/core-stability.js"></script>
-    <script src="assets/js/mobile-professional.js" defer></script>
+  <script src="assets/js/core-stability.js"></script>
+  <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-

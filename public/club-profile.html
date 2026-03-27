@@ -192,6 +192,217 @@
       .head-actions .btn{width:auto}
       .input,.textarea,.select{font-size:16px}
     }
+    /* player-profile look & feel override (keep existing club logic) */
+    :root {
+      --bg: #0b1220;
+      --ink: #e5ecfa;
+      --muted: #9fb0d1;
+      --line: #2c3a57;
+      --panel: #121a2b;
+      --panel-soft: #192339;
+      --primary: #4f8cff;
+      --primary-strong: #2d55b2;
+      --success: #17c9a5;
+      --cta: #4f8cff;
+      --cta-2: #266dce;
+      --shadow: 0 24px 80px rgba(4, 10, 20, 0.55);
+    }
+    body {
+      background:
+        radial-gradient(circle at 10% 0%, rgba(79, 140, 255, 0.25), transparent 34%),
+        radial-gradient(circle at 90% 20%, rgba(23, 201, 165, 0.22), transparent 36%),
+        var(--bg);
+    }
+    .wrap {
+      max-width: 1320px;
+      margin: 28px auto 48px;
+      padding: 22px;
+      position: relative;
+      border: 1px solid #2d4167;
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(29, 44, 72, 0.96), rgba(18, 26, 43, 0.96));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .wrap::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, #4f8cff 0%, #266dce 55%, #17c9a5 100%);
+      z-index: 1;
+    }
+    .head {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      margin-bottom: 10px;
+      padding: 0 4px 8px;
+    }
+    .head::before { display: none; }
+    .title { font-size: 38px; line-height: 1.1; letter-spacing: -0.4px; color: #eaf2ff; }
+    .sub { color: #c0d0ee; }
+    .btn {
+      border: 1px solid #3a5583;
+      background: rgba(18, 31, 52, 0.88);
+      color: #d9e7ff;
+      border-radius: 10px;
+      box-shadow: 0 14px 30px rgba(13, 33, 66, 0.35);
+    }
+    .btn-primary,
+    .home-btn {
+      border-color: #4d7cda;
+      background: linear-gradient(145deg, #2f58b9, #2767ca);
+      color: #fff;
+      box-shadow: 0 16px 28px rgba(45, 85, 178, 0.35);
+    }
+    .card {
+      background: var(--panel-soft);
+      border: 1px solid #31496e;
+      border-radius: 16px;
+      box-shadow: 0 18px 44px rgba(4, 10, 20, 0.45);
+    }
+    .card::before {
+      background: linear-gradient(90deg, #4f8cff 0%, #266dce 55%, #17c9a5 100%);
+    }
+    .section-title { font-size: 21px; margin-bottom: 14px; color: #d9e6ff; }
+    .data-meta {
+      margin: 0 4px 12px;
+      border-radius: 12px;
+      background: rgba(9, 17, 30, 0.52);
+      border: 1px solid #31496e;
+      color: #b7c8e9;
+    }
+    .profile-tabs {
+      gap: 8px;
+      padding: 10px 12px;
+      margin: 0 0 10px;
+      border: 1px solid #304568;
+      border-radius: 14px;
+      background: #131d31;
+    }
+    .workspace-tabs { gap: 8px; }
+    .profile-tab,
+    .workspace-tab {
+      border: 1px solid #304568;
+      background: #1a2842;
+      color: #bfd3f5;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .profile-tab.active,
+    .workspace-tab.active {
+      color: #fff;
+      border-color: #4c7fe0;
+      background: linear-gradient(145deg, #2d55b2, #266dce);
+    }
+    .input, .textarea, .select {
+      border: 1px solid #31496e;
+      border-radius: 10px;
+      background: rgba(9, 17, 30, 0.52);
+      color: #dce8ff;
+    }
+    .input:focus, .textarea:focus, .select:focus {
+      border-color: #4f8cff;
+      box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.14);
+    }
+    .summary-row { border-bottom: 1px solid #30486f; }
+    .chip {
+      border: 1px solid #3a547d;
+      background: #1f2e4d;
+      color: #cfe0ff;
+    }
+    .tab-panel { padding: 8px 2px 2px; }
+    .mini-table th, .mini-table td { border: 1px solid #30486f; }
+    .mini-table th { background: rgba(79, 140, 255, 0.12); color: #cfe0ff; }
+    @media (max-width: 768px) {
+      .wrap { margin-top: 14px; padding: 14px 10px 16px; border-radius: 16px; }
+      .title { font-size: 28px; }
+      .section-title { font-size: 18px; }
+      .profile-tabs { border-radius: 12px; padding: 8px; }
+    }
+    /* align to project page style (manager-needs theme) */
+    :root {
+      --bg: #08131d;
+      --ink: #f5fbff;
+      --muted: #9bb5cb;
+      --line: #2b4660;
+      --panel: #0f1f2e;
+      --panel-soft: #12293d;
+      --primary: #60a5fa;
+      --cta: #ff5a1f;
+      --cta-2: #ff7e22;
+      --shadow: 0 18px 36px rgba(8,19,29,.34);
+    }
+    body {
+      font-family: "Space Grotesk", sans-serif;
+      background:
+        radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+        radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+        var(--bg);
+    }
+    .wrap {
+      border-color: #2b4660;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      box-shadow: var(--shadow);
+    }
+    .wrap::before {
+      background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+    }
+    .head {
+      margin-bottom: 12px;
+    }
+    .title { color: #f5fbff; }
+    .sub { color: var(--muted); }
+    .btn {
+      border: 1px solid rgba(255,126,34,.45);
+      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+      color: #16325c;
+      border-radius: 12px;
+      box-shadow: 0 12px 24px rgba(8,19,29,.24);
+    }
+    .btn-primary, .home-btn {
+      background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+      border-color: #ff7e22;
+      color: #fff;
+      box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28);
+    }
+    .card {
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border-color: #2b4660;
+      border-radius: 18px;
+      box-shadow: 0 16px 30px rgba(8,19,29,.28);
+    }
+    .card::before {
+      background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+    }
+    .profile-tab,
+    .workspace-tab {
+      border: 1px solid #2b4660;
+      background: rgba(255,255,255,.04);
+      color: #d6e8f7;
+      border-radius: 999px;
+    }
+    .profile-tab.active,
+    .workspace-tab.active {
+      background: linear-gradient(135deg, #ff5a1f 0%, #ff7e22 100%);
+      border-color: rgba(255,126,34,.6);
+      color: #fff;
+    }
+    .input, .textarea, .select {
+      border: 1px solid #2b4660;
+      border-radius: 12px;
+      background: rgba(255,255,255,.04);
+      color: #f5fbff;
+    }
+    .input:focus, .textarea:focus, .select:focus {
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 3px rgba(96,165,250,.18);
+    }
   </style>
     <link rel="stylesheet" href="assets/css/mobile-unified.css">
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
