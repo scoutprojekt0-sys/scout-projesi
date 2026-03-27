@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
@@ -159,6 +159,46 @@
 
     .panel {
       padding: 20px;
+    }
+
+    .group-switcher {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .group-btn {
+      min-height: 42px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 126, 34, 0.24);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      padding: 0 14px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .group-btn.active {
+      background: linear-gradient(135deg, var(--accent-strong) 0%, var(--accent) 100%);
+      color: #fff;
+      border-color: rgba(255, 126, 34, 0.6);
+      box-shadow: 0 12px 24px rgba(255, 90, 31, 0.24);
+    }
+
+    .group-btn.vitrine::after {
+      content: "Vitrin";
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #ffe2c7;
+      opacity: 0.92;
     }
 
     .panel-head {
@@ -331,8 +371,8 @@
     <section class="header">
       <div>
         <div class="eyebrow"><i class="fas fa-bullhorn"></i><span>Kulup Vitrini</span></div>
-        <h1 class="title" id="showcaseTitle">Vitrine cikarilan grup yukleniyor</h1>
-        <p class="sub" id="showcaseSummary">Takim gruplari ekranindan vitrine cikarilan grup burada mevcut oyuncu profil kartlari ile listelenir.</p>
+        <h1 class="title" id="showcaseTitle">Grup yukleniyor</h1>
+        <p class="sub" id="showcaseSummary">Ustteki butonlardan grup secip sadece o grubu listeleyebilirsin. Varsayilan secim vitrindeki grup olur.</p>
       </div>
       <div class="header-actions">
         <a class="btn" href="team-dashboard.html"><i class="fas fa-arrow-left"></i><span>Dashboard</span></a>
@@ -341,26 +381,31 @@
     </section>
 
     <section class="summary">
-      <div class="metric"><strong id="metricPlayers">0</strong><span>Vitrindeki Oyuncu</span></div>
-      <div class="metric"><strong id="metricGroup">-</strong><span>Aktif Grup</span></div>
+      <div class="metric"><strong id="metricPlayers">0</strong><span>Secili Grup Oyuncu</span></div>
+      <div class="metric"><strong id="metricGroup">-</strong><span>Secili Grup</span></div>
       <div class="metric"><strong id="metricAverage">0.0</strong><span>Ortalama Rating</span></div>
     </section>
 
     <section class="panel">
+      <div class="group-switcher" id="groupSwitcher"></div>
       <div class="panel-head">
         <div>
           <h2>Oyuncu Kartlari</h2>
-          <p>Takim dashboard’ta kullandigimiz profil kartlariyla ayni mantikta listelenir.</p>
+          <p>Secilen grubun oyunculari takim dashboard'ta kullandiginiz kart diliyle listelenir.</p>
         </div>
         <div class="badge" id="showcaseBadge"><i class="fas fa-signal"></i><span>Yukleniyor</span></div>
       </div>
       <div class="players-grid" id="showcaseGrid">
-        <div class="empty">Vitrin verisi yukleniyor...</div>
+        <div class="empty">Grup verisi yukleniyor...</div>
       </div>
     </section>
   </div>
 
   <script>
+    let showcaseGroups = [];
+    let showcasePlayers = [];
+    let activeGroupKey = '';
+
     function getApiBaseUrl() {
       const configured = (window.NEXTSCOUT_API_BASE || '').toString().trim();
       if (configured) return configured.replace(/\/$/, '');
@@ -388,6 +433,10 @@
     function formatRating(value) {
       const number = Number(value || 0);
       return Number.isFinite(number) ? number.toFixed(1) : '0.0';
+    }
+
+    function getActiveGroup() {
+      return showcaseGroups.find((group) => group.group_key === activeGroupKey) || null;
     }
 
     function buildPlayerCard(player) {
@@ -426,6 +475,62 @@
       return payload;
     }
 
+    function renderGroupButtons() {
+      const root = document.getElementById('groupSwitcher');
+      if (!root) return;
+      if (!showcaseGroups.length) {
+        root.innerHTML = '';
+        return;
+      }
+      root.innerHTML = showcaseGroups.map((group) => `
+        <button class="group-btn ${group.group_key === activeGroupKey ? 'active' : ''} ${group.is_showcased ? 'vitrine' : ''}" type="button" onclick="selectShowcaseGroup('${escapeHtml(group.group_key)}')">
+          <span>${escapeHtml(group.name || group.group_key)}</span>
+        </button>
+      `).join('');
+    }
+
+    function renderShowcase() {
+      const title = document.getElementById('showcaseTitle');
+      const summary = document.getElementById('showcaseSummary');
+      const badge = document.getElementById('showcaseBadge');
+      const grid = document.getElementById('showcaseGrid');
+      const activeGroup = getActiveGroup();
+
+      if (!activeGroup) {
+        title.textContent = 'Vitrine cikarilan grup yok';
+        summary.textContent = 'Takim dashboard icinden grup secmeden bu sayfa liste veremez.';
+        badge.innerHTML = '<i class="fas fa-bullhorn"></i><span>Vitrin Kapali</span>';
+        document.getElementById('metricPlayers').textContent = '0';
+        document.getElementById('metricGroup').textContent = '-';
+        document.getElementById('metricAverage').textContent = '0.0';
+        grid.innerHTML = '<div class="empty">Listelenecek grup yok.</div>';
+        return;
+      }
+
+      const rows = showcasePlayers.filter((row) => row.group === activeGroupKey && row.profile_type === 'internal_profile');
+      const average = rows.length ? rows.reduce((sum, row) => sum + (Number(row.rating) || 0), 0) / rows.length : 0;
+
+      title.textContent = `${activeGroup.name || activeGroup.group_key} listeleniyor`;
+      summary.textContent = activeGroup.note || 'Secilen grubun tum oyunculari bu sayfada listelenir.';
+      badge.innerHTML = `<i class="fas fa-bullhorn"></i><span>${escapeHtml(String(rows.length))} Oyuncu</span>`;
+      document.getElementById('metricPlayers').textContent = String(rows.length);
+      document.getElementById('metricGroup').textContent = activeGroup.name || activeGroup.group_key;
+      document.getElementById('metricAverage').textContent = formatRating(average);
+
+      if (!rows.length) {
+        grid.innerHTML = '<div class="empty">Bu grupta henuz oyuncu yok.</div>';
+        return;
+      }
+
+      grid.innerHTML = rows.map((row) => buildPlayerCard(row)).join('');
+    }
+
+    function selectShowcaseGroup(groupKey) {
+      activeGroupKey = String(groupKey || '').trim();
+      renderGroupButtons();
+      renderShowcase();
+    }
+
     async function loadShowcase() {
       const title = document.getElementById('showcaseTitle');
       const summary = document.getElementById('showcaseSummary');
@@ -438,39 +543,12 @@
           fetchJson('/club/internal-players'),
         ]);
 
-        const groups = Array.isArray(groupsPayload?.data) ? groupsPayload.data : [];
-        const players = Array.isArray(playersPayload?.data?.data) ? playersPayload.data.data : [];
-        const group = groups.find((item) => item?.is_showcased) || null;
+        showcaseGroups = Array.isArray(groupsPayload?.data) ? groupsPayload.data : [];
+        showcasePlayers = Array.isArray(playersPayload?.data?.data) ? playersPayload.data.data : [];
+        activeGroupKey = showcaseGroups.find((item) => item?.is_showcased)?.group_key || showcaseGroups[0]?.group_key || '';
 
-        if (!group) {
-          title.textContent = 'Vitrine cikarilan grup yok';
-          summary.textContent = 'Takim dashboard icinden bir grubu vitrine cikarirsan burada gorunur.';
-          badge.innerHTML = '<i class="fas fa-bullhorn"></i><span>Vitrin Kapali</span>';
-          document.getElementById('metricPlayers').textContent = '0';
-          document.getElementById('metricGroup').textContent = '-';
-          document.getElementById('metricAverage').textContent = '0.0';
-          grid.innerHTML = '<div class="empty">Henuz vitrinde grup yok.</div>';
-          return;
-        }
-
-        const rows = players.filter((row) => row.group === group.group_key && row.profile_type === 'internal_profile');
-        const average = rows.length
-          ? rows.reduce((sum, row) => sum + (Number(row.rating) || 0), 0) / rows.length
-          : 0;
-
-        title.textContent = `${group.name || group.group_key} vitrinde`;
-        summary.textContent = group.note || 'Bu grup su anda kulubun one cikan vitrin grubu olarak sergileniyor.';
-        badge.innerHTML = `<i class="fas fa-bullhorn"></i><span>${escapeHtml(String(rows.length))} Oyuncu</span>`;
-        document.getElementById('metricPlayers').textContent = String(rows.length);
-        document.getElementById('metricGroup').textContent = group.name || group.group_key;
-        document.getElementById('metricAverage').textContent = formatRating(average);
-
-        if (!rows.length) {
-          grid.innerHTML = '<div class="empty">Bu vitrinde henuz oyuncu yok.</div>';
-          return;
-        }
-
-        grid.innerHTML = rows.map((row) => buildPlayerCard(row)).join('');
+        renderGroupButtons();
+        renderShowcase();
       } catch (error) {
         title.textContent = 'Kulup vitrini yuklenemedi';
         summary.textContent = error.message || 'Veri alinirken hata olustu.';

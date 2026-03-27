@@ -14,6 +14,7 @@ class ClubInternalPlayer extends Model
         'profile_type',
         'visibility',
         'group_key',
+        'status',
         'name',
         'gender',
         'sport',
@@ -26,11 +27,22 @@ class ClubInternalPlayer extends Model
         'contact',
         'dominant_foot',
         'bio',
+        'coach_note',
+        'manager_note',
         'note',
+        'note_history',
         'matches',
         'minutes',
         'goals',
         'assists',
         'rating',
+        'performance_history',
+        'timeline_events',
+    ];
+
+    protected $casts = [
+        'note_history' => 'array',
+        'performance_history' => 'array',
+        'timeline_events' => 'array',
     ];
 }

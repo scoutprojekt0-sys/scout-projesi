@@ -8,12 +8,14 @@ use App\Models\ClubInternalPlayer;
 use App\Models\ClubOffer;
 use App\Models\ClubPromo;
 use App\Models\ClubTeamGroup;
+use App\Models\PlayerProfile;
 use App\Models\PlayerTransfer;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -153,8 +155,29 @@ class ClubWorkspaceController extends Controller
 
         $this->ensureDefaultTeamGroups($user);
 
+        $validated = $request->validate([
+            'group' => ['nullable', 'string', 'max:40'],
+            'status' => ['nullable', 'string', 'max:40'],
+            'search' => ['nullable', 'string', 'max:120'],
+            'position' => ['nullable', 'string', 'max:120'],
+            'sport' => ['nullable', 'string', 'max:40'],
+        ]);
+
         $players = ClubInternalPlayer::query()
             ->where('club_user_id', (int) $user->id)
+            ->when(! empty($validated['group']), fn ($query) => $query->where('group_key', trim((string) $validated['group'])))
+            ->when(! empty($validated['status']) && $validated['status'] !== 'all', fn ($query) => $query->where('status', trim((string) $validated['status'])))
+            ->when(! empty($validated['position']) && $validated['position'] !== 'all', fn ($query) => $query->where('position', trim((string) $validated['position'])))
+            ->when(! empty($validated['sport']) && $validated['sport'] !== 'all', fn ($query) => $query->where('sport', trim((string) $validated['sport'])))
+            ->when(! empty($validated['search']), function ($query) use ($validated) {
+                $search = '%'.trim((string) $validated['search']).'%';
+                $query->where(function ($innerQuery) use ($search) {
+                    $innerQuery
+                        ->where('name', 'like', $search)
+                        ->orWhere('position', 'like', $search)
+                        ->orWhere('shirt_number', 'like', $search);
+                });
+            })
             ->latest('id')
             ->paginate(200)
             ->through(fn (ClubInternalPlayer $player) => $this->transformInternalPlayer($player));
@@ -268,7 +291,9 @@ class ClubWorkspaceController extends Controller
             return $user;
         }
 
-        $player = ClubInternalPlayer::query()->create($this->validatedInternalPlayerPayload($request, $user));
+        $payload = $this->validatedInternalPlayerPayload($request, $user);
+        $payload = $this->attachInternalPlayerHistory($payload, null);
+        $player = ClubInternalPlayer::query()->create($payload);
 
         return $this->successResponse($this->transformInternalPlayer($player), 'Kulup ici oyuncu profili kaydedildi.', Response::HTTP_CREATED);
     }
@@ -288,7 +313,8 @@ class ClubWorkspaceController extends Controller
             return $this->errorResponse('Kulup ici oyuncu profili bulunamadi.', Response::HTTP_NOT_FOUND, 'internal_player_not_found');
         }
 
-        $player->fill($this->validatedInternalPlayerPayload($request, $user));
+        $payload = $this->validatedInternalPlayerPayload($request, $user);
+        $player->fill($this->attachInternalPlayerHistory($payload, $player));
         $player->save();
 
         return $this->successResponse($this->transformInternalPlayer($player), 'Kulup ici oyuncu profili guncellendi.');
@@ -314,6 +340,101 @@ class ClubWorkspaceController extends Controller
         return $this->successResponse(null, 'Kulup ici oyuncu profili silindi.');
     }
 
+    public function internalPlayersCreateAccount(int $id, Request $request): JsonResponse
+    {
+        $user = $this->authorizeClubUser($request);
+        if ($user instanceof JsonResponse) {
+            return $user;
+        }
+
+        $player = ClubInternalPlayer::query()
+            ->where('club_user_id', (int) $user->id)
+            ->find($id);
+
+        if (! $player) {
+            return $this->errorResponse('Kulup ici oyuncu profili bulunamadi.', Response::HTTP_NOT_FOUND, 'internal_player_not_found');
+        }
+
+        $teamName = $this->resolveClubLoginTeamName($user);
+        $playerUser = $this->findPlayerUserForInternalPlayer($teamName, $player->name);
+
+        if (! $playerUser) {
+            $emailBase = Str::slug($player->name ?: 'player', '.');
+            $email = sprintf('%s.%s@nextscout.local', $emailBase ?: 'player', Str::lower(Str::random(8)));
+
+            $playerUser = User::query()->create([
+                'name' => $player->name,
+                'email' => $email,
+                'password' => Hash::make(Str::random(32)),
+                'role' => 'player',
+                'is_verified' => true,
+                'email_verified_at' => now(),
+                'player_password_initialized' => false,
+            ]);
+        }
+
+        PlayerProfile::query()->updateOrCreate(
+            ['user_id' => (int) $playerUser->id],
+            [
+                'birth_year' => is_numeric((string) $player->birth_year) ? (int) $player->birth_year : null,
+                'position' => $player->position,
+                'dominant_foot' => $player->dominant_foot,
+                'height_cm' => is_numeric((string) $player->height) ? (int) $player->height : null,
+                'bio' => $player->bio,
+                'current_team' => $teamName,
+            ]
+        );
+
+        if (! (bool) $playerUser->player_password_initialized) {
+            $playerUser->forceFill(['player_password_initialized' => false])->save();
+        }
+
+        return $this->successResponse([
+            'player_id' => (int) $player->id,
+            'player_user_id' => (int) $playerUser->id,
+            'team_name' => $teamName,
+            'player_name' => $playerUser->name,
+            'account_enabled' => true,
+            'player_password_initialized' => (bool) $playerUser->player_password_initialized,
+        ], 'Oyuncu giris hesabi hazirlandi.');
+    }
+
+    public function internalPlayersResetPasswordSetup(int $id, Request $request): JsonResponse
+    {
+        $user = $this->authorizeClubUser($request);
+        if ($user instanceof JsonResponse) {
+            return $user;
+        }
+
+        $player = ClubInternalPlayer::query()
+            ->where('club_user_id', (int) $user->id)
+            ->find($id);
+
+        if (! $player) {
+            return $this->errorResponse('Kulup ici oyuncu profili bulunamadi.', Response::HTTP_NOT_FOUND, 'internal_player_not_found');
+        }
+
+        $teamName = $this->resolveClubLoginTeamName($user);
+        $playerUser = $this->findPlayerUserForInternalPlayer($teamName, $player->name);
+
+        if (! $playerUser) {
+            return $this->errorResponse('Bu oyuncu icin acilmis bir giris hesabi bulunamadi.', Response::HTTP_NOT_FOUND, 'player_account_not_found');
+        }
+
+        $playerUser->forceFill([
+            'player_password_initialized' => false,
+        ])->save();
+
+        return $this->successResponse([
+            'player_id' => (int) $player->id,
+            'player_user_id' => (int) $playerUser->id,
+            'team_name' => $teamName,
+            'player_name' => $playerUser->name,
+            'account_enabled' => true,
+            'player_password_initialized' => false,
+        ], 'Oyuncu ilk sifre olusturma akisi tekrar acildi.');
+    }
+
     private function authorizeClubUser(Request $request): User|JsonResponse
     {
         $user = $request->user();
@@ -330,6 +451,7 @@ class ClubWorkspaceController extends Controller
             'profile_type' => ['nullable', 'string', 'max:40'],
             'visibility' => ['nullable', 'string', 'max:40'],
             'group' => ['required', 'string', 'max:40'],
+            'status' => ['nullable', 'string', 'in:active,trial,injured,development,departed,archived'],
             'name' => ['required', 'string', 'min:2', 'max:120'],
             'gender' => ['nullable', 'string', 'max:40'],
             'sport' => ['nullable', 'string', 'max:40'],
@@ -342,12 +464,23 @@ class ClubWorkspaceController extends Controller
             'contact' => ['nullable', 'string', 'max:120'],
             'dominantFoot' => ['nullable', 'string', 'max:40'],
             'bio' => ['nullable', 'string', 'max:4000'],
+            'coachNote' => ['nullable', 'string', 'max:4000'],
+            'managerNote' => ['nullable', 'string', 'max:4000'],
             'note' => ['nullable', 'string', 'max:4000'],
             'matches' => ['nullable', 'string', 'max:20'],
             'minutes' => ['nullable', 'string', 'max:20'],
             'goals' => ['nullable', 'string', 'max:20'],
             'assists' => ['nullable', 'string', 'max:20'],
             'rating' => ['nullable', 'string', 'max:20'],
+            'performanceMatchName' => ['nullable', 'string', 'max:160'],
+            'performanceMatchDate' => ['nullable', 'date'],
+            'performanceSummary' => ['nullable', 'string', 'max:1000'],
+            'manualEventType' => ['nullable', 'string', 'max:40'],
+            'manualEventAction' => ['nullable', 'string', 'in:create,update,delete'],
+            'manualEventDate' => ['nullable', 'date'],
+            'manualEventId' => ['nullable', 'string', 'max:80'],
+            'manualEventTitle' => ['nullable', 'string', 'max:120'],
+            'manualEventDetails' => ['nullable', 'string', 'max:1000'],
         ]);
 
         return [
@@ -355,6 +488,7 @@ class ClubWorkspaceController extends Controller
             'profile_type' => trim((string) ($validated['profile_type'] ?? 'internal_profile')),
             'visibility' => trim((string) ($validated['visibility'] ?? 'club_only')),
             'group_key' => trim((string) $validated['group']),
+            'status' => trim((string) ($validated['status'] ?? 'active')),
             'name' => trim((string) $validated['name']),
             'gender' => $this->nullableString($validated['gender'] ?? null),
             'sport' => $this->nullableString($validated['sport'] ?? null),
@@ -367,13 +501,228 @@ class ClubWorkspaceController extends Controller
             'contact' => $this->nullableString($validated['contact'] ?? null),
             'dominant_foot' => $this->nullableString($validated['dominantFoot'] ?? null),
             'bio' => $this->nullableString($validated['bio'] ?? null),
-            'note' => $this->nullableString($validated['note'] ?? null),
+            'coach_note' => $this->nullableString($validated['coachNote'] ?? null),
+            'manager_note' => $this->nullableString($validated['managerNote'] ?? null),
+            'note' => $this->nullableString(($validated['managerNote'] ?? null) ?: ($validated['note'] ?? null)),
             'matches' => $this->nullableString($validated['matches'] ?? null),
             'minutes' => $this->nullableString($validated['minutes'] ?? null),
             'goals' => $this->nullableString($validated['goals'] ?? null),
             'assists' => $this->nullableString($validated['assists'] ?? null),
             'rating' => $this->nullableString($validated['rating'] ?? null),
+            'performance_match_name' => $this->nullableString($validated['performanceMatchName'] ?? null),
+            'performance_match_date' => ! empty($validated['performanceMatchDate']) ? Carbon::parse($validated['performanceMatchDate'])->startOfDay()->toIso8601String() : null,
+            'performance_summary' => $this->nullableString($validated['performanceSummary'] ?? null),
+            'manual_event_type' => $this->nullableString($validated['manualEventType'] ?? null),
+            'manual_event_action' => $this->nullableString($validated['manualEventAction'] ?? null),
+            'manual_event_date' => ! empty($validated['manualEventDate']) ? Carbon::parse($validated['manualEventDate'])->startOfDay()->toIso8601String() : null,
+            'manual_event_id' => $this->nullableString($validated['manualEventId'] ?? null),
+            'manual_event_title' => $this->nullableString($validated['manualEventTitle'] ?? null),
+            'manual_event_details' => $this->nullableString($validated['manualEventDetails'] ?? null),
         ];
+    }
+
+    private function attachInternalPlayerHistory(array $payload, ?ClubInternalPlayer $existingPlayer): array
+    {
+        $now = now()->toIso8601String();
+        $noteHistory = $existingPlayer?->note_history ?? [];
+        $performanceHistory = $existingPlayer?->performance_history ?? [];
+        $timelineEvents = $this->normalizeInternalPlayerTimelineEvents($existingPlayer?->timeline_events ?? []);
+
+        if ($existingPlayer === null) {
+            $timelineEvents[] = $this->makeInternalPlayerTimelineEvent(
+                'profile_created',
+                'Kulup profili olusturuldu',
+                $now,
+                ($payload['group_key'] ?? '-').' grubuna ilk kayit acildi.'
+            );
+        }
+
+        if ($existingPlayer !== null && ($existingPlayer->group_key !== ($payload['group_key'] ?? null))) {
+            $timelineEvents[] = $this->makeInternalPlayerTimelineEvent(
+                'group_changed',
+                'Takim grubu guncellendi',
+                $now,
+                ($existingPlayer->group_key ?: '-').' -> '.($payload['group_key'] ?? '-')
+            );
+        }
+
+        if ($existingPlayer !== null && ($existingPlayer->status !== ($payload['status'] ?? null))) {
+            $timelineEvents[] = $this->makeInternalPlayerTimelineEvent(
+                'status_changed',
+                'Oyuncu durumu degisti',
+                $now,
+                ($existingPlayer->status ?: 'active').' -> '.($payload['status'] ?? 'active')
+            );
+        }
+
+        if ($existingPlayer !== null && ($existingPlayer->contract_status !== ($payload['contract_status'] ?? null))) {
+            $timelineEvents[] = $this->makeInternalPlayerTimelineEvent(
+                'contract_changed',
+                'Sozlesme durumu guncellendi',
+                $now,
+                ($existingPlayer->contract_status ?: '-').' -> '.($payload['contract_status'] ?? '-')
+            );
+        }
+
+        $newCoachNote = $payload['coach_note'] ?? null;
+        $oldCoachNote = $existingPlayer?->coach_note;
+        if ($newCoachNote && $newCoachNote !== $oldCoachNote) {
+            array_unshift($noteHistory, [
+                'text' => $newCoachNote,
+                'role' => 'coach',
+                'created_at' => $now,
+            ]);
+            $noteHistory = array_slice($noteHistory, 0, 12);
+            $timelineEvents[] = $this->makeInternalPlayerTimelineEvent(
+                'note_added',
+                'Antrenor notu guncellendi',
+                $now,
+                $newCoachNote
+            );
+        }
+
+        $newManagerNote = $payload['manager_note'] ?? null;
+        $oldManagerNote = $existingPlayer?->manager_note ?: $existingPlayer?->note;
+        if ($newManagerNote && $newManagerNote !== $oldManagerNote) {
+            array_unshift($noteHistory, [
+                'text' => $newManagerNote,
+                'role' => 'manager',
+                'created_at' => $now,
+            ]);
+            $noteHistory = array_slice($noteHistory, 0, 12);
+            $timelineEvents[] = $this->makeInternalPlayerTimelineEvent(
+                'note_added',
+                'Yonetici notu guncellendi',
+                $now,
+                $newManagerNote
+            );
+        }
+
+        $hasPerformanceData = collect(['matches', 'minutes', 'goals', 'assists', 'rating'])
+            ->contains(fn (string $field) => ! empty($payload[$field]));
+        $performanceChanged = $existingPlayer === null
+            || $existingPlayer->matches !== ($payload['matches'] ?? null)
+            || $existingPlayer->minutes !== ($payload['minutes'] ?? null)
+            || $existingPlayer->goals !== ($payload['goals'] ?? null)
+            || $existingPlayer->assists !== ($payload['assists'] ?? null)
+            || $existingPlayer->rating !== ($payload['rating'] ?? null);
+
+        if ($hasPerformanceData && $performanceChanged) {
+            array_unshift($performanceHistory, [
+                'match_name' => $payload['performance_match_name'] ?? null,
+                'match_date' => $payload['performance_match_date'] ?? null,
+                'matches' => $payload['matches'] ?? null,
+                'minutes' => $payload['minutes'] ?? null,
+                'goals' => $payload['goals'] ?? null,
+                'assists' => $payload['assists'] ?? null,
+                'rating' => $payload['rating'] ?? null,
+                'summary' => $payload['performance_summary'] ?? null,
+                'created_at' => $now,
+            ]);
+            $performanceHistory = array_slice($performanceHistory, 0, 12);
+            $timelineEvents[] = $this->makeInternalPlayerTimelineEvent(
+                'performance_updated',
+                $payload['performance_match_name'] ?: 'Performans ozeti guncellendi',
+                $payload['performance_match_date'] ?: $now,
+                trim(implode(' | ', array_filter([
+                    $payload['performance_summary'] ?? null,
+                    sprintf('%s dakika', $payload['minutes'] ?? '0'),
+                    sprintf('rating %s', $payload['rating'] ?? '-'),
+                ])))
+            );
+        }
+
+        $manualEventId = $payload['manual_event_id'] ?? null;
+        $manualEventAction = $payload['manual_event_action'] ?? 'create';
+        if ($manualEventId && $manualEventAction === 'delete') {
+            $timelineEvents = array_values(array_filter(
+                $timelineEvents,
+                fn (array $item) => (string) ($item['id'] ?? '') !== (string) $manualEventId
+            ));
+        } elseif ($manualEventId && $manualEventAction === 'update') {
+            $timelineEvents = array_map(function (array $item) use ($payload, $manualEventId, $now) {
+                if ((string) ($item['id'] ?? '') !== (string) $manualEventId) {
+                    return $item;
+                }
+
+                $item['type'] = $payload['manual_event_type'] ?: ($item['type'] ?? 'manual_note');
+                $item['title'] = $payload['manual_event_title'] ?: ($item['title'] ?? 'Guncelleme');
+                $item['details'] = $payload['manual_event_details'] ?? ($item['details'] ?? null);
+                $item['created_at'] = $payload['manual_event_date'] ?: ($item['created_at'] ?? $now);
+                $item['is_manual'] = true;
+
+                return $item;
+            }, $timelineEvents);
+        }
+
+        if (! empty($payload['manual_event_title'])) {
+            if (! $manualEventId || $manualEventAction === 'create') {
+                $timelineEvents[] = $this->makeInternalPlayerTimelineEvent(
+                    $payload['manual_event_type'] ?: 'manual_note',
+                    $payload['manual_event_title'],
+                    $payload['manual_event_date'] ?: $now,
+                    $payload['manual_event_details'] ?? null,
+                    true
+                );
+            }
+        }
+
+        $payload['note_history'] = array_values($noteHistory);
+        $payload['performance_history'] = array_values($performanceHistory);
+        $payload['timeline_events'] = array_values(array_slice($timelineEvents, -20));
+        unset($payload['performance_match_name'], $payload['performance_match_date'], $payload['performance_summary'], $payload['manual_event_type'], $payload['manual_event_action'], $payload['manual_event_date'], $payload['manual_event_id'], $payload['manual_event_title'], $payload['manual_event_details']);
+
+        return $payload;
+    }
+
+    private function makeInternalPlayerTimelineEvent(string $type, string $title, string $createdAt, ?string $details = null, bool $isManual = false): array
+    {
+        return [
+            'id' => (string) Str::uuid(),
+            'type' => $type,
+            'title' => $title,
+            'details' => $this->nullableString($details),
+            'created_at' => $createdAt,
+            'is_manual' => $isManual,
+        ];
+    }
+
+    private function normalizeInternalPlayerTimelineEvents(array $events): array
+    {
+        $automaticTypes = [
+            'profile_created',
+            'group_changed',
+            'status_changed',
+            'contract_changed',
+            'note_added',
+            'performance_updated',
+        ];
+
+        return array_values(array_map(function ($item) use ($automaticTypes) {
+            $event = is_array($item) ? $item : [];
+            $type = trim((string) ($event['type'] ?? 'manual_note'));
+            $title = trim((string) ($event['title'] ?? 'Guncelleme'));
+            $details = $this->nullableString($event['details'] ?? null);
+            $createdAt = trim((string) ($event['created_at'] ?? now()->toIso8601String()));
+            $normalizedId = trim((string) ($event['id'] ?? ''));
+
+            if ($normalizedId === '') {
+                $normalizedId = 'legacy-'.md5($type.'|'.$title.'|'.$details.'|'.$createdAt);
+            }
+
+            $isManual = array_key_exists('is_manual', $event)
+                ? (bool) $event['is_manual']
+                : ! in_array($type, $automaticTypes, true);
+
+            return [
+                'id' => $normalizedId,
+                'type' => $type === '' ? 'manual_note' : $type,
+                'title' => $title === '' ? 'Guncelleme' : $title,
+                'details' => $details,
+                'created_at' => $createdAt,
+                'is_manual' => $isManual,
+            ];
+        }, $events));
     }
 
     private function transformOffer(ClubOffer $offer): array
@@ -465,11 +814,15 @@ class ClubWorkspaceController extends Controller
 
     private function transformInternalPlayer(ClubInternalPlayer $player): array
     {
+        $timelineEvents = $this->normalizeInternalPlayerTimelineEvents($player->timeline_events ?? []);
+        $accountData = $this->resolveInternalPlayerAccountData($player);
+
         return [
             'id' => $player->id,
             'profile_type' => $player->profile_type,
             'visibility' => $player->visibility,
             'group' => $player->group_key,
+            'status' => $player->status ?: 'active',
             'name' => $player->name,
             'gender' => $player->gender,
             'sport' => $player->sport,
@@ -482,14 +835,73 @@ class ClubWorkspaceController extends Controller
             'contact' => $player->contact,
             'dominantFoot' => $player->dominant_foot,
             'bio' => $player->bio,
-            'note' => $player->note,
+            'coachNote' => $player->coach_note,
+            'managerNote' => $player->manager_note ?: $player->note,
+            'note' => $player->manager_note ?: $player->note,
+            'noteHistory' => array_values(array_map(function ($item) {
+                if (! is_array($item)) {
+                    return [
+                        'text' => (string) $item,
+                        'role' => 'manager',
+                        'created_at' => now()->toIso8601String(),
+                    ];
+                }
+
+                return [
+                    'text' => $item['text'] ?? '',
+                    'role' => $item['role'] ?? 'manager',
+                    'created_at' => $item['created_at'] ?? now()->toIso8601String(),
+                ];
+            }, $player->note_history ?? [])),
             'matches' => $player->matches,
             'minutes' => $player->minutes,
             'goals' => $player->goals,
             'assists' => $player->assists,
             'rating' => $player->rating,
+            'performanceHistory' => array_values($player->performance_history ?? []),
+            'timelineEvents' => $timelineEvents,
+            'accountEnabled' => $accountData['account_enabled'],
+            'playerUserId' => $accountData['player_user_id'],
+            'playerPasswordInitialized' => $accountData['player_password_initialized'],
+            'loginTeamName' => $accountData['team_name'],
             'savedAt' => optional($player->updated_at)->toIso8601String(),
         ];
+    }
+
+    private function resolveInternalPlayerAccountData(ClubInternalPlayer $player): array
+    {
+        $clubUser = User::query()->find((int) $player->club_user_id);
+        $teamName = $clubUser ? $this->resolveClubLoginTeamName($clubUser) : null;
+        $playerUser = ($teamName && $player->name)
+            ? $this->findPlayerUserForInternalPlayer($teamName, $player->name)
+            : null;
+
+        return [
+            'account_enabled' => (bool) $playerUser,
+            'player_user_id' => $playerUser?->id,
+            'player_password_initialized' => (bool) ($playerUser?->player_password_initialized ?? false),
+            'team_name' => $teamName,
+        ];
+    }
+
+    private function resolveClubLoginTeamName(User $user): string
+    {
+        $user->loadMissing('teamProfile');
+
+        $teamName = trim((string) ($user->teamProfile?->team_name ?? $user->name ?? ''));
+
+        return $teamName !== '' ? $teamName : 'Kulup Takimi';
+    }
+
+    private function findPlayerUserForInternalPlayer(string $teamName, string $playerName): ?User
+    {
+        return User::query()
+            ->select('users.*')
+            ->join('player_profiles', 'player_profiles.user_id', '=', 'users.id')
+            ->where('users.role', 'player')
+            ->whereRaw('LOWER(TRIM(users.name)) = ?', [Str::of($playerName)->trim()->lower()->value()])
+            ->whereRaw('LOWER(TRIM(player_profiles.current_team)) = ?', [Str::of($teamName)->trim()->lower()->value()])
+            ->first();
     }
 
     private function ensureDefaultTeamGroups(User $user)

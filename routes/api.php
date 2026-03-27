@@ -280,6 +280,8 @@ Route::get('/users/{userId}/videos', [VideoClipController::class, 'index']);
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:auth');
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:auth');
+    Route::post('/player/login', [AuthController::class, 'playerLogin'])->middleware('throttle:auth');
+    Route::post('/player/set-password', [AuthController::class, 'playerSetPassword'])->middleware('throttle:auth');
     Route::get('/verify-email', [AuthController::class, 'verifyEmail'])->middleware('throttle:auth');
     Route::post('/resend-verification', [AuthController::class, 'resendVerification'])->middleware('throttle:auth');
     Route::post('/password/forgot', [AuthController::class, 'forgotPassword'])->middleware('throttle:auth');
@@ -408,6 +410,8 @@ Route::apiResource('staff', StaffController::class)->only(['index', 'show', 'upd
     Route::post('/club/internal-players', [ClubWorkspaceController::class, 'internalPlayersStore'])->middleware('ability:profile:write');
     Route::put('/club/internal-players/{id}', [ClubWorkspaceController::class, 'internalPlayersUpdate'])->middleware('ability:profile:write');
     Route::delete('/club/internal-players/{id}', [ClubWorkspaceController::class, 'internalPlayersDestroy'])->middleware('ability:profile:write');
+    Route::post('/club/internal-players/{id}/account', [ClubWorkspaceController::class, 'internalPlayersCreateAccount'])->middleware('ability:profile:write');
+    Route::post('/club/internal-players/{id}/account/reset-password-setup', [ClubWorkspaceController::class, 'internalPlayersResetPasswordSetup'])->middleware('ability:profile:write');
     Route::get('/profiles/my-views', [ProfileViewController::class, 'myViews'])->middleware('ability:profile:read');
     Route::post('/profile-reviews/{reviewId}/reply', [ProfileReviewController::class, 'reply'])->middleware('ability:profile:write');
     Route::post('/profile-reviews/{reviewId}/report', [ProfileReviewController::class, 'report'])->middleware('ability:profile:write');

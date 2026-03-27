@@ -154,6 +154,107 @@ class AuthController extends Controller
         ]);
     }
 
+    public function playerLogin(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'team_name' => ['required', 'string', 'min:2', 'max:140'],
+            'player_name' => ['required', 'string', 'min:2', 'max:120'],
+            'password' => ['required', 'string', 'min:6'],
+        ]);
+
+        $teamName = $this->normalizeLookupValue($validated['team_name']);
+        $playerName = $this->normalizeLookupValue($validated['player_name']);
+        $password = (string) $validated['password'];
+        $ip = (string) $request->ip();
+        $identity = $teamName.'|'.$playerName;
+        $lockKey = 'player-auth-lock:'.$identity.'|'.$ip;
+        $attemptKey = 'player-auth-attempt:'.$identity.'|'.$ip;
+        $maxFailedAttempts = (int) config('scout.rate_limits.auth_failed_attempts_before_lock', 5);
+        $lockSeconds = (int) config('scout.rate_limits.auth_lock_seconds', 15 * 60);
+
+        if (RateLimiter::tooManyAttempts($lockKey, 1)) {
+            return response()->json([
+                'ok' => false,
+                'code' => 'auth_temporarily_locked',
+                'message' => 'Cok fazla hatali deneme. Lutfen daha sonra tekrar deneyin.',
+                'retry_after' => RateLimiter::availableIn($lockKey),
+            ], Response::HTTP_LOCKED);
+        }
+
+        $user = $this->findPlayerForClubLogin($teamName, $playerName);
+
+        if (! $user || ! (bool) $user->player_password_initialized || ! Hash::check($password, (string) $user->password)) {
+            return $this->playerLoginFailedResponse($teamName, $playerName, $ip, $attemptKey, $lockKey, $lockSeconds, $maxFailedAttempts);
+        }
+
+        RateLimiter::clear($attemptKey);
+        RateLimiter::clear($lockKey);
+
+        [$token, $expiresAt] = $this->issueToken($user, $request);
+
+        return response()->json([
+            'ok' => true,
+            'code' => 'player_logged_in',
+            'message' => 'Oyuncu girisi basarili.',
+            'data' => [
+                'token' => $token,
+                'expires_at' => $expiresAt,
+                'user' => $user,
+            ],
+        ]);
+    }
+
+    public function playerSetPassword(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'team_name' => ['required', 'string', 'min:2', 'max:140'],
+            'player_name' => ['required', 'string', 'min:2', 'max:120'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
+        ]);
+
+        $teamName = $this->normalizeLookupValue($validated['team_name']);
+        $playerName = $this->normalizeLookupValue($validated['player_name']);
+        $user = $this->findPlayerForClubLogin($teamName, $playerName);
+
+        if (! $user) {
+            return response()->json([
+                'ok' => false,
+                'code' => 'player_not_found_for_club',
+                'message' => 'Takim adi veya oyuncu adi hatali.',
+                'errors' => [
+                    'player_name' => ['Takim adi veya oyuncu adi hatali.'],
+                ],
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if ((bool) $user->player_password_initialized) {
+            return response()->json([
+                'ok' => false,
+                'code' => 'player_password_already_initialized',
+                'message' => 'Bu oyuncu icin ilk giris sifresi zaten olusturulmus.',
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $user->forceFill([
+            'password' => Hash::make((string) $validated['password']),
+            'player_password_initialized' => true,
+        ])->save();
+
+        $freshUser = $user->fresh();
+        [$token, $expiresAt] = $this->issueToken($freshUser, $request);
+
+        return response()->json([
+            'ok' => true,
+            'code' => 'player_password_initialized',
+            'message' => 'Ilk giris sifresi olusturuldu.',
+            'data' => [
+                'token' => $token,
+                'expires_at' => $expiresAt,
+                'user' => $freshUser,
+            ],
+        ], Response::HTTP_CREATED);
+    }
+
     public function verifyEmail(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -543,5 +644,56 @@ class AuthController extends Controller
     private function emailVerificationRequired(): bool
     {
         return (bool) config('app.auth_require_email_verification', false);
+    }
+
+    private function findPlayerForClubLogin(string $teamName, string $playerName): ?User
+    {
+        return User::query()
+            ->select('users.*')
+            ->join('player_profiles', 'player_profiles.user_id', '=', 'users.id')
+            ->where('users.role', 'player')
+            ->whereRaw('LOWER(TRIM(users.name)) = ?', [$playerName])
+            ->whereRaw('LOWER(TRIM(player_profiles.current_team)) = ?', [$teamName])
+            ->first();
+    }
+
+    private function playerLoginFailedResponse(
+        string $teamName,
+        string $playerName,
+        string $ip,
+        string $attemptKey,
+        string $lockKey,
+        int $lockSeconds,
+        int $maxFailedAttempts
+    ): JsonResponse {
+        RateLimiter::hit($attemptKey, $lockSeconds);
+        $attempts = RateLimiter::attempts($attemptKey);
+
+        if ($attempts >= $maxFailedAttempts) {
+            RateLimiter::hit($lockKey, $lockSeconds);
+            RateLimiter::clear($attemptKey);
+        }
+
+        Log::channel('security')->warning('Player login failed', [
+            'team_name' => $teamName,
+            'player_name' => $playerName,
+            'ip' => $ip,
+            'attempts' => $attempts,
+            'locked' => $attempts >= $maxFailedAttempts,
+        ]);
+
+        return response()->json([
+            'ok' => false,
+            'code' => 'auth_invalid_credentials',
+            'message' => 'Takim adi, oyuncu adi veya sifre hatali.',
+            'errors' => [
+                'player_name' => ['Takim adi, oyuncu adi veya sifre hatali.'],
+            ],
+        ], Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    private function normalizeLookupValue(string $value): string
+    {
+        return Str::of($value)->trim()->lower()->value();
     }
 }

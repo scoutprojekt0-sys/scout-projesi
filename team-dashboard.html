@@ -537,6 +537,57 @@
         #playerRegisterPanel .form-group textarea::placeholder {
             color: #cbd5e1;
         }
+        #playerRegisterPanel {
+            padding-bottom: 18px;
+        }
+        #playerRegisterPanel .needs-actions {
+            position: sticky;
+            bottom: -14px;
+            margin: 14px -14px -14px;
+            padding: 14px;
+            background: linear-gradient(180deg, rgba(15, 31, 46, 0.88) 0%, rgba(15, 31, 46, 0.97) 34%, rgba(15, 31, 46, 1) 100%);
+            border-top: 1px solid rgba(148, 163, 184, 0.22);
+            z-index: 3;
+        }
+        #playerRegisterPanel .needs-actions .btn-small {
+            min-width: 104px;
+            justify-content: center;
+        }
+        #playerRegisterFloatingActions {
+            position: fixed;
+            left: 50%;
+            bottom: 20px;
+            transform: translateX(-50%);
+            width: min(640px, calc(100vw - 24px));
+            display: none;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 12px 14px;
+            background: rgba(15, 31, 46, 0.96);
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.34);
+            z-index: 2610;
+        }
+        #playerRegisterFloatingActions.active {
+            display: flex;
+        }
+        #playerRegisterFloatingActions .btn-small {
+            min-width: 112px;
+            justify-content: center;
+        }
+        #debugTeamDashboardBadge {
+            position: fixed;
+            top: 84px;
+            right: 18px;
+            z-index: 4000;
+            padding: 10px 14px;
+            background: #dc2626;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: .04em;
+            box-shadow: 0 12px 30px rgba(127, 29, 29, 0.35);
+        }
         .search-section { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .search-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 15px; }
         .form-group { display: flex; flex-direction: column; gap: 8px; }
@@ -1185,6 +1236,7 @@
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
 <body>
+    <div id="debugTeamDashboardBadge">TEST: TEAM-DASHBOARD DOSYASI ACILDI</div>
     <div class="top-navbar">
         <div class="navbar-left">
             <div class="logo">NextScout Club</div>
@@ -1548,6 +1600,10 @@
 
     <div id="playerRegisterPanel" class="needs-panel">
         <h3>Kulup Ici Oyuncu Profili</h3>
+        <div class="needs-actions" style="margin-top:0;margin-bottom:12px;position:sticky;top:-14px;padding:12px 0 10px;background:linear-gradient(180deg, rgba(15,31,46,1) 0%, rgba(15,31,46,0.98) 72%, rgba(15,31,46,0.82) 100%);z-index:4;">
+            <button class="btn-small secondary" type="button" onclick="togglePlayerRegisterPanel(false)">Kapat</button>
+            <button class="btn-small primary" type="button" onclick="saveClubPlayerRegistration()">Kaydet</button>
+        </div>
         <div class="player-register-grid">
             <div class="form-group">
                 <label>Takim Grubu</label>
@@ -1664,6 +1720,10 @@
             <button class="btn-small primary" onclick="saveClubPlayerRegistration()">Kaydet</button>
         </div>
         <div id="playerRegisterMsg" class="needs-msg"></div>
+    </div>
+    <div id="playerRegisterFloatingActions">
+        <button class="btn-small secondary" type="button" onclick="togglePlayerRegisterPanel(false)">Kapat</button>
+        <button class="btn-small primary" type="button" onclick="saveClubPlayerRegistration()">Kaydet</button>
     </div>
 
     <div class="tip-modal-overlay" id="teamTalentTipOverlay" onclick="if (event.target.id === 'teamTalentTipOverlay') closeTeamTalentTipModal();">
@@ -3828,6 +3888,7 @@
             const panel = document.getElementById('playerRegisterPanel');
             const overlay = document.getElementById('panelOverlay');
             const groupsOverlay = document.getElementById('teamGroupsOverlay');
+            const floatingActions = document.getElementById('playerRegisterFloatingActions');
             if (!panel) return;
             const shouldOpen = typeof forceState === 'boolean' ? forceState : !panel.classList.contains('active');
             panel.classList.toggle('active', shouldOpen);
@@ -3845,6 +3906,9 @@
             if (overlay) {
                 overlay.classList.toggle('active', shouldOpen);
                 overlay.style.zIndex = groupsOverlay?.classList.contains('active') ? '2590' : '1990';
+            }
+            if (floatingActions) {
+                floatingActions.classList.toggle('active', shouldOpen);
             }
             const select = document.getElementById('registerGroupSelect');
             if (shouldOpen && select) select.value = activeTeamGroup;

@@ -56,6 +56,7 @@ class User extends Authenticatable
         'is_verified',
         'email_verified_at',
         'email_verification_token',
+        'player_password_initialized',
     ];
 
     protected $hidden = [
@@ -82,6 +83,7 @@ class User extends Authenticatable
         'can_dual_approve' => 'boolean',
         'is_verified' => 'boolean',
         'email_verified_at' => 'datetime',
+        'player_password_initialized' => 'boolean',
     ];
 
     public function playerProfile()
