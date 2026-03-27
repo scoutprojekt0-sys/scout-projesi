@@ -27,6 +27,10 @@
         .control, textarea, select{width:100%;padding:11px 12px;border:1px solid #2b4660;background:rgba(255,255,255,.04);color:var(--text);font-size:14px}
         textarea{min-height:90px;resize:vertical}
         .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #ff7e22;background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;padding:11px 14px;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 16px 28px rgba(255,90,31,.28)}
+        .btn-row{display:flex;gap:10px;flex-wrap:wrap}
+        .status-note{display:none;padding:10px 12px;border:1px solid #2b4660;background:rgba(255,255,255,.04);font-size:13px;font-weight:700}
+        .status-note.ok{display:block;border-color:rgba(16,185,129,.5);color:#86efac}
+        .status-note.err{display:block;border-color:rgba(239,68,68,.5);color:#fecaca}
         .list{display:grid;gap:12px}
         .item{padding:16px}
         .item-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:10px}
@@ -70,7 +74,11 @@
                 <label class="full" style="display:flex;align-items:center;gap:8px;color:#cbd5e1;font-size:13px;font-weight:700;">
                     <input type="checkbox" name="is_public" checked> Bu maç izleme eşleşmelerinde görünsün
                 </label>
-                <button class="btn full" type="submit"><i class="fas fa-plus"></i> Maçı Kaydet</button>
+                <div id="formStatus" class="status-note full"></div>
+                <div class="btn-row full">
+                    <button class="btn ghost" type="submit" data-mode="save"><i class="fas fa-floppy-disk"></i> Sadece Takvime Kaydet</button>
+                    <button class="btn" type="submit" data-mode="watch"><i class="fas fa-bullseye"></i> Mac Izleme Talebi Ac</button>
+                </div>
             </form>
         </article>
 
@@ -146,6 +154,7 @@
                     <span><i class="fas fa-shield-halved"></i> ${esc(row.team_name || 'Takım belirtilmedi')}</span>
                     <span><i class="fas fa-people-group"></i> ${esc(row.opponent_name || 'Rakip belirtilmedi')}</span>
                     <span><i class="fas fa-map-pin"></i> ${esc(row.venue || 'Saha belirtilmedi')}</span>
+                    ${row.is_public ? '<span><i class="fas fa-tower-broadcast"></i> Izleme talebine acik</span>' : '<span><i class="fas fa-lock"></i> Sadece benim takvimim</span>'}
                 </div>
                 ${row.notes ? `<div class="tag">${esc(row.notes)}</div>` : ''}
                 <div class="row-actions">
@@ -176,22 +185,41 @@
         loadSchedules();
     }
 
+    function setStatus(message, type) {
+        const node = document.getElementById('formStatus');
+        if (!node) return;
+        node.className = `status-note full ${type === 'ok' ? 'ok' : 'err'}`;
+        node.textContent = message;
+    }
+
     document.getElementById('scheduleForm')?.addEventListener('submit', async (event) => {
         event.preventDefault();
         const form = event.currentTarget;
         const formData = new FormData(form);
         const payload = Object.fromEntries(formData.entries());
-        payload.is_public = formData.get('is_public') === 'on';
+        const mode = event.submitter?.dataset?.mode === 'save' ? 'save' : 'watch';
+        payload.is_public = mode === 'watch' ? true : (formData.get('is_public') === 'on');
 
         try {
-            await fetch(`${API_BASE}/player/match-schedules`, {
+            const res = await fetch(`${API_BASE}/player/match-schedules`, {
                 method: 'POST',
                 headers: authHeaders(),
                 body: JSON.stringify(payload),
             });
+            if (!res.ok) {
+                throw new Error('request_failed');
+            }
             form.reset();
+            setStatus(
+                mode === 'watch'
+                    ? 'Mac izleme talebi acildi. Bu mac scout eslesmelerine acik olarak kaydedildi.'
+                    : 'Mac takvimine kaydedildi.',
+                'ok'
+            );
             loadSchedules();
-        } catch (error) {}
+        } catch (error) {
+            setStatus('Islem tamamlanamadi. Lutfen alanlari kontrol edip tekrar dene.', 'err');
+        }
     });
 
     loadSchedules();
