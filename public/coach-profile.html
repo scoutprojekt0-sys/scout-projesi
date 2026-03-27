@@ -74,11 +74,11 @@
       border: 1px solid rgba(255, 126, 34, 0.45);
       background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
       color: #16325c;
-      padding: 10px 14px;
+      padding: 7px 12px;
       border-radius: 12px;
       text-decoration: none;
       font-weight: 800;
-      font-size: 13px;
+      font-size: 12px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -144,6 +144,15 @@
       border-bottom: 1px solid rgba(148,163,184,.16);
       font-size: 13px;
     }
+    .row strong {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 10px;
+      border: 1px solid rgba(96,165,250,.22);
+      background: rgba(255,255,255,.05);
+      border-radius: 6px;
+    }
     .row:last-child { border-bottom: 0; }
     .muted { color: var(--muted); }
     .ok { color: #34d399; font-size: 12px; min-height: 16px; margin-top: 8px; font-weight: 700; }
@@ -162,8 +171,8 @@
       background:rgba(255,255,255,.04);
       color:#e2e8f0;
       border-radius:999px;
-      padding:7px 12px;
-      font-size:12px;
+      padding:5px 11px;
+      font-size:11px;
       font-weight:700;
       cursor:pointer;
     }
@@ -452,6 +461,11 @@
           <div class="field"><label class="label" for="branch">BranÅŸ</label><select class="select" id="branch"><option value="">SeÃ§iniz</option><option value="Futbol">Futbol</option><option value="Basketbol">Basketbol</option><option value="Voleybol">Voleybol</option><option value="Coklu Brans">Ã‡oklu BranÅŸ</option></select></div>
           <div class="field"><label class="label" for="country">Ãœlke</label><input class="input" id="country" placeholder="TÃ¼rkiye"></div>
           <div class="field"><label class="label" for="city">Åehir</label><input class="input" id="city" placeholder="Ä°stanbul"></div>
+          <div class="field"><label class="label" for="region">Bolge</label><input class="input" id="region" placeholder="Marmara"></div>
+          <div class="field"><label class="label" for="club">Kulup</label><input class="input" id="club" placeholder="Ornek SK"></div>
+          <div class="field"><label class="label" for="technicalRole">Teknik Rol</label><input class="input" id="technicalRole" placeholder="A Takim Yardimci Antrenor"></div>
+          <div class="field"><label class="label" for="specialization">Uzmanlik</label><input class="input" id="specialization" placeholder="Gecis oyunu, pres organizasyonu"></div>
+          <div class="field"><label class="label" for="status">Durum</label><select class="select" id="status"><option value="Aktif">Aktif</option><option value="Pasif">Pasif</option></select></div>
           <div class="field"><label class="label" for="phone">Telefon</label><input class="input" id="phone" placeholder="+90 5xx xxx xx xx"></div>
           <div class="field full"><label class="label" for="bio">HakkÄ±mda</label><textarea class="textarea" id="bio" placeholder="Teknik ekip yaklaÅŸÄ±mÄ±n, oyuncu geliÅŸimi ve saha iÃ§i odaÄŸÄ±n..."></textarea></div>
           <div class="act full"><button class="btn btn-primary" type="submit"><i class="fas fa-floppy-disk"></i><span>Kaydet</span></button><button class="btn" type="button" id="resetBtn"><i class="fas fa-rotate-left"></i><span>SÄ±fÄ±rla</span></button></div>
@@ -470,6 +484,12 @@
         <h2 class="section-title" style="margin-top:14px;">Ã–zet</h2>
         <div class="row"><span class="muted">Ä°sim</span><strong id="sumName">-</strong></div>
         <div class="row"><span class="muted">BranÅŸ</span><strong id="sumBranch">-</strong></div>
+        <div class="row"><span class="muted">Profil</span><strong id="sumProfileType">Coach</strong></div>
+        <div class="row"><span class="muted">Teknik Rol</span><strong id="sumTechnicalRole">-</strong></div>
+        <div class="row"><span class="muted">Kulup</span><strong id="sumClub">-</strong></div>
+        <div class="row"><span class="muted">Uzmanlik</span><strong id="sumSpecialization">-</strong></div>
+        <div class="row"><span class="muted">Durum</span><strong id="sumStatus">-</strong></div>
+        <div class="row"><span class="muted">Bolge</span><strong id="sumRegion">-</strong></div>
         <div class="row"><span class="muted">Ãœlke</span><strong id="sumCountry">-</strong></div>
         <div class="row"><span class="muted">Åehir</span><strong id="sumCity">-</strong></div>
       </div>
@@ -583,7 +603,21 @@
     }
 
     function defaults() {
-      return { name:'Antrenor', experience:'', branch:'Futbol', country:'Turkiye', city:'', phone:'', bio:'', photo:'' };
+      return {
+        name:'Antrenor',
+        experience:'',
+        branch:'Futbol',
+        country:'Turkiye',
+        city:'',
+        region:'',
+        club:'',
+        technical_role:'',
+        specialization:'',
+        status:'Aktif',
+        phone:'',
+        bio:'',
+        photo:'',
+      };
     }
 
     let coachNotesState = [];
@@ -595,6 +629,11 @@
       document.getElementById('branch').value = profile.branch || '';
       document.getElementById('country').value = profile.country || '';
       document.getElementById('city').value = profile.city || '';
+      document.getElementById('region').value = profile.region || '';
+      document.getElementById('club').value = profile.club || '';
+      document.getElementById('technicalRole').value = profile.technical_role || '';
+      document.getElementById('specialization').value = profile.specialization || '';
+      document.getElementById('status').value = profile.status || 'Aktif';
       document.getElementById('phone').value = profile.phone || '';
       document.getElementById('bio').value = profile.bio || '';
       document.getElementById('photoPreview').src = profile.photo || 'https://via.placeholder.com/120x120?text=Coach';
@@ -607,6 +646,11 @@
         branch: document.getElementById('branch').value,
         country: document.getElementById('country').value.trim(),
         city: document.getElementById('city').value.trim(),
+        region: document.getElementById('region').value.trim(),
+        club: document.getElementById('club').value.trim(),
+        technical_role: document.getElementById('technicalRole').value.trim(),
+        specialization: document.getElementById('specialization').value.trim(),
+        status: document.getElementById('status').value,
         phone: document.getElementById('phone').value.trim(),
         bio: document.getElementById('bio').value.trim(),
         photo: current.photo || '',
@@ -616,6 +660,12 @@
     function renderSummary(profile) {
       document.getElementById('sumName').textContent = profile.name || '-';
       document.getElementById('sumBranch').textContent = profile.branch || '-';
+      document.getElementById('sumProfileType').textContent = 'Coach';
+      document.getElementById('sumTechnicalRole').textContent = profile.technical_role || '-';
+      document.getElementById('sumClub').textContent = profile.club || '-';
+      document.getElementById('sumSpecialization').textContent = profile.specialization || '-';
+      document.getElementById('sumStatus').textContent = profile.status || '-';
+      document.getElementById('sumRegion').textContent = profile.region || '-';
       document.getElementById('sumCountry').textContent = profile.country || '-';
       document.getElementById('sumCity').textContent = profile.city || '-';
       const meta = document.getElementById('coachDataMeta');
@@ -930,6 +980,11 @@
         branch: data.branch || '',
         country: data.country || authUser?.country || '',
         city: data.city || authUser?.city || '',
+        region: data.region || data.area || '',
+        club: data.organization || data.club || '',
+        technical_role: data.technical_role || data.position_title || '',
+        specialization: data.specialization || data.expertise || '',
+        status: data.status || 'Aktif',
         phone: data.phone || authUser?.phone || '',
         bio: data.bio || '',
         photo: data.profile_photo_url || authUser?.photo_url || '',
@@ -947,11 +1002,15 @@
         city: profile.city,
         phone: profile.phone,
         role_type: 'coach',
-        organization: '',
+        organization: profile.club,
         experience_years: Number(profile.experience || 0),
         bio: profile.bio,
         country: profile.country,
         branch: profile.branch,
+        region: profile.region,
+        technical_role: profile.technical_role,
+        specialization: profile.specialization,
+        status: profile.status,
         profile_photo_url: profile.photo || '',
       };
       const res = await fetch(`${getApiBaseUrl()}/staff/${encodeURIComponent(targetId)}`, {

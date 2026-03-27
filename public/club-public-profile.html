@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kulup Public Profil - NextScout</title>
+  <meta name="robots" content="noindex,follow">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg:#08131d;
+      --ink:#f5fbff;
+      --muted:#9bb5cb;
+      --line:#2b4660;
+      --panel:#0f1f2e;
+      --panel-soft:#12293d;
+      --cta:#ff5a1f;
+      --cta-2:#ff7e22;
+      --shadow:0 18px 36px rgba(8,19,29,.34);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+        radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+        var(--bg);
+      min-height:100vh;
+      background-attachment:fixed;
+    }
+    .wrap{max-width:1320px;margin:0 auto;padding:18px 14px 24px}
+    .head{
+      position:relative;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px;
+      border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg, rgba(18,41,61,.98) 0%, rgba(15,31,46,.98) 100%);padding:24px;box-shadow:var(--shadow);overflow:hidden;
+    }
+    .head::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--cta) 0%,var(--cta-2) 55%,#60a5fa 100%)}
+    .title{margin:0;font-size:32px;font-weight:800}
+    .sub{margin-top:8px;color:var(--muted);font-size:14px}
+    .head-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .btn{
+      border:1px solid rgba(255,126,34,.45);background:linear-gradient(180deg, rgba(255,255,255,.95) 0%, rgba(219,234,254,.92) 100%);color:#16325c;
+      padding:10px 14px;border-radius:12px;text-decoration:none;font-weight:800;font-size:13px;display:inline-flex;align-items:center;gap:7px;
+    }
+    .data-meta{margin:0 0 12px;font-size:12px;color:#94a3b8;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;padding:8px 10px}
+    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+    .tab{
+      border:1px solid var(--line);background:rgba(255,255,255,.04);color:#e2e8f0;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;
+    }
+    .tab.active{background:linear-gradient(135deg,var(--cta) 0%,var(--cta-2) 100%);border-color:rgba(255,126,34,.6);color:#fff}
+    .panel{display:none}
+    .panel.active{display:block}
+    .layout{display:grid;grid-template-columns:1.2fr 1fr;gap:12px}
+    .card{
+      position:relative;background:linear-gradient(180deg, rgba(18,41,61,.98) 0%, rgba(15,31,46,.98) 100%);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px;overflow:hidden;
+    }
+    .card::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--cta) 0%,var(--cta-2) 55%,#60a5fa 100%)}
+    .section-title{margin:0 0 10px 0;font-size:16px;font-weight:800}
+    .club-hero{display:flex;align-items:center;gap:10px;padding:2px 0 10px;margin-bottom:4px;border-bottom:1px solid #334155}
+    .club-logo{
+      width:56px;height:56px;border-radius:14px;border:1px solid var(--line);
+      background:linear-gradient(135deg,#1e40af 0%,#0ea5e9 100%);
+      display:grid;place-items:center;color:#f8fafc;font-size:20px;font-weight:900;overflow:hidden;
+    }
+    .club-logo img{width:100%;height:100%;object-fit:cover;display:block}
+    .club-hero-name{font-size:17px;font-weight:800;color:#f5fbff;line-height:1.2}
+    .club-hero-role{font-size:12px;color:#93c5fd;font-weight:700}
+    .row{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #334155;font-size:13px}
+    .row:last-child{border-bottom:0}
+    .muted{color:var(--muted)}
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:12px;color:#dbeafe;background:rgba(255,255,255,.04)}
+    .mini-table{width:100%;border-collapse:collapse;font-size:13px}
+    .mini-table th,.mini-table td{border:1px solid var(--line);padding:8px;text-align:left}
+    .mini-table th{background:rgba(255,255,255,.04);color:#dbeafe}
+    .review-list{display:grid;gap:14px}
+    .review-item{padding:14px;border:1px solid rgba(96,165,250,.14);border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%)}
+    .review-meta{font-size:12px;color:var(--muted);margin-bottom:6px}
+    .media-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .media-card{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03);overflow:hidden}
+    .media-card img,.media-card video{width:100%;height:180px;object-fit:cover;display:block;background:#0b1725}
+    .media-card-body{padding:8px;font-size:12px;color:#dbeafe;font-weight:700}
+    .media-empty{border:1px dashed var(--line);border-radius:12px;padding:14px;text-align:center;color:var(--muted);font-size:12px}
+    @media (max-width:900px){.media-list{grid-template-columns:1fr}}
+    @media (max-width:900px){.layout{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <h1 class="title">Kulup Public Profili</h1>
+        <div class="sub">Uyelere acik kulup gorunumu.</div>
+      </div>
+      <div class="head-actions">
+        <a class="btn" href="professional-players.html"><i class="fas fa-arrow-left"></i><span>Geri</span></a>
+      </div>
+    </div>
+
+    <div class="data-meta" id="metaLine">Kaynak: Kulup Public Profili • Son guncelleme: -</div>
+
+    <div class="tabs" id="tabs">
+      <button class="tab active" type="button" data-tab="overview">Genel</button>
+      <button class="tab" type="button" data-tab="finance">Finans</button>
+      <button class="tab" type="button" data-tab="recruitment">Kadro/Ihtiyac</button>
+      <button class="tab" type="button" data-tab="plan">Transfer Plani</button>
+      <button class="tab" type="button" data-tab="media">Medya</button>
+      <button class="tab" type="button" data-tab="reviews">Yorumlar</button>
+    </div>
+
+    <section class="panel active" data-panel="overview">
+      <div class="layout">
+        <div class="card">
+          <h2 class="section-title">Kulup Bilgileri</h2>
+          <div class="club-hero">
+            <div class="club-logo" id="clubLogo"><span id="clubLogoMark">K</span></div>
+            <div>
+              <div id="clubHeroName" class="club-hero-name">-</div>
+              <div class="club-hero-role">Kulup Profili</div>
+            </div>
+          </div>
+          <div class="row"><span class="muted">Kulup</span><strong id="sumClub">-</strong></div>
+          <div class="row"><span class="muted">Sehir</span><strong id="sumCity">-</strong></div>
+          <div class="row"><span class="muted">Brans</span><strong id="sumBranch">-</strong></div>
+          <div class="row"><span class="muted">Transfer Butcesi</span><strong id="sumBudget">-</strong></div>
+          <div class="row"><span class="muted">Maas Butcesi</span><strong id="sumWage">-</strong></div>
+          <div class="row"><span class="muted">Kadro Ihtiyaclari</span><strong id="sumNeed">-</strong></div>
+          <div class="row"><span class="muted">Oyun Sistemi</span><strong id="sumSystem">-</strong></div>
+          <div class="row"><span class="muted">Tesis Seviyesi</span><strong id="sumFacility">-</strong></div>
+        </div>
+        <div class="card">
+          <h2 class="section-title">Odak Etiketleri</h2>
+          <div class="chips" id="chips"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" data-panel="finance">
+      <div class="card">
+        <h2 class="section-title">Finans Ozeti</h2>
+        <table class="mini-table">
+          <thead><tr><th>Kalem</th><th>Deger</th></tr></thead>
+          <tbody id="financeRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" data-panel="recruitment">
+      <div class="card">
+        <h2 class="section-title">Kadro ve Ihtiyac</h2>
+        <div class="chips" id="needChips"></div>
+      </div>
+    </section>
+
+    <section class="panel" data-panel="plan">
+      <div class="card">
+        <h2 class="section-title">Transfer Plani</h2>
+        <table class="mini-table">
+          <thead><tr><th>Donem</th><th>Oncelik</th><th>Butce</th><th>Durum</th></tr></thead>
+          <tbody id="planRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" data-panel="media">
+      <div class="card">
+        <h2 class="section-title">Kulup Medya</h2>
+        <div class="media-list" id="publicMediaList"></div>
+      </div>
+    </section>
+
+    <section class="panel" data-panel="reviews">
+      <div class="card">
+        <h2 class="section-title">Profil Yorumlari</h2>
+        <div class="review-list" id="reviewList"><div class="review-item">Yorumlar yukleniyor...</div></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function getApiBaseUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = (params.get('api_base') || '').trim();
+      if (fromQuery) return fromQuery.replace(/\/$/, '');
+      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      return '/api';
+    }
+    function getToken() { return (localStorage.getItem('nextscout_token') || '').trim(); }
+    function authHeaders() {
+      const token = getToken();
+      if (!token) return { Accept: 'application/json' };
+      return { Accept: 'application/json', Authorization: `Bearer ${token}` };
+    }
+    function esc(v){return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+    function formatMoney(v){ return `${Number(v || 0).toLocaleString('tr-TR')} EUR`; }
+    function parseNeedsText(needsText){
+      const d = { branch:'', budget:0, wageBudget:0, squadNeeds:[], squadNeed:'', preferredSystem:'', facilityLevel:'', facilities:'', notes:'', mediaAssets:[], mediaImages:[], mediaVideos:[] };
+      if (!needsText) return d;
+      try { return Object.assign(d, JSON.parse(needsText) || {}); } catch (e) { return d; }
+    }
+    function normalizeNeeds(v){
+      if (Array.isArray(v)) return v.filter(Boolean);
+      if (typeof v === 'string') return v.split(',').map((x)=>x.trim()).filter(Boolean);
+      return [];
+    }
+    function normalizeMediaAssets(value, mediaImages, mediaVideos){
+      const list = Array.isArray(value) ? value : [];
+      const normalized = list
+        .filter((item) => item && typeof item === 'object')
+        .map((item) => ({
+          type: String(item.type || 'image').toLowerCase() === 'video' ? 'video' : 'image',
+          src: String(item.src || '').trim(),
+        }))
+        .filter((item) => item.src);
+      if (normalized.length) return normalized;
+      const toArray = (v) => Array.isArray(v) ? v : typeof v === 'string' ? v.split(',').map((x)=>x.trim()).filter(Boolean) : [];
+      return [
+        ...toArray(mediaImages).map((src) => ({ type:'image', src })),
+        ...toArray(mediaVideos).map((src) => ({ type:'video', src })),
+      ];
+    }
+    function getTargetId(){
+      const p = new URLSearchParams(window.location.search);
+      return String(p.get('user_id') || p.get('team_id') || '').trim();
+    }
+    function bindTabs(){
+      const tabs = Array.from(document.querySelectorAll('.tab'));
+      const panels = Array.from(document.querySelectorAll('.panel'));
+      tabs.forEach((tab)=>{
+        tab.addEventListener('click', ()=>{
+          const key = tab.dataset.tab || 'overview';
+          tabs.forEach((t)=>t.classList.toggle('active', t === tab));
+          panels.forEach((p)=>p.classList.toggle('active', p.dataset.panel === key));
+        });
+      });
+    }
+    function render(profile){
+      const needs = normalizeNeeds(profile.squadNeeds || profile.squadNeed);
+      const initials = String(profile.clubName || 'K').trim().charAt(0).toUpperCase() || 'K';
+      const logoUrl = String(profile.logoUrl || '').trim();
+      const clubLogo = document.getElementById('clubLogo');
+      if (clubLogo) {
+        if (logoUrl) {
+          clubLogo.innerHTML = `<img src="${esc(logoUrl)}" alt="${esc(profile.clubName || 'Kulup')} Armasi">`;
+        } else {
+          clubLogo.innerHTML = `<span id="clubLogoMark">${esc(initials)}</span>`;
+        }
+      }
+      const heroName = document.getElementById('clubHeroName');
+      if (heroName) heroName.textContent = profile.clubName || '-';
+      document.getElementById('sumClub').textContent = profile.clubName || '-';
+      document.getElementById('sumCity').textContent = profile.city || '-';
+      document.getElementById('sumBranch').textContent = profile.branch || '-';
+      document.getElementById('sumBudget').textContent = formatMoney(profile.budget);
+      document.getElementById('sumWage').textContent = formatMoney(profile.wageBudget);
+      document.getElementById('sumNeed').textContent = needs.join(', ') || '-';
+      document.getElementById('sumSystem').textContent = profile.preferredSystem || '-';
+      document.getElementById('sumFacility').textContent = profile.facilityLevel || '-';
+      document.getElementById('metaLine').textContent = `Kaynak: Kulup Public Profili • Son guncelleme: ${new Date().toLocaleString('tr-TR')}`;
+
+      const chips = [];
+      if (profile.branch) chips.push(`Brans: ${profile.branch}`);
+      if (profile.city) chips.push(`Sehir: ${profile.city}`);
+      if (needs.length) chips.push(`Ihtiyac: ${needs.join(', ')}`);
+      if (profile.facilityLevel) chips.push(`Tesis: ${profile.facilityLevel}`);
+      document.getElementById('chips').innerHTML = chips.map((x)=>`<span class="chip">${esc(x)}</span>`).join('');
+
+      document.getElementById('financeRows').innerHTML = [
+        ['Transfer Butcesi', formatMoney(profile.budget)],
+        ['Maas Butcesi', formatMoney(profile.wageBudget)],
+        ['Maas/Transfer Orani', `${profile.budget ? ((Number(profile.wageBudget || 0) / Number(profile.budget || 1)) * 100).toFixed(1) : '0'}%`],
+        ['Finans Notu', Number(profile.budget || 0) >= 10000000 ? 'Agresif' : 'Dengeli'],
+      ].map((r)=>`<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td></tr>`).join('');
+
+      const needChipRows = [
+        ...needs.map((n)=>`Ihtiyac: ${n}`),
+        profile.notes ? `Not: ${profile.notes}` : '',
+        profile.facilities ? `Tesisler: ${profile.facilities}` : '',
+      ].filter(Boolean);
+      document.getElementById('needChips').innerHTML = needChipRows.map((x)=>`<span class="chip">${esc(x)}</span>`).join('');
+
+      document.getElementById('planRows').innerHTML = [
+        ['2026 Yaz', needs[0] || 'Forvet', formatMoney(profile.budget), 'Planlandi'],
+        ['2026 Kis', 'Genc oyuncu takviyesi', formatMoney(Math.round((Number(profile.budget || 0)) * 0.35)), 'Izleniyor'],
+      ].map((r)=>`<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td></tr>`).join('');
+
+      const mediaRoot = document.getElementById('publicMediaList');
+      if (mediaRoot) {
+        const mediaItems = normalizeMediaAssets(profile.mediaAssets, profile.mediaImages, profile.mediaVideos);
+        if (!mediaItems.length) {
+          mediaRoot.innerHTML = '<div class="media-empty">Kulup tarafindan henuz medya eklenmedi.</div>';
+        } else {
+          mediaRoot.innerHTML = mediaItems.map((item) => item.type === 'video'
+            ? `<div class="media-card"><video src="${esc(item.src)}" controls preload="metadata"></video><div class="media-card-body">Video</div></div>`
+            : `<div class="media-card"><img src="${esc(item.src)}" alt="Kulup Medya"><div class="media-card-body">Resim</div></div>`
+          ).join('');
+        }
+      }
+    }
+    async function loadReviews(targetId){
+      const root = document.getElementById('reviewList');
+      if (!targetId || !root) return;
+      try{
+        const res = await fetch(`${getApiBaseUrl()}/profiles/${encodeURIComponent(targetId)}/reviews`, { headers: { Accept:'application/json' } });
+        const payload = await res.json().catch(()=>null);
+        const rows = Array.isArray(payload?.data?.data) ? payload.data.data : Array.isArray(payload?.data) ? payload.data : [];
+        if (!rows.length) {
+          root.innerHTML = '<div class="review-item">Henuz yorum yok.</div>';
+          return;
+        }
+        root.innerHTML = rows.map((row)=>`<div class="review-item"><div class="review-meta">${esc(row?.author_name || 'Uye')} • ${esc(row?.sentiment || '-')}</div><div>${esc(row?.body || '')}</div></div>`).join('');
+      }catch(e){
+        root.innerHTML = '<div class="review-item">Yorumlar su an alinamiyor.</div>';
+      }
+    }
+    async function init(){
+      bindTabs();
+      const targetId = getTargetId();
+      if (!targetId) {
+        document.getElementById('sumClub').textContent = 'Profil bulunamadi';
+        return;
+      }
+      try{
+        const res = await fetch(`${getApiBaseUrl()}/teams/${encodeURIComponent(targetId)}`, { headers: authHeaders() });
+        const payload = await res.json().catch(()=>null);
+        const team = payload?.data || {};
+        const parsed = parseNeedsText(team?.needs_text || '');
+        const profile = Object.assign(parsed, {
+          clubName: team?.team_name || parsed.clubName || '-',
+          city: team?.team_city || parsed.city || '-',
+          logoUrl: team?.logo_url || team?.team_logo || team?.profile_photo_url || '',
+        });
+        render(profile);
+      }catch(e){
+        document.getElementById('sumClub').textContent = 'Profil yuklenemedi';
+      }
+      loadReviews(targetId);
+    }
+    init();
+  </script>
+</body>
+</html>

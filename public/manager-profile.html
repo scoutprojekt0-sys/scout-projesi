@@ -388,6 +388,21 @@
                 <input class="input" id="agency" placeholder="Ornek Sports Management">
               </div>
               <div class="field">
+                <label class="label" for="region">Bolge</label>
+                <input class="input" id="region" placeholder="Marmara">
+              </div>
+              <div class="field">
+                <label class="label" for="specialization">Uzmanlik</label>
+                <input class="input" id="specialization" placeholder="Oyuncu temsil / transfer sureci">
+              </div>
+              <div class="field">
+                <label class="label" for="status">Durum</label>
+                <select class="select" id="status">
+                  <option value="Aktif">Aktif</option>
+                  <option value="Pasif">Pasif</option>
+                </select>
+              </div>
+              <div class="field">
                 <label class="label" for="city">Sehir</label>
                 <input class="input" id="city" placeholder="Istanbul">
               </div>
@@ -442,6 +457,9 @@
           </article>
           <article class="card">
             <div class="field"><div class="label">Ajans</div><div id="previewAgency">-</div></div>
+            <div class="field"><div class="label">Bolge</div><div id="previewRegion">-</div></div>
+            <div class="field"><div class="label">Uzmanlik</div><div id="previewSpecialization">-</div></div>
+            <div class="field"><div class="label">Durum</div><div id="previewStatus">-</div></div>
             <div class="field"><div class="label">Sehir</div><div id="previewCity">-</div></div>
             <div class="field"><div class="label">Ulke</div><div id="previewCountry">-</div></div>
             <div class="field"><div class="label">Telefon</div><div id="previewPhone">-</div></div>
@@ -486,12 +504,15 @@
     }
 
     function defaults() {
-      return { name: 'Manager', agency: '', city: '', country: 'Turkiye', phone: '', branch: 'Futbol', bio: '', photo: '' };
+      return { name: 'Manager', agency: '', region: '', specialization: '', status: 'Aktif', city: '', country: 'Turkiye', phone: '', branch: 'Futbol', bio: '', photo: '' };
     }
 
     function setForm(p) {
       document.getElementById('name').value = p.name || '';
       document.getElementById('agency').value = p.agency || '';
+      document.getElementById('region').value = p.region || '';
+      document.getElementById('specialization').value = p.specialization || '';
+      document.getElementById('status').value = p.status || 'Aktif';
       document.getElementById('city').value = p.city || '';
       document.getElementById('country').value = p.country || '';
       document.getElementById('phone').value = p.phone || '';
@@ -504,6 +525,9 @@
       return {
         name: document.getElementById('name').value.trim(),
         agency: document.getElementById('agency').value.trim(),
+        region: document.getElementById('region').value.trim(),
+        specialization: document.getElementById('specialization').value.trim(),
+        status: document.getElementById('status').value,
         city: document.getElementById('city').value.trim(),
         country: document.getElementById('country').value.trim(),
         phone: document.getElementById('phone').value.trim(),
@@ -532,6 +556,9 @@
       document.getElementById('previewBranch').textContent = p.branch || '-';
       document.getElementById('previewBio').textContent = p.bio || 'Tanitim metni yok.';
       document.getElementById('previewAgency').textContent = p.agency || '-';
+      document.getElementById('previewRegion').textContent = p.region || '-';
+      document.getElementById('previewSpecialization').textContent = p.specialization || '-';
+      document.getElementById('previewStatus').textContent = p.status || '-';
       document.getElementById('previewCity').textContent = p.city || '-';
       document.getElementById('previewCountry').textContent = p.country || '-';
       document.getElementById('previewPhone').textContent = p.phone || '-';
@@ -634,6 +661,9 @@
       return {
         name: data.name || '',
         agency: data.organization || '',
+        region: data.region || data.area || '',
+        specialization: data.specialization || data.expertise || '',
+        status: data.status || 'Aktif',
         city: data.city || '',
         country: data.country || '',
         phone: data.phone || '',
@@ -653,6 +683,9 @@
         city: p.city,
         phone: p.phone,
         organization: p.agency,
+        region: p.region || '',
+        specialization: p.specialization || '',
+        status: p.status || 'Aktif',
         experience_years: null,
         bio: p.bio,
         country: p.country,

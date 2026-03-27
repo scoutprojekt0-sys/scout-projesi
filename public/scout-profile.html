@@ -83,6 +83,33 @@
     .row:last-child{border-bottom:0}
     .muted{color:var(--muted)}
     .ok{color:#34d399;font-size:12px;min-height:16px;margin-top:8px;font-weight:700}
+    .scout-profile-card{
+      margin-top:14px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(15,23,42,.22) 100%);
+      box-shadow:0 14px 24px rgba(2,6,23,.2);
+      display:none;
+    }
+    .scout-profile-card-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    .scout-profile-card-avatar{
+      width:56px;height:56px;border-radius:14px;object-fit:cover;border:1px solid var(--line);
+      background:linear-gradient(135deg,#1e40af 0%,#0ea5e9 100%);
+    }
+    .scout-profile-card-name{font-size:16px;font-weight:800;color:#f5fbff;line-height:1.2}
+    .scout-profile-card-role{font-size:12px;color:#93c5fd;font-weight:700}
+    .scout-profile-card-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+    .scout-profile-card-pill{
+      border:1px solid rgba(148,163,184,.2);
+      border-radius:999px;
+      padding:5px 10px;
+      font-size:11px;
+      font-weight:700;
+      color:#dbeafe;
+      background:rgba(255,255,255,.04);
+    }
+    .scout-profile-card-bio{margin:0;color:#dbeafe;font-size:13px;line-height:1.65}
     .data-meta{
       margin:0 0 12px;
       font-size:12px;
@@ -153,101 +180,7 @@
       .act{grid-template-columns:1fr}
       .act .btn{width:100%;justify-content:center}
     }
-    .profile-card-modal .profile-card-content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        background: #fff;
-        border-radius: 24px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-        padding: 36px 32px 28px 32px;
-        min-width: 320px;
-        max-width: 360px;
-        margin: 0 auto;
-        position: relative;
-    }
-    .profile-card-avatar {
-        width: 108px;
-        height: 108px;
-        border-radius: 50%;
-        overflow: hidden;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.18);
-        background: #e5e7eb;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 18px;
-    }
-    .profile-card-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 50%;
-    }
-    .profile-card-name {
-        font-size: 22px;
-        font-weight: 800;
-        color: #1e293b;
-        margin-bottom: 4px;
-        text-align: center;
-    }
-    .profile-card-role {
-        font-size: 15px;
-        color: #60a5fa;
-        font-weight: 600;
-        margin-bottom: 10px;
-        text-align: center;
-    }
-    .profile-card-bio {
-        font-size: 14px;
-        color: #334155;
-        margin-bottom: 14px;
-        text-align: center;
-    }
-    .profile-card-contact {
-        display: flex;
-        gap: 18px;
-        font-size: 13px;
-        color: #475569;
-        margin-bottom: 10px;
-        justify-content: center;
-    }
-    .profile-card-contact i {
-        margin-right: 6px;
-        color: #60a5fa;
-    }
-    .profile-card-social {
-        display: flex;
-        gap: 14px;
-        margin-bottom: 18px;
-        justify-content: center;
-    }
-    .profile-card-social a {
-        color: #64748b;
-        font-size: 18px;
-        transition: color 0.2s;
-    }
-    .profile-card-social a:hover {
-        color: #60a5fa;
-    }
-    .profile-card-close {
-        margin-top: 8px;
-        width: 100%;
-        border-radius: 12px;
-        font-size: 15px;
-        font-weight: 700;
-    }
-    @media (max-width: 600px) {
-        .profile-card-modal .profile-card-content {
-            padding: 18px 8px 18px 8px;
-            min-width: 0;
-            max-width: 98vw;
-        }
-    }
     </style>
-    <!-- PROFESYONEL PROFİL KART MODAL SONU -->
-    <!-- Modalı açmak için örnek kullanım: -->
-    <!-- <button onclick="openProfileCardModal({name:'Ali Veli',role:'Scout',bio:'10 yıllık deneyim...',email:'ali@site.com',phone:'+90 555 555 55 55',avatar:'https://randomuser.me/api/portraits/men/32.jpg',twitter:'#',linkedin:'#',instagram:'#'})">Profil Kartı Aç</button> -->
 </head>
 <body>
   <div class="wrap">
@@ -278,6 +211,11 @@
           <div class="field"><label class="label" for="branch">Brans</label><select class="select" id="branch"><option value="">Seciniz</option><option value="Futbol">Futbol</option><option value="Basketbol">Basketbol</option><option value="Voleybol">Voleybol</option><option value="Coklu Brans">Coklu Brans</option></select></div>
           <div class="field"><label class="label" for="country">Ülke</label><input class="input" id="country" placeholder="Türkiye"></div>
           <div class="field"><label class="label" for="city">Sehir</label><input class="input" id="city" placeholder="Istanbul"></div>
+          <div class="field"><label class="label" for="region">Bolge</label><input class="input" id="region" placeholder="Marmara"></div>
+          <div class="field"><label class="label" for="organization">Organizasyon</label><input class="input" id="organization" placeholder="Scout Ekibi"></div>
+          <div class="field"><label class="label" for="network">Ag</label><input class="input" id="network" placeholder="Kulup/Scout Agi"></div>
+          <div class="field"><label class="label" for="specialization">Uzmanlik</label><input class="input" id="specialization" placeholder="Genc yetenek gozlemi"></div>
+          <div class="field"><label class="label" for="status">Durum</label><select class="select" id="status"><option value="Aktif">Aktif</option><option value="Pasif">Pasif</option></select></div>
           <div class="field"><label class="label" for="phone">Telefon</label><input class="input" id="phone" placeholder="+90 5xx xxx xx xx"></div>
           <div class="field full"><label class="label" for="bio">Hakkimda</label><textarea class="textarea" id="bio" placeholder="Kisa scout tanitimi..."></textarea></div>
           <div class="act full"><button class="btn btn-primary" type="submit"><i class="fas fa-floppy-disk"></i><span>Kaydet</span></button><button class="btn" type="button" id="resetBtn"><i class="fas fa-rotate-left"></i><span>Sıfırla</span></button></div>
@@ -296,8 +234,30 @@
         <h2 class="section-title" style="margin-top:14px;">Ozet</h2>
         <div class="row"><span class="muted">Isim</span><strong id="sumName">-</strong></div>
         <div class="row"><span class="muted">Brans</span><strong id="sumBranch">-</strong></div>
+        <div class="row"><span class="muted">Profil</span><strong id="sumProfileType">Gozlem</strong></div>
+        <div class="row"><span class="muted">Organizasyon</span><strong id="sumOrganization">-</strong></div>
+        <div class="row"><span class="muted">Bolge</span><strong id="sumRegion">-</strong></div>
+        <div class="row"><span class="muted">Ag</span><strong id="sumNetwork">-</strong></div>
+        <div class="row"><span class="muted">Uzmanlik</span><strong id="sumSpecialization">-</strong></div>
+        <div class="row"><span class="muted">Durum</span><strong id="sumStatus">-</strong></div>
         <div class="row"><span class="muted">Ülke</span><strong id="sumCountry">-</strong></div>
         <div class="row"><span class="muted">Sehir</span><strong id="sumCity">-</strong></div>
+
+        <div class="scout-profile-card" id="memberScoutCard">
+          <div class="scout-profile-card-head">
+            <img id="memberScoutAvatar" class="scout-profile-card-avatar" alt="Scout Profil Karti">
+            <div>
+              <div id="memberScoutName" class="scout-profile-card-name">-</div>
+              <div class="scout-profile-card-role">Scout Profil Karti</div>
+            </div>
+          </div>
+          <div class="scout-profile-card-meta">
+            <span id="memberScoutBranch" class="scout-profile-card-pill">-</span>
+            <span id="memberScoutLocation" class="scout-profile-card-pill">-</span>
+            <span id="memberScoutExperience" class="scout-profile-card-pill">-</span>
+          </div>
+          <p id="memberScoutBio" class="scout-profile-card-bio">-</p>
+        </div>
       </div>
     </div>
     </section>
@@ -349,46 +309,6 @@
     </section>
   </div>
 
-  <!-- PROFESYONEL PROFİL KART MODAL (GÖRSELDEKİYLE BİREBİR) -->
-  <div class="need-modal-overlay" id="profileCardModal" onclick="if(event.target.id==='profileCardModal'){closeProfileCardModal();}">
-      <div class="need-modal live-modal profile-card-modal" onclick="event.stopPropagation()">
-          <div class="profile-card-content">
-              <div class="profile-card-avatar">
-                  <img id="profileCardAvatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profil Fotoğrafı">
-              </div>
-              <div class="profile-card-name" id="profileCardName">Ad Soyad</div>
-              <div class="profile-card-role" id="profileCardRole">Scout</div>
-              <div class="profile-card-bio" id="profileCardBio">Kısa biyografi veya açıklama buraya gelecek.</div>
-              <div class="profile-card-contact">
-                  <span id="profileCardEmail"><i class="fas fa-envelope"></i> email@site.com</span>
-                  <span id="profileCardPhone"><i class="fas fa-phone"></i> +90 555 555 55 55</span>
-              </div>
-              <div class="profile-card-social">
-                  <a href="#" id="profileCardTwitter" target="_blank"><i class="fab fa-twitter"></i></a>
-                  <a href="#" id="profileCardLinkedin" target="_blank"><i class="fab fa-linkedin"></i></a>
-                  <a href="#" id="profileCardInstagram" target="_blank"><i class="fab fa-instagram"></i></a>
-              </div>
-              <button class="btn btn-primary profile-card-close" type="button" onclick="closeProfileCardModal()">Kapat</button>
-          </div>
-      </div>
-  </div>
-  <script>
-  function openProfileCardModal(profile) {
-      document.getElementById('profileCardAvatar').src = profile.avatar || 'https://randomuser.me/api/portraits/men/32.jpg';
-      document.getElementById('profileCardName').textContent = profile.name || 'Ad Soyad';
-      document.getElementById('profileCardRole').textContent = profile.role || 'Scout';
-      document.getElementById('profileCardBio').textContent = profile.bio || 'Kısa biyografi veya açıklama buraya gelecek.';
-      document.getElementById('profileCardEmail').innerHTML = '<i class="fas fa-envelope"></i> ' + (profile.email || 'email@site.com');
-      document.getElementById('profileCardPhone').innerHTML = '<i class="fas fa-phone"></i> ' + (profile.phone || '+90 555 555 55 55');
-      document.getElementById('profileCardTwitter').href = profile.twitter || '#';
-      document.getElementById('profileCardLinkedin').href = profile.linkedin || '#';
-      document.getElementById('profileCardInstagram').href = profile.instagram || '#';
-      document.getElementById('profileCardModal').classList.add('show');
-  }
-  function closeProfileCardModal() {
-      document.getElementById('profileCardModal').classList.remove('show');
-  }
-  </script>
   <script>
 
     function getApiBaseUrl() {
@@ -620,6 +540,31 @@
       document.getElementById('sumCity').textContent = p.city || '-';
       const meta = document.getElementById('scoutDataMeta');
       if (meta) meta.textContent = `Kaynak: Scout Profili • Son güncelleme: ${new Date().toLocaleString('tr-TR')}`;
+      renderMemberScoutCard(p);
+    }
+
+    function renderMemberScoutCard(p) {
+      const card = document.getElementById('memberScoutCard');
+      if (!card) return;
+      const authUser = getCurrentAuthUserFromStorage();
+      const targetId = getScoutReviewTargetId();
+      const authId = Number(authUser?.id || 0);
+      const shouldShow = Boolean(authUser && Number(targetId) > 0 && Number.isFinite(authId) && authId !== targetId);
+      card.style.display = shouldShow ? 'block' : 'none';
+      if (!shouldShow) return;
+
+      const avatar = document.getElementById('memberScoutAvatar');
+      if (avatar) avatar.src = p.photo || 'https://via.placeholder.com/120x120?text=Scout';
+      const name = document.getElementById('memberScoutName');
+      if (name) name.textContent = p.name || '-';
+      const branch = document.getElementById('memberScoutBranch');
+      if (branch) branch.textContent = p.branch || '-';
+      const location = document.getElementById('memberScoutLocation');
+      if (location) location.textContent = [p.city, p.country].filter(Boolean).join(' • ') || '-';
+      const exp = document.getElementById('memberScoutExperience');
+      if (exp) exp.textContent = p.experience ? `${p.experience} Yil Deneyim` : 'Deneyim belirtilmedi';
+      const bio = document.getElementById('memberScoutBio');
+      if (bio) bio.textContent = p.bio || 'Scout biyografisi henuz eklenmemis.';
     }
 
     function bindTabs() {
@@ -666,6 +611,150 @@
         bio: p.bio,
         country: p.country,
         branch: p.branch,
+        profile_photo_url: p.photo || '',
+      };
+      const res = await fetch(`${getApiBaseUrl()}/staff-profiles/me`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify(body),
+      });
+      return res.ok;
+    }
+
+    // Override profile model with extended scout fields.
+    function defaults(){
+      return {
+        name:'Scout',
+        experience:'',
+        branch:'Futbol',
+        country:'Turkiye',
+        city:'',
+        region:'',
+        organization:'',
+        network:'',
+        specialization:'',
+        status:'Aktif',
+        phone:'',
+        bio:'',
+        photo:'',
+      };
+    }
+
+    function setForm(p){
+      document.getElementById('name').value = p.name || '';
+      document.getElementById('experience').value = p.experience || '';
+      document.getElementById('branch').value = p.branch || '';
+      document.getElementById('country').value = p.country || '';
+      document.getElementById('city').value = p.city || '';
+      document.getElementById('region').value = p.region || '';
+      document.getElementById('organization').value = p.organization || '';
+      document.getElementById('network').value = p.network || '';
+      document.getElementById('specialization').value = p.specialization || '';
+      document.getElementById('status').value = p.status || 'Aktif';
+      document.getElementById('phone').value = p.phone || '';
+      document.getElementById('bio').value = p.bio || '';
+      document.getElementById('photoPreview').src = p.photo || 'https://via.placeholder.com/120x120?text=Scout';
+    }
+
+    function readForm(current){
+      return {
+        name: document.getElementById('name').value.trim(),
+        experience: document.getElementById('experience').value.trim(),
+        branch: document.getElementById('branch').value,
+        country: document.getElementById('country').value.trim(),
+        city: document.getElementById('city').value.trim(),
+        region: document.getElementById('region').value.trim(),
+        organization: document.getElementById('organization').value.trim(),
+        network: document.getElementById('network').value.trim(),
+        specialization: document.getElementById('specialization').value.trim(),
+        status: document.getElementById('status').value,
+        phone: document.getElementById('phone').value.trim(),
+        bio: document.getElementById('bio').value.trim(),
+        photo: current.photo || ''
+      };
+    }
+
+    function renderSummary(p){
+      document.getElementById('sumName').textContent = p.name || '-';
+      document.getElementById('sumBranch').textContent = p.branch || '-';
+      document.getElementById('sumProfileType').textContent = 'Gozlem';
+      document.getElementById('sumOrganization').textContent = p.organization || '-';
+      document.getElementById('sumRegion').textContent = p.region || '-';
+      document.getElementById('sumNetwork').textContent = p.network || '-';
+      document.getElementById('sumSpecialization').textContent = p.specialization || '-';
+      document.getElementById('sumStatus').textContent = p.status || '-';
+      document.getElementById('sumCountry').textContent = p.country || '-';
+      document.getElementById('sumCity').textContent = p.city || '-';
+      const meta = document.getElementById('scoutDataMeta');
+      if (meta) meta.textContent = `Kaynak: Scout Profili • Son güncelleme: ${new Date().toLocaleString('tr-TR')}`;
+      renderMemberScoutCard(p);
+    }
+
+    function renderMemberScoutCard(p) {
+      const card = document.getElementById('memberScoutCard');
+      if (!card) return;
+      const authUser = getCurrentAuthUserFromStorage();
+      const targetId = getScoutReviewTargetId();
+      const authId = Number(authUser?.id || 0);
+      const shouldShow = Boolean(authUser && Number(targetId) > 0 && Number.isFinite(authId) && authId !== targetId);
+      card.style.display = shouldShow ? 'block' : 'none';
+      if (!shouldShow) return;
+
+      const avatar = document.getElementById('memberScoutAvatar');
+      if (avatar) avatar.src = p.photo || 'https://via.placeholder.com/120x120?text=Scout';
+      const name = document.getElementById('memberScoutName');
+      if (name) name.textContent = p.name || '-';
+      const branch = document.getElementById('memberScoutBranch');
+      if (branch) branch.textContent = p.branch || '-';
+      const location = document.getElementById('memberScoutLocation');
+      if (location) location.textContent = [p.region || p.city, p.country].filter(Boolean).join(' • ') || '-';
+      const exp = document.getElementById('memberScoutExperience');
+      if (exp) exp.textContent = p.experience ? `${p.experience} Yil Deneyim` : 'Deneyim belirtilmedi';
+      const bio = document.getElementById('memberScoutBio');
+      if (bio) bio.textContent = p.bio || 'Scout biyografisi henuz eklenmemis.';
+    }
+
+    async function loadBackendProfile() {
+      const headers = authHeaders();
+      if (!headers) return null;
+      const res = await fetch(`${getApiBaseUrl()}/staff-profiles/me`, { headers: { 'Accept': 'application/json', 'Authorization': headers.Authorization } });
+      if (!res.ok) return null;
+      const payload = await res.json();
+      const data = payload?.data || {};
+      return {
+        name: data.name || '',
+        experience: data.experience_years || '',
+        branch: data.branch || '',
+        country: data.country || '',
+        city: data.city || '',
+        region: data.region || data.area || '',
+        organization: data.organization || '',
+        network: data.network || '',
+        specialization: data.specialization || data.expertise || '',
+        status: data.status || 'Aktif',
+        phone: data.phone || '',
+        bio: data.bio || '',
+        photo: data.profile_photo_url || '',
+      };
+    }
+
+    async function saveBackendProfile(p) {
+      const headers = authHeaders();
+      if (!headers) return false;
+      const body = {
+        name: p.name,
+        city: p.city,
+        phone: p.phone,
+        role_type: 'scout',
+        organization: p.organization || '',
+        experience_years: Number(p.experience || 0),
+        bio: p.bio,
+        country: p.country,
+        branch: p.branch,
+        region: p.region || '',
+        network: p.network || '',
+        specialization: p.specialization || '',
+        status: p.status || 'Aktif',
         profile_photo_url: p.photo || '',
       };
       const res = await fetch(`${getApiBaseUrl()}/staff-profiles/me`, {

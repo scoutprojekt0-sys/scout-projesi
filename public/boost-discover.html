@@ -93,7 +93,7 @@
 
         .hero {
             position: relative;
-            border-radius: 0 !important;
+            border-radius: 22px;
             padding: 24px;
             margin-bottom: 18px;
             color: #f5fbff;
@@ -136,7 +136,7 @@
             background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
             color: #16325c;
             padding: 10px 16px;
-            border-radius: 0 !important;
+            border-radius: 12px;
             text-decoration: none;
             font-weight: 800;
             font-size: 13px;
@@ -158,7 +158,7 @@
         }
 
         .seo-intro {
-            border-radius: 0 !important;
+            border-radius: 18px;
             padding: 18px 20px;
             margin-bottom: 18px;
             color: #f5fbff;
@@ -183,7 +183,7 @@
         }
 
         .card {
-            border-radius: 0 !important;
+            border-radius: 18px;
             padding: 18px;
             color: #f5fbff;
             transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
@@ -227,14 +227,14 @@
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid #2b4660;
             color: #d6e8f7;
-            border-radius: 0 !important;
+            border-radius: 999px;
             padding: 5px 9px;
             font-size: 12px;
             font-weight: 700;
         }
 
         .empty {
-            border-radius: 0 !important;
+            border-radius: 14px;
             padding: 18px;
             color: #9bb5cb;
             text-align: center;
@@ -248,13 +248,6 @@
 
             .cards {
                 grid-template-columns: 1fr;
-            }
-
-            .hero,
-            .seo-intro,
-            .card,
-            .empty {
-                border-radius: 0 !important;
             }
 
             .hero {
@@ -274,9 +267,43 @@
                 padding: 12px;
             }
         }
+
+        /* Final global-style override (force) */
+        html, body {
+            background:
+                radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+                radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),
+                #08131d !important;
+            color: #f5fbff !important;
+        }
+        .page { max-width: 1320px !important; }
+        .hero,
+        .seo-intro,
+        .card,
+        .empty {
+            border-color: #2b4660 !important;
+            border-radius: 0 !important;
+            background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%) !important;
+            box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34) !important;
+        }
+        .btn {
+            border-radius: 0 !important;
+            border-color: rgba(255, 126, 34, 0.45) !important;
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%) !important;
+            color: #16325c !important;
+        }
+        .tag {
+            border-radius: 0 !important;
+            border-color: #2b4660 !important;
+            background: rgba(255,255,255,.04) !important;
+            color: #dbeafe !important;
+        }
+        .photo,
+        img,
+        .hero-close {
+            border-radius: 0 !important;
+        }
     </style>
-    <link rel="stylesheet" href="assets/css/mobile-unified.css">
-    <link rel="stylesheet" href="assets/css/mobile-polish.css">
 </head>
 <body>
 <main class="page">
@@ -378,7 +405,5 @@
     }
     renderProfiles();
 </script>
-<script src="assets/js/core-stability.js"></script>
-<script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>

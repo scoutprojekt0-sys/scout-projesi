@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scout Public Profil - NextScout</title>
+  <meta name="robots" content="noindex,follow">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{
+      --bg:#08131d;--ink:#f5fbff;--muted:#9bb5cb;--line:#2b4660;--cta:#ff5a1f;--cta-2:#ff7e22;--shadow:0 18px 36px rgba(8,19,29,.34);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--ink);background:
+      radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
+      radial-gradient(circle at 90% 0%, #3d1f2e 0%, transparent 28%),var(--bg);min-height:100vh;background-attachment:fixed}
+    .wrap{max-width:1200px;margin:0 auto;padding:18px 14px 24px}
+    .head{position:relative;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg, rgba(18,41,61,.98) 0%, rgba(15,31,46,.98) 100%);padding:24px;box-shadow:var(--shadow);overflow:hidden}
+    .head::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--cta) 0%,var(--cta-2) 55%,#60a5fa 100%)}
+    .title{margin:0;font-size:32px;font-weight:800}.sub{margin-top:8px;color:var(--muted);font-size:14px}
+    .btn{border:1px solid rgba(255,126,34,.45);background:linear-gradient(180deg, rgba(255,255,255,.95) 0%, rgba(219,234,254,.92) 100%);color:#16325c;padding:7px 12px;border-radius:12px;text-decoration:none;font-weight:800;font-size:12px;display:inline-flex;align-items:center;gap:7px}
+    .data-meta{margin:0 0 12px;font-size:12px;color:#94a3b8;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;padding:8px 10px}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+    .tab{border:1px solid var(--line);background:rgba(255,255,255,.04);color:#e2e8f0;border-radius:6px;padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer}
+    .tab.active{background:linear-gradient(135deg,var(--cta) 0%,var(--cta-2) 100%);border-color:rgba(255,126,34,.6);color:#fff}
+    .panel{display:none}.panel.active{display:block}
+    .layout{display:grid;grid-template-columns:1.2fr 1fr;gap:12px}
+    .card{position:relative;background:linear-gradient(180deg, rgba(18,41,61,.98) 0%, rgba(15,31,46,.98) 100%);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px;overflow:hidden}
+    .card::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--cta) 0%,var(--cta-2) 55%,#60a5fa 100%)}
+    .section-title{margin:0 0 10px 0;font-size:16px;font-weight:800}
+    .hero{display:flex;align-items:center;gap:10px;padding-bottom:10px;margin-bottom:6px;border-bottom:1px solid #334155}
+    .avatar{width:56px;height:56px;border-radius:14px;object-fit:cover;border:1px solid var(--line);background:linear-gradient(135deg,#1e40af 0%,#0ea5e9 100%)}
+    .hero-name{font-size:16px;font-weight:800;color:#f5fbff}.hero-role{font-size:12px;color:#93c5fd;font-weight:700}
+    .row{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #334155;font-size:13px}.row:last-child{border-bottom:0}
+    .row strong{display:inline-flex;align-items:center;min-height:28px;padding:0 10px;border:1px solid rgba(96,165,250,.22);background:rgba(255,255,255,.05);border-radius:6px}
+    .muted{color:var(--muted)}.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{border:1px solid var(--line);border-radius:6px;padding:6px 10px;font-size:12px;color:#dbeafe;background:rgba(255,255,255,.04)}
+    .bio{margin:0;color:#dbeafe;font-size:13px;line-height:1.65}
+    .review-list{display:grid;gap:14px}.review-item{padding:14px;border:1px solid rgba(96,165,250,.14);border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(15,23,42,.18) 100%)}
+    .review-meta{font-size:12px;color:var(--muted);margin-bottom:6px}
+    @media (max-width:900px){.layout{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <h1 class="title">Scout Public Profili</h1>
+        <div class="sub">Uyelere acik scout gorunumu.</div>
+      </div>
+      <a class="btn" href="professional-players.html"><i class="fas fa-arrow-left"></i><span>Geri</span></a>
+    </div>
+
+    <div class="data-meta" id="metaLine">Kaynak: Scout Public Profili • Son guncelleme: -</div>
+
+    <div class="tabs" id="tabs">
+      <button class="tab active" type="button" data-tab="overview">Genel</button>
+      <button class="tab" type="button" data-tab="reviews">Yorumlar</button>
+    </div>
+
+    <section class="panel active" data-panel="overview">
+      <div class="layout">
+        <div class="card">
+          <h2 class="section-title">Profil</h2>
+          <div class="hero">
+            <img id="avatar" class="avatar" alt="Scout Profil">
+            <div>
+              <div class="hero-name" id="name">-</div>
+              <div class="hero-role">Scout</div>
+            </div>
+          </div>
+          <div class="row"><span class="muted">Brans</span><strong id="branch">-</strong></div>
+          <div class="row"><span class="muted">Profil</span><strong id="profileType">Gozlem</strong></div>
+          <div class="row"><span class="muted">Organizasyon</span><strong id="organization">-</strong></div>
+          <div class="row"><span class="muted">Bolge</span><strong id="region">-</strong></div>
+          <div class="row"><span class="muted">Ag</span><strong id="network">-</strong></div>
+          <div class="row"><span class="muted">Uzmanlik</span><strong id="specialization">-</strong></div>
+          <div class="row"><span class="muted">Durum</span><strong id="status">Aktif</strong></div>
+          <div class="row"><span class="muted">Ulke</span><strong id="country">-</strong></div>
+          <div class="row"><span class="muted">Sehir</span><strong id="city">-</strong></div>
+          <div class="row"><span class="muted">Deneyim</span><strong id="experience">-</strong></div>
+        </div>
+        <div class="card">
+          <h2 class="section-title">Kisa Tanitim</h2>
+          <p class="bio" id="bio">-</p>
+          <h2 class="section-title" style="margin-top:14px;">Etiketler</h2>
+          <div class="chips" id="chips"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" data-panel="reviews">
+      <div class="card">
+        <h2 class="section-title">Profil Yorumlari</h2>
+        <div class="review-list" id="reviewList"><div class="review-item">Yorumlar yukleniyor...</div></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function getApiBaseUrl(){const p=new URLSearchParams(window.location.search);const q=(p.get('api_base')||'').trim();if(q)return q.replace(/\/$/,'');if(window.location.protocol==='file:')return 'http://127.0.0.1:8000/api';return '/api';}
+    function getToken(){return (localStorage.getItem('nextscout_token')||'').trim();}
+    function authHeaders(){const t=getToken();if(!t)return {Accept:'application/json'};return {Accept:'application/json',Authorization:`Bearer ${t}`};}
+    function esc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+    function getTargetId(){const p=new URLSearchParams(window.location.search);return String(p.get('user_id')||'').trim();}
+    function bindTabs(){const tabs=Array.from(document.querySelectorAll('.tab'));const panels=Array.from(document.querySelectorAll('.panel'));tabs.forEach((tab)=>tab.addEventListener('click',()=>{const key=tab.dataset.tab||'overview';tabs.forEach((t)=>t.classList.toggle('active',t===tab));panels.forEach((x)=>x.classList.toggle('active',x.dataset.panel===key));}));}
+    function render(profile){
+      document.getElementById('name').textContent = profile.name || '-';
+      document.getElementById('branch').textContent = profile.branch || '-';
+      document.getElementById('profileType').textContent = 'Gozlem';
+      document.getElementById('organization').textContent = profile.organization || '-';
+      document.getElementById('region').textContent = profile.region || '-';
+      document.getElementById('network').textContent = profile.network || '-';
+      document.getElementById('specialization').textContent = profile.specialization || '-';
+      document.getElementById('status').textContent = profile.status || 'Aktif';
+      document.getElementById('country').textContent = profile.country || '-';
+      document.getElementById('city').textContent = profile.city || '-';
+      document.getElementById('experience').textContent = profile.experience ? `${profile.experience} Yil` : '-';
+      document.getElementById('bio').textContent = profile.bio || 'Scout tanitimi henuz eklenmemis.';
+      document.getElementById('avatar').src = profile.photo || 'https://via.placeholder.com/120x120?text=Scout';
+      document.getElementById('metaLine').textContent = `Kaynak: Scout Public Profili • Son guncelleme: ${new Date().toLocaleString('tr-TR')}`;
+      const chips = [profile.branch, profile.organization, profile.specialization, profile.region || profile.city, profile.country].filter(Boolean);
+      document.getElementById('chips').innerHTML = chips.length ? chips.map((c)=>`<span class="chip">${esc(c)}</span>`).join('') : '<span class="chip">Profil Etiketi Yok</span>';
+    }
+    async function loadProfile(id){
+      const api = getApiBaseUrl();
+      const headers = authHeaders();
+      const tryUrls = [`${api}/staff-profiles/${encodeURIComponent(id)}`, `${api}/profiles/${encodeURIComponent(id)}`];
+      for (const url of tryUrls){
+        try{
+          const res = await fetch(url, { headers });
+          if (!res.ok) continue;
+          const payload = await res.json().catch(()=>null);
+          const row = payload?.data || {};
+          if (Object.keys(row).length){
+            return {
+              name: row.name || row.full_name || '-',
+              branch: row.branch || '-',
+              organization: row.organization || '',
+              region: row.region || row.area || '',
+              network: row.network || '',
+              specialization: row.specialization || row.expertise || row.organization || '',
+              status: row.status || 'Aktif',
+              country: row.country || '-',
+              city: row.city || '-',
+              experience: row.experience_years || row.experience || '',
+              bio: row.bio || '',
+              photo: row.profile_photo_url || row.photo_url || '',
+            };
+          }
+        } catch (e) {}
+      }
+      return null;
+    }
+    async function loadReviews(id){
+      const root = document.getElementById('reviewList');
+      if (!id || !root) return;
+      try{
+        const res = await fetch(`${getApiBaseUrl()}/profiles/${encodeURIComponent(id)}/reviews`, { headers: { Accept:'application/json' } });
+        const payload = await res.json().catch(()=>null);
+        const rows = Array.isArray(payload?.data?.data) ? payload.data.data : Array.isArray(payload?.data) ? payload.data : [];
+        if (!rows.length){ root.innerHTML = '<div class="review-item">Henuz yorum yok.</div>'; return; }
+        root.innerHTML = rows.map((row)=>`<div class="review-item"><div class="review-meta">${esc(row?.author_name || 'Uye')} • ${esc(row?.sentiment || '-')}</div><div>${esc(row?.body || '')}</div></div>`).join('');
+      } catch (e) {
+        root.innerHTML = '<div class="review-item">Yorumlar su an alinamiyor.</div>';
+      }
+    }
+    async function init(){
+      bindTabs();
+      const id = getTargetId();
+      if (!id){ document.getElementById('name').textContent = 'Profil bulunamadi'; return; }
+      const profile = await loadProfile(id);
+      if (profile) render(profile);
+      else document.getElementById('name').textContent = 'Profil yuklenemedi';
+      loadReviews(id);
+    }
+    init();
+  </script>
+</body>
+</html>

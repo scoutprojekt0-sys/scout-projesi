@@ -101,6 +101,13 @@
     .chip{
       border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:12px;color:#dbeafe;background:rgba(255,255,255,.04);
     }
+    .media-toolbar{display:grid;grid-template-columns:1.4fr .7fr auto;gap:8px;margin-bottom:10px}
+    .media-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .media-card{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03);overflow:hidden}
+    .media-card img,.media-card video{width:100%;height:150px;object-fit:cover;display:block;background:#0b1725}
+    .media-card-body{padding:8px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .media-card-type{font-size:11px;color:#dbeafe;font-weight:700}
+    .media-empty{border:1px dashed var(--line);border-radius:12px;padding:14px;text-align:center;color:var(--muted);font-size:12px}
     .act{display:flex;gap:8px;margin-top:12px}
     .summary-row{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #334155;font-size:13px}
     .summary-row:last-child{border-bottom:0}
@@ -201,6 +208,8 @@
       .review-form-grid{grid-template-columns:1fr}
       .review-summary-grid{grid-template-columns:1fr}
       .workspace-metrics{grid-template-columns:1fr}
+      .media-toolbar{grid-template-columns:1fr}
+      .media-list{grid-template-columns:1fr}
     }
     @media (max-width:768px){
       .wrap{padding:10px 10px 18px}
@@ -455,6 +464,7 @@
       <button class="profile-tab" type="button" data-tab="finance">Finans</button>
       <button class="profile-tab" type="button" data-tab="recruitment">Kadro/İhtiyaç</button>
       <button class="profile-tab" type="button" data-tab="plan">Transfer Plani</button>
+      <button class="profile-tab" type="button" data-tab="media">Medya</button>
     </div>
 
     <section class="tab-panel active" data-tab-panel="overview">
@@ -546,6 +556,11 @@
           <div class="field full">
             <label class="label" for="facilities">Tesisler</label>
             <textarea class="textarea" id="facilities" name="facilities" placeholder="Antrenman sahasi, analiz odasi, rehabilitasyon merkezi..."></textarea>
+          </div>
+
+          <div class="field full">
+            <label class="label" for="clubLogoUrl">Kulup Armasi (Logo URL)</label>
+            <input class="input" id="clubLogoUrl" name="clubLogoUrl" type="url" placeholder="https://.../logo.png">
           </div>
 
           <div class="field full">
@@ -652,6 +667,25 @@
         </table>
       </div>
     </section>
+
+    <section class="tab-panel" data-tab-panel="media">
+      <div class="card">
+        <h2 class="section-title">Kulup Medya</h2>
+        <div class="media-toolbar">
+          <input class="input" id="clubMediaUrl" type="url" placeholder="https://... (resim/video linki)">
+          <select class="select" id="clubMediaType">
+            <option value="image">Resim</option>
+            <option value="video">Video</option>
+          </select>
+          <button class="btn btn-primary" type="button" id="clubMediaAddBtn"><i class="fas fa-plus"></i><span>Ekle</span></button>
+        </div>
+        <div class="field full" style="margin-bottom:10px;">
+          <label class="label" for="clubMediaUpload">Dosya Yukle (Resim/Video)</label>
+          <input class="input" id="clubMediaUpload" type="file" accept="image/*,video/*" multiple>
+        </div>
+        <div class="media-list" id="clubMediaList"></div>
+      </div>
+    </section>
   </div>
 
   <script src="assets/js/site-core.js"></script>
@@ -667,6 +701,7 @@
     let currentUserRole = '';
     let viewedTeamId = null;
     let isProfileReadOnly = false;
+    let clubMediaState = [];
 
     function resolveCurrentRole(user) {
       return String(
@@ -710,6 +745,13 @@
         });
       }
       if (actions) actions.style.display = readOnly ? 'none' : '';
+      ['clubMediaUrl', 'clubMediaType', 'clubMediaUpload', 'clubMediaAddBtn'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.disabled = !!readOnly;
+      });
+      document.querySelectorAll('[data-media-remove]').forEach((btn) => {
+        btn.disabled = !!readOnly;
+      });
       const saveMsg = document.getElementById('saveMsg');
       if (saveMsg) {
         saveMsg.textContent = readOnly ? 'Bu profil salt okunur gorunumde acildi.' : '';
@@ -1192,6 +1234,8 @@ await clubApiPost('/staff/player-clips', {
         preferredSystem: 'gegenpressing',
         facilityLevel: 'Gelismis',
         facilities: '2 antrenman sahasi, performans laboratuvari, video analiz odasi',
+        logoUrl: '',
+        mediaAssets: [],
         notes: '22-27 yas bandinda oyuncu onceligi.',
       };
     }
@@ -1208,6 +1252,24 @@ await clubApiPost('/staff/player-clips', {
     function squadNeedsText(value) {
       const needs = normalizeSquadNeeds(value);
       return needs.length ? needs.join(', ') : '-';
+    }
+
+    function normalizeMediaAssets(value, mediaImages, mediaVideos) {
+      const list = Array.isArray(value) ? value : [];
+      const normalized = list
+        .filter((item) => item && typeof item === 'object')
+        .map((item) => ({
+          type: String(item.type || 'image').toLowerCase() === 'video' ? 'video' : 'image',
+          src: String(item.src || '').trim(),
+        }))
+        .filter((item) => item.src);
+      if (normalized.length) return normalized;
+
+      const toArray = (v) => Array.isArray(v) ? v : typeof v === 'string' ? v.split(',').map((x) => x.trim()).filter(Boolean) : [];
+      return [
+        ...toArray(mediaImages).map((src) => ({ type: 'image', src })),
+        ...toArray(mediaVideos).map((src) => ({ type: 'video', src })),
+      ];
     }
 
     function ensureClubProfileSelectOptions() {
@@ -1290,6 +1352,10 @@ await clubApiPost('/staff/player-clips', {
         preferredSystem: profile.preferredSystem || '',
         facilityLevel: profile.facilityLevel || '',
         facilities: profile.facilities || '',
+        logoUrl: profile.logoUrl || '',
+        mediaAssets: normalizeMediaAssets(profile.mediaAssets, profile.mediaImages, profile.mediaVideos),
+        mediaImages: normalizeMediaAssets(profile.mediaAssets, profile.mediaImages, profile.mediaVideos).filter((item) => item.type === 'image').map((item) => item.src),
+        mediaVideos: normalizeMediaAssets(profile.mediaAssets, profile.mediaImages, profile.mediaVideos).filter((item) => item.type === 'video').map((item) => item.src),
         notes: profile.notes || '',
       });
     }
@@ -1300,7 +1366,9 @@ await clubApiPost('/staff/player-clips', {
         clubName: team?.team_name || user?.name || parsedNeeds.clubName,
         city: team?.team_city || user?.user_city || user?.city || parsedNeeds.city,
       });
+      merged.logoUrl = team?.logo_url || team?.team_logo || team?.profile_photo_url || merged.logoUrl || '';
       merged.squadNeed = normalizeSquadNeeds(merged.squadNeeds || merged.squadNeed);
+      merged.mediaAssets = normalizeMediaAssets(merged.mediaAssets, merged.mediaImages, merged.mediaVideos);
       return merged;
     }
 
@@ -1320,7 +1388,10 @@ await clubApiPost('/staff/player-clips', {
       document.getElementById('preferredSystem').value = profile.preferredSystem || '';
       document.getElementById('facilityLevel').value = profile.facilityLevel || '';
       document.getElementById('facilities').value = profile.facilities || '';
+      document.getElementById('clubLogoUrl').value = profile.logoUrl || '';
       document.getElementById('notes').value = profile.notes || '';
+      clubMediaState = normalizeMediaAssets(profile.mediaAssets, profile.mediaImages, profile.mediaVideos);
+      renderClubMedia();
     }
 
     function readForm() {
@@ -1338,8 +1409,84 @@ await clubApiPost('/staff/player-clips', {
         preferredSystem: document.getElementById('preferredSystem').value,
         facilityLevel: document.getElementById('facilityLevel').value,
         facilities: document.getElementById('facilities').value.trim(),
+        logoUrl: document.getElementById('clubLogoUrl').value.trim(),
+        mediaAssets: clubMediaState.slice(),
         notes: document.getElementById('notes').value.trim(),
       };
+    }
+
+    function renderClubMedia() {
+      const root = document.getElementById('clubMediaList');
+      if (!root) return;
+      if (!clubMediaState.length) {
+        root.innerHTML = '<div class="media-empty">Henuz medya eklenmedi.</div>';
+        return;
+      }
+      root.innerHTML = clubMediaState.map((item, index) => {
+        if (item.type === 'video') {
+          return `
+            <div class="media-card">
+              <video src="${esc(item.src)}" controls preload="metadata"></video>
+              <div class="media-card-body">
+                <span class="media-card-type">Video</span>
+                <button class="btn" type="button" data-media-remove="${index}"><i class="fas fa-trash"></i><span>Sil</span></button>
+              </div>
+            </div>`;
+        }
+        return `
+          <div class="media-card">
+            <img src="${esc(item.src)}" alt="Kulup Medya">
+            <div class="media-card-body">
+              <span class="media-card-type">Resim</span>
+              <button class="btn" type="button" data-media-remove="${index}"><i class="fas fa-trash"></i><span>Sil</span></button>
+            </div>
+          </div>`;
+      }).join('');
+      if (isProfileReadOnly) {
+        document.querySelectorAll('[data-media-remove]').forEach((btn) => { btn.disabled = true; });
+      }
+    }
+
+    function bindClubMedia() {
+      document.getElementById('clubMediaAddBtn')?.addEventListener('click', () => {
+        if (isProfileReadOnly) return;
+        const urlInput = document.getElementById('clubMediaUrl');
+        const typeInput = document.getElementById('clubMediaType');
+        const src = String(urlInput?.value || '').trim();
+        const type = String(typeInput?.value || 'image').toLowerCase() === 'video' ? 'video' : 'image';
+        if (!src) return;
+        clubMediaState.unshift({ type, src });
+        if (urlInput) urlInput.value = '';
+        renderClubMedia();
+      });
+
+      document.getElementById('clubMediaUpload')?.addEventListener('change', (event) => {
+        if (isProfileReadOnly) return;
+        const files = Array.from(event.target?.files || []);
+        if (!files.length) return;
+        files.forEach((file) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const src = String(e?.target?.result || '').trim();
+            if (!src) return;
+            const type = String(file.type || '').startsWith('video/') ? 'video' : 'image';
+            clubMediaState.unshift({ type, src });
+            renderClubMedia();
+          };
+          reader.readAsDataURL(file);
+        });
+        event.target.value = '';
+      });
+
+      document.getElementById('clubMediaList')?.addEventListener('click', (event) => {
+        if (isProfileReadOnly) return;
+        const btn = event.target.closest('[data-media-remove]');
+        if (!btn) return;
+        const index = Number(btn.getAttribute('data-media-remove'));
+        if (!Number.isFinite(index)) return;
+        clubMediaState.splice(index, 1);
+        renderClubMedia();
+      });
     }
 
     function renderSummary(profile) {
@@ -1476,6 +1623,8 @@ await clubApiPost('/staff/player-clips', {
         city: profile.city,
         team_name: profile.clubName,
         team_city: profile.city,
+        logo_url: profile.logoUrl || '',
+        team_logo: profile.logoUrl || '',
         league_level: profile.facilityLevel || '',
         needs_text: buildNeedsText(profile),
       };
@@ -1490,6 +1639,7 @@ await clubApiPost('/staff/player-clips', {
     function bind() {
       const form = document.getElementById('clubForm');
       const saveMsg = document.getElementById('saveMsg');
+      bindClubMedia();
 
       document.getElementById('clubWorkspaceNoteSubmit')?.addEventListener('click', submitClubWorkspaceNote);
       document.getElementById('clubWorkspaceClipSubmit')?.addEventListener('click', submitClubWorkspaceClip);
@@ -1586,8 +1736,8 @@ await clubApiPost('/staff/player-clips', {
       if (publicBtn) {
         const publicTargetId = String(ownUserId || currentUserId || viewedTeamId || '').trim();
         publicBtn.href = publicTargetId
-          ? `club-profile.html?user_id=${encodeURIComponent(publicTargetId)}`
-          : 'club-profile.html';
+          ? `club-public-profile.html?user_id=${encodeURIComponent(publicTargetId)}`
+          : 'club-public-profile.html';
         publicBtn.style.display = 'inline-flex';
       }
       bindTabs();

@@ -379,13 +379,6 @@
 
   <main class="page">
     <section class="profile-shell">
-      <div class="floating-actions">
-        <button id="btnEditProfile" class="fbtn primary">Profili Duzenle</button>
-        <button id="btnShareProfile" class="fbtn">Paylas</button>
-        <button id="btnPrintProfile" class="fbtn">PDF Al</button>
-        <button id="btnSendScout" class="fbtn">Scouta Gonder</button>
-      </div>
-
       <div class="header-grid">
         <div class="avatar-box">
           <div class="avatar" id="playerInitials">AD</div>
@@ -770,28 +763,6 @@
         btn.addEventListener("click", function () {
           activate(btn.getAttribute("data-tab"));
         });
-      });
-
-      document.getElementById("btnEditProfile").addEventListener("click", function () {
-        window.location.href = "profile-edit.html";
-      });
-      document.getElementById("btnPrintProfile").addEventListener("click", function () {
-        window.print();
-      });
-      document.getElementById("btnShareProfile").addEventListener("click", async function () {
-        var url = window.location.href;
-        if (navigator.share) {
-          try { await navigator.share({ title: "Oyuncu Profili", url: url }); return; } catch (e) {}
-        }
-        try {
-          await navigator.clipboard.writeText(url);
-          alert("Profil linki kopyalandi.");
-        } catch (e) {
-          alert(url);
-        }
-      });
-      document.getElementById("btnSendScout").addEventListener("click", function () {
-        window.location.href = "notifications.html?compose=1&subject=Oyuncu%20Profili%20Paylasimi";
       });
 
       try {

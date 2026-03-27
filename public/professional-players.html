@@ -321,6 +321,27 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px;
     }
+    .sponsored-footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+    .sponsored-more-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 34px;
+      padding: 7px 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 126, 34, 0.45);
+      background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(219,234,254,0.92) 100%);
+      color: #16325c;
+      font-size: 12px;
+      font-weight: 800;
+      text-decoration: none;
+      box-shadow: 0 12px 24px rgba(8, 19, 29, 0.24);
+    }
 
     .sponsored-card {
       border: 1px solid rgba(96,165,250,.24);
@@ -703,6 +724,51 @@
       border-radius: 12px;
       padding: 14px;
       color: #f5fbff;
+    }
+    .contact-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      background: rgba(2, 6, 23, 0.6);
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+    .contact-modal.show { display: flex; }
+    .contact-card {
+      width: min(760px, 100%);
+      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+      border: 1px solid #2b4660;
+      border-radius: 12px;
+      padding: 14px;
+      color: #f5fbff;
+    }
+    .contact-form {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      border: 1px solid rgba(96,165,250,.22);
+      border-radius: 10px;
+      padding: 9px 10px;
+      font-size: 13px;
+      color: #f5fbff;
+      background: rgba(255,255,255,.04);
+    }
+    .contact-form textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+    .contact-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 2px;
+      flex-wrap: wrap;
     }
 
     .compare-table {
@@ -1343,6 +1409,11 @@
     .global-profile-card {
       min-height: 100%;
     }
+    .global-profile-card.role-coach {
+      width: 100% !important;
+      max-width: none !important;
+      min-width: 0 !important;
+    }
 
     .global-profile-card .player-avatar {
       background:
@@ -1391,7 +1462,9 @@
     }
 
     .global-profile-card .player-actions {
+      display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: stretch;
     }
 
     .global-profile-card .player-content {
@@ -1401,11 +1474,45 @@
     .global-profile-card .player-kpi-grid {
       gap: 10px;
     }
+    .global-profile-card .player-kpi {
+      border-radius: 6px !important;
+      padding: 7px 9px !important;
+      min-height: 40px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2px;
+    }
+    .global-profile-card .player-kpi-label {
+      font-size: 10px;
+      margin-bottom: 0;
+      line-height: 1.1;
+    }
 
     .global-profile-card .player-kpi-value {
-      font-size: 18px;
-      line-height: 1.2;
+      font-size: 12px;
+      line-height: 1.1;
+      white-space: normal !important;
+      overflow-wrap: anywhere;
       word-break: break-word;
+      word-break: break-word;
+    }
+    .global-profile-card.role-scout .player-kpi-label {
+      font-size: 9px;
+      letter-spacing: 0.04em;
+      line-height: 1.15;
+      white-space: normal !important;
+      word-break: break-word;
+      text-transform: none;
+      margin-bottom: 3px;
+    }
+    .global-profile-card.role-scout .player-kpi-value {
+      min-width: 0;
+      white-space: normal !important;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      line-height: 1.1;
     }
 
     .global-profile-card .player-info {
@@ -1420,6 +1527,23 @@
 
     .global-profile-card .info-value {
       word-break: break-word;
+    }
+    .global-profile-card .player-info .info-item {
+      min-height: 40px !important;
+      padding: 7px 9px !important;
+      border-radius: 6px !important;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2px;
+    }
+    .global-profile-card .player-info .info-label {
+      font-size: 10px;
+      line-height: 1.1;
+    }
+    .global-profile-card .player-info .info-value {
+      font-size: 12px !important;
+      line-height: 1.1;
     }
 
     .global-profile-card .global-result-role {
@@ -1440,7 +1564,25 @@
       font-weight: 800;
       font-size: 13px;
       letter-spacing: 0.01em;
+      white-space: normal !important;
+      line-height: 1.2;
+      text-align: center;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      hyphens: auto;
       transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+    .global-profile-card.role-coach .player-actions {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      width: 100%;
+    }
+    .global-profile-card.role-coach .player-actions a {
+      font-size: 12px;
+      padding: 11px 8px;
+    }
+    .global-profile-card.role-coach .player-actions a:last-child {
+      grid-column: 1 / -1;
     }
 
     .global-profile-card .player-actions a:hover {
@@ -2019,18 +2161,151 @@
         }
       }
     </style>
+    <style>
+      /* Kare filtre görünümü (Brans/Pozisyon/Lig/Yas/Rating/Piyasa/Sozlesme/Guven/AI/Siralama + Preset butonlari) */
+      .filters .filter input,
+      .filters .filter select,
+      .filters .filter-tools button,
+      #savePresetBtn,
+      #loadPresetBtn,
+      #resetFilterBtn {
+        border-radius: 4px !important;
+      }
+      .filters .filter-tools {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        gap: 8px !important;
+      }
+      .filters .filter-tools button {
+        flex: 1 1 auto;
+      }
+      .compare-bar {
+        border-radius: 4px !important;
+      }
+      .compare-list,
+      .compare-chip,
+      #openCompareBtn {
+        border-radius: 4px !important;
+      }
+      #prevPageBtn,
+      #nextPageBtn {
+        width: 40px !important;
+        min-width: 40px !important;
+        height: 40px !important;
+        padding: 0 !important;
+        border-radius: 4px !important;
+        font-size: 18px !important;
+        line-height: 1 !important;
+      }
+      .topbar,
+      .seo-market-intro {
+        display: none !important;
+      }
+      .hero {
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin-bottom: 10px !important;
+      }
+      .hero-copy {
+        display: none !important;
+      }
+      .hero-actions {
+        display: flex !important;
+        position: fixed !important;
+        top: 12px;
+        right: 12px;
+        z-index: 1201;
+      }
+      .hero-actions a:not(.quick-close-btn),
+      .hero-actions .btn:not(.quick-close-btn) {
+        display: none !important;
+      }
+      .quick-close-btn {
+        display: inline-flex !important;
+        min-width: 40px;
+        min-height: 40px;
+        padding: 8px !important;
+        border-radius: 6px !important;
+      }
+      .quick-close-btn span {
+        display: none !important;
+      }
+      .quick-title-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 100%;
+        gap: 12px;
+        padding: 10px 12px 10px 12px;
+        border: 1px solid #2b4660;
+        background: linear-gradient(180deg, rgba(18, 41, 61, 0.98), rgba(15, 31, 46, 0.98));
+        box-shadow: 0 18px 36px rgba(8, 19, 29, 0.34);
+        border-radius: 4px;
+        color: #f8fbff;
+        font-size: 16px;
+        font-weight: 900;
+        min-height: 46px;
+        position: relative;
+        overflow: hidden;
+      }
+      .quick-title-box::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ff5a1f 0%, #ff7e22 55%, #60a5fa 100%);
+        z-index: 0;
+      }
+      .quick-title-box .quick-title-text {
+        letter-spacing: .01em;
+        position: relative;
+        z-index: 1;
+      }
+      .quick-title-box .quick-close-btn {
+        position: relative;
+        z-index: 1;
+      }
+      body.quick-discovery-mode {
+        padding: 16px !important;
+      }
+      body.quick-discovery-mode .market-wrapper {
+        max-width: 1320px !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+      }
+      body.quick-discovery-mode .container {
+        max-width: 1200px !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+      }
+      body.quick-discovery-mode .hero-actions {
+        position: static !important;
+        top: auto !important;
+        right: auto !important;
+        left: auto !important;
+        transform: none !important;
+        width: 100%;
+        z-index: 1;
+      }
+      body.quick-discovery-mode .hero {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 0 14px 0 !important;
+        padding: 0 !important;
+      }
+      body.quick-discovery-mode .hero::before {
+        content: none !important;
+        display: none !important;
+        height: 0 !important;
+      }
+    </style>
 </head>
 <body>
-<header class="topbar">
-    <a class="brand" href="./index.html">NextScout</a>
-    <div class="top-actions">
-        <a class="home-btn-global" href="./index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #ff7e22;background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;box-shadow:0 16px 28px rgba(255,90,31,0.28);">Ana Sayfa</a>
-    </div>
-</header>
-<section class="seo-market-intro" aria-label="Oyuncu havuzu aciklama">
-  <h2>Yapay zeka destekli scout arama ve oyuncu kesfi</h2>
-        <p>NextScout oyuncu havuzu; pozisyon, yas, form, lig seviyesi ve performans odakli filtrelerle profesyonel futbolculari daha hizli kesfetmek icin hazirlandi. Scout ekipleri, kulup yoneticileri ve menajerler aradiklari oyuncu profiline gore listeleme yapabilir, transfer odakli oyuncu takibini tek merkezden yurutebilir.</p>
-</section>
 <div class="market-wrapper">
     <aside class="market-ad-panel">
       <div class="market-ad-content">
@@ -2139,11 +2414,9 @@
         <div class="sponsored-sub">Sponsorlu vitrin profilleri</div>
       </div>
       <div class="sponsored-list" id="sponsoredList">
-        <article class="sponsored-card">
-                <div class="sponsored-card-name">Vitrin yukleniyor...</div>
-                <div class="sponsored-card-line">Ucretli tanitim kartlari getiriliyor.</div>
-          <span class="sponsored-tag">Sponsorlu</span>
-        </article>
+      </div>
+      <div class="sponsored-footer">
+        <a class="sponsored-more-btn" href="boost-discover.html">Tumunu Gor <i class="fas fa-arrow-right"></i></a>
       </div>
     </section>
 
@@ -2259,9 +2532,9 @@
 
     <!-- Pagination -->
     <div class="pagination" id="pagination">
-      <button id="prevPageBtn" type="button">Onceki</button>
+      <button id="prevPageBtn" type="button">&lt;</button>
       <div id="pageNumbers"></div>
-      <button id="nextPageBtn" type="button">Sonraki</button>
+      <button id="nextPageBtn" type="button">&gt;</button>
     </div>
 
     </div>
@@ -2281,6 +2554,24 @@
         <button class="btn" type="button" onclick="closeCompareModal()">Kapat</button>
       </div>
       <div id="compareContent">Oyuncu seciniz.</div>
+    </div>
+  </div>
+  <div class="contact-modal" id="contactModal" onclick="if(event.target===this) closeContactModal()">
+    <div class="contact-card" onclick="event.stopPropagation()">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+        <strong style="font-size:16px;color:#1e3a8a;">Iletisime Gec</strong>
+        <button class="btn" type="button" onclick="closeContactModal()">Kapat</button>
+      </div>
+      <form class="contact-form" id="contactForm">
+        <input type="text" id="contactTargetName" placeholder="Alici" readonly>
+        <input type="text" id="contactSubject" placeholder="Konu" value="Profil hakkinda gorusme">
+        <textarea id="contactMessage" placeholder="Mesajini yaz...">Merhaba, profilinizi inceledim. Uygunsaniz kisa bir gorusme yapalim.</textarea>
+        <div id="contactNotice" style="font-size:12px;color:#9bb5cb;">Mesaj bu pencereden direkt gonderilir.</div>
+        <div class="contact-actions">
+          <button class="btn" type="button" onclick="closeContactModal()">Vazgec</button>
+          <button class="btn btn-primary" type="submit">Mesaj Gonder</button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -2339,6 +2630,12 @@
     const compareModal = document.getElementById("compareModal");
     const compareContent = document.getElementById("compareContent");
     const openCompareBtn = document.getElementById("openCompareBtn");
+    const contactModal = document.getElementById("contactModal");
+    const contactForm = document.getElementById("contactForm");
+    const contactTargetName = document.getElementById("contactTargetName");
+    const contactSubject = document.getElementById("contactSubject");
+    const contactMessage = document.getElementById("contactMessage");
+    const contactNotice = document.getElementById("contactNotice");
     const prevPageBtn = document.getElementById("prevPageBtn");
     const nextPageBtn = document.getElementById("nextPageBtn");
     const pageNumbers = document.getElementById("pageNumbers");
@@ -2365,6 +2662,7 @@
       ]
     };
     let compareIds = [];
+    let pendingContact = { id: 0, name: "" };
     let serverPage = 1;
     let serverLastPage = 1;
     let serverTotal = 0;
@@ -2533,13 +2831,7 @@
     function renderSponsoredProfiles(rows) {
       if (!sponsoredList) return;
       if (!Array.isArray(rows) || !rows.length) {
-        sponsoredList.innerHTML = `
-          <article class="sponsored-card">
-            <div class="sponsored-card-name">Sponsorlu profil yok</div>
-                    <div class="sponsored-card-line">Henuz ucretli vitrin kaydi bulunmuyor.</div>
-            <span class="sponsored-tag">Bos</span>
-          </article>
-        `;
+        sponsoredList.innerHTML = "";
         return;
       }
 
@@ -2802,10 +3094,10 @@
       const role = String(item?.role || "").toLowerCase();
       const id = Number(item?.id || 0);
       if (!id) return "#";
-      if (role === "team" || role === "club") return `club-profile.html?user_id=${encodeURIComponent(id)}`;
-      if (role === "scout") return `scout-profile.html?user_id=${encodeURIComponent(id)}`;
-      if (role === "manager") return `manager-profile.html?user_id=${encodeURIComponent(id)}`;
-      if (role === "coach") return `coach-profile.html?user_id=${encodeURIComponent(id)}`;
+      if (role === "team" || role === "club") return `club-public-profile.html?user_id=${encodeURIComponent(id)}`;
+      if (role === "scout") return `scout-public-profile.html?user_id=${encodeURIComponent(id)}`;
+      if (role === "manager") return `manager-public-profile.html?user_id=${encodeURIComponent(id)}`;
+      if (role === "coach") return `coach-public-profile.html?user_id=${encodeURIComponent(id)}`;
       if (role === "lawyer") return `lawyer-profile.html?user_id=${encodeURIComponent(id)}`;
       return `player-profile.html?user_id=${encodeURIComponent(id)}`;
     }
@@ -2898,11 +3190,11 @@
               <div class="player-info">
                 <div class="info-item">
                   <span class="info-label">Bolge</span>
-                  <span class="info-value" style="font-size:12px;">${esc(item?.city || "-")}</span>
+                  <span class="info-value" style="font-size:12px;">${esc(item?.region || item?.city || "-")}</span>
                 </div>
                 <div class="info-item">
                   <span class="info-label">Ag</span>
-                  <span class="info-value" style="font-size:12px;">${esc(item?.organization || item?.subtitle || "-")}</span>
+                  <span class="info-value" style="font-size:12px;">${esc(item?.network || item?.organization || item?.subtitle || "-")}</span>
                 </div>
                 <div class="info-item">
                   <span class="info-label">Uzmanlik</span>
@@ -2976,6 +3268,7 @@
                 <a class="global-card-primary" href="${href}">Profili Ac</a>
                 <a class="global-card-secondary" href="#" onclick="event.preventDefault(); globalAddToFavorites(${Number(item?.id || 0)}, '${esc(String(item?.name || "Antrenor")).replace(/'/g, "\\'")}');">Favoriye Ekle</a>
                 <a class="global-card-secondary" href="#" onclick="event.preventDefault(); globalContact(${Number(item?.id || 0)}, '${esc(String(item?.name || "Antrenor")).replace(/'/g, "\\'")}');">Iletisime Gec</a>
+                <a class="global-card-secondary" href="professional-players.html?q=${encodeURIComponent(String(item?.name || ''))}&role=coach">Karsilastir</a>
               </div>
             </div>
           </article>
@@ -3014,11 +3307,11 @@
               <div class="player-info">
                 <div class="info-item">
                   <span class="info-label">Bolge</span>
-                  <span class="info-value" style="font-size:12px;">${esc(item?.city || "-")}</span>
+                  <span class="info-value" style="font-size:12px;">${esc(item?.region || item?.city || "-")}</span>
                 </div>
                 <div class="info-item">
                   <span class="info-label">Ajans</span>
-                  <span class="info-value" style="font-size:12px;">${esc(item?.organization || item?.subtitle || "-")}</span>
+                  <span class="info-value" style="font-size:12px;">${esc(item?.organization || item?.agency || item?.subtitle || "-")}</span>
                 </div>
                 <div class="info-item">
                   <span class="info-label">Uzmanlik</span>
@@ -3026,7 +3319,7 @@
                 </div>
                 <div class="info-item">
                   <span class="info-label">Durum</span>
-                  <span class="info-value" style="font-size:12px;">Aktif profil</span>
+                  <span class="info-value" style="font-size:12px;">${esc(item?.status || "Aktif profil")}</span>
                 </div>
               </div>
 
@@ -3197,9 +3490,59 @@
       const targetId = Number(id || 0);
       const targetName = String(name || "Profil").trim() || "Profil";
       if (!targetId) return;
-      localStorage.setItem("nextscout_message_target_id", String(targetId));
-      localStorage.setItem("nextscout_message_target_name", targetName);
-      window.location.href = `notifications.html?target_user_id=${encodeURIComponent(targetId)}`;
+      pendingContact = { id: targetId, name: targetName };
+      if (contactTargetName) contactTargetName.value = targetName;
+      if (contactSubject) contactSubject.value = "Profil hakkinda gorusme";
+      if (contactMessage) {
+        contactMessage.value = `${targetName} merhaba,\n\nProfilinizi inceledim. Uygunsaniz kisa bir gorusme yapalim.`;
+      }
+      contactModal?.classList.add("show");
+    }
+
+    function closeContactModal() {
+      contactModal?.classList.remove("show");
+    }
+
+    async function submitGlobalContact() {
+      const targetId = Number(pendingContact?.id || 0);
+      const targetName = String(pendingContact?.name || "Profil").trim() || "Profil";
+      if (!targetId) return;
+      const subject = String(contactSubject?.value || "Profil hakkinda gorusme").trim();
+      const message = String(contactMessage?.value || "").trim();
+      const token = (localStorage.getItem("nextscout_token") || "").trim();
+      if (!token) {
+        if (contactNotice) contactNotice.textContent = "Mesaj gondermek icin giris yapmalisin.";
+        return;
+      }
+      if (!subject || !message) {
+        if (contactNotice) contactNotice.textContent = "Konu ve mesaj zorunlu.";
+        return;
+      }
+      try {
+        if (contactNotice) contactNotice.textContent = "Mesaj gonderiliyor...";
+        const res = await fetch(`${getApiBaseUrl()}/contacts`, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            to_user_id: targetId,
+            subject,
+            message,
+          }),
+        });
+        const payload = await res.json().catch(() => null);
+        if (!res.ok || payload?.ok === false) {
+          throw new Error(payload?.message || "Mesaj gonderilemedi.");
+        }
+        if (contactNotice) contactNotice.textContent = `${targetName} kullanicisina mesaj gonderildi.`;
+        nsAlert(`${targetName} kullanicisina mesaj gonderildi.`);
+        setTimeout(() => closeContactModal(), 350);
+      } catch (error) {
+        if (contactNotice) contactNotice.textContent = String(error?.message || "Mesaj gonderilemedi.");
+      }
     }
 
     async function loadGlobalResults() {
@@ -4103,6 +4446,10 @@
       filterPlayers();
     });
     openCompareBtn.addEventListener("click", openCompareModal);
+    contactForm?.addEventListener("submit", function (event) {
+      event.preventDefault();
+      submitGlobalContact();
+    });
 
     function syncLockedTransferFilters() {
       const transferCategory = getTransferCategoryFromQuery();
@@ -4278,7 +4625,12 @@
       const isQuick = getPlayerViewFromQuery() === 'quick';
       const quickCloseMarkup = '<a class="btn quick-close-btn" href="index.html" id="quickCloseBtn" aria-label="Kapat" title="Kapat"><i class="fas fa-xmark"></i></a>';
       if (isQuick) {
-        actions.innerHTML = quickCloseMarkup;
+        actions.innerHTML = `
+          <div class="quick-title-box">
+            <span class="quick-title-text">Bostaki Sporcular</span>
+            ${quickCloseMarkup}
+          </div>
+        `;
         return;
       }
       actions.innerHTML = `
