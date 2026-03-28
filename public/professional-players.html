@@ -3756,6 +3756,9 @@
       if (value === "club" || value === "team" || value === "kulup" || value === "klup") return "club";
       if (value === "manager" || value === "menajer" || value === "menejer") return "manager";
       if (value === "coach" || value === "antrenor" || value === "antroner") return "coach";
+      if (params.has("club") || params.has("team") || params.has("kulup") || params.has("klup")) return "club";
+      if (params.has("manager") || params.has("menajer") || params.has("menejer")) return "manager";
+      if (params.has("coach") || params.has("antrenor") || params.has("antroner")) return "coach";
       return "";
     }
 
@@ -4619,15 +4622,34 @@
       return 'player-dashboard.html';
     }
 
+    function getQuickHeaderTitle() {
+      const transferCategory = getTransferCategoryFromQuery();
+      const scoutCategory = getScoutRadarCategoryFromQuery();
+      const playerView = getPlayerViewFromQuery();
+      const visibilityRole = getVisibilityRoleFromQuery();
+      if (playerView === 'explore') return 'Oyunculari Kesfet';
+      if (visibilityRole === 'club') return 'Yapay Zeka Destekli Scout Arama';
+      if (visibilityRole === 'manager') return 'Portfoy Havuzu';
+      if (visibilityRole === 'coach') return 'Izleme Havuzu';
+      if (transferCategory === 'contracted') return 'Sozlesmeli Sporcular';
+      if (transferCategory === 'free') return 'Bostaki Sporcular';
+      if (transferCategory === 'seeking') return 'Kulup Arayan Sporcular';
+      if (scoutCategory === 'new') return 'Yeni Eslesenler';
+      if (scoutCategory === 'rising') return 'Yukselenler';
+      if (scoutCategory === 'hidden') return 'Gizli Yetenekler';
+      return 'Oyuncu Havuzu';
+    }
+
     function renderHeroActions() {
       const actions = document.querySelector('.hero-actions');
       if (!actions) return;
       const isQuick = getPlayerViewFromQuery() === 'quick';
       const quickCloseMarkup = '<a class="btn quick-close-btn" href="index.html" id="quickCloseBtn" aria-label="Kapat" title="Kapat"><i class="fas fa-xmark"></i></a>';
+      const quickTitle = getQuickHeaderTitle();
       if (isQuick) {
         actions.innerHTML = `
           <div class="quick-title-box">
-            <span class="quick-title-text">Bostaki Sporcular</span>
+            <span class="quick-title-text">${quickTitle}</span>
             ${quickCloseMarkup}
           </div>
         `;
