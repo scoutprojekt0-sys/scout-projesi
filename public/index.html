@@ -10449,6 +10449,50 @@
             error: (...args) => console.error(...args),
         };
 
+        function normalizeRole(value) {
+            return (value || '')
+                .toString()
+                .trim()
+                .toLocaleLowerCase('tr-TR')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/\s+/g, '')
+                .replace(/[_-]+/g, '');
+        }
+
+        function safeParseJson(value, fallback = null) {
+            try {
+                return JSON.parse(value);
+            } catch (error) {
+                return fallback;
+            }
+        }
+
+        function escapeHtml(value) {
+            return (value || '')
+                .toString()
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function nsnsAlert(message) {
+            if (window.nsNotify?.info) {
+                window.nsNotify.info(message);
+                return;
+            }
+            window.alert(message);
+        }
+
+        function getTimeoutSignal(timeoutMs) {
+            if (typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function') {
+                return AbortSignal.timeout(timeoutMs);
+            }
+            return undefined;
+        }
+
         // API Base URL - Fully automatic detection
         function getAPIBaseURL() {
             if (window.NextScoutApi && typeof window.NextScoutApi.base === 'function') {
@@ -10628,11 +10672,15 @@
 
             // If we're on http://, API should be on same server
             if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
+                API_BASE_URL = `${window.location.origin}/api`;
+                if (window.NextScoutApi && typeof window.NextScoutApi.setBase === 'function') {
+                    window.NextScoutApi.setBase(API_BASE_URL);
+                }
                 try {
                     runtime.log(`🔍 Testing current server API: ${API_BASE_URL}`);
                     const response = await fetch(`${API_BASE_URL}/ping`, {
                         method: 'GET',
-                        signal: AbortSignal.timeout(3000)
+                        signal: getTimeoutSignal(3000)
                     });
 
                     const data = await response.json();
@@ -10644,6 +10692,9 @@
                 } catch (error) {
                     runtime.warn(`❌ Current server API failed:`, error.message);
                 }
+
+                runtime.warn('⚠️ Ping doğrulanamadı ama aynı origin API kullanılacak:', API_BASE_URL);
+                return true;
             }
 
             // Try query param API if set
@@ -10655,7 +10706,7 @@
                     runtime.log(`🔍 Testing query param API: ${apiBaseParam}`);
                     const response = await fetch(`${apiBaseParam}/ping`, {
                         method: 'GET',
-                        signal: AbortSignal.timeout(2000)
+                        signal: getTimeoutSignal(2000)
                     });
 
                     const data = await response.json();
@@ -10677,7 +10728,7 @@
 
                     const response = await fetch(testUrl, {
                         method: 'GET',
-                        signal: AbortSignal.timeout(1500)
+                        signal: getTimeoutSignal(1500)
                     });
 
                     const data = await response.json();

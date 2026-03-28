@@ -1,6 +1,29 @@
 ﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
+<script>
+console.log('Yardımcı fonksiyonlar yüklendi (28 Mart 2026)');
+function normalizeRole(role) {
+    if (!role) return '';
+    return String(role).trim().toLowerCase();
+}
+function safeParseJson(str, fallback = {}) {
+    try {
+        return JSON.parse(str);
+    } catch (e) {
+        return fallback;
+    }
+}
+function escapeHtml(str) {
+    if (typeof str !== 'string') return str;
+    return str.replace(/[&<>"']/g, function (c) {
+        return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c];
+    });
+}
+function nsnsAlert(msg) {
+    alert(msg);
+}
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NextScout | Futbol Scout, KULÜP ve Oyuncu Veri Platformu</title>
@@ -34,7 +57,7 @@
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
-    
+
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/index-core.css">
@@ -552,7 +575,7 @@
             }
         }
     </style>
-    
+
     <style>
         /* Core reset/header rules moved to assets/css/index-core.css */
 
@@ -593,11 +616,11 @@
         }
 
         @keyframes slideUp {
-            from { 
+            from {
                 transform: translateY(50px);
                 opacity: 0;
             }
-            to { 
+            to {
                 transform: translateY(0);
                 opacity: 1;
             }
@@ -5304,14 +5327,14 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
+
             <div class="modal-body" style="text-align: center; padding: 40px;">
                 <i class="fas fa-building" style="font-size: 48px; color: #3B82F6; margin-bottom: 20px; display: block;"></i>
                 <h3 style="font-size: 20px; color: #1F2937; margin-bottom: 12px;">Yasal Hizmetler</h3>
                 <p style="color: #64748B; margin-bottom: 30px; line-height: 1.6;">
                     Profesyonel avukatlardan sözleşme hazırlama, danışmanlık ve hukuki destek alın.
                 </p>
-                
+
                 <button class="btn btn-primary" style="width: 100%;" onclick="openLawyerProfileForm()">
                     <i class="fas fa-user-plus"></i> Profil Oluştur
                 </button>
@@ -5334,7 +5357,7 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
+
             <div class="modal-body">
                 <form id="lawyerModalForm" style="display: flex; flex-direction: column; gap: 16px;">
                     <!-- Lisans Numarası -->
@@ -5434,7 +5457,7 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
+
             <div class="modal-body">
                 <form id="advancedSearchForm">
                     <div class="form-grid">
@@ -5549,7 +5572,7 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
+
             <div class="modal-body">
                 <!-- Social Login Buttons -->
                 <div class="social-login">
@@ -5613,7 +5636,7 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
+
             <div class="modal-body">
                 <!-- Social Register Buttons -->
                 <div class="social-login">
@@ -6160,16 +6183,16 @@
                 runtime.log('📍 Running from web server:', currentOrigin);
                 return currentOrigin + '/api';
             }
-            
+
             // Check query parameter for file:// protocol
             const urlParams = new URLSearchParams(window.location.search);
             const apiBaseParam = urlParams.get('api_base');
-            
+
             if (apiBaseParam) {
                 runtime.log('📍 API URL (query parameter):', apiBaseParam);
                 return apiBaseParam;
             }
-            
+
             // Default fallback
             runtime.log('📍 Using default API URL');
             return 'http://127.0.0.1:8000/api';
@@ -6185,7 +6208,7 @@
             const token = localStorage.getItem('nextscout_token');
             let userData = localStorage.getItem('nextscout_user');
             const demoLogin = localStorage.getItem('nextscout_demo_login') === 'true';
-            
+
             const registerBtn = document.getElementById('registerBtn');
             const loginBtn = document.getElementById('loginBtn');
             const profileBtn = document.getElementById('profileBtn');
@@ -6223,7 +6246,7 @@
                     loginBtn.style.display = 'none';
                     profileBtn.style.display = 'flex';
                     logoutBtn.style.display = 'flex';
-                    
+
                     document.getElementById('profileName').textContent = 'Profilim';
                     runtime.log('✅ Kullanıcı giriş yapılı:', user.name);
                 } catch (e) {
@@ -6345,11 +6368,11 @@
             if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
                 try {
                     runtime.log(`🔍 Testing current server API: ${API_BASE_URL}`);
-                    const response = await fetch(`${API_BASE_URL}/ping`, { 
+                    const response = await fetch(`${API_BASE_URL}/ping`, {
                         method: 'GET',
                         signal: AbortSignal.timeout(3000)
                     });
-                    
+
                     const data = await response.json();
                     if (data.ok) {
                         runtime.log(`✅ API bağlantısı başarılı:`, data.message);
@@ -6364,15 +6387,15 @@
             // Try query param API if set
             const urlParams = new URLSearchParams(window.location.search);
             const apiBaseParam = urlParams.get('api_base');
-            
+
             if (apiBaseParam) {
                 try {
                     runtime.log(`🔍 Testing query param API: ${apiBaseParam}`);
-                    const response = await fetch(`${apiBaseParam}/ping`, { 
+                    const response = await fetch(`${apiBaseParam}/ping`, {
                         method: 'GET',
                         signal: AbortSignal.timeout(2000)
                     });
-                    
+
                     const data = await response.json();
                     if (data.ok) {
                         runtime.log(`✅ API bağlantısı başarılı:`, data.message);
@@ -6389,12 +6412,12 @@
                 try {
                     const testUrl = `http://127.0.0.1:${port}/api/ping`;
                     runtime.log(`🔍 Testing port ${port}...`);
-                    
-                    const response = await fetch(testUrl, { 
+
+                    const response = await fetch(testUrl, {
                         method: 'GET',
                         signal: AbortSignal.timeout(1500)
                     });
-                    
+
                     const data = await response.json();
                     if (data.ok) {
                         API_BASE_URL = `http://127.0.0.1:${port}/api`;
@@ -6406,7 +6429,7 @@
                     runtime.warn(`❌ Port ${port} failed`);
                 }
             }
-            
+
             console.error('');
             console.error('═══════════════════════════════════════');
             console.error('❌ SERVER BULUNAMADI!');
@@ -6420,7 +6443,7 @@
             console.error('');
             console.error('3. Tarayıcı otomatik açılacak');
             console.error('');
-            
+
             setTimeout(() => {
                 if (!document.hidden) {
                     nsnsAlert('❌ SERVER BULUNAMADI!\n\n' +
@@ -6433,7 +6456,7 @@
                           '═══════════════════════════════');
                 }
             }, 1500);
-            
+
             return false;
         }
 
@@ -6467,7 +6490,7 @@
                 if (token) headers.Authorization = `Bearer ${token}`;
                 const response = await fetch(`${API_BASE_URL}/notifications/count`, { headers });
                 const data = await response.json();
-                
+
                 if (data.success) {
                     updateNotificationBadge(data.count);
                 }
@@ -6499,7 +6522,7 @@
             try {
                 const response = await fetch(`${API_BASE_URL}/live-matches/count`);
                 const data = await response.json();
-                
+
                 if (data.success) {
                     updateLiveMatchIndicator(data.count);
                 }
@@ -6918,7 +6941,10 @@
 
         async function fetchJsonSafe(url) {
             try {
-                const response = await fetch(url, { headers: { Accept: 'application/json' }, cache: 'no-store' });
+                const token = localStorage.getItem('nextscout_token');
+                const headers = { Accept: 'application/json' };
+                if (token) headers['Authorization'] = 'Bearer ' + token;
+                const response = await fetch(url, { headers, cache: 'no-store' });
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 return await response.json();
             } catch (error) {
@@ -7340,7 +7366,7 @@
                 localStorage.removeItem('nextscout_open_register');
                 openRegisterModal();
             }
-            
+
             if (window.location.protocol !== 'file:') {
                 testAPIConnection();
             }
@@ -9249,7 +9275,7 @@
 
         // Select Language
         function selectLanguage(lang) {
-            document.getElementById('langBtn').innerHTML = 
+            document.getElementById('langBtn').innerHTML =
                 `<i class="fas fa-globe"></i> ${lang}`;
             document.getElementById('langMenu').classList.remove('active');
             console.log('Dil değiştirildi:', lang);
@@ -9468,17 +9494,17 @@
             advancedSearchForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 setModalFlowStep('advancedSearchModal', '2/3 Sonuclar');
-                
+
                 // Form verilerini topla
                 const formData = new FormData(this);
                 const searchParams = new URLSearchParams();
-                
+
                 for (let [key, value] of formData.entries()) {
                     if (value) {
                         searchParams.append(key, value);
                     }
                 }
-                
+
                 // Arama sonucunu profesyonel oyuncular sayfasina yonlendir
                 window.location.href = resolveLocalPage(`professional-players.html?${searchParams.toString()}`);
             });
@@ -10150,7 +10176,7 @@
             if (lawyerForm) {
                 lawyerForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
-                    
+
                     const formData = new FormData(this);
                     const data = Object.fromEntries(formData);
 
@@ -10206,7 +10232,7 @@
             if (!input || !input.parentElement) return;
             const button = input.parentElement.querySelector('.toggle-password i');
             if (!button) return;
-            
+
             if (input.type === 'password') {
                 input.type = 'text';
                 button.classList.remove('fa-eye');
@@ -10495,7 +10521,7 @@
 
             fetch(`${API_BASE_URL}/auth/login`, {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                 },
@@ -10505,7 +10531,7 @@
                 console.log('📡 API yanıtı:', res.status, res.statusText);
                 const data = await res.json();
                 console.log('📦 Veri:', data);
-                
+
                 if (!res.ok || !data.ok) {
                     const msg = data?.message || data?.errors?.email?.[0] || 'Giriş başarısız.';
                     throw new Error(msg);
@@ -10513,7 +10539,7 @@
 
                 const token = data?.data?.token || '';
                 const user = data?.data?.user || {};
-                
+
                 if (token) {
                     localStorage.setItem('nextscout_token', token);
                     localStorage.setItem('nextscout_user', JSON.stringify(user));
@@ -10523,9 +10549,9 @@
                 const userRole = user?.role || '';
                 closeLoginModal();
                 console.log('➡️ DASHBOARD\'a yönlendiriliyor...');
-                
+
                 const dashboardUrl = getDashboardByRole(userRole, window.location.protocol === 'file:');
-                
+
                 console.log('📍 DASHBOARD URL:', dashboardUrl);
                                 window.location.href = resolveLocalPage(dashboardUrl);
             })
@@ -10540,7 +10566,7 @@
                 if (err.message === 'Failed to fetch') {
                     errorMsg = '❌ Server\'a bağlanılamadı!\n\nLütfen kontrol edin:\n1. Laravel server çalışıyor mu? (php artisan serve)\n2. URL doğru mu? ' + API_BASE_URL;
                 }
-                
+
                 nsnsAlert(errorMsg);
             });
             });
@@ -10620,7 +10646,7 @@
 
             fetch(`${API_BASE_URL}/auth/register`, {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                 },
@@ -10630,7 +10656,7 @@
                 console.log('📡 API yanıtı:', res.status, res.statusText);
                 const data = await res.json();
                 console.log('📦 Veri:', data);
-                
+
                 if (!res.ok || !data.ok) {
                     const firstError = data?.errors ? Object.values(data.errors)?.[0]?.[0] : null;
                     const msg = firstError || data?.message || 'Kayıt başarısız.';
@@ -10665,7 +10691,7 @@
                 if (err.message === 'Failed to fetch') {
                     errorMsg = '❌ Server\'a bağlanılamadı!\n\nLütfen kontrol edin:\n1. Laravel server çalışıyor mu? (php artisan serve)\n2. URL doğru mu? ' + API_BASE_URL;
                 }
-                
+
                 nsnsAlert(errorMsg);
             });
         }

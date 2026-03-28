@@ -24,7 +24,8 @@
   <script>
     (function () {
       var token = localStorage.getItem('nextscout_token');
-      if (!token) {
+      var user = localStorage.getItem('nextscout_user');
+      if (!token && !user) {
         window.location.replace('index.html');
       }
     })();
@@ -3502,4 +3503,3 @@ setText('.content h1', 'Antrenör Profili');
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
