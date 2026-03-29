@@ -177,6 +177,133 @@ class ScoutTipEndpointsTest extends TestCase
         $this->assertSame(0, (int) $manager->scout_tips_count);
     }
 
+    public function test_team_submission_directly_shortlists_for_managers(): void
+    {
+        $team = User::factory()->create(['role' => 'team']);
+        $manager = User::factory()->create(['role' => 'manager']);
+
+        Sanctum::actingAs($team, ['profile:read', 'profile:write', 'staff']);
+
+        $response = $this->postJson('/api/scout-tips', [
+            'source_type' => 'new_player',
+            'player_name' => 'Berat Yildiz',
+            'birth_year' => 2008,
+            'position' => 'stoper',
+            'city' => 'Bursa',
+            'guardian_consent_status' => 'received',
+            'description' => 'Kulup tarafindan izlenen ve manager shortlistine alinmasi gereken oyuncu.',
+        ]);
+
+        $response
+            ->assertCreated()
+            ->assertJsonPath('data.status', 'shortlisted')
+            ->assertJsonPath('data.metadata.submitted_to_manager_shortlist', true)
+            ->assertJsonPath('data.metadata.submitted_role', 'team');
+
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $manager->id,
+            'type' => 'scout_tip_shortlisted',
+        ]);
+
+        $this->getJson('/api/scout-tips/feed?limit=10')
+            ->assertOk()
+            ->assertJsonPath('data.0.player_name', 'Berat Yildiz')
+            ->assertJsonPath('data.0.status', 'shortlisted');
+
+        $team->refresh();
+        $this->assertSame(0, (int) $team->scout_tips_count);
+    }
+
+    public function test_coach_and_club_can_read_manager_tip_inbox(): void
+    {
+        $manager = User::factory()->create(['role' => 'manager']);
+        $coach = User::factory()->create(['role' => 'coach']);
+        $club = User::factory()->create(['role' => 'team']);
+        $otherScout = User::factory()->create(['role' => 'scout']);
+
+        $managerTip = ScoutTip::create([
+            'submitted_by' => $manager->id,
+            'source_type' => 'new_player',
+            'player_name' => 'Yunus Emre',
+            'city' => 'Istanbul',
+            'position' => '10 numara',
+            'guardian_consent_status' => 'received',
+            'description' => 'Manager tarafindan shortlist edilen ve teknik ekip tarafinda izlenecek oyuncu.',
+            'status' => 'shortlisted',
+            'shortlisted_at' => now(),
+            'ai_quality_score' => 72,
+            'final_score' => 72,
+            'metadata' => ['manager_direct_shortlist' => true],
+        ]);
+
+        ScoutTip::create([
+            'submitted_by' => $otherScout->id,
+            'source_type' => 'new_player',
+            'player_name' => 'Scout Kaydi',
+            'city' => 'Izmir',
+            'guardian_consent_status' => 'received',
+            'description' => 'Bu kayit staff inbox listesinde olmamali.',
+            'status' => 'shortlisted',
+            'shortlisted_at' => now(),
+            'ai_quality_score' => 60,
+            'final_score' => 60,
+        ]);
+
+        Sanctum::actingAs($coach, ['profile:read', 'staff']);
+        $this->getJson('/api/scout-tips/staff-inbox')
+            ->assertOk()
+            ->assertJsonPath('data.0.id', $managerTip->id)
+            ->assertJsonPath('data.0.submitter.role', 'manager');
+
+        Sanctum::actingAs($club, ['profile:read', 'staff']);
+        $this->getJson('/api/scout-tips/staff-inbox')
+            ->assertOk()
+            ->assertJsonPath('data.0.id', $managerTip->id)
+            ->assertJsonMissing(['player_name' => 'Scout Kaydi']);
+    }
+
+    public function test_coach_can_record_review_with_timestamp_for_manager_tip(): void
+    {
+        $manager = User::factory()->create(['role' => 'manager']);
+        $coach = User::factory()->create(['role' => 'coach']);
+        $player = User::factory()->create(['role' => 'player', 'name' => 'Emir Can']);
+
+        $tip = ScoutTip::create([
+            'submitted_by' => $manager->id,
+            'player_id' => $player->id,
+            'source_type' => 'existing_player',
+            'player_name' => $player->name,
+            'city' => 'Istanbul',
+            'guardian_consent_status' => 'received',
+            'description' => 'Manager tarafindan incelemeye dusen oyuncu.',
+            'status' => 'shortlisted',
+            'shortlisted_at' => now(),
+            'ai_quality_score' => 77,
+            'final_score' => 77,
+            'metadata' => ['manager_direct_shortlist' => true],
+        ]);
+
+        Sanctum::actingAs($coach, ['profile:read', 'profile:write', 'staff']);
+
+        $this->postJson('/api/scout-tips/'.$tip->id.'/staff-review', [
+            'comment' => 'Topla ilk temasi ve oyun gorusu teknik ekip icin olumlu gorunuyor.',
+            'sentiment' => 'olumlu',
+        ])
+            ->assertOk()
+            ->assertJsonPath('data.player_id', $player->id)
+            ->assertJsonPath('data.reviewer.role', 'coach');
+
+        $this->assertDatabaseHas('profile_reviews', [
+            'author_id' => $coach->id,
+            'target_id' => $player->id,
+            'relationship_type' => 'teknik_ekip',
+            'sentiment' => 'olumlu',
+        ]);
+
+        $tip->refresh();
+        $this->assertNotEmpty(data_get($tip->metadata, 'staff_reviews.0.reviewed_at'));
+    }
+
     public function test_coach_and_club_role_requests_auto_shortlist_for_managers(): void
     {
         $submitter = User::factory()->create(['role' => 'scout']);

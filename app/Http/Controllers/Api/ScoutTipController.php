@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ScoutTip;
 use App\Models\ScoutTipRoleRequest;
 use App\Models\ScoutTipWatchlist;
+use App\Models\ProfileReview;
 use App\Models\User;
 use App\Models\VideoClip;
 use App\Services\ScoutTipWorkflowService;
@@ -261,6 +262,108 @@ class ScoutTipController extends Controller
             ->get();
 
         return $this->successResponse($rows, 'Scout tip watchlist hazir.');
+    }
+
+    public function staffInbox(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $user || ! in_array((string) $user->role, ['coach', 'team', 'club'], true)) {
+            return $this->errorResponse('Bu akis sadece kulup ve antrenor hesaplari icin acik.', 403, 'forbidden');
+        }
+
+        $rows = ScoutTip::query()
+            ->with([
+                'submitter:id,name,role',
+                'player:id,name,role,city,position,age,rating',
+                'videoClip:id,title,video_url',
+            ])
+            ->whereIn('status', ['shortlisted', 'approved', 'trial', 'signed'])
+            ->whereHas('submitter', fn ($query) => $query->where('role', 'manager'))
+            ->latest('shortlisted_at')
+            ->latest('created_at')
+            ->paginate((int) $request->input('per_page', 20));
+
+        $rows->getCollection()->transform(function (ScoutTip $tip) {
+            return $this->attachResolvedPlayer($tip);
+        });
+
+        return $this->paginatedListResponse($rows, 'Manager kaynakli scout shortlist akisi hazir.');
+    }
+
+    public function recordStaffReview(Request $request, int $id): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $user || ! in_array((string) $user->role, ['coach', 'team', 'club'], true)) {
+            return $this->errorResponse('Bu akis sadece kulup ve antrenor hesaplari icin acik.', 403, 'forbidden');
+        }
+
+        $validated = $request->validate([
+            'comment' => ['nullable', 'string', 'max:3000'],
+            'sentiment' => ['nullable', 'in:olumlu,notr,dikkat'],
+        ]);
+
+        $tip = $this->attachResolvedPlayer(ScoutTip::findOrFail($id));
+        $player = $tip->player;
+
+        if (! $player || $player->role !== 'player') {
+            return $this->errorResponse('Bu scout tip henuz bir oyuncu profiline bagli degil.', 422, 'player_profile_required');
+        }
+
+        $reviewedAt = now();
+        $comment = trim((string) ($validated['comment'] ?? ''));
+        $roleLabel = in_array((string) $user->role, ['team', 'club'], true) ? 'kulup' : 'antrenor';
+        $defaultComment = sprintf(
+            '%s profili %s tarafindan %s tarihinde incelendi.',
+            $player->name ?: 'Oyuncu',
+            $user->name ?: ucfirst($roleLabel),
+            $reviewedAt->format('d.m.Y H:i')
+        );
+
+        $review = ProfileReview::query()->updateOrCreate(
+            [
+                'author_id' => $user->id,
+                'target_id' => $player->id,
+            ],
+            [
+                'author_role' => $user->role,
+                'target_role' => $player->role,
+                'relationship_type' => in_array((string) $user->role, ['team', 'club'], true) ? 'kulup_sureci' : 'teknik_ekip',
+                'sentiment' => $validated['sentiment'] ?? 'notr',
+                'body' => $comment !== '' ? $comment : $defaultComment,
+                'status' => 'published',
+            ]
+        );
+
+        $metadata = $tip->metadata ?? [];
+        $reviews = collect($metadata['staff_reviews'] ?? [])
+            ->reject(fn ($entry) => (int) ($entry['reviewer_id'] ?? 0) === (int) $user->id)
+            ->values()
+            ->all();
+        $reviews[] = [
+            'reviewer_id' => (int) $user->id,
+            'reviewer_name' => $user->name,
+            'reviewer_role' => $user->role,
+            'comment' => $comment !== '' ? $comment : null,
+            'reviewed_at' => $reviewedAt->toIso8601String(),
+        ];
+        $metadata['staff_reviews'] = $reviews;
+        $tip->metadata = $metadata;
+        $tip->save();
+
+        return $this->successResponse([
+            'review_id' => $review->id,
+            'player_id' => $player->id,
+            'player_name' => $player->name,
+            'reviewed_at' => $reviewedAt->toIso8601String(),
+            'reviewer' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'role' => $user->role,
+            ],
+            'comment' => $comment !== '' ? $comment : $defaultComment,
+        ], 'Inceleme kaydedildi.');
     }
 
     public function roleRequestFeed(Request $request): JsonResponse
@@ -592,12 +695,12 @@ class ScoutTipController extends Controller
     private function attachResolvedPlayer(ScoutTip $tip): ScoutTip
     {
         if ($tip->player_id) {
-            return $tip->fresh(['submitter:id,name,email,scout_points,scout_rank', 'player:id,name', 'videoClip', 'duplicateOf:id,player_name,status', 'events.actor:id,name', 'rewards']);
+            return $tip->fresh(['submitter:id,name,email,role,scout_points,scout_rank', 'player:id,name,role,city,position,age,rating', 'videoClip', 'duplicateOf:id,player_name,status', 'events.actor:id,name', 'rewards']);
         }
 
         $normalized = Str::lower(preg_replace('/\s+/u', '', (string) $tip->player_name) ?? (string) $tip->player_name);
         if ($normalized === '') {
-            return $tip->fresh(['submitter:id,name,email,scout_points,scout_rank', 'player:id,name', 'videoClip', 'duplicateOf:id,player_name,status', 'events.actor:id,name', 'rewards']);
+            return $tip->fresh(['submitter:id,name,email,role,scout_points,scout_rank', 'player:id,name,role,city,position,age,rating', 'videoClip', 'duplicateOf:id,player_name,status', 'events.actor:id,name', 'rewards']);
         }
 
         $player = User::query()
@@ -615,6 +718,6 @@ class ScoutTipController extends Controller
             $tip->save();
         }
 
-        return $tip->fresh(['submitter:id,name,email,scout_points,scout_rank', 'player:id,name', 'videoClip', 'duplicateOf:id,player_name,status', 'events.actor:id,name', 'rewards']);
+        return $tip->fresh(['submitter:id,name,email,role,scout_points,scout_rank', 'player:id,name,role,city,position,age,rating', 'videoClip', 'duplicateOf:id,player_name,status', 'events.actor:id,name', 'rewards']);
     }
 }

@@ -30,6 +30,7 @@ class ScoutTipWorkflowService
                 ->first();
             $isGuestSubmission = (bool) data_get($payload, 'metadata.guest_submission', false);
             $isManagerSubmission = $user->role === 'manager';
+            $isManagerInboxSubmission = in_array((string) $user->role, ['coach', 'team', 'club'], true);
 
             $payload['ai_quality_score'] = $this->scoringService->calculateInitialScore($payload, $user);
             $payload['final_score'] = $payload['ai_quality_score'];
@@ -39,6 +40,13 @@ class ScoutTipWorkflowService
                 $payload['shortlisted_at'] = now();
                 $payload['metadata'] = array_merge($payload['metadata'] ?? [], [
                     'manager_direct_shortlist' => true,
+                    'submitted_role' => $user->role,
+                ]);
+            } elseif ($isManagerInboxSubmission) {
+                $payload['status'] = 'shortlisted';
+                $payload['shortlisted_at'] = now();
+                $payload['metadata'] = array_merge($payload['metadata'] ?? [], [
+                    'submitted_to_manager_shortlist' => true,
                     'submitted_role' => $user->role,
                 ]);
             }
@@ -51,7 +59,7 @@ class ScoutTipWorkflowService
 
             $this->createModerationItem($tip, $user->id, $duplicate !== null);
 
-            if (! $isGuestSubmission && ! $isManagerSubmission) {
+            if (! $isGuestSubmission && ! $isManagerSubmission && ! $isManagerInboxSubmission) {
                 $user->increment('scout_tips_count');
                 $this->pointService->award(
                     $user->fresh(),
@@ -72,7 +80,11 @@ class ScoutTipWorkflowService
                 'Crowdsourced scout tip submitted'
             );
 
-            $this->notifyRelevantRolesAboutTip($tip, $user, $isManagerSubmission);
+            if ($isManagerInboxSubmission) {
+                $this->notifyManagersAboutTip($tip, $user);
+            } else {
+                $this->notifyRelevantRolesAboutTip($tip, $user, $isManagerSubmission);
+            }
 
             return $tip->fresh(['submitter', 'videoClip', 'duplicateOf']);
         });
@@ -257,6 +269,26 @@ class ScoutTipWorkflowService
             ->pluck('id');
 
         NotificationStore::sendToUsers($targetIds, $isManagerSubmission ? 'scout_tip_shortlisted' : 'scout_tip_created', [
+            'scout_tip_id' => $tip->id,
+            'player_name' => $tip->player_name,
+            'position' => $tip->position,
+            'city' => $tip->city,
+            'status' => $tip->status,
+            'submitted_by' => [
+                'id' => $submitter->id,
+                'name' => $submitter->name,
+                'role' => $submitter->role,
+            ],
+        ]);
+    }
+
+    private function notifyManagersAboutTip(ScoutTip $tip, User $submitter): void
+    {
+        $targetIds = User::query()
+            ->where('role', 'manager')
+            ->pluck('id');
+
+        NotificationStore::sendToUsers($targetIds, 'scout_tip_shortlisted', [
             'scout_tip_id' => $tip->id,
             'player_name' => $tip->player_name,
             'position' => $tip->position,

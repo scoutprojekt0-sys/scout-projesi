@@ -2538,7 +2538,13 @@
             if (!value) return '-';
             const date = new Date(value);
             if (Number.isNaN(date.getTime())) return '-';
-            return date.toLocaleDateString('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' });
+            return date.toLocaleString('tr-TR', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+            });
         }
 
         function prettyReviewLabelMap() {
@@ -2553,6 +2559,14 @@
                 notr: 'Notr',
                 dikkat: 'Dikkat',
             };
+        }
+
+        function reviewActorLabel(review) {
+            const role = String(review?.author_role || '').toLowerCase();
+            if (role === 'coach') return `${review?.author_name || 'Bir antrenor'} tarafindan incelendi`;
+            if (role === 'team' || role === 'club') return `${review?.author_name || 'Bir kulup'} tarafindan incelendi`;
+            if (role === 'manager') return `${review?.author_name || 'Bir manager'} tarafindan degerlendirildi`;
+            return `${review?.author_name || 'Kullanici'} tarafindan yorumlandi`;
         }
 
         function renderProfileReviews(items) {
@@ -2581,7 +2595,7 @@
                 <article class="review-item">
                     <div class="review-head">
                         <div class="review-author">
-                            <strong>${esc(review?.author_name || 'Kullanici')}</strong>
+                            <strong>${esc(reviewActorLabel(review))}</strong>
                             <span>${esc(review?.author_role || 'rol belirtilmedi')}</span>
                         </div>
                         <div class="review-meta">${esc(formatReviewDate(review?.created_at))}</div>

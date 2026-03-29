@@ -1897,10 +1897,20 @@
             </div>
             <div class="need-modal-body">
                 <div class="workspace-tabs" style="margin-bottom:14px;">
-                    <button class="workspace-tab active" type="button" data-team-scout-tab="watchlist" onclick="openTeamScoutHub('watchlist')">Scout Watchlist</button>
+                    <button class="workspace-tab active" type="button" data-team-scout-tab="inbox" onclick="openTeamScoutHub('inbox')">Manager Tipleri</button>
+                    <button class="workspace-tab" type="button" data-team-scout-tab="watchlist" onclick="openTeamScoutHub('watchlist')">Scout Watchlist</button>
                     <button class="workspace-tab" type="button" data-team-scout-tab="reports" onclick="openTeamScoutHub('reports')">Scout Raporlari</button>
                 </div>
-                <div id="teamScoutHubWatchlist">
+                <div id="teamScoutHubInbox">
+                    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
+                        <div class="quick-report-result" id="teamScoutInboxStatus" style="margin-bottom:0; flex:1; min-width:240px;">Manager tarafindan baglanan oyuncular burada gorunur.</div>
+                        <button class="btn-small secondary" type="button" onclick="loadTeamScoutInbox(true)"><i class="fas fa-arrows-rotate"></i><span>Yenile</span></button>
+                    </div>
+                    <div id="teamScoutInboxList" style="display:grid; gap:10px;">
+                        <div class="empty">Manager tipleri yukleniyor...</div>
+                    </div>
+                </div>
+                <div id="teamScoutHubWatchlist" hidden>
                     <div class="quick-report-result" style="margin-bottom:12px;">Takip ettigin oyunculara hizli ulas.</div>
                     <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
                         <button class="btn-small secondary" type="button" onclick="openTeamScoutWatchlist()">Scout Watchlist Ac</button>
@@ -3500,18 +3510,23 @@
 
         function openScoutReports() { window.location.href = 'scout-reports.html'; }
         function openLiveMatches() { window.location.href = 'scout-live-matches.html'; }
-        function openTeamScoutHub(type = 'watchlist') {
+        let teamScoutInboxState = [];
+
+        function openTeamScoutHub(type = 'inbox') {
             const overlay = document.getElementById('teamScoutHubOverlay');
+            const inbox = document.getElementById('teamScoutHubInbox');
             const watchlist = document.getElementById('teamScoutHubWatchlist');
             const reports = document.getElementById('teamScoutHubReports');
-            const activeType = type === 'reports' ? 'reports' : 'watchlist';
+            const activeType = type === 'watchlist' || type === 'reports' ? type : 'inbox';
             document.querySelectorAll('[data-team-scout-tab]').forEach((tab) => {
                 tab.classList.toggle('active', tab.dataset.teamScoutTab === activeType);
             });
+            if (inbox) inbox.hidden = activeType !== 'inbox';
             if (watchlist) watchlist.hidden = activeType !== 'watchlist';
             if (reports) reports.hidden = activeType !== 'reports';
             overlay?.classList.add('show');
             document.body.style.overflow = 'hidden';
+            if (activeType === 'inbox') loadTeamScoutInbox();
         }
         function closeTeamScoutHub() {
             document.getElementById('teamScoutHubOverlay')?.classList.remove('show');
@@ -3524,6 +3539,114 @@
         function openTeamScoutReports() {
             closeTeamScoutHub();
             window.location.href = 'scout-reports.html';
+        }
+
+        function teamScoutStatusLabel(status) {
+            switch (String(status || '').toLowerCase()) {
+                case 'shortlisted': return 'Shortlist';
+                case 'approved': return 'Onaylandi';
+                case 'trial': return 'Deneme';
+                case 'signed': return 'Imza';
+                case 'rejected': return 'Reddedildi';
+                default: return status || '-';
+            }
+        }
+
+        function getTeamScoutInbox() {
+            return Array.isArray(teamScoutInboxState) ? teamScoutInboxState : [];
+        }
+
+        function saveTeamScoutInbox(rows) {
+            teamScoutInboxState = Array.isArray(rows) ? rows : [];
+        }
+
+        async function fetchTeamScoutInbox() {
+            const headers = getAuthHeaders(false) || { Accept: 'application/json' };
+            const response = await fetch(`${getApiBaseUrl()}/scout-tips/staff-inbox?per_page=12`, { headers });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok || payload?.ok === false) throw new Error(payload?.message || 'Manager tipleri yuklenemedi.');
+            return Array.isArray(payload?.data) ? payload.data : [];
+        }
+
+        function teamScoutReviewerLabel(role) {
+            return role === 'coach' ? 'antrenor' : 'kulup';
+        }
+
+        function renderTeamScoutInbox() {
+            const root = document.getElementById('teamScoutInboxList');
+            const status = document.getElementById('teamScoutInboxStatus');
+            const rows = getTeamScoutInbox();
+            if (!root || !status) return;
+            if (!rows.length) {
+                status.textContent = 'Manager baglantili aktif oyuncu yok.';
+                root.innerHTML = '<div class="empty">Manager tarafindan panele dusen oyuncu bulunmuyor.</div>';
+                return;
+            }
+            status.textContent = `${rows.length} oyuncu kulup paneline dustu.`;
+            root.innerHTML = rows.map((row) => {
+                const note = row?.metadata?.manager_review?.note || row?.description || 'Kulup incelemesi bekleniyor.';
+                const nextAction = row?.metadata?.manager_review?.next_action || '';
+                const videoUrl = row?.video_clip?.video_url || row?.videoClip?.video_url || '';
+                return `
+                    <article class="market-pulse-item">
+                        <div><div class="market-pulse-time">${escapeHtml(row.city || 'Sehir yok')}</div><div class="market-pulse-tag info">${escapeHtml(teamScoutStatusLabel(row.status))}</div></div>
+                        <div><div class="market-pulse-line"><strong>${escapeHtml(row.player_name || 'Oyuncu')}</strong></div><div class="market-pulse-sub">${escapeHtml(row.position || 'Pozisyon yok')} · Manager: ${escapeHtml(row.submitter?.name || '-')}</div></div>
+                        <div class="market-pulse-metric"><span>Skor</span><strong>${escapeHtml(row.final_score ?? '-')}</strong><em>${escapeHtml(nextAction || 'Panelden kontrol et')}</em></div>
+                        <div style="grid-column:1 / -1; color:#cbd5f5; font-size:13px;">${escapeHtml(note)}</div>
+                        <div style="grid-column:1 / -1; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                            <button class="btn-small success" type="button" onclick="openTeamStaffReviewPrompt(${Number(row.id) || 0})">Incelendi / Yorum</button>
+                            <span style="color:#94a3b8; font-size:12px;">${escapeHtml(formatTipDateTime(row.shortlisted_at || row.created_at))}</span>
+                            ${videoUrl ? `<a class="btn-small secondary" href="${escapeHtml(videoUrl)}" target="_blank" rel="noopener noreferrer"><i class="fas fa-play"></i><span>Video</span></a>` : ''}
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        async function loadTeamScoutInbox(force = false) {
+            const root = document.getElementById('teamScoutInboxList');
+            const status = document.getElementById('teamScoutInboxStatus');
+            if (!root || !status) return;
+            if (!force && getTeamScoutInbox().length) {
+                renderTeamScoutInbox();
+                return;
+            }
+            status.textContent = 'Manager tipleri yukleniyor...';
+            root.innerHTML = '<div class="empty">Manager tipleri yukleniyor...</div>';
+            try {
+                saveTeamScoutInbox(await fetchTeamScoutInbox());
+                renderTeamScoutInbox();
+            } catch (error) {
+                status.textContent = error.message || 'Manager tipleri yuklenemedi.';
+                root.innerHTML = `<div class="empty">${escapeHtml(error.message || 'Manager tipleri yuklenemedi.')}</div>`;
+            }
+        }
+
+        function openTeamStaffReviewPrompt(id) {
+            let authUser = null;
+            try { authUser = JSON.parse(localStorage.getItem('nextscout_user') || '{}'); } catch (error) { authUser = null; }
+            const reviewerLabel = teamScoutReviewerLabel(String(authUser?.role || 'team'));
+            const comment = window.prompt(`${reviewerLabel} yorumu ekle. Bos birakirsan sadece inceleme saati kaydedilir.`, '');
+            if (comment === null) return;
+            runTeamScoutInboxAction(id, comment);
+        }
+
+        async function runTeamScoutInboxAction(id, comment) {
+            if (!id) return;
+            try {
+                const payload = await teamApiPost(`/scout-tips/${encodeURIComponent(id)}/staff-review`, {
+                    comment: String(comment || '').trim() || null,
+                    sentiment: 'notr',
+                });
+                await loadTeamScoutInbox(true);
+                const status = document.getElementById('teamScoutInboxStatus');
+                if (status && payload?.reviewed_at) {
+                    status.textContent = `${payload.player_name || 'Oyuncu'} ${formatTipDateTime(payload.reviewed_at)} tarihinde incelendi.`;
+                }
+            } catch (error) {
+                const status = document.getElementById('teamScoutInboxStatus');
+                if (status) status.textContent = error.message || 'Inceleme kaydi tamamlanamadi.';
+            }
         }
         function openTeamProfile() { window.location.href = 'club-profile.html'; }
         function openTrialCenter() { window.location.href = 'trial-center.html?view=club'; }
@@ -4534,8 +4657,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
 
 
 

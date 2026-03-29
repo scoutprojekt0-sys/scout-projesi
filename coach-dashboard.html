@@ -963,10 +963,20 @@
       </div>
       <div class="need-modal-body">
         <div class="workspace-tabs" style="margin-bottom:14px;">
-          <button class="workspace-tab active" type="button" data-coach-reports-tab="watchlist" onclick="openCoachReportsHub('watchlist')">Scout Watchlist</button>
+          <button class="workspace-tab active" type="button" data-coach-reports-tab="inbox" onclick="openCoachReportsHub('inbox')">Manager Tipleri</button>
+          <button class="workspace-tab" type="button" data-coach-reports-tab="watchlist" onclick="openCoachReportsHub('watchlist')">Scout Watchlist</button>
           <button class="workspace-tab" type="button" data-coach-reports-tab="reports" onclick="openCoachReportsHub('reports')">Scout Raporlari</button>
         </div>
-        <div id="coachReportsHubWatchlist">
+        <div id="coachReportsHubInbox">
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
+            <div class="quick-report-result" id="coachScoutInboxStatus" style="margin-bottom:0; flex:1; min-width:240px;">Manager tarafindan baglanan oyuncular burada gorunur.</div>
+            <button class="btn-small secondary" type="button" onclick="loadCoachScoutInbox(true)"><i class="fas fa-arrows-rotate"></i><span>Yenile</span></button>
+          </div>
+          <div id="coachScoutInboxList" style="display:grid; gap:10px;">
+            <div class="empty">Manager tipleri yukleniyor...</div>
+          </div>
+        </div>
+        <div id="coachReportsHubWatchlist" hidden>
           <div class="quick-report-result" style="margin-bottom:12px;">Takip ettigin oyunculara hizli ulas.</div>
           <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
             <button class="btn-small secondary" type="button" onclick="window.location.href='scout-watchlist.html'">Scout Watchlist Ac</button>
@@ -1176,6 +1186,7 @@
     let allPlayers = [];
     let filteredPlayers = [];
     let watchlistState = [];
+    let coachScoutInboxState = [];
 
     function getApiBaseUrl() {
       if (window.NextScoutApi && typeof window.NextScoutApi.base === 'function') {
@@ -1213,18 +1224,21 @@
       if (modal) modal.classList.remove('show');
     }
 
-    function openCoachReportsHub(type = 'watchlist') {
+    function openCoachReportsHub(type = 'inbox') {
       const modal = document.getElementById('coachReportsHubModal');
+      const inbox = document.getElementById('coachReportsHubInbox');
       const watchlist = document.getElementById('coachReportsHubWatchlist');
       const reports = document.getElementById('coachReportsHubReports');
       const tabs = Array.from(document.querySelectorAll('[data-coach-reports-tab]'));
-      const activeType = type === 'reports' ? 'reports' : 'watchlist';
-      if (!modal || !watchlist || !reports) return;
+      const activeType = type === 'watchlist' || type === 'reports' ? type : 'inbox';
+      if (!modal || !inbox || !watchlist || !reports) return;
+      inbox.hidden = activeType !== 'inbox';
       watchlist.hidden = activeType !== 'watchlist';
       reports.hidden = activeType !== 'reports';
       tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.coachReportsTab === activeType));
       modal.classList.add('show');
       document.body.style.overflow = 'hidden';
+      if (activeType === 'inbox') loadCoachScoutInbox();
     }
 
     function closeCoachReportsHub() {
@@ -1513,6 +1527,138 @@
       const payload = await response.json().catch(() => ({}));
       if (!response.ok || payload?.ok === false) throw new Error(payload?.message || 'Firsat verisi yuklenemedi.');
       return payload.data ?? payload;
+    }
+
+    function coachScoutStatusLabel(status) {
+      switch (String(status || '').toLowerCase()) {
+        case 'shortlisted': return 'Shortlist';
+        case 'approved': return 'Onaylandi';
+        case 'trial': return 'Deneme';
+        case 'signed': return 'Imza';
+        case 'rejected': return 'Reddedildi';
+        default: return status || '-';
+      }
+    }
+
+    function getCoachScoutInbox() {
+      return Array.isArray(coachScoutInboxState) ? coachScoutInboxState : [];
+    }
+
+    function saveCoachScoutInbox(rows) {
+      coachScoutInboxState = Array.isArray(rows) ? rows : [];
+    }
+
+    async function fetchCoachScoutInbox() {
+      const token = getToken();
+      if (!token) throw new Error('Oturum bulunamadi.');
+
+      const response = await fetch(`${getApiBaseUrl()}/scout-tips/staff-inbox?per_page=12`, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || payload?.ok === false) throw new Error(payload?.message || 'Manager tipleri yuklenemedi.');
+      return Array.isArray(payload?.data) ? payload.data : [];
+    }
+
+    function coachRoleReviewLabel(role) {
+      return role === 'coach' ? 'antrenor' : 'kulup';
+    }
+
+    function renderCoachScoutInbox() {
+      const root = document.getElementById('coachScoutInboxList');
+      const status = document.getElementById('coachScoutInboxStatus');
+      const rows = getCoachScoutInbox();
+      if (!root || !status) return;
+      if (!rows.length) {
+        status.textContent = 'Manager baglantili aktif oyuncu yok.';
+        root.innerHTML = '<div class="empty">Manager tarafindan panele dusen oyuncu bulunmuyor.</div>';
+        return;
+      }
+      status.textContent = `${rows.length} oyuncu coach paneline dustu.`;
+      root.innerHTML = rows.map((row) => {
+        const note = row?.metadata?.manager_review?.note || row?.description || 'Teknik ekip incelemesi bekleniyor.';
+        const nextAction = row?.metadata?.manager_review?.next_action || '';
+        const videoUrl = row?.video_clip?.video_url || row?.videoClip?.video_url || '';
+        return `
+          <article class="point-item">
+            <div class="row-top">
+              <div>
+                <div class="row-title">${escapeHtml(row.player_name || 'Oyuncu')}</div>
+                <div class="row-copy">${escapeHtml(row.position || 'Pozisyon yok')} · ${escapeHtml(row.city || 'Sehir yok')} · Manager: ${escapeHtml(row.submitter?.name || '-')}</div>
+              </div>
+              <span class="badge approved">${escapeHtml(coachScoutStatusLabel(row.status))}</span>
+            </div>
+            <div class="row-meta">
+              <span><i class="fas fa-star"></i> Skor ${escapeHtml(row.final_score ?? '-')}</span>
+              <span><i class="fas fa-calendar"></i> ${formatDateTime(row.shortlisted_at || row.created_at)}</span>
+              ${nextAction ? `<span><i class="fas fa-forward"></i> ${escapeHtml(nextAction)}</span>` : ''}
+            </div>
+            <div class="row-copy" style="margin-top:8px;">${escapeHtml(note)}</div>
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:12px;">
+              <button class="btn-small success" type="button" onclick="openCoachStaffReviewPrompt(${Number(row.id) || 0})">Incelendi / Yorum</button>
+              ${videoUrl ? `<a class="btn-small secondary" href="${escapeHtml(videoUrl)}" target="_blank" rel="noopener noreferrer"><i class="fas fa-play"></i><span>Video</span></a>` : ''}
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    async function loadCoachScoutInbox(force = false) {
+      const root = document.getElementById('coachScoutInboxList');
+      const status = document.getElementById('coachScoutInboxStatus');
+      if (!root || !status) return;
+      if (!force && getCoachScoutInbox().length) {
+        renderCoachScoutInbox();
+        return;
+      }
+      status.textContent = 'Manager tipleri yukleniyor...';
+      root.innerHTML = '<div class="empty">Manager tipleri yukleniyor...</div>';
+      try {
+        saveCoachScoutInbox(await fetchCoachScoutInbox());
+        renderCoachScoutInbox();
+      } catch (error) {
+        status.textContent = error.message || 'Manager tipleri yuklenemedi.';
+        root.innerHTML = `<div class="empty">${escapeHtml(error.message || 'Manager tipleri yuklenemedi.')}</div>`;
+      }
+    }
+
+    function openCoachStaffReviewPrompt(id) {
+      const roleLabel = coachRoleReviewLabel((getCurrentAuthUserFromStorage()?.role || '').toString());
+      const comment = window.prompt(`${roleLabel} yorumu ekle. Bos birakirsan sadece inceleme saati kaydedilir.`, '');
+      if (comment === null) return;
+      runCoachScoutInboxAction(id, comment);
+    }
+
+    async function runCoachScoutInboxAction(id, comment) {
+      const token = getToken();
+      if (!token || !id) return;
+      try {
+        const response = await fetch(`${getApiBaseUrl()}/scout-tips/${encodeURIComponent(id)}/staff-review`, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            comment: String(comment || '').trim() || null,
+            sentiment: 'notr'
+          })
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok || payload?.ok === false) throw new Error(payload?.message || 'Inceleme kaydi tamamlanamadi.');
+        await loadCoachScoutInbox(true);
+        const status = document.getElementById('coachScoutInboxStatus');
+        if (status && payload?.data?.reviewed_at) {
+          status.textContent = `${payload.data.player_name || 'Oyuncu'} ${formatDateTime(payload.data.reviewed_at)} tarihinde incelendi.`;
+        }
+      } catch (error) {
+        const status = document.getElementById('coachScoutInboxStatus');
+        if (status) status.textContent = error.message || 'Inceleme kaydi tamamlanamadi.';
+      }
     }
 
     function renderCoachOpportunityNeeds(rows) {
