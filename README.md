@@ -1,3 +1,24 @@
+## Eski Kullanıcılar İçin Şifre Sıfırlama ve Alan Güncelleme
+
+Eğer eski kullanıcılar giriş yapamıyorsa, aşağıdaki adımları uygulayın:
+
+1. Composer autoload dosyalarını güncelleyin:
+   
+   ```sh
+   composer dump-autoload
+   ```
+
+2. Artisan komutunu çalıştırarak eski kullanıcıların şifrelerini sıfırlayın ve eksik alanları güncelleyin:
+   
+   ```sh
+   php artisan users:reset-legacy-passwords
+   ```
+
+   Komut çalıştıktan sonra, terminalde her kullanıcı için yeni şifreyi göreceksiniz. Bu şifrelerle giriş yapılabilir.
+
+3. Giriş testini web arayüzünden veya API ile yapın.
+
+> Not: Bu komut, eski şifre algoritmasıyla kaydedilmiş veya eksik alanı olan tüm kullanıcıları kapsar. Yeni kullanıcılar etkilenmez.
 # Canlıya Hazırlık Notu (13 Mart 2026)
 
 - laravel/framework ve phpunit/phpunit CVE'leri giderildi, güncel sürümler yüklendi.
