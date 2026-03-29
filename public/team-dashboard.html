@@ -528,6 +528,26 @@
             background: #fff;
             padding: 14px;
         }
+        .group-roster-visual {
+            width: 100%;
+            height: 180px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #16325c 0%, #1d4f91 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .group-roster-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .group-roster-visual-fallback {
+            font-size: 52px;
+            color: rgba(255, 255, 255, 0.9);
+        }
         .group-roster-head {
             display: flex;
             align-items: center;
@@ -1696,6 +1716,10 @@
             <div class="form-group">
                 <label>Forma No</label>
                 <input id="registerShirtNumber" type="number" min="1" max="99" placeholder="9">
+            </div>
+            <div class="form-group">
+                <label>Forma Gorseli</label>
+                <input id="registerImageUrl" type="url" placeholder="https://...">
             </div>
             <div class="form-group">
                 <label>Sozlesme Durumu</label>
@@ -4113,6 +4137,11 @@
 
             root.innerHTML = rows.map((row) => `
                 <div class="group-roster-card">
+                    <div class="group-roster-visual">
+                        ${String(row.image_url || row.photo_url || '').trim()
+                            ? `<img src="${escapeHtml(String(row.image_url || row.photo_url || '').trim())}" alt="${escapeHtml(row.name || 'Oyuncu')}">`
+                            : '<div class="group-roster-visual-fallback">⚽</div>'}
+                    </div>
                     <div class="group-roster-head">
                         <div class="group-roster-name">${escapeHtml(row.name || '-')}</div>
                         <div class="compare-chip">${escapeHtml(row.position || '-')}</div>
@@ -4147,6 +4176,7 @@
             document.getElementById('registerPosition').value = row.position || 'Forvet';
             document.getElementById('registerHeight').value = row.height || '';
             document.getElementById('registerShirtNumber').value = row.shirtNumber || '';
+            document.getElementById('registerImageUrl').value = row.image_url || row.photo_url || '';
             document.getElementById('registerContractStatus').value = row.contractStatus || 'academy';
             document.getElementById('registerContact').value = row.contact || '';
             document.getElementById('registerFoot').value = row.dominantFoot || 'sag';
@@ -4302,6 +4332,7 @@
             const position = document.getElementById('registerPosition')?.value || 'Forvet';
             const height = (document.getElementById('registerHeight')?.value || '').trim();
             const shirtNumber = (document.getElementById('registerShirtNumber')?.value || '').trim();
+            const imageUrl = (document.getElementById('registerImageUrl')?.value || '').trim();
             const contractStatus = document.getElementById('registerContractStatus')?.value || 'academy';
             const contact = (document.getElementById('registerContact')?.value || '').trim();
             const dominantFoot = document.getElementById('registerFoot')?.value || 'sag';
@@ -4331,6 +4362,8 @@
                 position,
                 height,
                 shirtNumber,
+                image_url: imageUrl,
+                photo_url: imageUrl,
                 contractStatus,
                 contact,
                 dominantFoot,
@@ -4357,7 +4390,7 @@
                 renderTeamGroupRoster();
                 editingClubPlayerId = null;
 
-                ['registerPlayerName', 'registerBirthYear', 'registerAge', 'registerHeight', 'registerShirtNumber', 'registerContact', 'registerBio', 'registerPlayerNote', 'registerMatches', 'registerMinutes', 'registerGoals', 'registerAssists', 'registerRating'].forEach((id) => {
+                ['registerPlayerName', 'registerBirthYear', 'registerAge', 'registerHeight', 'registerShirtNumber', 'registerImageUrl', 'registerContact', 'registerBio', 'registerPlayerNote', 'registerMatches', 'registerMinutes', 'registerGoals', 'registerAssists', 'registerRating'].forEach((id) => {
                     const input = document.getElementById(id);
                     if (input) input.value = '';
                 });
