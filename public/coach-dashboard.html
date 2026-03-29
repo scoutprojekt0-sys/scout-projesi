@@ -168,7 +168,8 @@
       .btn-small { width:100%; justify-content:center; white-space:normal; text-align:center; min-height:42px; padding:8px 10px; font-size:12px; line-height:1.2; }
       .btn-small span { white-space:normal; }
       .main-container { grid-template-columns: 1fr; padding:10px; gap:10px; }
-      .sidebar { position: static; top:auto; padding:12px; }
+      .sidebar { position: static; top:auto; padding:12px; order: 1; }
+      .content { order: 2; }
       .sidebar-menu { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
       .sidebar-item { margin-bottom:0; font-size:13px; min-height:42px; }
       .search-grid { grid-template-columns: 1fr; }
@@ -254,6 +255,7 @@
       gap: 18px;
       padding: 18px;
       min-height: calc(100vh - 70px);
+      align-items: start;
     }
 
     .sidebar,
@@ -293,7 +295,12 @@
     }
 
     .sidebar {
-      top: 88px;
+      top: 0;
+      align-self: start;
+    }
+
+    .content {
+      align-self: start;
     }
 
     .sidebar-title,
@@ -356,51 +363,53 @@
     }
     .hero-title { margin: 0; max-width: 720px; font: 800 clamp(2rem, 3vw, 3rem)/1.02 Inter, sans-serif; letter-spacing: -0.03em; color: var(--ink); }
     .hero-sub { margin: 14px 0 0; max-width: 740px; color: var(--muted); font-size: 14px; line-height: 1.7; }
-    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
-    .hero-actions .btn-small {
-      min-height: 44px;
-      padding: 10px 14px;
-      border-radius: 0;
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 0.01em;
-      justify-content: center;
+    .hero-cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 20px;
     }
-    .hero-actions .btn-small i {
-      width: 16px;
-      text-align: center;
-      font-size: 13px;
-    }
-    .hero-actions .btn-small.primary {
-      background: linear-gradient(135deg, var(--cta) 0%, var(--cta-2) 100%);
-      border-color: rgba(255, 126, 34, 0.6);
-      color: #fff;
-      box-shadow: 0 16px 28px rgba(255, 90, 31, 0.28);
-    }
-    .hero-actions .btn-small.secondary {
-      background: rgba(59, 130, 246, 0.12);
-      color: #dbeafe;
-      border-color: rgba(96, 165, 250, 0.24);
-      box-shadow: none;
-    }
-    .hero-points { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
-    .pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; font-size: 12px; font-weight: 800; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--line); color: #dbeafe; }
-    .hero-side {
-      background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
+    .hero-card {
+      min-height: 220px;
       border: 1px solid var(--line);
       border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
       padding: 18px;
-      box-shadow: 0 16px 30px rgba(8, 19, 29, 0.28);
-      position: relative;
-      overflow: hidden;
     }
-    .hero-side::before {
-      content: "";
-      position: absolute;
-      inset: 0 0 auto 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--cta) 0%, var(--cta-2) 55%, #60a5fa 100%);
+    .hero-card-title {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #dbeafe;
+      margin-bottom: 12px;
     }
+    .hero-card-links {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .hero-card-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 10px 12px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      background: rgba(255, 255, 255, 0.05);
+      color: #e2e8f0;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .hero-card-link i { color: #8fd3ff; width: 14px; text-align: center; }
+    .hero-card-link:hover { border-color: rgba(255, 126, 34, 0.45); background: rgba(255, 255, 255, 0.08); }
+    .hero-actions,
+    .hero-points,
+    .hero-side { display: none; }
+    .hero-points { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; font-size: 12px; font-weight: 800; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--line); color: #dbeafe; }
     .panel-title { font-size: 17px; font-weight: 800; margin-bottom: 10px; color: #dbeafe; }
     .panel-sub { color: var(--muted); font-size: 14px; margin-bottom: 12px; }
     .status-stack { display: grid; gap: 12px; }
@@ -608,6 +617,8 @@
         border-radius: 14px;
       }
       .hero { grid-template-columns: 1fr; }
+      .hero-cards,
+      .hero-card-links { grid-template-columns: 1fr; }
 
       .need-modal {
         border-radius: 14px 14px 0 0;
@@ -646,10 +657,6 @@
     <div class="top-navbar">
     <div class="navbar-left"><div class="logo">NextScout Antrenor Profili</div></div>
       <div class="navbar-right">
-      <button class="btn-small success" onclick="openCoachNeedModal()"><i class="fas fa-plus-circle"></i><span>İlan Ver</span></button>
-      <button class="btn-small success" onclick="openTrialPublishModal()"><i class="fas fa-calendar-check"></i><span>Deneme/Idman Ilani</span></button>
-      <button class="btn-small primary" onclick="openLiveScoutModal()"><i class="fas fa-tower-broadcast"></i><span>Canlı Scout Baslat</span></button>
-      <button class="btn-small secondary" onclick="openScoutProfile()"><i class="fas fa-user-check"></i><span>Public Görünüm</span></button>
       <button class="btn-small home-btn-global" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255, 126, 34, 0.6);background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 16px 28px rgba(255,90,31,0.28);" onclick="window.location.href='index.html'"><i class="fas fa-house"></i><span>Ana Sayfa</span></button>
       <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Çıkış</span></button>
       </div>
@@ -661,15 +668,9 @@
         <div class="sidebar-title">MENU</div>
         <ul class="sidebar-menu">
           <li class="sidebar-item active" onclick="openPlayerSearchModal()"><i class="fas fa-magnifying-glass"></i><span>Oyuncu Ara</span></li>
-          <li class="sidebar-item" onclick="window.location.href='ai-discovery.html'"><i class="fas fa-flask"></i><span>AI Discovery</span></li>
           <li class="sidebar-item" onclick="window.location.href='review-center.html'"><i class="fas fa-comments"></i><span>Yorumlar</span></li>
           <li class="sidebar-item" onclick="openScoutProfile()"><i class="fas fa-user"></i><span>Antrenor Profili</span></li>
           <li class="sidebar-item" onclick="openCoachWorkspace('reviews')"><i class="fas fa-comments"></i><span>Profil Yorumları</span></li>
-          <li class="sidebar-item" onclick="openCoachSuccessStoriesHub()"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></li>
-                    <li class="sidebar-item" onclick="openLiveMatches()"><i class="fas fa-tower-broadcast"></i><span>Canli Mac Bildirimleri</span></li>
-                    <li class="sidebar-item" onclick="window.location.href='favorites.html'"><i class="fas fa-star"></i><span>Favorilerim</span></li>
-                    <li class="sidebar-item" onclick="window.location.href='live-watch-demand.html'"><i class="fas fa-location-crosshairs"></i><span>Canlı İzleme Talebi</span></li>
-        <li class="sidebar-item" onclick="openPerformance()"><i class="fas fa-chart-line"></i><span>Istatistikler</span></li>
         <li class="sidebar-item" onclick="openScoutReports()"><i class="fas fa-file-lines"></i><span>Scout Raporları</span></li>
           <li class="sidebar-item" onclick="openMessages()"><i class="fas fa-comments"></i><span>Mesajlarim</span></li>
           <li class="sidebar-item" onclick="openSettings()"><i class="fas fa-gear"></i><span>Ayarlar</span></li>
@@ -687,17 +688,46 @@
           </div>
           <h2 class="hero-title">Antrenor operasyonunu buradan yonet.</h2>
           <p class="hero-sub">Oyuncu izle, analiz et ve takip listene ekle.</p>
-          <div class="hero-actions">
-            <button class="btn-small primary" type="button" onclick="openCoachTalentModal()"><i class="fas fa-video"></i><span>Yetenek Bildir</span></button>
-            <button class="btn-small secondary" type="button" onclick="openCoachOpportunityArea('needs')"><i class="fas fa-calendar-check"></i><span>Antranör Firsat Alani</span></button>
-            <button class="btn-small secondary" type="button" onclick="openCoachMarketPulse()"><i class="fas fa-chart-line"></i><span>Market Pulse</span></button>
-            <button class="btn-small secondary" type="button" onclick="openLiveMatches()"><i class="fas fa-tower-broadcast"></i><span>Canli Mac Bildirimleri</span></button>
-            <button class="btn-small secondary" type="button" onclick="openCoachWorkspace('notes')"><i class="fas fa-briefcase"></i><span>Antrenör Çalışma Alanı</span></button>
-            <button class="btn-small secondary" type="button" onclick="openCoachReportsHub('watchlist')"><i class="fas fa-bookmark"></i><span>Scout Watchlist & Raporlar</span></button>
-          </div>
-          <div class="hero-points">
-            <span class="pill"><i class="fas fa-circle-check"></i><span>Dogrulanan gozlemler karar gucunu artirir</span></span>
-            <span class="pill"><i class="fas fa-handshake-angle"></i><span>Trial akislarini tek yerden takip et</span></span>
+          <div class="hero-cards">
+            <section class="hero-card">
+              <div class="hero-card-title">Hizli Erisim</div>
+              <div class="hero-card-links">
+                <button class="hero-card-link" type="button" onclick="openPlayerSearchModal()"><i class="fas fa-magnifying-glass"></i><span>Oyuncu Ara</span></button>
+                <button class="hero-card-link" type="button" onclick="window.location.href='favorites.html'"><i class="fas fa-star"></i><span>Favorilerim</span></button>
+                <button class="hero-card-link" type="button" onclick="openCoachWorkspace('notes')"><i class="fas fa-briefcase"></i><span>Antrenor Calisma Alani</span></button>
+                <button class="hero-card-link" type="button" onclick="openPerformance()"><i class="fas fa-chart-line"></i><span>Istatistikler</span></button>
+              </div>
+            </section>
+            <section class="hero-card">
+              <div class="hero-card-title">Kesif ve Analiz</div>
+              <div class="hero-card-links">
+                <button class="hero-card-link" type="button" onclick="window.location.href='ai-discovery.html'"><i class="fas fa-flask"></i><span>AI Discovery</span></button>
+                <button class="hero-card-link" type="button" onclick="openCoachTalentModal()"><i class="fas fa-video"></i><span>Yetenek Bildir</span></button>
+                <button class="hero-card-link" type="button" onclick="openCoachOpportunityArea('needs')"><i class="fas fa-calendar-check"></i><span>Antranor Firsat Alani</span></button>
+                <button class="hero-card-link" type="button" onclick="openCoachMarketPulse()"><i class="fas fa-chart-line"></i><span>Market Pulse</span></button>
+                <button class="hero-card-link" type="button" onclick="openCoachReportsHub('watchlist')"><i class="fas fa-bookmark"></i><span>Scout Watchlist & Raporlar</span></button>
+              </div>
+            </section>
+            <section class="hero-card">
+              <div class="hero-card-title">Yayin ve Ilanlar</div>
+              <div class="hero-card-links">
+                <button class="hero-card-link" type="button" onclick="openCoachNeedModal()"><i class="fas fa-plus-circle"></i><span>Ilan Ver</span></button>
+                <button class="hero-card-link" type="button" onclick="openTrialPublishModal()"><i class="fas fa-calendar-check"></i><span>Deneme/Idman Ilani</span></button>
+                <button class="hero-card-link" type="button" onclick="openLiveScoutModal()"><i class="fas fa-tower-broadcast"></i><span>Canli Scout Baslat</span></button>
+                <button class="hero-card-link" type="button" onclick="openLiveMatches()"><i class="fas fa-tower-broadcast"></i><span>Canli Mac Bildirimleri</span></button>
+                <button class="hero-card-link" type="button" onclick="window.location.href='live-watch-demand.html'"><i class="fas fa-location-crosshairs"></i><span>Canli Izleme Talebi</span></button>
+                <button class="hero-card-link" type="button" onclick="openCoachSuccessStoriesHub()"><i class="fas fa-trophy"></i><span>Basari Hikayesi</span></button>
+              </div>
+            </section>
+            <section class="hero-card">
+              <div class="hero-card-title">Profil ve Iletisim</div>
+              <div class="hero-card-links">
+                <button class="hero-card-link" type="button" onclick="openMessages()"><i class="fas fa-comments"></i><span>Mesajlarim</span></button>
+                <button class="hero-card-link" type="button" onclick="openSettings()"><i class="fas fa-gear"></i><span>Ayarlar</span></button>
+                <button class="hero-card-link" type="button" onclick="openHelp()"><i class="fas fa-circle-question"></i><span>Yardim</span></button>
+                <button class="hero-card-link" type="button" onclick="openScoutProfile()"><i class="fas fa-user"></i><span>Antrenor Profili</span></button>
+              </div>
+            </section>
           </div>
         </div>
         <aside class="hero-side">
@@ -3283,7 +3313,6 @@ setText('.content h1', 'Antrenör Profili');
 
       setText('.sidebar-item[onclick="openScoutProfile()"] span', 'Antrenör Profili');
       setText('.sidebar-item[onclick="openCoachWorkspace(\'notes\')"] span', 'Antrenor Calisma Alani');
-      setText('.sidebar-item[onclick="window.location.href=\'live-watch-demand.html\'"] span', 'Canlı İzleme Talebi');
       setText('.sidebar-item[onclick="openPerformance()"] span', 'İstatistikler');
       setText('.sidebar-item[onclick="openMessages()"] span', 'Mesajlarım');
       setText('.sidebar-item[onclick="openSettings()"] span', 'Ayarlar');
@@ -3384,3 +3413,4 @@ setText('.content h1', 'Antrenör Profili');
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+
