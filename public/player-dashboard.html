@@ -1827,6 +1827,47 @@
             }
         }
 
+        function normalizeSportValue(value) {
+            const raw = String(value || '').trim().toLowerCase();
+            if (!raw) return '';
+            if (raw.includes('basket')) return 'basketbol';
+            if (raw.includes('voley')) return 'voleybol';
+            if (raw.includes('fut')) return 'futbol';
+            return raw;
+        }
+
+        function getCurrentPlayerSport() {
+            try {
+                const raw = localStorage.getItem('nextscout_user');
+                const user = raw ? JSON.parse(raw) : null;
+                return normalizeSportValue(
+                    user?.sport ||
+                    user?.branch ||
+                    user?.primary_sport ||
+                    user?.primarySport ||
+                    ''
+                );
+            } catch (e) {
+                return '';
+            }
+        }
+
+        function filterRowsByPlayerSport(rows) {
+            const activeSport = getCurrentPlayerSport();
+            const list = Array.isArray(rows) ? rows : [];
+            if (!activeSport) return list;
+            return list.filter((row) => {
+                const rowSport = normalizeSportValue(
+                    row?.sport ||
+                    row?.sport_type ||
+                    row?.branch ||
+                    row?.category ||
+                    ''
+                );
+                return !rowSport || rowSport === activeSport;
+            });
+        }
+
         function getCurrentPlayerUserIdFromStorage() {
             try {
                 const raw = localStorage.getItem('nextscout_user');
@@ -2014,11 +2055,11 @@
                 fetchJsonSafe(`${apiBase}/community-events`),
             ]);
 
-            dashboardApiState.clubNeeds = parseAnyRows(clubNeedsPayload);
-            dashboardApiState.latestNeeds = parseAnyRows(needsPayload);
+            dashboardApiState.clubNeeds = filterRowsByPlayerSport(parseAnyRows(clubNeedsPayload));
+            dashboardApiState.latestNeeds = filterRowsByPlayerSport(parseAnyRows(needsPayload));
             dashboardApiState.weeklyTrends = parseAnyRows(trendingPayload);
             dashboardApiState.weeklyDigest = digestPayload?.data || digestPayload || null;
-            dashboardApiState.communityEvents = parseAnyRows(eventsPayload);
+            dashboardApiState.communityEvents = filterRowsByPlayerSport(parseAnyRows(eventsPayload));
             renderHeroOpportunities();
 
             const need = dashboardApiState.clubNeeds[0] || dashboardApiState.latestNeeds[0] || null;
@@ -3551,7 +3592,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
 
 
 

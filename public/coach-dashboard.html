@@ -2114,10 +2114,40 @@
       renderPlayersTo(players, 'playersGrid');
     }
 
+    function normalizeSportValue(value) {
+      const raw = String(value || '').trim().toLowerCase();
+      if (!raw) return '';
+      if (raw.includes('basket')) return 'basketbol';
+      if (raw.includes('voley')) return 'voleybol';
+      if (raw.includes('fut')) return 'futbol';
+      return raw;
+    }
+
+    function getActiveCoachSportFilter() {
+      const authUser = getCurrentAuthUserFromStorage();
+      return normalizeSportValue(
+        authUser?.sport ||
+        authUser?.branch ||
+        authUser?.primary_sport ||
+        authUser?.primarySport ||
+        ''
+      );
+    }
+
+    function filterPlayersByCoachSport(players) {
+      const activeSport = getActiveCoachSportFilter();
+      if (!activeSport) return Array.isArray(players) ? players.slice() : [];
+      return (Array.isArray(players) ? players : []).filter((player) => {
+        const playerSport = normalizeSportValue(player?.sport || player?.branch || '');
+        return !playerSport || playerSport === activeSport;
+      });
+    }
+
     function normalizePlayer(raw) {
       return {
         id: Number(raw && raw.id) || 0,
         name: (raw && raw.name) || '-',
+        sport: (raw && (raw.sport || raw.branch)) || 'futbol',
         position: (raw && raw.position) || '-',
         age: (raw && raw.age) || '-',
         height: (raw && raw.height) || '-',
@@ -2137,10 +2167,12 @@
 
     function getFallbackPlayers() {
       return [
-        { id: 1, name: 'Ahmet Yilmaz', position: 'Forvet', age: 24, height: '180cm', rating: 8.1, club: 'Fenerbahce' },
-        { id: 2, name: 'Serdar Aziz', position: 'Defans', age: 28, height: '185cm', rating: 7.6, club: 'Galatasaray' },
-        { id: 3, name: 'Kerem Akturkoglu', position: 'Forvet', age: 26, height: '183cm', rating: 8.2, club: 'Benfica' },
-        { id: 4, name: 'Okay Yokuslu', position: 'Orta Saha', age: 27, height: '188cm', rating: 7.9, club: 'Trabzonspor' },
+        { id: 1, name: 'Ahmet Yilmaz', sport: 'futbol', position: 'Forvet', age: 24, height: '180cm', rating: 8.1, club: 'Fenerbahce' },
+        { id: 2, name: 'Serdar Aziz', sport: 'futbol', position: 'Defans', age: 28, height: '185cm', rating: 7.6, club: 'Galatasaray' },
+        { id: 3, name: 'Kerem Akturkoglu', sport: 'futbol', position: 'Forvet', age: 26, height: '183cm', rating: 8.2, club: 'Benfica' },
+        { id: 4, name: 'Okay Yokuslu', sport: 'futbol', position: 'Orta Saha', age: 27, height: '188cm', rating: 7.9, club: 'Trabzonspor' },
+        { id: 5, name: 'Mert Can', sport: 'basketbol', position: 'Guard', age: 21, height: '191cm', rating: 7.7, club: 'Anadolu Efes' },
+        { id: 6, name: 'Deniz Ece', sport: 'voleybol', position: 'Smacor', age: 22, height: '186cm', rating: 7.8, club: 'Eczacibasi' },
       ];
     }
 
@@ -3385,6 +3417,7 @@ setText('.content h1', 'Antrenör Profili');
         saveWatchlist([]);
       }
 
+      allPlayers = filterPlayersByCoachSport(allPlayers);
       filteredPlayers = allPlayers.slice();
       renderPlayers(filteredPlayers);
       updateStats();

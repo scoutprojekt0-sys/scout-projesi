@@ -2975,6 +2975,27 @@
             return String(el?.value || 'futbol').trim().toLowerCase();
         }
 
+        function normalizeSportValue(value) {
+            const raw = String(value || '').trim().toLowerCase();
+            if (!raw) return '';
+            if (raw.includes('basket')) return 'basketbol';
+            if (raw.includes('voley')) return 'voleybol';
+            if (raw.includes('fut')) return 'futbol';
+            return raw;
+        }
+
+        function getActiveTeamSportFilter() {
+            let authUser = null;
+            try { authUser = JSON.parse(localStorage.getItem('nextscout_user') || '{}'); } catch (error) { authUser = null; }
+            return normalizeSportValue(
+                authUser?.sport ||
+                authUser?.branch ||
+                authUser?.primary_sport ||
+                authUser?.primarySport ||
+                ''
+            );
+        }
+
         function syncTeamPositionOptions() {
             const sport = getSportFilterValue();
             const positionSelect = document.getElementById('position');
@@ -4602,10 +4623,13 @@
                 allPlayers = getFallbackPlayers();
                 if (teamHeroApi) teamHeroApi.textContent = 'Yerel yedek';
             }
+            const activeTeamSport = getActiveTeamSportFilter();
+            if (activeTeamSport) {
+                const sportFilter = document.getElementById('sportFilter');
+                if (sportFilter) sportFilter.value = activeTeamSport;
+            }
             syncTeamPositionOptions();
-            filteredPlayers = allPlayers.slice();
-            renderPlayers(filteredPlayers);
-            updateStats();
+            searchPlayers();
             await loadTeamTransferSummary();
             renderCompareSelection();
 
@@ -4657,7 +4681,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
 
 
 

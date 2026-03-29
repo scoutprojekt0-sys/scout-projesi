@@ -1663,6 +1663,26 @@
       }
     }
 
+    function normalizeSportValue(value) {
+      const raw = String(value || '').trim().toLowerCase();
+      if (!raw) return '';
+      if (raw.includes('basket')) return 'basketbol';
+      if (raw.includes('voley')) return 'voleybol';
+      if (raw.includes('fut')) return 'futbol';
+      return raw;
+    }
+
+    function getActiveScoutSportFilter() {
+      const user = getUser();
+      return normalizeSportValue(
+        user?.sport ||
+        user?.branch ||
+        user?.primary_sport ||
+        user?.primarySport ||
+        ''
+      );
+    }
+
     function escapeHtml(value) {
       return String(value ?? '')
         .replace(/&/g, '&amp;')
@@ -2010,18 +2030,23 @@
       try {
         const payload = await apiGet(`/public/players?search=${encodeURIComponent(search)}&per_page=10`);
         const rows = Array.isArray(payload?.data) ? payload.data : Array.isArray(payload) ? payload : [];
-        if (!rows.length) {
+        const activeSport = getActiveScoutSportFilter();
+        const filteredRows = !activeSport ? rows : rows.filter((row) => {
+          const rowSport = normalizeSportValue(row?.sport || row?.branch || '');
+          return !rowSport || rowSport === activeSport;
+        });
+        if (!filteredRows.length) {
           select.innerHTML = '<option value="">Eslesen oyuncu bulunamadi</option>';
           if (hint) hint.textContent = 'Bu isimle oyuncu bulunamadi. Yeni oyuncu olarak devam edebilirsin.';
           return;
         }
 
-        select.innerHTML = rows.map((row) => {
+        select.innerHTML = filteredRows.map((row) => {
           const city = row.city || 'Sehir yok';
           const position = row.position || 'Pozisyon yok';
           return `<option value="${Number(row.id) || 0}" data-name="${escapeHtml(row.name || '')}" data-city="${escapeHtml(city)}" data-position="${escapeHtml(position)}">${escapeHtml(row.name || 'Oyuncu')} - ${escapeHtml(city)} / ${escapeHtml(position)}</option>`;
         }).join('');
-        if (hint) hint.textContent = `${rows.length} oyuncu bulundu. Listeden secim yap.`;
+        if (hint) hint.textContent = `${filteredRows.length} oyuncu bulundu. Listeden secim yap.`;
       } catch (error) {
         select.innerHTML = '<option value="">Oyuncular yuklenemedi</option>';
         if (hint) hint.textContent = error.message || 'Oyuncular yuklenemedi.';
