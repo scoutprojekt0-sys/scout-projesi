@@ -420,6 +420,12 @@
             color: #6b7280;
             font-size: 13px;
         }
+        .group-head-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
         .group-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
@@ -445,6 +451,49 @@
             border-color: #60a5fa;
             color: #fff;
         }
+        .group-chip.is-showcased {
+            box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.45);
+        }
+        .group-chip-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .group-chip-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .group-chip-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            padding: 4px 7px;
+            border-radius: 999px;
+            background: rgba(245, 158, 11, 0.16);
+            color: #b45309;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .group-chip.active .group-chip-badge {
+            background: rgba(255, 255, 255, 0.16);
+            color: #fef3c7;
+        }
+        .group-chip-meta {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            text-align: left;
+        }
+        .group-chip.active .group-chip-meta {
+            color: rgba(255, 255, 255, 0.8);
+        }
         .group-note {
             margin-top: 14px;
             padding: 12px 14px;
@@ -453,6 +502,21 @@
             background: #f8fafc;
             font-size: 13px;
             color: #4b5563;
+        }
+        .group-note strong {
+            color: #111827;
+        }
+        .group-note-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: 8px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: #fef3c7;
+            color: #92400e;
+            font-size: 11px;
+            font-weight: 800;
         }
         .group-roster {
             margin-top: 14px;
@@ -540,40 +604,12 @@
         }
         #playerRegisterPanel {
             padding-bottom: 18px;
-        }
-        #playerRegisterPanel .needs-actions {
-            position: sticky;
-            bottom: -14px;
-            margin: 14px -14px -14px;
-            padding: 14px;
-            background: linear-gradient(180deg, rgba(15, 31, 46, 0.88) 0%, rgba(15, 31, 46, 0.97) 34%, rgba(15, 31, 46, 1) 100%);
-            border-top: 1px solid rgba(148, 163, 184, 0.22);
-            z-index: 3;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            max-height: min(78vh, 760px) !important;
         }
         #playerRegisterPanel .needs-actions .btn-small {
             min-width: 104px;
-            justify-content: center;
-        }
-        #playerRegisterFloatingActions {
-            position: fixed;
-            left: 50%;
-            bottom: 20px;
-            transform: translateX(-50%);
-            width: min(640px, calc(100vw - 24px));
-            display: none;
-            justify-content: flex-end;
-            gap: 10px;
-            padding: 12px 14px;
-            background: rgba(15, 31, 46, 0.96);
-            border: 1px solid rgba(148, 163, 184, 0.22);
-            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.34);
-            z-index: 2610;
-        }
-        #playerRegisterFloatingActions.active {
-            display: flex;
-        }
-        #playerRegisterFloatingActions .btn-small {
-            min-width: 112px;
             justify-content: center;
         }
         #debugTeamDashboardBadge {
@@ -944,7 +980,8 @@
             padding: 16px;
             backdrop-filter: blur(4px);
         }
-        .need-modal-overlay.show { display: flex; }
+        .need-modal-overlay.show,
+        .need-modal-overlay.active { display: flex; }
         .need-modal {
             width: min(860px, 100%);
             background: linear-gradient(180deg, rgba(18, 41, 61, 0.98) 0%, rgba(15, 31, 46, 0.98) 100%);
@@ -1292,6 +1329,7 @@
                         <button class="btn-small secondary" type="button" onclick="openTeamScoutHub()"><i class="fas fa-bookmark"></i><span>Scout Watchlist & Raporlar</span></button>
                         <button class="btn-small secondary" type="button" onclick="openTeamWorkspace('notes')"><i class="fas fa-briefcase"></i><span>Oyuncu Calisma Alani</span></button>
                         <button class="btn-small secondary" type="button" onclick="openTeamGroupsCard()"><i class="fas fa-people-group"></i><span>Takim Gruplari</span></button>
+                        <button class="btn-small secondary" type="button" onclick="window.location.href='club-showcase.html'"><i class="fas fa-bullhorn"></i><span>Kulup Vitrini</span></button>
                         <button class="btn-small secondary" type="button" onclick="openClubOperationsModal()"><i class="fas fa-layer-group"></i><span>Kulup Operasyonlari</span></button>
                     </div>
                     <div class="hero-points">
@@ -1324,23 +1362,19 @@
                         </div>
                         <button class="team-groups-close" type="button" onclick="closeTeamGroupsCard()">Ã—</button>
                     </div>
-                    <button class="btn-small secondary" type="button" onclick="togglePlayerRegisterPanel(true)">
-                        <i class="fas fa-clipboard-list"></i><span>Gruba Oyuncu Ekle</span>
-                    </button>
+                    <div class="group-head-actions">
+                        <button class="btn-small secondary" type="button" onclick="toggleTeamGroupCreatePanel(true)">
+                            <i class="fas fa-layer-group"></i><span>Grup Ekle</span>
+                        </button>
+                        <button class="btn-small secondary" type="button" id="teamGroupShowcaseBtn" onclick="toggleActiveTeamGroupShowcase()">
+                            <i class="fas fa-bullhorn"></i><span>Vitrine Cikar</span>
+                        </button>
+                        <button class="btn-small secondary" type="button" onclick="togglePlayerRegisterPanel(true)">
+                            <i class="fas fa-clipboard-list"></i><span>Gruba Oyuncu Ekle</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="group-grid" id="teamGroupGrid">
-                    <button class="group-chip active" type="button" data-group="u9" onclick="setActiveTeamGroup('u9')">U9</button>
-                    <button class="group-chip" type="button" data-group="u10" onclick="setActiveTeamGroup('u10')">U10</button>
-                    <button class="group-chip" type="button" data-group="u11" onclick="setActiveTeamGroup('u11')">U11</button>
-                    <button class="group-chip" type="button" data-group="u12" onclick="setActiveTeamGroup('u12')">U12</button>
-                    <button class="group-chip" type="button" data-group="u13" onclick="setActiveTeamGroup('u13')">U13</button>
-                    <button class="group-chip" type="button" data-group="u14" onclick="setActiveTeamGroup('u14')">U14</button>
-                    <button class="group-chip" type="button" data-group="u15" onclick="setActiveTeamGroup('u15')">U15</button>
-                    <button class="group-chip" type="button" data-group="u16" onclick="setActiveTeamGroup('u16')">U16</button>
-                    <button class="group-chip" type="button" data-group="u17" onclick="setActiveTeamGroup('u17')">U17</button>
-                    <button class="group-chip" type="button" data-group="u19" onclick="setActiveTeamGroup('u19')">U19</button>
-                    <button class="group-chip" type="button" data-group="a-team" onclick="setActiveTeamGroup('a-team')">A Takim</button>
-                </div>
+                <div class="group-grid" id="teamGroupGrid"></div>
                 <div class="group-note" id="teamGroupNote">Secili grup: U9. Bu gruba sadece kulup ici profil kaydi yapilir.</div>
                 <div class="group-roster" id="teamGroupRoster"></div>
             </div>
@@ -1602,10 +1636,6 @@
 
     <div id="playerRegisterPanel" class="needs-panel">
         <h3>Kulup Ici Oyuncu Profili</h3>
-        <div class="needs-actions" style="margin-top:0;margin-bottom:12px;position:sticky;top:-14px;padding:12px 0 10px;background:linear-gradient(180deg, rgba(15,31,46,1) 0%, rgba(15,31,46,0.98) 72%, rgba(15,31,46,0.82) 100%);z-index:4;">
-            <button class="btn-small secondary" type="button" onclick="togglePlayerRegisterPanel(false)">Kapat</button>
-            <button class="btn-small primary" type="button" onclick="saveClubPlayerRegistration()">Kaydet</button>
-        </div>
         <div class="player-register-grid">
             <div class="form-group">
                 <label>Takim Grubu</label>
@@ -1723,9 +1753,33 @@
         </div>
         <div id="playerRegisterMsg" class="needs-msg"></div>
     </div>
-    <div id="playerRegisterFloatingActions">
-        <button class="btn-small secondary" type="button" onclick="togglePlayerRegisterPanel(false)">Kapat</button>
-        <button class="btn-small primary" type="button" onclick="saveClubPlayerRegistration()">Kaydet</button>
+    <div id="teamGroupCreatePanel" class="needs-panel">
+        <h3>Yeni Takim Grubu</h3>
+        <div class="player-register-grid">
+            <div class="form-group">
+                <label>Grup Adi</label>
+                <input id="teamGroupNameInput" type="text" placeholder="U18 Elit veya Gelisim Takimi">
+            </div>
+            <div class="form-group">
+                <label>Grup Anahtari</label>
+                <input id="teamGroupKeyInput" type="text" placeholder="u18-elit">
+            </div>
+            <div class="form-group full-span">
+                <label>Grup Notu</label>
+                <textarea id="teamGroupNoteInput" placeholder="Bu grubun kisa amaci veya kullanim notu"></textarea>
+            </div>
+            <div class="form-group full-span">
+                <label style="display:flex;align-items:center;gap:8px;">
+                    <input id="teamGroupShowcaseInput" type="checkbox" style="width:auto;min-height:auto;">
+                    <span>Kaydederken vitrinde ac</span>
+                </label>
+            </div>
+        </div>
+        <div class="needs-actions">
+            <button class="btn-small secondary" type="button" onclick="toggleTeamGroupCreatePanel(false)">Kapat</button>
+            <button class="btn-small primary" type="button" onclick="saveTeamGroup()">Kaydet</button>
+        </div>
+        <div id="teamGroupCreateMsg" class="needs-msg"></div>
     </div>
 
     <div class="tip-modal-overlay" id="teamTalentTipOverlay" onclick="if (event.target.id === 'teamTalentTipOverlay') closeTeamTalentTipModal();">
@@ -2188,6 +2242,7 @@
         let lastComparePayload = null;
         let searchDebounceTimer = null;
         let activeTeamGroup = 'u9';
+        let teamGroups = [];
         let clubOffers = [];
         let clubInternalPlayers = [];
         let editingClubPlayerId = null;
@@ -2426,7 +2481,7 @@
             events.hidden = activeTeamOpportunityTab !== 'events';
             manager.hidden = activeTeamOpportunityTab !== 'manager';
             tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.teamOpportunityTab === activeTeamOpportunityTab));
-            overlay.classList.add('active');
+            overlay.classList.add('show');
             document.body.style.overflow = 'hidden';
             loadTeamOpportunityArea(activeTeamOpportunityTab);
         }
@@ -2642,6 +2697,7 @@
         }
 
         function closeTeamWorkspace() {
+            document.getElementById('teamWorkspaceOverlay')?.classList.remove('show');
             document.getElementById('teamWorkspaceOverlay')?.classList.remove('active');
             document.body.style.overflow = '';
         }
@@ -2881,6 +2937,56 @@
             clubInternalPlayers = Array.isArray(payload?.data?.data) ? payload.data.data : [];
             return clubInternalPlayers;
         }
+
+        async function fetchClubTeamGroups() {
+            const headers = getAuthHeaders(false);
+            if (!headers) {
+                teamGroups = [];
+                return teamGroups;
+            }
+
+            const response = await fetch(`${getApiBaseUrl()}/club/groups`, { headers });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok || payload?.ok === false) {
+                throw new Error(payload?.message || 'Takim gruplari yuklenemedi.');
+            }
+
+            teamGroups = Array.isArray(payload?.data) ? payload.data : [];
+            return teamGroups;
+        }
+
+        async function createClubTeamGroup(payload) {
+            const headers = getAuthHeaders(true);
+            if (!headers) throw new Error('Takim grubu eklemek icin aktif oturum gerekli.');
+
+            const response = await fetch(`${getApiBaseUrl()}/club/groups`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(payload),
+            });
+            const body = await response.json().catch(() => ({}));
+            if (!response.ok || body?.ok === false) {
+                throw new Error(body?.message || 'Takim grubu kaydedilemedi.');
+            }
+            return body?.data || null;
+        }
+
+        async function updateClubTeamGroup(groupId, payload) {
+            const headers = getAuthHeaders(true);
+            if (!headers) throw new Error('Takim grubu guncellemek icin aktif oturum gerekli.');
+
+            const response = await fetch(`${getApiBaseUrl()}/club/groups/${encodeURIComponent(groupId)}`, {
+                method: 'PATCH',
+                headers,
+                body: JSON.stringify(payload),
+            });
+            const body = await response.json().catch(() => ({}));
+            if (!response.ok || body?.ok === false) {
+                throw new Error(body?.message || 'Takim grubu guncellenemedi.');
+            }
+            return body?.data || null;
+        }
+
 
         async function persistClubInternalPlayer(payload, playerId) {
             const headers = getAuthHeaders(true);
@@ -3947,16 +4053,49 @@
         }
 
         function setActiveTeamGroup(groupKey) {
-            activeTeamGroup = groupKey || 'u9';
-            document.querySelectorAll('#teamGroupGrid .group-chip').forEach((button) => {
-                button.classList.toggle('active', button.dataset.group === activeTeamGroup);
-            });
+            activeTeamGroup = groupKey || teamGroups[0]?.group_key || 'u9';
+            renderTeamGroupGrid();
             const select = document.getElementById('registerGroupSelect');
             if (select) select.value = activeTeamGroup;
             const note = document.getElementById('teamGroupNote');
-            const label = activeTeamGroup === 'a-team' ? 'A Takim' : activeTeamGroup.toUpperCase();
-            if (note) note.textContent = `Secili grup: ${label}. Bu gruba sadece kulup ici profil kaydi yapilir.`;
+            const activeGroup = getActiveTeamGroupData();
+            if (note) {
+                const showcase = activeGroup?.is_showcased ? '<span class="group-note-badge"><i class="fas fa-bullhorn"></i>Vitrinde</span>' : '';
+                note.innerHTML = `<strong>Secili grup:</strong> ${escapeHtml(activeGroup?.name || activeTeamGroup)}. ${escapeHtml(activeGroup?.note || 'Bu gruba sadece kulup ici profil kaydi yapilir.')}${showcase}`;
+            }
+            const showcaseBtn = document.getElementById('teamGroupShowcaseBtn');
+            if (showcaseBtn) {
+                showcaseBtn.innerHTML = activeGroup?.is_showcased
+                    ? '<i class="fas fa-circle-check"></i><span>Vitrinde</span>'
+                    : '<i class="fas fa-bullhorn"></i><span>Vitrine Cikar</span>';
+            }
             renderTeamGroupRoster();
+        }
+
+        function getActiveTeamGroupData() {
+            return teamGroups.find((group) => group.group_key === activeTeamGroup) || null;
+        }
+
+        function renderTeamGroupGrid() {
+            const root = document.getElementById('teamGroupGrid');
+            if (!root) return;
+            if (!Array.isArray(teamGroups) || !teamGroups.length) {
+                root.innerHTML = '<div class="group-roster-empty">Takim grubu kaydi bulunamadi.</div>';
+                return;
+            }
+
+            root.innerHTML = teamGroups.map((group) => {
+                const playerCount = clubInternalPlayers.filter((row) => row.group === group.group_key && row.profile_type === 'internal_profile').length;
+                return `
+                    <button class="group-chip ${group.group_key === activeTeamGroup ? 'active' : ''} ${group.is_showcased ? 'is-showcased' : ''}" type="button" data-group="${escapeHtml(group.group_key)}" onclick="setActiveTeamGroup('${escapeHtml(group.group_key)}')">
+                        <span class="group-chip-top">
+                            <span class="group-chip-label">${escapeHtml(group.name || group.group_key)}</span>
+                            ${group.is_showcased ? '<span class="group-chip-badge">Vitrin</span>' : ''}
+                        </span>
+                        <span class="group-chip-meta">${playerCount} oyuncu</span>
+                    </button>
+                `;
+            }).join('');
         }
 
         function renderTeamGroupRoster() {
@@ -3964,9 +4103,10 @@
             if (!root) return;
             const rows = clubInternalPlayers
                 .filter((row) => row.group === activeTeamGroup && row.profile_type === 'internal_profile');
+            const activeGroup = getActiveTeamGroupData();
 
             if (!rows.length) {
-                const emptyLabel = activeTeamGroup === 'a-team' ? 'A Takim' : activeTeamGroup.toUpperCase();
+                const emptyLabel = activeGroup?.name || activeTeamGroup;
                 root.innerHTML = `<div class="group-roster-empty">${emptyLabel} grubunda henuz kayitli oyuncu yok.</div>`;
                 return;
             }
@@ -4024,9 +4164,96 @@
             try {
                 await deleteClubInternalPlayerApi(playerId);
                 clubInternalPlayers = clubInternalPlayers.filter((item) => Number(item.id) !== Number(playerId));
+                renderTeamGroupGrid();
                 renderTeamGroupRoster();
             } catch (error) {
                 window.nsNotify?.error ? window.nsNotify.error(error.message || 'Profil silinemedi.') : nsnsAlert(error.message || 'Profil silinemedi.');
+            }
+        }
+
+        function syncRegisterGroupOptions() {
+            const select = document.getElementById('registerGroupSelect');
+            if (!select) return;
+            select.innerHTML = teamGroups.map((group) => `<option value="${escapeHtml(group.group_key)}">${escapeHtml(group.name || group.group_key)}</option>`).join('');
+            if (teamGroups.some((group) => group.group_key === activeTeamGroup)) {
+                select.value = activeTeamGroup;
+            }
+        }
+
+        function toggleTeamGroupCreatePanel(forceState) {
+            const panel = document.getElementById('teamGroupCreatePanel');
+            const overlay = document.getElementById('panelOverlay');
+            const groupsOverlay = document.getElementById('teamGroupsOverlay');
+            if (!panel) return;
+            const shouldOpen = typeof forceState === 'boolean' ? forceState : !panel.classList.contains('active');
+            panel.classList.toggle('active', shouldOpen);
+            panel.style.display = shouldOpen ? 'block' : 'none';
+            panel.style.position = 'fixed';
+            panel.style.left = '50%';
+            panel.style.top = '20%';
+            panel.style.right = 'auto';
+            panel.style.bottom = 'auto';
+            panel.style.transform = 'translate(-50%, -18%)';
+            panel.style.width = 'min(560px, calc(100vw - 24px))';
+            panel.style.maxHeight = '74vh';
+            panel.style.margin = '0';
+            panel.style.zIndex = groupsOverlay?.classList.contains('active') ? '2600' : '2000';
+            if (overlay) {
+                overlay.classList.toggle('active', shouldOpen);
+                overlay.style.zIndex = groupsOverlay?.classList.contains('active') ? '2590' : '1990';
+            }
+            if (!shouldOpen) {
+                const msg = document.getElementById('teamGroupCreateMsg');
+                if (msg) msg.textContent = '';
+                document.getElementById('teamGroupNameInput').value = '';
+                document.getElementById('teamGroupKeyInput').value = '';
+                document.getElementById('teamGroupNoteInput').value = '';
+                document.getElementById('teamGroupShowcaseInput').checked = false;
+            }
+        }
+
+        async function saveTeamGroup() {
+            const name = (document.getElementById('teamGroupNameInput')?.value || '').trim();
+            const group_key = (document.getElementById('teamGroupKeyInput')?.value || '').trim();
+            const note = (document.getElementById('teamGroupNoteInput')?.value || '').trim();
+            const is_showcased = !!document.getElementById('teamGroupShowcaseInput')?.checked;
+            const msg = document.getElementById('teamGroupCreateMsg');
+
+            if (!name) {
+                if (msg) msg.textContent = 'Grup adi gerekli.';
+                return;
+            }
+
+            try {
+                if (msg) msg.textContent = 'Grup kaydediliyor...';
+                const created = await createClubTeamGroup({ name, group_key, note, is_showcased });
+                if (created) {
+                    teamGroups = teamGroups
+                        .map((group) => created.is_showcased ? { ...group, is_showcased: false } : group)
+                        .concat([created])
+                        .sort((a, b) => Number(a.sort_order || 0) - Number(b.sort_order || 0));
+                    syncRegisterGroupOptions();
+                    setActiveTeamGroup(created.group_key || activeTeamGroup);
+                }
+                toggleTeamGroupCreatePanel(false);
+            } catch (error) {
+                if (msg) msg.textContent = error.message || 'Takim grubu kaydedilemedi.';
+            }
+        }
+
+        async function toggleActiveTeamGroupShowcase() {
+            const activeGroup = getActiveTeamGroupData();
+            if (!activeGroup?.id) return;
+            try {
+                const updated = await updateClubTeamGroup(activeGroup.id, { is_showcased: !activeGroup.is_showcased });
+                teamGroups = teamGroups.map((group) => {
+                    if (Number(group.id) === Number(updated?.id)) return updated;
+                    if (updated?.is_showcased) return { ...group, is_showcased: false };
+                    return group;
+                });
+                setActiveTeamGroup(updated?.group_key || activeTeamGroup);
+            } catch (error) {
+                window.nsNotify?.error ? window.nsNotify.error(error.message || 'Vitrin durumu guncellenemedi.') : nsnsAlert(error.message || 'Vitrin durumu guncellenemedi.');
             }
         }
 
@@ -4034,9 +4261,16 @@
             const panel = document.getElementById('playerRegisterPanel');
             const overlay = document.getElementById('panelOverlay');
             const groupsOverlay = document.getElementById('teamGroupsOverlay');
-            const floatingActions = document.getElementById('playerRegisterFloatingActions');
             if (!panel) return;
             const shouldOpen = typeof forceState === 'boolean' ? forceState : !panel.classList.contains('active');
+            if (shouldOpen) {
+                ['clubNeedsPanel', 'clubPromoPanel', 'trialPublishPanel', 'teamGroupCreatePanel'].forEach((id) => {
+                    const otherPanel = document.getElementById(id);
+                    if (!otherPanel) return;
+                    otherPanel.classList.remove('active');
+                    otherPanel.style.display = 'none';
+                });
+            }
             panel.classList.toggle('active', shouldOpen);
             panel.style.display = shouldOpen ? 'block' : 'none';
             panel.style.position = 'fixed';
@@ -4052,9 +4286,6 @@
             if (overlay) {
                 overlay.classList.toggle('active', shouldOpen);
                 overlay.style.zIndex = groupsOverlay?.classList.contains('active') ? '2590' : '1990';
-            }
-            if (floatingActions) {
-                floatingActions.classList.toggle('active', shouldOpen);
             }
             const select = document.getElementById('registerGroupSelect');
             if (shouldOpen && select) select.value = activeTeamGroup;
@@ -4121,6 +4352,7 @@
                     clubInternalPlayers = [saved, ...clubInternalPlayers];
                 }
                 if (msg) msg.textContent = editingClubPlayerId ? `${name} profili guncellendi.` : `${name} icin kulup ici profil olusturuldu.`;
+                renderTeamGroupGrid();
                 setActiveTeamGroup(group);
                 renderTeamGroupRoster();
                 editingClubPlayerId = null;
@@ -4501,7 +4733,7 @@
         }
 
         function closeAllTopPanels() {
-            ['clubNeedsPanel', 'clubPromoPanel', 'trialPublishPanel', 'playerRegisterPanel'].forEach((id) => {
+            ['clubNeedsPanel', 'clubPromoPanel', 'trialPublishPanel', 'playerRegisterPanel', 'teamGroupCreatePanel'].forEach((id) => {
                 const panel = document.getElementById(id);
                 if (!panel) return;
                 panel.classList.remove('active');
@@ -4610,9 +4842,18 @@
                 await fetchClubOffers();
             } catch (error) {}
             try {
+                await fetchClubTeamGroups();
+            } catch (error) {
+                teamGroups = [];
+            }
+            try {
                 await fetchClubInternalPlayers();
             } catch (error) {
                 clubInternalPlayers = [];
+            }
+            syncRegisterGroupOptions();
+            if (!teamGroups.some((group) => group.group_key === activeTeamGroup) && teamGroups[0]?.group_key) {
+                activeTeamGroup = teamGroups[0].group_key;
             }
             setActiveTeamGroup(activeTeamGroup);
             const grid = document.getElementById('playersGrid');
@@ -4682,12 +4923,3 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
