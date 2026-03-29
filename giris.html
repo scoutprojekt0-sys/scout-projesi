@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giris | NextScout</title>
+  <style>
+    :root {
+      --page-bg:#0b1220;
+      --panel:#111827;
+      --panel-2:#1f2937;
+      --line:#374151;
+      --text:#f9fafb;
+      --muted:#e5e7eb;
+      --muted-2:#9ca3af;
+      --primary:#1d4ed8;
+      --primary-2:#2563eb;
+      --error:#ef4444;
+      --ok:#10b981;
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      min-height:100vh;
+      font-family:Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top, rgba(37,99,235,.16), transparent 32%),
+        linear-gradient(180deg, #0f172a 0%, var(--page-bg) 100%);
+      display:grid;
+      place-items:center;
+      padding:24px 14px;
+    }
+    .shell {
+      width:min(92vw, 440px);
+    }
+    .card {
+      border:1px solid #4b5563;
+      border-radius:20px;
+      background:linear-gradient(180deg, var(--panel-2) 0%, var(--panel) 100%);
+      box-shadow:0 30px 80px rgba(0,0,0,.45);
+      overflow:hidden;
+    }
+    .card-header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:18px 22px;
+      background:linear-gradient(135deg, #1e3a8a 0%, var(--primary) 100%);
+    }
+    .card-header h1 {
+      margin:0;
+      font-size:20px;
+      letter-spacing:.2px;
+    }
+    .card-header p {
+      margin:6px 0 0;
+      color:rgba(255,255,255,.84);
+      font-size:13px;
+      line-height:1.45;
+    }
+    .back-link {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:42px;
+      height:42px;
+      border-radius:999px;
+      text-decoration:none;
+      color:#fff;
+      background:rgba(255,255,255,.14);
+      font-size:20px;
+      font-weight:700;
+    }
+    .card-body {
+      padding:22px;
+    }
+    .note {
+      margin:0 0 18px;
+      color:var(--muted);
+      line-height:1.5;
+      font-size:14px;
+    }
+    .row {
+      display:grid;
+      gap:6px;
+      margin-bottom:14px;
+    }
+    label {
+      font-size:13px;
+      font-weight:700;
+      color:var(--muted);
+    }
+    input {
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#111827;
+      color:var(--text);
+      padding:13px 14px;
+      font:inherit;
+      outline:none;
+    }
+    input::placeholder {
+      color:var(--muted-2);
+    }
+    input:focus {
+      border-color:#60a5fa;
+      box-shadow:0 0 0 3px rgba(37,99,235,.18);
+    }
+    .meta-row {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin:6px 0 18px;
+      font-size:13px;
+    }
+    .meta-row a,
+    .meta a {
+      color:var(--muted);
+      text-decoration:none;
+    }
+    .btn {
+      width:100%;
+      border:0;
+      border-radius:12px;
+      background:linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+      color:#fff;
+      font:inherit;
+      font-weight:800;
+      padding:13px 16px;
+      cursor:pointer;
+      box-shadow:0 10px 24px rgba(37,99,235,.3);
+    }
+    .btn:disabled {
+      opacity:.7;
+      cursor:not-allowed;
+    }
+    .msg {
+      display:none;
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:10px;
+      font-size:13px;
+      font-weight:700;
+    }
+    .msg.show { display:block; }
+    .msg.error {
+      background:rgba(239,68,68,.16);
+      border:1px solid rgba(239,68,68,.45);
+      color:#fecaca;
+    }
+    .msg.success {
+      background:rgba(16,185,129,.16);
+      border:1px solid rgba(16,185,129,.45);
+      color:#d1fae5;
+    }
+    .meta {
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      margin-top:16px;
+      padding-top:16px;
+      border-top:1px solid rgba(156,163,175,.18);
+      font-size:13px;
+    }
+    @media (max-width: 480px) {
+      .card-header,
+      .card-body {
+        padding:18px;
+      }
+      .meta,
+      .meta-row {
+        flex-direction:column;
+        align-items:flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="card">
+      <header class="card-header">
+        <div>
+          <h1>Giris Yap</h1>
+          <p>Eski hesaplar dahil tum kullanicilar icin tek giris noktasi.</p>
+        </div>
+        <a class="back-link" href="index.html" aria-label="Ana sayfaya don">×</a>
+      </header>
+      <div class="card-body">
+        <p class="note">Tum roller ayni backend giris akisini kullanir. Kayitli hesabin varsa burada dogrudan acilir.</p>
+        <form id="loginForm">
+          <div class="row">
+            <label for="email">E-posta</label>
+            <input id="email" name="email" type="email" autocomplete="username" placeholder="ornek@email.com" required>
+          </div>
+          <div class="row">
+            <label for="password">Sifre</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
+          </div>
+          <div class="meta-row">
+            <span>Beni hatirla destegi token ile otomatik calisir.</span>
+            <a href="index.html#kayit">Hesabin yok mu?</a>
+          </div>
+          <button class="btn" id="loginBtn" type="submit">Giris Yap</button>
+          <div class="msg" id="loginMsg"></div>
+        </form>
+        <div class="meta">
+          <a href="index.html">Ana sayfaya don</a>
+          <a href="menejer-giris.html">Rol bazli girisler</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script>
+    (function () {
+      const form = document.getElementById('loginForm');
+      const btn = document.getElementById('loginBtn');
+      const msg = document.getElementById('loginMsg');
+
+      function getApiBaseUrl() {
+        const stored = (localStorage.getItem('nextscout_api_base') || '').trim();
+        if (stored) return stored.replace(/\/$/, '');
+        if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
+          return window.location.origin.replace(/\/$/, '') + '/api';
+        }
+        return 'http://127.0.0.1:8000/api';
+      }
+
+      function getDashboardByRole(role) {
+        const normalized = String(role || '').trim().toLowerCase();
+        if (normalized === 'admin') return 'admin-dashboard.html';
+        if (normalized === 'manager') return 'manager-dashboard.html';
+        if (normalized === 'coach' || normalized === 'scout') return 'coach-dashboard.html';
+        if (normalized === 'team' || normalized === 'club') return 'team-dashboard.html';
+        if (normalized === 'lawyer') return 'lawyer-dashboard.html';
+        return 'player-dashboard.html';
+      }
+
+      function showMessage(text, type) {
+        msg.className = `msg show ${type}`;
+        msg.textContent = text;
+      }
+
+      form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const formData = new FormData(form);
+        const payload = {
+          email: String(formData.get('email') || '').trim(),
+          password: String(formData.get('password') || ''),
+        };
+
+        if (!payload.email || !payload.password) {
+          showMessage('E-posta ve sifre zorunlu.', 'error');
+          return;
+        }
+
+        btn.disabled = true;
+        showMessage('Giris yapiliyor...', 'success');
+
+        try {
+          const response = await fetch(`${getApiBaseUrl()}/auth/login`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: JSON.stringify(payload),
+          });
+
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok || !data?.ok) {
+            throw new Error(data?.message || data?.errors?.email?.[0] || 'Giris basarisiz.');
+          }
+
+          const token = data?.data?.token || '';
+          const user = data?.data?.user || {};
+          if (!token || !user?.role) {
+            throw new Error('Oturum verisi eksik.');
+          }
+
+          localStorage.setItem('nextscout_token', token);
+          localStorage.setItem('nextscout_user', JSON.stringify(user));
+          localStorage.removeItem('nextscout_demo_login');
+          showMessage('Giris basarili. Dashboard aciliyor...', 'success');
+
+          setTimeout(() => {
+            window.location.replace(getDashboardByRole(user.role));
+          }, 150);
+        } catch (error) {
+          showMessage(error?.message || 'Giris basarisiz.', 'error');
+          btn.disabled = false;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

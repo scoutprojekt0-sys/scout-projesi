@@ -177,7 +177,19 @@
           if (payload?.data?.user) {
             localStorage.setItem("nextscout_user", JSON.stringify(payload.data.user));
           }
-          setTimeout(() => { window.location.href = "index.html"; }, 1500);
+          const role = (payload?.data?.user?.role || ROLE || "team").toString().trim().toLowerCase();
+          const target = role === "admin"
+            ? "admin-dashboard.html"
+            : role === "manager"
+              ? "manager-dashboard.html"
+              : role === "coach" || role === "scout"
+                ? "coach-dashboard.html"
+                : role === "team" || role === "club"
+                  ? "team-dashboard.html"
+                  : role === "lawyer"
+                    ? "lawyer-dashboard.html"
+                    : "player-dashboard.html";
+          setTimeout(() => { window.location.href = target; }, 350);
         } catch (error) {
           showMessage(loginMsg, `❌ ${error.message}`, true);
           btn.disabled = false;

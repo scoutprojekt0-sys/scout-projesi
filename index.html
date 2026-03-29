@@ -4750,7 +4750,7 @@ function nsnsAlert(msg) {
                 </button>
 
                 <!-- Login Button -->
-                <button class="login-btn" id="loginBtn" onclick="openLoginModal()">
+                <button class="login-btn" id="loginBtn" onclick="window.location.href=resolveLocalPage('giris.html')">
                     <i class="fas fa-sign-in-alt"></i>
                     Giriş
                 </button>
@@ -5557,70 +5557,6 @@ function nsnsAlert(msg) {
                         <button type="submit" class="btn-primary">
                             <i class="fas fa-search"></i> Ara
                         </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== LOGIN MODAL ========== -->
-    <div class="modal-overlay" id="loginModal" onclick="closeLoginModal()">
-        <div class="modal-card login-modal" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h2><i class="fas fa-sign-in-alt"></i> Giriş Yap</h2>
-                <button class="modal-close" onclick="closeLoginModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-
-            <div class="modal-body">
-                <!-- Social Login Buttons -->
-                <div class="social-login">
-                    <button class="social-btn google-btn">
-                        <i class="fab fa-google"></i>
-                        Google ile Giriş Yap
-                    </button>
-                    <button class="social-btn facebook-btn">
-                        <i class="fab fa-facebook-f"></i>
-                        Facebook ile Giriş Yap
-                    </button>
-                </div>
-
-                <div class="divider">
-                    <span>veya</span>
-                </div>
-
-                <!-- Login Form -->
-                <form id="loginForm">
-                    <div class="form-group">
-                        <label><i class="fas fa-envelope"></i> Email</label>
-                        <input type="email" class="form-control" name="email" placeholder="ornek@email.com" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label><i class="fas fa-lock"></i> Şifre</label>
-                        <div class="password-input">
-                            <input type="password" class="form-control" name="password" id="loginPassword" placeholder="••••••••" required>
-                            <button type="button" class="toggle-password" onclick="togglePassword('loginPassword')">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="remember">
-                            <span>Beni Hatırla</span>
-                        </label>
-                        <a href="#" class="forgot-password" onclick="window.nsNotify?.info ? window.nsNotify.info('Şifre sıfırlama emaili gönderildi!') : nsnsAlert('Şifre sıfırlama emaili gönderildi!')">Şifremi Unuttum?</a>
-                    </div>
-
-                    <button type="submit" class="btn-primary btn-full">
-                        <i class="fas fa-sign-in-alt"></i> Giriş Yap
-                    </button>
-
-                    <div class="register-link">
-                        Hesabınız yok mu? <a href="#" onclick="closeLoginModal(); openRegisterModal();">Kayıt Ol</a>
                     </div>
                 </form>
             </div>
@@ -9526,12 +9462,10 @@ function nsnsAlert(msg) {
 
         // ========== LOGIN MODAL ==========
         function openLoginModal() {
-            document.getElementById('loginModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
+            window.location.href = resolveLocalPage('giris.html');
         }
 
         function closeLoginModal() {
-            document.getElementById('loginModal').classList.remove('active');
             document.body.style.overflow = 'auto';
         }
 
@@ -10486,92 +10420,6 @@ function nsnsAlert(msg) {
         }
 
         // Login Form Submit
-        const loginForm = document.getElementById('loginForm');
-        if (loginForm) {
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-
-            const formData = new FormData(this);
-            const payload = {
-                email: (formData.get('email') || '').toString().trim(),
-                password: (formData.get('password') || '').toString(),
-            };
-
-            console.log('🔐 Giriş denemesi:', { email: payload.email });
-
-            // file:// modunda API çağrısı CORS/network nedeniyle engellenebilir.
-            // Bu durumda üyeyi varsayılan kullanıcı DASHBOARD'una yönlendir.
-            if (window.location.protocol === 'file:') {
-                if (!payload.email || !payload.password) {
-                    nsnsAlert('Lütfen email ve şifre girin.');
-                    return;
-                }
-                const registeredUser = findRegisteredUser(payload.email, payload.password);
-                if (!registeredUser) {
-                    nsnsAlert('Bu hesap kayıtlı değil veya şifre yanlış. Önce kayıt olmalısın.');
-                    return;
-                }
-                if (!isUserLocallyVerified(registeredUser)) {
-                    nsnsAlert('Hesap doğrulanmadi. E-postana gönderilen linke tiklayip tekrar giriş yap.');
-                    return;
-                }
-                loginWithLocalUser(registeredUser);
-                return;
-            }
-
-            fetch(`${API_BASE_URL}/auth/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            })
-            .then(async (res) => {
-                console.log('📡 API yanıtı:', res.status, res.statusText);
-                const data = await res.json();
-                console.log('📦 Veri:', data);
-
-                if (!res.ok || !data.ok) {
-                    const msg = data?.message || data?.errors?.email?.[0] || 'Giriş başarısız.';
-                    throw new Error(msg);
-                }
-
-                const token = data?.data?.token || '';
-                const user = data?.data?.user || {};
-
-                if (token) {
-                    localStorage.setItem('nextscout_token', token);
-                    localStorage.setItem('nextscout_user', JSON.stringify(user));
-                    console.log('✅ Token ve kullanıcı bilgisi kaydedildi');
-                }
-
-                const userRole = user?.role || '';
-                closeLoginModal();
-                console.log('➡️ DASHBOARD\'a yönlendiriliyor...');
-
-                const dashboardUrl = getDashboardByRole(userRole, window.location.protocol === 'file:');
-
-                console.log('📍 DASHBOARD URL:', dashboardUrl);
-                                window.location.href = resolveLocalPage(dashboardUrl);
-            })
-            .catch((err) => {
-                console.error('❌ Giriş hatası:', err);
-                const registeredUser = findRegisteredUser(payload.email, payload.password);
-                if (err.message === 'Failed to fetch' && registeredUser) {
-                    loginWithLocalUser(registeredUser);
-                    return;
-                }
-                let errorMsg = err.message;
-                if (err.message === 'Failed to fetch') {
-                    errorMsg = '❌ Server\'a bağlanılamadı!\n\nLütfen kontrol edin:\n1. Laravel server çalışıyor mu? (php artisan serve)\n2. URL doğru mu? ' + API_BASE_URL;
-                }
-
-                nsnsAlert(errorMsg);
-            });
-            });
-        }
-
         function submitRegisterForm() {
             const registerForm = document.getElementById('registerForm');
             if (!registerForm) {
