@@ -313,6 +313,8 @@ Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->grou
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+    Route::get('/notifications/preferences', [NotificationController::class, 'preferences']);
+    Route::put('/notifications/preferences', [NotificationController::class, 'updatePreferences']);
     Route::get('/users', [SystemController::class, 'usersIndex'])->middleware('admin');
     Route::get('/users/{id}/profile-card', [SystemController::class, 'userProfileCard'])->middleware('admin');
     Route::get('/admin/ops/rate-limit-summary', [SystemController::class, 'adminRateLimitSummary'])->middleware('admin');

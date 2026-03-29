@@ -151,6 +151,16 @@ class User extends Authenticatable
         return $this->hasMany(Favorite::class);
     }
 
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    public function notificationPreference()
+    {
+        return $this->hasOne(UserNotificationPreference::class);
+    }
+
     public function favoritedBy()
     {
         return $this->hasMany(Favorite::class, 'target_user_id');

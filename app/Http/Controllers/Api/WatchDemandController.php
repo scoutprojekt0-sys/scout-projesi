@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\LiveMatch;
 use App\Models\LiveWatchRequest;
 use App\Models\PlayerMatchSchedule;
+use App\Services\MatchAlertNotificationService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,6 +15,8 @@ use Illuminate\Http\Request;
 class WatchDemandController extends Controller
 {
     use ApiResponds;
+
+    public function __construct(private readonly MatchAlertNotificationService $matchAlertNotificationService) {}
 
     public function publicHeatmap(Request $request): JsonResponse
     {
@@ -129,6 +132,7 @@ class WatchDemandController extends Controller
         ]);
 
         $this->syncTodayScheduleToLiveMatches($schedule, $user);
+        $this->matchAlertNotificationService->dispatchForSchedule($schedule);
 
         return $this->successResponse($this->transformSchedule($schedule), 'Mac takvimi kaydedildi.', 201);
     }
@@ -152,8 +156,8 @@ class WatchDemandController extends Controller
     public function myRequests(Request $request): JsonResponse
     {
         $user = $request->user();
-        if (! $user || ! in_array($user->role, ['manager', 'coach'], true)) {
-            return $this->errorResponse('Bu alan sadece menajer ve antrenor icin aktif.', 403, 'forbidden');
+        if (! $user || ! in_array($user->role, ['manager', 'coach', 'scout', 'team', 'club'], true)) {
+            return $this->errorResponse('Bu alan sadece staff ve kulup rolleri icin aktif.', 403, 'forbidden');
         }
 
         $rows = LiveWatchRequest::query()
@@ -169,8 +173,8 @@ class WatchDemandController extends Controller
     public function storeRequest(Request $request): JsonResponse
     {
         $user = $request->user();
-        if (! $user || ! in_array($user->role, ['manager', 'coach'], true)) {
-            return $this->errorResponse('Bu alan sadece menajer ve antrenor icin aktif.', 403, 'forbidden');
+        if (! $user || ! in_array($user->role, ['manager', 'coach', 'scout', 'team', 'club'], true)) {
+            return $this->errorResponse('Bu alan sadece staff ve kulup rolleri icin aktif.', 403, 'forbidden');
         }
 
         $validated = $request->validate([
@@ -196,8 +200,8 @@ class WatchDemandController extends Controller
     public function resolveRequest(Request $request, int $requestId): JsonResponse
     {
         $user = $request->user();
-        if (! $user || ! in_array($user->role, ['manager', 'coach'], true)) {
-            return $this->errorResponse('Bu alan sadece menajer ve antrenor icin aktif.', 403, 'forbidden');
+        if (! $user || ! in_array($user->role, ['manager', 'coach', 'scout', 'team', 'club'], true)) {
+            return $this->errorResponse('Bu alan sadece staff ve kulup rolleri icin aktif.', 403, 'forbidden');
         }
 
         $watchRequest = LiveWatchRequest::query()

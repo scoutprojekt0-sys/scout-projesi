@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\UserNotificationPreference;
 use Carbon\CarbonInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -34,8 +35,14 @@ class NotificationController extends Controller
                 return [
                     'id' => (int) $notification->id,
                     'type' => (string) $notification->type,
+                    'title' => $notification->title,
+                    'message' => $notification->message,
                     'payload' => $payload,
+                    'priority' => $notification->priority,
                     'is_read' => (bool) $notification->is_read,
+                    'read_at' => $this->normalizeTimestamp($notification->read_at),
+                    'related_player_id' => $notification->related_player_id ? (int) $notification->related_player_id : null,
+                    'related_match_schedule_id' => $notification->related_match_schedule_id ? (int) $notification->related_match_schedule_id : null,
                     'created_at' => $this->normalizeTimestamp($notification->created_at),
                     'updated_at' => $this->normalizeTimestamp($notification->updated_at),
                 ];
@@ -64,6 +71,7 @@ class NotificationController extends Controller
             ->where('user_id', $user->id)
             ->update([
                 'is_read' => true,
+                'read_at' => now(),
                 'updated_at' => now(),
             ]);
 
@@ -95,6 +103,7 @@ class NotificationController extends Controller
             ->where('is_read', false)
             ->update([
                 'is_read' => true,
+                'read_at' => now(),
                 'updated_at' => now(),
             ]);
 
@@ -106,6 +115,58 @@ class NotificationController extends Controller
             'data' => [
                 'updated_count' => $updated,
                 'unread_count' => $this->unreadCount($user->id),
+            ],
+        ]);
+    }
+
+    public function preferences(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $preferences = UserNotificationPreference::query()->firstOrCreate(
+            ['user_id' => $user->id],
+            [
+                'allow_match_alerts' => true,
+                'sport' => $user->sport,
+                'city' => $user->city,
+                'district' => null,
+            ]
+        );
+
+        return response()->json([
+            'ok' => true,
+            'data' => [
+                'allow_match_alerts' => (bool) $preferences->allow_match_alerts,
+                'sport' => $preferences->sport,
+                'city' => $preferences->city,
+                'district' => $preferences->district,
+            ],
+        ]);
+    }
+
+    public function updatePreferences(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $validated = $request->validate([
+            'allow_match_alerts' => ['required', 'boolean'],
+            'sport' => ['nullable', 'string', 'max:100'],
+            'city' => ['nullable', 'string', 'max:100'],
+            'district' => ['nullable', 'string', 'max:100'],
+        ]);
+
+        $preferences = UserNotificationPreference::query()->updateOrCreate(
+            ['user_id' => $user->id],
+            $validated
+        );
+
+        return response()->json([
+            'ok' => true,
+            'message' => 'Bildirim tercihleri guncellendi.',
+            'data' => [
+                'allow_match_alerts' => (bool) $preferences->allow_match_alerts,
+                'sport' => $preferences->sport,
+                'city' => $preferences->city,
+                'district' => $preferences->district,
             ],
         ]);
     }
