@@ -661,6 +661,75 @@
       };
     }
 
+    function getNotificationTitle(item) {
+      const type = String(item?.type || '').trim().toLowerCase();
+      const payload = item?.payload && typeof item.payload === 'object' ? item.payload : {};
+      const playerName = String(payload?.player_name || '').trim();
+
+      if (type === 'scout_tip_shortlisted') {
+        return playerName
+          ? `${playerName} shortlist'e eklendi`
+          : 'Scout ihbari shortlist'e eklendi';
+      }
+
+      if (type === 'scout_tip_created') {
+        return playerName
+          ? `${playerName} icin yeni scout ihbari`
+          : 'Yeni scout ihbari';
+      }
+
+      if (type === 'scout_tip_role_requested') {
+        return playerName
+          ? `${playerName} icin rol talebi geldi`
+          : 'Scout ihbari icin rol talebi geldi';
+      }
+
+      if (type === 'scout_tip_dual_role_match') {
+        return playerName
+          ? `${playerName} menajer listesine dustu`
+          : 'Scout ihbari menajer listesine dustu';
+      }
+
+      return String(item?.title || item?.type || 'Bildirim');
+    }
+
+    function getNotificationBody(item) {
+      const type = String(item?.type || '').trim().toLowerCase();
+      const payload = item?.payload && typeof item.payload === 'object' ? item.payload : {};
+      const playerName = String(payload?.player_name || 'Bu oyuncu').trim();
+      const position = String(payload?.position || '').trim();
+      const city = String(payload?.city || '').trim();
+      const role = String(payload?.requested_role || '').trim();
+      const requestedBy = String(payload?.requested_by?.name || '').trim();
+      const meta = [position, city].filter(Boolean).join(' · ');
+
+      if (type === 'scout_tip_shortlisted') {
+        return meta
+          ? `${playerName} icin shortlist kaydi olustu. ${meta}`
+          : `${playerName} icin shortlist kaydi olustu.`;
+      }
+
+      if (type === 'scout_tip_created') {
+        return meta
+          ? `${playerName} icin yeni scout ihbari olusturuldu. ${meta}`
+          : `${playerName} icin yeni scout ihbari olusturuldu.`;
+      }
+
+      if (type === 'scout_tip_role_requested') {
+        const roleText = role ? `${role} talebi` : 'rol talebi';
+        const byText = requestedBy ? ` ${requestedBy} tarafindan gonderildi.` : ' gonderildi.';
+        return `${playerName} icin ${roleText}${byText}`;
+      }
+
+      if (type === 'scout_tip_dual_role_match') {
+        return meta
+          ? `${playerName} hem kulup hem antrenor tarafindan istendi. ${meta}`
+          : `${playerName} hem kulup hem antrenor tarafindan istendi.`;
+      }
+
+      return String(item?.body || item?.message || '');
+    }
+
     function normalizeNotification(item) {
       return {
         id: `notification-${item?.id || Date.now()}`,
@@ -670,8 +739,8 @@
         read: Boolean(item?.is_read) || Boolean(item?.read_at) || Boolean(item?.read),
         from: 'Sistem',
         to: USER.name,
-        subject: String(item?.title || item?.type || 'Bildirim'),
-        body: String(item?.body || item?.message || ''),
+        subject: getNotificationTitle(item),
+        body: getNotificationBody(item),
         time: item?.created_at || item?.time || new Date().toISOString(),
       };
     }
