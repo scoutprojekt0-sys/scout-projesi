@@ -91,4 +91,9 @@ class ScoutTip extends Model
     {
         return $this->hasMany(ScoutReward::class);
     }
+
+    public function roleRequests()
+    {
+        return $this->hasMany(ScoutTipRoleRequest::class);
+    }
 }

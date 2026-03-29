@@ -3,11 +3,13 @@
 namespace Tests\Feature;
 
 use App\Models\ScoutTip;
+use App\Models\ScoutTipRoleRequest;
 use App\Models\ModerationQueue;
 use App\Models\PlayerTransfer;
 use App\Models\User;
 use App\Models\VideoClip;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -111,6 +113,92 @@ class ScoutTipEndpointsTest extends TestCase
         Sanctum::actingAs($other, ['profile:read']);
 
         $this->getJson('/api/scout-tips/'.$tip->id)->assertStatus(403);
+    }
+
+    public function test_tip_submission_notifies_coaches_and_clubs(): void
+    {
+        $submitter = User::factory()->create(['role' => 'scout']);
+        $coach = User::factory()->create(['role' => 'coach']);
+        $club = User::factory()->create(['role' => 'team']);
+
+        Sanctum::actingAs($submitter, ['profile:read', 'profile:write', 'staff']);
+
+        $this->postJson('/api/scout-tips', [
+            'source_type' => 'new_player',
+            'player_name' => 'Ali Vural',
+            'birth_year' => 2010,
+            'position' => 'midfielder',
+            'city' => 'Izmir',
+            'guardian_consent_status' => 'received',
+            'description' => 'Oyun gorusu yuksek, topu dogru yone tasiyan ve tempo degistirebilen oyuncu.',
+        ])->assertCreated();
+
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $coach->id,
+            'type' => 'scout_tip_created',
+        ]);
+
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $club->id,
+            'type' => 'scout_tip_created',
+        ]);
+    }
+
+    public function test_coach_and_club_role_requests_auto_shortlist_for_managers(): void
+    {
+        $submitter = User::factory()->create(['role' => 'scout']);
+        $coach = User::factory()->create(['role' => 'coach']);
+        $club = User::factory()->create(['role' => 'team']);
+        $manager = User::factory()->create(['role' => 'manager']);
+
+        $tip = ScoutTip::create([
+            'submitted_by' => $submitter->id,
+            'source_type' => 'new_player',
+            'player_name' => 'Mert Aydin',
+            'city' => 'Bursa',
+            'guardian_consent_status' => 'received',
+            'description' => 'Savunma arkasi kosulari iyi zamanlayan ve fizigiyle fark yaratan bir oyuncu.',
+            'ai_quality_score' => 62,
+            'final_score' => 62,
+        ]);
+
+        Sanctum::actingAs($coach, ['profile:read', 'profile:write', 'staff']);
+        $this->postJson('/api/scout-tips/'.$tip->id.'/role-request', [
+            'notes' => 'Kendi oyuncu havuzum icin takip etmek istiyorum.',
+        ])->assertOk();
+
+        $this->assertDatabaseHas('scout_tip_role_requests', [
+            'scout_tip_id' => $tip->id,
+            'user_id' => $coach->id,
+            'role_type' => 'coach',
+        ]);
+
+        Sanctum::actingAs($club, ['profile:read', 'profile:write', 'staff']);
+        $this->postJson('/api/scout-tips/'.$tip->id.'/role-request', [
+            'notes' => 'Kulup profiline uygun.',
+        ])->assertOk();
+
+        $this->assertDatabaseHas('scout_tip_role_requests', [
+            'scout_tip_id' => $tip->id,
+            'user_id' => $club->id,
+            'role_type' => 'team',
+        ]);
+
+        $this->assertDatabaseHas('scout_tip_watchlists', [
+            'manager_user_id' => $manager->id,
+            'scout_tip_id' => $tip->id,
+            'status' => 'auto_shortlisted',
+        ]);
+
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $manager->id,
+            'type' => 'scout_tip_dual_role_match',
+        ]);
+
+        Sanctum::actingAs($manager, ['profile:read', 'profile:write', 'staff']);
+        $this->getJson('/api/scout-tips/watchlist/my')
+            ->assertOk()
+            ->assertJsonPath('data.0.scout_tip_id', $tip->id);
     }
 
     public function test_transfer_creation_attaches_reward_candidate_for_attributed_tip(): void

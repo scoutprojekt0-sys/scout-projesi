@@ -5,14 +5,17 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Concerns\ApiResponds;
 use App\Http\Controllers\Controller;
 use App\Models\ScoutTip;
+use App\Models\ScoutTipRoleRequest;
 use App\Models\ScoutTipWatchlist;
 use App\Models\User;
 use App\Models\VideoClip;
 use App\Services\ScoutTipWorkflowService;
+use App\Support\NotificationStore;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -250,6 +253,7 @@ class ScoutTipController extends Controller
         $rows = ScoutTipWatchlist::query()
             ->with([
                 'scoutTip.submitter:id,name',
+                'scoutTip.roleRequests.user:id,name,role',
                 'player:id,name,role,city,position,age,rating',
             ])
             ->where('manager_user_id', $request->user()->id)
@@ -257,6 +261,122 @@ class ScoutTipController extends Controller
             ->get();
 
         return $this->successResponse($rows, 'Scout tip watchlist hazir.');
+    }
+
+    public function roleRequestFeed(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $this->canRequestRole($user)) {
+            return $this->errorResponse('Bu akis sadece kulup ve antrenor hesaplari icin acik.', 403, 'forbidden');
+        }
+
+        $roleType = $this->normalizeRoleRequestType((string) $user->role);
+
+        $rows = ScoutTip::query()
+            ->with([
+                'submitter:id,name,role',
+                'roleRequests.user:id,name,role',
+            ])
+            ->whereIn('status', ['pending', 'screened', 'shortlisted', 'approved'])
+            ->latest('created_at')
+            ->paginate((int) $request->input('per_page', 20));
+
+        $rows->getCollection()->transform(function (ScoutTip $tip) use ($user, $roleType) {
+            $tip->setAttribute(
+                'request_summary',
+                [
+                    'coach' => $tip->roleRequests->where('role_type', 'coach')->count(),
+                    'team' => $tip->roleRequests->where('role_type', 'team')->count(),
+                    'mine' => $tip->roleRequests->contains(function (ScoutTipRoleRequest $row) use ($user, $roleType) {
+                        return (int) $row->user_id === (int) $user->id && $row->role_type === $roleType;
+                    }),
+                ]
+            );
+
+            return $tip;
+        });
+
+        return $this->paginatedListResponse($rows, 'Rol talep akisi hazir.');
+    }
+
+    public function myRoleRequests(Request $request): JsonResponse
+    {
+        $rows = ScoutTipRoleRequest::query()
+            ->with([
+                'scoutTip.submitter:id,name,role',
+                'scoutTip.player:id,name',
+            ])
+            ->where('user_id', $request->user()->id)
+            ->latest('id')
+            ->get();
+
+        return $this->successResponse($rows, 'Rol talepleriniz hazir.');
+    }
+
+    public function requestRole(Request $request, int $id): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $this->canRequestRole($user)) {
+            return $this->errorResponse('Bu akis sadece kulup ve antrenor hesaplari icin acik.', 403, 'forbidden');
+        }
+
+        $validated = $request->validate([
+            'notes' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $tip = ScoutTip::with(['submitter:id,name,role', 'roleRequests.user:id,name,role'])->findOrFail($id);
+        $roleType = $this->normalizeRoleRequestType((string) $user->role);
+
+        $entry = DB::transaction(function () use ($tip, $user, $roleType, $validated) {
+            $entry = ScoutTipRoleRequest::query()->firstOrCreate(
+                [
+                    'scout_tip_id' => $tip->id,
+                    'user_id' => $user->id,
+                    'role_type' => $roleType,
+                ],
+                [
+                    'status' => 'requested',
+                    'notes' => $validated['notes'] ?? null,
+                    'metadata' => [
+                        'player_name' => $tip->player_name,
+                        'source' => 'scout_tip',
+                    ],
+                ]
+            );
+
+            if (! empty($validated['notes'])) {
+                $entry->notes = $validated['notes'];
+                $entry->save();
+            }
+
+            $counterpart = $roleType === 'coach' ? 'team' : 'coach';
+            $tip->load('roleRequests');
+            $hasCounterpartRequest = $tip->roleRequests->contains(fn (ScoutTipRoleRequest $row) => $row->role_type === $counterpart);
+
+            if ($hasCounterpartRequest) {
+                $this->autoCreateManagerShortlistEntries($tip);
+            }
+
+            NotificationStore::sendToUser((int) $tip->submitted_by, 'scout_tip_role_requested', [
+                'scout_tip_id' => $tip->id,
+                'player_name' => $tip->player_name,
+                'requested_role' => $roleType,
+                'requested_by' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'role' => $user->role,
+                ],
+            ]);
+
+            return $entry;
+        });
+
+        return $this->successResponse(
+            $entry->fresh(['scoutTip.submitter:id,name,role', 'user:id,name,role']),
+            'Rol talebi kaydedildi.'
+        );
     }
 
     public function addToWatchlist(Request $request, int $id): JsonResponse
@@ -390,6 +510,67 @@ class ScoutTipController extends Controller
         }
 
         return $user->can('review', ScoutTip::class);
+    }
+
+    private function canRequestRole(?User $user): bool
+    {
+        if (! $user) {
+            return false;
+        }
+
+        return in_array($user->role, ['coach', 'team'], true);
+    }
+
+    private function normalizeRoleRequestType(string $role): string
+    {
+        return $role === 'team' ? 'team' : 'coach';
+    }
+
+    private function autoCreateManagerShortlistEntries(ScoutTip $tip): void
+    {
+        $tip->loadMissing('roleRequests.user:id,name,role');
+
+        $roleCounts = [
+            'coach' => $tip->roleRequests->where('role_type', 'coach')->count(),
+            'team' => $tip->roleRequests->where('role_type', 'team')->count(),
+        ];
+
+        if ($roleCounts['coach'] < 1 || $roleCounts['team'] < 1) {
+            return;
+        }
+
+        $managerIds = User::query()
+            ->where('role', 'manager')
+            ->pluck('id');
+
+        foreach ($managerIds as $managerId) {
+            ScoutTipWatchlist::query()->firstOrCreate(
+                [
+                    'manager_user_id' => (int) $managerId,
+                    'scout_tip_id' => $tip->id,
+                ],
+                [
+                    'player_id' => $tip->player_id,
+                    'status' => 'auto_shortlisted',
+                    'notes' => 'Kulup ve antrenor talebi sonrasinda otomatik shortlist olustu.',
+                    'metadata' => [
+                        'source' => 'dual_role_request',
+                        'player_name' => $tip->player_name,
+                        'position' => $tip->position,
+                        'city' => $tip->city,
+                        'role_request_counts' => $roleCounts,
+                    ],
+                ]
+            );
+        }
+
+        NotificationStore::sendToUsers($managerIds, 'scout_tip_dual_role_match', [
+            'scout_tip_id' => $tip->id,
+            'player_name' => $tip->player_name,
+            'position' => $tip->position,
+            'city' => $tip->city,
+            'role_request_counts' => $roleCounts,
+        ]);
     }
 
     private function resolveGuestSubmitter(): User

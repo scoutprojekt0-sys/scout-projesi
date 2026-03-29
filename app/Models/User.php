@@ -216,6 +216,11 @@ class User extends Authenticatable
         return $this->hasMany(ScoutTipWatchlist::class, 'manager_user_id');
     }
 
+    public function scoutTipRoleRequests()
+    {
+        return $this->hasMany(ScoutTipRoleRequest::class);
+    }
+
     public function requestedVideoAnalyses()
     {
         return $this->hasMany(VideoAnalysis::class, 'requested_by');

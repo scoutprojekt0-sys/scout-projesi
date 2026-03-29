@@ -8,6 +8,7 @@ use App\Models\ScoutReward;
 use App\Models\ScoutTip;
 use App\Models\ScoutTipEvent;
 use App\Models\User;
+use App\Support\NotificationStore;
 use Illuminate\Support\Facades\DB;
 
 class ScoutTipWorkflowService
@@ -61,6 +62,8 @@ class ScoutTipWorkflowService
                 $user->id,
                 'Crowdsourced scout tip submitted'
             );
+
+            $this->notifyRelevantRolesAboutTip($tip, $user);
 
             return $tip->fresh(['submitter', 'videoClip', 'duplicateOf']);
         });
@@ -235,6 +238,25 @@ class ScoutTipWorkflowService
             'event_type' => $eventType,
             'notes' => $notes,
             'metadata' => $metadata,
+        ]);
+    }
+
+    private function notifyRelevantRolesAboutTip(ScoutTip $tip, User $submitter): void
+    {
+        $targetIds = User::query()
+            ->whereIn('role', ['coach', 'team'])
+            ->pluck('id');
+
+        NotificationStore::sendToUsers($targetIds, 'scout_tip_created', [
+            'scout_tip_id' => $tip->id,
+            'player_name' => $tip->player_name,
+            'position' => $tip->position,
+            'city' => $tip->city,
+            'submitted_by' => [
+                'id' => $submitter->id,
+                'name' => $submitter->name,
+                'role' => $submitter->role,
+            ],
         ]);
     }
 }

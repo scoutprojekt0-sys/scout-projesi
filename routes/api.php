@@ -162,8 +162,11 @@ Route::prefix('scout-tips')->middleware(['auth:sanctum', 'reject_legacy_token', 
     Route::get('/my', [ScoutTipController::class, 'my'])->middleware('ability:profile:read');
     Route::get('/resolve-player', [ScoutTipController::class, 'resolvePlayer'])->middleware('ability:profile:read');
     Route::get('/watchlist/my', [ScoutTipController::class, 'watchlist'])->middleware('ability:profile:read');
+    Route::get('/role-requests/feed', [ScoutTipController::class, 'roleRequestFeed'])->middleware('ability:profile:read');
+    Route::get('/role-requests/my', [ScoutTipController::class, 'myRoleRequests'])->middleware('ability:profile:read');
     Route::post('/{id}/manager-note', [ScoutTipController::class, 'saveManagerNote'])->middleware('ability:profile:write');
     Route::post('/{id}/watchlist', [ScoutTipController::class, 'addToWatchlist'])->middleware('ability:profile:write');
+    Route::post('/{id}/role-request', [ScoutTipController::class, 'requestRole'])->middleware('ability:profile:write');
     Route::post('/watchlist/{id}/remove', [ScoutTipController::class, 'removeFromWatchlist'])->middleware('ability:profile:write');
     Route::get('/{id}', [ScoutTipController::class, 'show'])->middleware('ability:profile:read');
     Route::post('/', [ScoutTipController::class, 'store'])->middleware('ability:profile:write');
