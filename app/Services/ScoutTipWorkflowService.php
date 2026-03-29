@@ -29,10 +29,19 @@ class ScoutTipWorkflowService
                 ->latest('id')
                 ->first();
             $isGuestSubmission = (bool) data_get($payload, 'metadata.guest_submission', false);
+            $isManagerSubmission = $user->role === 'manager';
 
             $payload['ai_quality_score'] = $this->scoringService->calculateInitialScore($payload, $user);
             $payload['final_score'] = $payload['ai_quality_score'];
             $payload['duplicate_of_tip_id'] = $duplicate?->id;
+            if ($isManagerSubmission) {
+                $payload['status'] = 'shortlisted';
+                $payload['shortlisted_at'] = now();
+                $payload['metadata'] = array_merge($payload['metadata'] ?? [], [
+                    'manager_direct_shortlist' => true,
+                    'submitted_role' => $user->role,
+                ]);
+            }
 
             $tip = ScoutTip::create($payload + ['submitted_by' => $user->id]);
 
@@ -42,7 +51,7 @@ class ScoutTipWorkflowService
 
             $this->createModerationItem($tip, $user->id, $duplicate !== null);
 
-            if (! $isGuestSubmission) {
+            if (! $isGuestSubmission && ! $isManagerSubmission) {
                 $user->increment('scout_tips_count');
                 $this->pointService->award(
                     $user->fresh(),
@@ -63,7 +72,7 @@ class ScoutTipWorkflowService
                 'Crowdsourced scout tip submitted'
             );
 
-            $this->notifyRelevantRolesAboutTip($tip, $user);
+            $this->notifyRelevantRolesAboutTip($tip, $user, $isManagerSubmission);
 
             return $tip->fresh(['submitter', 'videoClip', 'duplicateOf']);
         });
@@ -241,17 +250,18 @@ class ScoutTipWorkflowService
         ]);
     }
 
-    private function notifyRelevantRolesAboutTip(ScoutTip $tip, User $submitter): void
+    private function notifyRelevantRolesAboutTip(ScoutTip $tip, User $submitter, bool $isManagerSubmission = false): void
     {
         $targetIds = User::query()
             ->whereIn('role', ['coach', 'team'])
             ->pluck('id');
 
-        NotificationStore::sendToUsers($targetIds, 'scout_tip_created', [
+        NotificationStore::sendToUsers($targetIds, $isManagerSubmission ? 'scout_tip_shortlisted' : 'scout_tip_created', [
             'scout_tip_id' => $tip->id,
             'player_name' => $tip->player_name,
             'position' => $tip->position,
             'city' => $tip->city,
+            'status' => $tip->status,
             'submitted_by' => [
                 'id' => $submitter->id,
                 'name' => $submitter->name,

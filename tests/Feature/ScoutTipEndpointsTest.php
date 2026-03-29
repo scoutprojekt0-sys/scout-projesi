@@ -144,6 +144,39 @@ class ScoutTipEndpointsTest extends TestCase
         ]);
     }
 
+    public function test_manager_tip_submission_directly_shortlists_for_coach_and_club(): void
+    {
+        $manager = User::factory()->create(['role' => 'manager']);
+        $coach = User::factory()->create(['role' => 'coach']);
+        $club = User::factory()->create(['role' => 'team']);
+
+        Sanctum::actingAs($manager, ['profile:read', 'profile:write', 'staff']);
+
+        $this->postJson('/api/scout-tips', [
+            'source_type' => 'new_player',
+            'player_name' => 'Kaan Arslan',
+            'birth_year' => 2009,
+            'position' => 'winger',
+            'city' => 'Istanbul',
+            'guardian_consent_status' => 'received',
+            'description' => 'Direkt oyuna etki eden, hizli karar veren ve bire birde fark yaratan bir oyuncu.',
+        ])->assertCreated()
+            ->assertJsonPath('data.status', 'shortlisted');
+
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $coach->id,
+            'type' => 'scout_tip_shortlisted',
+        ]);
+
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $club->id,
+            'type' => 'scout_tip_shortlisted',
+        ]);
+
+        $manager->refresh();
+        $this->assertSame(0, (int) $manager->scout_tips_count);
+    }
+
     public function test_coach_and_club_role_requests_auto_shortlist_for_managers(): void
     {
         $submitter = User::factory()->create(['role' => 'scout']);
