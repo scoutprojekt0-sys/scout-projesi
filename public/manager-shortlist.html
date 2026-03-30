@@ -134,8 +134,55 @@
       padding: 16px;
       margin-bottom: 16px;
       display: grid;
-      grid-template-columns: 1.3fr .9fr auto;
+      grid-template-columns: 1.3fr .8fr .8fr auto;
       gap: 10px;
+    }
+
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .summary-card {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(18, 36, 52, 0.92), rgba(9, 18, 28, 0.92));
+      box-shadow: var(--shadow);
+      border-radius: 22px;
+      padding: 16px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .summary-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-2), var(--accent));
+    }
+
+    .summary-k {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .summary-v {
+      margin-top: 10px;
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .summary-sub {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
     }
 
     input,
@@ -167,10 +214,101 @@
       padding: 18px;
     }
 
+    .panel.is-locked,
+    .detail.is-locked {
+      position: relative;
+    }
+
+    .panel.is-locked .tip-list,
+    .panel.is-locked .list-head,
+    .detail.is-locked .detail-card,
+    .detail.is-locked .empty,
+    .detail.is-locked .detail-head {
+      visibility: hidden;
+    }
+
+    .paywall {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+      padding: 18px;
+    }
+
+    .paywall.active {
+      display: flex;
+    }
+
+    .paywall-card {
+      width: min(520px, 100%);
+      padding: 24px;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 126, 34, 0.24);
+      background: linear-gradient(180deg, rgba(9, 19, 30, 0.96), rgba(17, 34, 51, 0.96));
+      box-shadow: 0 28px 60px rgba(0, 0, 0, 0.36);
+      text-align: center;
+    }
+
+    .paywall-kicker {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 126, 34, 0.12);
+      border: 1px solid rgba(255, 126, 34, 0.2);
+      color: #ffba8a;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .paywall-title {
+      margin: 16px 0 8px;
+      font-size: 28px;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+
+    .paywall-copy {
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .paywall-points {
+      display: grid;
+      gap: 10px;
+      margin: 18px 0;
+      text-align: left;
+    }
+
+    .paywall-point {
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .paywall-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
     .detail {
       position: relative;
       overflow: hidden;
       min-height: 420px;
+      position: sticky;
+      top: 18px;
     }
 
     .list-head,
@@ -223,11 +361,98 @@
       align-items: flex-start;
     }
 
+    .tip-row {
+      display: grid;
+      grid-template-columns: 112px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .tip-thumb {
+      height: 124px;
+      border-radius: 16px;
+      overflow: hidden;
+      background:
+        linear-gradient(145deg, rgba(255, 126, 34, 0.18), rgba(96, 165, 250, 0.16)),
+        linear-gradient(180deg, #0d2133, #09131d);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #dbeafe;
+      font-size: 34px;
+      font-weight: 800;
+    }
+
+    .tip-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
     .tip-name,
     .player-name {
       margin: 0;
       font-size: 18px;
       font-weight: 800;
+    }
+
+    .tip-headline {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .status-pill-shortlisted { color: #ffd7b8; background: rgba(255, 126, 34, 0.14); border-color: rgba(255, 126, 34, 0.24); }
+    .status-pill-trial { color: #bfdbfe; background: rgba(59, 130, 246, 0.14); border-color: rgba(59, 130, 246, 0.28); }
+    .status-pill-signed { color: #bbf7d0; background: rgba(34, 197, 94, 0.14); border-color: rgba(34, 197, 94, 0.28); }
+    .status-pill-rejected { color: #fecaca; background: rgba(239, 68, 68, 0.14); border-color: rgba(239, 68, 68, 0.28); }
+
+    .score-line {
+      display: grid;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .score-track {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .score-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--primary), var(--primary-2), var(--accent));
+    }
+
+    .tip-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .tip-mini {
+      padding: 10px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .tip-mini-k {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .tip-mini-v {
+      margin-top: 4px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text);
     }
 
     .tip-desc,
@@ -258,6 +483,14 @@
 
     .detail-card[hidden] {
       display: none;
+    }
+
+    .detail-hero {
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.07);
     }
 
     .stack {
@@ -300,10 +533,19 @@
     @media (max-width: 960px) {
       .board { grid-template-columns: 1fr; }
       .filters { grid-template-columns: 1fr; }
+      .summary-strip { grid-template-columns: 1fr 1fr; }
+      .detail { position: relative; top: auto; }
       .hero-tools {
         position: static;
         margin-bottom: 14px;
       }
+      .tip-row { grid-template-columns: 1fr; }
+      .tip-thumb { height: 180px; }
+      .tip-mini-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .summary-strip { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -315,8 +557,8 @@
         <a class="btn" href="./manager-dashboard.html">Manager Dashboard</a>
       </div>
       <span class="eyebrow">Manager Shortlist</span>
-      <h1>Shortlist</h1>
-      <p>Bu ekran sadece manager shortlist havuzu icin var. Ham ihbar degil, kisa listeye alinmis adaylari gosterir.</p>
+      <h1>Karar verilecek adaylari tek ekranda yonet.</h1>
+      <p>Scout akısından shortlist'e dusen oyunculari daha temiz bir akışla incele, not al, denemeye tasi ve imza kararini ayni yerden ver.</p>
     </section>
 
     <section class="filters">
@@ -328,7 +570,35 @@
         <option value="signed">Imza</option>
         <option value="rejected">Reddedildi</option>
       </select>
+      <select id="sortFilter">
+        <option value="score">Skora Gore</option>
+        <option value="latest">En Yeni</option>
+        <option value="name">Ada Gore</option>
+      </select>
       <button class="btn" type="button" id="refreshBtn">Yenile</button>
+    </section>
+
+    <section class="summary-strip">
+      <article class="summary-card">
+        <div class="summary-k">Toplam Aday</div>
+        <div class="summary-v" id="summaryTotal">0</div>
+        <div class="summary-sub">Manager shortlist havuzunda aktif duran tum adaylar.</div>
+      </article>
+      <article class="summary-card">
+        <div class="summary-k">Deneme Asamasi</div>
+        <div class="summary-v" id="summaryTrial">0</div>
+        <div class="summary-sub">Trial ve deneme gorusmesine tasinmis oyuncular.</div>
+      </article>
+      <article class="summary-card">
+        <div class="summary-k">Imzaya Yakin</div>
+        <div class="summary-v" id="summarySigned">0</div>
+        <div class="summary-sub">Karar asamasina gelmis veya imzaya tasinmis oyuncular.</div>
+      </article>
+      <article class="summary-card">
+        <div class="summary-k">Ort. Skor</div>
+        <div class="summary-v" id="summaryAvg">0</div>
+        <div class="summary-sub">Shortlist havuzunun genel kalite seviyesi.</div>
+      </article>
     </section>
 
     <section class="board">
@@ -339,6 +609,22 @@
         </div>
         <div class="tip-list" id="tipList">
           <div class="empty">Shortlist yukleniyor...</div>
+        </div>
+        <div class="paywall" id="listPaywall">
+          <div class="paywall-card">
+            <div class="paywall-kicker">Premium Erişim</div>
+            <h3 class="paywall-title">Shortlist havuzunu acmak icin odeme gerekli.</h3>
+            <div class="paywall-copy">Shortlist'te aday var. Oyuncularin tam kartlarini, detaylarini ve karar aksiyonlarini acmak icin premium erisim satin alin.</div>
+            <div class="paywall-points">
+              <div class="paywall-point">Shortlist adaylarini tam gor</div>
+              <div class="paywall-point">Manager notu ve karar aksiyonlarini kullan</div>
+              <div class="paywall-point">Trial ve imza akisini ac</div>
+            </div>
+            <div class="paywall-actions">
+              <a class="btn btn-primary" id="unlockBtn" href="./homepage.html#pricing">Odeme Yap ve Ac</a>
+              <a class="btn" href="./manager-dashboard.html">Dashboarda Don</a>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -353,26 +639,28 @@
         <div class="empty" id="detailEmpty">Soldaki listeden bir shortlist adayi sec.</div>
 
         <div class="detail-card" id="detailCard" hidden>
-          <div class="detail-top">
-            <div>
-              <div class="eyebrow" id="detailScout">Scout Kaydi</div>
-              <h3 class="player-name" id="detailName">-</h3>
-              <div class="detail-sub" id="detailSub">-</div>
+          <div class="detail-hero">
+            <div class="detail-top">
+              <div>
+                <div class="eyebrow" id="detailScout">Scout Kaydi</div>
+                <h3 class="player-name" id="detailName">-</h3>
+                <div class="detail-sub" id="detailSub">-</div>
+              </div>
+              <div class="pill" id="detailStatus">Kisa Liste</div>
             </div>
-            <div class="pill" id="detailStatus">Kisa Liste</div>
-          </div>
 
-          <div class="quick-actions" style="margin-top:14px;">
-            <button class="action-btn" type="button" id="profileBtn">Profili Ac</button>
-            <button class="action-btn" type="button" id="messageBtn">Mesaj Taslagi</button>
-            <button class="action-btn" type="button" id="trialBtn">Trial Merkezi</button>
-          </div>
+            <div class="quick-actions" style="margin-top:14px;">
+              <button class="action-btn" type="button" id="profileBtn">Profili Ac</button>
+              <button class="action-btn" type="button" id="messageBtn">Mesaj Taslagi</button>
+              <button class="action-btn" type="button" id="trialBtn">Trial Merkezi</button>
+            </div>
 
-          <div class="detail-grid" style="margin-top:16px;">
-            <div class="metric"><div class="metric-k">Scout</div><div class="metric-v" id="metricScout">-</div></div>
-            <div class="metric"><div class="metric-k">Pozisyon</div><div class="metric-v" id="metricPosition">-</div></div>
-            <div class="metric"><div class="metric-k">Sehir</div><div class="metric-v" id="metricCity">-</div></div>
-            <div class="metric"><div class="metric-k">Skor</div><div class="metric-v" id="metricScore">0</div></div>
+            <div class="detail-grid" style="margin-top:16px;">
+              <div class="metric"><div class="metric-k">Scout</div><div class="metric-v" id="metricScout">-</div></div>
+              <div class="metric"><div class="metric-k">Pozisyon</div><div class="metric-v" id="metricPosition">-</div></div>
+              <div class="metric"><div class="metric-k">Sehir</div><div class="metric-v" id="metricCity">-</div></div>
+              <div class="metric"><div class="metric-k">Skor</div><div class="metric-v" id="metricScore">0</div></div>
+            </div>
           </div>
 
           <div class="stack">
@@ -406,6 +694,16 @@
             </div>
           </div>
         </div>
+        <div class="paywall" id="detailPaywall">
+          <div class="paywall-card">
+            <div class="paywall-kicker">Premium Erişim</div>
+            <h3 class="paywall-title">Aday detayini acmak icin premium paket gerekli.</h3>
+            <div class="paywall-copy">Bu alanda scout notu, manager notu, profil linki ve deneme aksiyonlari acilir.</div>
+            <div class="paywall-actions">
+              <a class="btn btn-primary" href="./homepage.html#pricing">Paketi Ac</a>
+            </div>
+          </div>
+        </div>
       </aside>
     </section>
   </main>
@@ -415,6 +713,7 @@
     let shortlistRows = [];
     let selectedTipId = Number(new URLSearchParams(window.location.search).get('selected_tip_id') || 0);
     let selectedDetail = null;
+    let shortlistLocked = false;
 
     function token() {
       return (localStorage.getItem('nextscout_token') || '').trim();
@@ -428,6 +727,31 @@
         Authorization: `Bearer ${value}`,
         'Content-Type': 'application/json'
       };
+    }
+
+    function currentUser() {
+      try {
+        return JSON.parse(localStorage.getItem('nextscout_user') || '{}') || {};
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function hasPremiumAccess() {
+      const user = currentUser();
+      const status = String(user?.subscription_status || user?.subscriptionStatus || '').trim().toLowerCase();
+      return ['active', 'premium', 'pro'].includes(status);
+    }
+
+    function applyPaywallState() {
+      const listPanel = document.querySelector('.board .panel');
+      const detailPanel = document.querySelector('.detail');
+      const listPaywall = document.getElementById('listPaywall');
+      const detailPaywall = document.getElementById('detailPaywall');
+      if (listPanel) listPanel.classList.toggle('is-locked', shortlistLocked);
+      if (detailPanel) detailPanel.classList.toggle('is-locked', shortlistLocked);
+      if (listPaywall) listPaywall.classList.toggle('active', shortlistLocked);
+      if (detailPaywall) detailPaywall.classList.toggle('active', shortlistLocked);
     }
 
     function escapeHtml(value) {
@@ -445,6 +769,19 @@
       if (status === 'signed') return 'Imza';
       if (status === 'rejected') return 'Reddedildi';
       return 'Kisa Liste';
+    }
+
+    function statusClass(value) {
+      const status = String(value || '').trim().toLowerCase();
+      if (status === 'trial') return 'status-pill-trial';
+      if (status === 'signed') return 'status-pill-signed';
+      if (status === 'rejected') return 'status-pill-rejected';
+      return 'status-pill-shortlisted';
+    }
+
+    function initials(value) {
+      const parts = String(value || '').trim().split(/\s+/).filter(Boolean).slice(0, 2);
+      return parts.map((part) => part.charAt(0).toUpperCase()).join('') || 'NS';
     }
 
     function formatDate(value) {
@@ -503,10 +840,31 @@
     function filteredRows() {
       const q = String(document.getElementById('searchInput').value || '').trim().toLocaleLowerCase('tr-TR');
       const status = String(document.getElementById('statusFilter').value || '').trim();
-      return shortlistRows.filter((row) => {
+      const sort = String(document.getElementById('sortFilter').value || 'score').trim();
+      const rows = shortlistRows.filter((row) => {
         const text = `${row.player_name || ''} ${row.city || ''} ${row.position || ''}`.toLocaleLowerCase('tr-TR');
         return (!q || text.includes(q)) && (!status || row.status === status);
       });
+      rows.sort((a, b) => {
+        if (sort === 'name') return String(a.player_name || '').localeCompare(String(b.player_name || ''), 'tr');
+        if (sort === 'latest') return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+        return Number(b.final_score || b.ai_quality_score || 0) - Number(a.final_score || a.ai_quality_score || 0);
+      });
+      return rows;
+    }
+
+    function updateSummary() {
+      const rows = shortlistRows.slice();
+      const total = rows.length;
+      const trial = rows.filter((row) => String(row.status || '').toLowerCase() === 'trial').length;
+      const signed = rows.filter((row) => String(row.status || '').toLowerCase() === 'signed').length;
+      const avg = total
+        ? (rows.reduce((sum, row) => sum + Number(row.final_score || row.ai_quality_score || 0), 0) / total).toFixed(1)
+        : '0';
+      document.getElementById('summaryTotal').textContent = String(total);
+      document.getElementById('summaryTrial').textContent = String(trial);
+      document.getElementById('summarySigned').textContent = String(signed);
+      document.getElementById('summaryAvg').textContent = String(avg);
     }
 
     function renderList() {
@@ -514,27 +872,53 @@
       const root = document.getElementById('tipList');
       document.getElementById('listMeta').textContent = `${rows.length} shortlist kaydi`;
       if (!rows.length) {
-        root.innerHTML = '<div class="empty">Shortlist kaydi bulunamadi.</div>';
+        root.innerHTML = '<div class="empty">Shortlistte listelenecek sporcu bulunamadi.</div>';
+        shortlistLocked = false;
+        applyPaywallState();
         return;
       }
       root.innerHTML = rows.map((row) => `
         <article class="tip-item ${Number(row.id) === Number(selectedTipId) ? 'is-active' : ''}">
-          <div class="tip-top">
+          <div class="tip-row">
+            <div class="tip-thumb">${escapeHtml(initials(row.player_name || ''))}</div>
             <div>
-              <h3 class="tip-name">${escapeHtml(row.player_name || '-')}</h3>
-              <div class="tip-desc">${escapeHtml(row.city || '-')}${row.position ? ` / ${escapeHtml(row.position)}` : ''}</div>
+              <div class="tip-headline">
+                <div>
+                  <h3 class="tip-name">${escapeHtml(row.player_name || '-')}</h3>
+                  <div class="tip-desc">${escapeHtml(row.city || '-')}${row.position ? ` / ${escapeHtml(row.position)}` : ''}</div>
+                </div>
+                <span class="pill ${statusClass(row.status)}">${escapeHtml(formatStatus(row.status))}</span>
+              </div>
+              <div class="tip-meta" style="margin-top:10px;">
+                <span class="pill">Scout: ${escapeHtml(row.submitter?.name || 'Scout')}</span>
+                <span class="pill">${escapeHtml(formatDate(row.created_at))}</span>
+              </div>
+              <div class="score-line">
+                <div class="tip-desc">Skor: <strong style="color:var(--text);">${escapeHtml(row.final_score || row.ai_quality_score || 0)}</strong></div>
+                <div class="score-track"><div class="score-fill" style="width:${Math.max(8, Math.min(100, Number(row.final_score || row.ai_quality_score || 0)))}%;"></div></div>
+              </div>
+              <div class="tip-mini-grid">
+                <div class="tip-mini">
+                  <div class="tip-mini-k">Pozisyon</div>
+                  <div class="tip-mini-v">${escapeHtml(row.position || '-')}</div>
+                </div>
+                <div class="tip-mini">
+                  <div class="tip-mini-k">Sehir</div>
+                  <div class="tip-mini-v">${escapeHtml(row.city || '-')}</div>
+                </div>
+                <div class="tip-mini">
+                  <div class="tip-mini-k">Durum</div>
+                  <div class="tip-mini-v">${escapeHtml(formatStatus(row.status))}</div>
+                </div>
+              </div>
+              <div class="tip-actions" style="margin-top:12px;">
+                <button class="action-btn" type="button" onclick="openDetail(${Number(row.id)})">Detay Ac</button>
+              </div>
             </div>
-            <span class="pill">${escapeHtml(formatStatus(row.status))}</span>
-          </div>
-          <div class="tip-meta">
-            <span class="pill">Skor: ${escapeHtml(row.final_score || 0)}</span>
-            <span class="pill">${escapeHtml(formatDate(row.created_at))}</span>
-          </div>
-          <div class="tip-actions" style="margin-top:12px;">
-            <button class="action-btn" type="button" onclick="openDetail(${Number(row.id)})">Detay Ac</button>
           </div>
         </article>
       `).join('');
+      applyPaywallState();
     }
 
     async function loadShortlist() {
@@ -543,14 +927,22 @@
         const payload = await apiGet('/scout-tips/feed?limit=50');
         const rows = Array.isArray(payload) ? payload : Array.isArray(payload?.data) ? payload.data : [];
         shortlistRows = rows.filter((row) => ['shortlisted', 'trial', 'signed', 'rejected'].includes(String(row?.status || '').trim().toLowerCase()));
+        shortlistLocked = shortlistRows.length > 0 && !hasPremiumAccess();
+        updateSummary();
         renderList();
+        if (shortlistLocked) {
+          document.getElementById('detailEmpty').textContent = 'Shortlist adaylarini acmak icin odeme gerekli.';
+        }
       } catch (error) {
         document.getElementById('tipList').innerHTML = `<div class="empty">${escapeHtml(error.message || 'Shortlist alinamadi.')}</div>`;
         document.getElementById('listMeta').textContent = 'Baglanti hatasi';
+        shortlistLocked = false;
+        applyPaywallState();
       }
     }
 
     async function openDetail(id) {
+      if (shortlistLocked) return;
       selectedTipId = Number(id) || 0;
       renderList();
       document.getElementById('detailEmpty').textContent = 'Detay yukleniyor...';
@@ -573,6 +965,7 @@
       document.getElementById('detailName').textContent = detail.player_name || '-';
       document.getElementById('detailSub').textContent = `${detail.city || '-'}${detail.position ? ` / ${detail.position}` : ''}`;
       document.getElementById('detailStatus').textContent = formatStatus(detail.status);
+      document.getElementById('detailStatus').className = `pill ${statusClass(detail.status)}`;
       document.getElementById('metricScout').textContent = detail.submitter?.name || 'Scout';
       document.getElementById('metricPosition').textContent = detail.position || '-';
       document.getElementById('metricCity').textContent = detail.city || '-';
@@ -586,6 +979,7 @@
     }
 
     async function saveNote() {
+      if (shortlistLocked) return;
       if (!selectedTipId) return;
       try {
         const detail = await apiPost(`/scout-tips/${encodeURIComponent(selectedTipId)}/manager-note`, {
@@ -602,6 +996,7 @@
     }
 
     async function updateStatus(action) {
+      if (shortlistLocked) return;
       if (!selectedTipId) return;
       try {
         await apiPost(`/scout-tips/${encodeURIComponent(selectedTipId)}/${action}`, {});
@@ -616,6 +1011,7 @@
     document.getElementById('refreshBtn').addEventListener('click', () => loadShortlist());
     document.getElementById('searchInput').addEventListener('input', renderList);
     document.getElementById('statusFilter').addEventListener('change', renderList);
+    document.getElementById('sortFilter').addEventListener('change', renderList);
     document.getElementById('saveNoteBtn').addEventListener('click', saveNote);
     document.getElementById('trialStatusBtn').addEventListener('click', () => updateStatus('mark-trial'));
     document.getElementById('signedStatusBtn').addEventListener('click', () => updateStatus('mark-signed'));
