@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Favorite;
+use App\Models\Notification;
+use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -175,6 +178,27 @@ class FavoriteController extends Controller
             'user_id' => $userId,
             'target_user_id' => $targetUserId,
         ]);
+
+        $actor = User::query()->find($userId, ['id', 'name', 'role']);
+
+        Notification::query()->create([
+            'user_id' => $targetUserId,
+            'type' => 'favorite_added',
+            'title' => 'Yeni takipci',
+            'message' => sprintf(
+                '%s seni takip listesine ekledi.',
+                $actor?->name ?: 'Bir uye'
+            ),
+            'payload' => [
+                'actor_user_id' => $userId,
+                'actor_name' => $actor?->name,
+                'actor_role' => $actor?->role,
+            ],
+            'priority' => 'normal',
+            'is_read' => false,
+            'related_player_id' => $targetUserId,
+        ]);
+        Cache::forget("notifications_count_{$targetUserId}");
 
         return response()->json([
             'ok' => true,
