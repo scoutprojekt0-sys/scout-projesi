@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -443,6 +444,11 @@ class AuthController extends Controller
         if (array_key_exists('password', $data)) {
             $data['password'] = Hash::make($data['password']);
             $user->tokens()->delete();
+        }
+
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('profile-photos', 'public');
+            $data['photo_url'] = Storage::url($path);
         }
 
         $user->fill($data);

@@ -27,6 +27,8 @@ class UpdateMeRequest extends FormRequest
             'password' => ['sometimes', 'confirmed', Password::min(8)->letters()->mixedCase()->numbers()],
             'city' => ['sometimes', 'nullable', 'string', 'max:80'],
             'phone' => ['sometimes', 'nullable', 'string', 'max:30'],
+            'photo_url' => ['sometimes', 'nullable', 'string', 'max:2048'],
+            'photo' => ['sometimes', 'nullable', 'image', 'max:5120'],
         ];
     }
 }
