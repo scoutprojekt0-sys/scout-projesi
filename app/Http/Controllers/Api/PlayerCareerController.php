@@ -118,6 +118,9 @@ class PlayerCareerController extends Controller
             ->where('verification_status', 'verified')
             ->get();
 
+        $player = \App\Models\User::query()->find($playerId);
+        $rating = (float) ($player?->rating ?? 0);
+
         $byClub = $timeline->groupBy('club_id')->map(function ($entries) {
             return [
                 'club_id' => $entries->first()->club_id,
@@ -140,20 +143,92 @@ class PlayerCareerController extends Controller
             ];
         });
 
+        $careerTotals = [
+            'appearances' => $timeline->sum('appearances'),
+            'goals' => $timeline->sum('goals'),
+            'assists' => $timeline->sum('assists'),
+            'minutes_played' => $timeline->sum('minutes_played'),
+            'yellow_cards' => $timeline->sum('yellow_cards'),
+            'red_cards' => $timeline->sum('red_cards'),
+        ];
+        $achievementItems = $this->buildAchievementItems(
+            $careerTotals,
+            $timeline,
+            $rating
+        );
+
         return response()->json([
             'ok' => true,
             'data' => [
                 'by_club' => $byClub,
                 'by_season' => $bySeason,
-                'career_totals' => [
-                    'appearances' => $timeline->sum('appearances'),
-                    'goals' => $timeline->sum('goals'),
-                    'assists' => $timeline->sum('assists'),
-                    'minutes_played' => $timeline->sum('minutes_played'),
-                    'yellow_cards' => $timeline->sum('yellow_cards'),
-                    'red_cards' => $timeline->sum('red_cards'),
-                ],
+                'career_totals' => $careerTotals,
+                'achievement_items' => $achievementItems,
             ],
         ]);
+    }
+
+    private function buildAchievementItems(array $totals, $timeline, float $rating): array
+    {
+        $items = [];
+        $currentClub = optional($timeline->where('is_current', true)->first()?->club)->name ?? '-';
+
+        if (($totals['goals'] ?? 0) > 0 || ($totals['assists'] ?? 0) > 0) {
+            $items[] = [
+                'category' => 'Bireysel',
+                'icon' => 'BG',
+                'title' => 'Gol Katkisi Lideri',
+                'description' => sprintf(
+                    'Toplam %d gol ve %d asist ile hucum katkinda one ciktin.',
+                    (int) ($totals['goals'] ?? 0),
+                    (int) ($totals['assists'] ?? 0)
+                ),
+                'meta' => 'Son donem performansi',
+            ];
+        }
+
+        if (($totals['appearances'] ?? 0) >= 20) {
+            $items[] = [
+                'category' => 'Takim',
+                'icon' => 'FI',
+                'title' => 'Form Istikrari',
+                'description' => sprintf(
+                    '%d resmi macla duzenli forma giyerek takim ritmini korudun.',
+                    (int) ($totals['appearances'] ?? 0)
+                ),
+                'meta' => 'Sezon geneli',
+            ];
+        }
+
+        if ($rating >= 8.0) {
+            $items[] = [
+                'category' => 'Bireysel',
+                'icon' => 'YP',
+                'title' => 'Yuksek Performans Seviyesi',
+                'description' => 'Genel oyuncu puanin '.number_format($rating, 1).' seviyesinde.',
+                'meta' => 'Guncel oyuncu puani',
+            ];
+        }
+
+        $clubCount = $timeline->pluck('club_id')->filter()->unique()->count();
+        if ($clubCount > 0) {
+            $items[] = [
+                'category' => 'Kariyer',
+                'icon' => 'KY',
+                'title' => 'Kariyer Yolculugu',
+                'description' => sprintf(
+                    '%s dahil %d farkli kulup deneyimiyle kariyer cizgini genislettin.',
+                    $currentClub,
+                    $clubCount
+                ),
+                'meta' => sprintf(
+                    '%d mac, %d gol',
+                    (int) ($totals['appearances'] ?? 0),
+                    (int) ($totals['goals'] ?? 0)
+                ),
+            ];
+        }
+
+        return $items;
     }
 }

@@ -456,9 +456,9 @@ Route::get('/admin/amateur-standings', [AdminAmateurResultController::class, 'st
 
     // Contracts
     Route::get('/contracts', [ContractController::class, 'index']);
-    Route::post('/contracts', [ContractController::class, 'store'])->middleware('ability:team');
+    Route::post('/contracts', [ContractController::class, 'store'])->middleware('auth:sanctum');
     Route::get('/contracts/{id}', [ContractController::class, 'show']);
-    Route::patch('/contracts/{id}', [ContractController::class, 'update'])->middleware('ability:team');
+    Route::patch('/contracts/{id}', [ContractController::class, 'update'])->middleware('auth:sanctum');
 
     // Social Media
     Route::get('/users/{userId}/social-media', [SocialMediaController::class, 'index']);

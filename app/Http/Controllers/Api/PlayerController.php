@@ -310,6 +310,7 @@ class PlayerController extends Controller
             'minutes' => (int) $statsRows->sum('minutes_played'),
             'rating' => $latest?->avg_rating !== null ? (float) $latest->avg_rating : (float) ($player->user_rating ?? 0),
         ];
+        $talentMetrics = $this->buildTalentMetrics($summary);
 
         $position = $player->position ?: $player->user_position ?: 'Oyuncu';
         $age = $player->age;
@@ -355,6 +356,7 @@ class PlayerController extends Controller
                     'nationality' => (string) ($player->country ?? ''),
                     'profile_photo_url' => (string) ($player->photo_url ?? ''),
                     'confidence_score' => $player->confidence_score !== null ? (float) $player->confidence_score : null,
+                    'talent_metrics' => $talentMetrics,
                 ],
                 'stats' => [
                     'summary' => $summary,
@@ -381,5 +383,99 @@ class PlayerController extends Controller
                 ],
             ],
         ]);
+    }
+
+    private function buildTalentMetrics(array $summary): array
+    {
+        $matches = (int) ($summary['matches'] ?? 0);
+        $goals = (int) ($summary['goals'] ?? 0);
+        $assists = (int) ($summary['assists'] ?? 0);
+        $minutes = (int) ($summary['minutes'] ?? 0);
+        $rating = (float) ($summary['rating'] ?? 0);
+
+        $minutesPerMatch = $matches > 0 ? $minutes / $matches : 0.0;
+        $goalRate = $matches > 0 ? $goals / $matches : 0.0;
+        $assistRate = $matches > 0 ? $assists / $matches : 0.0;
+        $involvementRate = $matches > 0 ? ($goals + $assists) / $matches : 0.0;
+        $ratingMomentum = max(-12.0, min(12.0, ($rating - 7.0) * 6));
+        $minutesRatio = max(0.0, min(1.0, $minutesPerMatch / 90));
+        $minutesBlocks = max(0.0, min(40.0, $minutes / 90));
+
+        return [
+            [
+                'label' => 'Topla Oyun',
+                'value' => $this->normalizeTalentMetric(
+                    $this->metricScore(40, [
+                        $rating * 2.8,
+                        $ratingMomentum,
+                        $assistRate * 18,
+                        $involvementRate * 8,
+                        $minutesRatio * 16,
+                    ])
+                ),
+            ],
+            [
+                'label' => 'Bitiricilik',
+                'value' => $this->normalizeTalentMetric(
+                    $this->metricScore(38, [
+                        $rating * 2.0,
+                        $ratingMomentum,
+                        $goalRate * 34,
+                        $goals * 1.2,
+                        $minutesRatio * 10,
+                    ])
+                ),
+            ],
+            [
+                'label' => 'Oyun Kurulum',
+                'value' => $this->normalizeTalentMetric(
+                    $this->metricScore(38, [
+                        $rating * 2.2,
+                        $ratingMomentum,
+                        $assistRate * 36,
+                        $involvementRate * 10,
+                        $minutesRatio * 12,
+                    ])
+                ),
+            ],
+            [
+                'label' => 'Mac Etkisi',
+                'value' => $this->normalizeTalentMetric(
+                    $this->metricScore(35, [
+                        $matches * 0.9,
+                        $minutesBlocks * 0.6,
+                        $involvementRate * 12,
+                        $rating * 1.6,
+                        $ratingMomentum,
+                    ])
+                ),
+            ],
+        ];
+    }
+
+    private function metricScore(float $base, array $factors): float
+    {
+        $total = $base + array_sum($factors);
+        if ($total < 0) {
+            return 0.0;
+        }
+        if ($total > 95) {
+            return 95.0;
+        }
+
+        return $total;
+    }
+
+    private function normalizeTalentMetric(float $raw): float
+    {
+        $normalized = $raw / 100;
+        if ($normalized < 0.45) {
+            return 0.45;
+        }
+        if ($normalized > 0.95) {
+            return 0.95;
+        }
+
+        return round($normalized, 4);
     }
 }
