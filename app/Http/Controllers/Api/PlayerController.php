@@ -7,6 +7,7 @@ use App\Http\Controllers\Concerns\EnforcesPrivacy;
 use App\Support\ProfileReviewData;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
@@ -109,6 +110,10 @@ class PlayerController extends Controller
                 'users.seeking_club',
                 'users.city',
                 'users.phone',
+                'users.photo_url',
+                'users.views_count',
+                'users.rating',
+                'users.updated_at',
                 'users.created_at',
                 'player_profiles.birth_year',
                 'player_profiles.position',
@@ -130,11 +135,13 @@ class PlayerController extends Controller
         $authUser = $request->user();
         $isOwner = $authUser && (int) $authUser->id === (int) ($player->id ?? 0);
         $player = $this->redactPrivateFields($player, $this->isAdmin($authUser) || $isOwner);
+        $showcase = $this->buildShowcaseStatus((int) $id, $player);
 
         return response()->json([
             'ok' => true,
             'data' => [
                 ...((array) $player),
+                'showcase' => $showcase,
                 'reviews' => ProfileReviewData::latestForTarget($id, $authUser),
             ],
         ]);
@@ -324,6 +331,7 @@ class PlayerController extends Controller
         $isVerified = (bool) ($player->is_verified ?? false)
             || $verificationStatus === 'verified'
             || ! empty($player->verified_at);
+        $showcase = $this->buildShowcaseStatus((int) $id, $player);
 
         return response()->json([
             'ok' => true,
@@ -367,6 +375,7 @@ class PlayerController extends Controller
                     'confidence_score' => $player->confidence_score !== null ? (float) $player->confidence_score : null,
                     'is_verified' => $isVerified,
                     'verification_status' => $verificationStatus ?: null,
+                    'showcase' => $showcase,
                     'talent_metrics' => $talentMetrics,
                 ],
                 'stats' => [
@@ -394,6 +403,104 @@ class PlayerController extends Controller
                 ],
             ],
         ]);
+    }
+
+    private function buildShowcaseStatus(int $playerId, object $player): array
+    {
+        $recentThreshold = now()->subDays(15);
+
+        $profileChecks = [
+            'photo' => ! empty($player->photo_url ?? null),
+            'position' => ! empty($player->position ?? null) || ! empty($player->user_position ?? null),
+            'city' => ! empty($player->city ?? null),
+            'bio' => ! empty($player->bio ?? null),
+            'age' => ! empty($player->age ?? null) || ! empty($player->birth_year ?? null),
+            'team' => ! empty($player->current_team ?? null),
+            'height' => ! empty($player->height_cm ?? null),
+        ];
+
+        $profileReady = $profileChecks['photo']
+            && $profileChecks['position']
+            && $profileChecks['city']
+            && $profileChecks['bio']
+            && $profileChecks['age'];
+
+        $recentSignals = 0;
+        if (! empty($player->updated_at ?? null) && Carbon::parse((string) $player->updated_at)->gte($recentThreshold)) {
+            $recentSignals++;
+        }
+
+        if (Schema::hasColumn('users', 'last_login_at')) {
+            $lastLoginAt = DB::table('users')->where('id', $playerId)->value('last_login_at');
+            if ($lastLoginAt && Carbon::parse((string) $lastLoginAt)->gte($recentThreshold)) {
+                $recentSignals++;
+            }
+        }
+
+        $recentSignals += $this->recentCountIfTableExists('media', fn ($query) => $query
+            ->where('user_id', $playerId)
+            ->where('created_at', '>=', $recentThreshold)
+        ) > 0 ? 1 : 0;
+
+        $recentSignals += $this->recentCountIfTableExists('applications', fn ($query) => $query
+            ->where('player_user_id', $playerId)
+            ->where('updated_at', '>=', $recentThreshold)
+        ) > 0 ? 1 : 0;
+
+        $recentSignals += $this->recentCountIfTableExists('profile_reviews', fn ($query) => $query
+            ->where('target_user_id', $playerId)
+            ->where('created_at', '>=', $recentThreshold)
+        ) > 0 ? 1 : 0;
+
+        $recentSignals += $this->recentCountIfTableExists('contacts', fn ($query) => $query
+            ->where(function ($builder) use ($playerId) {
+                $builder->where('from_user_id', $playerId)->orWhere('to_user_id', $playerId);
+            })
+            ->where('updated_at', '>=', $recentThreshold)
+        ) > 0 ? 1 : 0;
+
+        $recentSignals += $this->recentCountIfTableExists('player_statistics', fn ($query) => $query
+            ->where('user_id', $playerId)
+            ->where('updated_at', '>=', $recentThreshold)
+        ) > 0 ? 1 : 0;
+
+        $isActive = $recentSignals > 0;
+        $isFeatured = $isActive && $profileReady;
+
+        $badges = [];
+        if ($isActive) {
+            $badges[] = 'Aktif';
+        }
+        if ($profileReady) {
+            $badges[] = 'Vitrine Hazir';
+        }
+        if ($isFeatured) {
+            $badges[] = 'One Cikan';
+        }
+
+        $currentLevel = $isFeatured ? 'one_cikan' : ($profileReady ? 'vitrine_hazir' : ($isActive ? 'aktif' : 'temel'));
+
+        return [
+            'current_level' => $currentLevel,
+            'badges' => $badges,
+            'is_active' => $isActive,
+            'is_profile_ready' => $profileReady,
+            'is_featured' => $isFeatured,
+            'profile_strength_score' => (int) round((collect($profileChecks)->filter()->count() / count($profileChecks)) * 100),
+            'recent_signal_count' => $recentSignals,
+        ];
+    }
+
+    private function recentCountIfTableExists(string $table, callable $callback): int
+    {
+        if (! Schema::hasTable($table)) {
+            return 0;
+        }
+
+        $query = DB::table($table);
+        $callback($query);
+
+        return (int) $query->count();
     }
 
     public function shareAssets(Request $request): JsonResponse

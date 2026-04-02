@@ -12,6 +12,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
@@ -251,6 +252,95 @@ class PlayerTransferController extends Controller
         return response()->json([
             'ok' => true,
             'data' => $transfers,
+        ]);
+    }
+
+    public function offerDesk(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        if (! $user || strtolower((string) $user->role) !== 'player') {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Sadece oyuncu hesaplari bu ekrana erisebilir.',
+            ], 403);
+        }
+
+        $rows = DB::table('club_offers as offers')
+            ->leftJoin('users as clubs', 'clubs.id', '=', 'offers.club_user_id')
+            ->leftJoin('player_transfers as transfers', 'transfers.id', '=', 'offers.transfer_id')
+            ->where('offers.target_player_user_id', (int) $user->id)
+            ->orderByRaw('COALESCE(transfers.negotiation_updated_at, offers.updated_at, offers.created_at) desc')
+            ->select([
+                'offers.id',
+                'offers.transfer_id',
+                'offers.player_name',
+                'offers.offer_type',
+                'offers.amount_eur',
+                'offers.currency',
+                'offers.season',
+                'offers.contract_years',
+                'offers.salary_amount',
+                'offers.signing_fee',
+                'offers.bonus_summary',
+                'offers.contract_start_date',
+                'offers.contract_end_date',
+                'offers.expires_at',
+                'offers.clauses',
+                'offers.status',
+                'offers.note',
+                'offers.created_at',
+                'clubs.id as club_id',
+                'clubs.name as club_name',
+                'clubs.city as club_city',
+                'transfers.negotiation_status',
+                'transfers.verification_status',
+                'transfers.counter_fee',
+                'transfers.notes as history_notes',
+                'transfers.negotiation_notes',
+                'transfers.negotiation_updated_at',
+            ])
+            ->get()
+            ->map(function ($row) {
+                $history = collect(explode("\n", (string) ($row->history_notes ?? '')))
+                    ->map(fn ($line) => trim((string) $line))
+                    ->filter()
+                    ->values();
+
+                return [
+                    'id' => (int) $row->id,
+                    'transfer_id' => $row->transfer_id !== null ? (int) $row->transfer_id : null,
+                    'club_id' => $row->club_id !== null ? (int) $row->club_id : null,
+                    'club_name' => (string) ($row->club_name ?? 'Kulup'),
+                    'club_city' => $row->club_city ? (string) $row->club_city : null,
+                    'player_name' => (string) ($row->player_name ?? 'Oyuncu'),
+                    'offer_type' => (string) ($row->offer_type ?? 'permanent'),
+                    'amount_eur' => $row->amount_eur !== null ? (float) $row->amount_eur : null,
+                    'currency' => (string) ($row->currency ?? 'EUR'),
+                    'season' => $row->season ? (string) $row->season : null,
+                    'contract_years' => $row->contract_years !== null ? (int) $row->contract_years : null,
+                    'salary_amount' => $row->salary_amount !== null ? (float) $row->salary_amount : null,
+                    'signing_fee' => $row->signing_fee !== null ? (float) $row->signing_fee : null,
+                    'bonus_summary' => $row->bonus_summary ? (string) $row->bonus_summary : null,
+                    'contract_start_date' => $row->contract_start_date,
+                    'contract_end_date' => $row->contract_end_date,
+                    'expires_at' => $row->expires_at,
+                    'clauses' => $row->clauses ? (string) $row->clauses : null,
+                    'status' => (string) ($row->status ?? 'sent'),
+                    'note' => $row->note ? (string) $row->note : null,
+                    'negotiation_status' => $row->negotiation_status ? (string) $row->negotiation_status : null,
+                    'verification_status' => $row->verification_status ? (string) $row->verification_status : null,
+                    'counter_fee' => $row->counter_fee !== null ? (float) $row->counter_fee : null,
+                    'negotiation_notes' => $row->negotiation_notes ? (string) $row->negotiation_notes : null,
+                    'history' => $history,
+                    'created_at' => optional($row->created_at)->toISOString(),
+                    'updated_at' => optional($row->negotiation_updated_at)->toISOString(),
+                ];
+            })
+            ->values();
+
+        return response()->json([
+            'ok' => true,
+            'data' => $rows,
         ]);
     }
 

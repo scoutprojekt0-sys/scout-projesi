@@ -118,6 +118,7 @@ Route::prefix('transfers')->group(function () {
     Route::post('/', [PlayerTransferController::class, 'store'])->middleware('auth:sanctum');
     Route::post('/{id}/room-action', [PlayerTransferController::class, 'roomAction'])->middleware('auth:sanctum');
 });
+Route::get('/players/me/offer-desk', [PlayerTransferController::class, 'offerDesk'])->middleware(['auth:sanctum', 'ability:player']);
 
 // Player Career Timeline endpoints
 Route::prefix('career')->group(function () {
