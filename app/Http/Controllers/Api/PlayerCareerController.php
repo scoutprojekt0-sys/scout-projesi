@@ -8,6 +8,7 @@ use App\Models\ModerationQueue;
 use App\Models\PlayerCareerTimeline;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
@@ -165,6 +166,155 @@ class PlayerCareerController extends Controller
                 'career_totals' => $careerTotals,
                 'achievement_items' => $achievementItems,
             ],
+        ]);
+    }
+
+    public function activity(Request $request, int $playerId): JsonResponse
+    {
+        $viewer = $request->user();
+
+        if (! $viewer) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Yetkisiz istek.',
+            ], 401);
+        }
+
+        $isAdmin = in_array($viewer->role, ['admin', 'super_admin'], true)
+            || strtolower((string) ($viewer->editor_role ?? '')) === 'admin';
+
+        if ((int) $viewer->id !== $playerId && ! $isAdmin) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Bu aktivite akisina erisimin yok.',
+            ], 403);
+        }
+
+        $limit = max(1, min((int) $request->query('limit', 10), 20));
+        $items = collect();
+
+        $latestView = DB::table('profile_views as pv')
+            ->leftJoin('users as viewer', 'viewer.id', '=', 'pv.viewer_user_id')
+            ->where('pv.viewed_user_id', $playerId)
+            ->orderByDesc('pv.viewed_at')
+            ->select([
+                'pv.viewed_at',
+                'viewer.name as viewer_name',
+                'viewer.role as viewer_role',
+            ])
+            ->first();
+
+        if ($latestView) {
+            $viewCount = (int) DB::table('profile_views')
+                ->where('viewed_user_id', $playerId)
+                ->count();
+
+            $items->push([
+                'type' => 'profile_view',
+                'title' => 'Scout seni izlemeye aldi',
+                'subtitle' => $latestView->viewer_name
+                    ? sprintf('%s profilini inceledi. Toplam %d goruntulenme var.', $latestView->viewer_name, $viewCount)
+                    : sprintf('Profilin toplam %d kez goruntulendi.', $viewCount),
+                'occurred_at' => $latestView->viewed_at,
+            ]);
+        }
+
+        $latestReview = DB::table('profile_reviews')
+            ->where('target_id', $playerId)
+            ->whereIn('status', ['published', 'reported'])
+            ->orderByDesc('created_at')
+            ->select(['body', 'author_role', 'created_at'])
+            ->first();
+
+        if ($latestReview) {
+            $items->push([
+                'type' => 'review',
+                'title' => 'Yorum eklendi',
+                'subtitle' => trim((string) $latestReview->body) !== ''
+                    ? mb_strimwidth((string) $latestReview->body, 0, 110, '...')
+                    : (($latestReview->author_role ?: 'Uye').' tarafindan yeni yorum eklendi.'),
+                'occurred_at' => $latestReview->created_at,
+            ]);
+        }
+
+        $latestInbox = DB::table('contacts')
+            ->join('users as sender', 'sender.id', '=', 'contacts.from_user_id')
+            ->where('contacts.to_user_id', $playerId)
+            ->orderByDesc('contacts.created_at')
+            ->select([
+                'contacts.subject',
+                'contacts.message',
+                'contacts.created_at',
+                'sender.name as sender_name',
+            ])
+            ->first();
+
+        if ($latestInbox) {
+            $subject = trim((string) ($latestInbox->subject ?? ''));
+            $fallback = trim((string) ($latestInbox->message ?? ''));
+            $items->push([
+                'type' => 'message',
+                'title' => 'Yeni mesaj aldin',
+                'subtitle' => $subject !== ''
+                    ? $subject
+                    : ($fallback !== ''
+                        ? mb_strimwidth($fallback, 0, 110, '...')
+                        : sprintf('%s sana yeni bir mesaj gonderdi.', $latestInbox->sender_name ?? 'Bir uye')),
+                'occurred_at' => $latestInbox->created_at,
+            ]);
+        }
+
+        $latestApplication = DB::table('applications')
+            ->join('opportunities', 'opportunities.id', '=', 'applications.opportunity_id')
+            ->where('applications.player_user_id', $playerId)
+            ->orderByDesc('applications.created_at')
+            ->select([
+                'applications.status',
+                'applications.created_at',
+                'opportunities.title as opportunity_title',
+            ])
+            ->first();
+
+        if ($latestApplication) {
+            $items->push([
+                'type' => 'application',
+                'title' => 'Yeni davet veya teklif geldi',
+                'subtitle' => trim((string) ($latestApplication->opportunity_title ?? '')) !== ''
+                    ? (string) $latestApplication->opportunity_title
+                    : ('Basvuru durumun '.$latestApplication->status.' olarak guncellendi.'),
+                'occurred_at' => $latestApplication->created_at,
+            ]);
+        }
+
+        $latestNotification = DB::table('notifications')
+            ->where('user_id', $playerId)
+            ->orderByDesc('created_at')
+            ->select(['title', 'message', 'created_at'])
+            ->first();
+
+        if ($latestNotification) {
+            $items->push([
+                'type' => 'notification',
+                'title' => trim((string) ($latestNotification->title ?? '')) !== ''
+                    ? (string) $latestNotification->title
+                    : 'Profil etkilesimi artti',
+                'subtitle' => trim((string) ($latestNotification->message ?? '')) !== ''
+                    ? (string) $latestNotification->message
+                    : 'Yeni bir bildirim kaydi olustu.',
+                'occurred_at' => $latestNotification->created_at,
+            ]);
+        }
+
+        $feed = $items
+            ->filter(fn ($item) => ! empty($item['occurred_at']))
+            ->sortByDesc('occurred_at')
+            ->take($limit)
+            ->values()
+            ->all();
+
+        return response()->json([
+            'ok' => true,
+            'data' => $feed,
         ]);
     }
 

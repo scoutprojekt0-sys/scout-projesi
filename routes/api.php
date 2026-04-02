@@ -123,6 +123,7 @@ Route::prefix('transfers')->group(function () {
 Route::prefix('career')->group(function () {
     Route::get('/player/{playerId}/timeline', [PlayerCareerController::class, 'timeline']);
     Route::get('/player/{playerId}/statistics', [PlayerCareerController::class, 'statistics']);
+    Route::get('/player/{playerId}/activity', [PlayerCareerController::class, 'activity'])->middleware('auth:sanctum');
     Route::post('/', [PlayerCareerController::class, 'store'])->middleware('auth:sanctum');
 });
 
@@ -131,6 +132,8 @@ Route::prefix('players')->group(function () {
     Route::post('/compare', [PlayerAnalyticsController::class, 'compare']);
     Route::get('/{playerId}/trend-summary', [PlayerAnalyticsController::class, 'trendSummary']);
     Route::get('/{playerId}/similar', [PlayerAnalyticsController::class, 'similar']);
+    Route::get('/me/share-assets', [PlayerController::class, 'shareAssets'])->middleware('auth:sanctum');
+    Route::get('/me/export-pdf', [PlayerController::class, 'exportPdf'])->middleware('auth:sanctum');
 });
 
 // Player Market Value endpoints

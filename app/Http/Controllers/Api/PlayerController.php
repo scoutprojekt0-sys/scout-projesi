@@ -396,6 +396,164 @@ class PlayerController extends Controller
         ]);
     }
 
+    public function shareAssets(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        if (! $user || $user->role !== 'player') {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Sadece oyuncu hesaplari bu islemi kullanabilir.',
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        $profile = DB::table('users')
+            ->leftJoin('player_profiles as pp', 'pp.user_id', '=', 'users.id')
+            ->where('users.id', $user->id)
+            ->select([
+                'users.id',
+                'users.name',
+                'users.email',
+                'users.city',
+                'users.rating',
+                'users.position as user_position',
+                'pp.position',
+                'pp.height_cm',
+                'pp.current_team',
+                'pp.bio',
+            ])
+            ->first();
+
+        $stats = DB::table('player_statistics')
+            ->where('user_id', $user->id)
+            ->orderByDesc('season')
+            ->first();
+
+        $contract = DB::table('contracts')
+            ->leftJoin('users as clubs', 'clubs.id', '=', 'contracts.club_id')
+            ->where('contracts.player_id', $user->id)
+            ->orderByRaw("case when contracts.status = 'active' then 0 else 1 end")
+            ->orderByDesc('contracts.updated_at')
+            ->select([
+                'contracts.status',
+                'clubs.name as club_name',
+            ])
+            ->first();
+
+        $position = (string) ($profile->position ?? $profile->user_position ?? 'Oyuncu');
+        $height = $profile->height_cm ? ((string) $profile->height_cm.'cm') : '-';
+        $matches = (int) ($stats->matches_played ?? 0);
+        $goals = (int) ($stats->goals ?? 0);
+        $assists = (int) ($stats->assists ?? 0);
+        $rating = number_format((float) ($stats->avg_rating ?? $profile->rating ?? 0), 1);
+        $bio = trim((string) ($profile->bio ?? ''));
+        $profileUrl = rtrim(config('app.url'), '/').'/api/public/players/'.$user->id.'/profile';
+        $contractLine = trim((string) ($contract->club_name ?? '-')).' / '.trim((string) ($contract->status ?? '-'));
+
+        return response()->json([
+            'ok' => true,
+            'data' => [
+                'profile_url' => $profileUrl,
+                'share_summary' => $position.' oyuncu profili | Puan '.$rating.' | '
+                    .$matches.' mac, '.$goals.' gol, '.$assists.' asist | '.$profileUrl,
+                'scout_summary' => 'SCOUT SUNUMU'."\n"
+                    .$position.' | '.$matches.' mac | '.$goals.' gol | puan '.$rating."\n"
+                    .($bio !== '' ? $bio : 'Oyuncu biyografisi eklenmemis.'),
+                'club_summary' => 'Kulup incelemesi icin oyuncu ozeti: '.$position.', '.$height.', '
+                    .$matches.' mac, '.$goals.' gol. Profil: '.$profileUrl,
+                'pdf_full' => 'OYUNCU PROFILI'."\n"
+                    .'Pozisyon: '.$position."\n"
+                    .'Boy: '.$height."\n"
+                    .'Mac: '.$matches."\n"
+                    .'Gol/Asist: '.$goals.'/'.$assists."\n"
+                    .'Puan: '.$rating."\n"
+                    .'Sozlesme: '.$contractLine,
+                'pdf_scout' => 'SCOUT SUNUMU'."\n"
+                    .$position.' | '.$matches.' mac | '.$goals.' gol | puan '.$rating."\n"
+                    .($bio !== '' ? $bio : 'Oyuncu biyografisi eklenmemis.'),
+                'pdf_club' => 'KULUP PAKETI'."\n"
+                    .'Oyuncu: '.$position."\n"
+                    .'Verim: '.$goals.' gol, '.$assists.' asist'."\n"
+                    .'Kulup/Sozlesme: '.$contractLine,
+            ],
+        ]);
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $validated = $request->validate([
+            'type' => ['nullable', Rule::in(['full', 'scout', 'club'])],
+        ]);
+
+        $assetsResponse = $this->shareAssets($request);
+        $payload = $assetsResponse->getData(true);
+        $data = $payload['data'] ?? [];
+        $type = $validated['type'] ?? 'full';
+
+        $content = match ($type) {
+            'scout' => (string) ($data['pdf_scout'] ?? ''),
+            'club' => (string) ($data['pdf_club'] ?? ''),
+            default => (string) ($data['pdf_full'] ?? ''),
+        };
+
+        $filename = 'nextscout-player-'.$type.'-'.$request->user()->id.'.pdf';
+        $binary = $this->buildSimplePdf($content, (string) ($request->user()->name ?? 'Player Export'));
+
+        return response($binary, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
+            'Content-Length' => strlen($binary),
+        ]);
+    }
+
+    private function buildSimplePdf(string $content, string $title): string
+    {
+        $lines = preg_split("/\r\n|\n|\r/", $content) ?: [];
+        $lines = array_values(array_filter(array_map('trim', $lines), fn ($line) => $line !== ''));
+        if ($lines === []) {
+            $lines = ['NextScout PDF Export'];
+        }
+
+        $textLines = [];
+        $y = 780;
+        foreach ($lines as $index => $line) {
+            $safe = str_replace(['\\', '(', ')'], ['\\\\', '\(', '\)'], $line);
+            $fontSize = $index === 0 ? 16 : 12;
+            $textLines[] = "BT /F1 {$fontSize} Tf 50 {$y} Td ({$safe}) Tj ET";
+            $y -= $index === 0 ? 28 : 20;
+            if ($y < 60) {
+                break;
+            }
+        }
+
+        $stream = implode("\n", $textLines);
+        $objects = [];
+        $objects[] = "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj";
+        $objects[] = "2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj";
+        $objects[] = "3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>\nendobj";
+        $objects[] = "4 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj";
+        $objects[] = "5 0 obj\n<< /Length ".strlen($stream)." >>\nstream\n".$stream."\nendstream\nendobj";
+
+        $pdf = "%PDF-1.4\n";
+        $offsets = [0];
+        foreach ($objects as $object) {
+            $offsets[] = strlen($pdf);
+            $pdf .= $object."\n";
+        }
+
+        $xrefOffset = strlen($pdf);
+        $pdf .= "xref\n0 ".(count($offsets))."\n";
+        $pdf .= "0000000000 65535 f \n";
+        for ($i = 1; $i < count($offsets); $i++) {
+            $pdf .= sprintf("%010d 00000 n \n", $offsets[$i]);
+        }
+
+        $safeTitle = str_replace(['\\', '(', ')'], ['\\\\', '\(', '\)'], $title);
+        $pdf .= "trailer\n<< /Size ".count($offsets)." /Root 1 0 R /Info << /Title ({$safeTitle}) >> >>\n";
+        $pdf .= "startxref\n".$xrefOffset."\n%%EOF";
+
+        return $pdf;
+    }
+
     private function buildTalentMetrics(array $summary): array
     {
         $matches = (int) ($summary['matches'] ?? 0);
