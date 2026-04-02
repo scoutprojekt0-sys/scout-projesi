@@ -287,6 +287,7 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:auth');
     Route::post('/player/login', [AuthController::class, 'playerLogin'])->middleware('throttle:auth');
     Route::post('/player/set-password', [AuthController::class, 'playerSetPassword'])->middleware('throttle:auth');
+    Route::post('/supabase/exchange', [AuthController::class, 'exchangeSupabaseToken'])->middleware('throttle:auth');
     Route::get('/verify-email', [AuthController::class, 'verifyEmail'])->middleware('throttle:auth');
     Route::post('/resend-verification', [AuthController::class, 'resendVerification'])->middleware('throttle:auth');
     Route::post('/password/forgot', [AuthController::class, 'forgotPassword'])->middleware('throttle:auth');

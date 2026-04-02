@@ -17,11 +17,13 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
@@ -256,6 +258,109 @@ class AuthController extends Controller
         ], Response::HTTP_CREATED);
     }
 
+    public function exchangeSupabaseToken(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'access_token' => ['required', 'string', 'min:20'],
+            'role' => ['nullable', Rule::in(['player', 'manager', 'coach', 'scout', 'team'])],
+            'name' => ['nullable', 'string', 'min:2', 'max:120'],
+        ]);
+
+        $supabaseUrl = rtrim((string) config('supabase.url', ''), '/');
+        $supabaseAnonKey = (string) config('supabase.anon_key', '');
+
+        if ($supabaseUrl === '' || $supabaseAnonKey === '') {
+            return response()->json([
+                'ok' => false,
+                'code' => 'supabase_not_configured',
+                'message' => 'Supabase ayarlari tamamlanmadi.',
+            ], Response::HTTP_SERVICE_UNAVAILABLE);
+        }
+
+        $supabaseResponse = Http::withHeaders([
+            'apikey' => $supabaseAnonKey,
+            'Authorization' => 'Bearer '.$validated['access_token'],
+            'Accept' => 'application/json',
+        ])->get($supabaseUrl.'/auth/v1/user');
+
+        if (! $supabaseResponse->successful()) {
+            return response()->json([
+                'ok' => false,
+                'code' => 'supabase_token_invalid',
+                'message' => 'Supabase oturumu dogrulanamadi.',
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $supabaseUser = $supabaseResponse->json();
+        $supabaseUserId = (string) ($supabaseUser['id'] ?? '');
+        $email = strtolower((string) ($supabaseUser['email'] ?? ''));
+        $emailConfirmedAt = $supabaseUser['email_confirmed_at'] ?? null;
+        $metadata = is_array($supabaseUser['user_metadata'] ?? null) ? $supabaseUser['user_metadata'] : [];
+        $name = trim((string) ($validated['name']
+            ?? $metadata['name']
+            ?? $metadata['full_name']
+            ?? Str::before($email, '@')));
+
+        if ($supabaseUserId === '' || $email === '') {
+            return response()->json([
+                'ok' => false,
+                'code' => 'supabase_user_payload_invalid',
+                'message' => 'Supabase kullanici bilgisi eksik.',
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if ($emailConfirmedAt === null) {
+            return response()->json([
+                'ok' => false,
+                'code' => 'email_not_verified',
+                'message' => 'Hesap dogrulanmadi. E-postadaki linke tiklayip tekrar deneyin.',
+                'errors' => [
+                    'email' => ['Hesap dogrulanmadi. E-postadaki linke tiklayip tekrar deneyin.'],
+                ],
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        /** @var User|null $user */
+        $user = User::query()
+            ->where('supabase_user_id', $supabaseUserId)
+            ->orWhere('email', $email)
+            ->first();
+
+        if (! $user) {
+            $role = (string) ($validated['role'] ?? 'player');
+            $user = User::create([
+                'name' => $name !== '' ? $name : 'NextScout User',
+                'email' => $email,
+                'supabase_user_id' => $supabaseUserId,
+                'password' => Hash::make(Str::random(32)),
+                'auth_provider' => 'supabase',
+                'role' => $role,
+                'is_verified' => true,
+                'email_verified_at' => Carbon::parse((string) $emailConfirmedAt),
+            ]);
+        } else {
+            $user->forceFill([
+                'supabase_user_id' => $user->supabase_user_id ?: $supabaseUserId,
+                'auth_provider' => 'supabase',
+                'is_verified' => true,
+                'email_verified_at' => $user->email_verified_at ?: Carbon::parse((string) $emailConfirmedAt),
+            ])->save();
+        }
+
+        [$token, $expiresAt] = $this->issueToken($user->fresh(), $request);
+
+        return response()->json([
+            'ok' => true,
+            'code' => 'auth_logged_in',
+            'message' => 'Giris basarili.',
+            'data' => [
+                'token' => $token,
+                'expires_at' => $expiresAt,
+                'user' => $user->fresh(),
+            ],
+        ]);
+    }
+
     public function verifyEmail(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -324,6 +429,11 @@ class AuthController extends Controller
         $user->forceFill([
             'email_verification_token' => $user->email_verification_token ?: Str::random(64),
         ])->save();
+
+        SendWelcomeEmail::dispatch(
+            $user,
+            $this->buildEmailVerificationLink((string) $user->email_verification_token)
+        );
 
         return response()->json([
             'ok' => true,
@@ -639,12 +749,7 @@ class AuthController extends Controller
 
     private function buildEmailVerificationLink(string $token): string
     {
-        $frontendBase = rtrim((string) config('app.url'), '/');
-        if ($frontendBase === '') {
-            $frontendBase = 'http://localhost:5500';
-        }
-
-        return $frontendBase . '/index.html?verify_email_token=' . urlencode($token);
+        return 'nextscout://verify-email?token=' . urlencode($token);
     }
 
     private function emailVerificationRequired(): bool
