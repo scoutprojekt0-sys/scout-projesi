@@ -14,8 +14,34 @@ class ContributionController extends Controller
 {
     use ApiResponds;
 
+    private function canReview(Request $request): bool
+    {
+        $user = $request->user();
+        if (! $user) {
+            return false;
+        }
+
+        $editorRole = (string) ($user->editor_role ?? 'none');
+        $legacyStaffRole = in_array((string) $user->role, ['manager', 'coach', 'scout'], true);
+
+        return in_array($editorRole, ['reviewer', 'senior_reviewer', 'admin'], true) || $legacyStaffRole;
+    }
+
+    private function ensureReviewAccess(Request $request): ?JsonResponse
+    {
+        if ($this->canReview($request)) {
+            return null;
+        }
+
+        return $this->errorResponse('Bu islem icin moderasyon yetkiniz yok.', 403, 'forbidden');
+    }
+
     public function index(Request $request): JsonResponse
     {
+        if ($denied = $this->ensureReviewAccess($request)) {
+            return $denied;
+        }
+
         $query = UserContribution::query()
             ->with(['user:id,name,email', 'reviewer:id,name,email'])
             ->orderBy('created_at', 'desc');
@@ -75,6 +101,10 @@ class ContributionController extends Controller
 
     public function show(int $id): JsonResponse
     {
+        if ($denied = $this->ensureReviewAccess(request())) {
+            return $denied;
+        }
+
         $contribution = UserContribution::with([
             'user:id,name,email,editor_role,trust_score',
             'reviewer:id,name,email,editor_role',
@@ -85,6 +115,10 @@ class ContributionController extends Controller
 
     public function approve(Request $request, int $id): JsonResponse
     {
+        if ($denied = $this->ensureReviewAccess($request)) {
+            return $denied;
+        }
+
         $contribution = UserContribution::findOrFail($id);
         $validated    = $request->validate(['feedback' => 'nullable|string|max:1000']);
 
@@ -100,6 +134,10 @@ class ContributionController extends Controller
 
     public function reject(Request $request, int $id): JsonResponse
     {
+        if ($denied = $this->ensureReviewAccess($request)) {
+            return $denied;
+        }
+
         $contribution = UserContribution::findOrFail($id);
         $validated    = $request->validate(['reason' => 'required|string|min:10|max:1000']);
 
@@ -116,6 +154,10 @@ class ContributionController extends Controller
 
     public function requestInfo(Request $request, int $id): JsonResponse
     {
+        if ($denied = $this->ensureReviewAccess($request)) {
+            return $denied;
+        }
+
         $contribution = UserContribution::findOrFail($id);
         $validated    = $request->validate(['message' => 'required|string|min:10|max:1000']);
 
@@ -127,6 +169,12 @@ class ContributionController extends Controller
     public function stats(Request $request): JsonResponse
     {
         $userId = $request->has('user_id') ? $request->user_id : auth()->id();
+
+        if ($request->has('user_id') && (int) $request->user_id !== (int) auth()->id()) {
+            if ($denied = $this->ensureReviewAccess($request)) {
+                return $denied;
+            }
+        }
 
         $total    = UserContribution::where('user_id', $userId)->count();
         $approved = UserContribution::where('user_id', $userId)->where('status', 'approved')->count();
