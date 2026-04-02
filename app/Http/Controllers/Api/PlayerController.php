@@ -257,6 +257,9 @@ class PlayerController extends Controller
                 'users.name',
                 'users.sport',
                 'users.gender',
+                'users.is_verified',
+                'users.verification_status',
+                'users.verified_at',
                 'users.contract_status',
                 'users.seeking_club',
                 'users.city',
@@ -317,6 +320,10 @@ class PlayerController extends Controller
         if (! $age && $player->birth_year) {
             $age = (int) now()->format('Y') - (int) $player->birth_year;
         }
+        $verificationStatus = strtolower((string) ($player->verification_status ?? ''));
+        $isVerified = (bool) ($player->is_verified ?? false)
+            || $verificationStatus === 'verified'
+            || ! empty($player->verified_at);
 
         return response()->json([
             'ok' => true,
@@ -343,6 +350,8 @@ class PlayerController extends Controller
                     'seeking_club' => (bool) ($player->seeking_club ?? false),
                     'nationality' => (string) ($player->country ?? ''),
                     'city' => (string) ($player->city ?? ''),
+                    'is_verified' => $isVerified,
+                    'verification_status' => $verificationStatus ?: null,
                 ],
                 'card' => [
                     'id' => (int) $player->id,
@@ -356,6 +365,8 @@ class PlayerController extends Controller
                     'nationality' => (string) ($player->country ?? ''),
                     'profile_photo_url' => (string) ($player->photo_url ?? ''),
                     'confidence_score' => $player->confidence_score !== null ? (float) $player->confidence_score : null,
+                    'is_verified' => $isVerified,
+                    'verification_status' => $verificationStatus ?: null,
                     'talent_metrics' => $talentMetrics,
                 ],
                 'stats' => [
