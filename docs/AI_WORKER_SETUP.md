@@ -142,6 +142,12 @@ Train:
 TRAIN_FOOTBALL_MODEL.bat --data ai-worker/datasets/football_detection.yaml --device 0
 ```
 
+Artisan ile guarded train:
+
+```bat
+php artisan ai:train-model football --device 0
+```
+
 Smoke test:
 
 ```bat
@@ -170,6 +176,12 @@ Train:
 TRAIN_BASKETBALL_MODEL.bat --data ai-worker/datasets/basketball_detection.yaml --device 0
 ```
 
+Artisan ile guarded train:
+
+```bat
+php artisan ai:train-model basketball --device 0
+```
+
 ## 8. Voleybol model egitimi
 
 Dataset yaml:
@@ -190,4 +202,10 @@ Train:
 
 ```bat
 TRAIN_VOLLEYBALL_MODEL.bat --data ai-worker/datasets/volleyball_detection.yaml --device 0
+```
+
+Artisan ile guarded train:
+
+```bat
+php artisan ai:train-model volleyball --device 0
 ```

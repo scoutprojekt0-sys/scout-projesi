@@ -1077,3 +1077,84 @@ Artisan::command('ai:training-readiness {sport} {--min-images=50 : Minimum total
 
     return SymfonyCommand::FAILURE;
 })->purpose('Check whether a sport dataset is ready for model training');
+
+Artisan::command('ai:train-model {sport} {--device=cpu : Training device, e.g. cpu or 0} {--epochs=60 : Training epochs} {--imgsz=960 : Image size} {--batch=8 : Batch size} {--force : Skip readiness gate}', function (string $sport) {
+    $requestedSport = strtolower(trim($sport));
+    $allowedSports = ['football', 'basketball', 'volleyball'];
+    if (! in_array($requestedSport, $allowedSports, true)) {
+        $this->error('Desteklenmeyen spor: '.$sport);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    if (! (bool) $this->option('force')) {
+        $this->info('Readiness kontrolu calisiyor...');
+        $readinessExit = Artisan::call('ai:training-readiness', ['sport' => $requestedSport]);
+        $this->output->write(Artisan::output());
+
+        if ($readinessExit !== SymfonyCommand::SUCCESS) {
+            $this->error('Dataset train icin hazir degil. Zorla gecmek icin --force kullan.');
+
+            return SymfonyCommand::FAILURE;
+        }
+    }
+
+    $pythonPath = base_path('ai-worker/.venv/Scripts/python.exe');
+    if (! File::exists($pythonPath)) {
+        $this->error('Python sanal ortam bulunamadi: '.$pythonPath);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $scriptMap = [
+        'football' => base_path('ai-worker/scripts/train_football_model.py'),
+        'basketball' => base_path('ai-worker/scripts/train_basketball_model.py'),
+        'volleyball' => base_path('ai-worker/scripts/train_volleyball_model.py'),
+    ];
+    $dataMap = [
+        'football' => base_path('ai-worker/datasets/football_detection.yaml'),
+        'basketball' => base_path('ai-worker/datasets/basketball_detection.yaml'),
+        'volleyball' => base_path('ai-worker/datasets/volleyball_detection.yaml'),
+    ];
+
+    $scriptPath = $scriptMap[$requestedSport];
+    $dataPath = $dataMap[$requestedSport];
+    if (! File::exists($scriptPath)) {
+        $this->error('Train script bulunamadi: '.$scriptPath);
+
+        return SymfonyCommand::FAILURE;
+    }
+    if (! File::exists($dataPath)) {
+        $this->error('Dataset yaml bulunamadi: '.$dataPath);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $command = sprintf(
+        '"%s" "%s" --data "%s" --device %s --epochs %s --imgsz %s --batch %s',
+        $pythonPath,
+        $scriptPath,
+        $dataPath,
+        escapeshellarg((string) $this->option('device')),
+        escapeshellarg((string) $this->option('epochs')),
+        escapeshellarg((string) $this->option('imgsz')),
+        escapeshellarg((string) $this->option('batch')),
+    );
+
+    $this->info('Training baslatiliyor...');
+    $this->line('Sport: '.$requestedSport);
+    $this->line('Data: '.$dataPath);
+    $this->line('Device: '.(string) $this->option('device'));
+
+    passthru($command, $trainExit);
+
+    if ((int) $trainExit !== 0) {
+        $this->error('Training basarisiz oldu.');
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $this->info('Training tamamlandi.');
+
+    return SymfonyCommand::SUCCESS;
+})->purpose('Run sport-specific YOLO training with readiness guard');
