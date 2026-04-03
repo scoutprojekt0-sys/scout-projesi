@@ -23,3 +23,22 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 composer.phar
+
+# AI worker generated assets
+/ai-worker/datasets/*/
+/ai-worker/datasets/*/images/
+/ai-worker/datasets/*/labels/
+/ai-worker/datasets/*/manifest.csv
+/ai-worker/models/*.pt
+/ai-worker/runs/
+/raw_videos/*/
+/raw_videos/manifests/*.csv
+
+# Keep dataset/docs skeletons
+!/ai-worker/datasets/README.md
+!/ai-worker/datasets/*.yaml
+!/ai-worker/models/README.md
+!/raw_videos/README.md
+!/raw_videos/football/.gitkeep
+!/raw_videos/basketball/.gitkeep
+!/raw_videos/volleyball/.gitkeep
