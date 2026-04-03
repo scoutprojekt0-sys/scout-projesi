@@ -752,3 +752,73 @@ Artisan::command('ai:sync-video-candidates {sport=all} {--only-public : Sync onl
 
     return $failed > 0 ? SymfonyCommand::FAILURE : SymfonyCommand::SUCCESS;
 })->purpose('Download AI dataset candidate videos into raw_videos folders');
+
+Artisan::command('ai:prepare-dataset {sport} {--limit=0 : Limit clip count} {--only-public : Sync only public player videos} {--sample-every-seconds=1 : Frame sample interval} {--max-seconds=180 : Max seconds per video}', function (string $sport) {
+    $requestedSport = strtolower(trim($sport));
+    $allowedSports = ['football', 'basketball', 'volleyball'];
+    if (! in_array($requestedSport, $allowedSports, true)) {
+        $this->error('Desteklenmeyen spor: '.$sport);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $this->info("1/2 Sync basliyor: {$requestedSport}");
+
+    $syncExit = Artisan::call('ai:sync-video-candidates', [
+        'sport' => $requestedSport,
+        '--only-public' => (bool) $this->option('only-public'),
+        '--limit' => (int) $this->option('limit'),
+    ]);
+    $this->output->write(Artisan::output());
+
+    if ($syncExit !== SymfonyCommand::SUCCESS) {
+        $this->error('Sync adimi basarisiz oldu.');
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $sourceDir = base_path('raw_videos/'.$requestedSport);
+    $datasetDir = base_path('ai-worker/datasets/'.$requestedSport);
+    $scriptPath = base_path('ai-worker/scripts/prepare_football_dataset.py');
+    $pythonPath = base_path('ai-worker/.venv/Scripts/python.exe');
+
+    if (! File::exists($pythonPath)) {
+        $this->error('Python sanal ortam bulunamadi: '.$pythonPath);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    if (! File::exists($scriptPath)) {
+        $this->error('Dataset prep script bulunamadi: '.$scriptPath);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $this->newLine();
+    $this->info("2/2 Dataset prep basliyor: {$requestedSport}");
+
+    $command = sprintf(
+        '"%s" "%s" --source-dir "%s" --output-dir "%s" --sample-every-seconds=%s --max-seconds=%s',
+        $pythonPath,
+        $scriptPath,
+        $sourceDir,
+        $datasetDir,
+        (string) $this->option('sample-every-seconds'),
+        (string) $this->option('max-seconds'),
+    );
+
+    passthru($command, $prepExit);
+
+    if ((int) $prepExit !== 0) {
+        $this->error('Dataset prep adimi basarisiz oldu.');
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $this->newLine();
+    $this->info('Dataset hazirlama tamamlandi.');
+    $this->line('Raw video kaynagi: '.$sourceDir);
+    $this->line('Dataset klasoru: '.$datasetDir);
+
+    return SymfonyCommand::SUCCESS;
+})->purpose('Sync AI candidate videos and prepare dataset frames for a sport');
