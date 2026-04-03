@@ -38,6 +38,7 @@ class TrackSnapshot:
 class AnalysisContext:
     analysis_id: int
     video_clip_id: int
+    sport: str
     target_player_id: int | None
     video_url: str | None
     thumbnail_url: str | None

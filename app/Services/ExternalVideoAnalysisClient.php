@@ -11,14 +11,16 @@ class ExternalVideoAnalysisClient
     public function submit(VideoAnalysis $analysis): array
     {
         $baseUrl = $this->resolveBaseUrl();
+        $videoClip = $analysis->videoClip;
 
         $response = Http::timeout((int) config('scout.ai_analysis.worker_timeout_seconds', 20))
             ->acceptJson()
             ->post($baseUrl.'/jobs/video-analysis', [
                 'analysis_id' => $analysis->id,
                 'video_clip_id' => $analysis->video_clip_id,
-                'video_url' => $analysis->videoClip?->video_url,
-                'thumbnail_url' => $analysis->videoClip?->thumbnail_url,
+                'sport' => $this->inferSport($videoClip?->tags, $analysis->analysis_type),
+                'video_url' => $videoClip?->video_url,
+                'thumbnail_url' => $videoClip?->thumbnail_url,
                 'target_player_id' => $analysis->target_player_id,
                 'requested_by' => $analysis->requested_by,
                 'analysis_type' => $analysis->analysis_type,
@@ -47,5 +49,34 @@ class ExternalVideoAnalysisClient
         }
 
         throw new RuntimeException('AI worker base URL tanimli degil.');
+    }
+
+    private function inferSport(?array $tags, string $analysisType): string
+    {
+        $map = [
+            'futbol' => 'football',
+            'football' => 'football',
+            'soccer' => 'football',
+            'basketbol' => 'basketball',
+            'basketball' => 'basketball',
+            'voleybol' => 'volleyball',
+            'volleyball' => 'volleyball',
+        ];
+
+        foreach (($tags ?? []) as $tag) {
+            $normalized = strtolower(trim((string) $tag));
+            if (isset($map[$normalized])) {
+                return $map[$normalized];
+            }
+        }
+
+        $analysis = strtolower(trim($analysisType));
+        foreach ($map as $key => $value) {
+            if (str_contains($analysis, $key)) {
+                return $value;
+            }
+        }
+
+        return 'football';
     }
 }

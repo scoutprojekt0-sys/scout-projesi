@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field, HttpUrl
 class VideoAnalysisJobRequest(BaseModel):
     analysis_id: int
     video_clip_id: int
+    sport: str = "football"
     video_url: str | None = None
     thumbnail_url: str | None = None
     target_player_id: int | None = None

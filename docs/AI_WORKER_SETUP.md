@@ -17,8 +17,11 @@ Worker tarafi:
 
 ```env
 AI_WORKER_MODE=pipeline
-AI_WORKER_DETECTOR=heuristic
+AI_WORKER_DETECTOR=auto
 AI_WORKER_YOLO_MODEL_PATH=models/player_ball.pt
+AI_WORKER_FOOTBALL_MODEL_PATH=models/football_player_ball.pt
+AI_WORKER_BASKETBALL_MODEL_PATH=models/basketball_player_ball.pt
+AI_WORKER_VOLLEYBALL_MODEL_PATH=models/volleyball_player_ball.pt
 AI_WORKER_SAMPLE_EVERY_SECONDS=1
 AI_WORKER_MAX_SAMPLE_SECONDS=180
 ```
@@ -54,7 +57,7 @@ START_AI_PIPELINE.bat
 `START_AI_PIPELINE.bat`:
 
 - `pipeline` modda calisir
-- `ai-worker/models/player_ball.pt` varsa `yolo` detector kullanir
+- model varsa otomatik `yolo` detector kullanir
 - model yoksa `heuristic` detector ile acilir
 
 Worker `.env` destegi:
@@ -98,14 +101,15 @@ Model format detayi:
 
 ## 5. Gercek model checklist
 
-1. `ai-worker/models/player_ball.pt` dosyasini ekle
+1. `ai-worker/models/football_player_ball.pt` dosyasini ekle
 2. `pip install -r ai-worker/requirements.txt` ile `ultralytics` dahil bagimliliklari yukle
 3. `ai-worker/.env` icinde:
 
 ```env
 AI_WORKER_MODE=pipeline
-AI_WORKER_DETECTOR=yolo
+AI_WORKER_DETECTOR=auto
 AI_WORKER_YOLO_MODEL_PATH=models/player_ball.pt
+AI_WORKER_FOOTBALL_MODEL_PATH=models/football_player_ball.pt
 ```
 
 4. Laravel `.env` icinde:
@@ -117,3 +121,73 @@ AI_ANALYSIS_CALLBACK_SECRET=change-me
 ```
 
 5. `START_AI_PIPELINE.bat` ile worker'i baslat
+
+Ham video toplama standardi:
+
+- [AI_VIDEO_COLLECTION_GUIDE.md](AI_VIDEO_COLLECTION_GUIDE.md)
+
+## 6. Futbol model egitimi
+
+Dataset yaml:
+
+- `ai-worker/datasets/football_detection.yaml`
+
+Etiketleme guide:
+
+- [AI_LABELING_GUIDE_FOOTBALL.md](AI_LABELING_GUIDE_FOOTBALL.md)
+
+Train:
+
+```bat
+TRAIN_FOOTBALL_MODEL.bat --data ai-worker/datasets/football_detection.yaml --device 0
+```
+
+Smoke test:
+
+```bat
+SMOKE_TEST_FOOTBALL_MODEL.bat --model ai-worker/models/football_player_ball.pt --image C:\path\to\test.jpg
+```
+
+## 7. Basketbol model egitimi
+
+Dataset yaml:
+
+- `ai-worker/datasets/basketball_detection.yaml`
+
+Etiketleme guide:
+
+- [AI_LABELING_GUIDE_BASKETBALL.md](AI_LABELING_GUIDE_BASKETBALL.md)
+
+Dataset hazirlama:
+
+```bat
+PREPARE_BASKETBALL_DATASET.bat --source-dir C:\path\to\raw-basketball-videos --output-dir C:\Users\Hp\Desktop\PhpstormProjects\scout_api_pr_clean\ai-worker\datasets\basketball
+```
+
+Train:
+
+```bat
+TRAIN_BASKETBALL_MODEL.bat --data ai-worker/datasets/basketball_detection.yaml --device 0
+```
+
+## 8. Voleybol model egitimi
+
+Dataset yaml:
+
+- `ai-worker/datasets/volleyball_detection.yaml`
+
+Etiketleme guide:
+
+- [AI_LABELING_GUIDE_VOLLEYBALL.md](AI_LABELING_GUIDE_VOLLEYBALL.md)
+
+Dataset hazirlama:
+
+```bat
+PREPARE_VOLLEYBALL_DATASET.bat --source-dir C:\path\to\raw-volleyball-videos --output-dir C:\Users\Hp\Desktop\PhpstormProjects\scout_api_pr_clean\ai-worker\datasets\volleyball
+```
+
+Train:
+
+```bat
+TRAIN_VOLLEYBALL_MODEL.bat --data ai-worker/datasets/volleyball_detection.yaml --device 0
+```

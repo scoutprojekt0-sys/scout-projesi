@@ -15,13 +15,17 @@ if not exist ".env" if exist ".env.example" (
 
 set "AI_WORKER_PORT=8010"
 set "AI_WORKER_MODE=pipeline"
+set "AI_WORKER_DETECTOR=auto"
 
-if exist "models\\player_ball.pt" (
-  set "AI_WORKER_DETECTOR=yolo"
+if exist "models\\football_player_ball.pt" (
+  set "AI_WORKER_YOLO_MODEL_PATH=models/football_player_ball.pt"
+  set "AI_WORKER_FOOTBALL_MODEL_PATH=models/football_player_ball.pt"
+  if exist "models\\basketball_player_ball.pt" set "AI_WORKER_BASKETBALL_MODEL_PATH=models/basketball_player_ball.pt"
+  if exist "models\\volleyball_player_ball.pt" set "AI_WORKER_VOLLEYBALL_MODEL_PATH=models/volleyball_player_ball.pt"
+) else if exist "models\\player_ball.pt" (
   set "AI_WORKER_YOLO_MODEL_PATH=models/player_ball.pt"
 ) else (
-  set "AI_WORKER_DETECTOR=heuristic"
-  echo [AI PIPELINE] models\\player_ball.pt bulunamadi. Heuristic detector ile devam ediliyor.
+  echo [AI PIPELINE] YOLO model dosyasi bulunamadi. Heuristic detector ile devam ediliyor.
 )
 
 echo [AI PIPELINE] Pipeline worker baslatiliyor on port %AI_WORKER_PORT%

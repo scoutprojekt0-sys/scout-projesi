@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -44,6 +45,31 @@ class DatabaseSeeder extends Seeder
                 'city'       => 'Izmir',
                 'is_verified' => true,
                 'email_verified_at' => now(),
+            ]
+        );
+
+        $debugScout = User::query()->updateOrCreate(
+            ['email' => 'scout.debug@test.com'],
+            [
+                'name'       => 'Debug Scout Mobile',
+                'password'   => Hash::make('Password123!'),
+                'role'       => 'scout',
+                'city'       => 'Istanbul',
+                'phone'      => '+90 555 010 2026',
+                'is_verified' => true,
+                'email_verified_at' => now(),
+            ]
+        );
+
+        DB::table('staff_profiles')->updateOrInsert(
+            ['user_id' => $debugScout->id],
+            [
+                'role_type' => 'scout',
+                'branch' => 'Futbol',
+                'organization' => 'Scout Mobile Debug Unit',
+                'experience_years' => 8,
+                'bio' => 'Mobil test akislari icin hazirlanan debug scout profili. Genc oyuncu takibi, saha raporu ve tekrar izleme odaklidir.',
+                'updated_at' => now(),
             ]
         );
 

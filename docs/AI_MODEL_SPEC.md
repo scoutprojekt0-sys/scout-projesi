@@ -1,6 +1,6 @@
 # AI Model Spec
 
-Bu belge `ai-worker` tarafinda kullanilacak detection model dosyasi icin beklenen standardi tanimlar.
+Bu belge `ai-worker` tarafinda kullanilacak detection model dosyalari icin beklenen standardi tanimlar.
 
 ## Klasor
 
@@ -8,7 +8,13 @@ Model dosyalari:
 
 - `ai-worker/models/`
 
-Ornek:
+Spor bazli beklenen adlar:
+
+- `ai-worker/models/football_player_ball.pt`
+- `ai-worker/models/basketball_player_ball.pt`
+- `ai-worker/models/volleyball_player_ball.pt`
+
+Opsiyonel ortak fallback:
 
 - `ai-worker/models/player_ball.pt`
 
@@ -16,8 +22,11 @@ Ornek:
 
 ```env
 AI_WORKER_MODE=pipeline
-AI_WORKER_DETECTOR=yolo
+AI_WORKER_DETECTOR=auto
 AI_WORKER_YOLO_MODEL_PATH=models/player_ball.pt
+AI_WORKER_FOOTBALL_MODEL_PATH=models/football_player_ball.pt
+AI_WORKER_BASKETBALL_MODEL_PATH=models/basketball_player_ball.pt
+AI_WORKER_VOLLEYBALL_MODEL_PATH=models/volleyball_player_ball.pt
 ```
 
 ## Beklenen siniflar
@@ -33,7 +42,13 @@ Desteklenen alias'lar:
 - `athlete` -> `player`
 - `football` -> `ball`
 - `soccer_ball` -> `ball`
+- `basketball` -> `ball`
+- `volleyball` -> `ball`
+- `sports ball` -> `ball`
 - `keeper` -> `goalkeeper`
+- `rim` -> `hoop`
+- `basket` -> `hoop`
+- `volleyball_net` -> `net`
 
 Bu esleme kodda:
 
@@ -44,6 +59,8 @@ Bu esleme kodda:
 - YOLO `.pt` model
 - frame bazli `boxes`
 - `cls`, `conf`, `xyxy` alanlari
+- spor bazli dosya koyarsan worker otomatik o sporda onu kullanir
+- hic model yoksa worker heuristic detector'a duser
 
 ## Sonraki seviye
 
@@ -54,4 +71,9 @@ Sonraki asamada ayri modeller de baglanabilir:
 - keypoint / pose model
 - event classifier
 
-Ama ilk production gecisi icin tek `player_ball.pt` yeterlidir.
+Ilk gecis icin pratik sira:
+
+1. futbol icin `football_player_ball.pt`
+2. basketbol icin `basketball_player_ball.pt`
+3. voleybol icin `volleyball_player_ball.pt`
+4. sonra keypoint / pose / court calibration

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\VideoClip;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
 class VideoClipController extends Controller
@@ -36,17 +37,42 @@ class VideoClipController extends Controller
         $validated = $request->validate([
             'title'             => ['required', 'string', 'max:255'],
             'description'       => ['nullable', 'string', 'max:2000'],
-            'video_url'         => ['required', 'url'],
+            'video_url'         => ['required_without:file', 'nullable', 'url'],
+            'file'              => ['required_without:video_url', 'nullable', 'file', 'max:102400', 'mimetypes:video/mp4,video/quicktime,video/x-msvideo,video/webm'],
             'thumbnail_url'     => ['nullable', 'url'],
-            'platform'          => ['required', 'in:youtube,vimeo,custom'],
+            'platform'          => ['nullable', 'in:youtube,vimeo,custom'],
             'platform_video_id' => ['nullable', 'string', 'max:255'],
             'duration_seconds'  => ['nullable', 'integer', 'min:1'],
             'match_date'        => ['nullable', 'date'],
             'tags'              => ['nullable', 'array'],
         ]);
 
+        $videoUrl = $validated['video_url'] ?? null;
+        $platform = $validated['platform'] ?? 'custom';
+
+        if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('videos/'.$request->user()->id, 'public');
+            $videoUrl = Storage::disk('public')->url($path);
+            $platform = 'custom';
+        }
+
+        if (!$videoUrl) {
+            return $this->errorResponse('Video dosyasi veya video URL gerekli.', Response::HTTP_UNPROCESSABLE_ENTITY, 'video_source_required');
+        }
+
         return $this->successResponse(
-            VideoClip::create(['user_id' => $request->user()->id, ...$validated]),
+            VideoClip::create([
+                'user_id' => $request->user()->id,
+                'title' => $validated['title'],
+                'description' => $validated['description'] ?? null,
+                'video_url' => $videoUrl,
+                'thumbnail_url' => $validated['thumbnail_url'] ?? null,
+                'platform' => $platform,
+                'platform_video_id' => $validated['platform_video_id'] ?? null,
+                'duration_seconds' => $validated['duration_seconds'] ?? null,
+                'match_date' => $validated['match_date'] ?? null,
+                'tags' => $validated['tags'] ?? null,
+            ]),
             'Video eklendi.', Response::HTTP_CREATED
         );
     }
