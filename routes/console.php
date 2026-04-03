@@ -822,3 +822,152 @@ Artisan::command('ai:prepare-dataset {sport} {--limit=0 : Limit clip count} {--o
 
     return SymfonyCommand::SUCCESS;
 })->purpose('Sync AI candidate videos and prepare dataset frames for a sport');
+
+Artisan::command('ai:dataset-stats {sport}', function (string $sport) {
+    $requestedSport = strtolower(trim($sport));
+    $allowedSports = ['football', 'basketball', 'volleyball'];
+    if (! in_array($requestedSport, $allowedSports, true)) {
+        $this->error('Desteklenmeyen spor: '.$sport);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $datasetDir = base_path('ai-worker/datasets/'.$requestedSport);
+    if (! File::exists($datasetDir)) {
+        $this->error('Dataset klasoru bulunamadi: '.$datasetDir);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $summary = [];
+    $totalImages = 0;
+    $totalLabels = 0;
+    $totalAnnotated = 0;
+
+    foreach (['train', 'val', 'test'] as $split) {
+        $imageDir = $datasetDir.'/images/'.$split;
+        $labelDir = $datasetDir.'/labels/'.$split;
+
+        $images = File::exists($imageDir) ? collect(File::files($imageDir)) : collect();
+        $labels = File::exists($labelDir) ? collect(File::files($labelDir)) : collect();
+        $annotated = $labels->filter(static function ($file) {
+            return trim((string) File::get($file->getPathname())) !== '';
+        });
+
+        $imageCount = $images->count();
+        $labelCount = $labels->count();
+        $annotatedCount = $annotated->count();
+
+        $summary[$split] = [
+            'images' => $imageCount,
+            'labels' => $labelCount,
+            'annotated' => $annotatedCount,
+            'empty_labels' => max(0, $labelCount - $annotatedCount),
+        ];
+
+        $totalImages += $imageCount;
+        $totalLabels += $labelCount;
+        $totalAnnotated += $annotatedCount;
+    }
+
+    $manifestPath = $datasetDir.'/manifest.csv';
+    $manifestExists = File::exists($manifestPath);
+    $completion = $totalLabels > 0 ? round(($totalAnnotated / $totalLabels) * 100, 1) : 0.0;
+
+    $this->info('Dataset istatistikleri');
+    $this->line('Spor: '.$requestedSport);
+    $this->line('Klasor: '.$datasetDir);
+    $this->line('Manifest: '.($manifestExists ? 'var' : 'yok'));
+    $this->newLine();
+
+    foreach ($summary as $split => $stats) {
+        $this->line(strtoupper($split));
+        $this->line(' - images: '.$stats['images']);
+        $this->line(' - labels: '.$stats['labels']);
+        $this->line(' - annotated: '.$stats['annotated']);
+        $this->line(' - empty_labels: '.$stats['empty_labels']);
+    }
+
+    $this->newLine();
+    $this->info('Toplam');
+    $this->line('images='.$totalImages);
+    $this->line('labels='.$totalLabels);
+    $this->line('annotated='.$totalAnnotated);
+    $this->line('label_completion='.$completion.'%');
+
+    return SymfonyCommand::SUCCESS;
+})->purpose('Show dataset image/label progress for a sport');
+
+Artisan::command('ai:dataset-label-queue {sport} {--split=all : train, val, test or all}', function (string $sport) {
+    $requestedSport = strtolower(trim($sport));
+    $allowedSports = ['football', 'basketball', 'volleyball'];
+    if (! in_array($requestedSport, $allowedSports, true)) {
+        $this->error('Desteklenmeyen spor: '.$sport);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $requestedSplit = strtolower(trim((string) $this->option('split')));
+    $allowedSplits = ['all', 'train', 'val', 'test'];
+    if (! in_array($requestedSplit, $allowedSplits, true)) {
+        $this->error('Desteklenmeyen split: '.$requestedSplit);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $datasetDir = base_path('ai-worker/datasets/'.$requestedSport);
+    if (! File::exists($datasetDir)) {
+        $this->error('Dataset klasoru bulunamadi: '.$datasetDir);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $splits = $requestedSplit === 'all' ? ['train', 'val', 'test'] : [$requestedSplit];
+    $queueDir = $datasetDir.'/queues';
+    if (! File::exists($queueDir)) {
+        File::makeDirectory($queueDir, 0777, true);
+    }
+
+    $suffix = $requestedSplit === 'all' ? 'all' : $requestedSplit;
+    $queuePath = $queueDir.'/label_queue_'.$suffix.'.csv';
+    $handle = fopen($queuePath, 'w');
+    if ($handle === false) {
+        $this->error('Queue dosyasi olusturulamadi: '.$queuePath);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    fputcsv($handle, ['split', 'image_path', 'label_path', 'status']);
+
+    $count = 0;
+    foreach ($splits as $split) {
+        $imageDir = $datasetDir.'/images/'.$split;
+        $labelDir = $datasetDir.'/labels/'.$split;
+        if (! File::exists($imageDir) || ! File::exists($labelDir)) {
+            continue;
+        }
+
+        foreach (File::files($imageDir) as $imageFile) {
+            $labelPath = $labelDir.'/'.$imageFile->getFilenameWithoutExtension().'.txt';
+            $status = 'missing';
+            if (File::exists($labelPath)) {
+                $status = trim((string) File::get($labelPath)) === '' ? 'empty' : 'annotated';
+            }
+
+            if ($status === 'annotated') {
+                continue;
+            }
+
+            fputcsv($handle, [$split, $imageFile->getPathname(), $labelPath, $status]);
+            $count++;
+        }
+    }
+
+    fclose($handle);
+
+    $this->info('Label queue hazir.');
+    $this->line('Kayit sayisi: '.$count);
+    $this->line('Dosya: '.$queuePath);
+
+    return SymfonyCommand::SUCCESS;
+})->purpose('Export unlabeled dataset frames into a labeling queue CSV');
