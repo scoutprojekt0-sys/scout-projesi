@@ -584,6 +584,9 @@ Artisan::command('ai:export-video-candidates {sport=all} {--only-public : Export
 
     $clips = $query->get()->filter(function (VideoClip $clip) use ($requestedSport, $normalizeSport) {
         $sportName = $normalizeSport($clip->tags, $clip->metadata);
+        if (! (bool) ($clip->metadata['ai_dataset_candidate'] ?? false)) {
+            return false;
+        }
         return $requestedSport === 'all' || $sportName === $requestedSport;
     })->values();
 
@@ -614,6 +617,7 @@ Artisan::command('ai:export-video-candidates {sport=all} {--only-public : Export
         'duration_seconds',
         'match_date',
         'is_public',
+        'ai_dataset_candidate',
         'tags',
     ]);
 
@@ -632,6 +636,7 @@ Artisan::command('ai:export-video-candidates {sport=all} {--only-public : Export
             $clip->duration_seconds,
             optional($clip->match_date)?->format('Y-m-d'),
             $clip->player?->is_public ? 'yes' : 'no',
+            ! empty($clip->metadata['ai_dataset_candidate']) ? 'yes' : 'no',
             implode('|', $clip->tags ?? []),
         ]);
     }

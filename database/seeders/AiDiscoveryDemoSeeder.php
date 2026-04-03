@@ -130,8 +130,12 @@ class AiDiscoveryDemoSeeder extends Seeder
                     'platform' => 'custom',
                     'duration_seconds' => $row['video']['duration_seconds'],
                     'match_date' => now()->subDays(7)->toDateString(),
-                    'tags' => ['demo', 'ai-discovery', strtolower($row['position'])],
-                    'metadata' => ['seed' => 'ai_discovery_demo'],
+                    'tags' => ['demo', 'ai-discovery', 'football', strtolower($row['position'])],
+                    'metadata' => [
+                        'seed' => 'ai_discovery_demo',
+                        'sport' => 'football',
+                        'ai_dataset_candidate' => true,
+                    ],
                 ]
             );
 

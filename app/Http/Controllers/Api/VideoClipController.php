@@ -45,6 +45,8 @@ class VideoClipController extends Controller
             'duration_seconds'  => ['nullable', 'integer', 'min:1'],
             'match_date'        => ['nullable', 'date'],
             'tags'              => ['nullable', 'array'],
+            'sport'             => ['nullable', 'string', 'max:40'],
+            'ai_dataset_candidate' => ['nullable', 'boolean'],
         ]);
 
         $videoUrl = $validated['video_url'] ?? null;
@@ -60,6 +62,21 @@ class VideoClipController extends Controller
             return $this->errorResponse('Video dosyasi veya video URL gerekli.', Response::HTTP_UNPROCESSABLE_ENTITY, 'video_source_required');
         }
 
+        $sport = $this->normalizeSport($validated['sport'] ?? null);
+        $tags = collect($validated['tags'] ?? [])
+            ->map(static fn ($value) => trim((string) $value))
+            ->filter(static fn ($value) => $value !== '')
+            ->values();
+
+        if ($sport !== null && ! $tags->contains($sport)) {
+            $tags->push($sport);
+        }
+
+        $metadata = array_filter([
+            'sport' => $sport,
+            'ai_dataset_candidate' => (bool) ($validated['ai_dataset_candidate'] ?? false),
+        ], static fn ($value) => $value !== null);
+
         return $this->successResponse(
             VideoClip::create([
                 'user_id' => $request->user()->id,
@@ -71,10 +88,30 @@ class VideoClipController extends Controller
                 'platform_video_id' => $validated['platform_video_id'] ?? null,
                 'duration_seconds' => $validated['duration_seconds'] ?? null,
                 'match_date' => $validated['match_date'] ?? null,
-                'tags' => $validated['tags'] ?? null,
+                'tags' => $tags->all() ?: null,
+                'metadata' => $metadata ?: null,
             ]),
             'Video eklendi.', Response::HTTP_CREATED
         );
+    }
+
+    private function normalizeSport(?string $sport): ?string
+    {
+        if (! is_string($sport)) {
+            return null;
+        }
+
+        $normalized = strtolower(trim($sport));
+        if ($normalized === '') {
+            return null;
+        }
+
+        return match ($normalized) {
+            'futbol', 'football', 'soccer' => 'football',
+            'basketbol', 'basketball' => 'basketball',
+            'voleybol', 'volleyball' => 'volleyball',
+            default => $normalized,
+        };
     }
 
     public function destroy(Request $request, int $id): JsonResponse

@@ -1,4 +1,4 @@
-video_clip_id,player_id,player_name,player_email,player_city,sport,title,video_url,platform,duration_seconds,match_date,is_public,tags
-1,69,"Berat Akyildiz",berat.akyildiz@nextscout.demo,Istanbul,football,"Berat Akyildiz U17 Mac Kolaji",https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4,custom,30,2026-03-27,yes,demo|ai-discovery|forvet
-2,70,"Emirhan Kaya",emirhan.kaya@nextscout.demo,Izmir,football,"Emirhan Kaya Orta Saha Analiz Videosu",https://www.w3schools.com/html/mov_bbb.mp4,custom,10,2026-03-27,yes,"demo|ai-discovery|orta saha"
-3,71,"Yusuf Demir",yusuf.demir@nextscout.demo,Ankara,football,"Yusuf Demir Savunma Klipleri",https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4,custom,30,2026-03-27,yes,demo|ai-discovery|defans
+video_clip_id,player_id,player_name,player_email,player_city,sport,title,video_url,platform,duration_seconds,match_date,is_public,ai_dataset_candidate,tags
+1,69,"Berat Akyildiz",berat.akyildiz@nextscout.demo,Istanbul,football,"Berat Akyildiz U17 Mac Kolaji",https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4,custom,30,2026-03-27,yes,yes,demo|ai-discovery|football|forvet
+2,70,"Emirhan Kaya",emirhan.kaya@nextscout.demo,Izmir,football,"Emirhan Kaya Orta Saha Analiz Videosu",https://www.w3schools.com/html/mov_bbb.mp4,custom,10,2026-03-27,yes,yes,"demo|ai-discovery|football|orta saha"
+3,71,"Yusuf Demir",yusuf.demir@nextscout.demo,Ankara,football,"Yusuf Demir Savunma Klipleri",https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4,custom,30,2026-03-27,yes,yes,demo|ai-discovery|football|defans
