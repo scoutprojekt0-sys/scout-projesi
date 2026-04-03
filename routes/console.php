@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 
 Artisan::command('inspire', function () {
@@ -649,3 +651,104 @@ Artisan::command('ai:export-video-candidates {sport=all} {--only-public : Export
 
     return SymfonyCommand::SUCCESS;
 })->purpose('Export uploaded video clips as AI dataset candidate manifest');
+
+Artisan::command('ai:sync-video-candidates {sport=all} {--only-public : Sync only public player videos} {--limit=0 : Limit clip count}', function (string $sport) {
+    $normalizeSport = static function (?array $tags, ?array $metadata): string {
+        $map = [
+            'futbol' => 'football',
+            'football' => 'football',
+            'soccer' => 'football',
+            'basketbol' => 'basketball',
+            'basketball' => 'basketball',
+            'voleybol' => 'volleyball',
+            'volleyball' => 'volleyball',
+        ];
+
+        foreach (array_merge($tags ?? [], array_values($metadata ?? [])) as $value) {
+            $normalized = strtolower(trim((string) $value));
+            if (isset($map[$normalized])) {
+                return $map[$normalized];
+            }
+        }
+
+        return 'football';
+    };
+
+    $requestedSport = strtolower(trim($sport));
+    $allowedSports = ['all', 'football', 'basketball', 'volleyball'];
+    if (! in_array($requestedSport, $allowedSports, true)) {
+        $this->error('Desteklenmeyen spor: '.$sport);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $limit = max(0, (int) $this->option('limit'));
+    $query = VideoClip::query()->with('player')->orderBy('id');
+    if ($this->option('only-public')) {
+        $query->whereHas('player', static function ($builder) {
+            $builder->where('role', 'player')->where('is_public', true);
+        });
+    }
+
+    $clips = $query->get()->filter(function (VideoClip $clip) use ($requestedSport, $normalizeSport) {
+        $sportName = $normalizeSport($clip->tags, $clip->metadata);
+        if (! (bool) ($clip->metadata['ai_dataset_candidate'] ?? false)) {
+            return false;
+        }
+
+        return $requestedSport === 'all' || $sportName === $requestedSport;
+    })->values();
+
+    if ($limit > 0) {
+        $clips = $clips->take($limit)->values();
+    }
+
+    $saved = 0;
+    $skipped = 0;
+    $failed = 0;
+
+    foreach ($clips as $clip) {
+        $sportName = $normalizeSport($clip->tags, $clip->metadata);
+        $targetDir = base_path('raw_videos/'.$sportName);
+        if (! File::exists($targetDir)) {
+            File::makeDirectory($targetDir, 0777, true);
+        }
+
+        $extension = pathinfo(parse_url((string) $clip->video_url, PHP_URL_PATH) ?? '', PATHINFO_EXTENSION);
+        $extension = $extension !== '' ? strtolower($extension) : 'mp4';
+        $safeTitle = Str::slug((string) $clip->title, '_');
+        $targetPath = $targetDir.'/clip_'.$clip->id.'_'.$safeTitle.'.'.$extension;
+
+        if (File::exists($targetPath)) {
+            $this->line("SKIP {$clip->id} -> zaten var");
+            $skipped++;
+            continue;
+        }
+
+        try {
+            $videoUrl = (string) $clip->video_url;
+            if (str_starts_with($videoUrl, 'http://') || str_starts_with($videoUrl, 'https://')) {
+                $response = Http::timeout(90)->withOptions(['stream' => true])->get($videoUrl);
+                if (! $response->successful()) {
+                    throw new RuntimeException('download basarisiz: '.$response->status());
+                }
+                File::put($targetPath, $response->body());
+            } elseif (File::exists($videoUrl)) {
+                File::copy($videoUrl, $targetPath);
+            } else {
+                throw new RuntimeException('desteklenmeyen veya bulunamayan kaynak');
+            }
+
+            $saved++;
+            $this->info("OK {$clip->id} -> {$targetPath}");
+        } catch (\Throwable $exception) {
+            $failed++;
+            $this->warn("FAIL {$clip->id} -> {$exception->getMessage()}");
+        }
+    }
+
+    $this->newLine();
+    $this->info("Tamamlandi. saved={$saved} skipped={$skipped} failed={$failed}");
+
+    return $failed > 0 ? SymfonyCommand::FAILURE : SymfonyCommand::SUCCESS;
+})->purpose('Download AI dataset candidate videos into raw_videos folders');
