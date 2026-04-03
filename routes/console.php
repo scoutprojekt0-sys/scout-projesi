@@ -1,10 +1,12 @@
 <?php
 
 use App\Models\User;
+use App\Models\VideoClip;
 use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
@@ -542,3 +544,103 @@ Artisan::command('security:revoke-legacy-tokens {--dry-run}', function () {
 })->purpose('Revoke legacy Sanctum tokens that use wildcard (*) ability');
 
 Schedule::command('security:revoke-legacy-tokens')->dailyAt('03:00');
+
+Artisan::command('ai:export-video-candidates {sport=all} {--only-public : Export only public player videos}', function (string $sport) {
+    $normalizeSport = static function (?array $tags, ?array $metadata): string {
+        $map = [
+            'futbol' => 'football',
+            'football' => 'football',
+            'soccer' => 'football',
+            'basketbol' => 'basketball',
+            'basketball' => 'basketball',
+            'voleybol' => 'volleyball',
+            'volleyball' => 'volleyball',
+        ];
+
+        foreach (array_merge($tags ?? [], array_values($metadata ?? [])) as $value) {
+            $normalized = strtolower(trim((string) $value));
+            if (isset($map[$normalized])) {
+                return $map[$normalized];
+            }
+        }
+
+        return 'football';
+    };
+
+    $requestedSport = strtolower(trim($sport));
+    $allowedSports = ['all', 'football', 'basketball', 'volleyball'];
+    if (! in_array($requestedSport, $allowedSports, true)) {
+        $this->error('Desteklenmeyen spor: '.$sport);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $query = VideoClip::query()->with('player')->orderBy('id');
+    if ($this->option('only-public')) {
+        $query->whereHas('player', static function ($builder) {
+            $builder->where('role', 'player')->where('is_public', true);
+        });
+    }
+
+    $clips = $query->get()->filter(function (VideoClip $clip) use ($requestedSport, $normalizeSport) {
+        $sportName = $normalizeSport($clip->tags, $clip->metadata);
+        return $requestedSport === 'all' || $sportName === $requestedSport;
+    })->values();
+
+    $manifestDir = base_path('raw_videos/manifests');
+    if (! File::exists($manifestDir)) {
+        File::makeDirectory($manifestDir, 0777, true);
+    }
+
+    $suffix = $requestedSport === 'all' ? 'all' : $requestedSport;
+    $manifestPath = $manifestDir.'/video_candidates_'.$suffix.'.csv';
+    $handle = fopen($manifestPath, 'w');
+    if ($handle === false) {
+        $this->error('Manifest dosyasi olusturulamadi: '.$manifestPath);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    fputcsv($handle, [
+        'video_clip_id',
+        'player_id',
+        'player_name',
+        'player_email',
+        'player_city',
+        'sport',
+        'title',
+        'video_url',
+        'platform',
+        'duration_seconds',
+        'match_date',
+        'is_public',
+        'tags',
+    ]);
+
+    foreach ($clips as $clip) {
+        $sportName = $normalizeSport($clip->tags, $clip->metadata);
+        fputcsv($handle, [
+            $clip->id,
+            $clip->player?->id,
+            $clip->player?->name,
+            $clip->player?->email,
+            $clip->player?->city,
+            $sportName,
+            $clip->title,
+            $clip->video_url,
+            $clip->platform,
+            $clip->duration_seconds,
+            optional($clip->match_date)?->format('Y-m-d'),
+            $clip->player?->is_public ? 'yes' : 'no',
+            implode('|', $clip->tags ?? []),
+        ]);
+    }
+
+    fclose($handle);
+
+    $this->info('Video aday manifesti hazir.');
+    $this->line('Kayit sayisi: '.$clips->count());
+    $this->line('Dosya: '.$manifestPath);
+
+    return SymfonyCommand::SUCCESS;
+})->purpose('Export uploaded video clips as AI dataset candidate manifest');

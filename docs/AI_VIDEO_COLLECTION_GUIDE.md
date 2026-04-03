@@ -135,6 +135,10 @@ Ham videolari ayri klasorde tut:
 
 Sonra prep scriptlerini bu klasorlerden calistir.
 
+Repo standardi:
+
+- [raw_videos/README.md](../raw_videos/README.md)
+
 ## Son karar sorusu
 
 Bir videoyu almadan once sor:
