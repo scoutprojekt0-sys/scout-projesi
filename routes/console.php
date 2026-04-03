@@ -971,3 +971,109 @@ Artisan::command('ai:dataset-label-queue {sport} {--split=all : train, val, test
 
     return SymfonyCommand::SUCCESS;
 })->purpose('Export unlabeled dataset frames into a labeling queue CSV');
+
+Artisan::command('ai:training-readiness {sport} {--min-images=50 : Minimum total image count} {--min-annotated=30 : Minimum annotated frame count} {--min-completion=60 : Minimum label completion percentage}', function (string $sport) {
+    $requestedSport = strtolower(trim($sport));
+    $allowedSports = ['football', 'basketball', 'volleyball'];
+    if (! in_array($requestedSport, $allowedSports, true)) {
+        $this->error('Desteklenmeyen spor: '.$sport);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $datasetDir = base_path('ai-worker/datasets/'.$requestedSport);
+    if (! File::exists($datasetDir)) {
+        $this->error('Dataset klasoru bulunamadi: '.$datasetDir);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $summary = [];
+    $totalImages = 0;
+    $totalLabels = 0;
+    $totalAnnotated = 0;
+
+    foreach (['train', 'val', 'test'] as $split) {
+        $imageDir = $datasetDir.'/images/'.$split;
+        $labelDir = $datasetDir.'/labels/'.$split;
+
+        $images = File::exists($imageDir) ? collect(File::files($imageDir)) : collect();
+        $labels = File::exists($labelDir) ? collect(File::files($labelDir)) : collect();
+        $annotated = $labels->filter(static function ($file) {
+            return trim((string) File::get($file->getPathname())) !== '';
+        });
+
+        $summary[$split] = [
+            'images' => $images->count(),
+            'labels' => $labels->count(),
+            'annotated' => $annotated->count(),
+        ];
+
+        $totalImages += $images->count();
+        $totalLabels += $labels->count();
+        $totalAnnotated += $annotated->count();
+    }
+
+    $completion = $totalLabels > 0 ? round(($totalAnnotated / $totalLabels) * 100, 1) : 0.0;
+    $minImages = max(1, (int) $this->option('min-images'));
+    $minAnnotated = max(1, (int) $this->option('min-annotated'));
+    $minCompletion = max(1, (float) $this->option('min-completion'));
+
+    $checks = [
+        [
+            'label' => 'Toplam image',
+            'valid' => $totalImages >= $minImages,
+            'value' => "{$totalImages} / {$minImages}",
+            'hint' => 'Daha fazla frame uret veya daha fazla video sync et.',
+        ],
+        [
+            'label' => 'Annotated frame',
+            'valid' => $totalAnnotated >= $minAnnotated,
+            'value' => "{$totalAnnotated} / {$minAnnotated}",
+            'hint' => 'Etiketlenmis frame sayisini arttir.',
+        ],
+        [
+            'label' => 'Label completion',
+            'valid' => $completion >= $minCompletion,
+            'value' => "{$completion}% / {$minCompletion}%",
+            'hint' => 'Bos label dosyalarini doldur.',
+        ],
+        [
+            'label' => 'Train split',
+            'valid' => $summary['train']['images'] > 0,
+            'value' => (string) $summary['train']['images'],
+            'hint' => 'Train split bos. Dataset prep tekrar calistir.',
+        ],
+        [
+            'label' => 'Val split',
+            'valid' => $summary['val']['images'] > 0 || $totalImages < 10,
+            'value' => (string) $summary['val']['images'],
+            'hint' => 'Validation split bos. Daha fazla frame gerekebilir.',
+        ],
+    ];
+
+    $failed = collect($checks)->filter(static fn ($check) => ! $check['valid'])->values();
+
+    $this->info('Training readiness');
+    $this->line('Spor: '.$requestedSport);
+    $this->newLine();
+
+    foreach ($checks as $check) {
+        $status = $check['valid'] ? 'PASS' : 'FAIL';
+        $this->line("[{$status}] {$check['label']} => {$check['value']}");
+    }
+
+    $this->newLine();
+    if ($failed->isEmpty()) {
+        $this->info('Dataset train icin hazir gorunuyor.');
+
+        return SymfonyCommand::SUCCESS;
+    }
+
+    $this->warn('Eksikler:');
+    foreach ($failed as $check) {
+        $this->line('- '.$check['hint']);
+    }
+
+    return SymfonyCommand::FAILURE;
+})->purpose('Check whether a sport dataset is ready for model training');
