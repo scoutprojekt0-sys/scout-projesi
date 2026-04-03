@@ -5,6 +5,8 @@ import csv
 import math
 import random
 import shutil
+import re
+import unicodedata
 from pathlib import Path
 
 import cv2
@@ -28,6 +30,13 @@ def ensure_dirs(dataset_root: Path) -> None:
         (dataset_root / "labels" / split).mkdir(parents=True, exist_ok=True)
 
 
+def safe_stem(value: str) -> str:
+    normalized = unicodedata.normalize("NFKD", value)
+    ascii_value = normalized.encode("ascii", errors="ignore").decode("ascii")
+    slug = re.sub(r"[^A-Za-z0-9._-]+", "_", ascii_value).strip("._-")
+    return slug or "video"
+
+
 def extract_frames(video_path: Path, staging_dir: Path, sample_every_seconds: float, max_seconds: int) -> list[Path]:
     capture = cv2.VideoCapture(str(video_path))
     if not capture.isOpened():
@@ -47,7 +56,7 @@ def extract_frames(video_path: Path, staging_dir: Path, sample_every_seconds: fl
         ok, frame = capture.read()
         if not ok or frame is None:
             continue
-        frame_name = f"{video_path.stem}_s{str(second).replace('.', '_')}.jpg"
+        frame_name = f"{safe_stem(video_path.stem)}_s{str(second).replace('.', '_')}.jpg"
         target = staging_dir / frame_name
         cv2.imwrite(str(target), frame)
         sampled_paths.append(target)
@@ -88,7 +97,12 @@ def main() -> None:
         raise RuntimeError(f"video bulunamadi: {source_dir}")
 
     for video_path in video_files:
-        frames = extract_frames(video_path, staging_dir, args.sample_every_seconds, args.max_seconds)
+        try:
+            frames = extract_frames(video_path, staging_dir, args.sample_every_seconds, args.max_seconds)
+        except RuntimeError as exc:
+            safe_message = str(exc).encode("ascii", errors="replace").decode("ascii")
+            print(f"skip: {safe_message}")
+            continue
         for frame_path in frames:
             extracted.append(frame_path)
             frame_sources[frame_path.name] = str(video_path)

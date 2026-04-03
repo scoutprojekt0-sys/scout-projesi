@@ -37,9 +37,10 @@ class SetLocale
         // Locale'i ayarla
         app()->setLocale($locale);
 
-        // Response'a dil bilgisini header'da ekle
+        // BinaryFileResponse gibi response tiplerinde header() zinciri yok;
+        // ortak headers koleksiyonu uzerinden set etmek guvenli.
         $response = $next($request);
-        $response->header('Content-Language', $locale);
+        $response->headers->set('Content-Language', $locale);
 
         return $response;
     }

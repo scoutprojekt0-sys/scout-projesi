@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 import argparse
+import os
 from pathlib import Path
+import tempfile
+
+import yaml
 
 
 def parse_args() -> argparse.Namespace:
@@ -22,6 +26,8 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    os.environ.setdefault("POLARS_SKIP_CPU_CHECK", "1")
+
     try:
         from ultralytics import YOLO  # type: ignore
     except Exception as exc:  # pragma: no cover
@@ -32,9 +38,24 @@ def main() -> None:
     if not dataset_path.exists():
         raise FileNotFoundError(f"dataset yaml bulunamadi: {dataset_path}")
 
+    dataset_config = yaml.safe_load(dataset_path.read_text(encoding="utf-8")) or {}
+    dataset_root = dataset_path.parent / "football"
+    dataset_config["path"] = dataset_root.as_posix()
+    val_labels_dir = dataset_root / "labels" / "val"
+    has_val_annotations = any(
+        label_path.read_text(encoding="utf-8").strip()
+        for label_path in val_labels_dir.glob("*.txt")
+    ) if val_labels_dir.exists() else False
+    if not has_val_annotations:
+        dataset_config["val"] = dataset_config.get("train", "images/train")
+
+    with tempfile.NamedTemporaryFile("w", suffix=".yaml", delete=False, encoding="utf-8") as temp_file:
+        yaml.safe_dump(dataset_config, temp_file, sort_keys=False, allow_unicode=True)
+        resolved_dataset_yaml = temp_file.name
+
     model = YOLO(args.model)
     model.train(
-        data=str(dataset_path),
+        data=resolved_dataset_yaml,
         epochs=args.epochs,
         imgsz=args.imgsz,
         batch=args.batch,
@@ -43,6 +64,10 @@ def main() -> None:
         name=args.name,
         pretrained=True,
         exist_ok=True,
+        workers=0,
+        amp=False,
+        plots=False,
+        val=True,
     )
 
 

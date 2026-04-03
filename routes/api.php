@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\AdminBillingController;
 use App\Http\Controllers\Api\AdminAmateurResultController;
 use App\Http\Controllers\Api\AdminScoutController;
+use App\Http\Controllers\Api\AiLabelingController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BillingController;
 use App\Http\Controllers\Api\ContactController;
@@ -71,6 +72,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/ping', [SystemController::class, 'ping']);
 Route::get('/locales', [LocalizationController::class, 'getSupportedLocales']);
 Route::get('/translations', [LocalizationController::class, 'getTranslations']);
+Route::get('/ai-labeling/{sport}/queue', [AiLabelingController::class, 'queue']);
+Route::get('/ai-labeling/image', [AiLabelingController::class, 'image']);
+Route::post('/ai-labeling/{sport}/save', [AiLabelingController::class, 'save']);
 
 // Webhook endpoints (CSRF'den muaf, imza ile korunuyor)
 Route::post('/webhooks/stripe', [WebhookController::class, 'stripe'])->withoutMiddleware([\App\Http\Middleware\SanitizeInput::class]);

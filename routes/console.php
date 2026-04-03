@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
+use Symfony\Component\Process\Process;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
@@ -753,7 +754,7 @@ Artisan::command('ai:sync-video-candidates {sport=all} {--only-public : Sync onl
     return $failed > 0 ? SymfonyCommand::FAILURE : SymfonyCommand::SUCCESS;
 })->purpose('Download AI dataset candidate videos into raw_videos folders');
 
-Artisan::command('ai:prepare-dataset {sport} {--limit=0 : Limit clip count} {--only-public : Sync only public player videos} {--sample-every-seconds=1 : Frame sample interval} {--max-seconds=180 : Max seconds per video}', function (string $sport) {
+Artisan::command('ai:prepare-dataset {sport} {--limit=0 : Limit clip count} {--only-public : Sync only public player videos} {--skip-sync : Use only local raw_videos files} {--sample-every-seconds=1 : Frame sample interval} {--max-seconds=180 : Max seconds per video}', function (string $sport) {
     $requestedSport = strtolower(trim($sport));
     $allowedSports = ['football', 'basketball', 'volleyball'];
     if (! in_array($requestedSport, $allowedSports, true)) {
@@ -762,19 +763,23 @@ Artisan::command('ai:prepare-dataset {sport} {--limit=0 : Limit clip count} {--o
         return SymfonyCommand::FAILURE;
     }
 
-    $this->info("1/2 Sync basliyor: {$requestedSport}");
+    if ($this->option('skip-sync')) {
+        $this->info("1/2 Sync atlandi: {$requestedSport}");
+    } else {
+        $this->info("1/2 Sync basliyor: {$requestedSport}");
 
-    $syncExit = Artisan::call('ai:sync-video-candidates', [
-        'sport' => $requestedSport,
-        '--only-public' => (bool) $this->option('only-public'),
-        '--limit' => (int) $this->option('limit'),
-    ]);
-    $this->output->write(Artisan::output());
+        $syncExit = Artisan::call('ai:sync-video-candidates', [
+            'sport' => $requestedSport,
+            '--only-public' => (bool) $this->option('only-public'),
+            '--limit' => (int) $this->option('limit'),
+        ]);
+        $this->output->write(Artisan::output());
 
-    if ($syncExit !== SymfonyCommand::SUCCESS) {
-        $this->error('Sync adimi basarisiz oldu.');
+        if ($syncExit !== SymfonyCommand::SUCCESS) {
+            $this->error('Sync adimi basarisiz oldu.');
 
-        return SymfonyCommand::FAILURE;
+            return SymfonyCommand::FAILURE;
+        }
     }
 
     $sourceDir = base_path('raw_videos/'.$requestedSport);
@@ -1130,7 +1135,12 @@ Artisan::command('ai:train-model {sport} {--device=cpu : Training device, e.g. c
         return SymfonyCommand::FAILURE;
     }
 
-    $command = sprintf(
+    $this->info('Training baslatiliyor...');
+    $this->line('Sport: '.$requestedSport);
+    $this->line('Data: '.$dataPath);
+    $this->line('Device: '.(string) $this->option('device'));
+
+    $pythonCommand = sprintf(
         '"%s" "%s" --data "%s" --device %s --epochs %s --imgsz %s --batch %s',
         $pythonPath,
         $scriptPath,
@@ -1141,14 +1151,30 @@ Artisan::command('ai:train-model {sport} {--device=cpu : Training device, e.g. c
         escapeshellarg((string) $this->option('batch')),
     );
 
-    $this->info('Training baslatiliyor...');
-    $this->line('Sport: '.$requestedSport);
-    $this->line('Data: '.$dataPath);
-    $this->line('Device: '.(string) $this->option('device'));
+    if (PHP_OS_FAMILY === 'Windows') {
+        $logPath = storage_path('app/ai-train-output.log');
+        File::ensureDirectoryExists(dirname($logPath));
+        if (File::exists($logPath)) {
+            File::delete($logPath);
+        }
 
-    passthru($command, $trainExit);
+        $shellCommand = sprintf(
+            'cmd /v:on /c "%s > \"%s\" 2>&1 & set CODE=!ERRORLEVEL! & type \"%s\" & exit /b !CODE!"',
+            $pythonCommand,
+            $logPath,
+            $logPath,
+        );
+        $process = Process::fromShellCommandline($shellCommand, base_path());
+    } else {
+        $process = Process::fromShellCommandline($pythonCommand, base_path());
+    }
 
-    if ((int) $trainExit !== 0) {
+    $process->setTimeout(null);
+    $process->run(function (string $type, string $buffer): void {
+        echo $buffer;
+    });
+
+    if (! $process->isSuccessful()) {
         $this->error('Training basarisiz oldu.');
 
         return SymfonyCommand::FAILURE;

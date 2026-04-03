@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Labeler</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #0a1020; color: #fff; }
+    .app { display: grid; grid-template-columns: 320px 1fr; min-height: 100vh; }
+    .sidebar { border-right: 1px solid #26324d; padding: 16px; overflow: auto; }
+    .main { padding: 16px; }
+    .controls, .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    select, button { background: #14213d; color: #fff; border: 1px solid #32486d; padding: 10px 12px; border-radius: 8px; }
+    button.primary { background: #d4a94d; color: #111; border-color: #d4a94d; font-weight: 700; }
+    .queue-item { padding: 10px; border: 1px solid #26324d; border-radius: 8px; margin-bottom: 8px; cursor: pointer; }
+    .queue-item.active { border-color: #d4a94d; background: #121a2c; }
+    .queue-item small { color: #9fb0c7; display: block; margin-top: 4px; }
+    .canvas-wrap { position: relative; display: inline-block; border: 1px solid #26324d; background: #000; min-width: 320px; min-height: 220px; }
+    canvas { display: block; max-width: 100%; cursor: crosshair; }
+    .legend { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .legend button.active { outline: 2px solid #d4a94d; }
+    .status { color: #9fb0c7; margin-top: 8px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="controls">
+        <select id="sport">
+          <option value="football">Football</option>
+          <option value="basketball">Basketball</option>
+          <option value="volleyball">Volleyball</option>
+        </select>
+        <select id="split">
+          <option value="train">Train</option>
+          <option value="val">Val</option>
+          <option value="test">Test</option>
+          <option value="all">All</option>
+        </select>
+        <button id="loadQueue">Queue Yükle</button>
+      </div>
+      <div id="queue"></div>
+    </aside>
+    <main class="main">
+      <div class="legend" id="classes"></div>
+      <div class="actions">
+        <button id="undo">Son Kutuyu Sil</button>
+        <button class="primary" id="save">Kaydet</button>
+      </div>
+      <div class="canvas-wrap">
+        <canvas id="canvas"></canvas>
+      </div>
+      <div class="status" id="status">Queue yüklenmedi.</div>
+    </main>
+  </div>
+  <script>
+    const classDefs = [
+      { id: 0, name: 'player', color: '#4ecdc4' },
+      { id: 1, name: 'ball', color: '#ff6b6b' },
+      { id: 2, name: 'goalkeeper', color: '#ffd166' },
+      { id: 3, name: 'referee', color: '#a78bfa' },
+    ];
+
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const queueEl = document.getElementById('queue');
+    const statusEl = document.getElementById('status');
+    const classesEl = document.getElementById('classes');
+    const sportEl = document.getElementById('sport');
+    const splitEl = document.getElementById('split');
+
+    let queue = [];
+    let active = null;
+    let image = new Image();
+    let boxes = [];
+    let currentClass = 0;
+    let drawing = null;
+
+    classDefs.forEach((item) => {
+      const btn = document.createElement('button');
+      btn.textContent = item.name;
+      btn.style.borderColor = item.color;
+      btn.onclick = () => {
+        currentClass = item.id;
+        document.querySelectorAll('#classes button').forEach((x) => x.classList.remove('active'));
+        btn.classList.add('active');
+      };
+      if (item.id === 0) btn.classList.add('active');
+      classesEl.appendChild(btn);
+    });
+
+    document.getElementById('loadQueue').onclick = loadQueue;
+    document.getElementById('undo').onclick = () => {
+      boxes.pop();
+      render();
+    };
+    document.getElementById('save').onclick = saveLabels;
+
+    canvas.addEventListener('mousedown', (e) => {
+      if (!active || !image.width) return;
+      const p = point(e);
+      drawing = { x: p.x, y: p.y, w: 0, h: 0, class_id: currentClass };
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (!drawing) return;
+      const p = point(e);
+      drawing.w = p.x - drawing.x;
+      drawing.h = p.y - drawing.y;
+      render();
+    });
+
+    canvas.addEventListener('mouseup', () => {
+      if (!drawing) return;
+      const fixed = normalizeBox(drawing);
+      if (fixed.w > 4 && fixed.h > 4) boxes.push(fixed);
+      drawing = null;
+      render();
+    });
+
+    async function loadQueue() {
+      const sport = sportEl.value;
+      const split = splitEl.value;
+      statusEl.textContent = 'Queue yukleniyor...';
+      try {
+        const res = await fetch(`/api/ai-labeling/${sport}/queue?split=${split}`);
+        const json = await res.json();
+        if (!res.ok || !json.ok) {
+          throw new Error(json.message || `Queue hatasi (${res.status})`);
+        }
+        queue = json.data || [];
+        renderQueue();
+        statusEl.textContent = `Queue yuklendi: ${queue.length} kayit`;
+        if (queue.length) {
+          openItem(queue[0]);
+        } else {
+          clearCanvas();
+        }
+      } catch (error) {
+        queue = [];
+        active = null;
+        renderQueue();
+        clearCanvas();
+        statusEl.textContent = `Queue yuklenemedi.\n${error.message}`;
+      }
+    }
+
+    function renderQueue() {
+      queueEl.innerHTML = '';
+      queue.forEach((item) => {
+        const div = document.createElement('div');
+        div.className = 'queue-item' + (active && active.id === item.id ? ' active' : '');
+        div.innerHTML = `<strong>${item.split}</strong><small>${item.status}</small><small>${basename(item.image_path)}</small>`;
+        div.onclick = () => openItem(item);
+        queueEl.appendChild(div);
+      });
+    }
+
+    function openItem(item) {
+      active = item;
+      boxes = [];
+      renderQueue();
+      clearCanvas();
+      image = new Image();
+      image.onload = () => {
+        canvas.width = image.width;
+        canvas.height = image.height;
+        render();
+        statusEl.textContent = `Gorsel yuklendi: ${basename(item.image_path)}`;
+      };
+      image.onerror = () => {
+        clearCanvas();
+        statusEl.textContent = `Gorsel yuklenemedi.\n${item.image_url}`;
+      };
+      statusEl.textContent = `Gorsel aciliyor...\n${item.image_path}`;
+      image.src = `${item.image_url}&t=${Date.now()}`;
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (image.width) ctx.drawImage(image, 0, 0);
+
+      [...boxes, ...(drawing ? [normalizeBox(drawing)] : [])].forEach((box) => {
+        const cls = classDefs.find((x) => x.id === box.class_id);
+        ctx.strokeStyle = cls.color;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(box.x, box.y, box.w, box.h);
+        ctx.fillStyle = cls.color;
+        ctx.font = '14px Arial';
+        ctx.fillText(cls.name, box.x + 4, Math.max(14, box.y + 14));
+      });
+    }
+
+    function point(evt) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: (evt.clientX - rect.left) * (canvas.width / rect.width),
+        y: (evt.clientY - rect.top) * (canvas.height / rect.height),
+      };
+    }
+
+    function normalizeBox(box) {
+      const x = box.w < 0 ? box.x + box.w : box.x;
+      const y = box.h < 0 ? box.y + box.h : box.y;
+      const w = Math.abs(box.w);
+      const h = Math.abs(box.h);
+      return { x, y, w, h, class_id: box.class_id };
+    }
+
+    function basename(path) {
+      return path.split(/[\\\\/]/).pop();
+    }
+
+    function clearCanvas() {
+      canvas.width = 0;
+      canvas.height = 0;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    async function saveLabels() {
+      if (!active || !image.width || !image.height) {
+        statusEl.textContent = 'Once bir gorsel sec ve yuklenmesini bekle.';
+        return;
+      }
+
+      const payload = {
+        image_path: active.image_path,
+        label_path: active.label_path,
+        boxes: boxes.map((b) => ({
+          class_id: b.class_id,
+          x: (b.x + b.w / 2) / image.width,
+          y: (b.y + b.h / 2) / image.height,
+          w: b.w / image.width,
+          h: b.h / image.height,
+        })),
+      };
+
+      try {
+        const res = await fetch(`/api/ai-labeling/${sportEl.value}/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const json = await res.json();
+        if (!res.ok || !json.ok) {
+          throw new Error(json.message || `Kayit hatasi (${res.status})`);
+        }
+        statusEl.textContent = json.message || 'Kaydedildi';
+        queue = queue.filter((item) => item.id !== active.id);
+        active = null;
+        boxes = [];
+        renderQueue();
+        clearCanvas();
+        if (queue.length) {
+          openItem(queue[0]);
+        }
+      } catch (error) {
+        statusEl.textContent = `Kaydetme basarisiz.\n${error.message}`;
+      }
+    }
+  </script>
+</body>
+</html>
