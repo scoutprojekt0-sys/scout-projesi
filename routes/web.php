@@ -11,6 +11,8 @@ Route::get('/scout-et.html', function () {
         ->header('Content-Type', 'text/html; charset=UTF-8');
 });
 
+Route::view('/ai-labeler.html', 'ai-labeler')->middleware('internal_tool');
+
 Route::get('/{page}.html', function (string $page) {
     $path = base_path($page.'.html');
 

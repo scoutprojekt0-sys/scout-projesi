@@ -37,7 +37,7 @@
           <option value="test">Test</option>
           <option value="all">All</option>
         </select>
-        <button id="loadQueue">Queue Yükle</button>
+        <button id="loadQueue">Queue Yukle</button>
       </div>
       <div id="queue"></div>
     </aside>
@@ -50,7 +50,7 @@
       <div class="canvas-wrap">
         <canvas id="canvas"></canvas>
       </div>
-      <div class="status" id="status">Queue yüklenmedi.</div>
+      <div class="status" id="status">Queue yuklenmedi.</div>
     </main>
   </div>
   <script>

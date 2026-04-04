@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\RejectLegacyWildcardToken;
+use App\Http\Middleware\EnsureInternalToolAccess;
 use App\Http\Middleware\RequestMetricsLogger;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
@@ -39,6 +40,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'reject_legacy_token' => RejectLegacyWildcardToken::class,
             'locale' => \App\Http\Middleware\SetLocale::class,
             'admin' => \App\Http\Middleware\EnsureAdmin::class,
+            'internal_tool' => EnsureInternalToolAccess::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -72,9 +72,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/ping', [SystemController::class, 'ping']);
 Route::get('/locales', [LocalizationController::class, 'getSupportedLocales']);
 Route::get('/translations', [LocalizationController::class, 'getTranslations']);
-Route::get('/ai-labeling/{sport}/queue', [AiLabelingController::class, 'queue']);
-Route::get('/ai-labeling/image', [AiLabelingController::class, 'image']);
-Route::post('/ai-labeling/{sport}/save', [AiLabelingController::class, 'save']);
+Route::middleware('internal_tool')->prefix('ai-labeling')->group(function () {
+    Route::get('/{sport}/queue', [AiLabelingController::class, 'queue']);
+    Route::get('/image', [AiLabelingController::class, 'image']);
+    Route::post('/{sport}/save', [AiLabelingController::class, 'save']);
+});
 
 // Webhook endpoints (CSRF'den muaf, imza ile korunuyor)
 Route::post('/webhooks/stripe', [WebhookController::class, 'stripe'])->withoutMiddleware([\App\Http\Middleware\SanitizeInput::class]);
@@ -200,6 +202,12 @@ Route::prefix('scout-scoreboard')->middleware(['auth:sanctum', 'reject_legacy_to
 
 Route::prefix('scout-rewards')->middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->group(function () {
     Route::get('/my', [ScoutRewardController::class, 'my'])->middleware('ability:profile:read');
+});
+
+Route::prefix('scout-player-reports')->middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->group(function () {
+    Route::get('/', [ScoutPlayerReportController::class, 'index'])->middleware('ability:profile:read');
+    Route::post('/', [ScoutPlayerReportController::class, 'store'])->middleware('ability:profile:write');
+    Route::post('/{id}/status', [ScoutPlayerReportController::class, 'updateStatus'])->middleware('ability:profile:write');
 });
 
 Route::prefix('video-analyses')->middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->group(function () {

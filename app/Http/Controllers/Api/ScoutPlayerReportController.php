@@ -149,7 +149,7 @@ class ScoutPlayerReportController extends Controller
     public function updateStatus(int $id, Request $request): JsonResponse
     {
         $user = $request->user();
-        if ((string) $user->role !== 'scout') {
+        if (! in_array((string) $user->role, ['scout', 'coach', 'manager', 'team', 'club'], true)) {
             return $this->errorResponse('Bu alan icin yetkiniz yok.', Response::HTTP_FORBIDDEN, 'forbidden_role');
         }
 
