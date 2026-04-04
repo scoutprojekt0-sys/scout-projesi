@@ -1140,34 +1140,20 @@ Artisan::command('ai:train-model {sport} {--device=cpu : Training device, e.g. c
     $this->line('Data: '.$dataPath);
     $this->line('Device: '.(string) $this->option('device'));
 
-    $pythonCommand = sprintf(
-        '"%s" "%s" --data "%s" --device %s --epochs %s --imgsz %s --batch %s',
+    $process = new Process([
         $pythonPath,
         $scriptPath,
+        '--data',
         $dataPath,
-        escapeshellarg((string) $this->option('device')),
-        escapeshellarg((string) $this->option('epochs')),
-        escapeshellarg((string) $this->option('imgsz')),
-        escapeshellarg((string) $this->option('batch')),
-    );
-
-    if (PHP_OS_FAMILY === 'Windows') {
-        $logPath = storage_path('app/ai-train-output.log');
-        File::ensureDirectoryExists(dirname($logPath));
-        if (File::exists($logPath)) {
-            File::delete($logPath);
-        }
-
-        $shellCommand = sprintf(
-            'cmd /v:on /c "%s > \"%s\" 2>&1 & set CODE=!ERRORLEVEL! & type \"%s\" & exit /b !CODE!"',
-            $pythonCommand,
-            $logPath,
-            $logPath,
-        );
-        $process = Process::fromShellCommandline($shellCommand, base_path());
-    } else {
-        $process = Process::fromShellCommandline($pythonCommand, base_path());
-    }
+        '--device',
+        (string) $this->option('device'),
+        '--epochs',
+        (string) $this->option('epochs'),
+        '--imgsz',
+        (string) $this->option('imgsz'),
+        '--batch',
+        (string) $this->option('batch'),
+    ], base_path());
 
     $process->setTimeout(null);
     $process->run(function (string $type, string $buffer): void {
