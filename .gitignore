@@ -25,14 +25,21 @@ Thumbs.db
 composer.phar
 
 # AI worker generated assets
+/ai-worker/app/**/__pycache__/
+/ai-worker/scripts/__pycache__/
+*.pyc
 /ai-worker/datasets/*/
 /ai-worker/datasets/*/images/
 /ai-worker/datasets/*/labels/
 /ai-worker/datasets/*/manifest.csv
 /ai-worker/models/*.pt
 /ai-worker/runs/
+/runs/
+/yolov8n.pt
 /raw_videos/*/
 /raw_videos/manifests/*.csv
+/*.webm
+/*.mp4
 
 # Keep dataset/docs skeletons
 !/ai-worker/datasets/README.md
