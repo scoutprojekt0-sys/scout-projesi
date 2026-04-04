@@ -77,6 +77,29 @@ def assign_split(index: int, total: int, val_ratio: float, test_ratio: float) ->
     return "train"
 
 
+def load_existing_rows(manifest_path: Path) -> list[dict[str, str]]:
+    if not manifest_path.exists():
+        return []
+
+    with manifest_path.open("r", newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        return list(reader)
+
+
+def processed_video_keys(rows: list[dict[str, str]]) -> set[str]:
+    keys: set[str] = set()
+    for row in rows:
+        source_video = (row.get("source_video") or "").strip()
+        if not source_video:
+            continue
+        keys.add(safe_stem(Path(source_video).stem))
+    return keys
+
+
+def existing_frame_paths(rows: list[dict[str, str]]) -> set[str]:
+    return {str(Path((row.get("frame_path") or "")).resolve()) for row in rows if row.get("frame_path")}
+
+
 def main() -> None:
     args = parse_args()
     source_dir = Path(args.source_dir).resolve()
@@ -87,6 +110,10 @@ def main() -> None:
     staging_dir = dataset_root / "_staging"
     ensure_dirs(dataset_root)
     staging_dir.mkdir(parents=True, exist_ok=True)
+    manifest_path = dataset_root / "manifest.csv"
+    existing_rows = load_existing_rows(manifest_path)
+    processed_videos = processed_video_keys(existing_rows)
+    existing_frames = existing_frame_paths(existing_rows)
 
     extracted: list[Path] = []
     frame_sources: dict[str, str] = {}
@@ -97,6 +124,11 @@ def main() -> None:
         raise RuntimeError(f"video bulunamadi: {source_dir}")
 
     for video_path in video_files:
+        normalized_video_path = str(video_path.resolve())
+        video_key = safe_stem(video_path.stem)
+        if video_key in processed_videos:
+            print(f"skip: already processed: {safe_stem(video_path.stem)}")
+            continue
         try:
             frames = extract_frames(video_path, staging_dir, args.sample_every_seconds, args.max_seconds)
         except RuntimeError as exc:
@@ -105,18 +137,25 @@ def main() -> None:
             continue
         for frame_path in frames:
             extracted.append(frame_path)
-            frame_sources[frame_path.name] = str(video_path)
+            frame_sources[frame_path.name] = normalized_video_path
 
     rng = random.Random(args.seed)
     indices = list(range(len(extracted)))
     rng.shuffle(indices)
     ordered = [extracted[idx] for idx in indices]
 
-    final_rows: list[dict[str, str]] = []
+    final_rows: list[dict[str, str]] = existing_rows.copy()
     for ordered_index, frame_path in enumerate(ordered):
         split = assign_split(ordered_index, len(ordered), args.val_ratio, args.test_ratio)
         image_target = dataset_root / "images" / split / frame_path.name
         label_target = dataset_root / "labels" / split / f"{frame_path.stem}.txt"
+        if not frame_path.exists():
+            print(f"skip: missing staging frame: {frame_path.name}")
+            continue
+        if str(image_target.resolve()) in existing_frames or image_target.exists():
+            frame_path.unlink(missing_ok=True)
+            print(f"skip: duplicate frame: {frame_path.name}")
+            continue
         shutil.move(str(frame_path), str(image_target))
         label_target.touch(exist_ok=True)
         final_rows.append(
@@ -130,7 +169,6 @@ def main() -> None:
             }
         )
 
-    manifest_path = dataset_root / "manifest.csv"
     with manifest_path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(
             handle,
@@ -143,6 +181,7 @@ def main() -> None:
         shutil.rmtree(staging_dir, ignore_errors=True)
 
     print(f"dataset_root={dataset_root}")
+    print(f"new_frames={len(ordered)}")
     print(f"frames={len(final_rows)}")
     print(f"manifest={manifest_path}")
 
