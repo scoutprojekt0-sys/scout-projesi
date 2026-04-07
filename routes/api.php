@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\AdminBillingController;
 use App\Http\Controllers\Api\AdminAmateurResultController;
 use App\Http\Controllers\Api\AdminScoutController;
+use App\Http\Controllers\Api\AiSupportController;
 use App\Http\Controllers\Api\AiLabelingController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BillingController;
@@ -76,6 +77,7 @@ Route::middleware('internal_tool')->prefix('ai-labeling')->group(function () {
     Route::get('/{sport}/queue', [AiLabelingController::class, 'queue']);
     Route::get('/image', [AiLabelingController::class, 'image']);
     Route::post('/{sport}/save', [AiLabelingController::class, 'save']);
+    Route::post('/{sport}/skip', [AiLabelingController::class, 'skip']);
 });
 
 // Webhook endpoints (CSRF'den muaf, imza ile korunuyor)
@@ -394,6 +396,7 @@ Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->grou
     Route::get('/support-tickets/{id}', [SupportTicketController::class, 'show'])->middleware('ability:profile:read');
     Route::post('/support-tickets/{id}/messages', [SupportTicketController::class, 'addMessage'])->middleware('ability:profile:write');
     Route::post('/support-tickets/{id}/close', [SupportTicketController::class, 'close'])->middleware('ability:profile:write');
+    Route::post('/support/ai-chat', [AiSupportController::class, 'chat'])->middleware('ability:profile:read');
     Route::post('/live-matches', [LiveMatchController::class, 'store'])->middleware('ability:profile:write');
     Route::post('/match/{matchId}/live-update', [LiveMatchController::class, 'updateLiveMatch'])->middleware('ability:profile:write');
 
@@ -409,6 +412,7 @@ Route::patch('/lawyer/workspace/{itemId}/status', [LawyerWorkspaceController::cl
     Route::post('/profiles/{userId}/reviews', [ProfileReviewController::class, 'store'])->middleware('ability:profile:write');
 Route::get('/coach/player-clips', [CoachPlayerClipController::class, 'index'])->middleware('ability:profile:read');
 Route::post('/coach/player-clips', [CoachPlayerClipController::class, 'store'])->middleware('ability:profile:write');
+Route::post('/coach/player-clips/{id}/analyze', [CoachPlayerClipController::class, 'analyze'])->middleware('ability:profile:write');
 Route::get('/coach/player-evaluations', [CoachPlayerEvaluationController::class, 'index'])->middleware('ability:profile:read');
 Route::post('/coach/player-evaluations', [CoachPlayerEvaluationController::class, 'store'])->middleware('ability:profile:write');
 Route::get('/coach/player-notes', [CoachPlayerNoteController::class, 'index'])->middleware('ability:profile:read');

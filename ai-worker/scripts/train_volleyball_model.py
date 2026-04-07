@@ -25,7 +25,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--imgsz", type=int, default=960, help="Image size")
     parser.add_argument("--batch", type=int, default=8, help="Batch size")
     parser.add_argument("--device", default="cpu", help="Training device, e.g. cpu, 0")
-    parser.add_argument("--project", default="runs/volleyball", help="YOLO project directory")
+    parser.add_argument(
+        "--project",
+        default=str(Path(__file__).resolve().parents[2] / "runs" / "volleyball"),
+        help="YOLO project directory",
+    )
     parser.add_argument("--name", default="player_ball_detector", help="YOLO run name")
     return parser.parse_args()
 

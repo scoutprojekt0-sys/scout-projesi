@@ -18,7 +18,7 @@ class CoachPlayerEvaluationController extends Controller
     {
         $user = $request->user();
 
-        if (! in_array((string) $user->role, ['coach', 'manager', 'scout', 'club'], true)) {
+        if (! in_array((string) $user->role, ['coach', 'manager', 'scout', 'club', 'team'], true)) {
             return $this->errorResponse('Bu alan sadece teknik ekip kullanicilari icindir.', Response::HTTP_FORBIDDEN, 'forbidden_role');
         }
 
@@ -64,7 +64,7 @@ class CoachPlayerEvaluationController extends Controller
     {
         $user = $request->user();
 
-        if (! in_array((string) $user->role, ['coach', 'manager', 'scout', 'club'], true)) {
+        if (! in_array((string) $user->role, ['coach', 'manager', 'scout', 'club', 'team'], true)) {
             return $this->errorResponse('Bu alan sadece teknik ekip kullanicilari icindir.', Response::HTTP_FORBIDDEN, 'forbidden_role');
         }
 

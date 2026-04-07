@@ -12,6 +12,8 @@
     .controls, .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
     select, button { background: #14213d; color: #fff; border: 1px solid #32486d; padding: 10px 12px; border-radius: 8px; }
     button.primary { background: #d4a94d; color: #111; border-color: #d4a94d; font-weight: 700; }
+    button.warn { background: #b45309; border-color: #b45309; color: #fff; }
+    button.secondary { background: #173c73; border-color: #173c73; color: #fff; }
     .queue-item { padding: 10px; border: 1px solid #26324d; border-radius: 8px; margin-bottom: 8px; cursor: pointer; }
     .queue-item.active { border-color: #d4a94d; background: #121a2c; }
     .queue-item small { color: #9fb0c7; display: block; margin-top: 4px; }
@@ -45,6 +47,7 @@
       <div class="legend" id="classes"></div>
       <div class="actions">
         <button id="undo">Son Kutuyu Sil</button>
+        <button class="warn" id="skip">Bos Kare / Gosterme</button>
         <button class="primary" id="save">Kaydet</button>
       </div>
       <div class="canvas-wrap">
@@ -94,6 +97,7 @@
       boxes.pop();
       render();
     };
+    document.getElementById('skip').onclick = skipItem;
     document.getElementById('save').onclick = saveLabels;
 
     canvas.addEventListener('mousedown', (e) => {
@@ -256,6 +260,39 @@
         }
       } catch (error) {
         statusEl.textContent = `Kaydetme basarisiz.\n${error.message}`;
+      }
+    }
+
+    async function skipItem() {
+      if (!active) {
+        statusEl.textContent = 'Once queue icinden bir gorsel sec.';
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/ai-labeling/${sportEl.value}/skip`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            image_path: active.image_path,
+            label_path: active.label_path,
+          }),
+        });
+        const json = await res.json();
+        if (!res.ok || !json.ok) {
+          throw new Error(json.message || `Atlama hatasi (${res.status})`);
+        }
+        statusEl.textContent = json.message || 'Gorsel atlandi';
+        queue = queue.filter((item) => item.id !== active.id);
+        active = null;
+        boxes = [];
+        renderQueue();
+        clearCanvas();
+        if (queue.length) {
+          openItem(queue[0]);
+        }
+      } catch (error) {
+        statusEl.textContent = `Atlama basarisiz.\n${error.message}`;
       }
     }
   </script>

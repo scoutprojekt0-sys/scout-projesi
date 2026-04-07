@@ -933,6 +933,19 @@ Artisan::command('ai:dataset-label-queue {sport} {--split=all : train, val, test
         File::makeDirectory($queueDir, 0777, true);
     }
 
+    $loadSkippedItems = static function (string $split) use ($queueDir): array {
+        $path = $queueDir.'/skipped_'.$split.'.txt';
+        if (! File::exists($path)) {
+            return [];
+        }
+
+        return collect(file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [])
+            ->map(static fn (string $line): string => str_replace('\\', '/', trim($line)))
+            ->filter(static fn (string $line): bool => $line !== '')
+            ->flip()
+            ->all();
+    };
+
     $suffix = $requestedSplit === 'all' ? 'all' : $requestedSplit;
     $queuePath = $queueDir.'/label_queue_'.$suffix.'.csv';
     $handle = fopen($queuePath, 'w');
@@ -948,11 +961,17 @@ Artisan::command('ai:dataset-label-queue {sport} {--split=all : train, val, test
     foreach ($splits as $split) {
         $imageDir = $datasetDir.'/images/'.$split;
         $labelDir = $datasetDir.'/labels/'.$split;
+        $skipped = $loadSkippedItems($split);
         if (! File::exists($imageDir) || ! File::exists($labelDir)) {
             continue;
         }
 
         foreach (File::files($imageDir) as $imageFile) {
+            $imagePath = str_replace('\\', '/', $imageFile->getPathname());
+            if (isset($skipped[$imagePath])) {
+                continue;
+            }
+
             $labelPath = $labelDir.'/'.$imageFile->getFilenameWithoutExtension().'.txt';
             $status = 'missing';
             if (File::exists($labelPath)) {
@@ -963,7 +982,7 @@ Artisan::command('ai:dataset-label-queue {sport} {--split=all : train, val, test
                 continue;
             }
 
-            fputcsv($handle, [$split, $imageFile->getPathname(), $labelPath, $status]);
+            fputcsv($handle, [$split, $imagePath, str_replace('\\', '/', $labelPath), $status]);
             $count++;
         }
     }
@@ -1153,6 +1172,8 @@ Artisan::command('ai:train-model {sport} {--device=cpu : Training device, e.g. c
         (string) $this->option('imgsz'),
         '--batch',
         (string) $this->option('batch'),
+        '--project',
+        base_path("runs/{$requestedSport}"),
     ], base_path());
 
     $process->setTimeout(null);

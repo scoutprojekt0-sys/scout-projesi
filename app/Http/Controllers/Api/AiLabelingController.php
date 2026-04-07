@@ -26,6 +26,7 @@ class AiLabelingController extends Controller
         }
 
         $lines = file($queuePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
+        $skipped = $this->loadSkippedItems($sport, $split);
         $rows = [];
         foreach ($lines as $index => $line) {
             if ($index === 0) {
@@ -38,6 +39,11 @@ class AiLabelingController extends Controller
             }
 
             [$rowSplit, $imagePath, $labelPath, $status] = $data;
+            $imagePath = str_replace('\\', '/', $imagePath);
+            if (isset($skipped[$imagePath])) {
+                continue;
+            }
+
             $rows[] = [
                 'id' => md5($imagePath),
                 'split' => $rowSplit,
@@ -93,6 +99,9 @@ class AiLabelingController extends Controller
 
         File::ensureDirectoryExists(dirname($labelPath));
         File::put($labelPath, $lines.(($lines !== '') ? PHP_EOL : ''));
+        $split = $this->extractSplitFromPath($imagePath);
+        $this->removeSkippedItem($sport, $split, $imagePath);
+        $this->removeFromQueueFiles($sport, $split, $imagePath);
 
         return response()->json([
             'ok' => true,
@@ -101,6 +110,34 @@ class AiLabelingController extends Controller
                 'image_path' => $imagePath,
                 'label_path' => $labelPath,
                 'box_count' => count($validated['boxes']),
+            ],
+        ]);
+    }
+
+    public function skip(Request $request, string $sport): JsonResponse
+    {
+        $sport = $this->normalizeSport($sport);
+        $validated = $request->validate([
+            'image_path' => ['required', 'string'],
+            'label_path' => ['required', 'string'],
+        ]);
+
+        $imagePath = $this->validateDatasetPath($validated['image_path'], '/images/');
+        $labelPath = $this->validateDatasetPath($validated['label_path'], '/labels/');
+        abort_unless(str_contains($imagePath, "/{$sport}/"), 422, 'Sport klasoru eslesmiyor');
+        abort_unless(str_contains($labelPath, "/{$sport}/"), 422, 'Sport klasoru eslesmiyor');
+
+        $split = $this->extractSplitFromPath($imagePath);
+        $this->storeSkippedItem($sport, $split, $imagePath);
+        $this->removeFromQueueFiles($sport, $split, $imagePath);
+
+        return response()->json([
+            'ok' => true,
+            'message' => 'Gorsel atlandi ve tekrar queueya alinmayacak.',
+            'data' => [
+                'image_path' => $imagePath,
+                'label_path' => $labelPath,
+                'split' => $split,
             ],
         ]);
     }
@@ -131,5 +168,113 @@ class AiLabelingController extends Controller
     private function formatFloat(float $value): string
     {
         return rtrim(rtrim(number_format($value, 6, '.', ''), '0'), '.');
+    }
+
+    private function extractSplitFromPath(string $imagePath): string
+    {
+        if (preg_match('#/images/(train|val|test)/#', $imagePath, $matches) === 1) {
+            return $matches[1];
+        }
+
+        abort(422, 'Split klasoru cozumlenemedi');
+    }
+
+    private function skippedItemsPath(string $sport, string $split): string
+    {
+        return base_path("ai-worker/datasets/{$sport}/queues/skipped_{$split}.txt");
+    }
+
+    private function loadSkippedItems(string $sport, string $split): array
+    {
+        $splits = $split === 'all' ? ['train', 'val', 'test'] : [$split];
+        $items = [];
+
+        foreach ($splits as $currentSplit) {
+            $path = $this->skippedItemsPath($sport, $currentSplit);
+            if (! File::exists($path)) {
+                continue;
+            }
+
+            $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
+            foreach ($lines as $line) {
+                $normalized = str_replace('\\', '/', trim($line));
+                if ($normalized !== '') {
+                    $items[$normalized] = true;
+                }
+            }
+        }
+
+        return $items;
+    }
+
+    private function storeSkippedItem(string $sport, string $split, string $imagePath): void
+    {
+        $items = $this->loadSkippedItems($sport, $split);
+        $items[str_replace('\\', '/', $imagePath)] = true;
+
+        $path = $this->skippedItemsPath($sport, $split);
+        File::ensureDirectoryExists(dirname($path));
+        File::put($path, implode(PHP_EOL, array_keys($items)).PHP_EOL);
+    }
+
+    private function removeSkippedItem(string $sport, string $split, string $imagePath): void
+    {
+        $path = $this->skippedItemsPath($sport, $split);
+        if (! File::exists($path)) {
+            return;
+        }
+
+        $target = str_replace('\\', '/', $imagePath);
+        $items = collect(file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [])
+            ->map(static fn (string $line): string => str_replace('\\', '/', trim($line)))
+            ->filter(static fn (string $line): bool => $line !== '' && $line !== $target)
+            ->values()
+            ->all();
+
+        if ($items === []) {
+            File::delete($path);
+
+            return;
+        }
+
+        File::put($path, implode(PHP_EOL, $items).PHP_EOL);
+    }
+
+    private function removeFromQueueFiles(string $sport, string $split, string $imagePath): void
+    {
+        foreach (["label_queue_{$split}.csv", 'label_queue_all.csv'] as $filename) {
+            $path = base_path("ai-worker/datasets/{$sport}/queues/{$filename}");
+            if (! File::exists($path)) {
+                continue;
+            }
+
+            $lines = file($path, FILE_IGNORE_NEW_LINES) ?: [];
+            if ($lines === []) {
+                continue;
+            }
+
+            $filtered = [];
+            foreach ($lines as $index => $line) {
+                if ($index === 0) {
+                    $filtered[] = $line;
+
+                    continue;
+                }
+
+                $data = str_getcsv($line);
+                if (count($data) < 2) {
+                    continue;
+                }
+
+                $queuedImagePath = str_replace('\\', '/', $data[1]);
+                if ($queuedImagePath === $imagePath) {
+                    continue;
+                }
+
+                $filtered[] = $line;
+            }
+
+            File::put($path, implode(PHP_EOL, $filtered).PHP_EOL);
+        }
     }
 }
