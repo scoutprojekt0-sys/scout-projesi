@@ -621,12 +621,12 @@ class ScoutTipController extends Controller
             return false;
         }
 
-        return in_array($user->role, ['coach', 'team'], true);
+        return in_array($user->role, ['coach', 'team', 'club'], true);
     }
 
     private function normalizeRoleRequestType(string $role): string
     {
-        return $role === 'team' ? 'team' : 'coach';
+        return in_array($role, ['team', 'club'], true) ? 'team' : 'coach';
     }
 
     private function autoCreateManagerShortlistEntries(ScoutTip $tip): void

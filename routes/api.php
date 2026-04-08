@@ -76,6 +76,7 @@ Route::get('/translations', [LocalizationController::class, 'getTranslations']);
 Route::middleware('internal_tool')->prefix('ai-labeling')->group(function () {
     Route::get('/{sport}/queue', [AiLabelingController::class, 'queue']);
     Route::get('/image', [AiLabelingController::class, 'image']);
+    Route::post('/{sport}/predict', [AiLabelingController::class, 'predict']);
     Route::post('/{sport}/save', [AiLabelingController::class, 'save']);
     Route::post('/{sport}/skip', [AiLabelingController::class, 'skip']);
 });

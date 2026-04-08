@@ -257,43 +257,36 @@ class DiscoveryController extends Controller
     public function clubNeeds(): JsonResponse
     {
         $hasExpiresAt = Schema::hasColumn('opportunities', 'expires_at');
-        $this->closeExpiredOpportunities();
+        $limit = max(1, min((int) request()->query('limit', 20), 300));
 
         $needs = DB::table('opportunities')
             ->where('status', 'open')
+            ->when($hasExpiresAt, function ($query) {
+                $query->where(function ($innerQuery) {
+                    $innerQuery->whereNull('opportunities.expires_at')
+                        ->orWhere('opportunities.expires_at', '>', now());
+                });
+            })
             ->join('users as teams', 'opportunities.team_user_id', '=', 'teams.id')
-            ->where('teams.role', 'team')
+            ->whereIn('teams.role', ['team', 'club'])
             ->where(function ($query) {
                 foreach (self::EVENT_KEYWORDS as $keyword) {
                     $query->whereRaw('LOWER(COALESCE(opportunities.title, "")) NOT LIKE ?', [$keyword])
                         ->whereRaw('LOWER(COALESCE(opportunities.details, "")) NOT LIKE ?', [$keyword]);
                 }
             })
-            ->select('opportunities.*', 'teams.name as team_name')
+            ->select([
+                'opportunities.*',
+                'teams.name as team_name',
+                'teams.name as club_name',
+                'opportunities.details as note',
+                DB::raw("'API' as source"),
+            ])
             ->orderBy('opportunities.created_at', 'desc')
-            ->paginate(20);
+            ->limit($limit)
+            ->get();
 
-        if ($hasExpiresAt) {
-            $needs = DB::table('opportunities')
-                ->where('status', 'open')
-                ->where(function ($query) {
-                    $query->whereNull('opportunities.expires_at')
-                        ->orWhere('opportunities.expires_at', '>', now());
-                })
-                ->join('users as teams', 'opportunities.team_user_id', '=', 'teams.id')
-                ->where('teams.role', 'team')
-                ->where(function ($query) {
-                    foreach (self::EVENT_KEYWORDS as $keyword) {
-                        $query->whereRaw('LOWER(COALESCE(opportunities.title, "")) NOT LIKE ?', [$keyword])
-                            ->whereRaw('LOWER(COALESCE(opportunities.details, "")) NOT LIKE ?', [$keyword]);
-                    }
-                })
-                ->select('opportunities.*', 'teams.name as team_name')
-                ->orderBy('opportunities.created_at', 'desc')
-                ->paginate(20);
-        }
-
-        return $this->paginatedListResponse($needs, 'Kulup ihtiyaclari hazir.');
+        return $this->successResponse($needs, 'Kulup ihtiyaclari hazir.');
     }
 
     public function managerNeeds(): JsonResponse

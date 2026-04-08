@@ -67,6 +67,13 @@ class ClubWorkspaceController extends Controller
         ]);
 
         $targetPlayerId = isset($validated['target_player_user_id']) ? (int) $validated['target_player_user_id'] : null;
+        if ($targetPlayerId === null) {
+            $targetPlayerId = User::query()
+                ->where('role', 'player')
+                ->whereRaw('LOWER(name) = ?', [mb_strtolower(trim((string) $validated['player_name']))])
+                ->value('id');
+            $targetPlayerId = $targetPlayerId !== null ? (int) $targetPlayerId : null;
+        }
         if ($targetPlayerId !== null) {
             $player = User::query()->find($targetPlayerId);
             if (! $player || (string) $player->role !== 'player') {
@@ -104,13 +111,13 @@ class ClubWorkspaceController extends Controller
 
     public function promosIndex(Request $request): JsonResponse
     {
-        $user = $this->authorizeClubUser($request);
-        if ($user instanceof JsonResponse) {
-            return $user;
-        }
+        $user = $request->user();
 
         $promos = ClubPromo::query()
-            ->where('club_user_id', (int) $user->id)
+            ->when(
+                in_array((string) ($user?->role ?? ''), ['team', 'club'], true),
+                fn ($query) => $query->where('club_user_id', (int) $user->id)
+            )
             ->latest('id')
             ->paginate(25)
             ->through(fn (ClubPromo $promo) => $this->transformPromo($promo));

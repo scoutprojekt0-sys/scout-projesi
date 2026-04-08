@@ -119,7 +119,7 @@ class LegacyCompatibilityController extends Controller
         $rows = DB::table('opportunities as o')
             ->join('users as u', 'u.id', '=', 'o.team_user_id')
             ->where('o.status', 'open')
-            ->where('u.role', 'team')
+            ->whereIn('u.role', ['team', 'club'])
             ->where(function ($query) {
                 foreach (self::EVENT_KEYWORDS as $keyword) {
                     $query->orWhereRaw('LOWER(COALESCE(o.title, "")) LIKE ?', [$keyword])
@@ -172,7 +172,7 @@ class LegacyCompatibilityController extends Controller
         $row = DB::table('opportunities as o')
             ->join('users as u', 'u.id', '=', 'o.team_user_id')
             ->where('o.id', $id)
-            ->where('u.role', 'team')
+            ->whereIn('u.role', ['team', 'club'])
             ->where(function ($query) {
                 foreach (self::EVENT_KEYWORDS as $keyword) {
                     $query->orWhereRaw('LOWER(COALESCE(o.title, "")) LIKE ?', [$keyword])

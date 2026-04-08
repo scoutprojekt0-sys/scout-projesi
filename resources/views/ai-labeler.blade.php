@@ -47,6 +47,8 @@
       <div class="legend" id="classes"></div>
       <div class="actions">
         <button id="undo">Son Kutuyu Sil</button>
+        <button class="warn" id="deleteSelected">Secili Kutuyu Sil</button>
+        <button class="secondary" id="predict">AI Oner</button>
         <button class="warn" id="skip">Bos Kare / Gosterme</button>
         <button class="primary" id="save">Kaydet</button>
       </div>
@@ -78,15 +80,19 @@
     let boxes = [];
     let currentClass = 0;
     let drawing = null;
+    let selectedBoxIndex = -1;
 
     classDefs.forEach((item) => {
       const btn = document.createElement('button');
       btn.textContent = item.name;
       btn.style.borderColor = item.color;
       btn.onclick = () => {
-        currentClass = item.id;
-        document.querySelectorAll('#classes button').forEach((x) => x.classList.remove('active'));
-        btn.classList.add('active');
+        setActiveClass(item.id);
+        if (selectedBoxIndex >= 0 && boxes[selectedBoxIndex]) {
+          boxes[selectedBoxIndex].class_id = item.id;
+          statusEl.textContent = `Secili kutu ${item.name} olarak degistirildi.`;
+          render();
+        }
       };
       if (item.id === 0) btn.classList.add('active');
       classesEl.appendChild(btn);
@@ -95,14 +101,28 @@
     document.getElementById('loadQueue').onclick = loadQueue;
     document.getElementById('undo').onclick = () => {
       boxes.pop();
+      selectedBoxIndex = -1;
       render();
     };
+    document.getElementById('deleteSelected').onclick = deleteSelectedBox;
     document.getElementById('skip').onclick = skipItem;
     document.getElementById('save').onclick = saveLabels;
+    document.getElementById('predict').onclick = predictLabels;
 
     canvas.addEventListener('mousedown', (e) => {
       if (!active || !image.width) return;
       const p = point(e);
+      const hitIndex = findBoxAtPoint(p.x, p.y);
+      if (hitIndex >= 0) {
+        selectedBoxIndex = hitIndex;
+        drawing = null;
+        const cls = classDefs.find((x) => x.id === boxes[hitIndex].class_id);
+        setActiveClass(boxes[hitIndex].class_id);
+        statusEl.textContent = `Kutu secildi: ${cls ? cls.name : 'unknown'}. Sinif butonuna basarak degistirebilir veya Secili Kutuyu Sil diyebilirsin.`;
+        render();
+        return;
+      }
+      selectedBoxIndex = -1;
       drawing = { x: p.x, y: p.y, w: 0, h: 0, class_id: currentClass };
     });
 
@@ -117,7 +137,10 @@
     canvas.addEventListener('mouseup', () => {
       if (!drawing) return;
       const fixed = normalizeBox(drawing);
-      if (fixed.w > 4 && fixed.h > 4) boxes.push(fixed);
+      if (fixed.w > 4 && fixed.h > 4) {
+        boxes.push(fixed);
+        selectedBoxIndex = boxes.length - 1;
+      }
       drawing = null;
       render();
     });
@@ -163,6 +186,7 @@
     function openItem(item) {
       active = item;
       boxes = [];
+      selectedBoxIndex = -1;
       renderQueue();
       clearCanvas();
       image = new Image();
@@ -184,11 +208,16 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (image.width) ctx.drawImage(image, 0, 0);
 
-      [...boxes, ...(drawing ? [normalizeBox(drawing)] : [])].forEach((box) => {
-        const cls = classDefs.find((x) => x.id === box.class_id);
+      [...boxes, ...(drawing ? [normalizeBox(drawing)] : [])].forEach((box, index) => {
+        const cls = classDefs.find((x) => x.id === box.class_id) || classDefs[0];
         ctx.strokeStyle = cls.color;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = index === selectedBoxIndex ? 4 : 2;
         ctx.strokeRect(box.x, box.y, box.w, box.h);
+        if (index === selectedBoxIndex) {
+          ctx.strokeStyle = '#d4a94d';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(box.x - 3, box.y - 3, box.w + 6, box.h + 6);
+        }
         ctx.fillStyle = cls.color;
         ctx.font = '14px Arial';
         ctx.fillText(cls.name, box.x + 4, Math.max(14, box.y + 14));
@@ -218,7 +247,78 @@
     function clearCanvas() {
       canvas.width = 0;
       canvas.height = 0;
+      selectedBoxIndex = -1;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function setActiveClass(classId) {
+      currentClass = classId;
+      document.querySelectorAll('#classes button').forEach((button, index) => {
+        button.classList.toggle('active', classDefs[index].id === classId);
+      });
+    }
+
+    function findBoxAtPoint(x, y) {
+      for (let index = boxes.length - 1; index >= 0; index--) {
+        const box = boxes[index];
+        if (x >= box.x && x <= box.x + box.w && y >= box.y && y <= box.y + box.h) {
+          return index;
+        }
+      }
+
+      return -1;
+    }
+
+    function deleteSelectedBox() {
+      if (selectedBoxIndex < 0 || !boxes[selectedBoxIndex]) {
+        statusEl.textContent = 'Silmek icin once bir kutuya tikla.';
+        return;
+      }
+
+      boxes.splice(selectedBoxIndex, 1);
+      selectedBoxIndex = -1;
+      render();
+      statusEl.textContent = 'Secili kutu silindi.';
+    }
+
+    async function predictLabels() {
+      if (!active || !image.width || !image.height) {
+        statusEl.textContent = 'Once bir gorsel sec ve yuklenmesini bekle.';
+        return;
+      }
+
+      statusEl.textContent = 'AI onerileri aliniyor...';
+      try {
+        const res = await fetch(`/api/ai-labeling/${sportEl.value}/predict`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            image_path: active.image_path,
+            conf: 0.20,
+          }),
+        });
+        const json = await res.json();
+        if (!res.ok || !json.ok) {
+          throw new Error(json.message || `AI tahmin hatasi (${res.status})`);
+        }
+
+        const predicted = json.data && Array.isArray(json.data.boxes) ? json.data.boxes : [];
+        boxes = predicted
+          .map((box) => ({
+            class_id: Number(box.class_id) || 0,
+            x: Number(box.x) || 0,
+            y: Number(box.y) || 0,
+            w: Number(box.w) || 0,
+            h: Number(box.h) || 0,
+          }))
+          .filter((box) => box.w > 4 && box.h > 4);
+        selectedBoxIndex = -1;
+
+        render();
+        statusEl.textContent = `AI ${boxes.length} kutu onerdi. Yanlis kutulari sil, eksikleri ekle, sonra Kaydet.`;
+      } catch (error) {
+        statusEl.textContent = `AI onerisi alinamadi.\n${error.message}`;
+      }
     }
 
     async function saveLabels() {
@@ -253,6 +353,7 @@
         queue = queue.filter((item) => item.id !== active.id);
         active = null;
         boxes = [];
+        selectedBoxIndex = -1;
         renderQueue();
         clearCanvas();
         if (queue.length) {
@@ -286,6 +387,7 @@
         queue = queue.filter((item) => item.id !== active.id);
         active = null;
         boxes = [];
+        selectedBoxIndex = -1;
         renderQueue();
         clearCanvas();
         if (queue.length) {

@@ -1175,6 +1175,9 @@ Artisan::command('ai:train-model {sport} {--device=cpu : Training device, e.g. c
         '--project',
         base_path("runs/{$requestedSport}"),
     ], base_path());
+    $process->setEnv(array_merge($_ENV, $_SERVER, [
+        'POLARS_SKIP_CPU_CHECK' => '1',
+    ]));
 
     $process->setTimeout(null);
     $process->run(function (string $type, string $buffer): void {

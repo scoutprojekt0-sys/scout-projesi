@@ -31,6 +31,11 @@ def parse_args() -> argparse.Namespace:
         help="YOLO project directory",
     )
     parser.add_argument("--name", default="player_ball_detector", help="YOLO run name")
+    parser.add_argument(
+        "--exist-ok",
+        action="store_true",
+        help="Allow writing into an existing YOLO run directory",
+    )
     return parser.parse_args()
 
 
@@ -71,8 +76,8 @@ def _save_checkpoint(trainer, target_path: Path) -> None:
 
 
 def main() -> None:
-    os.environ.setdefault("POLARS_SKIP_CPU_CHECK", "1")
-    print("train_script_version=debug_v3")
+    os.environ["POLARS_SKIP_CPU_CHECK"] = "1"
+    print("train_script_version=metrics_safe_train_v1")
 
     try:
         from ultralytics.engine.trainer import BaseTrainer, LOGGER, RANK, TQDM, autocast, unwrap_model  # type: ignore
@@ -108,7 +113,7 @@ def main() -> None:
         "project": args.project,
         "name": args.name,
         "pretrained": True,
-        "exist_ok": True,
+        "exist_ok": args.exist_ok,
         "workers": 0,
         "amp": False,
         "plots": False,
@@ -215,17 +220,10 @@ def main() -> None:
     save_dir = Path(trainer.save_dir)
     weights_dir = save_dir / "weights"
     weights_dir.mkdir(parents=True, exist_ok=True)
-    print(f"weights_dir_ready={weights_dir}")
     last_path = weights_dir / "last.pt"
     best_path = weights_dir / "best.pt"
-
-    print(f"saving_last={last_path}")
     _save_checkpoint(trainer, last_path)
-    print("last_saved")
-
-    print(f"saving_best={best_path}")
     _save_checkpoint(trainer, best_path)
-    print("best_saved")
     print(f"weights_saved={weights_dir}")
 
 

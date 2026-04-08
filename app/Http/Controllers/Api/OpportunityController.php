@@ -151,10 +151,10 @@ class OpportunityController extends Controller
     {
         $hasExpiresAt = Schema::hasColumn('opportunities', 'expires_at');
         $authUser = $request->user();
-        if (! in_array($authUser->role, ['team', 'manager', 'coach'], true)) {
+        if (! in_array($authUser->role, ['team', 'club', 'manager', 'coach'], true)) {
             return response()->json([
                 'ok' => false,
-                'message' => 'Sadece takim, menajer veya antrenor rolu ilan olusturabilir.',
+                'message' => 'Sadece kulup, takim, menajer veya antrenor rolu ilan olusturabilir.',
             ], Response::HTTP_FORBIDDEN);
         }
 

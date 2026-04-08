@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Symfony\Component\Process\Process;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -111,6 +112,91 @@ class AiLabelingController extends Controller
                 'label_path' => $labelPath,
                 'box_count' => count($validated['boxes']),
             ],
+        ]);
+    }
+
+    public function predict(Request $request, string $sport): JsonResponse
+    {
+        $sport = $this->normalizeSport($sport);
+        $validated = $request->validate([
+            'image_path' => ['required', 'string'],
+            'conf' => ['nullable', 'numeric', 'min:0.01', 'max:0.95'],
+        ]);
+
+        $imagePath = $this->validateDatasetPath($validated['image_path'], '/images/');
+        abort_unless(str_contains($imagePath, "/{$sport}/"), 422, 'Sport klasoru eslesmiyor');
+
+        $modelPath = $this->resolvePredictModelPath($sport);
+        if ($modelPath === null) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Tahmin modeli bulunamadi. Once egitim cikti dosyasini olustur.',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $pythonPath = base_path('ai-worker/.venv/Scripts/python.exe');
+        if (! File::exists($pythonPath)) {
+            $pythonPath = 'python';
+        }
+
+        $process = new Process([
+            $pythonPath,
+            base_path('ai-worker/scripts/predict_boxes.py'),
+            '--model',
+            $modelPath,
+            '--image',
+            $imagePath,
+            '--conf',
+            (string) ($validated['conf'] ?? 0.20),
+            '--max-det',
+            '80',
+        ], base_path());
+        $systemRoot = getenv('SystemRoot') ?: getenv('SYSTEMROOT') ?: 'C:\\Windows';
+        $windir = getenv('WINDIR') ?: $systemRoot;
+        $path = getenv('PATH') ?: ($_SERVER['PATH'] ?? '');
+        $userProfile = getenv('USERPROFILE') ?: 'C:\\Users\\Hp';
+        $tempPath = getenv('TEMP') ?: $userProfile.'\\AppData\\Local\\Temp';
+        $process->setEnv([
+            'POLARS_SKIP_CPU_CHECK' => '1',
+            'PATH' => dirname($pythonPath).PATH_SEPARATOR.$path,
+            'SystemRoot' => $systemRoot,
+            'SYSTEMROOT' => $systemRoot,
+            'WINDIR' => $windir,
+            'USERPROFILE' => $userProfile,
+            'HOME' => $userProfile,
+            'HOMEDRIVE' => getenv('HOMEDRIVE') ?: 'C:',
+            'HOMEPATH' => getenv('HOMEPATH') ?: '\\Users\\Hp',
+            'APPDATA' => getenv('APPDATA') ?: $userProfile.'\\AppData\\Roaming',
+            'LOCALAPPDATA' => getenv('LOCALAPPDATA') ?: $userProfile.'\\AppData\\Local',
+            'USERNAME' => getenv('USERNAME') ?: 'Hp',
+            'USER' => getenv('USER') ?: 'Hp',
+            'TEMP' => $tempPath,
+            'TMP' => getenv('TMP') ?: $tempPath,
+            'TORCHINDUCTOR_CACHE_DIR' => $tempPath.'\\torchinductor_Hp',
+        ]);
+        $process->setTimeout(120);
+        $process->run();
+
+        if (! $process->isSuccessful()) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'AI tahmin calismadi.',
+                'error' => $this->safeProcessOutput($process->getErrorOutput() ?: $process->getOutput()),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        $payload = $this->decodePredictOutput($process->getOutput());
+        if ($payload === null) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'AI tahmin cevabi okunamadi.',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return response()->json([
+            'ok' => true,
+            'data' => $payload,
+            'model_path' => $modelPath,
         ]);
     }
 
@@ -276,5 +362,64 @@ class AiLabelingController extends Controller
 
             File::put($path, implode(PHP_EOL, $filtered).PHP_EOL);
         }
+    }
+
+    private function resolvePredictModelPath(string $sport): ?string
+    {
+        $candidates = [];
+
+        $modelMap = [
+            'football' => base_path('ai-worker/models/football_player_ball.pt'),
+            'basketball' => base_path('ai-worker/models/basketball_player_ball.pt'),
+            'volleyball' => base_path('ai-worker/models/volleyball_player_ball.pt'),
+        ];
+        if (isset($modelMap[$sport]) && File::exists($modelMap[$sport])) {
+            $candidates[] = $modelMap[$sport];
+        }
+
+        $runRoot = base_path("runs/{$sport}");
+        if (File::exists($runRoot)) {
+            foreach (File::allFiles($runRoot) as $file) {
+                if ($file->getFilename() === 'best.pt') {
+                    $candidates[] = $file->getPathname();
+                }
+            }
+        }
+
+        if ($candidates === []) {
+            return null;
+        }
+
+        usort($candidates, static fn (string $a, string $b): int => filemtime($b) <=> filemtime($a));
+
+        return $candidates[0];
+    }
+
+    private function decodePredictOutput(string $output): ?array
+    {
+        $lines = array_reverse(preg_split('/\R/', trim($output)) ?: []);
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line === '' || ! str_starts_with($line, '{')) {
+                continue;
+            }
+
+            $decoded = json_decode($line, true);
+            if (is_array($decoded) && ($decoded['ok'] ?? false) === true) {
+                return $decoded;
+            }
+        }
+
+        return null;
+    }
+
+    private function safeProcessOutput(string $output): string
+    {
+        $clean = trim($output);
+        if ($clean === '') {
+            return '';
+        }
+
+        return preg_replace('/[^\x09\x0A\x0D\x20-\x7E]/', '?', $clean) ?? '';
     }
 }
