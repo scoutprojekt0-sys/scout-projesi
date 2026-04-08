@@ -31,7 +31,7 @@ class ClubWorkspaceController extends Controller
         }
 
         $offers = ClubOffer::query()
-            ->with(['transfer:id,negotiation_status,verification_status,counter_fee,updated_at'])
+            ->with(['club:id,name,city', 'transfer:id,negotiation_status,verification_status,counter_fee,updated_at'])
             ->where('club_user_id', (int) $user->id)
             ->latest('id')
             ->paginate(50)
@@ -107,6 +107,114 @@ class ClubWorkspaceController extends Controller
         });
 
         return $this->successResponse($this->transformOffer($offer->load('transfer')), 'Teklif kaydedildi.', Response::HTTP_CREATED);
+    }
+
+    public function managerOffersIndex(Request $request): JsonResponse
+    {
+        $user = $this->authorizeManagerUser($request);
+        if ($user instanceof JsonResponse) {
+            return $user;
+        }
+
+        $offers = ClubOffer::query()
+            ->with(['club:id,name,city', 'transfer:id,negotiation_status,verification_status,counter_fee,updated_at'])
+            ->whereHas('transfer', fn ($query) => $query->where('created_by', (int) $user->id))
+            ->latest('id')
+            ->paginate(50)
+            ->through(fn (ClubOffer $offer) => $this->transformOffer($offer));
+
+        return $this->successResponse($offers, 'Menajer teklifleri hazir.');
+    }
+
+    public function managerOffersStore(Request $request): JsonResponse
+    {
+        $user = $this->authorizeManagerUser($request);
+        if ($user instanceof JsonResponse) {
+            return $user;
+        }
+
+        $validated = $request->validate([
+            'club_user_id' => ['nullable', 'integer', 'exists:users,id'],
+            'club_name' => ['nullable', 'string', 'min:2', 'max:120'],
+            'target_player_user_id' => ['nullable', 'integer', 'exists:users,id'],
+            'player_name' => ['required', 'string', 'min:2', 'max:120'],
+            'offer_type' => ['required', 'string', 'in:permanent,loan,trial,pre_contract'],
+            'amount_eur' => ['required', 'numeric', 'min:1', 'max:999999999'],
+            'currency' => ['nullable', 'string', 'size:3'],
+            'season' => ['nullable', 'string', 'max:20'],
+            'contract_years' => ['nullable', 'integer', 'min:1', 'max:7'],
+            'salary_amount' => ['nullable', 'numeric', 'min:0', 'max:999999999'],
+            'signing_fee' => ['nullable', 'numeric', 'min:0', 'max:999999999'],
+            'bonus_summary' => ['nullable', 'string', 'max:255'],
+            'contract_start_date' => ['nullable', 'date'],
+            'contract_end_date' => ['nullable', 'date', 'after_or_equal:contract_start_date'],
+            'expires_at' => ['nullable', 'date', 'after:today'],
+            'clauses' => ['nullable', 'string', 'max:3000'],
+            'status' => ['nullable', 'string', 'max:40'],
+            'note' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $club = isset($validated['club_user_id'])
+            ? User::query()->find((int) $validated['club_user_id'])
+            : null;
+        if (! $club && ! empty($validated['club_name'])) {
+            $club = User::query()
+                ->whereIn('role', ['team', 'club', 'kulup'])
+                ->whereRaw('LOWER(name) = ?', [mb_strtolower(trim((string) $validated['club_name']))])
+                ->first();
+        }
+        if (! $club || ! in_array((string) $club->role, ['team', 'club', 'kulup'], true)) {
+            return $this->errorResponse('Kulup bulunamadi. Kulup ID gir veya adi birebir eslestir.', Response::HTTP_UNPROCESSABLE_ENTITY, 'invalid_club');
+        }
+
+        $targetPlayerId = isset($validated['target_player_user_id']) ? (int) $validated['target_player_user_id'] : null;
+        if ($targetPlayerId === null) {
+            $targetPlayerId = User::query()
+                ->where('role', 'player')
+                ->whereRaw('LOWER(name) = ?', [mb_strtolower(trim((string) $validated['player_name']))])
+                ->value('id');
+            $targetPlayerId = $targetPlayerId !== null ? (int) $targetPlayerId : null;
+        }
+        if ($targetPlayerId === null) {
+            return $this->errorResponse('Oyuncu bulunamadi. Oyuncu ID gir veya adi birebir eslestir.', Response::HTTP_UNPROCESSABLE_ENTITY, 'player_not_found');
+        }
+
+        $player = User::query()->find($targetPlayerId);
+        if (! $player || (string) $player->role !== 'player') {
+            return $this->errorResponse('Secilen kayit bir oyuncuya ait degil.', Response::HTTP_UNPROCESSABLE_ENTITY, 'invalid_player');
+        }
+
+        $offer = DB::transaction(function () use ($user, $validated, $targetPlayerId, $club) {
+            $transfer = $this->createLinkedTransfer($user, $validated, $targetPlayerId, (int) $club->id);
+            $note = $this->nullableString($validated['note'] ?? null);
+            $note = trim(implode("\n", array_filter([
+                $note,
+                'Menajer: '.trim((string) $user->name),
+            ])));
+
+            return ClubOffer::query()->create([
+                'club_user_id' => (int) $club->id,
+                'transfer_id' => $transfer->id,
+                'target_player_user_id' => $targetPlayerId,
+                'player_name' => trim((string) $validated['player_name']),
+                'offer_type' => trim((string) $validated['offer_type']),
+                'amount_eur' => $validated['amount_eur'],
+                'currency' => strtoupper(trim((string) ($validated['currency'] ?? 'EUR'))),
+                'season' => $this->nullableString($validated['season'] ?? null),
+                'contract_years' => $validated['contract_years'] ?? null,
+                'salary_amount' => $validated['salary_amount'] ?? null,
+                'signing_fee' => $validated['signing_fee'] ?? null,
+                'bonus_summary' => $this->nullableString($validated['bonus_summary'] ?? null),
+                'contract_start_date' => $validated['contract_start_date'] ?? null,
+                'contract_end_date' => $validated['contract_end_date'] ?? null,
+                'expires_at' => $validated['expires_at'] ?? null,
+                'clauses' => $this->nullableString($validated['clauses'] ?? null),
+                'status' => trim((string) ($validated['status'] ?? 'sent')),
+                'note' => $this->nullableString($note),
+            ]);
+        });
+
+        return $this->successResponse($this->transformOffer($offer->load('transfer')), 'Menajer teklifi kaydedildi.', Response::HTTP_CREATED);
     }
 
     public function promosIndex(Request $request): JsonResponse
@@ -452,6 +560,16 @@ class ClubWorkspaceController extends Controller
         return $user;
     }
 
+    private function authorizeManagerUser(Request $request): User|JsonResponse
+    {
+        $user = $request->user();
+        if (! $user || ! in_array((string) $user->role, ['manager', 'menajer'], true)) {
+            return $this->errorResponse('Bu alan sadece menajer hesaplari icin aciktir.', Response::HTTP_FORBIDDEN, 'forbidden_role');
+        }
+
+        return $user;
+    }
+
     private function validatedInternalPlayerPayload(Request $request, User $user): array
     {
         $validated = $request->validate([
@@ -736,6 +854,9 @@ class ClubWorkspaceController extends Controller
     {
         return [
             'id' => $offer->id,
+            'club_user_id' => $offer->club_user_id,
+            'club_name' => $offer->club?->name,
+            'club_city' => $offer->club?->city,
             'transfer_id' => $offer->transfer_id,
             'target_player_user_id' => $offer->target_player_user_id,
             'player_name' => $offer->player_name,
@@ -760,7 +881,7 @@ class ClubWorkspaceController extends Controller
         ];
     }
 
-    private function createLinkedTransfer(User $user, array $validated, int $targetPlayerId): PlayerTransfer
+    private function createLinkedTransfer(User $user, array $validated, int $targetPlayerId, ?int $toClubId = null): PlayerTransfer
     {
         $transferDate = Carbon::now();
         $month = (int) $transferDate->format('n');
@@ -784,7 +905,7 @@ class ClubWorkspaceController extends Controller
         return PlayerTransfer::query()->create([
             'player_id' => $targetPlayerId,
             'from_club_id' => null,
-            'to_club_id' => (int) $user->id,
+            'to_club_id' => $toClubId ?? (int) $user->id,
             'fee' => $validated['amount_eur'],
             'currency' => $currency,
             'transfer_date' => $transferDate->toDateString(),

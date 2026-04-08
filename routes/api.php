@@ -430,6 +430,8 @@ Route::apiResource('staff', StaffController::class)->only(['index', 'show', 'upd
     Route::patch('/scout/player-reports/{id}/status', [ScoutPlayerReportController::class, 'updateStatus'])->middleware('ability:profile:write');
     Route::get('/club/offers', [ClubWorkspaceController::class, 'offersIndex'])->middleware('ability:profile:read');
     Route::post('/club/offers', [ClubWorkspaceController::class, 'offersStore'])->middleware('ability:profile:write');
+    Route::get('/manager/offers', [ClubWorkspaceController::class, 'managerOffersIndex'])->middleware('ability:profile:read');
+    Route::post('/manager/offers', [ClubWorkspaceController::class, 'managerOffersStore'])->middleware('ability:profile:write');
     Route::get('/club/promos', [ClubWorkspaceController::class, 'promosIndex'])->middleware('ability:profile:read');
     Route::post('/club/promos', [ClubWorkspaceController::class, 'promosStore'])->middleware('ability:profile:write');
     Route::get('/club/groups', [ClubWorkspaceController::class, 'groupsIndex'])->middleware('ability:profile:read');

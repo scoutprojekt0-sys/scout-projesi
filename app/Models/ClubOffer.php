@@ -44,4 +44,9 @@ class ClubOffer extends Model
     {
         return $this->belongsTo(PlayerTransfer::class, 'transfer_id');
     }
+
+    public function club()
+    {
+        return $this->belongsTo(User::class, 'club_user_id');
+    }
 }
