@@ -26,6 +26,58 @@
     <link rel="stylesheet" href="assets/css/admin-responsive.css">
     <link rel="stylesheet" href="assets/css/mobile-unified.css">
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
+    <style>
+        .admin-hero {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            padding: 20px 22px;
+            border: 1px solid #DBEAFE;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(30,64,175,.08) 0%, rgba(37,99,235,.03) 100%);
+            margin-bottom: 18px;
+        }
+        .admin-hero h1 { margin: 0; font-size: 30px; color: #0F172A; }
+        .admin-hero p { margin: 0; color: #475569; max-width: 780px; }
+        .admin-chip-row, .admin-menu { display: flex; flex-wrap: wrap; gap: 10px; }
+        .admin-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid #D1D5DB;
+            background: #fff;
+            color: #1E293B;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .admin-chip i, .admin-menu-btn i { color: #1D4ED8; }
+        .admin-menu { margin-bottom: 18px; }
+        .admin-menu-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid #D1D5DB;
+            background: #fff;
+            color: #0F172A;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .admin-menu-btn.active {
+            border-color: #1D4ED8;
+            background: linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);
+            color: #fff;
+        }
+        .admin-menu-btn.active i { color: #fff; }
+        .admin-note { margin-bottom: 14px; color: #64748B; font-size: 13px; }
+        .admin-panel { display: none; }
+        .admin-panel.active { display: block; }
+    </style>
 </head>
 <body>
     <div class="header">
@@ -58,9 +110,36 @@
                 <a href="menejer-giris.html" class="btn btn-secondary" style="padding:6px 10px;font-size:12px;text-decoration:none;">Menajer girisi</a>
             </div>
         </div>
-        <div class="welcome">
-            <h1>Hos Geldin, Admin!</h1>
-            <p>NextScout y�netim paneline hos geldin. Platformu buradan y�netebilirsin.</p>
+                <div class="admin-hero">
+            <div>
+                <h1>Admin Kontrol Merkezi</h1>
+                <p>Kullanici, moderasyon, canli akis, ilan, hata kaydi ve veri kalitesi tarafini tek panelden yonet.</p>
+            </div>
+            <div class="admin-chip-row">
+                <a class="admin-chip" href="#quick-actions"><i class="fas fa-bolt"></i> Hizli Islemler</a>
+                <a class="admin-chip" href="#data-quality"><i class="fas fa-shield-check"></i> Veri Kalitesi</a>
+                <a class="admin-chip" href="#ops-summary"><i class="fas fa-gauge-high"></i> Operasyon</a>
+                <a class="admin-chip" href="#mobile-oversight"><i class="fas fa-mobile-screen-button"></i> Mobil Denetim</a>
+                <a class="admin-chip" href="#pending-users"><i class="fas fa-user-clock"></i> Kayitlar</a>
+                <a class="admin-chip" href="#trial-moderation"><i class="fas fa-calendar-check"></i> Ilan Moderasyonu</a>
+                <a class="admin-chip" href="#contact-messages"><i class="fas fa-envelope-open-text"></i> Mesajlar</a>
+            </div>
+        </div>
+        <div class="admin-menu">
+            <button class="admin-menu-btn active" type="button" data-admin-target="quick-actions"><i class="fas fa-bolt"></i> Hizli Islemler</button>
+            <button class="admin-menu-btn" type="button" data-admin-target="data-quality"><i class="fas fa-shield-check"></i> Veri Kalitesi</button>
+            <button class="admin-menu-btn" type="button" data-admin-target="ops-summary"><i class="fas fa-gauge-high"></i> Operasyon</button>
+            <button class="admin-menu-btn" type="button" data-admin-target="client-errors"><i class="fas fa-bug"></i> Hata Loglari</button>
+            <button class="admin-menu-btn" type="button" data-admin-target="home-modules"><i class="fas fa-link"></i> Ana Sayfa</button>
+            <button class="admin-menu-btn" type="button" data-admin-target="mobile-oversight"><i class="fas fa-mobile-screen-button"></i> Mobil Denetim</button>
+            <button class="admin-menu-btn" type="button" data-admin-target="contact-messages"><i class="fas fa-envelope-open-text"></i> Mesajlar</button>
+            <button class="admin-menu-btn" type="button" data-admin-target="boost-packages"><i class="fas fa-bolt"></i> Boost</button>
+            <button class="admin-menu-btn" type="button" data-admin-target="scout-queue"><i class="fas fa-user-secret"></i> Scout Queue</button>
+            <button class="admin-menu-btn" type="button" data-admin-target="platform-stats"><i class="fas fa-chart-pie"></i> Istatistik</button>
+            <button class="admin-menu-btn" type="button" data-admin-target="registered-users"><i class="fas fa-magnifying-glass"></i> Kullanici Arama</button>
+            <button class="admin-menu-btn" type="button" data-admin-target="pending-users"><i class="fas fa-user-clock"></i> Kayitlar</button>
+            <button class="admin-menu-btn" type="button" data-admin-target="trial-moderation"><i class="fas fa-calendar-check"></i> Ilanlar</button>
+            <button class="admin-menu-btn" type="button" data-admin-target="amateurModerationSection"><i class="fas fa-futbol"></i> Amator</button>
         </div>
 
         <!-- Ana Istatistikler -->
@@ -92,7 +171,7 @@
         </div>
 
         <!-- Hizli Islemler -->
-        <div class="section">
+        <div class="section admin-panel active" id="quick-actions">
             <div class="section-title"><i class="fas fa-bolt"></i> Hizli Islemler</div>
             <div class="action-buttons">
                 <a href="settings.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Kullanici Y�netimi</a>
@@ -102,7 +181,7 @@
             </div>
         </div>
 
-        <div class="section">
+        <div class="section admin-panel" id="data-quality">
             <div class="section-title"><i class="fas fa-shield-check"></i> Hafta 4 - Veri Kalite Durumu</div>
             <div class="action-buttons" style="margin-bottom:12px;">
                 <button class="btn btn-secondary" type="button" onclick="loadDataQualityWidget()"><i class="fas fa-rotate"></i> Kalite Verisini Yenile</button>
@@ -128,7 +207,7 @@
             <div style="margin-top:12px;color:#64748B;font-size:12px;" id="dqMeta">Kalite raporu bekleniyor...</div>
         </div>
 
-        <div class="section">
+        <div class="section admin-panel" id="ops-summary">
             <div class="section-title"><i class="fas fa-gauge-high"></i> Operasyon ve Guvenlik Ozeti</div>
             <div class="action-buttons" style="margin-bottom:12px;">
                 <button class="btn btn-secondary" type="button" onclick="loadOpsSummary()"><i class="fas fa-rotate"></i> Ozeti Yenile</button>
@@ -163,7 +242,7 @@
             <div style="margin-top:12px;color:#64748B;font-size:12px;" id="opsMeta">Operasyon ozeti bekleniyor...</div>
         </div>
 
-        <div class="section">
+        <div class="section admin-panel" id="client-errors">
             <div class="section-title"><i class="fas fa-bug"></i> Istemci Hata Gunlugu</div>
             <div class="action-buttons" style="margin-bottom:12px;">
                 <button class="btn btn-secondary" type="button" onclick="loadClientErrorLogs()"><i class="fas fa-rotate"></i> Loglari Yenile</button>
@@ -185,7 +264,7 @@
             </table>
         </div>
 
-        <div class="section">
+        <div class="section admin-panel" id="home-modules">
             <div class="section-title"><i class="fas fa-link"></i> Ana Sayfa Modulleri (Hizli Erisim)</div>
             <div class="module-grid">
                 <a class="module-card" href="scout-live-matches.html">
@@ -215,7 +294,46 @@
             </div>
         </div>
 
-        <div class="section">
+        <div class="section admin-panel" id="mobile-oversight">
+            <div class="section-title"><i class="fas fa-mobile-screen-button"></i> Mobil Aksiyon Denetimi</div>
+            <div class="admin-note">Canli yayin, izleme, ilan, transfer ve bildirim akislarini admin gozuyle hizli kontrol et.</div>
+            <div class="module-grid">
+                <a class="module-card" href="live-matches.html">
+                    <div class="module-title"><i class="fas fa-tower-broadcast"></i> Canli Scout Baslat</div>
+                    <div class="module-desc">Acilan canli mac ve yayin kartlarini dogrudan denetle.</div>
+                </a>
+                <a class="module-card" href="scout-watchlist.html">
+                    <div class="module-title"><i class="fas fa-binoculars"></i> Canli Izleme Talepleri</div>
+                    <div class="module-desc">Izleme talepleri ve takip listesi akislarini ac.</div>
+                </a>
+                <a class="module-card" href="trial-center.html">
+                    <div class="module-title"><i class="fas fa-calendar-check"></i> Deneme ve Idman Ilanlari</div>
+                    <div class="module-desc">Trial center uzerinden yayinlanan deneme ve idmanlari izle.</div>
+                </a>
+                <a class="module-card" href="manager-needs.html">
+                    <div class="module-title"><i class="fas fa-briefcase"></i> Kulup ve Menajer Ilanlari</div>
+                    <div class="module-desc">Kulup ihtiyaclari ve menajer arayislarini yonetsel bakisla ac.</div>
+                </a>
+                <a class="module-card" href="teklif-pazarlik-odasi.html">
+                    <div class="module-title"><i class="fas fa-handshake-angle"></i> Transfer Masasi</div>
+                    <div class="module-desc">Teklif ve pazarlik akislarini tek yerden incele.</div>
+                </a>
+                <a class="module-card" href="favorites.html">
+                    <div class="module-title"><i class="fas fa-star"></i> Takip ve Favoriler</div>
+                    <div class="module-desc">Takip, favori ve ilgi akislarinin yansimasini kontrol et.</div>
+                </a>
+                <a class="module-card" href="notifications.html">
+                    <div class="module-title"><i class="fas fa-bell"></i> Bildirim Akisi</div>
+                    <div class="module-desc">Mesaj, davet ve sistem bildirimlerinin dagilimini izle.</div>
+                </a>
+                <a class="module-card" href="achievements.html">
+                    <div class="module-title"><i class="fas fa-trophy"></i> Basari Hikayeleri</div>
+                    <div class="module-desc">Basari hikayesi ve vitrin akislarini hizli kontrol et.</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="section admin-panel" id="contact-messages">
             <div class="section-title"><i class="fas fa-envelope-open-text"></i> Iletisim Mesajlari</div>
             <div class="action-buttons" style="margin-bottom:12px;">
                 <button class="btn btn-secondary" type="button" onclick="loadContactMessages()"><i class="fas fa-rotate"></i> Mesajlari Yenile</button>
@@ -233,7 +351,7 @@
             </table>
         </div>
 
-        <div class="section">
+        <div class="section admin-panel" id="boost-packages">
             <div class="section-title"><i class="fas fa-bolt"></i> Kesfet Boost Paketleri</div>
             <div class="action-buttons" style="margin-bottom:12px;">
                 <button class="btn btn-secondary" type="button" onclick="loadBoostPackagesAdmin()"><i class="fas fa-rotate"></i> Paketleri Yenile</button>
@@ -256,7 +374,7 @@
         </div>
 
         <!-- Google Entegrasyonu -->
-        <div class="section" style="border: 2px solid #4285F4;">
+        <div class="section admin-panel" id="google-metrics" style="border: 2px solid #4285F4;">
             <div class="section-title">
                 <i class="fab fa-google" style="color: #4285F4;"></i> 
                 Google Entegrasyonu
@@ -328,7 +446,7 @@
             </table>
         </div>
 
-        <div class="section">
+        <div class="section admin-panel" id="scout-queue">
             <div class="section-title"><i class="fas fa-user-secret"></i> Crowdsourced Scout Queue</div>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:14px;">
                 <div style="background:linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%);border:1px solid #bfdbfe;border-radius:12px;padding:14px;">
@@ -390,7 +508,7 @@
     </div>
 
         <!-- Platform Istatistikleri -->
-        <div class="section">
+        <div class="section admin-panel" id="platform-stats">
             <div class="section-title"><i class="fas fa-chart-pie"></i> Platform Istatistikleri</div>
             <div class="quick-stats">
                 <div class="quick-stat">
@@ -412,7 +530,7 @@
             </div>
         </div>
 
-        <div class="section">
+        <div class="section admin-panel" id="registered-users">
             <div class="section-title"><i class="fas fa-magnifying-glass"></i> Kayitli Kullanici Arama (API)</div>
             <div style="display:grid;grid-template-columns:2fr 1fr auto;gap:10px;align-items:end;margin-bottom:12px;">
                 <div>
@@ -464,7 +582,7 @@
             </div>
         </div>
 
-        <div class="section">
+        <div class="section admin-panel" id="trial-moderation">
             <div class="section-title"><i class="fas fa-calendar-check"></i> Deneme/Idman Ilan Moderasyonu (API)</div>
             <div class="action-buttons" style="margin-bottom:12px;">
                 <button class="btn btn-secondary" type="button" onclick="loadTrialModerationQueue()"><i class="fas fa-rotate"></i> Listeyi Yenile</button>
@@ -488,7 +606,7 @@
         </div>
 
         <!-- Amator Lig Sonuc Moderasyonu -->
-        <div class="section" id="amateurModerationSection">
+        <div class="section admin-panel" id="amateurModerationSection">
             <div class="section-title"><i class="fas fa-futbol"></i> Amator Lig Sonuc Moderasyonu</div>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">
                 <input id="amLeague" type="text" placeholder="Lig (or: Izmir 1. Amator A)" style="padding:10px;border:1px solid #E5E7EB;border-radius:8px;">
@@ -2048,6 +2166,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            setupAdminMenu();
             updateAuthNotice();
             loadContactMessages();
             loadBoostPackagesAdmin();
@@ -2139,6 +2258,24 @@
             });
         });
 
+        function setupAdminMenu() {
+            const buttons = Array.from(document.querySelectorAll('.admin-menu-btn'));
+            const panels = Array.from(document.querySelectorAll('.admin-panel'));
+            if (!buttons.length || !panels.length) return;
+            function openPanel(targetId) {
+                panels.forEach((panel) => {
+                    panel.classList.toggle('active', panel.id === targetId);
+                });
+                buttons.forEach((button) => {
+                    button.classList.toggle('active', button.dataset.adminTarget === targetId);
+                });
+                const active = document.getElementById(targetId);
+                if (active) active.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            buttons.forEach((button) => {
+                button.addEventListener('click', () => openPanel(button.dataset.adminTarget));
+            });
+        }
         function getAmateurResults() {
             try {
                 const rows = JSON.parse(localStorage.getItem('nextscout_amateur_results') || '[]');

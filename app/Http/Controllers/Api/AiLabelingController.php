@@ -16,6 +16,7 @@ class AiLabelingController extends Controller
     {
         $sport = $this->normalizeSport($sport);
         $split = strtolower(trim((string) $request->query('split', 'train')));
+        $latestOnly = filter_var($request->query('latest_only', false), FILTER_VALIDATE_BOOL);
         if (! in_array($split, ['train', 'val', 'test', 'all'], true)) {
             return response()->json(['ok' => false, 'message' => 'Gecersiz split'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
@@ -29,6 +30,8 @@ class AiLabelingController extends Controller
         $lines = file($queuePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
         $skipped = $this->loadSkippedItems($sport, $split);
         $rows = [];
+        $latestSourceKey = null;
+        $latestSourceMtime = null;
         foreach ($lines as $index => $line) {
             if ($index === 0) {
                 continue;
@@ -51,11 +54,32 @@ class AiLabelingController extends Controller
                 'image_path' => $imagePath,
                 'label_path' => $labelPath,
                 'status' => $status,
+                'source_key' => $this->extractSourceKey($imagePath),
                 'image_url' => '/api/ai-labeling/image?path='.urlencode($imagePath),
             ];
+
+            $mtime = @filemtime($imagePath);
+            if ($mtime !== false && ($latestSourceMtime === null || $mtime > $latestSourceMtime)) {
+                $latestSourceMtime = $mtime;
+                $latestSourceKey = $this->extractSourceKey($imagePath);
+            }
         }
 
-        return response()->json(['ok' => true, 'data' => $rows]);
+        if ($latestOnly && $latestSourceKey !== null) {
+            $rows = array_values(array_filter(
+                $rows,
+                static fn (array $row): bool => ($row['source_key'] ?? null) === $latestSourceKey
+            ));
+        }
+
+        return response()->json([
+            'ok' => true,
+            'data' => $rows,
+            'meta' => [
+                'latest_source_key' => $latestSourceKey,
+                'latest_only' => $latestOnly,
+            ],
+        ]);
     }
 
     public function image(Request $request): BinaryFileResponse
@@ -263,6 +287,14 @@ class AiLabelingController extends Controller
         }
 
         abort(422, 'Split klasoru cozumlenemedi');
+    }
+
+    private function extractSourceKey(string $imagePath): string
+    {
+        $basename = pathinfo($imagePath, PATHINFO_FILENAME);
+        $normalized = preg_replace('/\.f\d+_s\d+_\d+$/', '', $basename);
+
+        return is_string($normalized) && $normalized !== '' ? $normalized : $basename;
     }
 
     private function skippedItemsPath(string $sport, string $split): string

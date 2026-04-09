@@ -10,7 +10,9 @@
     .sidebar { border-right: 1px solid #26324d; padding: 16px; overflow: auto; }
     .main { padding: 16px; }
     .controls, .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .toggle-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; color: #9fb0c7; font-size: 13px; }
     select, button { background: #14213d; color: #fff; border: 1px solid #32486d; padding: 10px 12px; border-radius: 8px; }
+    input[type="checkbox"] { accent-color: #d4a94d; }
     button.primary { background: #d4a94d; color: #111; border-color: #d4a94d; font-weight: 700; }
     button.warn { background: #b45309; border-color: #b45309; color: #fff; }
     button.secondary { background: #173c73; border-color: #173c73; color: #fff; }
@@ -41,6 +43,10 @@
         </select>
         <button id="loadQueue">Queue Yukle</button>
       </div>
+      <label class="toggle-row">
+        <input type="checkbox" id="latestOnly">
+        <span>Sadece son yuklenen video</span>
+      </label>
       <div id="queue"></div>
     </aside>
     <main class="main">
@@ -73,6 +79,7 @@
     const classesEl = document.getElementById('classes');
     const sportEl = document.getElementById('sport');
     const splitEl = document.getElementById('split');
+    const latestOnlyEl = document.getElementById('latestOnly');
 
     let queue = [];
     let active = null;
@@ -148,16 +155,20 @@
     async function loadQueue() {
       const sport = sportEl.value;
       const split = splitEl.value;
+      const latestOnly = latestOnlyEl.checked;
       statusEl.textContent = 'Queue yukleniyor...';
       try {
-        const res = await fetch(`/api/ai-labeling/${sport}/queue?split=${split}`);
+        const params = new URLSearchParams({ split });
+        if (latestOnly) params.set('latest_only', '1');
+        const res = await fetch(`/api/ai-labeling/${sport}/queue?${params.toString()}`);
         const json = await res.json();
         if (!res.ok || !json.ok) {
           throw new Error(json.message || `Queue hatasi (${res.status})`);
         }
         queue = json.data || [];
         renderQueue();
-        statusEl.textContent = `Queue yuklendi: ${queue.length} kayit`;
+        const latestMeta = json.meta && json.meta.latest_source_key ? `\nKaynak video: ${json.meta.latest_source_key}` : '';
+        statusEl.textContent = `Queue yuklendi: ${queue.length} kayit${latestMeta}`;
         if (queue.length) {
           openItem(queue[0]);
         } else {
@@ -177,7 +188,7 @@
       queue.forEach((item) => {
         const div = document.createElement('div');
         div.className = 'queue-item' + (active && active.id === item.id ? ' active' : '');
-        div.innerHTML = `<strong>${item.split}</strong><small>${item.status}</small><small>${basename(item.image_path)}</small>`;
+        div.innerHTML = `<strong>${item.split}</strong><small>${item.status}</small><small>${item.source_key || '-'}</small><small>${basename(item.image_path)}</small>`;
         div.onclick = () => openItem(item);
         queueEl.appendChild(div);
       });
