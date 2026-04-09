@@ -43,3 +43,10 @@ class AnalysisContext:
     video_url: str | None
     thumbnail_url: str | None
     analysis_type: str
+    target_profile: dict[str, Any] | None = None
+    target_track_id: int | None = None
+    track_team_map: dict[int, int] = field(default_factory=dict)
+    target_team_id: int | None = None
+    ownership_chain: list[dict[str, Any]] = field(default_factory=list)
+    meters_per_pixel: float | None = None
+    calibration_confidence: float | None = None

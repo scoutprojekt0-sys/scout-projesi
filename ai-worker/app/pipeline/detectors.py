@@ -73,7 +73,7 @@ class YoloDetector(BaseDetector):
 
     def detect(self, context: AnalysisContext, frame: FrameSample) -> FrameDetections:
         model = self._load(context.sport)
-        result = model.predict(frame.image, verbose=False)[0]
+        result = model.track(frame.image, persist=True, verbose=False, tracker="bytetrack.yaml")[0]
         detections: list[Detection] = []
 
         names = getattr(result, "names", {})
@@ -82,15 +82,20 @@ class YoloDetector(BaseDetector):
             label = normalize_label(str(names.get(cls_id, cls_id)))
             conf = float(box.conf.item())
             x1, y1, x2, y2 = [float(v) for v in box.xyxy[0].tolist()]
+            track_id = None
+            if getattr(box, "id", None) is not None:
+                track_id = int(box.id.item())
             detections.append(
                 Detection(
                     label=label,
                     confidence=conf,
                     bbox=(x1, y1, x2, y2),
+                    track_id=track_id,
                     metadata={
                         "source": "yolo",
                         "sport": context.sport,
                         "model_path": self.model_path,
+                        "tracker": "bytetrack",
                     },
                 )
             )

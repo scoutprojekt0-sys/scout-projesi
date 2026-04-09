@@ -31,13 +31,56 @@ def parse_args() -> argparse.Namespace:
         help="YOLO project directory",
     )
     parser.add_argument("--name", default="player_ball_detector", help="YOLO run name")
+    parser.add_argument(
+        "--ball-boost",
+        type=int,
+        default=3,
+        help="Duplicate train images containing ball labels this many times",
+    )
     return parser.parse_args()
 
 
-def _resolved_dataset_yaml(dataset_name: str, dataset_path: Path) -> str:
+def _build_ball_boost_train_list(dataset_root: Path, multiplier: int) -> str | None:
+    if multiplier <= 1:
+        return None
+
+    images_dir = dataset_root / "images" / "train"
+    labels_dir = dataset_root / "labels" / "train"
+    if not images_dir.exists() or not labels_dir.exists():
+        return None
+
+    image_paths = sorted(path for path in images_dir.glob("*") if path.is_file())
+    boosted_paths: list[str] = []
+    ball_positive = 0
+    for image_path in image_paths:
+        label_path = labels_dir / f"{image_path.stem}.txt"
+        boosted_paths.append(image_path.as_posix())
+        if not label_path.exists():
+            continue
+        label_lines = [line.strip() for line in label_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        has_ball = any(line.split()[0] == "1" for line in label_lines)
+        if not has_ball:
+            continue
+        ball_positive += 1
+        for _ in range(multiplier - 1):
+            boosted_paths.append(image_path.as_posix())
+
+    if ball_positive == 0:
+        return None
+
+    with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False, encoding="utf-8") as temp_file:
+        temp_file.write("\n".join(boosted_paths))
+        temp_file.write("\n")
+        return temp_file.name
+
+
+def _resolved_dataset_yaml(dataset_name: str, dataset_path: Path, ball_boost: int) -> str:
     dataset_config = yaml.safe_load(dataset_path.read_text(encoding="utf-8")) or {}
     dataset_root = dataset_path.parent / dataset_name
     dataset_config["path"] = dataset_root.as_posix()
+    boosted_train_list = _build_ball_boost_train_list(dataset_root, ball_boost)
+    if boosted_train_list is not None:
+        dataset_config["train"] = boosted_train_list
     val_labels_dir = dataset_root / "labels" / "val"
     has_val_annotations = any(
         label_path.read_text(encoding="utf-8").strip() for label_path in val_labels_dir.glob("*.txt")
@@ -88,7 +131,7 @@ def main() -> None:
     if not dataset_path.exists():
         raise FileNotFoundError(f"dataset yaml bulunamadi: {dataset_path}")
 
-    resolved_dataset_yaml = _resolved_dataset_yaml("basketball", dataset_path)
+    resolved_dataset_yaml = _resolved_dataset_yaml("basketball", dataset_path, args.ball_boost)
     overrides = {
         "model": args.model,
         "data": resolved_dataset_yaml,
@@ -106,6 +149,7 @@ def main() -> None:
         "val": False,
         "save": False,
     }
+    print(f"ball_boost={args.ball_boost}")
 
     class NextScoutDetectionTrainer(DetectionTrainer):
         def _do_train(self):

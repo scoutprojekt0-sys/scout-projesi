@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import threading
 
 import httpx
 
@@ -52,4 +53,8 @@ async def send_callback(job: VideoAnalysisJobRequest, result: VideoAnalysisResul
 
 
 def enqueue_video_analysis(job: VideoAnalysisJobRequest) -> None:
-    asyncio.create_task(process_video_analysis(job))
+    threading.Thread(
+        target=lambda: asyncio.run(process_video_analysis(job)),
+        daemon=True,
+        name=f"video-analysis-{job.analysis_id}",
+    ).start()
