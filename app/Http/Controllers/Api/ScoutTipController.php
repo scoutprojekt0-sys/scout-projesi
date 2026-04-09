@@ -32,7 +32,7 @@ class ScoutTipController extends Controller
     public function index(Request $request): JsonResponse
     {
         $query = ScoutTip::query()
-            ->with(['submitter:id,name,email,scout_points,scout_rank', 'player:id,name', 'videoClip:id,title,video_url'])
+            ->with(['submitter:id,name,email,scout_points,scout_rank', 'player:id,name,sport', 'videoClip:id,title,video_url'])
             ->orderByDesc('created_at');
 
         if (! $this->canReview($request->user())) {
@@ -53,7 +53,7 @@ class ScoutTipController extends Controller
     {
         return $this->paginatedListResponse(
             ScoutTip::query()
-                ->with(['videoClip:id,title,video_url', 'duplicateOf:id,player_name,status'])
+                ->with(['player:id,name,sport', 'videoClip:id,title,video_url', 'duplicateOf:id,player_name,status'])
                 ->where('submitted_by', $request->user()->id)
                 ->orderByDesc('created_at')
                 ->paginate((int) $request->input('per_page', 20)),

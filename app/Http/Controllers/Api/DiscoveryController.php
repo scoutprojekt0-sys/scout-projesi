@@ -258,6 +258,7 @@ class DiscoveryController extends Controller
     {
         $hasExpiresAt = Schema::hasColumn('opportunities', 'expires_at');
         $limit = max(1, min((int) request()->query('limit', 20), 300));
+        $sportTerms = $this->sportTerms((string) request()->query('sport', ''));
 
         $needs = DB::table('opportunities')
             ->where('status', 'open')
@@ -269,6 +270,9 @@ class DiscoveryController extends Controller
             })
             ->join('users as teams', 'opportunities.team_user_id', '=', 'teams.id')
             ->whereIn('teams.role', ['team', 'club'])
+            ->when($sportTerms !== [], function ($query) use ($sportTerms) {
+                $query->whereIn(DB::raw('LOWER(COALESCE(teams.sport, ""))'), $sportTerms);
+            })
             ->where(function ($query) {
                 foreach (self::EVENT_KEYWORDS as $keyword) {
                     $query->whereRaw('LOWER(COALESCE(opportunities.title, "")) NOT LIKE ?', [$keyword])
@@ -293,11 +297,15 @@ class DiscoveryController extends Controller
     {
         $hasExpiresAt = Schema::hasColumn('opportunities', 'expires_at');
         $this->closeExpiredOpportunities();
+        $sportTerms = $this->sportTerms((string) request()->query('sport', ''));
 
         $needs = DB::table('opportunities')
             ->where('status', 'open')
             ->join('users as teams', 'opportunities.team_user_id', '=', 'teams.id')
             ->where('teams.role', 'manager')
+            ->when($sportTerms !== [], function ($query) use ($sportTerms) {
+                $query->whereIn(DB::raw('LOWER(COALESCE(teams.sport, ""))'), $sportTerms);
+            })
             ->select([
                 'opportunities.*',
                 'teams.name as manager_name',
@@ -316,6 +324,9 @@ class DiscoveryController extends Controller
                 })
                 ->join('users as teams', 'opportunities.team_user_id', '=', 'teams.id')
                 ->where('teams.role', 'manager')
+                ->when($sportTerms !== [], function ($query) use ($sportTerms) {
+                    $query->whereIn(DB::raw('LOWER(COALESCE(teams.sport, ""))'), $sportTerms);
+                })
                 ->select([
                     'opportunities.*',
                     'teams.name as manager_name',
@@ -327,6 +338,23 @@ class DiscoveryController extends Controller
         }
 
         return $this->paginatedListResponse($needs, 'Menajer ihtiyaclari hazir.');
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function sportTerms(string $raw): array
+    {
+        $sport = mb_strtolower(trim($raw));
+        if ($sport === '' || $sport === 'all' || $sport === 'coklu spor') {
+            return [];
+        }
+
+        return match ($sport) {
+            'basketbol', 'basketball' => ['basketbol', 'basketball'],
+            'voleybol', 'volleyball' => ['voleybol', 'volleyball'],
+            default => ['futbol', 'football'],
+        };
     }
 
     public function weeklyDigest(): JsonResponse

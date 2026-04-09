@@ -28,7 +28,9 @@ class ScoutPlayerReportController extends Controller
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
         ]);
 
-        $query = ScoutPlayerReport::query()->latest('id');
+        $query = ScoutPlayerReport::query()
+            ->with('player:id,name,sport')
+            ->latest('id');
 
         $search = trim((string) ($validated['q'] ?? ''));
         if ($search !== '') {
@@ -143,7 +145,7 @@ class ScoutPlayerReportController extends Controller
             'note' => $note,
         ]);
 
-        return $this->successResponse($this->transformReport($report), 'Scout raporu kaydedildi.', Response::HTTP_CREATED);
+        return $this->successResponse($this->transformReport($report->loadMissing('player:id,name,sport')), 'Scout raporu kaydedildi.', Response::HTTP_CREATED);
     }
 
     public function updateStatus(int $id, Request $request): JsonResponse
@@ -165,7 +167,7 @@ class ScoutPlayerReportController extends Controller
         $report->status = $validated['status'];
         $report->save();
 
-        return $this->successResponse($this->transformReport($report), 'Scout raporu durumu guncellendi.');
+        return $this->successResponse($this->transformReport($report->loadMissing('player:id,name,sport')), 'Scout raporu durumu guncellendi.');
     }
 
     private function transformReport(ScoutPlayerReport $report): array
@@ -174,6 +176,7 @@ class ScoutPlayerReportController extends Controller
             'id' => $report->id,
             'player_id' => $report->player_user_id,
             'player_name' => $report->player_name,
+            'sport' => $report->player?->sport,
             'position' => $report->position,
             'age' => $report->age,
             'rating' => (float) $report->rating,

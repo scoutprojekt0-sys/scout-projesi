@@ -5,18 +5,24 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Concerns\ApiResponds;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class MarketTerminalController extends Controller
 {
     use ApiResponds;
 
-    public function liveFeed(): JsonResponse
+    public function liveFeed(Request $request): JsonResponse
     {
+        $sportTerms = $this->sportTerms((string) $request->query('sport', ''));
+
         $videoRows = DB::table('video_clips as vc')
             ->join('users as u', 'u.id', '=', 'vc.user_id')
             ->leftJoin('player_profiles as pp', 'pp.user_id', '=', 'u.id')
             ->leftJoin('favorites as f', 'f.target_user_id', '=', 'u.id')
+            ->when($sportTerms !== [], function ($query) use ($sportTerms) {
+                $query->whereIn(DB::raw('LOWER(COALESCE(u.sport, ""))'), $sportTerms);
+            })
             ->selectRaw('
                 vc.id,
                 vc.title,
@@ -46,6 +52,9 @@ class MarketTerminalController extends Controller
             ->leftJoin('player_profiles as pp', 'pp.user_id', '=', 'u.id')
             ->where('u.role', 'player')
             ->where('f.created_at', '>=', now()->subDay())
+            ->when($sportTerms !== [], function ($query) use ($sportTerms) {
+                $query->whereIn(DB::raw('LOWER(COALESCE(u.sport, ""))'), $sportTerms);
+            })
             ->selectRaw('
                 u.id as player_id,
                 u.name as player_name,
@@ -68,6 +77,9 @@ class MarketTerminalController extends Controller
             ->join('users as u', 'u.id', '=', 'o.team_user_id')
             ->where('o.status', 'open')
             ->where('o.created_at', '>=', now()->startOfDay())
+            ->when($sportTerms !== [], function ($query) use ($sportTerms) {
+                $query->whereIn(DB::raw('LOWER(COALESCE(u.sport, ""))'), $sportTerms);
+            })
             ->selectRaw('
                 COALESCE(NULLIF(o.position, \'\'), \'Oyuncu\') as position_name,
                 COUNT(o.id) as total_count,
@@ -84,6 +96,9 @@ class MarketTerminalController extends Controller
             ->join('users as u', 'u.id', '=', 'pms.player_user_id')
             ->where('pms.is_public', true)
             ->whereBetween('pms.match_date', [now()->startOfDay(), now()->copy()->addDays(1)->endOfDay()])
+            ->when($sportTerms !== [], function ($query) use ($sportTerms) {
+                $query->whereIn(DB::raw('LOWER(COALESCE(u.sport, ""))'), $sportTerms);
+            })
             ->selectRaw('
                 pms.id,
                 pms.match_title,
@@ -214,12 +229,22 @@ class MarketTerminalController extends Controller
 
         $summary = [
             'open_opportunities' => (int) DB::table('opportunities')->where('status', 'open')->count(),
-            'videos_today' => (int) DB::table('video_clips')->where('created_at', '>=', now()->startOfDay())->count(),
-            'favorites_today' => (int) DB::table('favorites')->where('created_at', '>=', now()->startOfDay())->count(),
+            'videos_today' => (int) DB::table('video_clips as vc')
+                ->join('users as u', 'u.id', '=', 'vc.user_id')
+                ->when($sportTerms !== [], fn ($query) => $query->whereIn(DB::raw('LOWER(COALESCE(u.sport, ""))'), $sportTerms))
+                ->where('vc.created_at', '>=', now()->startOfDay())
+                ->count(),
+            'favorites_today' => (int) DB::table('favorites as f')
+                ->join('users as u', 'u.id', '=', 'f.target_user_id')
+                ->when($sportTerms !== [], fn ($query) => $query->whereIn(DB::raw('LOWER(COALESCE(u.sport, ""))'), $sportTerms))
+                ->where('f.created_at', '>=', now()->startOfDay())
+                ->count(),
             'trial_invites_today' => (int) $trialRows->sum(fn ($row) => (int) ($row->trial_invites ?: $row->total_count)),
-            'public_match_windows' => (int) DB::table('player_match_schedules')
-                ->where('is_public', true)
-                ->whereBetween('match_date', [now()->startOfDay(), now()->copy()->addDays(1)->endOfDay()])
+            'public_match_windows' => (int) DB::table('player_match_schedules as pms')
+                ->join('users as u', 'u.id', '=', 'pms.player_user_id')
+                ->when($sportTerms !== [], fn ($query) => $query->whereIn(DB::raw('LOWER(COALESCE(u.sport, ""))'), $sportTerms))
+                ->where('pms.is_public', true)
+                ->whereBetween('pms.match_date', [now()->startOfDay(), now()->copy()->addDays(1)->endOfDay()])
                 ->count(),
         ];
 
@@ -286,5 +311,20 @@ class MarketTerminalController extends Controller
         }
 
         return date('H:i', $timestamp);
+    }
+
+    private function sportTerms(string $raw): array
+    {
+        $sport = mb_strtolower(trim($raw));
+        if ($sport === '' || $sport === 'all' || $sport === 'coklu spor') {
+            return [];
+        }
+
+        return match ($sport) {
+            'football', 'futbol' => ['football', 'futbol'],
+            'basketball', 'basketbol' => ['basketball', 'basketbol'],
+            'volleyball', 'voleybol', 'voleyball' => ['volleyball', 'voleybol', 'voleyball'],
+            default => [$sport],
+        };
     }
 }

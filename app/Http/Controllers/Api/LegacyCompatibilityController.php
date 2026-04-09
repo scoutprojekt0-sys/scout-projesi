@@ -116,10 +116,14 @@ class LegacyCompatibilityController extends Controller
     public function communityEventsIndex(Request $request): JsonResponse
     {
         $trialOnly = (string) $request->query('trial_only', '') === '1';
+        $sportTerms = $this->sportTerms((string) $request->query('sport', ''));
         $rows = DB::table('opportunities as o')
             ->join('users as u', 'u.id', '=', 'o.team_user_id')
             ->where('o.status', 'open')
             ->whereIn('u.role', ['team', 'club'])
+            ->when($sportTerms !== [], function ($query) use ($sportTerms) {
+                $query->whereIn(DB::raw('LOWER(COALESCE(u.sport, ""))'), $sportTerms);
+            })
             ->where(function ($query) {
                 foreach (self::EVENT_KEYWORDS as $keyword) {
                     $query->orWhereRaw('LOWER(COALESCE(o.title, "")) LIKE ?', [$keyword])
@@ -165,6 +169,23 @@ class LegacyCompatibilityController extends Controller
             ->values();
 
         return response()->json(['ok' => true, 'data' => $rows]);
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function sportTerms(string $raw): array
+    {
+        $sport = mb_strtolower(trim($raw));
+        if ($sport === '' || $sport === 'all' || $sport === 'coklu spor') {
+            return [];
+        }
+
+        return match ($sport) {
+            'basketbol', 'basketball' => ['basketbol', 'basketball'],
+            'voleybol', 'volleyball' => ['voleybol', 'volleyball'],
+            default => ['futbol', 'football'],
+        };
     }
 
     public function communityEventsShow(int $id): JsonResponse

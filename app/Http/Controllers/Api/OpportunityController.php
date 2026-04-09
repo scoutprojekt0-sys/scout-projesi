@@ -21,6 +21,7 @@ class OpportunityController extends Controller
         $validated = $request->validate([
             'status' => ['nullable', Rule::in(['open', 'closed'])],
             'position' => ['nullable', 'string', 'max:40'],
+            'sport' => ['nullable', 'string', 'max:40'],
             'city' => ['nullable', 'string', 'max:80'],
             'age_min' => ['nullable', 'integer', 'min:10', 'max:60'],
             'age_max' => ['nullable', 'integer', 'min:10', 'max:60'],
@@ -71,6 +72,11 @@ class OpportunityController extends Controller
 
         if (! empty($validated['position'])) {
             $query->where('opportunities.position', 'like', '%'.$validated['position'].'%');
+        }
+
+        if (! empty($validated['sport']) && strtolower((string) $validated['sport']) !== 'all') {
+            $sportTerms = $this->sportTerms((string) $validated['sport']);
+            $query->whereIn(DB::raw('LOWER(COALESCE(users.sport, ""))'), $sportTerms);
         }
 
         if (! empty($validated['city'])) {
@@ -384,5 +390,22 @@ class OpportunityController extends Controller
                 'status' => 'closed',
                 'updated_at' => now(),
             ]);
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function sportTerms(string $raw): array
+    {
+        $sport = mb_strtolower(trim($raw));
+        if ($sport === '' || $sport === 'all' || $sport === 'coklu spor') {
+            return [];
+        }
+
+        return match ($sport) {
+            'basketbol', 'basketball' => ['basketbol', 'basketball'],
+            'voleybol', 'volleyball' => ['voleybol', 'volleyball'],
+            default => ['futbol', 'football'],
+        };
     }
 }

@@ -33,4 +33,9 @@ class ScoutPlayerReport extends Model
         'risks' => 'array',
         'rating' => 'decimal:1',
     ];
+
+    public function player()
+    {
+        return $this->belongsTo(User::class, 'player_user_id');
+    }
 }

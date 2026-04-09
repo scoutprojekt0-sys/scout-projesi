@@ -50,6 +50,7 @@ class ClubWorkspaceController extends Controller
         $validated = $request->validate([
             'target_player_user_id' => ['nullable', 'integer', 'exists:users,id'],
             'player_name' => ['required', 'string', 'min:2', 'max:120'],
+            'sport' => ['nullable', 'string', 'max:40'],
             'offer_type' => ['required', 'string', 'in:permanent,loan,trial,pre_contract'],
             'amount_eur' => ['required', 'numeric', 'min:1', 'max:999999999'],
             'currency' => ['nullable', 'string', 'size:3'],
@@ -78,6 +79,9 @@ class ClubWorkspaceController extends Controller
             $player = User::query()->find($targetPlayerId);
             if (! $player || (string) $player->role !== 'player') {
                 return $this->errorResponse('Secilen kayit bir oyuncuya ait degil.', Response::HTTP_UNPROCESSABLE_ENTITY, 'invalid_player');
+            }
+            if (! $this->playerMatchesRequestedSport($player, $validated['sport'] ?? $user->sport ?? null)) {
+                return $this->errorResponse('Oyuncu secili bransla eslesmiyor.', Response::HTTP_UNPROCESSABLE_ENTITY, 'sport_mismatch');
             }
         }
 
@@ -138,6 +142,7 @@ class ClubWorkspaceController extends Controller
             'club_name' => ['nullable', 'string', 'min:2', 'max:120'],
             'target_player_user_id' => ['nullable', 'integer', 'exists:users,id'],
             'player_name' => ['required', 'string', 'min:2', 'max:120'],
+            'sport' => ['nullable', 'string', 'max:40'],
             'offer_type' => ['required', 'string', 'in:permanent,loan,trial,pre_contract'],
             'amount_eur' => ['required', 'numeric', 'min:1', 'max:999999999'],
             'currency' => ['nullable', 'string', 'size:3'],
@@ -182,6 +187,9 @@ class ClubWorkspaceController extends Controller
         $player = User::query()->find($targetPlayerId);
         if (! $player || (string) $player->role !== 'player') {
             return $this->errorResponse('Secilen kayit bir oyuncuya ait degil.', Response::HTTP_UNPROCESSABLE_ENTITY, 'invalid_player');
+        }
+        if (! $this->playerMatchesRequestedSport($player, $validated['sport'] ?? $club->sport ?? $user->sport ?? null)) {
+            return $this->errorResponse('Oyuncu secili bransla eslesmiyor.', Response::HTTP_UNPROCESSABLE_ENTITY, 'sport_mismatch');
         }
 
         $offer = DB::transaction(function () use ($user, $validated, $targetPlayerId, $club) {
@@ -1116,6 +1124,29 @@ class ClubWorkspaceController extends Controller
             ->where('id', '!=', $activeGroupId)
             ->where('is_showcased', true)
             ->update(['is_showcased' => false]);
+    }
+
+    private function playerMatchesRequestedSport(User $player, mixed $requestedSport): bool
+    {
+        $requested = $this->normalizeSportValue($requestedSport);
+        if ($requested === null) {
+            return true;
+        }
+
+        return $this->normalizeSportValue($player->sport) === $requested;
+    }
+
+    private function normalizeSportValue(mixed $value): ?string
+    {
+        $normalized = mb_strtolower(trim((string) ($value ?? '')));
+
+        return match ($normalized) {
+            '', 'all', 'tum', 'coklu spor' => null,
+            'football', 'futbol' => 'futbol',
+            'basketball', 'basketbol' => 'basketbol',
+            'volleyball', 'voleybol', 'voleyball' => 'voleybol',
+            default => $normalized,
+        };
     }
 
     private function nullableString(mixed $value): ?string
