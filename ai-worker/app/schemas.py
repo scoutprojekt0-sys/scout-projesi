@@ -47,6 +47,10 @@ class AnalysisMetric(BaseModel):
     movement_score: int = 0
     speed_score: int = 0
     cross_quality_score: int = 0
+    assist_vision_score: int = 0
+    drive_efficiency_score: int = 0
+    spike_quality_score: int = 0
+    block_timing_score: int = 0
     metadata: dict[str, Any] | None = None
 
 

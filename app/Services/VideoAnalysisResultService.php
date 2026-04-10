@@ -70,6 +70,10 @@ class VideoAnalysisResultService
                     'movement_score' => (int) ($metricData['movement_score'] ?? 0),
                     'speed_score' => (int) ($metricData['speed_score'] ?? 0),
                     'cross_quality_score' => (int) ($metricData['cross_quality_score'] ?? 0),
+                    'assist_vision_score' => (int) ($metricData['assist_vision_score'] ?? 0),
+                    'drive_efficiency_score' => (int) ($metricData['drive_efficiency_score'] ?? 0),
+                    'spike_quality_score' => (int) ($metricData['spike_quality_score'] ?? 0),
+                    'block_timing_score' => (int) ($metricData['block_timing_score'] ?? 0),
                     'metadata' => $metricData['metadata'] ?? null,
                 ]);
             });

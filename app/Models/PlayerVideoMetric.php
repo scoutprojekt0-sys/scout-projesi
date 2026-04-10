@@ -22,6 +22,10 @@ class PlayerVideoMetric extends Model
         'movement_score',
         'speed_score',
         'cross_quality_score',
+        'assist_vision_score',
+        'drive_efficiency_score',
+        'spike_quality_score',
+        'block_timing_score',
         'metadata',
     ];
 

@@ -8,4 +8,4 @@ if not exist ".venv\\Scripts\\python.exe" (
   exit /b 1
 )
 
-".venv\\Scripts\\python.exe" scripts\\prepare_football_dataset.py %*
+".venv\\Scripts\\python.exe" scripts\\prepare_dataset.py --sport volleyball %*

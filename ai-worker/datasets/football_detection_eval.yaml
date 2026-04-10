@@ -1,0 +1,9 @@
+path: E:/PhpstormProjects/scout_api_pr_clean/ai-worker/datasets/football
+train: images/train
+val: images/val
+test: images/test
+names:
+  0: player
+  1: ball
+  2: goalkeeper
+  3: referee

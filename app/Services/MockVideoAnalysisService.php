@@ -140,6 +140,10 @@ class MockVideoAnalysisService
                 'movement_score' => $summary['movement_score'],
                 'speed_score' => $summary['speed_score'],
                 'cross_quality_score' => $summary['cross_quality_score'],
+                'assist_vision_score' => (int) ($summary['assist_vision_score'] ?? 0),
+                'drive_efficiency_score' => (int) ($summary['drive_efficiency_score'] ?? 0),
+                'spike_quality_score' => (int) ($summary['spike_quality_score'] ?? 0),
+                'block_timing_score' => (int) ($summary['block_timing_score'] ?? 0),
                 'metadata' => [
                     'analysis_version' => 'mock-v1',
                 ],

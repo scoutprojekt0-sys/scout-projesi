@@ -215,6 +215,10 @@ class CoachPlayerClipController extends Controller
             'speed_score' => $metric?->speed_score,
             'movement_score' => $metric?->movement_score,
             'cross_quality_score' => $metric?->cross_quality_score,
+            'assist_vision_score' => $metric?->assist_vision_score,
+            'drive_efficiency_score' => $metric?->drive_efficiency_score,
+            'spike_quality_score' => $metric?->spike_quality_score,
+            'block_timing_score' => $metric?->block_timing_score,
         ], static fn ($value) => $value !== null && $value !== [] && $value !== '');
 
         $clip->update([

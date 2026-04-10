@@ -129,6 +129,10 @@ def run_mock_analysis(job: VideoAnalysisJobRequest) -> VideoAnalysisResult:
                 movement_score=summary["movement_score"],
                 speed_score=summary["speed_score"],
                 cross_quality_score=summary["cross_quality_score"],
+                assist_vision_score=summary.get("assist_vision_score", 0),
+                drive_efficiency_score=summary.get("drive_efficiency_score", 0),
+                spike_quality_score=summary.get("spike_quality_score", 0),
+                block_timing_score=summary.get("block_timing_score", 0),
                 metadata={"analysis_version": "external-mock-v1", "sport": sport},
             )
         ],
