@@ -400,6 +400,21 @@
       return true;
     }
 
+    function resetAnalysisPanel() {
+      if (summaryRoot) {
+        summaryRoot.innerHTML = createSummaryMarkup(null);
+      }
+      if (eventsRoot) {
+        eventsRoot.innerHTML = '<div class="ai-video-lab-empty">Analiz baslatildiginda eventler burada gorunur.</div>';
+      }
+      if (sourceBadge) {
+        sourceBadge.hidden = true;
+        sourceBadge.className = 'ai-video-lab-source';
+        sourceBadge.textContent = '';
+      }
+      setWorkerMode('', '');
+    }
+
     function renderPlayerResults() {
       if (!resultsRoot) return;
       if (!players.length) {
@@ -634,6 +649,7 @@
 
       if (!selectedVideo || !preview) {
         if (preview) preview.hidden = true;
+        resetAnalysisPanel();
         return;
       }
 
@@ -649,6 +665,12 @@
         previewLink.href = selectedVideo.video_url || '#';
         previewLink.style.pointerEvents = selectedVideo.video_url ? 'auto' : 'none';
         previewLink.style.opacity = selectedVideo.video_url ? '1' : '0.5';
+      }
+
+      const cacheKey = getCacheKey(selectedPlayer?.id || 0, selectedVideo.id);
+      const cachedEntry = getAnalysisCache()[cacheKey];
+      if (!renderCachedAnalysis(cachedEntry)) {
+        resetAnalysisPanel();
       }
     }
 
@@ -687,6 +709,7 @@
 
     async function selectPlayer(player) {
       selectedPlayer = player;
+      resetAnalysisPanel();
       if (selectedRoot) selectedRoot.hidden = false;
       if (selectedName) selectedName.textContent = player.name || 'Oyuncu';
       if (selectedMeta) {
@@ -908,10 +931,11 @@
         }
       });
     }
-    loadQuickPicks();
+      loadQuickPicks();
     loadDiscoveryRankings();
     runDiscoverySearch();
     setWorkerMode('', '');
+    resetAnalysisPanel();
     syncAnalyzeButtonState();
     if (!isAuthenticated()) {
       setNotice('AI discovery acik. Oyuncu kesfi yapabilirsin; analiz baslatmak icin giris gerekiyor.', 'ok');
