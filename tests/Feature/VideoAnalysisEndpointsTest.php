@@ -220,12 +220,17 @@ class VideoAnalysisEndpointsTest extends TestCase
 
         $this->getJson('/api/scouting-search/discovery?search=Ahmet&city=Istanbul&sort=speed_score_desc')
             ->assertOk()
+            ->assertJsonPath('data.0.id', $player->id)
             ->assertJsonPath('data.0.player_id', $player->id)
-            ->assertJsonPath('data.0.name', 'Ahmet Yildiz');
+            ->assertJsonPath('data.0.name', 'Ahmet Yildiz')
+            ->assertJsonPath('data.0.video_clip_id', $clip->id)
+            ->assertJsonPath('data.0.video_title', 'Discovery Video');
 
         $this->getJson('/api/scouting-search/rankings?limit=5')
             ->assertOk()
+            ->assertJsonPath('data.best_speed.0.id', $player->id)
             ->assertJsonPath('data.best_speed.0.player_id', $player->id)
-            ->assertJsonPath('data.best_crosses.0.player_id', $player->id);
+            ->assertJsonPath('data.best_crosses.0.player_id', $player->id)
+            ->assertJsonPath('data.best_speed.0.video_clip_id', $clip->id);
     }
 }

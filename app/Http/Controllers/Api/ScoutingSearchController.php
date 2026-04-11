@@ -29,6 +29,7 @@ class ScoutingSearchController extends Controller
             ->where('users.role', 'player')
             ->select([
                 'player_video_metrics.id',
+                'users.id as id',
                 'player_video_metrics.player_id',
                 'users.name',
                 'users.city',
@@ -46,6 +47,13 @@ class ScoutingSearchController extends Controller
                 'video_clips.id as video_clip_id',
                 'video_clips.title as video_title',
                 'video_clips.video_url',
+                'video_clips.thumbnail_url',
+                'video_clips.platform',
+                'video_clips.duration_seconds',
+                'video_clips.match_date',
+                'video_analyses.id as video_analysis_id',
+                'video_analyses.status as analysis_status',
+                'video_analyses.provider as analysis_provider',
             ]);
 
         if ($request->filled('search')) {
@@ -54,11 +62,13 @@ class ScoutingSearchController extends Controller
         }
 
         if ($request->filled('city')) {
-            $query->where('users.city', (string) $request->input('city'));
+            $city = (string) $request->input('city');
+            $query->where('users.city', 'like', "%{$city}%");
         }
 
         if ($request->filled('position')) {
-            $query->where('users.position', (string) $request->input('position'));
+            $positions = $this->expandPositionAliases((string) $request->input('position'));
+            $query->whereIn('users.position', $positions);
         }
 
         if ($request->filled('min_speed_score')) {
@@ -115,10 +125,13 @@ class ScoutingSearchController extends Controller
                 ->orderByDesc($orderColumn)
                 ->limit($limit)
                 ->get([
+                    'users.id as id',
                     'player_video_metrics.player_id',
                     'users.name',
                     'users.city',
                     'users.position',
+                    'users.age',
+                    'users.photo_url',
                     'player_video_metrics.successful_crosses',
                     'player_video_metrics.successful_passes',
                     'player_video_metrics.speed_score',
@@ -127,6 +140,10 @@ class ScoutingSearchController extends Controller
                     'video_clips.id as video_clip_id',
                     'video_clips.title as video_title',
                     'video_clips.video_url',
+                    'video_clips.thumbnail_url',
+                    'video_clips.platform',
+                    'video_clips.duration_seconds',
+                    'video_clips.match_date',
                 ]);
         };
 
@@ -170,5 +187,24 @@ class ScoutingSearchController extends Controller
             $query->paginate((int) $request->input('per_page', 20)),
             'Video metric scouting search hazir.'
         );
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function expandPositionAliases(string $position): array
+    {
+        $normalized = mb_strtolower(trim($position));
+        if ($normalized === '') {
+            return [];
+        }
+
+        return match ($normalized) {
+            'kaleci', 'goalkeeper' => ['Kaleci', 'Goalkeeper'],
+            'defans', 'defender' => ['Defans', 'Defender'],
+            'orta saha', 'ortasaha', 'midfield', 'midfielder' => ['Orta Saha', 'Midfielder', 'Midfield'],
+            'forvet', 'forward', 'striker' => ['Forvet', 'Forward', 'Striker'],
+            default => [$position],
+        };
     }
 }

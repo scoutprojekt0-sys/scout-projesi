@@ -151,6 +151,7 @@
     }
 
     return rows.map(function (event) {
+      const clip = Array.isArray(event.clips) && event.clips.length ? event.clips[0] : null;
       return '' +
         '<article class="ai-video-lab-event">' +
           '<div class="ai-video-lab-event-top">' +
@@ -161,8 +162,48 @@
             escapeHtml(event.payload?.successful ? 'Basarili aksiyon' : 'Tespit edilen aksiyon') +
             ' - ' + escapeHtml(Number(event.start_second || 0)) + 's - ' + escapeHtml(Number(event.end_second || 0)) + 's' +
           '</div>' +
+          (clip?.clip_url ? '<div class="ai-video-lab-actions" style="margin-top:8px;"><a class="nav-btn" href="' + escapeHtml(clip.clip_url) + '" target="_blank" rel="noopener noreferrer">Klibi Ac</a></div>' : '') +
         '</article>';
     }).join('');
+  }
+
+  function normalizeDiscoveryPlayer(row) {
+    if (!row || typeof row !== 'object') {
+      return null;
+    }
+
+    const playerId = Number(row.player_id || row.id || 0);
+    if (!playerId) {
+      return null;
+    }
+
+    const videoClipId = Number(row.video_clip_id || 0);
+
+    return {
+      id: playerId,
+      player_id: playerId,
+      name: row.name || 'Oyuncu',
+      city: row.city || '',
+      position: row.position || '',
+      age: row.age || '',
+      photo_url: row.photo_url || '',
+      successful_passes: Number(row.successful_passes || 0),
+      successful_crosses: Number(row.successful_crosses || 0),
+      speed_score: Number(row.speed_score || 0),
+      movement_score: Number(row.movement_score || 0),
+      cross_quality_score: Number(row.cross_quality_score || 0),
+      analysis_status: row.analysis_status || '',
+      analysis_provider: row.analysis_provider || '',
+      embedded_video: videoClipId ? {
+        id: videoClipId,
+        title: row.video_title || ('Video #' + videoClipId),
+        video_url: row.video_url || '',
+        thumbnail_url: row.thumbnail_url || '',
+        platform: row.platform || '',
+        duration_seconds: row.duration_seconds || null,
+        match_date: row.match_date || null
+      } : null
+    };
   }
 
   function initLab(root) {
@@ -250,6 +291,7 @@
     const bestCrossesRoot = root.querySelector('[data-ai-best-crosses]');
     const bestSpeedRoot = root.querySelector('[data-ai-best-speed]');
     const bestMovementRoot = root.querySelector('[data-ai-best-movement]');
+    const workerModeBadge = document.getElementById('workerModeBadge');
 
     if (!sourceBadge && resultCard) {
       const heading = resultCard.querySelector('h3');
@@ -299,6 +341,25 @@
       notice.textContent = '';
     }
 
+    function setWorkerMode(provider, fallbackMode) {
+      if (!workerModeBadge) return;
+      const normalizedProvider = String(provider || '').toLowerCase();
+      const normalizedFallback = String(fallbackMode || '').toLowerCase();
+
+      if (!normalizedProvider) {
+        workerModeBadge.textContent = 'Hazir';
+        return;
+      }
+
+      const labels = [
+        normalizedProvider === 'mock' ? 'Mock' : normalizedProvider === 'external' ? 'External' : normalizedProvider
+      ];
+      if (normalizedFallback) {
+        labels.push('fallback ' + normalizedFallback);
+      }
+      workerModeBadge.textContent = labels.join(' / ');
+    }
+
     function setSourceBadge(source, meta) {
       if (!sourceBadge) return;
       const key = String(source || '').toLowerCase();
@@ -316,6 +377,7 @@
       if (provider) labels.push(provider === 'mock' ? 'Mock' : provider === 'external' ? 'External' : provider);
       if (fallbackMode) labels.push('Fallback ' + fallbackMode.toUpperCase());
       sourceBadge.textContent = labels.join(' | ');
+      setWorkerMode(provider, fallbackMode);
     }
 
     function renderCachedAnalysis(entry) {
@@ -349,6 +411,7 @@
               '<span>' + escapeHtml(player.position || '-') + '</span>' +
               '<span>' + escapeHtml(player.city || '-') + '</span>' +
               '<span>Yas: ' + escapeHtml(player.age || '-') + '</span>' +
+              '<span>Cross: ' + escapeHtml(player.successful_crosses || 0) + ' | Pass: ' + escapeHtml(player.successful_passes || 0) + ' | Speed: ' + escapeHtml(player.speed_score || 0) + '</span>' +
             '</div>' +
             '<button type="button" class="btn-small primary" data-ai-player-pick="' + escapeHtml(player.id) + '">Sec</button>' +
           '</article>';
@@ -437,19 +500,19 @@
           bestCrossesRoot.innerHTML = bestCrosses.length
             ? bestCrosses.map(function (row) { return createDiscoveryChip(row, 'successful_crosses'); }).join('')
             : '<div class="ai-video-lab-empty">Liste bos.</div>';
-          bindQuickPickButtons(bestCrossesRoot, bestCrosses.map(function (row) { return { id: row.player_id, name: row.name, position: row.position, city: row.city }; }));
+          bindQuickPickButtons(bestCrossesRoot, bestCrosses.map(normalizeDiscoveryPlayer).filter(Boolean));
         }
         if (bestSpeedRoot) {
           bestSpeedRoot.innerHTML = bestSpeed.length
             ? bestSpeed.map(function (row) { return createDiscoveryChip(row, 'speed_score'); }).join('')
             : '<div class="ai-video-lab-empty">Liste bos.</div>';
-          bindQuickPickButtons(bestSpeedRoot, bestSpeed.map(function (row) { return { id: row.player_id, name: row.name, position: row.position, city: row.city }; }));
+          bindQuickPickButtons(bestSpeedRoot, bestSpeed.map(normalizeDiscoveryPlayer).filter(Boolean));
         }
         if (bestMovementRoot) {
           bestMovementRoot.innerHTML = bestMovement.length
             ? bestMovement.map(function (row) { return createDiscoveryChip(row, 'movement_score'); }).join('')
             : '<div class="ai-video-lab-empty">Liste bos.</div>';
-          bindQuickPickButtons(bestMovementRoot, bestMovement.map(function (row) { return { id: row.player_id, name: row.name, position: row.position, city: row.city }; }));
+          bindQuickPickButtons(bestMovementRoot, bestMovement.map(normalizeDiscoveryPlayer).filter(Boolean));
         }
       } catch (error) {
         if (bestCrossesRoot) bestCrossesRoot.innerHTML = '<div class="ai-video-lab-empty">Ranking verisi alinamadi.</div>';
@@ -487,9 +550,7 @@
           '</article>';
       }).join('');
 
-      const mappedRows = rows.map(function (row) {
-        return { id: row.player_id, name: row.name, position: row.position, city: row.city, age: row.age };
-      });
+      const mappedRows = rows.map(normalizeDiscoveryPlayer).filter(Boolean);
       bindQuickPickButtons(discoveryResultsRoot, mappedRows);
       discoveryResultsRoot.querySelectorAll('[data-ai-discovery-pick]').forEach(function (button) {
         button.addEventListener('click', function () {
@@ -565,15 +626,34 @@
       }
     }
 
-    async function loadVideos(playerId) {
+    function mergeEmbeddedVideo(currentVideos, embeddedVideo) {
+      if (!embeddedVideo || !embeddedVideo.id) {
+        return currentVideos;
+      }
+
+      const alreadyExists = currentVideos.some(function (video) {
+        return Number(video.id) === Number(embeddedVideo.id);
+      });
+      if (alreadyExists) {
+        return currentVideos;
+      }
+
+      return [embeddedVideo].concat(currentVideos);
+    }
+
+    async function loadVideos(playerId, player) {
       videos = [];
+      if (player?.embedded_video) {
+        videos = mergeEmbeddedVideo(videos, player.embedded_video);
+      }
       renderVideos();
       try {
         const payload = await apiGet('/users/' + playerId + '/videos', Boolean(getToken()));
-        videos = Array.isArray(payload?.data) ? payload.data : (Array.isArray(payload) ? payload : []);
+        const fetchedVideos = Array.isArray(payload?.data) ? payload.data : (Array.isArray(payload) ? payload : []);
+        videos = mergeEmbeddedVideo(fetchedVideos, player?.embedded_video);
         renderVideos();
       } catch (error) {
-        videos = [];
+        videos = mergeEmbeddedVideo([], player?.embedded_video);
         renderVideos();
         setNotice(error.message || 'Oyuncu videolari yuklenemedi.', 'bad');
       }
@@ -593,7 +673,7 @@
       }
       if (targetInput) targetInput.value = player.id || '';
       clearNotice();
-      await loadVideos(player.id);
+      await loadVideos(player.id, player);
     }
 
     async function runSearch() {
@@ -610,8 +690,10 @@
       if (positionSelect?.value.trim()) query.set('position', positionSelect.value.trim());
 
       try {
-        const payload = await apiGet('/public/players?' + query.toString(), false);
-        players = Array.isArray(payload?.data) ? payload.data : (Array.isArray(payload) ? payload : []);
+        query.set('per_page', '8');
+        const payload = await apiGet('/scouting-search/discovery?' + query.toString(), false);
+        const rows = Array.isArray(payload?.data) ? payload.data : (Array.isArray(payload) ? payload : []);
+        players = rows.map(normalizeDiscoveryPlayer).filter(Boolean);
         renderPlayerResults();
       } catch (error) {
         resultsRoot.innerHTML = '<div class="ai-video-lab-empty">' + escapeHtml(error.message || 'Oyuncular getirilemedi.') + '</div>';
@@ -695,6 +777,7 @@
           eventsRoot.innerHTML = createEventMarkup([]);
         }
         setSourceBadge('');
+        setWorkerMode('', '');
         setNotice(error.message || 'Video analizi baslatilamadi.', 'bad');
       }
     }
@@ -795,6 +878,7 @@
     loadQuickPicks();
     loadDiscoveryRankings();
     runDiscoverySearch();
+    setWorkerMode('', '');
   }
 
   document.addEventListener('DOMContentLoaded', function () {

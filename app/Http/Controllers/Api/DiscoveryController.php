@@ -257,7 +257,7 @@ class DiscoveryController extends Controller
     public function clubNeeds(): JsonResponse
     {
         $hasExpiresAt = Schema::hasColumn('opportunities', 'expires_at');
-        $limit = max(1, min((int) request()->query('limit', 20), 300));
+        $perPage = max(1, min((int) request()->query('per_page', request()->query('limit', 20)), 100));
         $sportTerms = $this->sportTerms((string) request()->query('sport', ''));
 
         $needs = DB::table('opportunities')
@@ -287,10 +287,9 @@ class DiscoveryController extends Controller
                 DB::raw("'API' as source"),
             ])
             ->orderBy('opportunities.created_at', 'desc')
-            ->limit($limit)
-            ->get();
+            ->paginate($perPage);
 
-        return $this->successResponse($needs, 'Kulup ihtiyaclari hazir.');
+        return $this->paginatedListResponse($needs, 'Kulup ihtiyaclari hazir.');
     }
 
     public function managerNeeds(): JsonResponse
