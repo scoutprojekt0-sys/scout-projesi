@@ -15,6 +15,15 @@ pipeline_analyzer = PipelineAnalyzer()
 
 
 async def process_video_analysis(job: VideoAnalysisJobRequest) -> None:
+    logger.info(
+        "analysis job started",
+        extra={
+            "analysis_id": job.analysis_id,
+            "sport": job.sport,
+            "video_url": job.video_url,
+            "callback_url": str(job.callback_url),
+        },
+    )
     try:
         if settings.ai_worker_mode == "mock":
             result = run_mock_analysis(job)
@@ -33,7 +42,13 @@ async def process_video_analysis(job: VideoAnalysisJobRequest) -> None:
             raw_output={"engine": "external-ai-worker", "stage": "process"},
             failure_reason=str(exc),
         )
-        await send_callback(job, failed)
+        try:
+            await send_callback(job, failed)
+        except Exception:  # pragma: no cover
+            logger.exception(
+                "failed callback delivery failed",
+                extra={"analysis_id": job.analysis_id, "callback_url": str(job.callback_url)},
+            )
 
 
 async def send_callback(job: VideoAnalysisJobRequest, result: VideoAnalysisResult) -> None:
@@ -50,6 +65,14 @@ async def send_callback(job: VideoAnalysisJobRequest, result: VideoAnalysisResul
             json=result.model_dump(mode="json"),
         )
         response.raise_for_status()
+    logger.info(
+        "analysis callback delivered",
+        extra={
+            "analysis_id": job.analysis_id,
+            "status": result.status,
+            "callback_url": str(job.callback_url),
+        },
+    )
 
 
 def enqueue_video_analysis(job: VideoAnalysisJobRequest) -> None:

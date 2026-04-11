@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import tempfile
 from pathlib import Path
 
@@ -19,6 +20,9 @@ from app.pipeline.tracking import SimpleTracker
 from app.pipeline.types import AnalysisContext
 from app.schemas import VideoAnalysisJobRequest, VideoAnalysisResult
 from app.sports import normalize_sport
+
+
+logger = logging.getLogger("ai-worker")
 
 
 class PipelineAnalyzer:
@@ -105,7 +109,13 @@ class PipelineAnalyzer:
 
     def _download_video(self, video_url: str, tmp_dir: Path) -> Path:
         target = tmp_dir / "video.mp4"
-        with httpx.stream("GET", video_url, timeout=settings.ai_worker_download_timeout_seconds) as response:
+        logger.info("downloading video for analysis", extra={"video_url": video_url})
+        with httpx.stream(
+            "GET",
+            video_url,
+            timeout=settings.ai_worker_download_timeout_seconds,
+            follow_redirects=True,
+        ) as response:
             response.raise_for_status()
             with target.open("wb") as file_handle:
                 for chunk in response.iter_bytes():

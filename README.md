@@ -77,6 +77,7 @@ Dis AI worker servisi `ai-worker/` klasorunde bulunur.
 Kurulum ve entegrasyon:
 
 - [docs/AI_WORKER_SETUP.md](docs/AI_WORKER_SETUP.md)
+- [docs/runbooks/ai-video-analysis-local.md](docs/runbooks/ai-video-analysis-local.md)
 
 ## Katkı Sağlama
 
