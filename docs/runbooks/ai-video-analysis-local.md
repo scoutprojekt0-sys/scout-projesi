@@ -21,10 +21,38 @@ AI worker `.env`
 ```env
 AI_WORKER_PORT=8010
 AI_WORKER_MODE=pipeline
-AI_WORKER_DETECTOR=heuristic
+AI_WORKER_DETECTOR=auto
+AI_WORKER_SAMPLE_EVERY_SECONDS=2
+AI_WORKER_MAX_SAMPLE_SECONDS=10
 AI_WORKER_CALLBACK_TIMEOUT_SECONDS=20
 AI_WORKER_LOG_LEVEL=info
 ```
+
+This local profile is optimized for fast end-to-end validation with real football clips.
+
+## Production / Staging Profile
+
+Suggested production-oriented worker values:
+
+```env
+AI_WORKER_MODE=pipeline
+AI_WORKER_DETECTOR=auto
+AI_WORKER_SAMPLE_EVERY_SECONDS=1
+AI_WORKER_MAX_SAMPLE_SECONDS=180
+AI_WORKER_CALLBACK_TIMEOUT_SECONDS=30
+AI_WORKER_LOG_LEVEL=info
+```
+
+Suggested Laravel values:
+
+```env
+AI_ANALYSIS_MODE=external
+AI_ANALYSIS_WORKER_BASE_URL=https://your-worker-host
+AI_ANALYSIS_CALLBACK_SECRET=strong-shared-secret
+AI_ANALYSIS_WORKER_TIMEOUT_SECONDS=60
+```
+
+Use the local profile for quick feedback and debugging. Use the production/staging profile for fuller analysis coverage.
 
 ## Start Order
 
@@ -51,7 +79,7 @@ Invoke-RestMethod http://127.0.0.1:8010/health
 Expected:
 
 - `mode: pipeline`
-- `detector: heuristic`
+- `detector: auto`
 
 ## Required Database State
 
@@ -86,8 +114,8 @@ php artisan tinker --execute="echo json_encode(App\Models\VideoAnalysis::query()
 
 ## Known Notes
 
-- `heuristic` mode is the current local demo/staging-friendly setup.
-- `auto` or `yolo` mode worked end-to-end, but the sample public MP4 used in testing produced `0` detections.
+- `auto` or `yolo` mode worked end-to-end with real local football footage.
+- The sample public MP4 used in early testing produced `0` detections.
 - That `track_count: 0` result was not a callback or tracking bug; it was a detector/video mismatch.
 - Real model evaluation should be done with actual football, basketball, or volleyball footage.
 
