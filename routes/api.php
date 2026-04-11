@@ -223,6 +223,7 @@ Route::prefix('video-analyses')->middleware(['auth:sanctum', 'reject_legacy_toke
 Route::get('/players/{playerId}/video-metrics', [PlayerVideoMetricController::class, 'index'])
     ->middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api', 'ability:profile:read']);
 
+Route::get('/scouting-search/status', [ScoutingSearchController::class, 'status']);
 Route::get('/scouting-search/discovery', [ScoutingSearchController::class, 'discovery']);
 Route::get('/scouting-search/rankings', [ScoutingSearchController::class, 'rankings']);
 Route::get('/scouting-search/video-metrics', [ScoutingSearchController::class, 'videoMetrics'])

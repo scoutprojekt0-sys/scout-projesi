@@ -12,6 +12,19 @@ class ScoutingSearchController extends Controller
 {
     use ApiResponds;
 
+    public function status(): JsonResponse
+    {
+        $mode = (string) config('scout.ai_analysis.mode', 'mock');
+
+        return $this->successResponse([
+            'discovery_active' => true,
+            'rankings_active' => true,
+            'analysis_mode' => $mode,
+            'analysis_requires_auth' => true,
+            'public_browsing' => true,
+        ], 'AI discovery durumu hazir.');
+    }
+
     public function discovery(Request $request): JsonResponse
     {
         $latestMetricIds = PlayerVideoMetric::query()

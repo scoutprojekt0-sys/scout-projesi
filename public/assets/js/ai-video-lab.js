@@ -297,6 +297,9 @@
     const bestSpeedRoot = root.querySelector('[data-ai-best-speed]');
     const bestMovementRoot = root.querySelector('[data-ai-best-movement]');
     const workerModeBadge = document.getElementById('workerModeBadge');
+    const discoveryStatusBadge = document.getElementById('discoveryStatusBadge');
+    const rankingStatusBadge = document.getElementById('rankingStatusBadge');
+    const analysisAccessBadge = document.getElementById('analysisAccessBadge');
 
     if (!sourceBadge && resultCard) {
       const heading = resultCard.querySelector('h3');
@@ -363,6 +366,31 @@
         labels.push('fallback ' + normalizedFallback);
       }
       workerModeBadge.textContent = labels.join(' / ');
+    }
+
+    function setPlatformStatus(status) {
+      if (discoveryStatusBadge) {
+        discoveryStatusBadge.textContent = status?.discovery_active ? 'Aktif' : 'Pasif';
+      }
+      if (rankingStatusBadge) {
+        rankingStatusBadge.textContent = status?.rankings_active ? 'Aktif' : 'Pasif';
+      }
+      if (analysisAccessBadge) {
+        analysisAccessBadge.textContent = status?.analysis_requires_auth ? 'Giris ile Acik' : 'Acik';
+      }
+
+      if (!workerModeBadge || !status?.analysis_mode) {
+        return;
+      }
+
+      const mode = String(status.analysis_mode).toLowerCase();
+      if (mode === 'mock') {
+        workerModeBadge.textContent = 'Mock';
+      } else if (mode === 'external') {
+        workerModeBadge.textContent = 'External';
+      } else {
+        workerModeBadge.textContent = status.analysis_mode;
+      }
     }
 
     function setSourceBadge(source, meta) {
@@ -511,6 +539,17 @@
           ? rising.map(createQuickChip).join('')
           : '<div class="ai-video-lab-empty">Yukselen yildiz bulunamadi.</div>';
         bindQuickPickButtons(risingRoot, rising);
+      }
+    }
+
+    async function loadPlatformStatus() {
+      try {
+        const status = await apiGet('/scouting-search/status', false);
+        setPlatformStatus(status);
+      } catch (error) {
+        if (discoveryStatusBadge) discoveryStatusBadge.textContent = 'Hazir';
+        if (rankingStatusBadge) rankingStatusBadge.textContent = 'Hazir';
+        if (analysisAccessBadge) analysisAccessBadge.textContent = isAuthenticated() ? 'Giris ile Acik' : 'Giris Gerekli';
       }
     }
 
@@ -931,7 +970,8 @@
         }
       });
     }
-      loadQuickPicks();
+    loadQuickPicks();
+    loadPlatformStatus();
     loadDiscoveryRankings();
     runDiscoverySearch();
     setWorkerMode('', '');

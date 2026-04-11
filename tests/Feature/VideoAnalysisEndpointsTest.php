@@ -233,4 +233,19 @@ class VideoAnalysisEndpointsTest extends TestCase
             ->assertJsonPath('data.best_crosses.0.player_id', $player->id)
             ->assertJsonPath('data.best_speed.0.video_clip_id', $clip->id);
     }
+
+    public function test_ai_discovery_status_endpoint_exposes_runtime_mode(): void
+    {
+        config()->set('scout.ai_analysis.mode', 'external');
+
+        $this->getJson('/api/scouting-search/status')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('message', 'AI discovery durumu hazir.')
+            ->assertJsonPath('data.discovery_active', true)
+            ->assertJsonPath('data.rankings_active', true)
+            ->assertJsonPath('data.analysis_mode', 'external')
+            ->assertJsonPath('data.analysis_requires_auth', true)
+            ->assertJsonPath('data.public_browsing', true);
+    }
 }
