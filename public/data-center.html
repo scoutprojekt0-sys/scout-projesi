@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Veri Merkezi | NextScout</title>
-    <meta name="description" content="Veri Merkezi: lig, kul�p, oyuncu, antren�r ve haftalik trend sayilarinin g�ncel �zeti.">
+    <meta name="description" content="Veri Merkezi: lig, kulï¿½p, oyuncu, antrenï¿½r ve haftalik trend sayilarinin gï¿½ncel ï¿½zeti.">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://nextscout.pro/data-center.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
     <meta property="og:title" content="Veri Merkezi | NextScout">
-    <meta property="og:description" content="Veri Merkezi: lig, kul�p, oyuncu, antren�r ve haftalik trend sayilarinin g�ncel �zeti.">
+    <meta property="og:description" content="Veri Merkezi: lig, kulï¿½p, oyuncu, antrenï¿½r ve haftalik trend sayilarinin gï¿½ncel ï¿½zeti.">
     <meta property="og:url" content="https://nextscout.pro/data-center.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-data-center.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Veri Merkezi | NextScout">
-    <meta name="twitter:description" content="Futbol veri merkezi, lig ve oyuncu sayilari ile haftalik trend g�r�n�m�.">
+    <meta name="twitter:description" content="Futbol veri merkezi, lig ve oyuncu sayilari ile haftalik trend gï¿½rï¿½nï¿½mï¿½.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-data-center.jpg">
     <meta name="theme-color" content="#0B3B8A">
     <style>
@@ -148,11 +148,11 @@
     <div class="top">
         <div>
             <h1>Veri Merkezi</h1>
-            <section class="seo-intro" aria-label="Veri merkezi a�iklama">
-                <h2>Futbol veri merkezi ve haftalik trend g�r�n�m�</h2>
-                <p>NextScout Veri Merkezi; lig, kul�p, oyuncu ve antren�r sayilarini tek panelde toplar. Haftalik trendler, b�y�me sinyalleri ve genel platform �zetleri sayesinde sponsorlar, scout ekipleri ve futbol profesyonelleri mevcut hareketliligi hizli sekilde takip edebilir.</p>
+            <section class="seo-intro" aria-label="Veri merkezi aï¿½iklama">
+                <h2>Futbol veri merkezi ve haftalik trend gï¿½rï¿½nï¿½mï¿½</h2>
+                <p>NextScout Veri Merkezi; lig, kulï¿½p, oyuncu ve antrenï¿½r sayilarini tek panelde toplar. Haftalik trendler, bï¿½yï¿½me sinyalleri ve genel platform ï¿½zetleri sayesinde sponsorlar, scout ekipleri ve futbol profesyonelleri mevcut hareketliligi hizli sekilde takip edebilir.</p>
             </section>
-            <p class="sub">Scout Radar ve ana sayfa kartlarinin veri saglik �zeti</p>
+            <p class="sub">Scout Radar ve ana sayfa kartlarinin veri saglik ï¿½zeti</p>
         </div>
         <a class="home-btn-global" href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #2563eb;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;">Ana Sayfa</a>
     </div>
@@ -165,7 +165,7 @@
                 <div class="meta">Kaynak: sabit lig verisi</div>
             </article>
             <article class="card">
-                <div class="label">KUL�P Sayisi</div>
+                <div class="label">KULï¿½P Sayisi</div>
                 <div class="value" id="clubCount">-</div>
                 <div class="meta">Kaynak: /api/club-needs</div>
             </article>
@@ -175,7 +175,7 @@
                 <div class="meta">Kaynak: /api/public/players</div>
             </article>
             <article class="card">
-                <div class="label">ANTREN�R Sayisi</div>
+                <div class="label">ANTRENï¿½R Sayisi</div>
                 <div class="value" id="coachCount">-</div>
                 <div class="meta">Kaynak: /api/users?role=coach</div>
             </article>
@@ -195,7 +195,10 @@
         const query = new URLSearchParams(window.location.search);
         const fromQuery = (query.get('api_base') || '').trim();
         if (fromQuery) return fromQuery.replace(/\/$/, '');
+        const host = (window.location.hostname || '').toString().trim().toLowerCase();
+        const port = (window.location.port || '').toString().trim();
         if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+        if ((host === '127.0.0.1' || host === 'localhost') && port && port !== '8000') return 'http://127.0.0.1:8000/api';
         return '/api';
     }
 
@@ -244,7 +247,7 @@
 
         const statusRow = document.getElementById('statusRow');
         if (players.length || needs.length || trends.length) {
-            statusRow.innerHTML = `<span class="dot"></span>G�ncel veri alindi � Son g�ncelleme: ${new Date().toLocaleString('tr-TR')}`;
+            statusRow.innerHTML = `<span class="dot"></span>Gï¿½ncel veri alindi ï¿½ Son gï¿½ncelleme: ${new Date().toLocaleString('tr-TR')}`;
         } else {
             statusRow.innerHTML = '<span class="dot" style="background:#f59e0b;box-shadow:0 0 8px rgba(245,158,11,.7)"></span>Canli veri yok, API kontrol edilmeli.';
         }
@@ -255,6 +258,7 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+
 
 
 

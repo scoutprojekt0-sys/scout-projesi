@@ -13,7 +13,12 @@
     }
     const configured = (window.NEXTSCOUT_API_BASE || '').toString().trim();
     if (configured) return configured.replace(/\/$/, '');
+    const host = (window.location.hostname || '').toString().trim().toLowerCase();
+    const port = (window.location.port || '').toString().trim();
     if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+    if ((host === '127.0.0.1' || host === 'localhost') && port && port !== '8000') {
+      return 'http://127.0.0.1:8000/api';
+    }
     return window.location.origin.replace(/\/$/, '') + '/api';
   }
 
@@ -310,7 +315,7 @@
       const labels = [key === 'cached' ? 'Cached Analysis' : 'Fresh Analysis'];
       if (provider) labels.push(provider === 'mock' ? 'Mock' : provider === 'external' ? 'External' : provider);
       if (fallbackMode) labels.push('Fallback ' + fallbackMode.toUpperCase());
-      sourceBadge.textContent = labels.join(' · ');
+      sourceBadge.textContent = labels.join(' | ');
     }
 
     function renderCachedAnalysis(entry) {
@@ -796,3 +801,4 @@
     document.querySelectorAll('[data-ai-video-lab]').forEach(initLab);
   });
 })();
+

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import os
 import tempfile
@@ -44,6 +45,153 @@ def default_data_path(sport: str) -> Path:
 
 def default_project_path(sport: str) -> Path:
     return Path(__file__).resolve().parents[2] / "runs" / sport
+
+
+def _patch_ultralytics_polars_usage() -> None:
+    """Avoid importing polars on older CPUs where it can crash the process."""
+    import numpy as np
+    import ultralytics.engine.trainer as trainer_module  # type: ignore
+    import ultralytics.models.yolo.detect.train as detect_train_module  # type: ignore
+    import ultralytics.utils.plotting as plotting_module  # type: ignore
+
+    def _read_results_csv_without_polars(self) -> dict[str, list[float | str]]:
+        csv_path = Path(self.csv)
+        if not csv_path.exists():
+            return {}
+
+        rows: dict[str, list[float | str]] = {}
+        with csv_path.open("r", encoding="utf-8", newline="") as handle:
+            reader = csv.DictReader(handle)
+            for row in reader:
+                for key, raw_value in row.items():
+                    if key is None:
+                        continue
+                    rows.setdefault(key, [])
+                    value = (raw_value or "").strip()
+                    if value == "":
+                        rows[key].append(value)
+                        continue
+                    try:
+                        rows[key].append(float(value))
+                    except ValueError:
+                        rows[key].append(value)
+        return rows
+
+    def _plot_results_without_polars(file: str = "path/to/results.csv", dir: str = "", on_plot=None):
+        import matplotlib.pyplot as plt  # type: ignore
+
+        save_dir = Path(file).parent if file and file != "path/to/results.csv" else Path(dir)
+        files = list(save_dir.glob("results*.csv"))
+        if not files:
+            return
+
+        for csv_file in files:
+            with csv_file.open("r", encoding="utf-8", newline="") as handle:
+                reader = csv.DictReader(handle)
+                rows = list(reader)
+            if not rows:
+                continue
+
+            columns = [column for column in (reader.fieldnames or []) if column]
+            if len(columns) < 2:
+                continue
+
+            x_values: list[float] = []
+            series: dict[str, list[float | None]] = {column: [] for column in columns[1:]}
+            for row in rows:
+                try:
+                    x_values.append(float((row.get(columns[0]) or "").strip()))
+                except ValueError:
+                    x_values.append(float(len(x_values)))
+                for column in columns[1:]:
+                    raw_value = (row.get(column) or "").strip()
+                    try:
+                        series[column].append(float(raw_value))
+                    except ValueError:
+                        series[column].append(None)
+
+            numeric_columns = [column for column, values in series.items() if any(value is not None for value in values)]
+            if not numeric_columns:
+                continue
+
+            fig, axes = plt.subplots(len(numeric_columns), 1, figsize=(10, max(4, len(numeric_columns) * 2.2)), tight_layout=True)
+            if hasattr(axes, "ravel"):
+                axes = axes.ravel().tolist()
+            elif not isinstance(axes, list):
+                axes = [axes]
+
+            for axis, column in zip(axes, numeric_columns):
+                y_values = [value if value is not None else float("nan") for value in series[column]]
+                axis.plot(x_values, y_values, marker=".", linewidth=1.5, markersize=5)
+                axis.set_title(column, fontsize=10)
+                axis.grid(True, alpha=0.25)
+
+            results_plot = csv_file.with_suffix(".png")
+            fig.savefig(results_plot, dpi=200)
+            plt.close(fig)
+            if on_plot:
+                on_plot(results_plot)
+
+    def _plot_labels_without_polars(boxes, cls, names=(), save_dir=Path(""), on_plot=None):
+        import matplotlib.pyplot as plt  # type: ignore
+        from matplotlib.colors import LinearSegmentedColormap
+        from PIL import Image, ImageDraw
+        from ultralytics.utils.plotting import colors  # type: ignore
+
+        boxes_array = np.asarray(boxes)
+        cls_array = np.asarray(cls).reshape(-1)
+        if boxes_array.size == 0 or cls_array.size == 0:
+            return
+
+        save_dir = Path(save_dir)
+        save_dir.mkdir(parents=True, exist_ok=True)
+        nc = int(cls_array.max() + 1) if cls_array.size else 0
+        if nc <= 0:
+            return
+
+        subplot_color = LinearSegmentedColormap.from_list("white_blue", ["white", "blue"])
+        figure, axes = plt.subplots(2, 2, figsize=(8, 8), tight_layout=True)
+        axes = axes.ravel()
+
+        histogram = axes[0].hist(cls_array, bins=np.linspace(0, nc, nc + 1) - 0.5, rwidth=0.8)
+        for index in range(min(nc, len(histogram[2]))):
+            histogram[2][index].set_color([channel / 255 for channel in colors(index)])
+        axes[0].set_ylabel("instances")
+        if 0 < len(names) < 30:
+            axes[0].set_xticks(range(len(names)))
+            axes[0].set_xticklabels(list(names.values()), rotation=90, fontsize=10)
+            axes[0].bar_label(histogram[2])
+        else:
+            axes[0].set_xlabel("classes")
+
+        draw_boxes = np.column_stack([0.5 - boxes_array[:, 2:4] / 2, 0.5 + boxes_array[:, 2:4] / 2]) * 1000
+        image = Image.fromarray(np.ones((1000, 1000, 3), dtype=np.uint8) * 255)
+        for class_id, box in zip(cls_array[:500], draw_boxes[:500]):
+            ImageDraw.Draw(image).rectangle(box.tolist(), width=1, outline=colors(int(class_id)))
+        axes[1].imshow(image)
+        axes[1].axis("off")
+
+        axes[2].hist2d(boxes_array[:, 0], boxes_array[:, 1], bins=50, cmap=subplot_color)
+        axes[2].set_xlabel("x")
+        axes[2].set_ylabel("y")
+        axes[3].hist2d(boxes_array[:, 2], boxes_array[:, 3], bins=50, cmap=subplot_color)
+        axes[3].set_xlabel("width")
+        axes[3].set_ylabel("height")
+        for axis in axes:
+            for side in ("top", "right", "left", "bottom"):
+                axis.spines[side].set_visible(False)
+
+        labels_plot = save_dir / "labels.jpg"
+        figure.savefig(labels_plot, dpi=200)
+        plt.close(figure)
+        if on_plot:
+            on_plot(labels_plot)
+
+    trainer_module.BaseTrainer.read_results_csv = _read_results_csv_without_polars
+    trainer_module.plot_results = _plot_results_without_polars
+    plotting_module.plot_results = _plot_results_without_polars
+    plotting_module.plot_labels = _plot_labels_without_polars
+    detect_train_module.plot_labels = _plot_labels_without_polars
 
 
 def _build_ball_boost_train_list(dataset_root: Path, multiplier: int) -> str | None:
@@ -159,6 +307,7 @@ def main() -> None:
 
     project_path = Path(args.project).resolve() if args.project else default_project_path(args.sport)
     resolved_dataset_yaml = _resolved_dataset_yaml(args.sport, dataset_path, args.ball_boost)
+    _patch_ultralytics_polars_usage()
 
     from ultralytics import YOLO  # type: ignore
 

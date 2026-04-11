@@ -14,6 +14,11 @@ import cv2
 
 SPORTS = {"football", "basketball", "volleyball"}
 VIDEO_EXTENSIONS = {".mp4", ".mov", ".avi", ".mkv", ".webm"}
+SPORT_KEYWORDS = {
+    "football": {"football", "futbol", "soccer"},
+    "basketball": {"basketball", "basketbol"},
+    "volleyball": {"volleyball", "voleybol", "voleyball"},
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -40,6 +45,10 @@ def safe_stem(value: str) -> str:
     ascii_value = normalized.encode("ascii", errors="ignore").decode("ascii")
     slug = re.sub(r"[^A-Za-z0-9._-]+", "_", ascii_value).strip("._-")
     return slug or "video"
+
+
+def safe_console_text(value: str) -> str:
+    return value.encode("ascii", errors="replace").decode("ascii")
 
 
 def extract_frames(video_path: Path, staging_dir: Path, sample_every_seconds: float, max_seconds: int) -> list[Path]:
@@ -106,6 +115,17 @@ def default_output_dir(sport: str) -> Path:
     return Path(__file__).resolve().parents[1] / "datasets" / sport
 
 
+def is_mismatched_source_for_sport(sport: str, candidate: str) -> bool:
+    normalized = safe_stem(candidate).lower()
+    requested_keywords = SPORT_KEYWORDS.get(sport, set())
+    forbidden_keywords = set().union(
+        *(keywords for current_sport, keywords in SPORT_KEYWORDS.items() if current_sport != sport)
+    )
+    has_requested_keyword = any(keyword in normalized for keyword in requested_keywords)
+    has_forbidden_keyword = any(keyword in normalized for keyword in forbidden_keywords)
+    return has_forbidden_keyword and not has_requested_keyword
+
+
 def main() -> None:
     args = parse_args()
     source_dir = Path(args.source_dir).resolve()
@@ -132,6 +152,9 @@ def main() -> None:
     for video_path in video_files:
         normalized_video_path = str(video_path.resolve())
         video_key = safe_stem(video_path.stem)
+        if is_mismatched_source_for_sport(args.sport, f"{video_path.name} {video_path.parent}"):
+            print(f"skip: sport mismatch: {safe_console_text(video_path.name)}")
+            continue
         if video_key in processed_videos:
             print(f"skip: already processed: {video_key}")
             continue

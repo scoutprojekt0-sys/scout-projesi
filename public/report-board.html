@@ -141,21 +141,21 @@
       <a class="btn head-close" href="index.html" id="closeBtn" aria-label="Kapat" title="Kapat"><i class="fas fa-xmark"></i></a>
       <div>
         <h1 class="title">Rapor Panosu</h1>
-        <div class="sub">Scout tarafından paylaşılan raporları okuyun, oyuncu değerlendirmelerini tek panelden inceleyin ve detay notlara erişin.</div>
+        <div class="sub">Scout tarafÄ±ndan paylaÅŸÄ±lan raporlarÄ± okuyun, oyuncu deÄŸerlendirmelerini tek panelden inceleyin ve detay notlara eriÅŸin.</div>
       </div>
     </div>
 
     <div class="toolbar">
       <input class="field" id="searchInput" type="text" placeholder="Oyuncu veya scout ara">
       <select class="field" id="statusFilter">
-        <option value="">Durum (Tümü)</option>
-        <option value="Kısa Liste">Kısa Liste</option>
-        <option value="İncelemede">İncelemede</option>
-        <option value="Tekrar İzle">Tekrar İzle</option>
-        <option value="Uygun Değil">Uygun Değil</option>
+        <option value="">Durum (TÃ¼mÃ¼)</option>
+        <option value="KÄ±sa Liste">KÄ±sa Liste</option>
+        <option value="Ä°ncelemede">Ä°ncelemede</option>
+        <option value="Tekrar Ä°zle">Tekrar Ä°zle</option>
+        <option value="Uygun DeÄŸil">Uygun DeÄŸil</option>
       </select>
       <select class="field" id="positionFilter">
-        <option value="">Pozisyon (Tümü)</option>
+        <option value="">Pozisyon (TÃ¼mÃ¼)</option>
       </select>
     </div>
 
@@ -163,8 +163,8 @@
       <div class="table-wrap">
         <div class="table-head">
           <div>
-            <h2 class="panel-title">Paylaşılan Raporlar</h2>
-            <div class="panel-sub">Liste görünümünde raporları seçip sağ panelde detayları okuyun.</div>
+            <h2 class="panel-title">PaylaÅŸÄ±lan Raporlar</h2>
+            <div class="panel-sub">Liste gÃ¶rÃ¼nÃ¼mÃ¼nde raporlarÄ± seÃ§ip saÄŸ panelde detaylarÄ± okuyun.</div>
           </div>
         </div>
         <table>
@@ -182,8 +182,8 @@
       </div>
 
       <aside class="detail-card" id="reportDetail">
-        <h2 class="detail-name">Rapor seçin</h2>
-        <div class="detail-role">Detaylar burada görünecek.</div>
+        <h2 class="detail-name">Rapor seÃ§in</h2>
+        <div class="detail-role">Detaylar burada gÃ¶rÃ¼necek.</div>
       </aside>
     </div>
   </div>
@@ -203,7 +203,10 @@
     }
 
     function getApiBaseUrl() {
-      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      const host = (window.location.hostname || '').toString().trim().toLowerCase();
+        const port = (window.location.port || '').toString().trim();
+        if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+        if ((host === '127.0.0.1' || host === 'localhost') && port && port !== '8000') return 'http://127.0.0.1:8000/api';
       return `${window.location.origin}/api`;
     }
 
@@ -232,35 +235,35 @@
       const select = document.getElementById('positionFilter');
       if (!select) return;
       const positions = Array.from(new Set(rows.map((row) => (row?.position || '').trim()).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'tr'));
-      select.innerHTML = '<option value="">Pozisyon (Tümü)</option>' + positions.map((position) => `<option value="${esc(position)}">${esc(position)}</option>`).join('');
+      select.innerHTML = '<option value="">Pozisyon (TÃ¼mÃ¼)</option>' + positions.map((position) => `<option value="${esc(position)}">${esc(position)}</option>`).join('');
     }
 
     function renderDetail(report) {
       const root = document.getElementById('reportDetail');
       if (!root) return;
       if (!report) {
-        root.innerHTML = '<h2 class="detail-name">Rapor seçin</h2><div class="detail-role">Detaylar burada görünecek.</div>';
+        root.innerHTML = '<h2 class="detail-name">Rapor seÃ§in</h2><div class="detail-role">Detaylar burada gÃ¶rÃ¼necek.</div>';
         return;
       }
 
       root.innerHTML = `
         <h2 class="detail-name">${esc(report.player_name || 'Oyuncu')}</h2>
-        <div class="detail-role">${esc(report.position || '-')} • ${esc(report.club || 'Kulüp bilgisi yok')}</div>
+        <div class="detail-role">${esc(report.position || '-')} â€¢ ${esc(report.club || 'KulÃ¼p bilgisi yok')}</div>
         <div class="detail-section">
-          <h3>Genel Değerlendirme</h3>
-          <p>${esc(report.general_assessment || 'Genel değerlendirme eklenmemiş.')}</p>
+          <h3>Genel DeÄŸerlendirme</h3>
+          <p>${esc(report.general_assessment || 'Genel deÄŸerlendirme eklenmemiÅŸ.')}</p>
         </div>
         <div class="detail-section">
-          <h3>Güçlü Yönler</h3>
+          <h3>GÃ¼Ã§lÃ¼ YÃ¶nler</h3>
           <div class="chips">${String(report.strengths || '').split(',').filter(Boolean).map((item) => `<span class="chip">${esc(item.trim())}</span>`).join('') || '<span class="chip">Not yok</span>'}</div>
         </div>
         <div class="detail-section">
-          <h3>Gelişim Alanları</h3>
+          <h3>GeliÅŸim AlanlarÄ±</h3>
           <div class="chips">${String(report.development_areas || '').split(',').filter(Boolean).map((item) => `<span class="chip">${esc(item.trim())}</span>`).join('') || '<span class="chip">Not yok</span>'}</div>
         </div>
         <div class="detail-section">
           <h3>Scout Notu</h3>
-          <p>${esc(report.scout_note || 'Scout notu eklenmemiş.')}</p>
+          <p>${esc(report.scout_note || 'Scout notu eklenmemiÅŸ.')}</p>
         </div>
       `;
     }
@@ -269,7 +272,7 @@
       const tbody = document.getElementById('reportTableBody');
       if (!tbody) return;
       if (!rows.length) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty">Gösterilecek rapor bulunamadı.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="empty">GÃ¶sterilecek rapor bulunamadÄ±.</td></tr>';
         renderDetail(null);
         return;
       }
@@ -283,10 +286,10 @@
         const isActive = id === activeReportId ? 'is-active' : '';
         return `
           <tr class="${isActive}" data-report-id="${esc(id)}">
-            <td><div class="player-cell"><strong>${esc(report.player_name || 'Oyuncu')}</strong><span>${esc(report.age || '-')} yaş</span></div></td>
+            <td><div class="player-cell"><strong>${esc(report.player_name || 'Oyuncu')}</strong><span>${esc(report.age || '-')} yaÅŸ</span></div></td>
             <td>${esc(report.position || '-')}</td>
             <td>${esc(report.scout_name || report.author_name || '-')}</td>
-            <td><span class="tag">${esc(report.status || 'İncelemede')}</span></td>
+            <td><span class="tag">${esc(report.status || 'Ä°ncelemede')}</span></td>
             <td>${esc(report.report_date || report.created_at || '-')}</td>
           </tr>
         `;
@@ -350,3 +353,4 @@
   </script>
 </body>
 </html>
+

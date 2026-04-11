@@ -76,7 +76,7 @@ class OpportunityController extends Controller
 
         if (! empty($validated['sport']) && strtolower((string) $validated['sport']) !== 'all') {
             $sportTerms = $this->sportTerms((string) $validated['sport']);
-            $query->whereIn(DB::raw('LOWER(COALESCE(users.sport, ""))'), $sportTerms);
+            $query->whereIn(DB::raw('LOWER(COALESCE(teams.sport, ""))'), $sportTerms);
         }
 
         if (! empty($validated['city'])) {
@@ -111,6 +111,7 @@ class OpportunityController extends Controller
             'filters' => [
                 'status' => $validated['status'] ?? null,
                 'position' => $validated['position'] ?? null,
+                'sport' => $validated['sport'] ?? null,
                 'city' => $validated['city'] ?? null,
                 'age_min' => $validated['age_min'] ?? null,
                 'age_max' => $validated['age_max'] ?? null,
@@ -127,6 +128,7 @@ class OpportunityController extends Controller
             $cacheKey = 'opportunities:index:v'.$version.':'.md5(json_encode([
                 'status' => $validated['status'] ?? null,
                 'position' => $validated['position'] ?? null,
+                'sport' => $validated['sport'] ?? null,
                 'city' => $validated['city'] ?? null,
                 'age_min' => $validated['age_min'] ?? null,
                 'age_max' => $validated['age_max'] ?? null,

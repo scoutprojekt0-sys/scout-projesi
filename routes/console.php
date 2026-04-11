@@ -784,7 +784,7 @@ Artisan::command('ai:prepare-dataset {sport} {--limit=0 : Limit clip count} {--o
 
     $sourceDir = base_path('raw_videos/'.$requestedSport);
     $datasetDir = base_path('ai-worker/datasets/'.$requestedSport);
-    $scriptPath = base_path('ai-worker/scripts/prepare_football_dataset.py');
+    $scriptPath = base_path('ai-worker/scripts/prepare_dataset.py');
     $pythonPath = base_path('ai-worker/.venv/Scripts/python.exe');
 
     if (! File::exists($pythonPath)) {
@@ -803,9 +803,10 @@ Artisan::command('ai:prepare-dataset {sport} {--limit=0 : Limit clip count} {--o
     $this->info("2/2 Dataset prep basliyor: {$requestedSport}");
 
     $command = sprintf(
-        '"%s" "%s" --source-dir "%s" --output-dir "%s" --sample-every-seconds=%s --max-seconds=%s',
+        '"%s" "%s" --sport "%s" --source-dir "%s" --output-dir "%s" --sample-every-seconds=%s --max-seconds=%s',
         $pythonPath,
         $scriptPath,
+        $requestedSport,
         $sourceDir,
         $datasetDir,
         (string) $this->option('sample-every-seconds'),
@@ -816,6 +817,21 @@ Artisan::command('ai:prepare-dataset {sport} {--limit=0 : Limit clip count} {--o
 
     if ((int) $prepExit !== 0) {
         $this->error('Dataset prep adimi basarisiz oldu.');
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $this->newLine();
+    $this->info('Label queue yenileniyor...');
+
+    $queueExit = Artisan::call('ai:dataset-label-queue', [
+        'sport' => $requestedSport,
+        '--split' => 'all',
+    ]);
+    $this->output->write(Artisan::output());
+
+    if ($queueExit !== SymfonyCommand::SUCCESS) {
+        $this->error('Label queue yenilenemedi.');
 
         return SymfonyCommand::FAILURE;
     }

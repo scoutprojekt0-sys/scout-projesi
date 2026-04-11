@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NextScout - Antrenör İlanları</title>
-    <meta name="description" content="Son 7 günde açılan antrenör ilanları NextScout haftalık bülten stilinde listelenir.">
+    <title>NextScout - AntrenÃ¶r Ä°lanlarÄ±</title>
+    <meta name="description" content="Son 7 gÃ¼nde aÃ§Ä±lan antrenÃ¶r ilanlarÄ± NextScout haftalÄ±k bÃ¼lten stilinde listelenir.">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://nextscout.pro/coach-needs.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
-    <meta property="og:title" content="NextScout - Antrenör İlanları">
-    <meta property="og:description" content="Antrenör ilanları haftalık bülten stilinde tek sayfada listelenir.">
+    <meta property="og:title" content="NextScout - AntrenÃ¶r Ä°lanlarÄ±">
+    <meta property="og:description" content="AntrenÃ¶r ilanlarÄ± haftalÄ±k bÃ¼lten stilinde tek sayfada listelenir.">
     <meta property="og:url" content="https://nextscout.pro/coach-needs.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="NextScout - Antrenör İlanları">
-    <meta name="twitter:description" content="Antrenör ilanları haftalık bülten stilinde tek sayfada listelenir.">
+    <meta name="twitter:title" content="NextScout - AntrenÃ¶r Ä°lanlarÄ±">
+    <meta name="twitter:description" content="AntrenÃ¶r ilanlarÄ± haftalÄ±k bÃ¼lten stilinde tek sayfada listelenir.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
@@ -81,14 +81,14 @@
 <header class="topbar">
     <a class="brand" href="./index.html">NextScout</a>
     <div class="top-actions">
-        <a class="home-btn-global" href="./weekly-digest.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #ff7e22;background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;box-shadow:0 16px 28px rgba(255,90,31,0.28);">Haftalık Bülten</a>
+        <a class="home-btn-global" href="./weekly-digest.html" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:10px;border:1px solid #ff7e22;background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;box-shadow:0 16px 28px rgba(255,90,31,0.28);">HaftalÄ±k BÃ¼lten</a>
     </div>
 </header>
 
 <main class="page">
     <section class="hero">
-        <h1><i class="fa-solid fa-chalkboard-user"></i> Antrenör İlanları</h1>
-        <p>Haftalık bültendeki görünümle aynı stilde, yayındaki antrenör ilanları burada kart olarak listelenir.</p>
+        <h1><i class="fa-solid fa-chalkboard-user"></i> AntrenÃ¶r Ä°lanlarÄ±</h1>
+        <p>HaftalÄ±k bÃ¼ltendeki gÃ¶rÃ¼nÃ¼mle aynÄ± stilde, yayÄ±ndaki antrenÃ¶r ilanlarÄ± burada kart olarak listelenir.</p>
     </section>
 
     <section class="jobs-grid" id="jobList"></section>
@@ -99,7 +99,10 @@
         const query = new URLSearchParams(window.location.search);
         const fromQuery = (query.get('api_base') || '').trim();
         if (fromQuery) return fromQuery.replace(/\/$/, '');
+        const host = (window.location.hostname || '').toString().trim().toLowerCase();
+        const port = (window.location.port || '').toString().trim();
         if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+        if ((host === '127.0.0.1' || host === 'localhost') && port && port !== '8000') return 'http://127.0.0.1:8000/api';
         return '/api';
     }
 
@@ -122,21 +125,21 @@
     function render(data) {
         const root = document.getElementById('jobList');
         if (!data.length) {
-            root.innerHTML = '<div class="empty">Henüz antrenör ilanı yok.</div>';
+            root.innerHTML = '<div class="empty">HenÃ¼z antrenÃ¶r ilanÄ± yok.</div>';
             return;
         }
 
         root.innerHTML = data.map((job) => `
             <article class="job-card">
                 <div class="job-head">
-                    <div class="job-title">${job.title || 'Antrenör ilanı'}</div>
+                    <div class="job-title">${job.title || 'AntrenÃ¶r ilanÄ±'}</div>
                     <div class="job-time">${formatDate(job.created_at)}</div>
                 </div>
                 <div class="job-meta">
                     <span class="job-chip"><i class="fa-solid fa-user"></i> ${job.author_name || 'Bilinmeyen kullanici'}</span>
                     <span class="job-chip"><i class="fa-solid fa-briefcase"></i> Teknik ekip ilani</span>
                 </div>
-                <div class="job-content">${job.description || 'Açıklama yok.'}</div>
+                <div class="job-content">${job.description || 'AÃ§Ä±klama yok.'}</div>
             </article>
         `).join('');
     }
@@ -156,3 +159,4 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+

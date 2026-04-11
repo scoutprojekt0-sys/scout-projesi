@@ -20,7 +20,7 @@ class OpportunityPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['team', 'manager'], true);
+        return in_array($user->role, ['team', 'club', 'manager', 'coach'], true);
     }
 
     /**

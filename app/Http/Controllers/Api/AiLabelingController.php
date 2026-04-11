@@ -12,6 +12,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AiLabelingController extends Controller
 {
+    private const SPORT_KEYWORDS = [
+        'football' => ['football', 'futbol', 'soccer'],
+        'basketball' => ['basketball', 'basketbol'],
+        'volleyball' => ['volleyball', 'voleybol', 'voleyball'],
+    ];
+
     public function queue(Request $request, string $sport): JsonResponse
     {
         $sport = $this->normalizeSport($sport);
@@ -47,7 +53,9 @@ class AiLabelingController extends Controller
             if (isset($skipped[$imagePath])) {
                 continue;
             }
-
+            if ($this->isMismatchedForSport($sport, implode(' ', [$imagePath, $labelPath]))) {
+                continue;
+            }
             $rows[] = [
                 'id' => md5($imagePath),
                 'split' => $rowSplit,
@@ -260,10 +268,37 @@ class AiLabelingController extends Controller
         return $normalized;
     }
 
+    private function isMismatchedForSport(string $sport, string $text): bool
+    {
+        $normalized = strtolower($text);
+        $requestedKeywords = self::SPORT_KEYWORDS[$sport] ?? [];
+        $forbiddenKeywords = [];
+
+        foreach (self::SPORT_KEYWORDS as $currentSport => $keywords) {
+            if ($currentSport === $sport) {
+                continue;
+            }
+
+            $forbiddenKeywords = array_merge($forbiddenKeywords, $keywords);
+        }
+
+        $hasRequestedKeyword = collect($requestedKeywords)->contains(
+            static fn (string $keyword): bool => str_contains($normalized, $keyword)
+        );
+        $hasForbiddenKeyword = collect($forbiddenKeywords)->contains(
+            static fn (string $keyword): bool => str_contains($normalized, $keyword)
+        );
+
+        return $hasForbiddenKeyword && ! $hasRequestedKeyword;
+    }
+
     private function validateDatasetPath(string $path, string $mustContain): string
     {
         $normalized = str_replace('\\', '/', trim($path));
         $real = realpath($normalized);
+        if (! is_string($real)) {
+            $real = $this->resolveLegacyDatasetPath($normalized);
+        }
         abort_unless(is_string($real), 404, 'Dosya yolu bulunamadi');
 
         $datasetRoot = str_replace('\\', '/', realpath(base_path('ai-worker/datasets')) ?: '');
@@ -273,6 +308,26 @@ class AiLabelingController extends Controller
         abort_unless(str_contains($realNormalized, $mustContain), 403, 'Beklenmeyen dosya tipi');
 
         return $realNormalized;
+    }
+
+    private function resolveLegacyDatasetPath(string $path): ?string
+    {
+        $normalized = str_replace('\\', '/', trim($path));
+        $marker = '/ai-worker/datasets/';
+        $markerPosition = strpos($normalized, $marker);
+        if ($markerPosition === false) {
+            return null;
+        }
+
+        $relativePath = substr($normalized, $markerPosition + 1);
+        if (! is_string($relativePath) || $relativePath === '') {
+            return null;
+        }
+
+        $candidate = base_path(str_replace('/', DIRECTORY_SEPARATOR, $relativePath));
+        $resolved = realpath($candidate);
+
+        return is_string($resolved) ? $resolved : null;
     }
 
     private function formatFloat(float $value): string

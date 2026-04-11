@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Antrenör Profili | NextScout</title>
-  <meta name="description" content="Antrenör paneli: keşif listeleri, canlı akış ve teknik değerlendirme süreçlerini takip edin.">
+  <title>AntrenÃ¶r Profili | NextScout</title>
+  <meta name="description" content="AntrenÃ¶r paneli: keÅŸif listeleri, canlÄ± akÄ±ÅŸ ve teknik deÄŸerlendirme sÃ¼reÃ§lerini takip edin.">
   <meta name="robots" content="noindex,follow">
   <link rel="canonical" href="https://nextscout.pro/coach-dashboard.html">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="tr_TR">
   <meta property="og:site_name" content="NextScout">
-  <meta property="og:title" content="Antrenör Profili | NextScout">
-  <meta property="og:description" content="Antrenör paneli: keşif listeleri, canlı akış ve teknik değerlendirme süreçlerini takip edin.">
+  <meta property="og:title" content="AntrenÃ¶r Profili | NextScout">
+  <meta property="og:description" content="AntrenÃ¶r paneli: keÅŸif listeleri, canlÄ± akÄ±ÅŸ ve teknik deÄŸerlendirme sÃ¼reÃ§lerini takip edin.">
   <meta property="og:url" content="https://nextscout.pro/coach-dashboard.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
@@ -658,7 +658,7 @@
     <div class="navbar-left"><div class="logo">NextScout Antrenor Profili</div></div>
       <div class="navbar-right">
       <button class="btn-small home-btn-global" style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255, 126, 34, 0.6);background:linear-gradient(135deg,#ff5a1f 0%,#ff7e22 100%);color:#fff;text-decoration:none;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 16px 28px rgba(255,90,31,0.28);" onclick="window.location.href='index.html'"><i class="fas fa-house"></i><span>Ana Sayfa</span></button>
-      <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Çıkış</span></button>
+      <button class="btn-small secondary" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Ã‡Ä±kÄ±ÅŸ</span></button>
       </div>
     </div>
 
@@ -670,8 +670,8 @@
           <li class="sidebar-item active" onclick="openPlayerSearchModal()"><i class="fas fa-magnifying-glass"></i><span>Oyuncu Ara</span></li>
           <li class="sidebar-item" onclick="window.location.href='review-center.html'"><i class="fas fa-comments"></i><span>Yorumlar</span></li>
           <li class="sidebar-item" onclick="openScoutProfile()"><i class="fas fa-user"></i><span>Antrenor Profili</span></li>
-          <li class="sidebar-item" onclick="openCoachWorkspace('reviews')"><i class="fas fa-comments"></i><span>Profil Yorumları</span></li>
-        <li class="sidebar-item" onclick="openScoutReports()"><i class="fas fa-file-lines"></i><span>Scout Raporları</span></li>
+          <li class="sidebar-item" onclick="openCoachWorkspace('reviews')"><i class="fas fa-comments"></i><span>Profil YorumlarÄ±</span></li>
+        <li class="sidebar-item" onclick="openScoutReports()"><i class="fas fa-file-lines"></i><span>Scout RaporlarÄ±</span></li>
           <li class="sidebar-item" onclick="openMessages()"><i class="fas fa-comments"></i><span>Mesajlarim</span></li>
           <li class="sidebar-item" onclick="openSettings()"><i class="fas fa-gear"></i><span>Ayarlar</span></li>
           <li class="sidebar-item" onclick="openHelp()"><i class="fas fa-circle-question"></i><span>Yardim</span></li>
@@ -684,7 +684,7 @@
         <div class="welcome-card">
           <div class="hero-kicker">
             <i class="fas fa-bullseye"></i>
-                <span>Crowdsourced antranör</span>
+                <span>Crowdsourced antranÃ¶r</span>
           </div>
           <h2 class="hero-title">Antrenor operasyonunu buradan yonet.</h2>
           <p class="hero-sub">Oyuncu izle, analiz et ve takip listene ekle.</p>
@@ -770,16 +770,16 @@
             <div class="quick-report-grid" style="grid-template-columns:repeat(3,1fr); margin-bottom:14px;">
               <div class="quick-report-result"><strong id="coachReviewTotal">0</strong><br><span>Toplam</span></div>
               <div class="quick-report-result"><strong id="coachReviewPositive">%0</strong><br><span>Olumlu</span></div>
-              <div class="quick-report-result"><strong id="coachReviewTrust">0/10</strong><br><span>Güven Skoru</span></div>
+              <div class="quick-report-result"><strong id="coachReviewTrust">0/10</strong><br><span>GÃ¼ven Skoru</span></div>
             </div>
             <div class="search-grid" style="grid-template-columns:1fr 1fr; margin-bottom:12px;">
               <div class="form-group">
-                <label>İlişki</label>
+                <label>Ä°liÅŸki</label>
                 <select id="coachDashboardReviewRelationship">
                   <option value="teknik_ekip">Teknik ekip</option>
-                  <option value="birlikte_calistik">Birlikte çalıştık</option>
-                  <option value="izledim">İzledim</option>
-                  <option value="kulup_sureci">Kulüp süreci</option>
+                  <option value="birlikte_calistik">Birlikte Ã§alÄ±ÅŸtÄ±k</option>
+                  <option value="izledim">Ä°zledim</option>
+                  <option value="kulup_sureci">KulÃ¼p sÃ¼reci</option>
                   <option value="rakiptik">Rakiptik</option>
                 </select>
               </div>
@@ -787,17 +787,17 @@
                 <label>Ton</label>
                 <select id="coachDashboardReviewSentiment">
                   <option value="olumlu">Olumlu</option>
-                  <option value="notr">Nötr</option>
+                  <option value="notr">NÃ¶tr</option>
                   <option value="dikkat">Dikkat</option>
                 </select>
               </div>
             </div>
             <div class="form-group" style="margin-bottom:12px;">
               <label>Yorum</label>
-              <textarea id="coachDashboardReviewBody" style="min-height:96px;" placeholder="Antrenörün teknik iletişimi ve süreç yönetimi hakkında yorum yaz..."></textarea>
+              <textarea id="coachDashboardReviewBody" style="min-height:96px;" placeholder="AntrenÃ¶rÃ¼n teknik iletiÅŸimi ve sÃ¼reÃ§ yÃ¶netimi hakkÄ±nda yorum yaz..."></textarea>
             </div>
             <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
-              <button class="btn-small primary" type="button" id="coachDashboardReviewSubmit">Yorumu Gönder</button>
+              <button class="btn-small primary" type="button" id="coachDashboardReviewSubmit">Yorumu GÃ¶nder</button>
               <div class="quick-report-result" id="coachDashboardReviewMessage">Yorumlar burada listelenir.</div>
             </div>
             <div id="coachDashboardReviewList" style="display:grid; gap:10px;"></div>
@@ -805,14 +805,14 @@
 
           <section id="coachWorkspaceNotes" style="display:none; padding:18px;border:1px solid #475569;border-radius:12px;background:#1f2937;color:#dbeafe;">
             <div class="search-grid" style="grid-template-columns:repeat(2,1fr);">
-              <div class="form-group"><label>Oyuncu</label><input type="text" id="coachDashboardNotePlayer" placeholder="Oyuncu adı"></div>
+              <div class="form-group"><label>Oyuncu</label><input type="text" id="coachDashboardNotePlayer" placeholder="Oyuncu adÄ±"></div>
               <div class="form-group"><label>Pozisyon</label><input type="text" id="coachDashboardNotePosition" placeholder="Forvet / Orta saha / Bek"></div>
-              <div class="form-group"><label>Etiket</label><select id="coachDashboardNoteTag"><option value="izlenecek">İzlenecek</option><option value="tekrar-bak">Tekrar Bak</option><option value="gelisim-var">Gelişim Var</option><option value="hazir">Hazır</option></select></div>
+              <div class="form-group"><label>Etiket</label><select id="coachDashboardNoteTag"><option value="izlenecek">Ä°zlenecek</option><option value="tekrar-bak">Tekrar Bak</option><option value="gelisim-var">GeliÅŸim Var</option><option value="hazir">HazÄ±r</option></select></div>
               <div class="form-group"><label>Odak</label><select id="coachDashboardNoteFocus"><option value="teknik">Teknik</option><option value="taktik">Taktik</option><option value="fizik">Fizik</option><option value="zihinsel">Zihinsel</option></select></div>
             </div>
             <div class="form-group" style="margin:12px 0;">
               <label>Not</label>
-              <textarea id="coachDashboardNoteBody" style="min-height:96px;" placeholder="Kısa teknik not..."></textarea>
+              <textarea id="coachDashboardNoteBody" style="min-height:96px;" placeholder="KÄ±sa teknik not..."></textarea>
             </div>
             <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
               <button class="btn-small primary" type="button" id="coachDashboardNoteSubmit">Notu Kaydet</button>
@@ -823,14 +823,14 @@
 
           <section id="coachWorkspaceClips" style="display:none; padding:18px;border:1px solid #475569;border-radius:12px;background:#1f2937;color:#dbeafe;">
             <div class="search-grid" style="grid-template-columns:repeat(2,1fr);">
-              <div class="form-group"><label>Oyuncu</label><input type="text" id="coachDashboardClipPlayer" placeholder="Oyuncu adı"></div>
+              <div class="form-group"><label>Oyuncu</label><input type="text" id="coachDashboardClipPlayer" placeholder="Oyuncu adÄ±"></div>
               <div class="form-group"><label>Video Linki</label><input type="url" id="coachDashboardClipUrl" placeholder="https://..."></div>
               <div class="form-group"><label>Dakika</label><input type="number" id="coachDashboardClipMinute" min="0" max="180" placeholder="12"></div>
               <div class="form-group"><label>Saniye</label><input type="number" id="coachDashboardClipSecond" min="0" max="59" placeholder="34"></div>
             </div>
             <div class="form-group" style="margin:12px 0;">
               <label>Klip Notu</label>
-              <textarea id="coachDashboardClipBody" style="min-height:96px;" placeholder="Sahne bazlı kısa teknik not..."></textarea>
+              <textarea id="coachDashboardClipBody" style="min-height:96px;" placeholder="Sahne bazlÄ± kÄ±sa teknik not..."></textarea>
             </div>
             <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
               <button class="btn-small primary" type="button" id="coachDashboardClipSubmit">Klibi Kaydet</button>
@@ -843,7 +843,7 @@
             <div class="quick-report-grid" style="grid-template-columns:repeat(3,1fr); margin-bottom:14px;">
               <div class="quick-report-result"><strong id="coachEvalTotal">0</strong><br><span>Toplam</span></div>
               <div class="quick-report-result"><strong id="coachEvalLastPlayer">-</strong><br><span>Son Oyuncu</span></div>
-              <div class="quick-report-result"><strong id="coachEvalLastDate">-</strong><br><span>Son Kayıt</span></div>
+              <div class="quick-report-result"><strong id="coachEvalLastDate">-</strong><br><span>Son KayÄ±t</span></div>
             </div>
             <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
               <input type="text" id="coachDashboardEvalSearch" placeholder="Oyuncu, pozisyon veya karar notu..." style="flex:1; padding:10px; border:1px solid #475569; border-radius:10px; background:#0f172a; color:#e2e8f0;">
@@ -886,7 +886,7 @@
         <div class="market-pulse-head tips-flyout-head">
           <div>
             <div class="sidebar-title">Firsat Alani</div>
-            <h2 id="coachOpportunityTitle" style="margin:0 0 6px 0;font-size:18px;color:#f8fafc;">Antranör Firsat Alani</h2>
+            <h2 id="coachOpportunityTitle" style="margin:0 0 6px 0;font-size:18px;color:#f8fafc;">AntranÃ¶r Firsat Alani</h2>
             <div class="market-pulse-copy" id="coachOpportunitySummary">Acik kulup arayislarini ve deneme akisini tek panelde ac.</div>
           </div>
           <div class="market-pulse-tools tips-flyout-tools">
@@ -932,7 +932,7 @@
   <div class="need-modal-overlay" id="coachNeedModal" onclick="if(event.target.id==='coachNeedModal'){closeCoachNeedModal();}">
     <div class="need-modal" onclick="event.stopPropagation()">
       <div class="need-modal-head">
-        <h3>ANTRENÖR Ilani Ver</h3>
+        <h3>ANTRENÃ–R Ilani Ver</h3>
         <button class="btn-small secondary" type="button" onclick="closeCoachNeedModal()">Kapat</button>
       </div>
       <form id="coachNeedForm">
@@ -1107,7 +1107,7 @@
         </div>
         <div style="display:flex;gap:10px;align-items:center;">
           <button class="search-btn" type="button" onclick="searchPlayersModal()">Ara</button>
-          <button class="btn-small secondary" type="button" onclick="resetPlayersModal()">Sıfırla</button>
+          <button class="btn-small secondary" type="button" onclick="resetPlayersModal()">SÄ±fÄ±rla</button>
         </div>
         <div class="players-grid player-search-results" id="playersGridModal"></div>
       </div>
@@ -1117,7 +1117,7 @@
   <div class="need-modal-overlay" id="liveScoutModal" onclick="if(event.target.id==='liveScoutModal'){closeLiveScoutModal();}">
     <div class="need-modal live-modal" onclick="event.stopPropagation()">
       <div class="need-modal-head">
-        <h3>Canlı Scout Baslat</h3>
+        <h3>CanlÄ± Scout Baslat</h3>
         <button class="btn-small secondary" type="button" onclick="closeLiveScoutModal()">Kapat</button>
       </div>
       <form id="liveScoutForm">
@@ -1134,7 +1134,7 @@
             </select>
             <input type="text" id="liveFocusPlayer" placeholder="Odak oyuncu / pozisyon (or: Sol Bek #3)">
           </div>
-          <input type="url" id="liveStreamUrl" placeholder="Ana yayın linki (opsiyonel)">
+          <input type="url" id="liveStreamUrl" placeholder="Ana yayÄ±n linki (opsiyonel)">
           <div class="live-grid">
             <input type="url" id="liveStreamYoutube" placeholder="YouTube linki">
             <input type="url" id="liveStreamInstagram" placeholder="Instagram linki">
@@ -1227,7 +1227,10 @@
       const query = new URLSearchParams(window.location.search);
       const fromQuery = (query.get('api_base') || '').trim();
       if (fromQuery) return fromQuery.replace(/\/$/, '');
-      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      const host = (window.location.hostname || '').toString().trim().toLowerCase();
+        const port = (window.location.port || '').toString().trim();
+        if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+        if ((host === '127.0.0.1' || host === 'localhost') && port && port !== '8000') return 'http://127.0.0.1:8000/api';
       return '/api';
     }
 
@@ -1495,11 +1498,11 @@
 
       const map = {
         hub: {
-          title: 'AntranÃ¶r Firsat Alani',
+          title: 'AntranÃƒÂ¶r Firsat Alani',
           summary: 'Ihtiyac, deneme ve menajer ilanlarini kart secerek ac.'
         },
         needs: {
-          title: 'Antranör Firsat Alani',
+          title: 'AntranÃ¶r Firsat Alani',
           summary: 'Acik kulup arayislarini antrenor ekranindan hizlica tara.'
         },
         events: {
@@ -1617,7 +1620,7 @@
             <div class="row-top">
               <div>
                 <div class="row-title">${escapeHtml(row.player_name || 'Oyuncu')}</div>
-                <div class="row-copy">${escapeHtml(row.position || 'Pozisyon yok')} · ${escapeHtml(row.city || 'Sehir yok')} · Manager: ${escapeHtml(row.submitter?.name || '-')}</div>
+                <div class="row-copy">${escapeHtml(row.position || 'Pozisyon yok')} Â· ${escapeHtml(row.city || 'Sehir yok')} Â· Manager: ${escapeHtml(row.submitter?.name || '-')}</div>
               </div>
               <span class="badge approved">${escapeHtml(coachScoutStatusLabel(row.status))}</span>
             </div>
@@ -1705,7 +1708,7 @@
           <div class="row-top">
             <div>
               <div class="row-title">${escapeHtml(item.title || item.position || 'Kulup ihtiyaci')}</div>
-              <div class="row-copy">${escapeHtml(item.team_name || 'Kulup')} · ${escapeHtml(item.city || 'Sehir yok')}</div>
+              <div class="row-copy">${escapeHtml(item.team_name || 'Kulup')} Â· ${escapeHtml(item.city || 'Sehir yok')}</div>
             </div>
             <span class="badge screened">${escapeHtml(item.status || 'open')}</span>
           </div>
@@ -1733,7 +1736,7 @@
           <div class="row-top">
             <div>
               <div class="row-title">${escapeHtml(item.title || 'Etkinlik')}</div>
-              <div class="row-copy">${escapeHtml(item.organizer?.club_name || item.organizer?.name || 'Organizator')} · ${escapeHtml(item.city || 'Sehir yok')}</div>
+              <div class="row-copy">${escapeHtml(item.organizer?.club_name || item.organizer?.name || 'Organizator')} Â· ${escapeHtml(item.city || 'Sehir yok')}</div>
             </div>
             <span class="badge approved">${escapeHtml(item.event_type || 'event')}</span>
           </div>
@@ -1762,7 +1765,7 @@
           <div class="row-top">
             <div>
               <div class="row-title">${escapeHtml(item.title || item.position || 'Menajer ilani')}</div>
-              <div class="row-copy">${escapeHtml(item.city || 'Sehir yok')} Â· ${escapeHtml(item.status || 'open')}</div>
+              <div class="row-copy">${escapeHtml(item.city || 'Sehir yok')} Ã‚Â· ${escapeHtml(item.status || 'open')}</div>
             </div>
             <span class="badge approved">${escapeHtml(item.position || '-')}</span>
           </div>
@@ -1836,13 +1839,13 @@
 
     function reviewLabelMap() {
       return {
-        birlikte_calistik: 'Birlikte çalıştık',
+        birlikte_calistik: 'Birlikte Ã§alÄ±ÅŸtÄ±k',
         rakiptik: 'Rakiptik',
-        izledim: 'İzledim',
-        kulup_sureci: 'Kulüp süreci',
+        izledim: 'Ä°zledim',
+        kulup_sureci: 'KulÃ¼p sÃ¼reci',
         teknik_ekip: 'Teknik ekip',
         olumlu: 'Olumlu',
-        notr: 'Nötr',
+        notr: 'NÃ¶tr',
         dikkat: 'Dikkat',
       };
     }
@@ -1856,7 +1859,7 @@
       const role = String(row?.author_role || '').trim();
       if (!name && !role) return '';
       const roleLabel = role ? role.charAt(0).toUpperCase() + role.slice(1) : 'Ekip';
-      return `${name || 'Bilinmeyen'} • ${roleLabel}`;
+      return `${name || 'Bilinmeyen'} â€¢ ${roleLabel}`;
     }
 
     function setCoachWorkspaceScope(scope) {
@@ -2083,10 +2086,10 @@
       grid.innerHTML = players.map((player) => {
         const rating = Number(player.rating) || 0;
         const starCount = Math.max(1, Math.min(5, Math.round(rating / 2)));
-        const stars = '★'.repeat(starCount) + '☆'.repeat(5 - starCount);
+        const stars = 'â˜…'.repeat(starCount) + 'â˜†'.repeat(5 - starCount);
         return `
           <div class="player-card">
-            <div class="player-card-image">⚽</div>
+            <div class="player-card-image">âš½</div>
             <div class="player-card-content">
               <div class="player-name">${escapeHtml(player.name || '-')}</div>
               <div class="player-position">${escapeHtml(player.position || '-')}</div>
@@ -2324,19 +2327,19 @@
 
       const contentMap = {
         reviews: {
-          title: 'Profil Yorumları',
-          summary: 'Antrenör hakkındaki geri bildirimleri bu alanda takip edebilirsin.',
-          body: 'Profil yorumları dashboard modülü burada açılacak.',
+          title: 'Profil YorumlarÄ±',
+          summary: 'AntrenÃ¶r hakkÄ±ndaki geri bildirimleri bu alanda takip edebilirsin.',
+          body: 'Profil yorumlarÄ± dashboard modÃ¼lÃ¼ burada aÃ§Ä±lacak.',
         },
         notes: {
           title: 'Teknik Not Defteri',
-          summary: 'Oyuncu bazlı teknik gözlem ve kısa karar notlarını buradan yöneteceksin.',
-          body: 'Teknik not defteri dashboard modülü burada açılacak.',
+          summary: 'Oyuncu bazlÄ± teknik gÃ¶zlem ve kÄ±sa karar notlarÄ±nÄ± buradan yÃ¶neteceksin.',
+          body: 'Teknik not defteri dashboard modÃ¼lÃ¼ burada aÃ§Ä±lacak.',
         },
         clips: {
-          title: 'Video Üzerinden Klip İşaretleme',
-          summary: 'İşaretlenen klipler ve sahne bazlı teknik notlar burada toplanacak.',
-          body: 'Klip işaretleme dashboard modülü burada açılacak.',
+          title: 'Video Ãœzerinden Klip Ä°ÅŸaretleme',
+          summary: 'Ä°ÅŸaretlenen klipler ve sahne bazlÄ± teknik notlar burada toplanacak.',
+          body: 'Klip iÅŸaretleme dashboard modÃ¼lÃ¼ burada aÃ§Ä±lacak.',
         },
       };
 
@@ -2360,20 +2363,20 @@
 
       const contentMap = {
         reviews: {
-          title: 'Profil Yorumları',
-          summary: 'Antrenör hakkındaki geri bildirimleri bu alanda takip edebilirsin.',
+          title: 'Profil YorumlarÄ±',
+          summary: 'AntrenÃ¶r hakkÄ±ndaki geri bildirimleri bu alanda takip edebilirsin.',
         },
         notes: {
           title: 'Antrenor Calisma Alani',
-          summary: 'Oyuncu bazlı teknik gözlem ve kısa karar notlarını buradan yöneteceksin.',
+          summary: 'Oyuncu bazlÄ± teknik gÃ¶zlem ve kÄ±sa karar notlarÄ±nÄ± buradan yÃ¶neteceksin.',
         },
         clips: {
-          title: 'Video Üzerinden Klip İşaretleme',
-          summary: 'İşaretlenen klipler ve sahne bazlı teknik notlar burada toplanacak.',
+          title: 'Video Ãœzerinden Klip Ä°ÅŸaretleme',
+          summary: 'Ä°ÅŸaretlenen klipler ve sahne bazlÄ± teknik notlar burada toplanacak.',
         },
         evaluations: {
-          title: 'Kaydedilmiş Değerlendirmeler',
-          summary: 'Oyuncu profillerinde kaydettiğin teknik değerlendirmeleri burada toplu görürsün.',
+          title: 'KaydedilmiÅŸ DeÄŸerlendirmeler',
+          summary: 'Oyuncu profillerinde kaydettiÄŸin teknik deÄŸerlendirmeleri burada toplu gÃ¶rÃ¼rsÃ¼n.',
         },
       };
 
@@ -2470,15 +2473,15 @@
       trust.textContent = `${trustScore.toFixed(1)}/10`;
 
       if (!rows.length) {
-        list.innerHTML = '<div class="quick-report-result">Henüz yorum yok.</div>';
+        list.innerHTML = '<div class="quick-report-result">HenÃ¼z yorum yok.</div>';
         return;
       }
 
       list.innerHTML = rows.map((review) => `
         <div class="quick-report-result" style="text-align:left;">
-          <strong>${escapeHtml(review?.author_name || 'Kullanıcı')}</strong>
-          <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(review?.author_role || 'rol belirtilmedi')} • ${escapeHtml(formatReviewDate(review?.created_at))}</div>
-          <div style="margin-top:8px;"><span>${escapeHtml(labels[review?.relationship_type] || review?.relationship_type || '-')}</span> • <span>${escapeHtml(labels[review?.sentiment] || review?.sentiment || '-')}</span></div>
+          <strong>${escapeHtml(review?.author_name || 'KullanÄ±cÄ±')}</strong>
+          <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(review?.author_role || 'rol belirtilmedi')} â€¢ ${escapeHtml(formatReviewDate(review?.created_at))}</div>
+          <div style="margin-top:8px;"><span>${escapeHtml(labels[review?.relationship_type] || review?.relationship_type || '-')}</span> â€¢ <span>${escapeHtml(labels[review?.sentiment] || review?.sentiment || '-')}</span></div>
           <div style="margin-top:8px; color:#e2e8f0;">${escapeHtml(review?.body || '')}</div>
         </div>
       `).join('');
@@ -2488,7 +2491,7 @@
       const list = document.getElementById('coachDashboardReviewList');
       const targetId = getCoachReviewTargetId();
       if (!list || !targetId) return;
-      list.innerHTML = '<div class="quick-report-result">Yorumlar yükleniyor...</div>';
+      list.innerHTML = '<div class="quick-report-result">Yorumlar yÃ¼kleniyor...</div>';
       try {
         const res = await fetch(`${getApiBaseUrl()}/profiles/${encodeURIComponent(targetId)}/reviews`, {
           headers: { Accept: 'application/json' },
@@ -2503,7 +2506,7 @@
           : [];
         renderDashboardCoachReviews(items);
       } catch (error) {
-        list.innerHTML = '<div class="quick-report-result">Yorumlar şu an alınamıyor.</div>';
+        list.innerHTML = '<div class="quick-report-result">Yorumlar ÅŸu an alÄ±namÄ±yor.</div>';
       }
     }
 
@@ -2523,7 +2526,7 @@
       };
 
       if (payload.body.length < 10) {
-        message.textContent = 'Yorum en az 10 karakter olmalı.';
+        message.textContent = 'Yorum en az 10 karakter olmalÄ±.';
         return;
       }
 
@@ -2562,14 +2565,14 @@
         });
       }
       if (!rows.length) {
-        list.innerHTML = '<div class="quick-report-result">Henüz teknik not yok.</div>';
+        list.innerHTML = '<div class="quick-report-result">HenÃ¼z teknik not yok.</div>';
         return;
       }
       const previewRows = rows.slice(0, 3);
       list.innerHTML = previewRows.map((row) => `
         <div class="quick-report-result" style="text-align:left;">
           <strong>${escapeHtml(row.player || 'Oyuncu')}</strong>
-          <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(row.position || '-')} • ${escapeHtml(row.tag || '-')} • ${escapeHtml(row.focus || '-')}</div>
+          <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(row.position || '-')} â€¢ ${escapeHtml(row.tag || '-')} â€¢ ${escapeHtml(row.focus || '-')}</div>
           <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(formatWorkspaceAuthorMeta(row) || 'Benim')}</div>
           <div style="margin-top:8px; color:#e2e8f0;">${escapeHtml(row.body || '')}</div>
         </div>
@@ -2635,14 +2638,14 @@
         });
       }
       if (!rows.length) {
-        list.innerHTML = '<div class="quick-report-result">Henüz klip kaydı yok.</div>';
+        list.innerHTML = '<div class="quick-report-result">HenÃ¼z klip kaydÄ± yok.</div>';
         return;
       }
       const previewRows = rows.slice(0, 3);
       list.innerHTML = previewRows.map((row) => `
         <div class="quick-report-result" style="text-align:left;">
           <strong>${escapeHtml(row.player || 'Oyuncu')}</strong>
-          <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(row.stamp || '-')} • ${escapeHtml(row.url || '-')}</div>
+          <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(row.stamp || '-')} â€¢ ${escapeHtml(row.url || '-')}</div>
           <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(formatWorkspaceAuthorMeta(row) || 'Benim')}</div>
           <div style="margin-top:8px; color:#e2e8f0;">${escapeHtml(row.body || '')}</div>
         </div>
@@ -2681,12 +2684,12 @@
       lastDate.textContent = rows[0]?.saved_at || '-';
 
       if (!rows.length) {
-        list.innerHTML = '<div class="quick-report-result">Henüz kaydedilmiş değerlendirme yok.</div>';
+        list.innerHTML = '<div class="quick-report-result">HenÃ¼z kaydedilmiÅŸ deÄŸerlendirme yok.</div>';
         return;
       }
 
       if (!filtered.length) {
-        list.innerHTML = '<div class="quick-report-result">Bu filtreyle eşleşen değerlendirme yok.</div>';
+        list.innerHTML = '<div class="quick-report-result">Bu filtreyle eÅŸleÅŸen deÄŸerlendirme yok.</div>';
         return;
       }
 
@@ -2694,7 +2697,7 @@
       list.innerHTML = previewRows.map((row) => `
         <div class="quick-report-result" style="text-align:left;">
           <strong>${escapeHtml(row.player_name || 'Oyuncu')}</strong>
-          <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(row.position || '-')} • Ortalama ${escapeHtml(row.average)}</div>
+          <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(row.position || '-')} â€¢ Ortalama ${escapeHtml(row.average)}</div>
           <div style="margin-top:4px; color:#9bb5cb;">${escapeHtml(formatWorkspaceAuthorMeta(row) || 'Benim')}</div>
           <div style="margin-top:8px; color:#e2e8f0;">${escapeHtml(row.decision_note || '-')}</div>
           <div style="margin-top:8px; color:#9bb5cb;">${escapeHtml(row.saved_at || '-')}</div>
@@ -3036,7 +3039,7 @@
       } catch (error) {}
 
       const row = {
-        author_name: coachName || 'ANTRENÖR',
+        author_name: coachName || 'ANTRENÃ–R',
         title,
         description: text,
       };
@@ -3045,9 +3048,9 @@
         await saveCoachNeed(row);
         this.reset();
         closeCoachNeedModal();
-        window.nsNotify?.success ? window.nsNotify.success('İlan APIye kaydedildi. Anasayfa 4. ikonda gorunecek.') : nsnsAlert('İlan APIye kaydedildi. Anasayfa 4. ikonda gorunecek.');
+        window.nsNotify?.success ? window.nsNotify.success('Ä°lan APIye kaydedildi. Anasayfa 4. ikonda gorunecek.') : nsnsAlert('Ä°lan APIye kaydedildi. Anasayfa 4. ikonda gorunecek.');
       } catch (error) {
-        window.nsNotify?.error ? window.nsNotify.error(`İlan APIye kaydedilemedi: ${error.message}`) : nsnsAlert(`İlan APIye kaydedilemedi: ${error.message}`);
+        window.nsNotify?.error ? window.nsNotify.error(`Ä°lan APIye kaydedilemedi: ${error.message}`) : nsnsAlert(`Ä°lan APIye kaydedilemedi: ${error.message}`);
       }
     });
 
@@ -3096,7 +3099,7 @@
         return;
       }
       if (stream && /(^|:\/\/)(www\.)?example\.com(\/|$)/i.test(stream)) {
-        window.nsNotify?.error ? window.nsNotify.error('Lütfen gercek bir yayın linki girin. example.com test alanidir.') : nsnsAlert('Lütfen gercek bir yayın linki girin. example.com test alanidir.');
+        window.nsNotify?.error ? window.nsNotify.error('LÃ¼tfen gercek bir yayÄ±n linki girin. example.com test alanidir.') : nsnsAlert('LÃ¼tfen gercek bir yayÄ±n linki girin. example.com test alanidir.');
         return;
       }
       const allStreams = [streamYoutube, streamInstagram, streamFacebook, streamX];
@@ -3105,7 +3108,7 @@
         return;
       }
       if (stream && !isValidHttpUrl(stream)) {
-        window.nsNotify?.error ? window.nsNotify.error('Ana yayın linki http/https formatinda olmali.') : nsnsAlert('Ana yayın linki http/https formatinda olmali.');
+        window.nsNotify?.error ? window.nsNotify.error('Ana yayÄ±n linki http/https formatinda olmali.') : nsnsAlert('Ana yayÄ±n linki http/https formatinda olmali.');
         return;
       }
       if (streamYoutube && (!isValidHttpUrl(streamYoutube) || !isAllowedPlatformUrl(streamYoutube, 'youtube'))) {
@@ -3158,7 +3161,7 @@
         closeLiveScoutModal();
         window.location.href = 'scout-live-matches.html';
       } catch (error) {
-        window.nsNotify?.error ? window.nsNotify.error(`Canlı mac kaydedilemedi: ${error.message}`) : nsnsAlert(`Canlı mac kaydedilemedi: ${error.message}`);
+        window.nsNotify?.error ? window.nsNotify.error(`CanlÄ± mac kaydedilemedi: ${error.message}`) : nsnsAlert(`CanlÄ± mac kaydedilemedi: ${error.message}`);
       }
     });
 
@@ -3205,47 +3208,47 @@
         .then(() => {
           this.reset();
           closeTrialPublishModal();
-          pushLocalNotification('Yeni Deneme/Idman Ilani', `${title} yayına alindi.`);
-          window.nsNotify?.success ? window.nsNotify.success('Deneme/Idman ilani yayına alindi.') : nsnsAlert('Deneme/Idman ilani yayına alindi.');
+          pushLocalNotification('Yeni Deneme/Idman Ilani', `${title} yayÄ±na alindi.`);
+          window.nsNotify?.success ? window.nsNotify.success('Deneme/Idman ilani yayÄ±na alindi.') : nsnsAlert('Deneme/Idman ilani yayÄ±na alindi.');
         })
         .catch((error) => {
-          window.nsNotify?.error ? window.nsNotify.error(`İlan yayınlanamadi: ${error.message}`) : nsnsAlert(`İlan yayınlanamadi: ${error.message}`);
+          window.nsNotify?.error ? window.nsNotify.error(`Ä°lan yayÄ±nlanamadi: ${error.message}`) : nsnsAlert(`Ä°lan yayÄ±nlanamadi: ${error.message}`);
         });
     });
 
     function applyTurkishTextFixes() {
       const replacements = new Map([
-        ['Ä°lan Ver', 'İlan Ver'],
-        ['Deneme/Idman Ilani', 'Deneme/İdman İlanı'],
-        ['CanlÄ± Scout Baslat', 'Canlı Scout Başlat'],
-        ['Ã‡Ä±kÄ±ÅŸ', 'Çıkış'],
-        ['Deneme & Idmanlar', 'Deneme & İdmanlar'],
-        ['CanlÄ± Scout', 'Canlı Scout'],
-        ['Mesajlarim', 'Mesajlarım'],
-        ['Yardim', 'Yardım'],
-        ['Henuz rapor kaydi yok.', 'Henüz rapor kaydı yok.'],
-        ['Mac Sonu Anlik Rapor', 'Maç Sonu Anlık Rapor'],
-        ['Mac Basligi', 'Maç Başlığı'],
-        ['Tumu', 'Tümü'],
-        ['Yas Araligi', 'Yaş Aralığı'],
-        ['ANTRENÃ–R Ilani Ver', 'Antrenör İlanı Ver'],
-        ['Baslik (or: U19 icin hizli sol kanat araniyor)', 'Başlık (ör: U19 için hızlı sol kanat aranıyor)'],
-        ['Ne aradigini yaz... (pozisyon, yas, fizik, oyun tarzi vb.)', 'Ne aradığını yaz... (pozisyon, yaş, fizik, oyun tarzı vb.)'],
-        ['Iptal', 'İptal'],
-        ['Oyuncu Adi', 'Oyuncu Adı'],
-        ['Oyuncu adi gir', 'Oyuncu adı gir'],
-        ['SÄ±fÄ±rla', 'Sıfırla'],
-        ['Mac adi (or: U19 Hazirlik Maci)', 'Maç adı (ör: U19 Hazırlık Maçı)'],
-        ['Ana yayÄ±n linki (opsiyonel)', 'Ana yayın linki (opsiyonel)'],
-        ['Kisa not (opsiyonel): Bu oyuncu hizli gecislerde etkili.', 'Kısa not (opsiyonel): Bu oyuncu hızlı geçişlerde etkili.'],
-        ['Yayini Baslat', 'Yayını Başlat'],
-        ['Deneme / Idman Ilani', 'Deneme / İdman İlanı'],
-        ['Idman', 'İdman'],
-        ['Deneme Maci', 'Deneme Maçı'],
-        ['Baslik (or: U19 Acik Deneme)', 'Başlık (ör: U19 Açık Deneme)'],
-        ['Sehir', 'Şehir'],
-        ['Yayina Al', 'Yayına Al'],
-        ['Yas', 'Yaş']
+        ['Ã„Â°lan Ver', 'Ä°lan Ver'],
+        ['Deneme/Idman Ilani', 'Deneme/Ä°dman Ä°lanÄ±'],
+        ['CanlÃ„Â± Scout Baslat', 'CanlÄ± Scout BaÅŸlat'],
+        ['Ãƒâ€¡Ã„Â±kÃ„Â±Ã…Å¸', 'Ã‡Ä±kÄ±ÅŸ'],
+        ['Deneme & Idmanlar', 'Deneme & Ä°dmanlar'],
+        ['CanlÃ„Â± Scout', 'CanlÄ± Scout'],
+        ['Mesajlarim', 'MesajlarÄ±m'],
+        ['Yardim', 'YardÄ±m'],
+        ['Henuz rapor kaydi yok.', 'HenÃ¼z rapor kaydÄ± yok.'],
+        ['Mac Sonu Anlik Rapor', 'MaÃ§ Sonu AnlÄ±k Rapor'],
+        ['Mac Basligi', 'MaÃ§ BaÅŸlÄ±ÄŸÄ±'],
+        ['Tumu', 'TÃ¼mÃ¼'],
+        ['Yas Araligi', 'YaÅŸ AralÄ±ÄŸÄ±'],
+        ['ANTRENÃƒâ€“R Ilani Ver', 'AntrenÃ¶r Ä°lanÄ± Ver'],
+        ['Baslik (or: U19 icin hizli sol kanat araniyor)', 'BaÅŸlÄ±k (Ã¶r: U19 iÃ§in hÄ±zlÄ± sol kanat aranÄ±yor)'],
+        ['Ne aradigini yaz... (pozisyon, yas, fizik, oyun tarzi vb.)', 'Ne aradÄ±ÄŸÄ±nÄ± yaz... (pozisyon, yaÅŸ, fizik, oyun tarzÄ± vb.)'],
+        ['Iptal', 'Ä°ptal'],
+        ['Oyuncu Adi', 'Oyuncu AdÄ±'],
+        ['Oyuncu adi gir', 'Oyuncu adÄ± gir'],
+        ['SÃ„Â±fÃ„Â±rla', 'SÄ±fÄ±rla'],
+        ['Mac adi (or: U19 Hazirlik Maci)', 'MaÃ§ adÄ± (Ã¶r: U19 HazÄ±rlÄ±k MaÃ§Ä±)'],
+        ['Ana yayÃ„Â±n linki (opsiyonel)', 'Ana yayÄ±n linki (opsiyonel)'],
+        ['Kisa not (opsiyonel): Bu oyuncu hizli gecislerde etkili.', 'KÄ±sa not (opsiyonel): Bu oyuncu hÄ±zlÄ± geÃ§iÅŸlerde etkili.'],
+        ['Yayini Baslat', 'YayÄ±nÄ± BaÅŸlat'],
+        ['Deneme / Idman Ilani', 'Deneme / Ä°dman Ä°lanÄ±'],
+        ['Idman', 'Ä°dman'],
+        ['Deneme Maci', 'Deneme MaÃ§Ä±'],
+        ['Baslik (or: U19 Acik Deneme)', 'BaÅŸlÄ±k (Ã¶r: U19 AÃ§Ä±k Deneme)'],
+        ['Sehir', 'Åehir'],
+        ['Yayina Al', 'YayÄ±na Al'],
+        ['Yas', 'YaÅŸ']
       ]);
 
       const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
@@ -3270,31 +3273,31 @@
     }
 
     function applyTurkishTextFixesFinal() {
-document.title = 'Antrenör Profili | NextScout';
+document.title = 'AntrenÃ¶r Profili | NextScout';
 
       const setText = (selector, text) => {
         const el = document.querySelector(selector);
         if (el) el.textContent = text;
       };
 
-setText('.navbar-left .logo', 'NextScout Antrenör Profili');
-      setText('.navbar-right button[onclick="openScoutProfile()"] span', 'Antrenör Profili');
-      setText('.sidebar-item[onclick="openScoutProfile()"] span', 'Antrenör Profili');
+setText('.navbar-left .logo', 'NextScout AntrenÃ¶r Profili');
+      setText('.navbar-right button[onclick="openScoutProfile()"] span', 'AntrenÃ¶r Profili');
+      setText('.sidebar-item[onclick="openScoutProfile()"] span', 'AntrenÃ¶r Profili');
       setText('.sidebar-item:nth-of-type(4) span', 'Deneme & \u0130dmanlar');
       setText('.sidebar-item:nth-of-type(5) span', 'Canl\u0131 \u0130zleme Talebi');
       setText('.sidebar-item:nth-of-type(6) span', '\u0130statistikler');
       setText('.sidebar-item:nth-of-type(7) span', 'Scout Raporlar\u0131');
       setText('.sidebar-item:nth-of-type(8) span', 'Mesajlar\u0131m');
       setText('.sidebar-item:nth-of-type(10) span', 'Yard\u0131m');
-setText('.content h1', 'Antrenör Profili');
+setText('.content h1', 'AntrenÃ¶r Profili');
       setText('.quick-report-result', 'Hen\u00fcz rapor kayd\u0131 yok.');
-      setText('.navbar-left .logo', 'NextScout Antrenör Profili');
-      setText('.navbar-right button[onclick="openCoachNeedModal()"] span', 'İlan Ver');
-      setText('.navbar-right button[onclick="openTrialPublishModal()"] span', 'Deneme/İdman İlanı');
-      setText('.navbar-right button[onclick="openLiveScoutModal()"] span', 'Canlı Scout Başlat');
-      setText('.navbar-right button[onclick="openScoutProfile()"] span', 'Antrenör Profili');
-      setText('.sidebar-item[onclick="openScoutProfile()"] span', 'Antrenör Profili');
-      setText('.content h1', 'Antrenör Profili');
+      setText('.navbar-left .logo', 'NextScout AntrenÃ¶r Profili');
+      setText('.navbar-right button[onclick="openCoachNeedModal()"] span', 'Ä°lan Ver');
+      setText('.navbar-right button[onclick="openTrialPublishModal()"] span', 'Deneme/Ä°dman Ä°lanÄ±');
+      setText('.navbar-right button[onclick="openLiveScoutModal()"] span', 'CanlÄ± Scout BaÅŸlat');
+      setText('.navbar-right button[onclick="openScoutProfile()"] span', 'AntrenÃ¶r Profili');
+      setText('.sidebar-item[onclick="openScoutProfile()"] span', 'AntrenÃ¶r Profili');
+      setText('.content h1', 'AntrenÃ¶r Profili');
 
       document.querySelectorAll('label').forEach((label) => {
         const value = (label.textContent || '').trim();
@@ -3305,11 +3308,11 @@ setText('.content h1', 'Antrenör Profili');
       document.querySelectorAll('button, span, h2, h3, option').forEach((el) => {
         const value = (el.textContent || '').trim();
         if (value === 'Deneme/Idman Ilani') el.textContent = 'Deneme/\u0130dman \u0130lan\u0131';
-        if (value === 'Canlı Scout Baslat' || value === 'Canl\u0131 Scout Baslat') el.textContent = 'Canl\u0131 Scout Ba\u015flat';
+        if (value === 'CanlÄ± Scout Baslat' || value === 'Canl\u0131 Scout Baslat') el.textContent = 'Canl\u0131 Scout Ba\u015flat';
         if (value === 'Mesajlarim') el.textContent = 'Mesajlar\u0131m';
         if (value === 'Yardim') el.textContent = 'Yard\u0131m';
         if (value === 'Scout Sonuclari') el.textContent = 'Scout Sonu\u00e7lar\u0131';
-        if (value === 'Canlı Scout Baslat' || value === 'Canli Scout Baslat') el.textContent = 'Canl\u0131 Scout Ba\u015flat';
+        if (value === 'CanlÄ± Scout Baslat' || value === 'Canli Scout Baslat') el.textContent = 'Canl\u0131 Scout Ba\u015flat';
         if (value === 'Iptal') el.textContent = '\u0130ptal';
         if (value === 'Yayini Baslat') el.textContent = 'Yay\u0131n\u0131 Ba\u015flat';
         if (value === 'Deneme / Idman Ilani') el.textContent = 'Deneme / \u0130dman \u0130lan\u0131';
@@ -3330,62 +3333,62 @@ setText('.content h1', 'Antrenör Profili');
     }
 
     function applyTurkishTextFixesFinal() {
-      document.title = 'Antrenör Profili | NextScout';
+      document.title = 'AntrenÃ¶r Profili | NextScout';
 
       const setText = (selector, text) => {
         const el = document.querySelector(selector);
         if (el) el.textContent = text;
       };
 
-      setText('.navbar-left .logo', 'NextScout Antrenör Profili');
-      setText('.navbar-right button[onclick="openCoachNeedModal()"] span', 'İlan Ver');
-      setText('.navbar-right button[onclick="openTrialPublishModal()"] span', 'Deneme/İdman İlanı');
-      setText('.navbar-right button[onclick="openLiveScoutModal()"] span', 'Canlı Scout Başlat');
-      setText('.navbar-right button[onclick="openScoutProfile()"] span', 'Antrenör Profili');
+      setText('.navbar-left .logo', 'NextScout AntrenÃ¶r Profili');
+      setText('.navbar-right button[onclick="openCoachNeedModal()"] span', 'Ä°lan Ver');
+      setText('.navbar-right button[onclick="openTrialPublishModal()"] span', 'Deneme/Ä°dman Ä°lanÄ±');
+      setText('.navbar-right button[onclick="openLiveScoutModal()"] span', 'CanlÄ± Scout BaÅŸlat');
+      setText('.navbar-right button[onclick="openScoutProfile()"] span', 'AntrenÃ¶r Profili');
 
-      setText('.sidebar-item[onclick="openScoutProfile()"] span', 'Antrenör Profili');
+      setText('.sidebar-item[onclick="openScoutProfile()"] span', 'AntrenÃ¶r Profili');
       setText('.sidebar-item[onclick="openCoachWorkspace(\'notes\')"] span', 'Antrenor Calisma Alani');
-      setText('.sidebar-item[onclick="openPerformance()"] span', 'İstatistikler');
-      setText('.sidebar-item[onclick="openMessages()"] span', 'Mesajlarım');
+      setText('.sidebar-item[onclick="openPerformance()"] span', 'Ä°statistikler');
+      setText('.sidebar-item[onclick="openMessages()"] span', 'MesajlarÄ±m');
       setText('.sidebar-item[onclick="openSettings()"] span', 'Ayarlar');
-      setText('.sidebar-item[onclick="openHelp()"] span', 'Yardım');
+      setText('.sidebar-item[onclick="openHelp()"] span', 'YardÄ±m');
       const watchlistMenu = document.querySelector('.sidebar-item[onclick="openWatchlist()"]');
       if (watchlistMenu) watchlistMenu.style.display = 'none';
       const reportsMenu = document.querySelector('.sidebar-item[onclick="openScoutReports()"]');
       if (reportsMenu) reportsMenu.style.display = 'none';
 
-      setText('.content h1', 'Antrenör Profili');
-      setText('.quick-report-result', 'Henüz rapor kaydı yok.');
+      setText('.content h1', 'AntrenÃ¶r Profili');
+      setText('.quick-report-result', 'HenÃ¼z rapor kaydÄ± yok.');
 
       document.querySelectorAll('label').forEach((label) => {
         const value = (label.textContent || '').trim();
-        if (value === 'Yas Araligi') label.textContent = 'Yaş Aralığı';
-        if (value === 'Yas') label.textContent = 'Yaş';
+        if (value === 'Yas Araligi') label.textContent = 'YaÅŸ AralÄ±ÄŸÄ±';
+        if (value === 'Yas') label.textContent = 'YaÅŸ';
       });
 
       document.querySelectorAll('button, span, h2, h3, option').forEach((el) => {
         const value = (el.textContent || '').trim();
-        if (value === 'Deneme/Idman Ilani') el.textContent = 'Deneme/İdman İlanı';
-        if (value === 'Canlı Scout Baslat' || value === 'Canli Scout Baslat') el.textContent = 'Canlı Scout Başlat';
-        if (value === 'Mesajlarim') el.textContent = 'Mesajlarım';
-        if (value === 'Yardim') el.textContent = 'Yardım';
-        if (value === 'Scout Sonuclari') el.textContent = 'Scout Sonuçları';
-        if (value === 'Iptal') el.textContent = 'İptal';
-        if (value === 'Yayini Baslat') el.textContent = 'Yayını Başlat';
-        if (value === 'Deneme / Idman Ilani') el.textContent = 'Deneme / İdman İlanı';
-        if (value === 'Idman') el.textContent = 'İdman';
-        if (value === 'Deneme Maci') el.textContent = 'Deneme Maçı';
-        if (value === 'Yayina Al') el.textContent = 'Yayına Al';
+        if (value === 'Deneme/Idman Ilani') el.textContent = 'Deneme/Ä°dman Ä°lanÄ±';
+        if (value === 'CanlÄ± Scout Baslat' || value === 'Canli Scout Baslat') el.textContent = 'CanlÄ± Scout BaÅŸlat';
+        if (value === 'Mesajlarim') el.textContent = 'MesajlarÄ±m';
+        if (value === 'Yardim') el.textContent = 'YardÄ±m';
+        if (value === 'Scout Sonuclari') el.textContent = 'Scout SonuÃ§larÄ±';
+        if (value === 'Iptal') el.textContent = 'Ä°ptal';
+        if (value === 'Yayini Baslat') el.textContent = 'YayÄ±nÄ± BaÅŸlat';
+        if (value === 'Deneme / Idman Ilani') el.textContent = 'Deneme / Ä°dman Ä°lanÄ±';
+        if (value === 'Idman') el.textContent = 'Ä°dman';
+        if (value === 'Deneme Maci') el.textContent = 'Deneme MaÃ§Ä±';
+        if (value === 'Yayina Al') el.textContent = 'YayÄ±na Al';
       });
 
       document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach((el) => {
         const value = el.getAttribute('placeholder') || '';
-        if (value === 'Oyuncu adi gir') el.setAttribute('placeholder', 'Oyuncu adı gir');
-        if (value === 'Baslik (or: U19 icin hizli sol kanat araniyor)') el.setAttribute('placeholder', 'Başlık (ör: U19 için hızlı sol kanat aranıyor)');
-        if (value === 'Ne aradigini yaz... (pozisyon, yas, fizik, oyun tarzi vb.)') el.setAttribute('placeholder', 'Ne aradığını yaz... (pozisyon, yaş, fizik, oyun tarzı vb.)');
-        if (value === 'Mac adi (or: U19 Hazirlik Maci)') el.setAttribute('placeholder', 'Maç adı (ör: U19 Hazırlık Maçı)');
-        if (value === 'Ana yayin linki (opsiyonel)') el.setAttribute('placeholder', 'Ana yayın linki (opsiyonel)');
-        if (value === 'Baslik (or: U19 Acik Deneme)') el.setAttribute('placeholder', 'Başlık (ör: U19 Açık Deneme)');
+        if (value === 'Oyuncu adi gir') el.setAttribute('placeholder', 'Oyuncu adÄ± gir');
+        if (value === 'Baslik (or: U19 icin hizli sol kanat araniyor)') el.setAttribute('placeholder', 'BaÅŸlÄ±k (Ã¶r: U19 iÃ§in hÄ±zlÄ± sol kanat aranÄ±yor)');
+        if (value === 'Ne aradigini yaz... (pozisyon, yas, fizik, oyun tarzi vb.)') el.setAttribute('placeholder', 'Ne aradÄ±ÄŸÄ±nÄ± yaz... (pozisyon, yaÅŸ, fizik, oyun tarzÄ± vb.)');
+        if (value === 'Mac adi (or: U19 Hazirlik Maci)') el.setAttribute('placeholder', 'MaÃ§ adÄ± (Ã¶r: U19 HazÄ±rlÄ±k MaÃ§Ä±)');
+        if (value === 'Ana yayin linki (opsiyonel)') el.setAttribute('placeholder', 'Ana yayÄ±n linki (opsiyonel)');
+        if (value === 'Baslik (or: U19 Acik Deneme)') el.setAttribute('placeholder', 'BaÅŸlÄ±k (Ã¶r: U19 AÃ§Ä±k Deneme)');
       });
     }
 
@@ -3446,4 +3449,5 @@ setText('.content h1', 'Antrenör Profili');
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+
 

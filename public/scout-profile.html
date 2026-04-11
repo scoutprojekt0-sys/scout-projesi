@@ -4,19 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Scout Profili - NextScout</title>
-    <meta name="description" content="NextScout scout profile sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="description" content="NextScout scout profile sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
     <meta name="robots" content="noindex,follow">
     <link rel="canonical" href="https://nextscout.pro/scout-profile.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="tr_TR">
     <meta property="og:site_name" content="NextScout">
     <meta property="og:title" content="Scout Profili - NextScout">
-    <meta property="og:description" content="NextScout scout profile sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta property="og:description" content="NextScout scout profile sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
     <meta property="og:url" content="https://nextscout.pro/scout-profile.html">
     <meta property="og:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Scout Profili - NextScout">
-    <meta name="twitter:description" content="NextScout scout profile sayfasi: futbol scout, KULÜP ve oyuncu odakli platform icerigi.">
+    <meta name="twitter:description" content="NextScout scout profile sayfasi: futbol scout, KULÃœP ve oyuncu odakli platform icerigi.">
     <meta name="twitter:image" content="https://nextscout.pro/assets/img/og-default.jpg">
     <meta name="theme-color" content="#0B3B8A">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
@@ -187,7 +187,7 @@
     <div class="head">
       <div>
         <h1 class="title">Scout Profili</h1>
-        <div class="sub">Scout profilini düzenle ve kaydet.</div>
+        <div class="sub">Scout profilini dÃ¼zenle ve kaydet.</div>
       </div>
       <div class="head-actions">
         <a class="btn btn-primary" href="index.html"><i class="fas fa-house"></i><span>Ana Sayfa</span></a>
@@ -195,7 +195,7 @@
       </div>
     </div>
 
-    <div class="data-meta" id="scoutDataMeta">Kaynak: Scout Profili • Son güncelleme: -</div>
+    <div class="data-meta" id="scoutDataMeta">Kaynak: Scout Profili â€¢ Son gÃ¼ncelleme: -</div>
     <div class="profile-tabs" id="scoutProfileTabs">
       <button class="profile-tab active" type="button" data-tab="overview">Genel</button>
       <button class="profile-tab" type="button" data-tab="reviews">Yorumlar</button>
@@ -209,7 +209,7 @@
           <div class="field"><label class="label" for="name">Isim Soyisim</label><input class="input" id="name" required placeholder="Ad Soyad"></div>
           <div class="field"><label class="label" for="experience">Deneyim (Yil)</label><input class="input" id="experience" type="number" min="0" max="50" placeholder="5"></div>
           <div class="field"><label class="label" for="branch">Brans</label><select class="select" id="branch"><option value="">Seciniz</option><option value="Futbol">Futbol</option><option value="Basketbol">Basketbol</option><option value="Voleybol">Voleybol</option><option value="Coklu Brans">Coklu Brans</option></select></div>
-          <div class="field"><label class="label" for="country">Ülke</label><input class="input" id="country" placeholder="Türkiye"></div>
+          <div class="field"><label class="label" for="country">Ãœlke</label><input class="input" id="country" placeholder="TÃ¼rkiye"></div>
           <div class="field"><label class="label" for="city">Sehir</label><input class="input" id="city" placeholder="Istanbul"></div>
           <div class="field"><label class="label" for="region">Bolge</label><input class="input" id="region" placeholder="Marmara"></div>
           <div class="field"><label class="label" for="organization">Organizasyon</label><input class="input" id="organization" placeholder="Scout Ekibi"></div>
@@ -218,7 +218,7 @@
           <div class="field"><label class="label" for="status">Durum</label><select class="select" id="status"><option value="Aktif">Aktif</option><option value="Pasif">Pasif</option></select></div>
           <div class="field"><label class="label" for="phone">Telefon</label><input class="input" id="phone" placeholder="+90 5xx xxx xx xx"></div>
           <div class="field full"><label class="label" for="bio">Hakkimda</label><textarea class="textarea" id="bio" placeholder="Kisa scout tanitimi..."></textarea></div>
-          <div class="act full"><button class="btn btn-primary" type="submit"><i class="fas fa-floppy-disk"></i><span>Kaydet</span></button><button class="btn" type="button" id="resetBtn"><i class="fas fa-rotate-left"></i><span>Sıfırla</span></button></div>
+          <div class="act full"><button class="btn btn-primary" type="submit"><i class="fas fa-floppy-disk"></i><span>Kaydet</span></button><button class="btn" type="button" id="resetBtn"><i class="fas fa-rotate-left"></i><span>SÄ±fÄ±rla</span></button></div>
         </form>
         <div id="saveMsg" class="ok"></div>
       </div>
@@ -240,7 +240,7 @@
         <div class="row"><span class="muted">Ag</span><strong id="sumNetwork">-</strong></div>
         <div class="row"><span class="muted">Uzmanlik</span><strong id="sumSpecialization">-</strong></div>
         <div class="row"><span class="muted">Durum</span><strong id="sumStatus">-</strong></div>
-        <div class="row"><span class="muted">Ülke</span><strong id="sumCountry">-</strong></div>
+        <div class="row"><span class="muted">Ãœlke</span><strong id="sumCountry">-</strong></div>
         <div class="row"><span class="muted">Sehir</span><strong id="sumCity">-</strong></div>
 
         <div class="scout-profile-card" id="memberScoutCard">
@@ -315,7 +315,10 @@
       const params = new URLSearchParams(window.location.search);
       const fromQuery = (params.get('api_base') || '').trim();
       if (fromQuery) return fromQuery.replace(/\/$/, '');
-      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      const host = (window.location.hostname || '').toString().trim().toLowerCase();
+        const port = (window.location.port || '').toString().trim();
+        if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+        if ((host === '127.0.0.1' || host === 'localhost') && port && port !== '8000') return 'http://127.0.0.1:8000/api';
       return '/api';
     }
 
@@ -507,7 +510,7 @@
       if (gate) gate.style.display = !isOwnProfile && !authUser ? '' : 'none';
     }
 
-    function defaults(){ return { name:'Scout', experience:'', branch:'Futbol', country:'Türkiye', city:'', phone:'', bio:'', photo:'' }; }
+    function defaults(){ return { name:'Scout', experience:'', branch:'Futbol', country:'TÃ¼rkiye', city:'', phone:'', bio:'', photo:'' }; }
 
     function setForm(p){
       document.getElementById('name').value = p.name || '';
@@ -539,7 +542,7 @@
       document.getElementById('sumCountry').textContent = p.country || '-';
       document.getElementById('sumCity').textContent = p.city || '-';
       const meta = document.getElementById('scoutDataMeta');
-      if (meta) meta.textContent = `Kaynak: Scout Profili • Son güncelleme: ${new Date().toLocaleString('tr-TR')}`;
+      if (meta) meta.textContent = `Kaynak: Scout Profili â€¢ Son gÃ¼ncelleme: ${new Date().toLocaleString('tr-TR')}`;
       renderMemberScoutCard(p);
     }
 
@@ -560,7 +563,7 @@
       const branch = document.getElementById('memberScoutBranch');
       if (branch) branch.textContent = p.branch || '-';
       const location = document.getElementById('memberScoutLocation');
-      if (location) location.textContent = [p.city, p.country].filter(Boolean).join(' • ') || '-';
+      if (location) location.textContent = [p.city, p.country].filter(Boolean).join(' â€¢ ') || '-';
       const exp = document.getElementById('memberScoutExperience');
       if (exp) exp.textContent = p.experience ? `${p.experience} Yil Deneyim` : 'Deneyim belirtilmedi';
       const bio = document.getElementById('memberScoutBio');
@@ -686,7 +689,7 @@
       document.getElementById('sumCountry').textContent = p.country || '-';
       document.getElementById('sumCity').textContent = p.city || '-';
       const meta = document.getElementById('scoutDataMeta');
-      if (meta) meta.textContent = `Kaynak: Scout Profili • Son güncelleme: ${new Date().toLocaleString('tr-TR')}`;
+      if (meta) meta.textContent = `Kaynak: Scout Profili â€¢ Son gÃ¼ncelleme: ${new Date().toLocaleString('tr-TR')}`;
       renderMemberScoutCard(p);
     }
 
@@ -707,7 +710,7 @@
       const branch = document.getElementById('memberScoutBranch');
       if (branch) branch.textContent = p.branch || '-';
       const location = document.getElementById('memberScoutLocation');
-      if (location) location.textContent = [p.region || p.city, p.country].filter(Boolean).join(' • ') || '-';
+      if (location) location.textContent = [p.region || p.city, p.country].filter(Boolean).join(' â€¢ ') || '-';
       const exp = document.getElementById('memberScoutExperience');
       if (exp) exp.textContent = p.experience ? `${p.experience} Yil Deneyim` : 'Deneyim belirtilmedi';
       const bio = document.getElementById('memberScoutBio');
@@ -846,27 +849,27 @@
 
     function applyScoutProfileTextFixes() {
       const replacements = new Map([
-        ['Scout profilini dÃ¼zenle ve kaydet.', 'Scout profilini düzenle ve kaydet.'],
-        ['Isim Soyisim', 'İsim Soyisim'],
-        ['Deneyim (Yil)', 'Deneyim (Yıl)'],
-        ['Brans', 'Branş'],
-        ['Seciniz', 'Seçiniz'],
-        ['Coklu Brans', 'Çoklu Branş'],
-        ['Ãœlke', 'Ülke'],
-        ['TÃ¼rkiye', 'Türkiye'],
-        ['Sehir', 'Şehir'],
-        ['Istanbul', 'İstanbul'],
-        ['Hakkimda', 'Hakkımda'],
-        ['Kisa scout tanitimi...', 'Kısa scout tanıtımı...'],
-        ['SÄ±fÄ±rla', 'Sıfırla'],
-        ['Profil Fotografi', 'Profil Fotoğrafı'],
-        ['Scout Fotograf', 'Scout Fotoğraf'],
-        ['Fotografi Kaldir', 'Fotoğrafı Kaldır'],
-        ['Ozet', 'Özet'],
-        ['Isim', 'İsim'],
-        ['Isim zorunlu.', 'İsim zorunlu.'],
+        ['Scout profilini dÃƒÂ¼zenle ve kaydet.', 'Scout profilini dÃ¼zenle ve kaydet.'],
+        ['Isim Soyisim', 'Ä°sim Soyisim'],
+        ['Deneyim (Yil)', 'Deneyim (YÄ±l)'],
+        ['Brans', 'BranÅŸ'],
+        ['Seciniz', 'SeÃ§iniz'],
+        ['Coklu Brans', 'Ã‡oklu BranÅŸ'],
+        ['ÃƒÅ“lke', 'Ãœlke'],
+        ['TÃƒÂ¼rkiye', 'TÃ¼rkiye'],
+        ['Sehir', 'Åehir'],
+        ['Istanbul', 'Ä°stanbul'],
+        ['Hakkimda', 'HakkÄ±mda'],
+        ['Kisa scout tanitimi...', 'KÄ±sa scout tanÄ±tÄ±mÄ±...'],
+        ['SÃ„Â±fÃ„Â±rla', 'SÄ±fÄ±rla'],
+        ['Profil Fotografi', 'Profil FotoÄŸrafÄ±'],
+        ['Scout Fotograf', 'Scout FotoÄŸraf'],
+        ['Fotografi Kaldir', 'FotoÄŸrafÄ± KaldÄ±r'],
+        ['Ozet', 'Ã–zet'],
+        ['Isim', 'Ä°sim'],
+        ['Isim zorunlu.', 'Ä°sim zorunlu.'],
         ['Profil local kaydedildi.', 'Profil yerel olarak kaydedildi.'],
-        ['Profil sÄ±fÄ±rlandi.', 'Profil sıfırlandı.']
+        ['Profil sÃ„Â±fÃ„Â±rlandi.', 'Profil sÄ±fÄ±rlandÄ±.']
       ]);
 
       const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
@@ -898,3 +901,4 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+

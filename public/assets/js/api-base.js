@@ -22,6 +22,10 @@
     return normalized;
   }
 
+  function localBackendBase() {
+    return 'http://127.0.0.1:8000/api';
+  }
+
   function resolve() {
     var configured = normalize(global.NEXTSCOUT_API_BASE);
     if (configured) return persist(configured);
@@ -30,6 +34,11 @@
     if (stored) return stored;
 
     if (global.location.protocol === 'http:' || global.location.protocol === 'https:') {
+      var host = normalize(global.location.hostname).toLowerCase();
+      var port = normalize(global.location.port);
+      if ((host === '127.0.0.1' || host === 'localhost') && port && port !== '8000') {
+        return persist(localBackendBase());
+      }
       return persist(global.location.origin + '/api');
     }
 
@@ -39,7 +48,7 @@
       if (fromQuery) return persist(fromQuery);
     } catch (error) {}
 
-    return persist('http://127.0.0.1:8000/api');
+    return persist(localBackendBase());
   }
 
   global.NextScoutApi = global.NextScoutApi || {};

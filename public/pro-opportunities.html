@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NextScout - Profesyonel İlan Masası</title>
-    <meta name="description" content="NextScout profesyonel ilan masası: menajer ve antrenör ilanlarını tek merkezde gösterir.">
+    <title>NextScout - Profesyonel Ä°lan MasasÄ±</title>
+    <meta name="description" content="NextScout profesyonel ilan masasÄ±: menajer ve antrenÃ¶r ilanlarÄ±nÄ± tek merkezde gÃ¶sterir.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -58,22 +58,22 @@
 <main class="page">
     <section class="hero">
         <a href="index.html" class="btn hero-close" id="closeBtn" aria-label="Kapat" title="Kapat"><i class="fas fa-xmark"></i></a>
-        <h1><i class="fa-solid fa-filter"></i> Profesyonel İlan Masası</h1>
-        <p>Menajer ve antrenör ilanları burada birlikte yayınlanır. Oyuncular filtreleyip kendine uygun akışı tek sayfada görür.</p>
+        <h1><i class="fa-solid fa-filter"></i> Profesyonel Ä°lan MasasÄ±</h1>
+        <p>Menajer ve antrenÃ¶r ilanlarÄ± burada birlikte yayÄ±nlanÄ±r. Oyuncular filtreleyip kendine uygun akÄ±ÅŸÄ± tek sayfada gÃ¶rÃ¼r.</p>
         <div class="filters">
             <select class="control" id="positionFilter">
-                <option value="">Pozisyon (Tümü)</option>
+                <option value="">Pozisyon (TÃ¼mÃ¼)</option>
                 <option value="CB">Stoper</option>
                 <option value="LB">Sol Bek</option>
-                <option value="RB">Sağ Bek</option>
+                <option value="RB">SaÄŸ Bek</option>
                 <option value="AM">10 Numara</option>
-                <option value="RW">Sağ Kanat</option>
+                <option value="RW">SaÄŸ Kanat</option>
                 <option value="LW">Sol Kanat</option>
                 <option value="ST">Santrfor</option>
             </select>
             <input class="control" id="heightFilter" type="number" placeholder="Min boy (cm)">
-            <input class="control" id="budgetMinFilter" type="number" placeholder="Bütçe min (TL)">
-            <input class="control" id="budgetMaxFilter" type="number" placeholder="Bütçe max (TL)">
+            <input class="control" id="budgetMinFilter" type="number" placeholder="BÃ¼tÃ§e min (TL)">
+            <input class="control" id="budgetMaxFilter" type="number" placeholder="BÃ¼tÃ§e max (TL)">
             <button class="btn primary" id="applyFilter"><i class="fa-solid fa-magnifying-glass"></i> Filtrele</button>
         </div>
     </section>
@@ -88,7 +88,10 @@
         const query = new URLSearchParams(window.location.search);
         const fromQuery = (query.get('api_base') || '').trim();
         if (fromQuery) return fromQuery.replace(/\/$/, '');
+        const host = (window.location.hostname || '').toString().trim().toLowerCase();
+        const port = (window.location.port || '').toString().trim();
         if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+        if ((host === '127.0.0.1' || host === 'localhost') && port && port !== '8000') return 'http://127.0.0.1:8000/api';
         return '/api';
     }
 
@@ -113,15 +116,15 @@
     function render(data) {
         const root = document.getElementById('jobList');
         if (!data.length) {
-            root.innerHTML = '<div class="empty">Kriterlere uygun ilan bulunamadı.</div>';
+            root.innerHTML = '<div class="empty">Kriterlere uygun ilan bulunamadÄ±.</div>';
             return;
         }
 
         root.innerHTML = data.map((job) => {
-            const roleLabel = String(job.source_role || '').toLowerCase() === 'coach' ? 'ANTRENÖR İlanı' : 'MENAJER İlanı';
-            const title = job.title || `${job.position || '-'} pozisyonu için oyuncu aranıyor`;
-            const freeLabel = job.free_only === 'true' ? 'Bonservisi elinde' : (job.free_only === 'false' ? 'Kulübünde olabilir' : 'Bonservis fark etmez');
-            const ageLabel = `${job.age_min || '-'}-${job.age_max || '-'} yaş`;
+            const roleLabel = String(job.source_role || '').toLowerCase() === 'coach' ? 'ANTRENÃ–R Ä°lanÄ±' : 'MENAJER Ä°lanÄ±';
+            const title = job.title || `${job.position || '-'} pozisyonu iÃ§in oyuncu aranÄ±yor`;
+            const freeLabel = job.free_only === 'true' ? 'Bonservisi elinde' : (job.free_only === 'false' ? 'KulÃ¼bÃ¼nde olabilir' : 'Bonservis fark etmez');
+            const ageLabel = `${job.age_min || '-'}-${job.age_max || '-'} yaÅŸ`;
             return `
                 <article class="job">
                     <div class="job-head">
@@ -130,7 +133,7 @@
                     </div>
                     <div class="meta">
                         <span><i class="fa-solid fa-user-tie"></i> ${roleLabel}: ${job.author_name || job.coach_name || '-'}</span>
-                        <span><i class="fa-solid fa-location-dot"></i> ${job.city || 'Şehir belirtilmedi'}</span>
+                        <span><i class="fa-solid fa-location-dot"></i> ${job.city || 'Åehir belirtilmedi'}</span>
                         <span><i class="fa-solid fa-ruler-vertical"></i> Min ${job.min_height || '-'} cm</span>
                         <span><i class="fa-solid fa-user"></i> ${ageLabel}</span>
                     </div>
@@ -138,9 +141,9 @@
                         <span class="tag">${roleLabel}</span>
                         <span class="tag">${job.dominant_side || 'Ayak fark etmez'}</span>
                         <span class="tag">${freeLabel}</span>
-                        <span class="tag">${job.description || 'Ek açıklama yok'}</span>
+                        <span class="tag">${job.description || 'Ek aÃ§Ä±klama yok'}</span>
                     </div>
-                    <button class="btn primary" onclick="alert('Başvuru iletildi: ${title}')"><i class="fa-solid fa-paper-plane"></i> Bu Göreve Başvur</button>
+                    <button class="btn primary" onclick="alert('BaÅŸvuru iletildi: ${title}')"><i class="fa-solid fa-paper-plane"></i> Bu GÃ¶reve BaÅŸvur</button>
                 </article>
             `;
         }).join('');
@@ -188,3 +191,4 @@
 <script src="assets/js/core-stability.js"></script>
 </body>
 </html>
+

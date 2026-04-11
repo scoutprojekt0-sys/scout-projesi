@@ -64,7 +64,14 @@
         }
 
         var fromWindow = window.NEXTSCOUT_API_BASE || '';
-        var defaultBase = (window.location.protocol === 'http:' || window.location.protocol === 'https:') ? (window.location.origin + '/api') : 'http://127.0.0.1:8000/api';
+        var host = String(window.location.hostname || '').trim().toLowerCase();
+        var port = String(window.location.port || '').trim();
+        var defaultBase = 'http://127.0.0.1:8000/api';
+        if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
+            defaultBase = ((host === '127.0.0.1' || host === 'localhost') && port && port !== '8000')
+                ? 'http://127.0.0.1:8000/api'
+                : (window.location.origin + '/api');
+        }
         var base = String(fromStorage || fromWindow || defaultBase).trim();
         return base.replace(/\/+$/, '');
     }

@@ -340,12 +340,17 @@
 
   <script>
     function getAPIBaseURL() {
-      const params = new URLSearchParams(window.location.search);
-      const explicit = (params.get('api') || '').trim();
-      if (explicit) return explicit.replace(/\/$/, '');
-      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
-      return `${window.location.origin}/api`;
-    }
+        const params = new URLSearchParams(window.location.search);
+        const explicit = (params.get('api') || '').trim();
+        if (explicit) return explicit.replace(/\/$/, '');
+        const host = (window.location.hostname || '').toString().trim().toLowerCase();
+        const port = (window.location.port || '').toString().trim();
+        if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+        if ((host === '127.0.0.1' || host === 'localhost') && port && port !== '8000') {
+          return 'http://127.0.0.1:8000/api';
+        }
+        return `${window.location.origin}/api`;
+      }
 
     const API_BASE_URL = getAPIBaseURL();
 

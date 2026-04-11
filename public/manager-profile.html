@@ -485,7 +485,10 @@
       const params = new URLSearchParams(window.location.search);
       const fromQuery = (params.get('api_base') || '').trim();
       if (fromQuery) return fromQuery.replace(/\/$/, '');
-      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      const host = (window.location.hostname || '').toString().trim().toLowerCase();
+        const port = (window.location.port || '').toString().trim();
+        if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+        if ((host === '127.0.0.1' || host === 'localhost') && port && port !== '8000') return 'http://127.0.0.1:8000/api';
       return '/api';
     }
 
@@ -539,7 +542,7 @@
 
     function renderSummary(p) {
       document.getElementById('headName').textContent = p.name || 'Manager';
-      document.getElementById('headMeta').textContent = `${p.branch || '-'} • ${p.city || '-'} • ${p.country || '-'}`;
+      document.getElementById('headMeta').textContent = `${p.branch || '-'} â€¢ ${p.city || '-'} â€¢ ${p.country || '-'}`;
       document.getElementById('headBio').textContent = p.bio || 'Tanitim metni yok.';
       document.getElementById('sumBranch').textContent = p.branch || '-';
       document.getElementById('sumAgency').textContent = p.agency || '-';
@@ -813,3 +816,4 @@
   <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
+

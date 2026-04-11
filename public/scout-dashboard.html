@@ -1644,11 +1644,16 @@
   </div>
   <script>
     const API_BASE_URL = (() => {
-      const configured = (window.NEXTSCOUT_API_BASE || '').toString().trim();
-      if (configured) return configured.replace(/\/$/, '');
-      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
-      return `${window.location.origin}/api`;
-    })();
+        const configured = (window.NEXTSCOUT_API_BASE || '').toString().trim();
+        if (configured) return configured.replace(/\/$/, '');
+        const host = (window.location.hostname || '').toString().trim().toLowerCase();
+        const port = (window.location.port || '').toString().trim();
+        if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+        if ((host === '127.0.0.1' || host === 'localhost') && port && port !== '8000') {
+          return 'http://127.0.0.1:8000/api';
+        }
+        return `${window.location.origin}/api`;
+      })();
     let cachedScoutVideos = [];
 
     function getToken() {

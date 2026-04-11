@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NextScout - Kulüplerin İhtiyaçları</title>
-    <meta name="description" content="Kulüplerin açık oyuncu ihtiyaçlarını tek merkezde listeleyen NextScout sayfası.">
+    <title>NextScout - KulÃ¼plerin Ä°htiyaÃ§larÄ±</title>
+    <meta name="description" content="KulÃ¼plerin aÃ§Ä±k oyuncu ihtiyaÃ§larÄ±nÄ± tek merkezde listeleyen NextScout sayfasÄ±.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -221,8 +221,8 @@
     <section class="hero">
         <div class="hero-head">
             <div>
-                <h1><i class="fas fa-building-circle-check"></i> Kulüplerin Açık İhtiyaçları</h1>
-                <p>Kulüplerin bugün aradığı pozisyonları, şehir ve ihtiyaç detaylarıyla tek merkezde incele.</p>
+                <h1><i class="fas fa-building-circle-check"></i> KulÃ¼plerin AÃ§Ä±k Ä°htiyaÃ§larÄ±</h1>
+                <p>KulÃ¼plerin bugÃ¼n aradÄ±ÄŸÄ± pozisyonlarÄ±, ÅŸehir ve ihtiyaÃ§ detaylarÄ±yla tek merkezde incele.</p>
             </div>
             <a class="close-btn" href="./index.html" onclick="if (history.length > 1) { event.preventDefault(); history.back(); }" aria-label="Kapat">
                 <i class="fas fa-times"></i>
@@ -230,23 +230,23 @@
         </div>
         <div class="filters">
             <input class="control" id="positionFilter" type="text" placeholder="Pozisyon ara">
-            <input class="control" id="clubFilter" type="text" placeholder="Kulüp adı">
-            <input class="control" id="cityFilter" type="text" placeholder="Şehir">
+            <input class="control" id="clubFilter" type="text" placeholder="KulÃ¼p adÄ±">
+            <input class="control" id="cityFilter" type="text" placeholder="Åehir">
             <button class="btn" id="applyFilter"><i class="fas fa-filter"></i> Filtrele</button>
         </div>
     </section>
 
     <section class="stats">
         <article class="stat-card">
-            <div class="stat-k">Toplam İhtiyaç</div>
+            <div class="stat-k">Toplam Ä°htiyaÃ§</div>
             <div class="stat-v" id="needsTotal">0</div>
         </article>
         <article class="stat-card">
-            <div class="stat-k">Kulüp Sayısı</div>
+            <div class="stat-k">KulÃ¼p SayÄ±sÄ±</div>
             <div class="stat-v" id="clubsTotal">0</div>
         </article>
         <article class="stat-card">
-            <div class="stat-k">Öne Çıkan Pozisyon</div>
+            <div class="stat-k">Ã–ne Ã‡Ä±kan Pozisyon</div>
             <div class="stat-v" id="topPosition">-</div>
         </article>
     </section>
@@ -256,7 +256,10 @@
 
 <script>
     const API_BASE = (() => {
+        const host = (window.location.hostname || '').toString().trim().toLowerCase();
+        const port = (window.location.port || '').toString().trim();
         if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+        if ((host === '127.0.0.1' || host === 'localhost') && port && port !== '8000') return 'http://127.0.0.1:8000/api';
         return '/api';
     })();
     let allNeeds = [];
@@ -276,7 +279,7 @@
 
     function formatDate(value) {
         const dt = new Date(value || '');
-        if (Number.isNaN(dt.getTime())) return 'Bugün';
+        if (Number.isNaN(dt.getTime())) return 'BugÃ¼n';
         return dt.toLocaleDateString('tr-TR');
     }
 
@@ -305,16 +308,16 @@
         updateStats(rows);
 
         if (!rows.length) {
-            root.innerHTML = '<article class="empty">Bu filtreyle eşleşen kulüp ihtiyacı bulunamadı.</article>';
+            root.innerHTML = '<article class="empty">Bu filtreyle eÅŸleÅŸen kulÃ¼p ihtiyacÄ± bulunamadÄ±.</article>';
             return;
         }
 
         root.innerHTML = rows.map((row) => {
             const position = normalizePosition(row?.position || row?.player_position || row?.need_position || row?.role);
-            const club = escapeHtml((row?.club_name || 'Kulüp').toString().trim());
-            const city = escapeHtml((row?.city || row?.location || 'Şehir belirtilmedi').toString().trim());
+            const club = escapeHtml((row?.club_name || 'KulÃ¼p').toString().trim());
+            const city = escapeHtml((row?.city || row?.location || 'Åehir belirtilmedi').toString().trim());
             const status = escapeHtml((row?.status || 'Aktif').toString().trim());
-            const note = escapeHtml((row?.note || row?.description || 'Kulüp bu pozisyon için aktif arayışta.').toString().trim());
+            const note = escapeHtml((row?.note || row?.description || 'KulÃ¼p bu pozisyon iÃ§in aktif arayÄ±ÅŸta.').toString().trim());
             const created = formatDate(row?.created_at);
             const age = row?.age_min || row?.age_max ? `${row?.age_min || '-'}-${row?.age_max || '-'}` : 'Esnek';
             const foot = escapeHtml((row?.dominant_side || 'Ayak fark etmez').toString().trim());
@@ -331,7 +334,7 @@
                     <div class="need-meta">
                         <span><i class="fas fa-location-dot"></i> ${city}</span>
                         <span><i class="fas fa-calendar-days"></i> ${created}</span>
-                        <span><i class="fas fa-user"></i> Yaş: ${age}</span>
+                        <span><i class="fas fa-user"></i> YaÅŸ: ${age}</span>
                     </div>
                     <div class="need-tags">
                         <span class="tag">${foot}</span>
@@ -411,3 +414,4 @@
 <script src="assets/js/core-stability.js"></script>
 </body>
 </html>
+

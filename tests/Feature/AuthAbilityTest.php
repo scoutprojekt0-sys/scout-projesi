@@ -50,6 +50,46 @@ class AuthAbilityTest extends TestCase
             ->assertJsonPath('data.team_user_id', $user->id);
     }
 
+    public function test_coach_can_create_opportunity_with_opportunity_write_ability(): void
+    {
+        $user = User::factory()->create(['role' => 'coach']);
+        Sanctum::actingAs($user, ['opportunity:write']);
+
+        $response = $this->postJson('/api/opportunities', [
+            'title' => 'Antrenman grubu icin guard araniyor',
+            'position' => 'Guard',
+            'city' => 'Istanbul',
+        ]);
+
+        $response->assertCreated()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.team_user_id', $user->id);
+    }
+
+    public function test_opportunities_index_can_filter_by_sport_using_team_alias(): void
+    {
+        $manager = User::factory()->create([
+            'role' => 'manager',
+            'sport' => 'basketball',
+        ]);
+        Sanctum::actingAs($manager, ['opportunity:write']);
+
+        DB::table('opportunities')->insert([
+            'team_user_id' => $manager->id,
+            'title' => 'Basketbol guard ihtiyaci',
+            'position' => 'Guard',
+            'city' => 'Istanbul',
+            'status' => 'open',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $this->getJson('/api/opportunities?sport=basketball')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.data.0.team_user_id', $manager->id);
+    }
+
     public function test_manager_can_view_incoming_applications_with_application_incoming_ability(): void
     {
         $manager = User::factory()->create(['role' => 'manager']);

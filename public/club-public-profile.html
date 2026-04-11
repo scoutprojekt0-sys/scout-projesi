@@ -98,7 +98,7 @@
       </div>
     </div>
 
-    <div class="data-meta" id="metaLine">Kaynak: Kulup Public Profili • Son guncelleme: -</div>
+    <div class="data-meta" id="metaLine">Kaynak: Kulup Public Profili â€¢ Son guncelleme: -</div>
 
     <div class="tabs" id="tabs">
       <button class="tab active" type="button" data-tab="overview">Genel</button>
@@ -183,7 +183,10 @@
       const params = new URLSearchParams(window.location.search);
       const fromQuery = (params.get('api_base') || '').trim();
       if (fromQuery) return fromQuery.replace(/\/$/, '');
-      if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+      const host = (window.location.hostname || '').toString().trim().toLowerCase();
+        const port = (window.location.port || '').toString().trim();
+        if (window.location.protocol === 'file:') return 'http://127.0.0.1:8000/api';
+        if ((host === '127.0.0.1' || host === 'localhost') && port && port !== '8000') return 'http://127.0.0.1:8000/api';
       return '/api';
     }
     function getToken() { return (localStorage.getItem('nextscout_token') || '').trim(); }
@@ -257,7 +260,7 @@
       document.getElementById('sumNeed').textContent = needs.join(', ') || '-';
       document.getElementById('sumSystem').textContent = profile.preferredSystem || '-';
       document.getElementById('sumFacility').textContent = profile.facilityLevel || '-';
-      document.getElementById('metaLine').textContent = `Kaynak: Kulup Public Profili • Son guncelleme: ${new Date().toLocaleString('tr-TR')}`;
+      document.getElementById('metaLine').textContent = `Kaynak: Kulup Public Profili â€¢ Son guncelleme: ${new Date().toLocaleString('tr-TR')}`;
 
       const chips = [];
       if (profile.branch) chips.push(`Brans: ${profile.branch}`);
@@ -309,7 +312,7 @@
           root.innerHTML = '<div class="review-item">Henuz yorum yok.</div>';
           return;
         }
-        root.innerHTML = rows.map((row)=>`<div class="review-item"><div class="review-meta">${esc(row?.author_name || 'Uye')} • ${esc(row?.sentiment || '-')}</div><div>${esc(row?.body || '')}</div></div>`).join('');
+        root.innerHTML = rows.map((row)=>`<div class="review-item"><div class="review-meta">${esc(row?.author_name || 'Uye')} â€¢ ${esc(row?.sentiment || '-')}</div><div>${esc(row?.body || '')}</div></div>`).join('');
       }catch(e){
         root.innerHTML = '<div class="review-item">Yorumlar su an alinamiyor.</div>';
       }
@@ -341,3 +344,4 @@
   </script>
 </body>
 </html>
+
