@@ -352,7 +352,7 @@
       const normalizedFallback = String(fallbackMode || '').toLowerCase();
 
       if (!normalizedProvider) {
-        workerModeBadge.textContent = 'Hazir';
+        workerModeBadge.textContent = 'Analiz sonrasi gorunur';
         return;
       }
 
