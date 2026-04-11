@@ -259,6 +259,13 @@
   font-size: 14px;
 }
 
+.ai-video-lab-discovery-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
 .ai-video-lab-discovery-meta,
 .ai-video-lab-discovery-stats {
   display: flex;
@@ -279,6 +286,42 @@
   padding: 6px 8px;
   border: 1px solid var(--line, #dbe3f1);
   background: rgba(255, 255, 255, 0.03);
+}
+
+.ai-video-lab-status-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.ai-video-lab-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border: 1px solid var(--line, #2b4660);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--muted, #9bb5cb);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ai-video-lab-pill.good {
+  border-color: rgba(45, 212, 191, 0.35);
+  color: #5eead4;
+}
+
+.ai-video-lab-pill.warn {
+  border-color: rgba(251, 191, 36, 0.35);
+  color: #fbbf24;
+}
+
+.ai-video-lab-pill.info {
+  border-color: rgba(96, 165, 250, 0.35);
+  color: #93c5fd;
 }
 
 .ai-video-lab-empty {
@@ -303,6 +346,13 @@
   display: block;
   margin-bottom: 4px;
   font-size: 14px;
+}
+
+.ai-video-lab-player-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
 }
 
 .ai-video-lab-player span {

@@ -194,6 +194,7 @@
       cross_quality_score: Number(row.cross_quality_score || 0),
       analysis_status: row.analysis_status || '',
       analysis_provider: row.analysis_provider || '',
+      has_video: Boolean(videoClipId),
       embedded_video: videoClipId ? {
         id: videoClipId,
         title: row.video_title || ('Video #' + videoClipId),
@@ -204,9 +205,9 @@
         match_date: row.match_date || null
       } : null
     };
-  }
+    }
 
-  function initLab(root) {
+    function initLab(root) {
     const quickRoot = document.createElement('div');
     quickRoot.className = 'ai-video-lab-quick';
     quickRoot.innerHTML = '' +
@@ -411,7 +412,12 @@
               '<span>' + escapeHtml(player.position || '-') + '</span>' +
               '<span>' + escapeHtml(player.city || '-') + '</span>' +
               '<span>Yas: ' + escapeHtml(player.age || '-') + '</span>' +
-              '<span>Cross: ' + escapeHtml(player.successful_crosses || 0) + ' | Pass: ' + escapeHtml(player.successful_passes || 0) + ' | Speed: ' + escapeHtml(player.speed_score || 0) + '</span>' +
+              '<div class="ai-video-lab-player-metrics">' +
+                '<span class="ai-video-lab-metric">Cross ' + escapeHtml(player.successful_crosses || 0) + '</span>' +
+                '<span class="ai-video-lab-metric">Pass ' + escapeHtml(player.successful_passes || 0) + '</span>' +
+                '<span class="ai-video-lab-metric">Speed ' + escapeHtml(player.speed_score || 0) + '</span>' +
+                '<span class="ai-video-lab-metric">Move ' + escapeHtml(player.movement_score || 0) + '</span>' +
+              '</div>' +
             '</div>' +
             '<button type="button" class="btn-small primary" data-ai-player-pick="' + escapeHtml(player.id) + '">Sec</button>' +
           '</article>';
@@ -529,10 +535,22 @@
       }
 
       discoveryResultsRoot.innerHTML = rows.map(function (row) {
+        const provider = String(row.analysis_provider || '').toLowerCase();
+        const status = String(row.analysis_status || '');
+        const hasVideo = Boolean(row.video_clip_id);
+        const providerLabel = provider ? (provider === 'mock' ? 'Mock' : provider === 'external' ? 'External' : provider) : 'Unknown';
+        const statusPills = [
+          '<span class="ai-video-lab-pill ' + (hasVideo ? 'good' : 'warn') + '">' + (hasVideo ? 'Video Hazir' : 'Video Yok') + '</span>',
+          status ? '<span class="ai-video-lab-pill info">' + escapeHtml(status) + '</span>' : '',
+          provider ? '<span class="ai-video-lab-pill info">' + escapeHtml(providerLabel) + '</span>' : ''
+        ].filter(Boolean).join('');
+
         return '' +
           '<article class="ai-video-lab-discovery-player">' +
             '<div>' +
-              '<strong>' + escapeHtml(row.name || 'Oyuncu') + '</strong>' +
+              '<div class="ai-video-lab-discovery-head">' +
+                '<strong>' + escapeHtml(row.name || 'Oyuncu') + '</strong>' +
+              '</div>' +
               '<div class="ai-video-lab-discovery-meta">' +
                 '<span>ID: ' + escapeHtml(row.player_id) + '</span>' +
                 '<span>' + escapeHtml(row.position || '-') + '</span>' +
@@ -545,6 +563,7 @@
                 '<span class="ai-video-lab-metric">Speed ' + escapeHtml(Number(row.speed_score || 0)) + '</span>' +
                 '<span class="ai-video-lab-metric">Move ' + escapeHtml(Number(row.movement_score || 0)) + '</span>' +
               '</div>' +
+              '<div class="ai-video-lab-status-pills">' + statusPills + '</div>' +
             '</div>' +
             '<button type="button" class="btn-small primary" data-ai-discovery-pick="' + escapeHtml(row.player_id) + '">Analize Git</button>' +
           '</article>';
@@ -599,6 +618,9 @@
           return '<option value="' + escapeHtml(video.id) + '">' + label + duration + '</option>';
         }))
         .join('');
+      if (videos.length === 1) {
+        videoSelect.value = String(videos[0].id);
+      }
       updatePreview();
     }
 
@@ -668,7 +690,9 @@
           'ID: ' + (player.id || '-'),
           player.position || '-',
           player.city || '-',
-          'Yas: ' + (player.age || '-')
+          'Yas: ' + (player.age || '-'),
+          'Cross: ' + (player.successful_crosses || 0),
+          'Speed: ' + (player.speed_score || 0)
         ].join(' - ');
       }
       if (targetInput) targetInput.value = player.id || '';
