@@ -26,6 +26,10 @@
     return (localStorage.getItem('nextscout_token') || '').trim();
   }
 
+  function isAuthenticated() {
+    return getToken() !== '';
+  }
+
   function escapeHtml(value) {
     return String(value ?? '')
       .replace(/&/g, '&amp;')
@@ -726,6 +730,11 @@
 
     async function startAnalysis() {
       clearNotice();
+      if (!isAuthenticated()) {
+        setNotice('Discovery acik. Analiz baslatmak icin once giris yapmalisin.', 'bad');
+        return;
+      }
+
       const videoClipId = Number(videoSelect?.value || 0);
       const targetPlayerId = Number(targetInput?.value || 0) || null;
 
@@ -903,6 +912,10 @@
     loadDiscoveryRankings();
     runDiscoverySearch();
     setWorkerMode('', '');
+    syncAnalyzeButtonState();
+    if (!isAuthenticated()) {
+      setNotice('AI discovery acik. Oyuncu kesfi yapabilirsin; analiz baslatmak icin giris gerekiyor.', 'ok');
+    }
   }
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -910,3 +923,16 @@
   });
 })();
 
+    function syncAnalyzeButtonState() {
+      if (!analyzeButton) return;
+      if (isAuthenticated()) {
+        analyzeButton.disabled = false;
+        analyzeButton.textContent = 'Analizi Baslat';
+        analyzeButton.title = '';
+        return;
+      }
+
+      analyzeButton.disabled = false;
+      analyzeButton.textContent = 'Giris Yap ve Analiz Et';
+      analyzeButton.title = 'Analiz baslatmak icin giris gerekli';
+    }
