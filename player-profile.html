@@ -3341,10 +3341,10 @@ const response = await fetch(`${getApiBaseUrl()}/staff/player-evaluations`, {
             const hasToken = Boolean((localStorage.getItem('nextscout_token') || '').trim());
 
             const [transferRes, marketRes, videoRes, mediaRes] = await Promise.all([
-                fetchJsonSafe(`${apiBase}/transfers/player/${encodeURIComponent(userId)}/history`, true),
-                fetchJsonSafe(`${apiBase}/market-values/player/${encodeURIComponent(userId)}/history`, true),
-                fetchJsonSafe(`${apiBase}/video-portfolio/player/${encodeURIComponent(userId)}`, true),
-                fetchJsonSafe(`${apiBase}/users/${encodeURIComponent(userId)}/media`, true),
+                fetchJsonSafe(`${apiBase}/transfers/player/${encodeURIComponent(userId)}/timeline`, false),
+                fetchJsonSafe(`${apiBase}/market-values/player/${encodeURIComponent(userId)}/history`, false),
+                fetchJsonSafe(`${apiBase}/video-portfolio/player/${encodeURIComponent(userId)}`, false),
+                fetchJsonSafe(`${apiBase}/public/players/${encodeURIComponent(userId)}/media`, false),
             ]);
 
             const marketInsights = mapMarketInsights(marketRes || {});
@@ -3361,7 +3361,7 @@ const response = await fetch(`${getApiBaseUrl()}/staff/player-evaluations`, {
                 scout_notes: marketInsights.notes,
                 market_history: marketInsights.marketHistory || [],
                 timeline_events: combinedTimeline,
-                sourceLabel: hasToken ? 'API (birlesik)' : 'API (public + fallback)',
+                sourceLabel: hasToken ? 'API (public + compatibility)' : 'API (public + fallback)',
             };
         }
 

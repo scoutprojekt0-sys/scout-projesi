@@ -83,6 +83,31 @@ class MediaController extends Controller
         ]);
     }
 
+    public function publicIndexByUser(int $id): JsonResponse
+    {
+        $validated = request()->validate([
+            'type'     => ['nullable', 'in:image,video'],
+            'sort_by'  => ['nullable', 'in:created_at,title,type'],
+            'sort_dir' => ['nullable', 'in:asc,desc'],
+            'page'     => ['nullable', 'integer', 'min:1'],
+            'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
+        ]);
+
+        $query = Media::query()->where('user_id', $id);
+        if (! empty($validated['type'])) {
+            $query->where('type', $validated['type']);
+        }
+
+        $sortBy  = $validated['sort_by'] ?? 'created_at';
+        $sortDir = $validated['sort_dir'] ?? 'desc';
+
+        $media = $query->orderBy($sortBy, $sortDir)->paginate((int) ($validated['per_page'] ?? 20));
+
+        return $this->successResponse($media, 'Public medya listesi hazir.', 200, [
+            'filters' => ['type' => $validated['type'] ?? null, 'sort_by' => $sortBy, 'sort_dir' => $sortDir],
+        ]);
+    }
+
     public function destroy(Request $request, int $id): JsonResponse
     {
         $media = Media::query()->find($id);

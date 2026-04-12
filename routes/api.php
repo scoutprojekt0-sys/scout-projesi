@@ -245,6 +245,7 @@ Route::get('/match/{matchId}/scorers', [LiveMatchController::class, 'matchScorer
 Route::get('/public/players', [DiscoveryController::class, 'publicPlayers']);
 Route::get('/public/search', [DiscoveryController::class, 'globalSearch']);
 Route::get('/public/players/{id}/profile', [PlayerController::class, 'publicProfile']);
+Route::get('/public/players/{id}/media', [MediaController::class, 'publicIndexByUser']);
 Route::get('/contracts/live', [DiscoveryController::class, 'contractsLive']);
 Route::get('/player-of-week', [DiscoveryController::class, 'playerOfWeek']);
 Route::get('/trending/week', [DiscoveryController::class, 'trendingWeek']);

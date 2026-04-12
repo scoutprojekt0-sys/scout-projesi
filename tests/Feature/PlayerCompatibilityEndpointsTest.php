@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\ProfileView;
 use App\Models\User;
+use App\Models\Media;
 use App\Models\VideoClip;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
@@ -58,5 +59,24 @@ class PlayerCompatibilityEndpointsTest extends TestCase
             ->assertJsonPath('data.0.title', 'Scout Highlight')
             ->assertJsonPath('data.0.video_url', 'https://example.com/highlight.mp4')
             ->assertJsonPath('data.0.video_type', 'custom');
+    }
+
+    public function test_public_player_media_endpoint_returns_media_without_auth(): void
+    {
+        $player = User::factory()->create(['role' => 'player']);
+
+        Media::query()->create([
+            'user_id' => $player->id,
+            'type' => 'image',
+            'url' => 'https://example.com/player-photo.jpg',
+            'thumb_url' => 'https://example.com/player-photo-thumb.jpg',
+            'title' => 'Player Photo',
+        ]);
+
+        $this->getJson('/api/public/players/'.$player->id.'/media')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.data.0.title', 'Player Photo')
+            ->assertJsonPath('data.data.0.url', 'https://example.com/player-photo.jpg');
     }
 }
