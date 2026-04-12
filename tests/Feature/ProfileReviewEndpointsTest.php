@@ -120,7 +120,7 @@ class ProfileReviewEndpointsTest extends TestCase
             ->assertJsonPath('data.reply.body', 'Geri bildirim icin tesekkur ederim.');
     }
 
-    public function test_user_can_report_review_once_and_public_lawyer_profile_includes_reviews(): void
+    public function test_reported_review_is_hidden_from_public_profile_views(): void
     {
         $owner = User::factory()->create(['role' => 'manager']);
         $lawyerUser = User::factory()->create(['role' => 'scout']);
@@ -162,7 +162,33 @@ class ProfileReviewEndpointsTest extends TestCase
 
         $this->getJson('/api/lawyers/'.$lawyer->id)
             ->assertOk()
-            ->assertJsonPath('data.reviews.total', 1)
-            ->assertJsonPath('data.reviews.items.0.status', 'reported');
+            ->assertJsonPath('data.reviews.total', 0)
+            ->assertJsonPath('data.reviews.items', []);
+    }
+
+    public function test_target_user_can_still_see_reported_review_in_private_context(): void
+    {
+        $author = User::factory()->create(['role' => 'manager']);
+        $target = User::factory()->create(['role' => 'player']);
+
+        $review = ProfileReview::query()->create([
+            'author_id' => $author->id,
+            'author_role' => $author->role,
+            'target_id' => $target->id,
+            'target_role' => $target->role,
+            'relationship_type' => 'kulup_sureci',
+            'sentiment' => 'dikkat',
+            'body' => 'Bu yorum raporlanmis olsa da hedef kullanici tarafindan gorulebilmeli.',
+            'status' => 'reported',
+        ]);
+
+        Sanctum::actingAs($target, ['profile:read']);
+
+        $this->getJson('/api/profiles/'.$target->id.'/reviews')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.total', 1)
+            ->assertJsonPath('data.data.0.id', $review->id)
+            ->assertJsonPath('data.data.0.status', 'reported');
     }
 }

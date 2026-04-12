@@ -78,7 +78,7 @@ class ProfileReviewData
             return ['published', 'reported', 'under_review', 'removed'];
         }
 
-        return ['published', 'reported'];
+        return ['published'];
     }
 
     private static function isAdmin(User $user): bool
