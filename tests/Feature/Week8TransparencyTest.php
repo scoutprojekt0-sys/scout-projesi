@@ -65,7 +65,9 @@ class Week8TransparencyTest extends TestCase
             ->assertJsonPath('ok', true)
             ->assertJsonCount(1, 'data.data')
             ->assertJsonPath('data.data.0.has_source', false)
-            ->assertJsonPath('data.data.0.verification_status', 'needs_review');
+            ->assertJsonPath('data.data.0.verification_status', 'needs_review')
+            ->assertJsonMissingPath('data.data.0.email')
+            ->assertJsonMissingPath('data.data.0.source_url');
     }
 
     public function test_player_detail_returns_market_values_and_transfers(): void
@@ -112,7 +114,10 @@ class Week8TransparencyTest extends TestCase
             ->assertJsonPath('ok', true)
             ->assertJsonPath('data.player.id', $player->id)
             ->assertJsonCount(1, 'data.market_values')
-            ->assertJsonCount(1, 'data.transfers');
+            ->assertJsonCount(1, 'data.transfers')
+            ->assertJsonMissingPath('data.player.source_url')
+            ->assertJsonMissingPath('data.market_values.0.source_url')
+            ->assertJsonMissingPath('data.transfers.0.source_url');
     }
 
     public function test_player_detail_returns_404_for_non_player(): void

@@ -41,7 +41,7 @@ class Week8TransparencyController extends Controller
     {
         $query = User::query()
             ->where('role', 'player')
-            ->select(['id','name','email','position','age','source_url','confidence_score',
+            ->select(['id','name','position','age','confidence_score',
                       'verification_status','has_source','has_conflicts','updated_at'])
             ->orderByDesc('updated_at');
 
@@ -65,18 +65,18 @@ class Week8TransparencyController extends Controller
 
         $marketValues = PlayerMarketValue::query()
             ->where('player_id', $playerId)->orderByDesc('valuation_date')->limit(10)
-            ->get(['id','value','currency','valuation_date','source_url','confidence_score','verification_status','model_version']);
+            ->get(['id','value','currency','valuation_date','confidence_score','verification_status','model_version']);
 
         $transfers = PlayerTransfer::query()
             ->where('player_id', $playerId)->with(['fromClub:id,name','toClub:id,name'])->orderByDesc('transfer_date')->limit(10)
             ->get(['id','player_id','from_club_id','to_club_id','fee','currency','transfer_date',
-                   'transfer_type','source_url','confidence_score','verification_status']);
+                   'transfer_type','confidence_score','verification_status']);
 
         return $this->successResponse([
             'player' => [
                 'id' => $player->id, 'name' => $player->name,
                 'position' => $player->position, 'age' => $player->age,
-                'source_url' => $player->source_url, 'confidence_score' => $player->confidence_score,
+                'confidence_score' => $player->confidence_score,
                 'verification_status' => $player->verification_status,
                 'has_source' => (bool) $player->has_source,
                 'has_conflicts' => (bool) $player->has_conflicts,

@@ -184,7 +184,6 @@ class SystemController extends Controller
                 'social_accounts' => $socialAccounts,
                 'media_count' => $mediaCount,
                 'registration_source' => $registrationSource,
-                'latest_user_agent' => $latestUserAgent,
                 'last_login_at' => $lastLoginAt,
                 'last_active_at' => $lastActiveAt,
             ], 'Profil karti hazir.');
