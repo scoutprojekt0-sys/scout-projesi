@@ -35,7 +35,12 @@ class NotificationEndpointsTest extends TestCase
             [
                 'user_id' => $player->id,
                 'type' => 'opportunity',
-                'payload' => json_encode(['role' => 'player']),
+                'payload' => json_encode([
+                    'actor_user_id' => 123,
+                    'actor_name' => 'Scout One',
+                    'secret_token' => 'hidden',
+                    'email' => 'private@example.com',
+                ]),
                 'is_read' => false,
                 'created_at' => now()->subMinute(),
                 'updated_at' => now()->subMinute(),
@@ -66,7 +71,10 @@ class NotificationEndpointsTest extends TestCase
             ->assertJsonCount(2, 'data')
             ->assertJsonPath('meta.unread_count', 1)
             ->assertJsonPath('data.0.type', 'message')
-            ->assertJsonPath('data.1.type', 'opportunity');
+            ->assertJsonPath('data.1.type', 'opportunity')
+            ->assertJsonPath('data.1.payload.actor_user_id', 123)
+            ->assertJsonMissingPath('data.1.payload.secret_token')
+            ->assertJsonMissingPath('data.1.payload.email');
 
         $this->getJson('/api/notifications?unread=1')
             ->assertOk()

@@ -130,7 +130,6 @@ class LiveMatchController extends Controller
                     'scout_name'   => $meta['scout_name']  ?? null,
                     'source_role'  => $meta['source_role'] ?? null,
                     'source_name'  => $meta['source_name'] ?? null,
-                    'source_user_id' => $meta['source_user_id'] ?? null,
                 ];
             })->values();
 
@@ -243,7 +242,6 @@ class LiveMatchController extends Controller
                 'note'         => $meta['note']       ?? null,
                 'source_role'  => $meta['source_role'] ?? null,
                 'source_name'  => $meta['source_name'] ?? null,
-                'source_user_id' => $meta['source_user_id'] ?? null,
                 'updated_at'   => $updateRow->update_time ?? $record->updated_at?->toIso8601String(),
             ], 'Mac detayi hazir.');
         } catch (ModelNotFoundException $e) {

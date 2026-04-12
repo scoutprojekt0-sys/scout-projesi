@@ -91,13 +91,15 @@ class LiveMatchEndpointsTest extends TestCase
         $this->getJson('/api/match-center/live-matches')
             ->assertOk()
             ->assertJsonPath('data.0.location', 'Tupras Stadium')
-            ->assertJsonPath('data.0.sport', 'football');
+            ->assertJsonPath('data.0.sport', 'football')
+            ->assertJsonMissingPath('data.0.source_user_id');
 
         $this->getJson('/api/match/'.$match->id.'/details')
             ->assertOk()
             ->assertJsonPath('ok', true)
             ->assertJsonPath('data.stadium', 'Tupras Stadium')
-            ->assertJsonPath('data.stream_url', 'https://example.com/live');
+            ->assertJsonPath('data.stream_url', 'https://example.com/live')
+            ->assertJsonMissingPath('data.source_user_id');
 
         $this->getJson('/api/match/'.$match->id.'/scorers')
             ->assertOk()

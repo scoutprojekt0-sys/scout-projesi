@@ -37,7 +37,7 @@ class NotificationController extends Controller
                     'type' => (string) $notification->type,
                     'title' => $notification->title,
                     'message' => $notification->message,
-                    'payload' => $payload,
+                    'payload' => $this->sanitizePayload(is_array($payload) ? $payload : null),
                     'priority' => $notification->priority,
                     'is_read' => (bool) $notification->is_read,
                     'read_at' => $this->normalizeTimestamp($notification->read_at),
@@ -199,5 +199,44 @@ class NotificationController extends Controller
         }
 
         return (string) $value;
+    }
+
+    private function sanitizePayload(?array $payload): ?array
+    {
+        if ($payload === null) {
+            return null;
+        }
+
+        $allowedKeys = [
+            'actor_user_id',
+            'actor_name',
+            'actor_role',
+            'match_id',
+            'match_title',
+            'player_id',
+            'player_name',
+            'opportunity_id',
+            'report_id',
+            'message_id',
+            'conversation_id',
+            'url',
+            'route',
+            'action',
+            'status',
+            'type',
+        ];
+
+        $sanitized = [];
+        foreach ($payload as $key => $value) {
+            if (! in_array((string) $key, $allowedKeys, true)) {
+                continue;
+            }
+
+            if (is_scalar($value) || $value === null) {
+                $sanitized[$key] = $value;
+            }
+        }
+
+        return $sanitized;
     }
 }
