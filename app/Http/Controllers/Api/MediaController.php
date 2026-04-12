@@ -93,6 +93,15 @@ class MediaController extends Controller
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
         ]);
 
+        $player = User::query()
+            ->whereKey($id)
+            ->where('role', 'player')
+            ->first();
+
+        if (! $player) {
+            return $this->errorResponse('Oyuncu bulunamadi.', Response::HTTP_NOT_FOUND, 'player_not_found');
+        }
+
         $query = Media::query()->where('user_id', $id);
         if (! empty($validated['type'])) {
             $query->where('type', $validated['type']);

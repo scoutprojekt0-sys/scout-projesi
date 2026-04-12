@@ -79,4 +79,22 @@ class PlayerCompatibilityEndpointsTest extends TestCase
             ->assertJsonPath('data.data.0.title', 'Player Photo')
             ->assertJsonPath('data.data.0.url', 'https://example.com/player-photo.jpg');
     }
+
+    public function test_public_player_media_endpoint_returns_not_found_for_non_player(): void
+    {
+        $scout = User::factory()->create(['role' => 'scout']);
+
+        Media::query()->create([
+            'user_id' => $scout->id,
+            'type' => 'image',
+            'url' => 'https://example.com/scout-photo.jpg',
+            'thumb_url' => 'https://example.com/scout-photo-thumb.jpg',
+            'title' => 'Scout Photo',
+        ]);
+
+        $this->getJson('/api/public/players/'.$scout->id.'/media')
+            ->assertNotFound()
+            ->assertJsonPath('ok', false)
+            ->assertJsonPath('code', 'player_not_found');
+    }
 }
