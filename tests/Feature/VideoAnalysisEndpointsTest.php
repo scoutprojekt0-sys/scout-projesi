@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use App\Models\VideoAnalysis;
 use App\Models\VideoClip;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -105,6 +106,40 @@ class VideoAnalysisEndpointsTest extends TestCase
             ->assertJsonPath('data.status', 'completed');
 
         $this->assertSame(1, VideoAnalysis::query()->count());
+    }
+
+    public function test_external_mode_can_fail_without_mock_fallback(): void
+    {
+        config()->set('scout.ai_analysis.mode', 'external');
+        config()->set('scout.ai_analysis.allow_mock_fallback', false);
+        config()->set('scout.ai_analysis.worker_base_url', 'http://worker.test');
+
+        Http::fake([
+            'http://worker.test/*' => Http::response(['message' => 'worker error'], 500),
+        ]);
+
+        $player = User::factory()->create(['role' => 'player']);
+        $clip = VideoClip::create([
+            'user_id' => $player->id,
+            'title' => 'External Fail Video',
+            'video_url' => 'https://example.com/external-fail-video',
+            'thumbnail_url' => 'https://example.com/external-fail-thumb.jpg',
+            'platform' => 'custom',
+        ]);
+
+        Sanctum::actingAs($player, ['profile:read', 'profile:write']);
+
+        $response = $this->postJson('/api/video-analyses/start', [
+            'video_clip_id' => $clip->id,
+            'target_player_id' => $player->id,
+            'analysis_type' => 'scout_mvp',
+        ]);
+
+        $response
+            ->assertStatus(201)
+            ->assertJsonPath('data.provider', 'external')
+            ->assertJsonPath('data.status', 'failed')
+            ->assertJsonPath('data.failure_reason', 'AI worker istegi basarisiz: 500');
     }
 
     public function test_worker_callback_can_complete_external_video_analysis(): void
@@ -237,6 +272,8 @@ class VideoAnalysisEndpointsTest extends TestCase
     public function test_ai_discovery_status_endpoint_exposes_runtime_mode(): void
     {
         config()->set('scout.ai_analysis.mode', 'external');
+        config()->set('scout.ai_analysis.allow_mock_fallback', false);
+        config()->set('scout.ai_analysis.worker_base_url', 'http://worker.test');
 
         $this->getJson('/api/scouting-search/status')
             ->assertOk()
@@ -246,6 +283,8 @@ class VideoAnalysisEndpointsTest extends TestCase
             ->assertJsonPath('data.rankings_active', true)
             ->assertJsonPath('data.analysis_mode', 'external')
             ->assertJsonPath('data.analysis_requires_auth', true)
-            ->assertJsonPath('data.public_browsing', true);
+            ->assertJsonPath('data.public_browsing', true)
+            ->assertJsonPath('data.allow_mock_fallback', false)
+            ->assertJsonPath('data.worker_base_url_configured', true);
     }
 }

@@ -384,10 +384,11 @@
       }
 
       const mode = String(status.analysis_mode).toLowerCase();
+      const allowMockFallback = Boolean(status.allow_mock_fallback);
       if (mode === 'mock') {
         workerModeBadge.textContent = 'Mock';
       } else if (mode === 'external') {
-        workerModeBadge.textContent = 'External';
+        workerModeBadge.textContent = allowMockFallback ? 'External / Mock Fallback' : 'External';
       } else {
         workerModeBadge.textContent = status.analysis_mode;
       }

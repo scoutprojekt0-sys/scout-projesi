@@ -15,6 +15,11 @@ class ScoutingSearchController extends Controller
     public function status(): JsonResponse
     {
         $mode = (string) config('scout.ai_analysis.mode', 'mock');
+        $configuredFallback = config('scout.ai_analysis.allow_mock_fallback');
+        $allowMockFallback = ($configuredFallback === null || $configuredFallback === '')
+            ? ! app()->environment('production')
+            : filter_var($configuredFallback, FILTER_VALIDATE_BOOL);
+        $workerBaseUrl = trim((string) config('scout.ai_analysis.worker_base_url', ''));
 
         return $this->successResponse([
             'discovery_active' => true,
@@ -22,6 +27,8 @@ class ScoutingSearchController extends Controller
             'analysis_mode' => $mode,
             'analysis_requires_auth' => true,
             'public_browsing' => true,
+            'allow_mock_fallback' => $allowMockFallback,
+            'worker_base_url_configured' => $workerBaseUrl !== '',
         ], 'AI discovery durumu hazir.');
     }
 

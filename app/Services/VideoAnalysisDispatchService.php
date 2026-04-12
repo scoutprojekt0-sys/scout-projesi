@@ -37,7 +37,7 @@ class VideoAnalysisDispatchService
         try {
             $response = $this->externalVideoAnalysisClient->submit($analysis->fresh('videoClip'));
         } catch (RuntimeException $exception) {
-            if (! app()->environment('production')) {
+            if ($this->shouldFallbackToMock()) {
                 $mockedAnalysis = $this->mockVideoAnalysisService->run($analysis->fresh(['videoClip', 'targetPlayer']));
                 $rawOutput = (array) ($mockedAnalysis->raw_output ?? []);
                 $rawOutput['fallback_from'] = 'external-worker';
@@ -71,5 +71,15 @@ class VideoAnalysisDispatchService
         ]);
 
         return $analysis->fresh(['videoClip', 'targetPlayer', 'events.clips', 'metrics', 'targets']);
+    }
+
+    private function shouldFallbackToMock(): bool
+    {
+        $configured = config('scout.ai_analysis.allow_mock_fallback');
+        if ($configured === null || $configured === '') {
+            return ! app()->environment('production');
+        }
+
+        return filter_var($configured, FILTER_VALIDATE_BOOL);
     }
 }
