@@ -77,7 +77,7 @@ class LegacyCompatibilityController extends Controller
                 'u.name',
                 'u.position',
                 'u.city',
-                DB::raw("COALESCE(NULLIF(u.source_url, ''), 'Sponsorlu oyuncu profili') as summary"),
+                DB::raw("'Sponsorlu oyuncu profili' as summary"),
                 DB::raw('bp.name as package_label'),
                 DB::raw('pb.ends_at as expires_at'),
                 DB::raw('pb.activated_at as created_at'),

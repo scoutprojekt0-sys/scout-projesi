@@ -44,6 +44,7 @@ class LegacyCompatibilityEndpointsTest extends TestCase
             'role' => 'player',
             'confidence_score' => 0.95,
             'views_count' => 120,
+            'source_url' => 'https://private-source.example/internal-profile',
         ]);
 
         $package = BoostPackage::query()->create([
@@ -86,7 +87,9 @@ class LegacyCompatibilityEndpointsTest extends TestCase
         $this->getJson('/api/discovery/boosts')
             ->assertOk()
             ->assertJsonPath('ok', true)
-            ->assertJsonPath('data.0.package_label', 'Sponsorlu');
+            ->assertJsonPath('data.0.package_label', 'Sponsorlu')
+            ->assertJsonPath('data.0.summary', 'Sponsorlu oyuncu profili')
+            ->assertJsonMissing(['summary' => 'https://private-source.example/internal-profile']);
 
         $this->getJson('/api/public/players/quality-summary')
             ->assertOk()
@@ -181,8 +184,8 @@ class LegacyCompatibilityEndpointsTest extends TestCase
 
     public function test_success_story_lawyer_register_and_profile_like_work_for_authenticated_user(): void
     {
-        $user = User::factory()->create(['role' => 'manager']);
-        Sanctum::actingAs($user, ['profile:write']);
+        $user = User::factory()->create(['role' => 'lawyer']);
+        Sanctum::actingAs($user, ['profile:write', 'lawyer']);
 
         $this->postJson('/api/success-stories', [
             'full_name' => 'Demo Player',
