@@ -947,6 +947,20 @@
       window.setTimeout(tick, intervalMs);
     }
 
+    function syncAnalyzeButtonState() {
+      if (!analyzeButton) return;
+      if (isAuthenticated()) {
+        analyzeButton.disabled = false;
+        analyzeButton.textContent = 'Analizi Baslat';
+        analyzeButton.title = '';
+        return;
+      }
+
+      analyzeButton.disabled = false;
+      analyzeButton.textContent = 'Giris Yap ve Analiz Et';
+      analyzeButton.title = 'Analiz baslatmak icin giris gerekli';
+    }
+
     if (searchButton) searchButton.addEventListener('click', runSearch);
     if (searchInput) {
       searchInput.addEventListener('keydown', function (event) {
@@ -991,17 +1005,3 @@
     document.querySelectorAll('[data-ai-video-lab]').forEach(initLab);
   });
 })();
-
-    function syncAnalyzeButtonState() {
-      if (!analyzeButton) return;
-      if (isAuthenticated()) {
-        analyzeButton.disabled = false;
-        analyzeButton.textContent = 'Analizi Baslat';
-        analyzeButton.title = '';
-        return;
-      }
-
-      analyzeButton.disabled = false;
-      analyzeButton.textContent = 'Giris Yap ve Analiz Et';
-      analyzeButton.title = 'Analiz baslatmak icin giris gerekli';
-    }
