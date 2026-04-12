@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-        // ...
+        // Scheduled commands are registered in routes/console.php via the Schedule facade.
     }
 
     protected function commands()

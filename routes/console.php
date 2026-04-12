@@ -18,7 +18,13 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Artisan::command('legacy-auth:repair {--dry-run : Show affected users without writing changes}', function () {
+Artisan::command('legacy-auth:repair {--dry-run : Show affected users without writing changes} {--allow-production : Explicitly allow running this command in production}', function () {
+    if (app()->environment('production') && ! $this->option('allow-production')) {
+        $this->error('Refusing to modify legacy/demo accounts in production without --allow-production.');
+
+        return SymfonyCommand::FAILURE;
+    }
+
     $cutoff = Carbon::create(2026, 3, 11, 9, 0, 0, config('app.timezone', 'UTC'));
 
     $legacyUsers = User::query()
@@ -116,13 +122,17 @@ Artisan::command('legacy-auth:repair {--dry-run : Show affected users without wr
     $this->newLine();
     $this->info("Repaired {$updatedLegacyCount} legacy users.");
     $this->info('Normalized known demo accounts and passwords.');
-    $this->line('Demo credentials:');
-    $this->line(' - player@test.com / Password123!');
-    $this->line(' - team@test.com / Password123!');
-    $this->line(' - scout@test.com / Password123!');
-    $this->line(' - club-a@nextscout.pro / Password123');
-    $this->line(' - club-b@nextscout.pro / Password123');
-    $this->line(' - player-demo@nextscout.pro / Password123');
+    if (app()->environment('production')) {
+        $this->warn('Demo credentials were refreshed in production. Rotate or disable any account that should not stay active.');
+    } else {
+        $this->line('Demo credentials:');
+        $this->line(' - player@test.com / Password123!');
+        $this->line(' - team@test.com / Password123!');
+        $this->line(' - scout@test.com / Password123!');
+        $this->line(' - club-a@nextscout.pro / Password123');
+        $this->line(' - club-b@nextscout.pro / Password123');
+        $this->line(' - player-demo@nextscout.pro / Password123');
+    }
 
     return SymfonyCommand::SUCCESS;
 })->purpose('Repair legacy users and normalize demo account credentials');
@@ -304,6 +314,14 @@ Artisan::command('release:check {--env-file=}', function () {
         ? (string) $readValue('SESSION_DRIVER', '')
         : (string) config('session.driver');
 
+    $sessionSecureCookie = is_array($envValues)
+        ? strtolower((string) $readValue('SESSION_SECURE_COOKIE', 'false')) === 'true'
+        : (bool) config('session.secure');
+
+    $sanctumStatefulDomains = is_array($envValues)
+        ? array_values(array_filter(array_map('trim', explode(',', (string) $readValue('SANCTUM_STATEFUL_DOMAINS', '')))))
+        : config('sanctum.stateful', []);
+
     $logLevel = is_array($envValues)
         ? (string) $readValue('LOG_LEVEL', 'debug')
         : (string) config('logging.channels.stack.level', env('LOG_LEVEL', 'debug'));
@@ -385,6 +403,20 @@ Artisan::command('release:check {--env-file=}', function () {
             'severity' => 'warning',
             'valid' => ! in_array($sessionDriver, ['array', 'file', ''], true),
             'hint' => 'Cookie, database, or redis sessions scale better than file/array.',
+        ],
+        [
+            'label' => 'SESSION_SECURE_COOKIE',
+            'value' => $sessionSecureCookie ? 'true' : 'false',
+            'severity' => 'critical',
+            'valid' => $sessionDriver === '' || $sessionDriver === 'array' || $sessionSecureCookie,
+            'hint' => 'Set SESSION_SECURE_COOKIE=true for HTTPS production environments.',
+        ],
+        [
+            'label' => 'SANCTUM_STATEFUL_DOMAINS',
+            'value' => implode(', ', $sanctumStatefulDomains),
+            'severity' => 'warning',
+            'valid' => $sessionDriver !== 'cookie' || $hasOnlyPublicOrigins(array_map(static fn (string $host): string => str_contains($host, '://') ? $host : 'https://'.$host, $sanctumStatefulDomains)),
+            'hint' => 'List your SPA domains in SANCTUM_STATEFUL_DOMAINS when using cookie-based auth.',
         ],
         [
             'label' => 'LOG_LEVEL',
