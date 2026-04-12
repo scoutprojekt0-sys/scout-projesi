@@ -56,7 +56,8 @@ class FavoriteEndpointsTest extends TestCase
             ->assertOk()
             ->assertJsonPath('ok', true)
             ->assertJsonPath('data.total', 1)
-            ->assertJsonPath('data.data.0.target_user.name', 'Target Team');
+            ->assertJsonPath('data.data.0.target_user.name', 'Target Team')
+            ->assertJsonMissingPath('data.data.0.target_user.email');
 
         $this->postJson('/api/favorites/'.$target->id.'/toggle')
             ->assertOk()

@@ -231,7 +231,9 @@ class FeaturedController extends Controller
 
     private function resolveSuccessStory(int $id): ?array
     {
-        $story = SuccessStory::query()->find($id);
+        $story = SuccessStory::query()
+            ->where('status', 'approved')
+            ->find($id);
         if (!$story) {
             return null;
         }
@@ -253,6 +255,7 @@ class FeaturedController extends Controller
     {
         $transfer = PlayerTransfer::query()
             ->with(['player:id,name', 'fromClub:id,name', 'toClub:id,name'])
+            ->where('verification_status', 'verified')
             ->find($id);
         if (!$transfer) {
             return null;

@@ -138,7 +138,7 @@ class FavoriteController extends Controller
     {
         $favorites = Favorite::query()
             ->where('user_id', $request->user()->id)
-            ->with('targetUser:id,name,email,role,city,position,photo_url')
+            ->with('targetUser:id,name,role,city,position,photo_url')
             ->latest('id')
             ->paginate(20);
 

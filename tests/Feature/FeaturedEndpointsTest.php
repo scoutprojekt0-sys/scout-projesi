@@ -114,6 +114,63 @@ class FeaturedEndpointsTest extends TestCase
             ->assertJsonPath('data.0.reliability_score', 91);
     }
 
+    public function test_public_featured_feed_skips_non_public_story_and_unverified_transfer(): void
+    {
+        $player = User::factory()->create(['role' => 'player', 'name' => 'Hidden Player']);
+        $toClub = User::factory()->create(['role' => 'team', 'name' => 'Hidden Club']);
+
+        $pendingStory = SuccessStory::query()->create([
+            'user_id' => $player->id,
+            'full_name' => 'Hidden Player',
+            'sport' => 'Football',
+            'story_text' => 'Pending story',
+            'status' => 'pending',
+        ]);
+
+        $unverifiedTransfer = PlayerTransfer::query()->create([
+            'player_id' => $player->id,
+            'to_club_id' => $toClub->id,
+            'fee' => 500000,
+            'currency' => 'EUR',
+            'transfer_date' => now()->subDay()->toDateString(),
+            'transfer_type' => 'loan',
+            'season' => '25/26',
+            'window' => 'winter',
+            'verification_status' => 'pending',
+            'confidence_score' => 0.42,
+        ]);
+
+        DB::table('featured_content')->insert([
+            [
+                'featurable_type' => 'success_story',
+                'featurable_id' => $pendingStory->id,
+                'section' => 'homepage',
+                'priority' => 50,
+                'badge_text' => 'Pending',
+                'badge_color' => '#111111',
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'featurable_type' => 'player_transfer',
+                'featurable_id' => $unverifiedTransfer->id,
+                'section' => 'homepage',
+                'priority' => 40,
+                'badge_text' => 'Transfer',
+                'badge_color' => '#222222',
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
+        $this->getJson('/api/featured')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonCount(0, 'data');
+    }
+
     public function test_authenticated_user_can_manage_featured_content(): void
     {
         $user = User::factory()->create(['role' => 'admin']);
