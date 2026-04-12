@@ -116,9 +116,9 @@ class FeaturedEndpointsTest extends TestCase
 
     public function test_authenticated_user_can_manage_featured_content(): void
     {
-        $user = User::factory()->create(['role' => 'scout']);
+        $user = User::factory()->create(['role' => 'admin']);
         $player = User::factory()->create(['role' => 'player', 'name' => 'Featured User']);
-        Sanctum::actingAs($user, ['profile:read', 'profile:write']);
+        Sanctum::actingAs($user, $user->tokenAbilities());
 
         $this->postJson('/api/featured/admin', [
             'featurable_type' => 'user',
@@ -150,5 +150,22 @@ class FeaturedEndpointsTest extends TestCase
             'id' => $featuredId,
             'is_active' => false,
         ]);
+    }
+
+    public function test_non_admin_cannot_manage_featured_content(): void
+    {
+        $user = User::factory()->create(['role' => 'scout']);
+        $player = User::factory()->create(['role' => 'player']);
+
+        Sanctum::actingAs($user, $user->tokenAbilities());
+
+        $this->postJson('/api/featured/admin', [
+            'featurable_type' => 'user',
+            'featurable_id' => $player->id,
+            'section' => 'homepage',
+        ])
+            ->assertForbidden()
+            ->assertJsonPath('ok', false)
+            ->assertJsonPath('code', 'forbidden_admin_only');
     }
 }

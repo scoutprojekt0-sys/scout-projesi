@@ -49,9 +49,20 @@ class Week11WorkloadController extends Controller
         $total = ModerationQueue::where('status', 'pending')->count();
         $breachRate = $total > 0 ? round(($breaches / $total) * 100, 1) : 0.0;
 
-        $avgReviewTime = ModerationQueue::whereNotNull('reviewed_at')
-            ->selectRaw('AVG(EXTRACT(EPOCH FROM (reviewed_at - submitted_at))/3600) as avg_hours')
-            ->value('avg_hours');
+        $driver = DB::connection()->getDriverName();
+        $avgReviewTimeQuery = ModerationQueue::query()->whereNotNull('reviewed_at');
+
+        $avgReviewTime = match ($driver) {
+            'sqlite' => $avgReviewTimeQuery
+                ->selectRaw('AVG((julianday(reviewed_at) - julianday(submitted_at)) * 24) as avg_hours')
+                ->value('avg_hours'),
+            'mysql' => $avgReviewTimeQuery
+                ->selectRaw('AVG(TIMESTAMPDIFF(SECOND, submitted_at, reviewed_at) / 3600) as avg_hours')
+                ->value('avg_hours'),
+            default => $avgReviewTimeQuery
+                ->selectRaw('AVG(EXTRACT(EPOCH FROM (reviewed_at - submitted_at))/3600) as avg_hours')
+                ->value('avg_hours'),
+        };
 
         return $this->successResponse([
             'sla_target_hours' => $slaTargetHours,

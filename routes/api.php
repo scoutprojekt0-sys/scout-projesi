@@ -456,9 +456,9 @@ Route::get('/admin/amateur-results', [AdminAmateurResultController::class, 'inde
 Route::post('/admin/amateur-results', [AdminAmateurResultController::class, 'store'])->middleware('admin');
 Route::patch('/admin/amateur-results/{id}/status', [AdminAmateurResultController::class, 'updateStatus'])->middleware('admin');
 Route::get('/admin/amateur-standings', [AdminAmateurResultController::class, 'standings'])->middleware('admin');
-    Route::get('/featured/admin', [FeaturedController::class, 'adminList'])->middleware('ability:profile:read');
-    Route::post('/featured/admin', [FeaturedController::class, 'adminStore'])->middleware('ability:profile:write');
-    Route::patch('/featured/admin/{id}/active', [FeaturedController::class, 'adminToggleActive'])->middleware('ability:profile:write');
+    Route::get('/featured/admin', [FeaturedController::class, 'adminList'])->middleware('admin');
+    Route::post('/featured/admin', [FeaturedController::class, 'adminStore'])->middleware('admin');
+    Route::patch('/featured/admin/{id}/active', [FeaturedController::class, 'adminToggleActive'])->middleware('admin');
 
     // Legacy frontend compatibility endpoints
     Route::post('/community-events/{id}/register', [LegacyCompatibilityController::class, 'communityEventsRegister']);
@@ -507,6 +507,6 @@ Route::get('/admin/amateur-standings', [AdminAmateurResultController::class, 'st
     Route::get('/seasons/{season}/top-scorers', [\App\Http\Controllers\Api\PlayerStatisticsController::class, 'topScorers']);
 
     // Week 11 - Reviewer Workload & SLA
-    Route::get('/analytics/reviewer-workload', [Week11WorkloadController::class, 'reviewerWorkload']);
-    Route::get('/analytics/sla-dashboard', [Week11WorkloadController::class, 'slaDashboard']);
+    Route::get('/analytics/reviewer-workload', [Week11WorkloadController::class, 'reviewerWorkload'])->middleware('admin');
+    Route::get('/analytics/sla-dashboard', [Week11WorkloadController::class, 'slaDashboard'])->middleware('admin');
 });
