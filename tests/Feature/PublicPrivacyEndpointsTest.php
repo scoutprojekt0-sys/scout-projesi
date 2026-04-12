@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\VideoClip;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class PublicPrivacyEndpointsTest extends TestCase
@@ -37,6 +38,37 @@ class PublicPrivacyEndpointsTest extends TestCase
             ->assertJsonPath('data.0.title', 'Public Highlight')
             ->assertJsonMissingPath('data.0.platform_video_id')
             ->assertJsonMissingPath('data.0.metadata');
+
+        Sanctum::actingAs($player, ['profile:read']);
+
+        $this->getJson('/api/videos/'.$clip->id)
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.id', $clip->id)
+            ->assertJsonMissingPath('data.platform_video_id')
+            ->assertJsonMissingPath('data.metadata');
+    }
+
+    public function test_public_player_media_endpoint_returns_minimized_payload(): void
+    {
+        $player = User::factory()->create(['role' => 'player']);
+
+        $mediaId = DB::table('media')->insertGetId([
+            'user_id' => $player->id,
+            'type' => 'image',
+            'url' => 'https://example.com/media.jpg',
+            'thumb_url' => null,
+            'title' => 'Profile Shot',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $this->getJson('/api/public/players/'.$player->id.'/media')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.data.0.id', $mediaId)
+            ->assertJsonPath('data.data.0.title', 'Profile Shot')
+            ->assertJsonMissingPath('data.data.0.user_id');
     }
 
     public function test_public_discovery_shortlists_do_not_expose_email_or_phone_fields(): void

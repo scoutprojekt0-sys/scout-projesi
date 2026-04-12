@@ -33,7 +33,7 @@ class VideoClipController extends Controller
             return $this->errorResponse('Video bulunamadi.', Response::HTTP_NOT_FOUND, 'video_not_found');
         }
         $clip->increment('view_count');
-        return $this->successResponse($clip->fresh(), 'Video detayi hazir.');
+        return $this->successResponse($this->transformPublicClip($clip->fresh()), 'Video detayi hazir.');
     }
 
     public function store(Request $request): JsonResponse
@@ -81,8 +81,7 @@ class VideoClipController extends Controller
             'ai_dataset_candidate' => (bool) ($validated['ai_dataset_candidate'] ?? false),
         ], static fn ($value) => $value !== null);
 
-        return $this->successResponse(
-            VideoClip::create([
+        $clip = VideoClip::create([
                 'user_id' => $request->user()->id,
                 'title' => $validated['title'],
                 'description' => $validated['description'] ?? null,
@@ -94,7 +93,10 @@ class VideoClipController extends Controller
                 'match_date' => $validated['match_date'] ?? null,
                 'tags' => $tags->all() ?: null,
                 'metadata' => $metadata ?: null,
-            ]),
+            ]);
+
+        return $this->successResponse(
+            $this->transformPublicClip($clip),
             'Video eklendi.', Response::HTTP_CREATED
         );
     }
@@ -131,7 +133,7 @@ class VideoClipController extends Controller
     public function trending(): JsonResponse
     {
         return $this->successResponse(
-            VideoClip::orderByDesc('view_count')->limit(50)->get(),
+            VideoClip::orderByDesc('view_count')->limit(50)->get()->map(fn (VideoClip $clip) => $this->transformPublicClip($clip))->values(),
             'Trend videolar hazir.'
         );
     }
@@ -141,6 +143,8 @@ class VideoClipController extends Controller
         $clips = VideoClip::where('tags', 'like', '%"' . $tag . '"%')
             ->orderByDesc('created_at')
             ->paginate(20);
+
+        $clips->getCollection()->transform(fn (VideoClip $clip) => $this->transformPublicClip($clip));
 
         return response()->json(['ok' => true, 'data' => $clips]);
     }

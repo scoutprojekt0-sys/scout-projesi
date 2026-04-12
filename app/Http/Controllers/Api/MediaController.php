@@ -33,7 +33,7 @@ class MediaController extends Controller
             'title'    => $request->validated('title'),
         ]);
 
-        return $this->successResponse($media, 'Media yuklendi.', Response::HTTP_CREATED);
+        return $this->successResponse($this->transformMedia($media), 'Media yuklendi.', Response::HTTP_CREATED);
     }
 
     public function guestStore(Request $request): JsonResponse
@@ -57,7 +57,7 @@ class MediaController extends Controller
             'title' => $validated['title'] ?? null,
         ]);
 
-        return $this->successResponse($media, 'Misafir medya yuklendi.', Response::HTTP_CREATED);
+        return $this->successResponse($this->transformMedia($media), 'Misafir medya yuklendi.', Response::HTTP_CREATED);
     }
 
     public function indexByUser(int $id): JsonResponse
@@ -77,6 +77,7 @@ class MediaController extends Controller
         $sortDir = $validated['sort_dir'] ?? 'desc';
 
         $media = $query->orderBy($sortBy, $sortDir)->paginate((int) ($validated['per_page'] ?? 20));
+        $media->getCollection()->transform(fn (Media $item) => $this->transformMedia($item));
 
         return $this->successResponse($media, 'Medya listesi hazir.', 200, [
             'filters' => ['type' => $validated['type'] ?? null, 'sort_by' => $sortBy, 'sort_dir' => $sortDir],
@@ -111,6 +112,7 @@ class MediaController extends Controller
         $sortDir = $validated['sort_dir'] ?? 'desc';
 
         $media = $query->orderBy($sortBy, $sortDir)->paginate((int) ($validated['per_page'] ?? 20));
+        $media->getCollection()->transform(fn (Media $item) => $this->transformMedia($item));
 
         return $this->successResponse($media, 'Public medya listesi hazir.', 200, [
             'filters' => ['type' => $validated['type'] ?? null, 'sort_by' => $sortBy, 'sort_dir' => $sortDir],
@@ -151,5 +153,18 @@ class MediaController extends Controller
                 'is_public' => false,
             ]
         );
+    }
+
+    private function transformMedia(Media $media): array
+    {
+        return [
+            'id' => (int) $media->id,
+            'type' => (string) $media->type,
+            'url' => (string) $media->url,
+            'thumb_url' => $media->thumb_url,
+            'title' => $media->title,
+            'created_at' => optional($media->created_at)?->toIso8601String(),
+            'updated_at' => optional($media->updated_at)?->toIso8601String(),
+        ];
     }
 }
