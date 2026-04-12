@@ -22,7 +22,9 @@ class HelpController extends Controller
                     ->select(['id', 'category_id', 'title', 'slug', 'view_count', 'helpful_count', 'order']);
             }])
             ->orderBy('order')
-            ->get();
+            ->get()
+            ->map(fn (HelpCategory $category) => $this->transformCategory($category, true))
+            ->values();
 
         return $this->successResponse($categories, 'Yardim kategorileri hazir.');
     }
@@ -37,7 +39,7 @@ class HelpController extends Controller
         $article->incrementViews();
         $article->load('category:id,name,slug');
 
-        return $this->successResponse($article, 'Yardim makalesi hazir.');
+        return $this->successResponse($this->transformArticle($article, true), 'Yardim makalesi hazir.');
     }
 
     public function getCategoryArticles(string $categorySlug): JsonResponse
@@ -48,10 +50,11 @@ class HelpController extends Controller
             ->where('category_id', $category->id)
             ->where('is_published', true)
             ->orderBy('order')
-            ->paginate(10);
+            ->paginate(10)
+            ->through(fn (HelpArticle $article) => $this->transformArticle($article));
 
         return $this->successResponse($articles, 'Kategori makaleleri hazir.', 200, [
-            'category' => $category,
+            'category' => $this->transformCategory($category),
         ]);
     }
 
@@ -82,7 +85,8 @@ class HelpController extends Controller
                     ->orWhere('user_type', 'all');
             })
             ->orderBy('order')
-            ->paginate(15);
+            ->paginate(15)
+            ->through(fn (Faq $faq) => $this->transformFaq($faq));
 
         return $this->paginatedListResponse($faq, 'Sik sorulan sorular hazir.');
     }
@@ -112,10 +116,70 @@ class HelpController extends Controller
             })
             ->orderByDesc('helpful_count')
             ->orderBy('order')
-            ->paginate(10);
+            ->paginate(10)
+            ->through(fn (HelpArticle $article) => $this->transformArticle($article));
 
         return $this->successResponse($articles, 'Arama sonuclari hazir.', 200, [
             'query' => $queryText,
         ]);
+    }
+
+    private function transformCategory(HelpCategory $category, bool $includeArticles = false): array
+    {
+        $payload = [
+            'id' => (int) $category->id,
+            'name' => (string) $category->name,
+            'slug' => (string) $category->slug,
+            'description' => $category->description,
+            'icon' => $category->icon,
+            'order' => (int) ($category->order ?? 0),
+        ];
+
+        if ($includeArticles) {
+            $payload['articles'] = $category->articles
+                ->map(fn (HelpArticle $article) => $this->transformArticle($article))
+                ->values()
+                ->all();
+        }
+
+        return $payload;
+    }
+
+    private function transformArticle(HelpArticle $article, bool $includeContent = false): array
+    {
+        $payload = [
+            'id' => (int) $article->id,
+            'category_id' => (int) $article->category_id,
+            'title' => (string) $article->title,
+            'slug' => (string) $article->slug,
+            'meta_description' => $article->meta_description,
+            'view_count' => (int) ($article->view_count ?? 0),
+            'helpful_count' => (int) ($article->helpful_count ?? 0),
+            'unhelpful_count' => (int) ($article->unhelpful_count ?? 0),
+            'order' => (int) ($article->order ?? 0),
+        ];
+
+        if ($includeContent) {
+            $payload['content'] = (string) $article->content;
+            $payload['category'] = $article->relationLoaded('category') && $article->category ? [
+                'id' => (int) $article->category->id,
+                'name' => (string) $article->category->name,
+                'slug' => (string) $article->category->slug,
+            ] : null;
+        }
+
+        return $payload;
+    }
+
+    private function transformFaq(Faq $faq): array
+    {
+        return [
+            'id' => (int) $faq->id,
+            'question' => (string) $faq->question,
+            'answer' => (string) $faq->answer,
+            'topic' => $faq->topic,
+            'helpful_count' => (int) ($faq->helpful_count ?? 0),
+            'order' => (int) ($faq->order ?? 0),
+        ];
     }
 }
