@@ -286,10 +286,10 @@ class VideoAnalysisEndpointsTest extends TestCase
             ->assertJsonPath('data.analysis_mode', 'external')
             ->assertJsonPath('data.analysis_requires_auth', true)
             ->assertJsonPath('data.public_browsing', true)
-            ->assertJsonPath('data.allow_mock_fallback', false)
-            ->assertJsonPath('data.worker_base_url_configured', true)
-            ->assertJsonPath('data.callback_secret_configured', true)
-            ->assertJsonPath('data.callback_url_configured', true)
+            ->assertJsonPath('data.mock_fallback_enabled', false)
+            ->assertJsonMissingPath('data.worker_base_url_configured')
+            ->assertJsonMissingPath('data.callback_secret_configured')
+            ->assertJsonMissingPath('data.callback_url_configured')
             ->assertJsonPath('data.external_worker_ready', true);
     }
 
@@ -304,9 +304,10 @@ class VideoAnalysisEndpointsTest extends TestCase
         $this->getJson('/api/scouting-search/status')
             ->assertOk()
             ->assertJsonPath('data.analysis_mode', 'external')
-            ->assertJsonPath('data.worker_base_url_configured', false)
-            ->assertJsonPath('data.callback_secret_configured', false)
-            ->assertJsonPath('data.callback_url_configured', false)
+            ->assertJsonPath('data.mock_fallback_enabled', false)
+            ->assertJsonMissingPath('data.worker_base_url_configured')
+            ->assertJsonMissingPath('data.callback_secret_configured')
+            ->assertJsonMissingPath('data.callback_url_configured')
             ->assertJsonPath('data.external_worker_ready', false);
     }
 }

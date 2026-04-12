@@ -32,11 +32,8 @@ class ScoutingSearchController extends Controller
             'analysis_mode' => $mode,
             'analysis_requires_auth' => true,
             'public_browsing' => true,
-            'allow_mock_fallback' => $allowMockFallback,
-            'worker_base_url_configured' => $workerBaseUrl !== '',
-            'callback_secret_configured' => $callbackSecretConfigured,
-            'callback_url_configured' => $callbackUrlConfigured,
             'external_worker_ready' => $externalWorkerReady,
+            'mock_fallback_enabled' => $allowMockFallback,
         ], 'AI discovery durumu hazir.');
     }
 

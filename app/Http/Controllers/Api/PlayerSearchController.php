@@ -76,7 +76,7 @@ class PlayerSearchController extends Controller
 
         $results = PlayerSearchResult::query()
             ->where('search_id', $search->id)
-            ->with('player:id,name,email,role,city,position,age,rating')
+            ->with('player:id,name,role,city,position,age,rating')
             ->orderByDesc('match_score')
             ->paginate(20);
 
@@ -116,7 +116,7 @@ class PlayerSearchController extends Controller
 
         $results = PlayerSearchResult::query()
             ->where('search_id', $searchId)
-            ->with('player:id,name,email,role,city,position,age,rating')
+            ->with('player:id,name,role,city,position,age,rating')
             ->orderByDesc('match_score')
             ->paginate(20);
 

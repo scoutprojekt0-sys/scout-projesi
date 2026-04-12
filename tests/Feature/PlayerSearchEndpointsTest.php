@@ -85,6 +85,7 @@ class PlayerSearchEndpointsTest extends TestCase
             ->assertOk()
             ->assertJsonPath('ok', true)
             ->assertJsonPath('data.data.0.player.name', 'Matching Player')
+            ->assertJsonMissingPath('data.data.0.player.email')
             ->assertJsonPath('data.data.0.match_details.0', 'Pozisyon uyumlu');
     }
 
