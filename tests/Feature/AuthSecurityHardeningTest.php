@@ -164,8 +164,8 @@ class AuthSecurityHardeningTest extends TestCase
         $this->assertCount(2, $sessions);
         $this->assertTrue(collect($sessions)->contains(fn ($s) => (int) $s['id'] === $currentTokenId && $s['is_current'] === true));
         $this->assertTrue(collect($sessions)->contains(fn ($s) => array_key_exists('device_label', $s)));
-        $this->assertTrue(collect($sessions)->contains(fn ($s) => array_key_exists('ip_address', $s)));
-        $this->assertTrue(collect($sessions)->contains(fn ($s) => array_key_exists('user_agent', $s)));
+        $this->assertFalse(collect($sessions)->contains(fn ($s) => array_key_exists('ip_address', $s)));
+        $this->assertFalse(collect($sessions)->contains(fn ($s) => array_key_exists('user_agent', $s)));
     }
 
     public function test_revoke_session_deletes_target_token(): void

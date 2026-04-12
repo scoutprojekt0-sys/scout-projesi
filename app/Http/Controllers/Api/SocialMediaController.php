@@ -24,7 +24,9 @@ class SocialMediaController extends Controller
 
         $accounts = SocialMediaAccount::where('user_id', $userId)
             ->orderBy('platform')
-            ->get();
+            ->get()
+            ->map(fn (SocialMediaAccount $account) => $this->transformAccount($account))
+            ->values();
 
         return response()->json(['ok' => true, 'data' => $accounts]);
     }
@@ -43,7 +45,7 @@ class SocialMediaController extends Controller
         );
 
         return response()->json(
-            ['ok' => true, 'message' => 'Sosyal medya hesabı eklendi.', 'data' => $account],
+            ['ok' => true, 'message' => 'Sosyal medya hesabı eklendi.', 'data' => $this->transformAccount($account)],
             Response::HTTP_CREATED
         );
     }
@@ -78,6 +80,20 @@ class SocialMediaController extends Controller
 
         $account->update($validated);
 
-        return response()->json(['ok' => true, 'message' => 'Güncellendi.', 'data' => $account->fresh()]);
+        return response()->json(['ok' => true, 'message' => 'Güncellendi.', 'data' => $this->transformAccount($account->fresh())]);
+    }
+
+    private function transformAccount(SocialMediaAccount $account): array
+    {
+        return [
+            'id' => (int) $account->id,
+            'platform' => (string) $account->platform,
+            'username' => (string) $account->username,
+            'url' => (string) $account->url,
+            'follower_count' => (int) ($account->follower_count ?? 0),
+            'verified' => (bool) $account->verified,
+            'created_at' => optional($account->created_at)?->toIso8601String(),
+            'updated_at' => optional($account->updated_at)?->toIso8601String(),
+        ];
     }
 }

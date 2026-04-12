@@ -510,7 +510,7 @@ class AuthController extends Controller
 
     public function me(Request $request): JsonResponse
     {
-        return $this->successResponse($request->user(), 'Profil bilgileri hazir.');
+        return $this->successResponse($this->transformUser($request->user()), 'Profil bilgileri hazir.');
     }
 
     public function sessions(Request $request): JsonResponse
@@ -521,7 +521,7 @@ class AuthController extends Controller
 
         $sessions = $user->tokens()
             ->orderByDesc('id')
-            ->get(['id', 'name', 'ip_address', 'user_agent', 'abilities', 'last_used_at', 'expires_at', 'created_at'])
+            ->get(['id', 'name', 'abilities', 'last_used_at', 'expires_at', 'created_at'])
             ->map(function ($token) use ($currentTokenId) {
                 $abilities = is_array($token->abilities) ? $token->abilities : [];
 
@@ -529,8 +529,6 @@ class AuthController extends Controller
                     'id' => $token->id,
                     'device_label' => (string) $token->name,
                     'is_current' => (int) $token->id === (int) $currentTokenId,
-                    'ip_address' => $token->ip_address,
-                    'user_agent' => $token->user_agent,
                     'abilities' => $abilities,
                     'last_used_at' => optional($token->last_used_at)?->toISOString(),
                     'expires_at' => optional($token->expires_at)?->toISOString(),
@@ -568,7 +566,7 @@ class AuthController extends Controller
             'ok' => true,
             'code' => 'profile_updated',
             'message' => 'Profil guncellendi.',
-            'data' => $user->fresh(),
+            'data' => $this->transformUser($user->fresh()),
         ]);
     }
 
@@ -806,5 +804,27 @@ class AuthController extends Controller
     private function normalizeLookupValue(string $value): string
     {
         return Str::of($value)->trim()->lower()->value();
+    }
+
+    private function transformUser(?User $user): ?array
+    {
+        if (! $user) {
+            return null;
+        }
+
+        return [
+            'id' => (int) $user->id,
+            'name' => (string) $user->name,
+            'email' => (string) $user->email,
+            'role' => (string) $user->role,
+            'city' => $user->city,
+            'phone' => $user->phone,
+            'photo_url' => $user->photo_url,
+            'sport' => $user->sport,
+            'position' => $user->position,
+            'is_verified' => (bool) $user->is_verified,
+            'created_at' => optional($user->created_at)?->toIso8601String(),
+            'updated_at' => optional($user->updated_at)?->toIso8601String(),
+        ];
     }
 }
