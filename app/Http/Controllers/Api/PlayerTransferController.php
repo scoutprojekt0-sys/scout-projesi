@@ -26,6 +26,10 @@ class PlayerTransferController extends Controller
     public function index(Request $request): JsonResponse
     {
         $user = $request->user();
+        if ($response = $this->ensureTransferIndexAccess($user)) {
+            return $response;
+        }
+
         $query = PlayerTransfer::query()
             ->with(['player:id,name', 'fromClub:id,name', 'toClub:id,name', 'negotiationUpdater:id,name,role'])
             ->orderBy('transfer_date', 'desc');
@@ -67,6 +71,10 @@ class PlayerTransferController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        if ($response = $this->ensureTransferStoreAccess($request->user())) {
+            return $response;
+        }
+
         $validator = Validator::make($request->all(), [
             'player_id' => ['required', Rule::exists('users', 'id')->where('role', 'player')],
             'from_club_id' => ['nullable', Rule::exists('users', 'id')->where('role', 'team')],
@@ -350,7 +358,7 @@ class PlayerTransferController extends Controller
     {
         $role = strtolower((string) $user->role);
 
-        if ($role === 'admin') {
+        if (in_array($role, ['admin', 'super_admin'], true)) {
             return;
         }
 
@@ -387,7 +395,7 @@ class PlayerTransferController extends Controller
 
         $role = strtolower((string) $user->role);
 
-        if ($role === 'admin') {
+        if (in_array($role, ['admin', 'super_admin'], true)) {
             return true;
         }
 
@@ -406,5 +414,35 @@ class PlayerTransferController extends Controller
         }
 
         return false;
+    }
+
+    private function ensureTransferIndexAccess(?User $user): ?JsonResponse
+    {
+        $role = strtolower((string) ($user?->role ?? ''));
+        $allowedRoles = ['admin', 'super_admin', 'player', 'team', 'club', 'kulup', 'manager', 'menajer', 'lawyer'];
+
+        if ($user && in_array($role, $allowedRoles, true)) {
+            return null;
+        }
+
+        return response()->json([
+            'ok' => false,
+            'message' => 'Transfer listesine erisim yetkiniz yok.',
+        ], 403);
+    }
+
+    private function ensureTransferStoreAccess(?User $user): ?JsonResponse
+    {
+        $role = strtolower((string) ($user?->role ?? ''));
+        $allowedRoles = ['admin', 'super_admin', 'team', 'club', 'kulup', 'manager', 'menajer', 'lawyer'];
+
+        if ($user && in_array($role, $allowedRoles, true)) {
+            return null;
+        }
+
+        return response()->json([
+            'ok' => false,
+            'message' => 'Transfer kaydi olusturma yetkiniz yok.',
+        ], 403);
     }
 }

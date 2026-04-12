@@ -40,6 +40,10 @@ class PlayerCareerController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        if ($response = $this->ensureCareerStoreAccess($request->user())) {
+            return $response;
+        }
+
         $validator = Validator::make($request->all(), [
             'player_id' => ['required', Rule::exists('users', 'id')->where('role', 'player')],
             'club_id' => ['required', Rule::exists('users', 'id')->where('role', 'team')],
@@ -380,5 +384,20 @@ class PlayerCareerController extends Controller
         }
 
         return $items;
+    }
+
+    private function ensureCareerStoreAccess($user): ?JsonResponse
+    {
+        $role = strtolower((string) ($user?->role ?? ''));
+        $allowedRoles = ['admin', 'super_admin', 'team', 'club', 'kulup', 'manager', 'menajer', 'scout', 'coach'];
+
+        if ($user && in_array($role, $allowedRoles, true)) {
+            return null;
+        }
+
+        return response()->json([
+            'ok' => false,
+            'message' => 'Kariyer gecmisi kaydi olusturma yetkiniz yok.',
+        ], 403);
     }
 }

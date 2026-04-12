@@ -227,13 +227,13 @@ class ClubWorkspaceController extends Controller
 
     public function promosIndex(Request $request): JsonResponse
     {
-        $user = $request->user();
+        $user = $this->authorizeClubUser($request);
+        if ($user instanceof JsonResponse) {
+            return $user;
+        }
 
         $promos = ClubPromo::query()
-            ->when(
-                in_array((string) ($user?->role ?? ''), ['team', 'club'], true),
-                fn ($query) => $query->where('club_user_id', (int) $user->id)
-            )
+            ->where('club_user_id', (int) $user->id)
             ->latest('id')
             ->paginate(25)
             ->through(fn (ClubPromo $promo) => $this->transformPromo($promo));
