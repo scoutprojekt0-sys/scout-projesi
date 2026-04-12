@@ -32,7 +32,7 @@ class ScoutTipController extends Controller
     public function index(Request $request): JsonResponse
     {
         $query = ScoutTip::query()
-            ->with(['submitter:id,name,email,scout_points,scout_rank', 'player:id,name,sport', 'videoClip:id,title,video_url'])
+            ->with(['submitter:id,name,scout_points,scout_rank', 'player:id,name,sport', 'videoClip:id,title,video_url'])
             ->orderByDesc('created_at');
 
         if (! $this->canReview($request->user())) {
@@ -205,7 +205,7 @@ class ScoutTipController extends Controller
     public function show(Request $request, int $id): JsonResponse
     {
         $tip = ScoutTip::with([
-            'submitter:id,name,email,scout_points,scout_rank',
+            'submitter:id,name,scout_points,scout_rank',
             'player:id,name',
             'videoClip',
             'duplicateOf:id,player_name,status',
@@ -244,7 +244,7 @@ class ScoutTipController extends Controller
         $tip->save();
 
         return $this->successResponse(
-            $tip->fresh(['submitter:id,name,email,scout_points,scout_rank', 'player:id,name', 'videoClip', 'duplicateOf:id,player_name,status', 'events.actor:id,name', 'rewards']),
+            $tip->fresh(['submitter:id,name,scout_points,scout_rank', 'player:id,name', 'videoClip', 'duplicateOf:id,player_name,status', 'events.actor:id,name', 'rewards']),
             'Manager notu kaydedildi.'
         );
     }
@@ -695,12 +695,12 @@ class ScoutTipController extends Controller
     private function attachResolvedPlayer(ScoutTip $tip): ScoutTip
     {
         if ($tip->player_id) {
-            return $tip->fresh(['submitter:id,name,email,role,scout_points,scout_rank', 'player:id,name,role,city,position,age,rating', 'videoClip', 'duplicateOf:id,player_name,status', 'events.actor:id,name', 'rewards']);
+            return $tip->fresh(['submitter:id,name,role,scout_points,scout_rank', 'player:id,name,role,city,position,age,rating', 'videoClip', 'duplicateOf:id,player_name,status', 'events.actor:id,name', 'rewards']);
         }
 
         $normalized = Str::lower(preg_replace('/\s+/u', '', (string) $tip->player_name) ?? (string) $tip->player_name);
         if ($normalized === '') {
-            return $tip->fresh(['submitter:id,name,email,role,scout_points,scout_rank', 'player:id,name,role,city,position,age,rating', 'videoClip', 'duplicateOf:id,player_name,status', 'events.actor:id,name', 'rewards']);
+            return $tip->fresh(['submitter:id,name,role,scout_points,scout_rank', 'player:id,name,role,city,position,age,rating', 'videoClip', 'duplicateOf:id,player_name,status', 'events.actor:id,name', 'rewards']);
         }
 
         $player = User::query()
@@ -718,6 +718,6 @@ class ScoutTipController extends Controller
             $tip->save();
         }
 
-        return $tip->fresh(['submitter:id,name,email,role,scout_points,scout_rank', 'player:id,name,role,city,position,age,rating', 'videoClip', 'duplicateOf:id,player_name,status', 'events.actor:id,name', 'rewards']);
+        return $tip->fresh(['submitter:id,name,role,scout_points,scout_rank', 'player:id,name,role,city,position,age,rating', 'videoClip', 'duplicateOf:id,player_name,status', 'events.actor:id,name', 'rewards']);
     }
 }

@@ -253,7 +253,8 @@ class ScoutTipEndpointsTest extends TestCase
         $this->getJson('/api/scout-tips/staff-inbox')
             ->assertOk()
             ->assertJsonPath('data.0.id', $managerTip->id)
-            ->assertJsonPath('data.0.submitter.role', 'manager');
+            ->assertJsonPath('data.0.submitter.role', 'manager')
+            ->assertJsonMissingPath('data.0.submitter.email');
 
         Sanctum::actingAs($club, ['profile:read', 'staff']);
         $this->getJson('/api/scout-tips/staff-inbox')

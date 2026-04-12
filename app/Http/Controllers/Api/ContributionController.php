@@ -43,7 +43,7 @@ class ContributionController extends Controller
         }
 
         $query = UserContribution::query()
-            ->with(['user:id,name,email', 'reviewer:id,name,email'])
+            ->with(['user:id,name,role', 'reviewer:id,name,role'])
             ->orderBy('created_at', 'desc');
 
         if ($request->has('user_id'))          { $query->where('user_id', $request->user_id); }
@@ -52,7 +52,7 @@ class ContributionController extends Controller
         if ($request->has('contribution_type')){ $query->where('contribution_type', $request->contribution_type); }
 
         return $this->paginatedListResponse(
-            $query->paginate($request->per_page ?? 20),
+            $query->paginate($request->per_page ?? 20)->through(fn (UserContribution $contribution) => $this->transformContribution($contribution, true)),
             'Katki listesi hazir.'
         );
     }
@@ -60,9 +60,10 @@ class ContributionController extends Controller
     public function myContributions(Request $request): JsonResponse
     {
         $contributions = UserContribution::where('user_id', auth()->id())
-            ->with('reviewer:id,name')
+            ->with('reviewer:id,name,role')
             ->orderBy('created_at', 'desc')
-            ->paginate($request->per_page ?? 20);
+            ->paginate($request->per_page ?? 20)
+            ->through(fn (UserContribution $contribution) => $this->transformContribution($contribution, false));
 
         return $this->paginatedListResponse($contributions, 'Katkileriniz hazir.');
     }
@@ -96,7 +97,7 @@ class ContributionController extends Controller
             null, $contribution->toArray(), auth()->id(), 'User contribution submitted'
         );
 
-        return $this->successResponse($contribution, 'Katki gonderildi. Inceleme bekleniyor.', 201);
+        return $this->successResponse($this->transformContribution($contribution, false), 'Katki gonderildi. Inceleme bekleniyor.', 201);
     }
 
     public function show(int $id): JsonResponse
@@ -106,11 +107,11 @@ class ContributionController extends Controller
         }
 
         $contribution = UserContribution::with([
-            'user:id,name,email,editor_role,trust_score',
-            'reviewer:id,name,email,editor_role',
+            'user:id,name,role,editor_role,trust_score',
+            'reviewer:id,name,role,editor_role',
         ])->findOrFail($id);
 
-        return $this->successResponse($contribution, 'Katki detayi hazir.');
+        return $this->successResponse($this->transformContribution($contribution, true), 'Katki detayi hazir.');
     }
 
     public function approve(Request $request, int $id): JsonResponse
@@ -129,7 +130,7 @@ class ContributionController extends Controller
             ['status' => 'pending'], ['status' => 'approved'], auth()->id(), 'Contribution approved'
         );
 
-        return $this->successResponse($contribution->fresh(['user', 'reviewer']), 'Katki onaylandi.');
+        return $this->successResponse($this->transformContribution($contribution->fresh(['user', 'reviewer']), true), 'Katki onaylandi.');
     }
 
     public function reject(Request $request, int $id): JsonResponse
@@ -149,7 +150,7 @@ class ContributionController extends Controller
             auth()->id(), 'Contribution rejected: '.$validated['reason']
         );
 
-        return $this->successResponse($contribution->fresh(['user', 'reviewer']), 'Katki reddedildi.');
+        return $this->successResponse($this->transformContribution($contribution->fresh(['user', 'reviewer']), true), 'Katki reddedildi.');
     }
 
     public function requestInfo(Request $request, int $id): JsonResponse
@@ -163,7 +164,7 @@ class ContributionController extends Controller
 
         $contribution->requestMoreInfo(auth()->id(), $validated['message']);
 
-        return $this->successResponse($contribution->fresh(['user', 'reviewer']), 'Ek bilgi talep edildi.');
+        return $this->successResponse($this->transformContribution($contribution->fresh(['user', 'reviewer']), true), 'Ek bilgi talep edildi.');
     }
 
     public function stats(Request $request): JsonResponse
@@ -189,5 +190,48 @@ class ContributionController extends Controller
         ];
 
         return $this->successResponse($stats, 'Katki istatistikleri hazir.');
+    }
+
+    private function transformContribution(UserContribution $contribution, bool $includeRelations): array
+    {
+        $payload = [
+            'id' => (int) $contribution->id,
+            'user_id' => (int) $contribution->user_id,
+            'model_type' => (string) $contribution->model_type,
+            'model_id' => $contribution->model_id !== null ? (int) $contribution->model_id : null,
+            'contribution_type' => (string) $contribution->contribution_type,
+            'description' => (string) $contribution->description,
+            'source_url' => $contribution->source_url,
+            'proof_urls' => array_values($contribution->proof_urls ?? []),
+            'reasoning' => $contribution->reasoning,
+            'status' => (string) $contribution->status,
+            'reviewed_by' => $contribution->reviewed_by !== null ? (int) $contribution->reviewed_by : null,
+            'reviewed_at' => optional($contribution->reviewed_at)?->toIso8601String(),
+            'reviewer_feedback' => $contribution->reviewer_feedback,
+            'quality_score' => $contribution->quality_score !== null ? (float) $contribution->quality_score : null,
+            'is_controversial' => (bool) $contribution->is_controversial,
+            'requires_expert_review' => (bool) $contribution->requires_expert_review,
+            'created_at' => optional($contribution->created_at)?->toIso8601String(),
+            'updated_at' => optional($contribution->updated_at)?->toIso8601String(),
+        ];
+
+        if ($includeRelations) {
+            $payload['user'] = $contribution->relationLoaded('user') && $contribution->user ? [
+                'id' => (int) $contribution->user->id,
+                'name' => (string) $contribution->user->name,
+                'role' => (string) $contribution->user->role,
+                'editor_role' => $contribution->user->editor_role ?? null,
+                'trust_score' => $contribution->user->trust_score ?? null,
+            ] : null;
+
+            $payload['reviewer'] = $contribution->relationLoaded('reviewer') && $contribution->reviewer ? [
+                'id' => (int) $contribution->reviewer->id,
+                'name' => (string) $contribution->reviewer->name,
+                'role' => (string) $contribution->reviewer->role,
+                'editor_role' => $contribution->reviewer->editor_role ?? null,
+            ] : null;
+        }
+
+        return $payload;
     }
 }
