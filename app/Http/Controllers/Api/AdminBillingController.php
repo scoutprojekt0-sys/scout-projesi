@@ -56,18 +56,63 @@ class AdminBillingController extends Controller
 
     public function getPayments(Request $request): JsonResponse
     {
-        $payments = Payment::with('user')
+        $payments = Payment::query()
+            ->with('user:id,name,role')
             ->orderByDesc('created_at')
-            ->paginate(20);
+            ->paginate(20)
+            ->through(function (Payment $payment): array {
+                return [
+                    'id' => (int) $payment->id,
+                    'user' => $payment->user ? [
+                        'id' => (int) $payment->user->id,
+                        'name' => (string) $payment->user->name,
+                        'role' => (string) $payment->user->role,
+                    ] : null,
+                    'subscription_id' => $payment->subscription_id !== null ? (int) $payment->subscription_id : null,
+                    'boost_package_id' => $payment->boost_package_id !== null ? (int) $payment->boost_package_id : null,
+                    'amount' => $payment->amount !== null ? (float) $payment->amount : null,
+                    'currency' => (string) $payment->currency,
+                    'payment_method' => (string) $payment->payment_method,
+                    'payment_context' => (string) $payment->payment_context,
+                    'status' => (string) $payment->status,
+                    'created_at' => optional($payment->created_at)?->toIso8601String(),
+                    'updated_at' => optional($payment->updated_at)?->toIso8601String(),
+                ];
+            });
 
         return $this->successResponse($payments, 'Odeme listesi hazir.');
     }
 
     public function getSubscriptions(Request $request): JsonResponse
     {
-        $subscriptions = Subscription::with(['user', 'plan'])
+        $subscriptions = Subscription::query()
+            ->with(['user:id,name,role', 'plan:id,name,slug,price,currency,billing_cycle'])
             ->orderByDesc('created_at')
-            ->paginate(20);
+            ->paginate(20)
+            ->through(function (Subscription $subscription): array {
+                return [
+                    'id' => (int) $subscription->id,
+                    'user' => $subscription->user ? [
+                        'id' => (int) $subscription->user->id,
+                        'name' => (string) $subscription->user->name,
+                        'role' => (string) $subscription->user->role,
+                    ] : null,
+                    'plan' => $subscription->plan ? [
+                        'id' => (int) $subscription->plan->id,
+                        'name' => (string) $subscription->plan->name,
+                        'slug' => (string) $subscription->plan->slug,
+                        'price' => $subscription->plan->price !== null ? (float) $subscription->plan->price : null,
+                        'currency' => (string) $subscription->plan->currency,
+                        'billing_cycle' => (string) $subscription->plan->billing_cycle,
+                    ] : null,
+                    'status' => (string) $subscription->status,
+                    'started_at' => optional($subscription->started_at)?->toIso8601String(),
+                    'cancelled_at' => optional($subscription->cancelled_at)?->toIso8601String(),
+                    'expires_at' => optional($subscription->expires_at)?->toIso8601String(),
+                    'created_at' => optional($subscription->created_at)?->toIso8601String(),
+                    'updated_at' => optional($subscription->updated_at)?->toIso8601String(),
+                ];
+            });
 
         return $this->successResponse($subscriptions, 'Abonelik listesi hazir.');
     }

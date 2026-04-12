@@ -51,7 +51,10 @@ class BoostBillingEndpointsTest extends TestCase
             ->assertJsonPath('ok', true)
             ->assertJsonPath('data.provider', 'iyzico')
             ->assertJsonPath('data.payment.payment_context', 'boost')
-            ->assertJsonPath('data.boost.status', 'pending');
+            ->assertJsonPath('data.boost.status', 'pending')
+            ->assertJsonMissingPath('data.payment.metadata')
+            ->assertJsonMissingPath('data.payment.transaction_id')
+            ->assertJsonMissingPath('data.boost.metadata');
 
         $this->assertDatabaseHas('payments', [
             'user_id' => $player->id,
@@ -126,7 +129,9 @@ class BoostBillingEndpointsTest extends TestCase
             ->assertOk()
             ->assertJsonPath('ok', true)
             ->assertJsonPath('data.0.status', 'active')
-            ->assertJsonPath('data.0.package.slug', 'scout-plus');
+            ->assertJsonPath('data.0.package.slug', 'scout-plus')
+            ->assertJsonMissingPath('data.0.payment.metadata')
+            ->assertJsonMissingPath('data.0.payment.transaction_id');
     }
 
     public function test_player_can_start_boost_purchase_with_configured_iyzico_checkout(): void

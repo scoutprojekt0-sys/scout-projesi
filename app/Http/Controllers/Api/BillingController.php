@@ -94,8 +94,8 @@ class BillingController extends Controller
                 $payment->refresh();
 
                 return $this->successResponse([
-                    'payment' => $payment,
-                    'boost' => $boost,
+                    'payment' => $this->formatPayment($payment),
+                    'boost' => $this->formatBoost($boost),
                     'next_action' => 'redirect_to_checkout',
                     'provider' => 'iyzico',
                     'provider_status' => 'checkout_ready',
@@ -118,8 +118,8 @@ class BillingController extends Controller
         }
 
         return $this->successResponse([
-            'payment' => $payment,
-            'boost' => $boost,
+            'payment' => $this->formatPayment($payment),
+            'boost' => $this->formatBoost($boost),
             'next_action' => 'provider_checkout_required',
             'provider' => $paymentMethod,
             'provider_status' => 'integration_pending',
@@ -139,7 +139,7 @@ class BillingController extends Controller
             ->first();
 
         return $this->successResponse(
-            $activeBoost ?: ['status' => 'none'],
+            $activeBoost ? $this->formatBoost($activeBoost, true) : ['status' => 'none'],
             'Boost durumu hazir.'
         );
     }
@@ -152,9 +152,57 @@ class BillingController extends Controller
             ->with(['package', 'payment'])
             ->where('user_id', $user->id)
             ->latest('created_at')
-            ->paginate(20);
+            ->paginate(20)
+            ->through(fn (PlayerBoost $boost) => $this->formatBoost($boost, true));
 
         return $this->paginatedListResponse($history, 'Boost gecmisi hazir.');
     }
 
+    private function formatPayment(Payment $payment): array
+    {
+        return [
+            'id' => (int) $payment->id,
+            'boost_package_id' => $payment->boost_package_id !== null ? (int) $payment->boost_package_id : null,
+            'amount' => $payment->amount !== null ? (float) $payment->amount : null,
+            'currency' => (string) $payment->currency,
+            'payment_method' => (string) $payment->payment_method,
+            'payment_context' => (string) $payment->payment_context,
+            'status' => (string) $payment->status,
+            'created_at' => optional($payment->created_at)?->toIso8601String(),
+            'updated_at' => optional($payment->updated_at)?->toIso8601String(),
+        ];
+    }
+
+    private function formatBoost(PlayerBoost $boost, bool $includeRelations = false): array
+    {
+        $payload = [
+            'id' => (int) $boost->id,
+            'boost_package_id' => (int) $boost->boost_package_id,
+            'payment_id' => $boost->payment_id !== null ? (int) $boost->payment_id : null,
+            'status' => (string) $boost->status,
+            'starts_at' => optional($boost->starts_at)?->toIso8601String(),
+            'ends_at' => optional($boost->ends_at)?->toIso8601String(),
+            'activated_at' => optional($boost->activated_at)?->toIso8601String(),
+            'created_at' => optional($boost->created_at)?->toIso8601String(),
+            'updated_at' => optional($boost->updated_at)?->toIso8601String(),
+        ];
+
+        if ($includeRelations && $boost->relationLoaded('package') && $boost->package) {
+            $payload['package'] = [
+                'id' => (int) $boost->package->id,
+                'name' => (string) $boost->package->name,
+                'slug' => (string) $boost->package->slug,
+                'price' => $boost->package->price !== null ? (float) $boost->package->price : null,
+                'currency' => (string) $boost->package->currency,
+                'duration_days' => (int) $boost->package->duration_days,
+                'discover_score' => (int) $boost->package->discover_score,
+            ];
+        }
+
+        if ($includeRelations && $boost->relationLoaded('payment') && $boost->payment) {
+            $payload['payment'] = $this->formatPayment($boost->payment);
+        }
+
+        return $payload;
+    }
 }
