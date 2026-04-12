@@ -29,7 +29,7 @@ class ReportController extends Controller
         return response()->json([
             'ok' => true,
             'message' => 'Sikayet gonderildi. Incelenecektir.',
-            'data' => $report,
+            'data' => $this->transformReport($report),
         ], Response::HTTP_CREATED);
     }
 
@@ -37,9 +37,10 @@ class ReportController extends Controller
     {
         $reports = Report::query()
             ->where('reporter_user_id', $request->user()->id)
-            ->with('reportedUser:id,name,email,role,city')
+            ->with('reportedUser:id,name,role,city')
             ->latest('id')
-            ->paginate(20);
+            ->paginate(20)
+            ->through(fn (Report $report) => $this->transformReport($report));
 
         return response()->json([
             'ok' => true,
@@ -52,12 +53,34 @@ class ReportController extends Controller
         $report = Report::query()
             ->where('id', $id)
             ->where('reporter_user_id', $request->user()->id)
-            ->with('reportedUser:id,name,email,role,city')
+            ->with('reportedUser:id,name,role,city')
             ->firstOrFail();
 
         return response()->json([
             'ok' => true,
-            'data' => $report,
+            'data' => $this->transformReport($report),
         ]);
+    }
+
+    private function transformReport(Report $report): array
+    {
+        return [
+            'id' => (int) $report->id,
+            'reporter_user_id' => (int) $report->reporter_user_id,
+            'reported_user_id' => $report->reported_user_id !== null ? (int) $report->reported_user_id : null,
+            'reported_entity_type' => $report->reported_entity_type,
+            'reported_entity_id' => $report->reported_entity_id !== null ? (int) $report->reported_entity_id : null,
+            'reason' => (string) $report->reason,
+            'description' => $report->description,
+            'status' => (string) $report->status,
+            'created_at' => optional($report->created_at)?->toIso8601String(),
+            'updated_at' => optional($report->updated_at)?->toIso8601String(),
+            'reported_user' => $report->relationLoaded('reportedUser') && $report->reportedUser ? [
+                'id' => (int) $report->reportedUser->id,
+                'name' => (string) $report->reportedUser->name,
+                'role' => (string) $report->reportedUser->role,
+                'city' => (string) ($report->reportedUser->city ?? ''),
+            ] : null,
+        ];
     }
 }

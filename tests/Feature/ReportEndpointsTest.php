@@ -48,7 +48,8 @@ class ReportEndpointsTest extends TestCase
             ->assertOk()
             ->assertJsonPath('ok', true)
             ->assertJsonPath('data.id', $reportId)
-            ->assertJsonPath('data.reported_user.name', $reported->name);
+            ->assertJsonPath('data.reported_user.name', $reported->name)
+            ->assertJsonMissingPath('data.reported_user.email');
     }
 
     public function test_user_cannot_view_another_users_report(): void

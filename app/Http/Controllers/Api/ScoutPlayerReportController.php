@@ -17,7 +17,7 @@ class ScoutPlayerReportController extends Controller
     public function index(Request $request): JsonResponse
     {
         $user = $request->user();
-        if (! in_array((string) $user->role, ['scout', 'coach', 'manager', 'team', 'club'], true)) {
+        if ((string) $user->role !== 'scout') {
             return $this->errorResponse('Bu alan icin yetkiniz yok.', Response::HTTP_FORBIDDEN, 'forbidden_role');
         }
 
@@ -30,6 +30,7 @@ class ScoutPlayerReportController extends Controller
 
         $query = ScoutPlayerReport::query()
             ->with('player:id,name,sport')
+            ->where('scout_user_id', (int) $user->id)
             ->latest('id');
 
         $search = trim((string) ($validated['q'] ?? ''));
@@ -151,7 +152,7 @@ class ScoutPlayerReportController extends Controller
     public function updateStatus(int $id, Request $request): JsonResponse
     {
         $user = $request->user();
-        if (! in_array((string) $user->role, ['scout', 'coach', 'manager', 'team', 'club'], true)) {
+        if ((string) $user->role !== 'scout') {
             return $this->errorResponse('Bu alan icin yetkiniz yok.', Response::HTTP_FORBIDDEN, 'forbidden_role');
         }
 
@@ -159,7 +160,10 @@ class ScoutPlayerReportController extends Controller
             'status' => ['required', 'string', 'in:review,shortlist,observe,reject'],
         ]);
 
-        $report = ScoutPlayerReport::query()->find($id);
+        $report = ScoutPlayerReport::query()
+            ->where('id', $id)
+            ->where('scout_user_id', (int) $user->id)
+            ->first();
         if (! $report) {
             return $this->errorResponse('Scout raporu bulunamadi.', Response::HTTP_NOT_FOUND, 'report_not_found');
         }

@@ -91,7 +91,7 @@ class ModerationController extends Controller
         }
 
         $query = ModerationQueue::query()
-            ->with(['submitter:id,name,email', 'reviewer:id,name,email'])
+            ->with(['submitter:id,name,role', 'reviewer:id,name,role'])
             ->orderBy('priority', 'desc')
             ->orderBy('submitted_at', 'asc');
 
@@ -124,9 +124,9 @@ class ModerationController extends Controller
         }
 
         $item = ModerationQueue::with([
-            'submitter:id,name,email',
-            'reviewer:id,name,email',
-            'secondReviewer:id,name,email'
+            'submitter:id,name,role',
+            'reviewer:id,name,role',
+            'secondReviewer:id,name,role'
         ])->findOrFail($id);
 
         return response()->json([

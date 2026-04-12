@@ -49,7 +49,7 @@ class Week9ModerationHardeningTest extends TestCase
             'requires_dual_approval' => true,
         ]);
 
-        Sanctum::actingAs($firstReviewer, ['profile:write']);
+        Sanctum::actingAs($firstReviewer, ['profile:write', 'staff']);
 
         $this->postJson('/api/moderation/'.$item->id.'/approve', [
             'notes' => 'First approval check',
@@ -64,7 +64,7 @@ class Week9ModerationHardeningTest extends TestCase
             ->assertStatus(422)
             ->assertJsonPath('ok', false);
 
-        Sanctum::actingAs($secondReviewer, ['profile:write']);
+        Sanctum::actingAs($secondReviewer, ['profile:write', 'staff']);
 
         $this->postJson('/api/moderation/'.$item->id.'/approve', [
             'notes' => 'Second approval granted',
@@ -97,7 +97,7 @@ class Week9ModerationHardeningTest extends TestCase
             'requires_dual_approval' => false,
         ]);
 
-        Sanctum::actingAs($reviewer, ['profile:write']);
+        Sanctum::actingAs($reviewer, ['profile:write', 'staff']);
 
         $this->postJson('/api/moderation/'.$item->id.'/approve', [
             'notes' => 'No critical permission',
@@ -105,7 +105,7 @@ class Week9ModerationHardeningTest extends TestCase
             ->assertStatus(403)
             ->assertJsonPath('ok', false);
 
-        Sanctum::actingAs($criticalReviewer, ['profile:write']);
+        Sanctum::actingAs($criticalReviewer, ['profile:write', 'staff']);
 
         $this->postJson('/api/moderation/'.$item->id.'/approve', [
             'notes' => 'Critical permission available',
@@ -113,5 +113,43 @@ class Week9ModerationHardeningTest extends TestCase
             ->assertOk()
             ->assertJsonPath('ok', true)
             ->assertJsonPath('message', 'Item approved successfully');
+    }
+
+    public function test_moderation_endpoints_do_not_expose_user_email_fields(): void
+    {
+        $reviewer = User::factory()->create([
+            'role' => 'manager',
+            'editor_role' => 'reviewer',
+        ]);
+        $submitter = User::factory()->create([
+            'role' => 'scout',
+            'email' => 'submitter@example.com',
+        ]);
+
+        $item = ModerationQueue::create([
+            'model_type' => 'PlayerTransfer',
+            'model_id' => 31,
+            'status' => 'pending',
+            'priority' => 'medium',
+            'reason' => 'new_entry',
+            'submitted_by' => $submitter->id,
+            'reviewed_by' => $reviewer->id,
+            'requires_dual_approval' => false,
+        ]);
+
+        Sanctum::actingAs($reviewer, ['profile:read', 'staff']);
+
+        $this->getJson('/api/moderation')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.data.0.submitter.id', $submitter->id)
+            ->assertJsonMissingPath('data.data.0.submitter.email')
+            ->assertJsonMissingPath('data.data.0.reviewer.email');
+
+        $this->getJson('/api/moderation/'.$item->id)
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonMissingPath('data.submitter.email')
+            ->assertJsonMissingPath('data.reviewer.email');
     }
 }
