@@ -15,10 +15,11 @@ class SupportTicketController extends Controller
     {
         $tickets = SupportTicket::query()
             ->where('user_id', $request->user()->id)
-            ->with('assignedTo:id,name,email,role,city')
+            ->with('assignedTo:id,name,role,city')
             ->withCount('messages')
             ->latest('id')
-            ->paginate(20);
+            ->paginate(20)
+            ->through(fn (SupportTicket $ticket) => $this->transformTicket($ticket, false));
 
         return response()->json([
             'ok' => true,
@@ -47,21 +48,21 @@ class SupportTicketController extends Controller
         return response()->json([
             'ok' => true,
             'message' => 'Destek talebi olusturuldu.',
-            'data' => $ticket,
+            'data' => $this->transformTicket($ticket, false),
         ], Response::HTTP_CREATED);
     }
 
     public function show(Request $request, int $id): JsonResponse
     {
         $ticket = SupportTicket::query()
-            ->with(['messages.user:id,name,email,role,city', 'assignedTo:id,name,email,role,city'])
+            ->with(['messages.user:id,name,role,city', 'assignedTo:id,name,role,city'])
             ->where('id', $id)
             ->where('user_id', $request->user()->id)
             ->firstOrFail();
 
         return response()->json([
             'ok' => true,
-            'data' => $ticket,
+            'data' => $this->transformTicket($ticket, true),
         ]);
     }
 
@@ -90,7 +91,7 @@ class SupportTicketController extends Controller
         return response()->json([
             'ok' => true,
             'message' => 'Mesaj eklendi.',
-            'data' => $message,
+            'data' => $this->transformMessage($message),
         ], Response::HTTP_CREATED);
     }
 
@@ -110,5 +111,54 @@ class SupportTicketController extends Controller
             'ok' => true,
             'message' => 'Destek talebi kapatildi.',
         ]);
+    }
+
+    private function transformTicket(SupportTicket $ticket, bool $includeMessages): array
+    {
+        $payload = [
+            'id' => (int) $ticket->id,
+            'title' => (string) $ticket->title,
+            'description' => (string) $ticket->description,
+            'category' => (string) $ticket->category,
+            'priority' => (string) $ticket->priority,
+            'status' => (string) $ticket->status,
+            'messages_count' => isset($ticket->messages_count) ? (int) $ticket->messages_count : null,
+            'resolved_at' => optional($ticket->resolved_at)?->toIso8601String(),
+            'created_at' => optional($ticket->created_at)?->toIso8601String(),
+            'updated_at' => optional($ticket->updated_at)?->toIso8601String(),
+            'assigned_to' => $ticket->relationLoaded('assignedTo') && $ticket->assignedTo ? [
+                'id' => (int) $ticket->assignedTo->id,
+                'name' => (string) $ticket->assignedTo->name,
+                'role' => (string) $ticket->assignedTo->role,
+                'city' => (string) ($ticket->assignedTo->city ?? ''),
+            ] : null,
+        ];
+
+        if ($includeMessages) {
+            $payload['messages'] = $ticket->messages
+                ->map(fn (SupportTicketMessage $message) => $this->transformMessage($message, true))
+                ->values()
+                ->all();
+        }
+
+        return $payload;
+    }
+
+    private function transformMessage(SupportTicketMessage $message, bool $includeUser = false): array
+    {
+        return [
+            'id' => (int) $message->id,
+            'ticket_id' => (int) $message->ticket_id,
+            'message' => (string) $message->message,
+            'is_staff_reply' => (bool) $message->is_staff_reply,
+            'created_at' => optional($message->created_at)?->toIso8601String(),
+            'updated_at' => optional($message->updated_at)?->toIso8601String(),
+            'user' => $includeUser && $message->relationLoaded('user') && $message->user ? [
+                'id' => (int) $message->user->id,
+                'name' => (string) $message->user->name,
+                'role' => (string) $message->user->role,
+                'city' => (string) ($message->user->city ?? ''),
+            ] : null,
+        ];
     }
 }

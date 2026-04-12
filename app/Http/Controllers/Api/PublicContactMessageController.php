@@ -30,15 +30,34 @@ class PublicContactMessageController extends Controller
             'user_agent' => substr((string) $request->userAgent(), 0, 500),
         ]);
 
-        return $this->successResponse($message, 'Mesaj alindi.', Response::HTTP_CREATED);
+        return $this->successResponse($this->transformPublicMessage($message, false), 'Mesaj alindi.', Response::HTTP_CREATED);
     }
 
     public function index(Request $request): JsonResponse
     {
         $rows = PublicContactMessage::query()
             ->latest('id')
-            ->paginate((int) $request->input('per_page', 100));
+            ->paginate((int) $request->input('per_page', 100))
+            ->through(fn (PublicContactMessage $message) => $this->transformPublicMessage($message, true));
 
         return $this->successResponse($rows, 'Iletisim mesajlari hazir.');
+    }
+
+    private function transformPublicMessage(PublicContactMessage $message, bool $includeEmail): array
+    {
+        $payload = [
+            'id' => (int) $message->id,
+            'name' => (string) $message->name,
+            'message' => (string) $message->message,
+            'source' => (string) $message->source,
+            'created_at' => optional($message->created_at)?->toIso8601String(),
+            'updated_at' => optional($message->updated_at)?->toIso8601String(),
+        ];
+
+        if ($includeEmail) {
+            $payload['email'] = (string) $message->email;
+        }
+
+        return $payload;
     }
 }

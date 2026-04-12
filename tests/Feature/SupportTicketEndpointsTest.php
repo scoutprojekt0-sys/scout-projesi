@@ -49,14 +49,16 @@ class SupportTicketEndpointsTest extends TestCase
         $this->getJson('/api/support-tickets/'.$ticketId)
             ->assertOk()
             ->assertJsonPath('ok', true)
-            ->assertJsonPath('data.title', 'Login issue');
+            ->assertJsonPath('data.title', 'Login issue')
+            ->assertJsonMissingPath('data.assigned_to.email');
 
         $this->postJson('/api/support-tickets/'.$ticketId.'/messages', [
             'message' => 'Extra debugging details.',
         ])
             ->assertStatus(201)
             ->assertJsonPath('ok', true)
-            ->assertJsonPath('data.message', 'Extra debugging details.');
+            ->assertJsonPath('data.message', 'Extra debugging details.')
+            ->assertJsonMissingPath('data.user.email');
 
         $this->postJson('/api/support-tickets/'.$ticketId.'/close')
             ->assertOk()

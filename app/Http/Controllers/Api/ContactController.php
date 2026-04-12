@@ -44,7 +44,7 @@ class ContactController extends Controller
 
         $created = DB::table('contacts')->where('id', $id)->first();
 
-        return $this->successResponse($created, 'Mesaj gonderildi.', Response::HTTP_CREATED);
+        return $this->successResponse($this->transformContactRow($created), 'Mesaj gonderildi.', Response::HTTP_CREATED);
     }
 
     public function searchRecipients(Request $request): JsonResponse
@@ -198,7 +198,7 @@ class ContactController extends Controller
             ->update(['status' => $request->validated('status'), 'updated_at' => now()]);
 
         return $this->successResponse(
-            DB::table('contacts')->where('id', $id)->first(),
+            $this->transformContactRow(DB::table('contacts')->where('id', $id)->first()),
             'Mesaj durumu guncellendi.'
         );
     }
@@ -219,7 +219,7 @@ class ContactController extends Controller
             ->update(['status' => 'read', 'updated_at' => now()]);
 
         return $this->successResponse(
-            DB::table('contacts')->where('id', $id)->first(),
+            $this->transformContactRow(DB::table('contacts')->where('id', $id)->first()),
             'Mesaj okundu olarak isaretlendi.'
         );
     }
@@ -253,5 +253,23 @@ class ContactController extends Controller
             ->update(['status' => 'archived', 'updated_at' => now()]);
 
         return $this->successResponse(null, 'Mesaj arsivlendi.');
+    }
+
+    private function transformContactRow(?object $row): ?array
+    {
+        if (! $row) {
+            return null;
+        }
+
+        return [
+            'id' => (int) $row->id,
+            'from_user_id' => (int) $row->from_user_id,
+            'to_user_id' => (int) $row->to_user_id,
+            'subject' => $row->subject,
+            'message' => (string) $row->message,
+            'status' => (string) $row->status,
+            'created_at' => (string) $row->created_at,
+            'updated_at' => (string) $row->updated_at,
+        ];
     }
 }
