@@ -107,12 +107,12 @@ class MessagingEndpointsTest extends TestCase
             ->assertOk()
             ->assertJsonPath('ok', true)
             ->assertJsonPath('data.0.id', $scout->id)
-            ->assertJsonPath('data.0.role', 'scout');
+            ->assertJsonPath('data.0.role', 'scout')
+            ->assertJsonMissingPath('data.0.email');
 
         $this->getJson('/api/contacts/recipients/search?q=@example.com')
             ->assertOk()
             ->assertJsonPath('ok', true)
-            ->assertJsonFragment(['id' => $scout->id, 'role' => 'scout'])
-            ->assertJsonFragment(['id' => $player->id, 'role' => 'player']);
+            ->assertJsonCount(0, 'data');
     }
 }

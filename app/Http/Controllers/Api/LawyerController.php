@@ -16,7 +16,7 @@ class LawyerController extends Controller
 
     public function publicIndex(Request $request): JsonResponse
     {
-        $query = Lawyer::query()->with('user:id,name,email,role,city');
+        $query = Lawyer::query()->with('user:id,name,role,city');
 
         if ($request->filled('specialization'))  { $query->where('specialization', $request->string('specialization')); }
         if ($request->boolean('verified_only'))  { $query->where('is_verified', true); }
@@ -71,7 +71,7 @@ class LawyerController extends Controller
 
     public function show(Request $request, int $lawyerId): JsonResponse
     {
-        $lawyer = Lawyer::query()->with('user:id,name,email,role,city')->findOrFail($lawyerId);
+        $lawyer = Lawyer::query()->with('user:id,name,role,city')->findOrFail($lawyerId);
 
         return $this->successResponse([
             ...$lawyer->toArray(),

@@ -50,7 +50,7 @@ class ClubEndpointsTest extends TestCase
 
     public function test_public_can_view_club_squad_and_transfers(): void
     {
-        $club = User::factory()->create(['role' => 'team', 'name' => 'Besiktas']);
+        $club = User::factory()->create(['role' => 'team', 'name' => 'Besiktas', 'phone' => '+90 555 000 00 00']);
         DB::table('team_profiles')->insert([
             'user_id' => $club->id,
             'team_name' => 'Besiktas',
@@ -96,7 +96,8 @@ class ClubEndpointsTest extends TestCase
             ->assertOk()
             ->assertJsonPath('ok', true)
             ->assertJsonPath('data.club.name', 'Besiktas')
-            ->assertJsonPath('data.recent_transfers.0.player_name', 'Player One');
+            ->assertJsonPath('data.recent_transfers.0.player_name', 'Player One')
+            ->assertJsonMissingPath('data.club.phone');
 
         $this->getJson('/api/clubs/'.$club->id.'/squad')
             ->assertOk()

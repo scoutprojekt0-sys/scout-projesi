@@ -85,7 +85,6 @@ class DiscoveryController extends Controller
             ->where(function ($builder) use ($query) {
                 $builder->where('users.name', 'like', "%{$query}%")
                     ->orWhere('users.city', 'like', "%{$query}%")
-                    ->orWhere('users.email', 'like', "%{$query}%")
                     ->orWhere('pp.current_team', 'like', "%{$query}%")
                     ->orWhere('pp.position', 'like', "%{$query}%")
                     ->orWhere('tp.team_name', 'like', "%{$query}%")
@@ -219,12 +218,20 @@ class DiscoveryController extends Controller
 
     public function playerOfWeek(): JsonResponse
     {
-        // Get player with highest rating from last week
         $player = DB::table('users')
             ->where('role', 'player')
             ->where('created_at', '>=', now()->subDays(7))
             ->orderBy('rating', 'desc')
-            ->first();
+            ->first([
+                'id',
+                'name',
+                'position',
+                'city',
+                'age',
+                'rating',
+                'views_count',
+                'photo_url',
+            ]);
 
         return $this->successResponse($player ?: [], 'Haftanin oyuncusu hazir.');
     }
@@ -236,7 +243,16 @@ class DiscoveryController extends Controller
             ->where('created_at', '>=', now()->subDays(7))
             ->orderBy('views_count', 'desc')
             ->limit(10)
-            ->get();
+            ->get([
+                'id',
+                'name',
+                'position',
+                'city',
+                'age',
+                'rating',
+                'views_count',
+                'photo_url',
+            ]);
 
         return $this->successResponse($trending, 'Haftanin trend listesi hazir.');
     }
@@ -249,7 +265,16 @@ class DiscoveryController extends Controller
             ->where('age', '<=', 21)
             ->orderBy('rating', 'desc')
             ->limit(10)
-            ->get();
+            ->get([
+                'id',
+                'name',
+                'position',
+                'city',
+                'age',
+                'rating',
+                'views_count',
+                'photo_url',
+            ]);
 
         return $this->successResponse($stars, 'Yukselen yildizlar hazir.');
     }

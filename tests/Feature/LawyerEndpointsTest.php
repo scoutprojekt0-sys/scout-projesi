@@ -34,13 +34,14 @@ class LawyerEndpointsTest extends TestCase
             ->assertOk()
             ->assertJsonPath('ok', true)
             ->assertJsonPath('total', 1)
-            ->assertJsonPath('data.0.user.name', 'Lawyer User');
+            ->assertJsonPath('data.0.user.name', 'Lawyer User')
+            ->assertJsonMissingPath('data.0.user.email');
     }
 
     public function test_authenticated_user_can_register_and_update_lawyer_profile(): void
     {
-        $user = User::factory()->create(['role' => 'manager']);
-        Sanctum::actingAs($user, ['profile:read', 'profile:write']);
+        $user = User::factory()->create(['role' => 'lawyer']);
+        Sanctum::actingAs($user, $user->tokenAbilities());
 
         $register = $this->postJson('/api/lawyers/register', [
             'license_number' => 'TR-200',
@@ -59,7 +60,8 @@ class LawyerEndpointsTest extends TestCase
         $this->getJson('/api/lawyers/'.$lawyerId)
             ->assertOk()
             ->assertJsonPath('ok', true)
-            ->assertJsonPath('data.license_number', 'TR-200');
+            ->assertJsonPath('data.license_number', 'TR-200')
+            ->assertJsonMissingPath('data.user.email');
 
         $this->putJson('/api/lawyers/'.$lawyerId, [
             'bio' => 'Sports contracts specialist',
@@ -72,8 +74,8 @@ class LawyerEndpointsTest extends TestCase
 
     public function test_user_cannot_update_another_lawyer_profile(): void
     {
-        $owner = User::factory()->create(['role' => 'manager']);
-        $other = User::factory()->create(['role' => 'manager']);
+        $owner = User::factory()->create(['role' => 'lawyer']);
+        $other = User::factory()->create(['role' => 'lawyer']);
 
         $lawyer = Lawyer::query()->create([
             'user_id' => $owner->id,
@@ -83,7 +85,7 @@ class LawyerEndpointsTest extends TestCase
             'license_status' => 'valid',
         ]);
 
-        Sanctum::actingAs($other, ['profile:write']);
+        Sanctum::actingAs($other, $other->tokenAbilities());
 
         $this->putJson('/api/lawyers/'.$lawyer->id, [
             'office_name' => 'Forbidden',

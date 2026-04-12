@@ -67,18 +67,16 @@ class ContactController extends Controller
             })
             ->when($query !== '', function ($builder) use ($query) {
                 $builder->where(function ($inner) use ($query) {
-                    $inner->where('name', 'like', '%'.$query.'%')
-                        ->orWhere('email', 'like', '%'.$query.'%');
+                    $inner->where('name', 'like', '%'.$query.'%');
                 });
             })
             ->orderByRaw('LOWER(name) = ? desc', [mb_strtolower($query, 'UTF-8')])
             ->orderBy('name')
             ->limit($limit)
-            ->get(['id', 'name', 'email', 'role'])
+            ->get(['id', 'name', 'role'])
             ->map(fn (User $recipient) => [
                 'id' => (int) $recipient->id,
                 'name' => (string) $recipient->name,
-                'email' => (string) $recipient->email,
                 'role' => (string) $recipient->role,
             ])
             ->values();

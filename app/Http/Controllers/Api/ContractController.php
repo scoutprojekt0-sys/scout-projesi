@@ -18,7 +18,7 @@ class ContractController extends Controller
         $user = $request->user();
         $contracts = Contract::query()
             ->where(fn ($q) => $q->where('player_id', $user->id)->orWhere('club_id', $user->id))
-            ->with(['player:id,name,email', 'club:id,name,email'])
+            ->with(['player:id,name', 'club:id,name'])
             ->orderByDesc('created_at')
             ->paginate(20);
 
@@ -28,7 +28,7 @@ class ContractController extends Controller
     public function show(Request $request, int $id): JsonResponse
     {
         $user     = $request->user();
-        $contract = Contract::with(['player:id,name,email', 'club:id,name,email'])->find($id);
+        $contract = Contract::with(['player:id,name', 'club:id,name'])->find($id);
 
         if (! $contract) {
             return $this->errorResponse('Sozlesme bulunamadi.', Response::HTTP_NOT_FOUND, 'contract_not_found');

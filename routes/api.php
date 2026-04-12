@@ -483,9 +483,9 @@ Route::get('/admin/amateur-standings', [AdminAmateurResultController::class, 'st
     Route::post('/admin/scout-rewards/{rewardId}/mark-paid', [AdminScoutController::class, 'markRewardPaid'])->middleware('admin');
 
     // Contracts
-    Route::get('/contracts', [ContractController::class, 'index']);
+    Route::get('/contracts', [ContractController::class, 'index'])->middleware('auth:sanctum');
     Route::post('/contracts', [ContractController::class, 'store'])->middleware('auth:sanctum');
-    Route::get('/contracts/{id}', [ContractController::class, 'show']);
+    Route::get('/contracts/{id}', [ContractController::class, 'show'])->middleware('auth:sanctum');
     Route::patch('/contracts/{id}', [ContractController::class, 'update'])->middleware('auth:sanctum');
 
     // Social Media

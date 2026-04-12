@@ -68,7 +68,7 @@ class ClubController extends Controller
             ->where('users.role', 'team')
             ->select([
                 'users.id', 'users.name', 'users.city as user_city',
-                'users.phone', 'users.created_at',
+                'users.created_at',
                 'team_profiles.team_name', 'team_profiles.league_level',
                 'team_profiles.city as team_city', 'team_profiles.founded_year',
             ])

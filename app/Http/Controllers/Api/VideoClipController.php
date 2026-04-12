@@ -16,10 +16,14 @@ class VideoClipController extends Controller
 
     public function index(int $userId): JsonResponse
     {
-        return $this->paginatedListResponse(
-            VideoClip::where('user_id', $userId)->orderByDesc('created_at')->paginate(20),
-            'Video listesi hazir.'
-        );
+        $clips = VideoClip::query()
+            ->where('user_id', $userId)
+            ->orderByDesc('created_at')
+            ->paginate(20);
+
+        $clips->getCollection()->transform(fn (VideoClip $clip) => $this->transformPublicClip($clip));
+
+        return $this->paginatedListResponse($clips, 'Video listesi hazir.');
     }
 
     public function show(int $id): JsonResponse
@@ -139,5 +143,22 @@ class VideoClipController extends Controller
             ->paginate(20);
 
         return response()->json(['ok' => true, 'data' => $clips]);
+    }
+
+    private function transformPublicClip(VideoClip $clip): array
+    {
+        return [
+            'id' => (int) $clip->id,
+            'user_id' => (int) $clip->user_id,
+            'title' => (string) $clip->title,
+            'description' => $clip->description,
+            'video_url' => (string) $clip->video_url,
+            'thumbnail_url' => $clip->thumbnail_url,
+            'platform' => $clip->platform,
+            'duration_seconds' => $clip->duration_seconds,
+            'match_date' => optional($clip->match_date)?->toDateString(),
+            'tags' => is_array($clip->tags) ? $clip->tags : [],
+            'created_at' => optional($clip->created_at)?->toIso8601String(),
+        ];
     }
 }
