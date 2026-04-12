@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Lawyer;
+use App\Models\ProfileView;
 use App\Models\SuccessStory;
+use App\Models\VideoClip;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -563,6 +565,74 @@ class LegacyCompatibilityController extends Controller
                 'card_owner_id' => $cardOwnerId,
                 'likes' => $count,
             ],
+        ]);
+    }
+
+    public function profileCardStats(string $cardType, int $cardOwnerId): JsonResponse
+    {
+        $normalizedType = strtolower(trim($cardType));
+        if ($normalizedType !== 'player') {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Profil karti tipi desteklenmiyor.',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $likesKey = sprintf('legacy_profile_like_%s_%d', $normalizedType, $cardOwnerId);
+        $likes = (int) Cache::get($likesKey, 0);
+        $totalViews = ProfileView::query()
+            ->where('viewed_user_id', $cardOwnerId)
+            ->count();
+
+        return response()->json([
+            'ok' => true,
+            'data' => [
+                'card_type' => $normalizedType,
+                'card_owner_id' => $cardOwnerId,
+                'likes' => $likes,
+                'total_views' => $totalViews,
+            ],
+        ]);
+    }
+
+    public function playerVideoPortfolio(int $playerId): JsonResponse
+    {
+        $videos = VideoClip::query()
+            ->where('user_id', $playerId)
+            ->orderByDesc('match_date')
+            ->orderByDesc('created_at')
+            ->get([
+                'id',
+                'title',
+                'description',
+                'video_url',
+                'thumbnail_url',
+                'platform',
+                'duration_seconds',
+                'match_date',
+                'tags',
+                'created_at',
+            ])
+            ->map(function (VideoClip $clip) {
+                return [
+                    'id' => (int) $clip->id,
+                    'title' => (string) $clip->title,
+                    'description' => $clip->description,
+                    'video_url' => (string) $clip->video_url,
+                    'thumbnail_url' => $clip->thumbnail_url,
+                    'platform' => $clip->platform,
+                    'duration_seconds' => $clip->duration_seconds,
+                    'match_date' => optional($clip->match_date)?->toDateString(),
+                    'video_type' => $clip->platform ?: 'video',
+                    'tags' => is_array($clip->tags) ? $clip->tags : [],
+                    'created_at' => optional($clip->created_at)?->toIso8601String(),
+                ];
+            })
+            ->values();
+
+        return response()->json([
+            'ok' => true,
+            'data' => $videos,
         ]);
     }
 }

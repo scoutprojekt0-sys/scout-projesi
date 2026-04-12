@@ -301,6 +301,8 @@ Route::get('/lawyers/{lawyerId}', [LawyerController::class, 'show']);
 Route::get('/profiles/{userId}/views/count', [ProfileViewController::class, 'viewCount']);
 Route::get('/profiles/{userId}/reviews', [ProfileReviewController::class, 'index']);
 Route::get('/users/{userId}/videos', [VideoClipController::class, 'index']);
+Route::get('/profile-cards/{cardType}/{cardOwnerId}/stats', [LegacyCompatibilityController::class, 'profileCardStats']);
+Route::get('/video-portfolio/player/{playerId}', [LegacyCompatibilityController::class, 'playerVideoPortfolio']);
 
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:auth');

@@ -1938,21 +1938,23 @@
             if (!userId) return;
 
             const apiBase = getApiBaseUrl();
-            const [viewPayload, cardStatsPayload, videosPayload, inboxPayload, notifPayload] = await Promise.all([
+            const [viewPayload, cardStatsPayload, videosPayload, offerDeskPayload, inboxPayload, notifPayload] = await Promise.all([
                 fetchJsonSafe(`${apiBase}/profile-views/${userId}/count`),
                 fetchJsonSafe(`${apiBase}/profile-cards/player/${userId}/stats`),
                 fetchJsonSafe(`${apiBase}/video-portfolio/player/${userId}`),
+                fetchJsonSafe(`${apiBase}/players/me/offer-desk`),
                 fetchJsonSafe(`${apiBase}/contacts/inbox?per_page=100`),
                 fetchJsonSafe(`${apiBase}/notifications?limit=100`),
             ]);
 
             dashboardApiState.loaded = true;
-            dashboardApiState.views = Number(viewPayload?.data?.count ?? cardStatsPayload?.data?.total_views ?? 0) || null;
+            dashboardApiState.views = Number(viewPayload?.data?.view_count ?? cardStatsPayload?.data?.total_views ?? 0) || null;
             dashboardApiState.likes = Number(cardStatsPayload?.data?.likes ?? 0) || 0;
             dashboardApiState.videos = Array.isArray(videosPayload?.data) ? videosPayload.data : [];
             dashboardApiState.incomingMessages = parsePaginatedRows(inboxPayload);
             dashboardApiState.notifications = parsePaginatedRows(notifPayload);
-            dashboardApiState.offers = dashboardApiState.incomingMessages.filter((row) => {
+            const offerDeskRows = Array.isArray(offerDeskPayload?.data) ? offerDeskPayload.data : [];
+            dashboardApiState.offers = offerDeskRows.length ? offerDeskRows : dashboardApiState.incomingMessages.filter((row) => {
                 const subject = normalizeText(row?.subject);
                 const message = normalizeText(row?.message);
                 const type = normalizeText(row?.type);
@@ -2455,8 +2457,8 @@
                 summary: `Toplam ${offerCount} teklif kaydi • ${offerCount > 0 ? Math.max(1, offerCount - 1) : 0} teklif acik`,
                     items: dashboardApiState.loaded && dashboardApiState.offers.length
                         ? dashboardApiState.offers.slice(0, 3).map((row) => ({
-                            title: row.subject || row.title || 'Transfer teklifi',
-                            meta: row.message || row.created_at || row.time || '-',
+                            title: row.club_name || row.subject || row.title || 'Transfer teklifi',
+                            meta: row.note || row.message || row.negotiation_status || row.status || row.created_at || row.time || '-',
                         }))
                         : [
                             { title: 'Acil gorusme talebi', meta: offerCount > 0 ? 'Acik gorusme var' : 'Henuz teklif yok' },
