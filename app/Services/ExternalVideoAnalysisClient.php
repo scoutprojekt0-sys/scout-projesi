@@ -13,6 +13,8 @@ class ExternalVideoAnalysisClient
     {
         $baseUrl = $this->resolveBaseUrl();
         $videoClip = $analysis->videoClip;
+        $callbackSecret = $this->resolveCallbackSecret();
+        $callbackUrl = $this->resolveCallbackUrl($analysis->id);
 
         $response = Http::timeout((int) config('scout.ai_analysis.worker_timeout_seconds', 20))
             ->acceptJson()
@@ -26,8 +28,8 @@ class ExternalVideoAnalysisClient
                 'target_profile' => $this->buildTargetProfile($analysis->target_player_id),
                 'requested_by' => $analysis->requested_by,
                 'analysis_type' => $analysis->analysis_type,
-                'callback_url' => rtrim((string) config('app.url'), '/').'/api/video-analyses/'.$analysis->id.'/callback',
-                'callback_secret' => (string) config('scout.ai_analysis.callback_secret'),
+                'callback_url' => $callbackUrl,
+                'callback_secret' => $callbackSecret,
             ]);
 
         if (! $response->successful()) {
@@ -51,6 +53,30 @@ class ExternalVideoAnalysisClient
         }
 
         throw new RuntimeException('AI worker base URL tanimli degil.');
+    }
+
+    private function resolveCallbackSecret(): string
+    {
+        $callbackSecret = trim((string) config('scout.ai_analysis.callback_secret', ''));
+        if ($callbackSecret !== '') {
+            return $callbackSecret;
+        }
+
+        if (! app()->environment('production')) {
+            return '';
+        }
+
+        throw new RuntimeException('AI callback secret tanimli degil.');
+    }
+
+    private function resolveCallbackUrl(int $analysisId): string
+    {
+        $appUrl = rtrim((string) config('app.url', ''), '/');
+        if ($appUrl !== '') {
+            return $appUrl.'/api/video-analyses/'.$analysisId.'/callback';
+        }
+
+        throw new RuntimeException('APP_URL tanimli degil.');
     }
 
     private function inferSport(?array $tags, string $analysisType): string

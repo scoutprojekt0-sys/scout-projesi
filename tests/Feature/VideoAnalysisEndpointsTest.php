@@ -274,6 +274,8 @@ class VideoAnalysisEndpointsTest extends TestCase
         config()->set('scout.ai_analysis.mode', 'external');
         config()->set('scout.ai_analysis.allow_mock_fallback', false);
         config()->set('scout.ai_analysis.worker_base_url', 'http://worker.test');
+        config()->set('scout.ai_analysis.callback_secret', 'secret');
+        config()->set('app.url', 'http://app.test');
 
         $this->getJson('/api/scouting-search/status')
             ->assertOk()
@@ -285,6 +287,26 @@ class VideoAnalysisEndpointsTest extends TestCase
             ->assertJsonPath('data.analysis_requires_auth', true)
             ->assertJsonPath('data.public_browsing', true)
             ->assertJsonPath('data.allow_mock_fallback', false)
-            ->assertJsonPath('data.worker_base_url_configured', true);
+            ->assertJsonPath('data.worker_base_url_configured', true)
+            ->assertJsonPath('data.callback_secret_configured', true)
+            ->assertJsonPath('data.callback_url_configured', true)
+            ->assertJsonPath('data.external_worker_ready', true);
+    }
+
+    public function test_ai_discovery_status_endpoint_marks_external_worker_not_ready_when_config_missing(): void
+    {
+        config()->set('scout.ai_analysis.mode', 'external');
+        config()->set('scout.ai_analysis.allow_mock_fallback', false);
+        config()->set('scout.ai_analysis.worker_base_url', '');
+        config()->set('scout.ai_analysis.callback_secret', '');
+        config()->set('app.url', '');
+
+        $this->getJson('/api/scouting-search/status')
+            ->assertOk()
+            ->assertJsonPath('data.analysis_mode', 'external')
+            ->assertJsonPath('data.worker_base_url_configured', false)
+            ->assertJsonPath('data.callback_secret_configured', false)
+            ->assertJsonPath('data.callback_url_configured', false)
+            ->assertJsonPath('data.external_worker_ready', false);
     }
 }

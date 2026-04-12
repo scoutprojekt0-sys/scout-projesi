@@ -20,6 +20,11 @@ class ScoutingSearchController extends Controller
             ? ! app()->environment('production')
             : filter_var($configuredFallback, FILTER_VALIDATE_BOOL);
         $workerBaseUrl = trim((string) config('scout.ai_analysis.worker_base_url', ''));
+        $callbackSecretConfigured = trim((string) config('scout.ai_analysis.callback_secret', '')) !== '';
+        $callbackUrlConfigured = trim((string) config('app.url', '')) !== '';
+        $externalWorkerReady = $mode !== 'external'
+            ? true
+            : ($workerBaseUrl !== '' && $callbackUrlConfigured && ($callbackSecretConfigured || ! app()->environment('production')));
 
         return $this->successResponse([
             'discovery_active' => true,
@@ -29,6 +34,9 @@ class ScoutingSearchController extends Controller
             'public_browsing' => true,
             'allow_mock_fallback' => $allowMockFallback,
             'worker_base_url_configured' => $workerBaseUrl !== '',
+            'callback_secret_configured' => $callbackSecretConfigured,
+            'callback_url_configured' => $callbackUrlConfigured,
+            'external_worker_ready' => $externalWorkerReady,
         ], 'AI discovery durumu hazir.');
     }
 

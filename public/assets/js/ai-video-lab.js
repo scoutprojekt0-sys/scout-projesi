@@ -376,7 +376,11 @@
         rankingStatusBadge.textContent = status?.rankings_active ? 'Aktif' : 'Pasif';
       }
       if (analysisAccessBadge) {
-        analysisAccessBadge.textContent = status?.analysis_requires_auth ? 'Giris ile Acik' : 'Acik';
+        if (status?.analysis_mode === 'external' && status?.external_worker_ready === false) {
+          analysisAccessBadge.textContent = 'Worker Hazir Degil';
+        } else {
+          analysisAccessBadge.textContent = status?.analysis_requires_auth ? 'Giris ile Acik' : 'Acik';
+        }
       }
 
       if (!workerModeBadge || !status?.analysis_mode) {
