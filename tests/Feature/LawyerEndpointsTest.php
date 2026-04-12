@@ -60,7 +60,8 @@ class LawyerEndpointsTest extends TestCase
         $this->getJson('/api/lawyers/'.$lawyerId)
             ->assertOk()
             ->assertJsonPath('ok', true)
-            ->assertJsonPath('data.license_number', 'TR-200')
+            ->assertJsonPath('data.specialization', 'Contract law')
+            ->assertJsonMissingPath('data.license_number')
             ->assertJsonMissingPath('data.user.email');
 
         $this->putJson('/api/lawyers/'.$lawyerId, [

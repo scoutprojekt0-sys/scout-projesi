@@ -25,7 +25,8 @@ class LawyerController extends Controller
         $lawyers = $query->where('is_active', true)
             ->orderByDesc('is_verified')
             ->orderByDesc('id')
-            ->paginate(30);
+            ->paginate(30)
+            ->through(fn (Lawyer $lawyer) => $this->transformLawyer($lawyer, false));
 
         return $this->paginatedListResponse($lawyers, 'Avukat listesi hazir.');
     }
@@ -66,7 +67,7 @@ class LawyerController extends Controller
             'license_status' => 'valid',
         ]);
 
-        return $this->successResponse($lawyer->load('user:id,name,email,role,city'), 'Avukat profili olusturuldu.');
+        return $this->successResponse($this->transformLawyer($lawyer->load('user:id,name,role,city'), true), 'Avukat profili olusturuldu.');
     }
 
     public function show(Request $request, int $lawyerId): JsonResponse
@@ -74,7 +75,7 @@ class LawyerController extends Controller
         $lawyer = Lawyer::query()->with('user:id,name,role,city')->findOrFail($lawyerId);
 
         return $this->successResponse([
-            ...$lawyer->toArray(),
+            ...$this->transformLawyer($lawyer, false),
             'reviews' => ProfileReviewData::latestForTarget($lawyer->user_id, $request->user()),
         ], 'Avukat profili hazir.');
     }
@@ -104,6 +105,40 @@ class LawyerController extends Controller
 
         $lawyer->update($validated);
 
-        return $this->successResponse($lawyer->fresh()->load('user:id,name,email,role,city'), 'Profil guncellendi.');
+        return $this->successResponse($this->transformLawyer($lawyer->fresh()->load('user:id,name,role,city'), true), 'Profil guncellendi.');
+    }
+
+    private function transformLawyer(Lawyer $lawyer, bool $includePrivateFields): array
+    {
+        $payload = [
+            'id' => (int) $lawyer->id,
+            'user_id' => (int) $lawyer->user_id,
+            'specialization' => (string) $lawyer->specialization,
+            'bio' => $lawyer->bio,
+            'office_name' => $lawyer->office_name,
+            'years_experience' => $lawyer->years_experience !== null ? (int) $lawyer->years_experience : null,
+            'hourly_rate' => $lawyer->hourly_rate !== null ? (float) $lawyer->hourly_rate : null,
+            'contract_fee' => $lawyer->contract_fee !== null ? (float) $lawyer->contract_fee : null,
+            'is_verified' => (bool) $lawyer->is_verified,
+            'is_active' => (bool) $lawyer->is_active,
+            'license_status' => (string) $lawyer->license_status,
+            'created_at' => optional($lawyer->created_at)?->toIso8601String(),
+            'updated_at' => optional($lawyer->updated_at)?->toIso8601String(),
+            'user' => $lawyer->relationLoaded('user') && $lawyer->user ? [
+                'id' => (int) $lawyer->user->id,
+                'name' => (string) $lawyer->user->name,
+                'role' => (string) $lawyer->user->role,
+                'city' => (string) ($lawyer->user->city ?? ''),
+            ] : null,
+        ];
+
+        if ($includePrivateFields) {
+            $payload['license_number'] = (string) $lawyer->license_number;
+            $payload['office_address'] = $lawyer->office_address;
+            $payload['office_phone'] = $lawyer->office_phone;
+            $payload['office_email'] = $lawyer->office_email;
+        }
+
+        return $payload;
     }
 }

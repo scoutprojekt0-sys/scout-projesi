@@ -31,8 +31,8 @@ class LawyerWorkspaceController extends Controller
         return response()->json([
             'ok' => true,
             'data' => [
-                'contracts' => ($items->get('contract') ?? collect())->values(),
-                'consults' => ($items->get('consult') ?? collect())->values(),
+                'contracts' => ($items->get('contract') ?? collect())->map(fn (LawyerWorkspaceItem $item) => $this->transformItem($item))->values(),
+                'consults' => ($items->get('consult') ?? collect())->map(fn (LawyerWorkspaceItem $item) => $this->transformItem($item))->values(),
             ],
         ]);
     }
@@ -61,9 +61,25 @@ class LawyerWorkspaceController extends Controller
 
         return response()->json([
             'ok' => true,
-            'data' => $item->fresh(),
+            'data' => $this->transformItem($item->fresh()),
             'message' => 'Kayit durumu guncellendi.',
         ]);
+    }
+
+    private function transformItem(LawyerWorkspaceItem $item): array
+    {
+        return [
+            'id' => (int) $item->id,
+            'item_type' => (string) $item->item_type,
+            'title' => (string) $item->title,
+            'counterparty' => $item->counterparty,
+            'fee_label' => $item->fee_label,
+            'priority' => $item->priority,
+            'status' => (string) $item->status,
+            'deadline' => $item->deadline,
+            'created_at' => optional($item->created_at)?->toIso8601String(),
+            'updated_at' => optional($item->updated_at)?->toIso8601String(),
+        ];
     }
 
     private function seedDefaults(int $userId): void

@@ -17,7 +17,8 @@ class AdminAmateurResultController extends Controller
     {
         $rows = AmateurResult::query()
             ->latest('id')
-            ->paginate((int) $request->input('per_page', 100));
+            ->paginate((int) $request->input('per_page', 100))
+            ->through(fn (AmateurResult $result) => $this->transformResult($result));
 
         return $this->successResponse($rows, 'Amator sonuc listesi hazir.');
     }
@@ -43,7 +44,7 @@ class AdminAmateurResultController extends Controller
             'source' => 'admin',
         ]);
 
-        return $this->successResponse($row, 'Amator sonuc eklendi.', Response::HTTP_CREATED);
+        return $this->successResponse($this->transformResult($row), 'Amator sonuc eklendi.', Response::HTTP_CREATED);
     }
 
     public function updateStatus(Request $request, int $id): JsonResponse
@@ -62,7 +63,7 @@ class AdminAmateurResultController extends Controller
             'reviewed_at' => now(),
         ]);
 
-        return $this->successResponse($row->fresh(), 'Amator sonuc durumu guncellendi.');
+        return $this->successResponse($this->transformResult($row->fresh()), 'Amator sonuc durumu guncellendi.');
     }
 
     public function standings(): JsonResponse
@@ -144,5 +145,24 @@ class AdminAmateurResultController extends Controller
         })->values();
 
         return $this->successResponse($out, 'Amator puan durumlari hazir.');
+    }
+
+    private function transformResult(AmateurResult $result): array
+    {
+        return [
+            'id' => (int) $result->id,
+            'league' => (string) $result->league,
+            'season' => (string) $result->season,
+            'country' => (string) $result->country,
+            'sport' => (string) $result->sport,
+            'home_team' => (string) $result->home_team,
+            'away_team' => (string) $result->away_team,
+            'home_score' => (int) $result->home_score,
+            'away_score' => (int) $result->away_score,
+            'status' => (string) $result->status,
+            'reviewed_at' => optional($result->reviewed_at)?->toIso8601String(),
+            'created_at' => optional($result->created_at)?->toIso8601String(),
+            'updated_at' => optional($result->updated_at)?->toIso8601String(),
+        ];
     }
 }
