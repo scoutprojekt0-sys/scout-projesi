@@ -314,5 +314,44 @@ CI:
   - release candidate checklist
   - first-week monitoring plan
 - Added manual RC workflow:
-  - `.github/workflows/release-candidate.yml`
+- `.github/workflows/release-candidate.yml`
   - runs quality gates plus both Newman E2E collections
+
+## Docker Production
+
+Bu repo icin prod Docker dosyalari:
+
+- `Dockerfile.prod`
+- `compose.prod.yml`
+- `docker/prod/...`
+- `.env.production.docker.example`
+
+Hazirlik:
+
+```bash
+cp .env.production.docker.example .env.production
+```
+
+Gercek degerleri doldurun:
+
+- `APP_KEY`
+- `APP_URL`
+- `FRONTEND_URL`
+- `CORS_ALLOWED_ORIGINS`
+- `DB_PASSWORD`
+- `DB_ROOT_PASSWORD`
+- `REDIS_PASSWORD`
+
+Build ve calistirma:
+
+```bash
+docker compose -f compose.prod.yml build
+docker compose -f compose.prod.yml up -d
+```
+
+Durum kontrolu:
+
+```bash
+docker compose -f compose.prod.yml ps
+docker compose -f compose.prod.yml logs -f app
+```

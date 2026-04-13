@@ -1,0 +1,70 @@
+FROM composer:2 AS composer_deps
+WORKDIR /app
+
+COPY composer.json composer.lock ./
+RUN composer install \
+    --no-dev \
+    --no-interaction \
+    --no-progress \
+    --prefer-dist \
+    --optimize-autoloader \
+    --ignore-platform-req=ext-exif
+
+FROM node:22-alpine AS frontend_builder
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY resources ./resources
+COPY public ./public
+COPY vite.config.js ./
+RUN npm run build
+
+FROM php:8.3-fpm-alpine AS app
+WORKDIR /var/www/html
+
+RUN apk add --no-cache \
+        bash \
+        curl \
+        fcgi \
+        icu-dev \
+        libpng-dev \
+        libjpeg-turbo-dev \
+        freetype-dev \
+        libzip-dev \
+        oniguruma-dev \
+        postgresql-dev \
+        mariadb-connector-c-dev \
+        linux-headers \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j"$(nproc)" \
+        bcmath \
+        exif \
+        gd \
+        intl \
+        opcache \
+        pcntl \
+        pdo_mysql \
+        zip \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    && rm -rf /tmp/pear
+
+COPY docker/prod/php/conf.d/app.ini /usr/local/etc/php/conf.d/zz-app.ini
+COPY docker/prod/php-fpm/www.conf /usr/local/etc/php-fpm.d/www.conf
+
+COPY . .
+COPY --from=composer_deps /app/vendor ./vendor
+COPY --from=frontend_builder /app/public/build ./public/build
+
+RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache
+
+COPY docker/prod/bin/entrypoint.sh /usr/local/bin/app-entrypoint
+RUN chmod +x /usr/local/bin/app-entrypoint
+
+USER www-data
+
+ENTRYPOINT ["app-entrypoint"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
