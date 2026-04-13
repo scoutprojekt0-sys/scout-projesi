@@ -9,16 +9,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('stripe_customer_id')->nullable()->after('remember_token');
-            $table->string('paypal_customer_id')->nullable()->after('stripe_customer_id');
-            $table->string('subscription_status')->default('free')->after('paypal_customer_id');
-            $table->boolean('is_public')->default(false)->after('subscription_status');
-            $table->string('position')->nullable()->after('is_public');
-            $table->string('country')->nullable()->after('position');
-            $table->integer('age')->nullable()->after('country');
-            $table->string('photo_url')->nullable()->after('age');
-            $table->integer('views_count')->default(0)->after('photo_url');
-            $table->decimal('rating', 3, 2)->nullable()->after('views_count');
+            $table->string('stripe_customer_id')->nullable();
+            $table->string('paypal_customer_id')->nullable();
+            $table->string('subscription_status')->default('free');
+            $table->boolean('is_public')->default(false);
+            $table->string('position')->nullable();
+            $table->string('country')->nullable();
+            $table->integer('age')->nullable();
+            $table->string('photo_url')->nullable();
+            $table->integer('views_count')->default(0);
+            $table->decimal('rating', 3, 2)->nullable();
         });
     }
 
