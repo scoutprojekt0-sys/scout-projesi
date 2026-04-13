@@ -38,6 +38,7 @@ FROM php:8.3-fpm-alpine AS app
 WORKDIR /var/www/html
 
 RUN apk add --no-cache \
+        $PHPIZE_DEPS \
         bash \
         curl \
         fcgi \
