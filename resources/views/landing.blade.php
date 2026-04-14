@@ -71,7 +71,7 @@
         .hero {
             width: min(1160px, 100%);
             display: grid;
-            grid-template-columns: minmax(0, 1.35fr) minmax(320px, 400px);
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 28px;
             align-items: stretch;
         }
@@ -79,6 +79,8 @@
         .story,
         .cta {
             position: relative;
+            min-height: 640px;
+            height: 100%;
             border: 1px solid var(--line);
             border-radius: var(--edge);
             background: linear-gradient(180deg, rgba(8, 15, 27, 0.82), rgba(8, 15, 27, 0.56));
@@ -98,6 +100,9 @@
 
         .story {
             padding: 38px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .eyebrow {
@@ -126,9 +131,9 @@
 
         h1 {
             margin: 0;
-            max-width: 9ch;
-            font-size: clamp(3.2rem, 7vw, 6.4rem);
-            line-height: 0.9;
+            max-width: 11ch;
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            line-height: 0.98;
             letter-spacing: -0.05em;
         }
 
@@ -171,13 +176,16 @@
         }
 
         .cta {
-            align-self: center;
-            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            padding: 38px;
             background: linear-gradient(180deg, rgba(12, 23, 41, 0.95), rgba(10, 18, 33, 0.88));
         }
 
         .visual {
-            min-height: 240px;
+            min-height: 280px;
             margin-bottom: 22px;
             border-radius: 3px;
             background:
@@ -402,6 +410,8 @@
             .story,
             .cta {
                 padding: 24px;
+                min-height: auto;
+                height: auto;
             }
 
             .visual {

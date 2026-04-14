@@ -353,9 +353,9 @@
   <main class="shell">
     <section class="story">
       <div class="eyebrow">NextScout Access</div>
-      <h1 id="heroTitle">Oyuncu girisi, net ve hizli.</h1>
+      <h1 id="heroTitle">Tum roller icin tek giris alani.</h1>
       <p class="lead" id="heroLead">
-        Hesabina dogru rolden gir. Her rol ayni altyapiyi kullanir ama deneyim, ekranlar ve yonlendirmeler role gore sekillenir.
+        Oyuncu, scout, menajer, antrenor ve avukat hesaplari ayni giris ailesinden devam eder.
       </p>
       <div class="role-strip">
         <div class="role-pill">Oyuncu</div>
@@ -369,15 +369,15 @@
     <section class="card">
       <header class="card-head">
         <div>
-          <h2 id="panelTitle">Giris Yap</h2>
-          <p id="panelCopy">Kayitli hesabin varsa role uygun paneline buradan gececeksin.</p>
+          <h2 id="panelTitle">Hesabina Giris Yap</h2>
+          <p id="panelCopy">Kayitli hesabinla platforma gir. Sistem seni rolune uygun alana yonlendirir.</p>
         </div>
         <a class="back-link" href="/" aria-label="Ana sayfaya don">×</a>
       </header>
       <div class="card-body">
-        <div class="role-badge" id="roleBadge">Oyuncu Akisi</div>
+        <div class="role-badge" id="roleBadge">Genel Giris</div>
         <p class="note" id="panelNote">
-          E-posta ve sifreni gir. Basarili giris sonrasinda sistem seni role uygun dashboard'a yonlendirir.
+          Once giris yap. Sonraki adimda hesabinin rolune gore dogru panel acilir.
         </p>
 
         <form id="loginForm">
@@ -390,7 +390,7 @@
             <input id="password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
           </div>
           <div class="meta-row">
-            <span id="metaHint">Kendi hesabinla dogrudan giris yap.</span>
+            <span id="metaHint">Kayitli hesabinla devam et.</span>
             <a id="registerLink" href="/">Hesabin yok mu? Kayit ol</a>
           </div>
           <button class="btn" id="loginBtn" type="submit">Giris Yap</button>
@@ -408,6 +408,15 @@
   <script>
     (function () {
       const ROLE_CONFIG = {
+        general: {
+          badge: 'Genel Giriş',
+          heroTitle: 'Tüm roller için tek giriş alanı.',
+          heroLead: 'Oyuncu, scout, menajer, antrenör, avukat ve kulüp dışı tüm bireysel hesaplar aynı giriş ailesinden devam eder.',
+          panelTitle: 'Hesabına Giriş Yap',
+          panelCopy: 'Kayıtlı hesabınla platforma gir. Sistem seni rolüne uygun alana yönlendirir.',
+          panelNote: 'Önce giriş yap. Sonraki adımda hesabının rolüne göre doğru panel açılır.',
+          metaHint: 'Kayıtlı hesabınla devam et.',
+        },
         player: {
           badge: 'Oyuncu Akisi',
           heroTitle: 'Oyuncu girisi, net ve hizli.',
@@ -456,8 +465,8 @@
       };
 
       const params = new URLSearchParams(window.location.search);
-      const activeRole = (params.get('role') || 'player').toLowerCase();
-      const roleConfig = ROLE_CONFIG[activeRole] || ROLE_CONFIG.player;
+      const activeRole = (params.get('role') || 'general').toLowerCase();
+      const roleConfig = ROLE_CONFIG[activeRole] || ROLE_CONFIG.general;
 
       document.title = `${roleConfig.panelTitle} | NextScout`;
       document.getElementById('heroTitle').textContent = roleConfig.heroTitle;
