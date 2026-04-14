@@ -4,15 +4,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>NextScout</title>
-    <meta name="description" content="NextScout oyuncular, scoutlar ve takimlar icin yeni nesil futbol kesif platformu.">
+    <meta name="description" content="NextScout oyuncular, scoutlar ve kulüpler için yeni nesil futbol keşif platformu.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #07111f;
-            --panel: rgba(10, 19, 34, 0.82);
-            --line: rgba(255, 255, 255, 0.14);
+            --panel: rgba(10, 19, 34, 0.84);
+            --panel-strong: rgba(11, 22, 40, 0.96);
+            --line: rgba(255, 255, 255, 0.12);
+            --line-soft: rgba(255, 255, 255, 0.06);
             --text: #f6f7fb;
             --muted: #bcc6d6;
             --accent: #ff8a1d;
@@ -29,8 +31,8 @@
             font-family: "Manrope", sans-serif;
             color: var(--text);
             background:
-                radial-gradient(circle at 15% 20%, rgba(255, 138, 29, 0.28), transparent 24%),
-                radial-gradient(circle at 82% 12%, rgba(88, 160, 255, 0.24), transparent 22%),
+                radial-gradient(circle at 14% 18%, rgba(255, 138, 29, 0.24), transparent 24%),
+                radial-gradient(circle at 84% 12%, rgba(88, 160, 255, 0.18), transparent 20%),
                 linear-gradient(135deg, #06101c 0%, #0c1830 50%, #07111f 100%);
             overflow-x: hidden;
         }
@@ -40,11 +42,11 @@
             position: fixed;
             inset: 0;
             background:
-                linear-gradient(rgba(7, 17, 31, 0.2), rgba(7, 17, 31, 0.86)),
+                linear-gradient(rgba(7, 17, 31, 0.26), rgba(7, 17, 31, 0.88)),
                 url('https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
-            opacity: 0.34;
-            transform: scale(1.04);
+            opacity: 0.3;
             z-index: -2;
+            transform: scale(1.04);
         }
 
         body::after {
@@ -52,10 +54,10 @@
             position: fixed;
             inset: 0;
             background-image:
-                linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+                linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
             background-size: 56px 56px;
-            mask-image: linear-gradient(to bottom, rgba(0,0,0,.45), transparent 78%);
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,.44), transparent 74%);
             z-index: -1;
         }
 
@@ -67,21 +69,22 @@
         }
 
         .hero {
-            width: min(1120px, 100%);
+            width: min(1160px, 100%);
             display: grid;
-            grid-template-columns: minmax(0, 1.2fr) minmax(320px, 430px);
+            grid-template-columns: minmax(0, 1.35fr) minmax(320px, 400px);
             gap: 28px;
             align-items: stretch;
         }
 
-        .story {
-            padding: 38px;
+        .story,
+        .cta {
+            position: relative;
             border: 1px solid var(--line);
             border-radius: var(--edge);
-            background: linear-gradient(180deg, rgba(8, 15, 27, 0.76), rgba(8, 15, 27, 0.54));
+            background: linear-gradient(180deg, rgba(8, 15, 27, 0.82), rgba(8, 15, 27, 0.56));
             box-shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
             backdrop-filter: blur(10px);
-            position: relative;
+            overflow: hidden;
         }
 
         .story::after,
@@ -89,9 +92,12 @@
             content: "";
             position: absolute;
             inset: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 2px;
+            border: 1px solid var(--line-soft);
             pointer-events: none;
+        }
+
+        .story {
+            padding: 38px;
         }
 
         .eyebrow {
@@ -100,67 +106,74 @@
             gap: 10px;
             margin-bottom: 18px;
             padding: 8px 14px;
-            border: 1px solid rgba(255, 184, 77, 0.28);
+            border: 1px solid rgba(255, 184, 77, 0.24);
             border-radius: 2px;
             background: rgba(255, 184, 77, 0.06);
             color: #ffd08f;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 800;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
         }
 
         .eyebrow::before {
             content: "";
-            width: 9px;
-            height: 9px;
-            border-radius: 999px;
+            width: 8px;
+            height: 8px;
             background: linear-gradient(135deg, var(--accent), var(--accent-2));
             box-shadow: 0 0 14px rgba(255, 138, 29, 0.7);
         }
 
         h1 {
             margin: 0;
-            max-width: 11ch;
-            font-size: clamp(3rem, 7vw, 5.8rem);
-            line-height: 0.94;
+            max-width: 9ch;
+            font-size: clamp(3.2rem, 7vw, 6.4rem);
+            line-height: 0.9;
             letter-spacing: -0.05em;
         }
 
         .lead {
-            max-width: 600px;
-            margin: 22px 0 0;
+            max-width: 520px;
+            margin: 18px 0 0;
             color: var(--muted);
-            font-size: clamp(1rem, 2vw, 1.18rem);
-            line-height: 1.7;
+            font-size: clamp(1rem, 1.8vw, 1.08rem);
+            line-height: 1.75;
         }
 
-        .points {
-            display: flex;
-            flex-wrap: wrap;
+        .story-meta {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 12px;
-            margin: 26px 0 0;
+            margin: 30px 0 0;
+            max-width: 620px;
         }
 
-        .point {
-            padding: 12px 15px;
+        .story-stat {
+            padding: 14px 14px 16px;
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 2px;
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
-            color: #eef3fb;
-            font-size: 14px;
+        }
+
+        .story-stat strong {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: -0.04em;
+        }
+
+        .story-stat span {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
             font-weight: 700;
         }
 
         .cta {
             align-self: center;
             padding: 24px;
-            border: 1px solid var(--line);
-            border-radius: var(--edge);
             background: linear-gradient(180deg, rgba(12, 23, 41, 0.95), rgba(10, 18, 33, 0.88));
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.34);
-            backdrop-filter: blur(14px);
-            position: relative;
         }
 
         .visual {
@@ -177,7 +190,7 @@
         }
 
         .visual::after {
-            content: "Yetenek, veri ve firsat tek ekranda.";
+            content: "Yetenek, veri ve fırsat tek ekranda.";
             position: absolute;
             left: 18px;
             right: 18px;
@@ -279,7 +292,6 @@
             align-items: start;
             justify-content: space-between;
             gap: 16px;
-            margin-bottom: 0;
             padding: 26px 26px 18px;
             border-bottom: 1px solid rgba(255,255,255,.08);
         }
@@ -390,17 +402,15 @@
             .story,
             .cta {
                 padding: 24px;
-                border-radius: var(--edge);
             }
 
             .visual {
                 min-height: 210px;
             }
-        }
 
-        @media (max-width: 560px) {
-            .role-grid {
+            .story-meta {
                 grid-template-columns: 1fr;
+                max-width: 100%;
             }
         }
 
@@ -427,6 +437,12 @@
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
+
+        @media (max-width: 560px) {
+            .role-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -434,24 +450,33 @@
         <section class="hero">
             <div class="story">
                 <div class="eyebrow">NextScout Live</div>
-                <h1>Yeni nesil scout deneyimi.</h1>
+                <h1>Oyuncu ile fırsat arasındaki ekran.</h1>
                 <p class="lead">
-                    Oyuncular, scoutlar ve kulüpler için daha temiz bir başlangıç ekranı.
-                    Karmaşık giriş yerine tek odak: hızlı kayıt, net giriş ve takım akışı.
+                    Fazlalıkları attık. Daha net giriş, daha doğru rol seçimi ve
+                    daha premium bir başlangıç akışı kuruyoruz.
                 </p>
 
-                <div class="points">
-                    <div class="point">Oyuncu profilleri</div>
-                    <div class="point">Scout keşif akışı</div>
-                    <div class="point">Takım giriş alanı</div>
+                <div class="story-meta">
+                    <div class="story-stat">
+                        <strong>01</strong>
+                        <span>Doğru rolü seç, doğru akışa gir.</span>
+                    </div>
+                    <div class="story-stat">
+                        <strong>02</strong>
+                        <span>Oyuncu, scout ve kulüp tarafını ayır.</span>
+                    </div>
+                    <div class="story-stat">
+                        <strong>03</strong>
+                        <span>Canlıya çıkmadan önce yüzeyi tamamla.</span>
+                    </div>
                 </div>
             </div>
 
             <aside class="cta">
                 <div class="visual"></div>
-                <h2 class="panel-title">Sahaya çıkmaya hazır mısın?</h2>
+                <h2 class="panel-title">Girişi doğru kur, ürünü güçlü göster.</h2>
                 <p class="panel-copy">
-                    Hesabını oluştur, platforma giriş yap veya takım hesabınla ayrı akıştan devam et.
+                    Hesabını oluştur, mevcut hesabınla devam et veya takım tarafına ayrı akıştan geç.
                 </p>
 
                 <button class="primary" id="open-register" type="button">Kayıt Ol</button>
@@ -482,10 +507,10 @@
 
             <div class="sheet-actions">
                 <aside class="sheet-side">
-                    <h3>Rolunu sec.</h3>
+                    <h3>Rolünü seç.</h3>
                     <p>
-                        Giris ve kayit akisini role gore ayiriyoruz. Bireysel roller tek ailede,
-                        takim ve kulup tarafi ise ayri hatta ilerliyor.
+                        Giriş ve kayıt akışını role göre ayırıyoruz. Bireysel roller tek ailede,
+                        takım ve kulüp tarafı ise ayrı hatta ilerliyor.
                     </p>
                 </aside>
 
@@ -494,30 +519,30 @@
                     <div class="role-grid">
                         <a class="sheet-card role" href="/giris.html?role=player">
                             <strong>Oyuncu</strong>
-                            <span>Kendi profilini kur, videolarini ekle ve firsatlari takip et.</span>
+                            <span>Kendi profilini kur, videolarını ekle ve fırsatları takip et.</span>
                         </a>
                         <a class="sheet-card role" href="/giris.html?role=scout">
                             <strong>Scout</strong>
-                            <span>Oyuncu izle, raporla ve kesif akisina dogrudan gir.</span>
+                            <span>Oyuncu izle, raporla ve keşif akışına doğrudan gir.</span>
                         </a>
                         <a class="sheet-card role" href="/giris.html?role=manager">
                             <strong>Menajer</strong>
-                            <span>Oyuncularini temsil et, gorusmeleri ve firsatlari yonet.</span>
+                            <span>Oyuncularını temsil et, görüşmeleri ve fırsatları yönet.</span>
                         </a>
                         <a class="sheet-card role" href="/giris.html?role=coach">
-                            <strong>Antrenor</strong>
-                            <span>Gozlem, performans ve ekip akislarini kendi panelinden yonet.</span>
+                            <strong>Antrenör</strong>
+                            <span>Gözlem, performans ve ekip akışlarını kendi panelinden yönet.</span>
                         </a>
                         <a class="sheet-card role" href="/giris.html?role=lawyer">
                             <strong>Avukat</strong>
-                            <span>Sozlesme, hukuki surec ve profesyonel destek akisina gir.</span>
+                            <span>Sözleşme, hukuki süreç ve profesyonel destek akışına gir.</span>
                         </a>
                     </div>
 
-                    <div class="sheet-kicker">Kulup Tarafi</div>
+                    <div class="sheet-kicker">Kulüp Tarafı</div>
                     <a class="sheet-card role" href="/takim-giris.html">
                         <strong>Takım / Kulüp</strong>
-                        <span>Kulup kaydi, takim girisi ve oyuncu ihtiyaclarini yonetmek icin devam et.</span>
+                        <span>Kulüp kaydı, takım girişi ve oyuncu ihtiyaçlarını yönetmek için devam et.</span>
                     </a>
                 </div>
             </div>
