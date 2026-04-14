@@ -10,9 +10,10 @@
   <style>
     :root {
       --bg:#07111f;
-      --panel:rgba(10,19,34,.84);
-      --line:rgba(255,255,255,.12);
-      --line-soft:rgba(255,255,255,.06);
+      --panel:rgba(9,18,33,.9);
+      --panel-2:rgba(14,26,46,.92);
+      --line:rgba(255,255,255,.1);
+      --line-soft:rgba(255,255,255,.05);
       --text:#f6f7fb;
       --muted:#bcc6d6;
       --accent:#ff8a1d;
@@ -30,12 +31,9 @@
       font-family:"Manrope",sans-serif;
       color:var(--text);
       background:
-        radial-gradient(circle at 14% 18%, rgba(255,138,29,.24), transparent 24%),
-        radial-gradient(circle at 84% 12%, rgba(88,160,255,.18), transparent 20%),
-        linear-gradient(135deg, #06101c 0%, #0c1830 50%, #07111f 100%);
-      display:grid;
-      place-items:center;
-      padding:24px 16px;
+        radial-gradient(circle at 12% 14%, rgba(255,138,29,.22), transparent 22%),
+        radial-gradient(circle at 88% 8%, rgba(90,150,255,.14), transparent 18%),
+        linear-gradient(135deg, #06101c 0%, #0b1730 48%, #07111f 100%);
       overflow-x:hidden;
     }
 
@@ -44,11 +42,11 @@
       position:fixed;
       inset:0;
       background:
-        linear-gradient(rgba(7,17,31,.3), rgba(7,17,31,.88)),
+        linear-gradient(rgba(7,17,31,.3), rgba(7,17,31,.86)),
         url('https://images.unsplash.com/photo-1511886929837-354d827aae26?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
-      opacity:.28;
+      opacity:.24;
       z-index:-2;
-      transform:scale(1.04);
+      transform:scale(1.03);
     }
 
     body::after {
@@ -56,35 +54,38 @@
       position:fixed;
       inset:0;
       background-image:
-        linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
-      background-size:56px 56px;
-      mask-image:linear-gradient(to bottom, rgba(0,0,0,.44), transparent 74%);
+        linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+      background-size:60px 60px;
+      mask-image:linear-gradient(to bottom, rgba(0,0,0,.42), transparent 78%);
       z-index:-1;
     }
 
+    .page {
+      width:min(1220px, 100%);
+      margin:0 auto;
+      padding:18px 18px 40px;
+    }
+
     .shell {
-      width:min(1160px, 100%);
       display:grid;
-      grid-template-columns:repeat(2, minmax(0, 1fr));
-      gap:28px;
+      grid-template-columns:minmax(0, 1.05fr) minmax(0, 1.2fr);
+      gap:22px;
       align-items:stretch;
     }
 
-    .story,
-    .panel {
+    .intro,
+    .workspace {
       position:relative;
-      min-height:660px;
       border:1px solid var(--line);
       border-radius:var(--edge);
-      background:linear-gradient(180deg, rgba(8,15,27,.82), rgba(8,15,27,.56));
-      box-shadow:0 24px 80px rgba(0,0,0,.38);
-      backdrop-filter:blur(10px);
       overflow:hidden;
+      box-shadow:0 26px 82px rgba(0,0,0,.34);
+      backdrop-filter:blur(10px);
     }
 
-    .story::after,
-    .panel::after {
+    .intro::after,
+    .workspace::after {
       content:"";
       position:absolute;
       inset:14px;
@@ -92,20 +93,23 @@
       pointer-events:none;
     }
 
-    .story {
+    .intro {
+      min-height:700px;
       padding:38px;
       display:flex;
       flex-direction:column;
       justify-content:space-between;
+      background:
+        linear-gradient(180deg, rgba(10,18,33,.84), rgba(9,17,30,.68)),
+        linear-gradient(145deg, rgba(255,138,29,.08), transparent 45%);
     }
 
-    .eyebrow {
+    .intro-kicker {
       display:inline-flex;
       align-items:center;
       gap:10px;
-      margin-bottom:18px;
       padding:8px 14px;
-      border:1px solid rgba(255,184,77,.24);
+      border:1px solid rgba(255,184,77,.22);
       border-radius:2px;
       background:rgba(255,184,77,.06);
       color:#ffd08f;
@@ -115,120 +119,113 @@
       text-transform:uppercase;
     }
 
-    .eyebrow::before {
+    .intro-kicker::before {
       content:"";
       width:8px;
       height:8px;
       background:linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow:0 0 14px rgba(255,138,29,.7);
     }
 
     h1 {
-      margin:0;
+      margin:18px 0 0;
       max-width:11ch;
-      font-size:clamp(2.1rem, 4vw, 3.6rem);
+      font-size:clamp(2.2rem, 4.2vw, 3.8rem);
       line-height:.98;
       letter-spacing:-.05em;
     }
 
     .lead {
-      max-width:520px;
+      max-width:540px;
       margin:18px 0 0;
       color:var(--muted);
-      font-size:clamp(1rem, 1.8vw, 1.08rem);
+      font-size:1.04rem;
       line-height:1.75;
     }
 
-    .story-grid {
+    .info-grid {
       display:grid;
       grid-template-columns:repeat(2, minmax(0, 1fr));
       gap:12px;
-      margin-top:28px;
-      max-width:620px;
+      margin-top:32px;
     }
 
-    .story-card {
-      padding:14px 14px 16px;
-      border:1px solid rgba(255,255,255,.12);
+    .info-card {
+      padding:16px;
+      border:1px solid rgba(255,255,255,.1);
       border-radius:2px;
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      background:rgba(255,255,255,.04);
     }
 
-    .story-card strong {
+    .info-card strong {
       display:block;
-      margin-bottom:6px;
+      margin-bottom:8px;
       font-size:24px;
+      letter-spacing:-.04em;
+    }
+
+    .info-card span {
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.6;
+      font-weight:700;
+    }
+
+    .workspace {
+      min-height:700px;
+      padding:24px;
+      background:
+        linear-gradient(180deg, rgba(12,23,41,.95), rgba(10,18,33,.88));
+      display:grid;
+      grid-template-rows:auto auto 1fr;
+      gap:18px;
+    }
+
+    .workspace-head h2 {
+      margin:0 0 8px;
+      font-size:30px;
       line-height:1;
       letter-spacing:-.04em;
     }
 
-    .story-card span {
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.5;
-      font-weight:700;
-    }
-
-    .panel {
-      display:grid;
-      grid-template-rows:auto 1fr;
-      background:linear-gradient(180deg, rgba(12,23,41,.95), rgba(10,18,33,.88));
-    }
-
-    .panel-head {
-      display:flex;
-      justify-content:space-between;
-      gap:16px;
-      align-items:flex-start;
-      padding:22px 24px 16px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-    }
-
-    .panel-head h2 {
+    .workspace-head p {
       margin:0;
-      font-size:28px;
-      line-height:1;
-    }
-
-    .panel-head p {
-      margin:8px 0 0;
       color:var(--muted);
       font-size:14px;
-      line-height:1.6;
+      line-height:1.65;
+      max-width:560px;
     }
 
-    .back-link {
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      width:42px;
-      height:42px;
-      border:1px solid rgba(255,255,255,.12);
+    .workspace-strip {
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:10px;
+    }
+
+    .strip-card {
+      padding:13px 14px;
+      border:1px solid rgba(255,255,255,.09);
       border-radius:2px;
-      text-decoration:none;
-      color:#fff;
-      background:rgba(255,255,255,.06);
-      font-size:18px;
-      font-weight:800;
-      flex:0 0 auto;
+      background:rgba(255,255,255,.04);
+      font-size:12px;
+      font-weight:700;
+      color:var(--muted);
     }
 
-    .panel-body {
+    .auth-grid {
       display:grid;
       grid-template-columns:repeat(2, minmax(0, 1fr));
       gap:14px;
-      padding:24px;
       align-items:stretch;
     }
 
     .auth-card {
-      height:100%;
       display:flex;
       flex-direction:column;
       padding:18px;
       border:1px solid rgba(255,255,255,.1);
       border-radius:2px;
-      background:rgba(255,255,255,.04);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
     }
 
     .auth-card h3 {
@@ -254,9 +251,9 @@
     label {
       display:grid;
       gap:6px;
+      color:var(--muted);
       font-size:13px;
       font-weight:700;
-      color:var(--muted);
     }
 
     input {
@@ -292,7 +289,7 @@
       color:#251102;
       font:inherit;
       font-weight:800;
-      padding:14px 16px;
+      padding:15px 16px;
       cursor:pointer;
       text-transform:uppercase;
       letter-spacing:.08em;
@@ -324,86 +321,98 @@
       color:#d1fae5;
     }
 
-    @media (max-width: 980px) {
+    @media (max-width: 1020px) {
       .shell {
         grid-template-columns:1fr;
       }
 
-      .story,
-      .panel {
+      .intro,
+      .workspace {
         min-height:auto;
       }
     }
 
-    @media (max-width: 720px) {
-      .panel-body,
-      .story-grid {
+    @media (max-width: 760px) {
+      .auth-grid,
+      .workspace-strip,
+      .info-grid {
         grid-template-columns:1fr;
       }
+
+      .intro,
+      .workspace {
+        padding:20px;
+      }
+
     }
   </style>
 </head>
 <body>
-  <main class="shell">
-    <section class="story">
-      <div>
-        <div class="eyebrow">Team Access</div>
-        <h1>Takim ve kulup tarafi icin ayri giris alani.</h1>
-        <p class="lead">
-          Kulup hesabi olusturma, mevcut takim girisi ve oyuncu yonetimi ayni akista toplanir.
-          Yeni kayit ve mevcut giris buradan devam eder.
-        </p>
-      </div>
-
-      <div class="story-grid">
-        <div class="story-card">
-          <strong>01</strong>
-          <span>Yeni takim hesabini birkac adimda olustur.</span>
-        </div>
-        <div class="story-card">
-          <strong>02</strong>
-          <span>Mevcut kulup girisini ayni panelden yonet.</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="panel">
-      <header class="panel-head">
+  <div class="page">
+    <main class="shell">
+      <section class="intro">
         <div>
-          <h2>Takim Girisi</h2>
-          <p>Yeni kulup hesabi olustur veya mevcut takim hesabinla devam et.</p>
+          <div class="intro-kicker">Kulup ve Takim Alani</div>
+          <h1>Takim ve kulup tarafi icin ayri giris alani.</h1>
+          <p class="lead">
+            Kulup hesabi olusturma, mevcut takim girisi ve oyuncu yonetimi ayni merkezde toplanir.
+            Bu alan bireysel giristen ayridir ve kulup akisina gore calisir.
+          </p>
         </div>
-        <a class="back-link" href="/" aria-label="Ana sayfaya don">×</a>
-      </header>
 
-      <div class="panel-body">
-        <section class="auth-card" aria-label="Takim yeni hesap alani">
-          <h3>Yeni Takim Hesabi</h3>
-          <p>Takim adini ve hesap bilgilerini gir. Kayit sonrasi dogrulama akis devreye girer.</p>
-          <form class="form-grid" id="registerForm">
-            <label>Takim Adi<input type="text" name="name" placeholder="Takim adini girin" required></label>
-            <label>E-posta<input type="email" name="email" placeholder="ornek@mail.com" required></label>
-            <label>Sifre<input type="password" name="password" placeholder="Sifre olusturun" required minlength="8"></label>
-            <label>Sifre Tekrar<input type="password" name="password_confirmation" placeholder="Sifreyi tekrar girin" required minlength="8"></label>
-            <button class="btn" type="submit">Kayit Ol</button>
-            <div id="registerMsg"></div>
-          </form>
-        </section>
+        <div class="info-grid">
+          <div class="info-card">
+            <strong>01</strong>
+            <span>Yeni kulup hesabini ac ve yapini sistemde net bir sekilde kur.</span>
+          </div>
+          <div class="info-card">
+            <strong>02</strong>
+            <span>Mevcut takim girisini tek panelden yonet ve ilgili ekrana gec.</span>
+          </div>
+        </div>
+      </section>
 
-        <section class="auth-card" aria-label="Takim giris alani">
-          <h3>Mevcut Takim Girisi</h3>
-          <p>Kayitli takim veya kulup hesabinla devam et. Giristen sonra ilgili panel acilir.</p>
-          <form class="form-grid" id="loginForm">
-            <label>E-posta<input type="email" name="email" placeholder="ornek@mail.com" required></label>
-            <label>Sifre<input type="password" name="password" placeholder="Sifrenizi girin" required></label>
-            <label class="remember-row"><input type="checkbox">Beni Hatirla</label>
-            <button class="btn" type="submit">Giris Yap</button>
-            <div id="loginMsg"></div>
-          </form>
-        </section>
-      </div>
-    </section>
-  </main>
+      <section class="workspace">
+        <header class="workspace-head">
+          <h2>Takim Girisi</h2>
+          <p>Yeni kulup hesabi olustur veya mevcut takim hesabinla devam et. Iki akisi ayni panelde ama ayri bloklarda tutuyoruz.</p>
+        </header>
+
+        <div class="workspace-strip">
+          <div class="strip-card">Kulup hesabi</div>
+          <div class="strip-card">Takim girisi</div>
+          <div class="strip-card">Oyuncu yonetimi</div>
+        </div>
+
+        <div class="auth-grid">
+          <section class="auth-card" aria-label="Takim yeni hesap alani">
+            <h3>Yeni Takim Hesabi</h3>
+            <p>Takim adini ve hesap bilgilerini gir. Kayit sonrasi dogrulama akis devreye girer.</p>
+            <form class="form-grid" id="registerForm">
+              <label>Takim Adi<input type="text" name="name" placeholder="Takim adini girin" required></label>
+              <label>E-posta<input type="email" name="email" placeholder="ornek@mail.com" required></label>
+              <label>Sifre<input type="password" name="password" placeholder="Sifre olusturun" required minlength="8"></label>
+              <label>Sifre Tekrar<input type="password" name="password_confirmation" placeholder="Sifreyi tekrar girin" required minlength="8"></label>
+              <button class="btn" type="submit">Kayit Ol</button>
+              <div id="registerMsg"></div>
+            </form>
+          </section>
+
+          <section class="auth-card" aria-label="Takim giris alani">
+            <h3>Mevcut Takim Girisi</h3>
+            <p>Kayitli takim veya kulup hesabinla devam et. Giristen sonra ilgili panel acilir.</p>
+            <form class="form-grid" id="loginForm">
+              <label>E-posta<input type="email" name="email" placeholder="ornek@mail.com" required></label>
+              <label>Sifre<input type="password" name="password" placeholder="Sifrenizi girin" required></label>
+              <label class="remember-row"><input type="checkbox">Beni Hatirla</label>
+              <button class="btn" type="submit">Giris Yap</button>
+              <div id="loginMsg"></div>
+            </form>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
 
   <script>
     (function () {
