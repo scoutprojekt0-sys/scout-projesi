@@ -108,3 +108,10 @@ docker system df
 - `nextscout.pro` and `api.nextscout.pro` are behind Caddy.
 - App traffic is proxied to Docker nginx on `127.0.0.1:8081`.
 - If DNS acts stale, test with time and recheck.
+
+## Model Comparison
+
+```bash
+python scripts/compare_run_metrics.py runs/basketball/player_ball_detector13/validation_summary.json
+python scripts/compare_run_metrics.py runs/volleyball/player_ball_detector2/validation_summary.json
+```
