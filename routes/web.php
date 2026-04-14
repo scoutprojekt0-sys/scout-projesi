@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect('/index.html');
+    return view('landing');
 });
 
 Route::get('/scout-et.html', function () {
