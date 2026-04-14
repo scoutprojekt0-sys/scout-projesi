@@ -450,10 +450,9 @@
         <section class="hero">
             <div class="story">
                 <div class="eyebrow">NextScout Live</div>
-                <h1>Oyuncu ile fırsat arasındaki ekran.</h1>
+                <h1>Oyuncu, scout ve kulüpler için tek giriş noktası.</h1>
                 <p class="lead">
-                    Fazlalıkları attık. Daha net giriş, daha doğru rol seçimi ve
-                    daha premium bir başlangıç akışı kuruyoruz.
+                    Hesabına giriş yap veya kayıt ol. Sonraki adımda rolüne uygun alan açılır.
                 </p>
 
                 <div class="story-meta">
