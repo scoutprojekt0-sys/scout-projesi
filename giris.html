@@ -4,111 +4,254 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Giris | NextScout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --page-bg:#0b1220;
-      --panel:#111827;
-      --panel-2:#1f2937;
-      --line:#374151;
-      --text:#f9fafb;
-      --muted:#e5e7eb;
-      --muted-2:#9ca3af;
-      --primary:#1d4ed8;
-      --primary-2:#2563eb;
-      --error:#ef4444;
+      --bg:#07111f;
+      --panel:rgba(10,19,34,.86);
+      --panel-strong:rgba(11,22,40,.96);
+      --line:rgba(255,255,255,.12);
+      --line-soft:rgba(255,255,255,.07);
+      --text:#f6f7fb;
+      --muted:#bcc6d6;
+      --accent:#ff8a1d;
+      --accent-2:#ffb84d;
       --ok:#10b981;
+      --error:#ef4444;
+      --edge:8px;
     }
+
     * { box-sizing:border-box; }
+
     body {
       margin:0;
       min-height:100vh;
-      font-family:Arial,sans-serif;
+      font-family:"Manrope",sans-serif;
       color:var(--text);
       background:
-        radial-gradient(circle at top, rgba(37,99,235,.16), transparent 32%),
-        linear-gradient(180deg, #0f172a 0%, var(--page-bg) 100%);
+        radial-gradient(circle at 14% 18%, rgba(255,138,29,.24), transparent 24%),
+        radial-gradient(circle at 84% 12%, rgba(88,160,255,.18), transparent 20%),
+        linear-gradient(135deg, #06101c 0%, #0c1830 50%, #07111f 100%);
       display:grid;
       place-items:center;
-      padding:24px 14px;
+      padding:24px 16px;
+      overflow-x:hidden;
     }
+
+    body::before {
+      content:"";
+      position:fixed;
+      inset:0;
+      background:
+        linear-gradient(rgba(7,17,31,.32), rgba(7,17,31,.9)),
+        url('https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+      opacity:.28;
+      z-index:-2;
+      transform:scale(1.04);
+    }
+
+    body::after {
+      content:"";
+      position:fixed;
+      inset:0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+      background-size:56px 56px;
+      mask-image:linear-gradient(to bottom, rgba(0,0,0,.44), transparent 74%);
+      z-index:-1;
+    }
+
     .shell {
-      width:min(92vw, 440px);
+      width:min(1100px, 100%);
+      display:grid;
+      grid-template-columns:minmax(0, 1.08fr) minmax(340px, 430px);
+      gap:24px;
+      align-items:stretch;
     }
+
+    .story,
     .card {
-      border:1px solid #4b5563;
-      border-radius:20px;
-      background:linear-gradient(180deg, var(--panel-2) 0%, var(--panel) 100%);
-      box-shadow:0 30px 80px rgba(0,0,0,.45);
+      position:relative;
+      border:1px solid var(--line);
+      border-radius:var(--edge);
+      background:linear-gradient(180deg, rgba(8,15,27,.82), rgba(8,15,27,.58));
+      box-shadow:0 24px 80px rgba(0,0,0,.38);
+      backdrop-filter:blur(10px);
       overflow:hidden;
     }
-    .card-header {
-      display:flex;
+
+    .story::after,
+    .card::after {
+      content:"";
+      position:absolute;
+      inset:14px;
+      border:1px solid var(--line-soft);
+      pointer-events:none;
+    }
+
+    .story {
+      padding:34px;
+    }
+
+    .eyebrow {
+      display:inline-flex;
       align-items:center;
+      gap:10px;
+      margin-bottom:18px;
+      padding:8px 14px;
+      border:1px solid rgba(255,184,77,.24);
+      border-radius:2px;
+      background:rgba(255,184,77,.06);
+      color:#ffd08f;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+    }
+
+    .eyebrow::before {
+      content:"";
+      width:8px;
+      height:8px;
+      background:linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow:0 0 14px rgba(255,138,29,.7);
+    }
+
+    h1 {
+      margin:0;
+      font-size:clamp(2.8rem, 6vw, 5.4rem);
+      line-height:.94;
+      letter-spacing:-.05em;
+      max-width:9ch;
+    }
+
+    .lead {
+      margin:20px 0 0;
+      max-width:590px;
+      color:var(--muted);
+      font-size:clamp(1rem, 2vw, 1.15rem);
+      line-height:1.75;
+    }
+
+    .role-strip {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin:24px 0 0;
+    }
+
+    .role-pill {
+      padding:11px 14px;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:2px;
+      background:rgba(255,255,255,.05);
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .card {
+      padding:0;
+      background:linear-gradient(180deg, rgba(12,23,41,.95), rgba(10,18,33,.88));
+    }
+
+    .card-head {
+      padding:22px 24px 16px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex;
       justify-content:space-between;
       gap:16px;
-      padding:18px 22px;
-      background:linear-gradient(135deg, #1e3a8a 0%, var(--primary) 100%);
+      align-items:flex-start;
     }
-    .card-header h1 {
+
+    .card-head h2 {
       margin:0;
-      font-size:20px;
-      letter-spacing:.2px;
+      font-size:28px;
+      line-height:1;
     }
-    .card-header p {
-      margin:6px 0 0;
-      color:rgba(255,255,255,.84);
-      font-size:13px;
-      line-height:1.45;
+
+    .card-head p {
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.6;
     }
+
     .back-link {
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      min-width:42px;
+      width:42px;
       height:42px;
-      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:2px;
       text-decoration:none;
       color:#fff;
-      background:rgba(255,255,255,.14);
-      font-size:20px;
-      font-weight:700;
+      background:rgba(255,255,255,.06);
+      font-size:18px;
+      font-weight:800;
+      flex:0 0 auto;
     }
+
     .card-body {
-      padding:22px;
+      padding:20px 24px 24px;
     }
+
+    .role-badge {
+      display:inline-flex;
+      align-items:center;
+      margin-bottom:16px;
+      padding:9px 12px;
+      border-radius:2px;
+      background:rgba(255,184,77,.08);
+      border:1px solid rgba(255,184,77,.18);
+      color:#ffd08f;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
     .note {
       margin:0 0 18px;
       color:var(--muted);
-      line-height:1.5;
+      line-height:1.65;
       font-size:14px;
     }
+
     .row {
       display:grid;
-      gap:6px;
+      gap:7px;
       margin-bottom:14px;
     }
+
     label {
       font-size:13px;
       font-weight:700;
       color:var(--muted);
+      letter-spacing:.02em;
     }
+
     input {
       width:100%;
-      border:1px solid var(--line);
-      border-radius:12px;
-      background:#111827;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:2px;
+      background:#101a2b;
       color:var(--text);
-      padding:13px 14px;
+      padding:14px 14px;
       font:inherit;
       outline:none;
     }
-    input::placeholder {
-      color:var(--muted-2);
-    }
+
+    input::placeholder { color:#8691a5; }
+
     input:focus {
-      border-color:#60a5fa;
-      box-shadow:0 0 0 3px rgba(37,99,235,.18);
+      border-color:rgba(255,184,77,.5);
+      box-shadow:0 0 0 3px rgba(255,138,29,.12);
     }
+
     .meta-row {
       display:flex;
       align-items:center;
@@ -116,61 +259,88 @@
       gap:12px;
       margin:6px 0 18px;
       font-size:13px;
+      color:var(--muted);
     }
+
     .meta-row a,
     .meta a {
-      color:var(--muted);
+      color:#f0f4fb;
       text-decoration:none;
     }
+
     .btn {
       width:100%;
       border:0;
-      border-radius:12px;
-      background:linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
-      color:#fff;
+      border-radius:2px;
+      background:linear-gradient(135deg, #f3922b, var(--accent-2));
+      color:#251102;
       font:inherit;
       font-weight:800;
-      padding:13px 16px;
+      padding:16px 16px;
       cursor:pointer;
-      box-shadow:0 10px 24px rgba(37,99,235,.3);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      box-shadow:0 16px 34px rgba(255,138,29,.24);
     }
+
     .btn:disabled {
-      opacity:.7;
+      opacity:.72;
       cursor:not-allowed;
     }
+
     .msg {
       display:none;
       margin-top:12px;
-      padding:10px 12px;
-      border-radius:10px;
+      padding:11px 12px;
+      border-radius:2px;
       font-size:13px;
       font-weight:700;
     }
+
     .msg.show { display:block; }
+
     .msg.error {
       background:rgba(239,68,68,.16);
       border:1px solid rgba(239,68,68,.45);
       color:#fecaca;
     }
+
     .msg.success {
       background:rgba(16,185,129,.16);
       border:1px solid rgba(16,185,129,.45);
       color:#d1fae5;
     }
+
     .meta {
       display:flex;
       justify-content:space-between;
       gap:12px;
       margin-top:16px;
       padding-top:16px;
-      border-top:1px solid rgba(156,163,175,.18);
+      border-top:1px solid rgba(156,163,175,.16);
       font-size:13px;
+      color:var(--muted);
     }
-    @media (max-width: 480px) {
-      .card-header,
-      .card-body {
-        padding:18px;
+
+    @media (max-width: 920px) {
+      .shell {
+        grid-template-columns:1fr;
       }
+
+      .story,
+      .card {
+        border-radius:var(--edge);
+      }
+    }
+
+    @media (max-width: 520px) {
+      .story,
+      .card-head,
+      .card-body {
+        padding-left:18px;
+        padding-right:18px;
+      }
+
       .meta,
       .meta-row {
         flex-direction:column;
@@ -181,16 +351,35 @@
 </head>
 <body>
   <main class="shell">
+    <section class="story">
+      <div class="eyebrow">NextScout Access</div>
+      <h1 id="heroTitle">Oyuncu girisi, net ve hizli.</h1>
+      <p class="lead" id="heroLead">
+        Hesabina dogru rolden gir. Her rol ayni altyapiyi kullanir ama deneyim, ekranlar ve yonlendirmeler role gore sekillenir.
+      </p>
+      <div class="role-strip">
+        <div class="role-pill">Oyuncu</div>
+        <div class="role-pill">Scout</div>
+        <div class="role-pill">Menajer</div>
+        <div class="role-pill">Antrenor</div>
+        <div class="role-pill">Avukat</div>
+      </div>
+    </section>
+
     <section class="card">
-      <header class="card-header">
+      <header class="card-head">
         <div>
-          <h1>Giris Yap</h1>
-          <p>Eski hesaplar dahil tum kullanicilar icin tek giris noktasi.</p>
+          <h2 id="panelTitle">Giris Yap</h2>
+          <p id="panelCopy">Kayitli hesabin varsa role uygun paneline buradan gececeksin.</p>
         </div>
-        <a class="back-link" href="index.html" aria-label="Ana sayfaya don">×</a>
+        <a class="back-link" href="/" aria-label="Ana sayfaya don">×</a>
       </header>
       <div class="card-body">
-        <p class="note">Tum roller ayni backend giris akisini kullanir. Kayitli hesabin varsa burada dogrudan acilir.</p>
+        <div class="role-badge" id="roleBadge">Oyuncu Akisi</div>
+        <p class="note" id="panelNote">
+          E-posta ve sifreni gir. Basarili giris sonrasinda sistem seni role uygun dashboard'a yonlendirir.
+        </p>
+
         <form id="loginForm">
           <div class="row">
             <label for="email">E-posta</label>
@@ -201,21 +390,85 @@
             <input id="password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
           </div>
           <div class="meta-row">
-            <span>Beni hatirla destegi token ile otomatik calisir.</span>
-            <a href="index.html#kayit">Hesabin yok mu?</a>
+            <span id="metaHint">Kendi hesabinla dogrudan giris yap.</span>
+            <a id="registerLink" href="/">Hesabin yok mu? Kayit ol</a>
           </div>
           <button class="btn" id="loginBtn" type="submit">Giris Yap</button>
           <div class="msg" id="loginMsg"></div>
         </form>
+
         <div class="meta">
-          <a href="index.html">Ana sayfaya don</a>
-          <a href="menejer-giris.html">Rol bazli girisler</a>
+          <a href="/">Ana sayfaya don</a>
+          <a href="/takim-giris.html">Takim / kulup girisi</a>
         </div>
       </div>
     </section>
   </main>
+
   <script>
     (function () {
+      const ROLE_CONFIG = {
+        player: {
+          badge: 'Oyuncu Akisi',
+          heroTitle: 'Oyuncu girisi, net ve hizli.',
+          heroLead: 'Profilini yonet, videolarini yukle ve seni bekleyen firsatlara daha hizli ulas.',
+          panelTitle: 'Oyuncu Girisi',
+          panelCopy: 'Kendi oyuncu paneline girmek icin hesap bilgilerini kullan.',
+          panelNote: 'Oyuncu hesabin varsa giris yaptiginda dogrudan kendi dashboard ekranina yonlenirsin.',
+          metaHint: 'Oyuncu hesabinla devam et.',
+        },
+        scout: {
+          badge: 'Scout Akisi',
+          heroTitle: 'Scout merkezi sana acik.',
+          heroLead: 'Kesif, raporlama ve oyuncu degerlendirme akisina dogrudan gir.',
+          panelTitle: 'Scout Girisi',
+          panelCopy: 'Scout arayuzune ulasmak icin girisini tamamla.',
+          panelNote: 'Scout hesabin aktifse raporlarina ve analiz alanina buradan gecersin.',
+          metaHint: 'Scout hesabinla devam et.',
+        },
+        manager: {
+          badge: 'Menajer Akisi',
+          heroTitle: 'Menajer paneline kontrollu giris.',
+          heroLead: 'Oyuncularini, teklifleri ve profesyonel surecleri tek noktadan yonet.',
+          panelTitle: 'Menajer Girisi',
+          panelCopy: 'Menajer paneli icin giris bilgilerini kullan.',
+          panelNote: 'Menajer rolu icin giris sonrasi dashboard yonlendirmesi otomatik yapilir.',
+          metaHint: 'Menajer hesabinla devam et.',
+        },
+        coach: {
+          badge: 'Antrenor Akisi',
+          heroTitle: 'Antrenor arayuzu hazir.',
+          heroLead: 'Oyuncu takibi, performans ve ekip akislarini ayni duzende yonet.',
+          panelTitle: 'Antrenor Girisi',
+          panelCopy: 'Antrenor hesabinla kendi paneline gir.',
+          panelNote: 'Antrenor olarak giris yaptiginda gozlem ve performans alanlari acilir.',
+          metaHint: 'Antrenor hesabinla devam et.',
+        },
+        lawyer: {
+          badge: 'Avukat Akisi',
+          heroTitle: 'Hukuki surec paneline gir.',
+          heroLead: 'Sozlesme, koruma ve profesyonel destek sureclerini guvenli sekilde yonet.',
+          panelTitle: 'Avukat Girisi',
+          panelCopy: 'Avukat hesabiyla platforma baglan.',
+          panelNote: 'Avukat rolu ile giris yaptiginda hukuki dashboard ekranina yonlenirsin.',
+          metaHint: 'Avukat hesabinla devam et.',
+        },
+      };
+
+      const params = new URLSearchParams(window.location.search);
+      const activeRole = (params.get('role') || 'player').toLowerCase();
+      const roleConfig = ROLE_CONFIG[activeRole] || ROLE_CONFIG.player;
+
+      document.title = `${roleConfig.panelTitle} | NextScout`;
+      document.getElementById('heroTitle').textContent = roleConfig.heroTitle;
+      document.getElementById('heroLead').textContent = roleConfig.heroLead;
+      document.getElementById('panelTitle').textContent = roleConfig.panelTitle;
+      document.getElementById('panelCopy').textContent = roleConfig.panelCopy;
+      document.getElementById('panelNote').textContent = roleConfig.panelNote;
+      document.getElementById('roleBadge').textContent = roleConfig.badge;
+      document.getElementById('metaHint').textContent = roleConfig.metaHint;
+      document.getElementById('registerLink').setAttribute('href', '/');
+
       const form = document.getElementById('loginForm');
       const btn = document.getElementById('loginBtn');
       const msg = document.getElementById('loginMsg');
