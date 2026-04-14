@@ -18,6 +18,7 @@
             --accent: #ff8a1d;
             --accent-2: #ffb84d;
             --card: rgba(255, 255, 255, 0.08);
+            --edge: 8px;
         }
 
         * { box-sizing: border-box; }
@@ -76,10 +77,21 @@
         .story {
             padding: 38px;
             border: 1px solid var(--line);
-            border-radius: 32px;
+            border-radius: var(--edge);
             background: linear-gradient(180deg, rgba(8, 15, 27, 0.76), rgba(8, 15, 27, 0.54));
             box-shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
             backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .story::after,
+        .cta::after {
+            content: "";
+            position: absolute;
+            inset: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 2px;
+            pointer-events: none;
         }
 
         .eyebrow {
@@ -89,8 +101,8 @@
             margin-bottom: 18px;
             padding: 8px 14px;
             border: 1px solid rgba(255, 184, 77, 0.28);
-            border-radius: 999px;
-            background: rgba(255, 184, 77, 0.08);
+            border-radius: 2px;
+            background: rgba(255, 184, 77, 0.06);
             color: #ffd08f;
             font-size: 13px;
             font-weight: 800;
@@ -133,8 +145,8 @@
         .point {
             padding: 12px 15px;
             border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.06);
+            border-radius: 2px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
             color: #eef3fb;
             font-size: 14px;
             font-weight: 700;
@@ -144,16 +156,17 @@
             align-self: center;
             padding: 24px;
             border: 1px solid var(--line);
-            border-radius: 28px;
+            border-radius: var(--edge);
             background: linear-gradient(180deg, rgba(12, 23, 41, 0.95), rgba(10, 18, 33, 0.88));
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.34);
             backdrop-filter: blur(14px);
+            position: relative;
         }
 
         .visual {
             min-height: 240px;
             margin-bottom: 22px;
-            border-radius: 22px;
+            border-radius: 3px;
             background:
                 linear-gradient(160deg, rgba(255, 138, 29, 0.2), transparent 50%),
                 linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02)),
@@ -170,7 +183,7 @@
             right: 18px;
             bottom: 18px;
             padding: 12px 14px;
-            border-radius: 14px;
+            border-radius: 2px;
             background: rgba(5, 9, 18, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.1);
             font-size: 13px;
@@ -197,15 +210,17 @@
             align-items: center;
             justify-content: center;
             border: 0;
-            border-radius: 18px;
-            padding: 16px 20px;
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            border-radius: 2px;
+            padding: 18px 20px;
+            background: linear-gradient(135deg, #f3922b, var(--accent-2));
             color: #251102;
             font: inherit;
             font-size: 16px;
             font-weight: 800;
             cursor: pointer;
             box-shadow: 0 18px 36px rgba(255, 138, 29, 0.26);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
 
         .secondary-links {
@@ -219,12 +234,19 @@
             justify-content: space-between;
             align-items: center;
             padding: 14px 16px;
-            border-radius: 16px;
+            border-radius: 2px;
             background: var(--card);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--text);
             text-decoration: none;
             font-weight: 700;
+            transition: background .18s ease, border-color .18s ease, transform .18s ease;
+        }
+
+        .secondary-link:hover {
+            background: rgba(255, 255, 255, 0.11);
+            border-color: rgba(255, 184, 77, 0.28);
+            transform: translateY(-1px);
         }
 
         .secondary-link small {
@@ -237,7 +259,7 @@
             width: min(460px, calc(100vw - 24px));
             padding: 0;
             border: 0;
-            border-radius: 26px;
+            border-radius: var(--edge);
             background: linear-gradient(180deg, rgba(10, 20, 38, 0.98), rgba(8, 14, 28, 0.98));
             color: var(--text);
             box-shadow: 0 32px 90px rgba(0, 0, 0, 0.45);
@@ -277,7 +299,7 @@
             width: 42px;
             height: 42px;
             border: 1px solid rgba(255,255,255,.12);
-            border-radius: 999px;
+            border-radius: 2px;
             background: rgba(255,255,255,.06);
             color: var(--text);
             font-size: 18px;
@@ -292,7 +314,7 @@
         .sheet-card {
             display: block;
             padding: 16px 18px;
-            border-radius: 18px;
+            border-radius: 2px;
             text-decoration: none;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255,255,255,.1);
@@ -319,7 +341,7 @@
             .story,
             .cta {
                 padding: 24px;
-                border-radius: 24px;
+                border-radius: var(--edge);
             }
 
             .visual {
