@@ -311,6 +311,13 @@
             gap: 12px;
         }
 
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+
         .sheet-card {
             display: block;
             padding: 16px 18px;
@@ -319,6 +326,13 @@
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255,255,255,.1);
             color: var(--text);
+        }
+
+        .sheet-card.role {
+            min-height: 120px;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)),
+                rgba(255,255,255,.03);
         }
 
         .sheet-card strong {
@@ -331,6 +345,15 @@
             color: var(--muted);
             font-size: 13px;
             line-height: 1.5;
+        }
+
+        .sheet-kicker {
+            margin: 14px 0 8px;
+            color: #ffd08f;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
         }
 
         @media (max-width: 940px) {
@@ -346,6 +369,12 @@
 
             .visual {
                 min-height: 210px;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .role-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -396,19 +425,40 @@
             <div class="sheet-head">
                 <div>
                     <h2>Kayıt Ol</h2>
-                    <p>Hangi taraftan başlamak istediğini seç. Giriş ekranını sonra detaylandırırız.</p>
+                    <p>Rolünü seç ve doğru kayıt akışına gir. Takım hesabı ayrı, diğer roller aynı giriş ailesinde.</p>
                 </div>
                 <button class="close" type="button" id="close-register" aria-label="Kapat">×</button>
             </div>
 
             <div class="sheet-actions">
-                <a class="sheet-card" href="/giris.html">
-                    <strong>Bireysel kayıt / giriş</strong>
-                    <span>Oyuncu, scout veya kişisel hesap akışı için devam et.</span>
-                </a>
-                <a class="sheet-card" href="/takim-giris.html">
-                    <strong>Takım hesabı oluştur</strong>
-                    <span>Kulüp ve takım tarafı için ayrı kayıt ve giriş alanına git.</span>
+                <div class="sheet-kicker">Bireysel Roller</div>
+                <div class="role-grid">
+                    <a class="sheet-card role" href="/giris.html?role=player">
+                        <strong>Oyuncu</strong>
+                        <span>Kendi profilini kur, videolarini ekle ve firsatlari takip et.</span>
+                    </a>
+                    <a class="sheet-card role" href="/giris.html?role=scout">
+                        <strong>Scout</strong>
+                        <span>Oyuncu izle, raporla ve kesif akisina dogrudan gir.</span>
+                    </a>
+                    <a class="sheet-card role" href="/giris.html?role=manager">
+                        <strong>Menajer</strong>
+                        <span>Oyuncularini temsil et, gorusmeleri ve firsatlari yonet.</span>
+                    </a>
+                    <a class="sheet-card role" href="/giris.html?role=coach">
+                        <strong>Antrenor</strong>
+                        <span>Gozlem, performans ve ekip akislarini kendi panelinden yonet.</span>
+                    </a>
+                    <a class="sheet-card role" href="/giris.html?role=lawyer">
+                        <strong>Avukat</strong>
+                        <span>Sozlesme, hukuki surec ve profesyonel destek akisina gir.</span>
+                    </a>
+                </div>
+
+                <div class="sheet-kicker">Kulup Tarafi</div>
+                <a class="sheet-card role" href="/takim-giris.html">
+                    <strong>Takım / Kulüp</strong>
+                    <span>Kulup kaydi, takim girisi ve oyuncu ihtiyaclarini yonetmek icin devam et.</span>
                 </a>
             </div>
         </div>
