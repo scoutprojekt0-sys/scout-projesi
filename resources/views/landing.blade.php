@@ -256,7 +256,7 @@
         }
 
         dialog {
-            width: min(460px, calc(100vw - 24px));
+            width: min(980px, calc(100vw - 24px));
             padding: 0;
             border: 0;
             border-radius: var(--edge);
@@ -271,7 +271,7 @@
         }
 
         .sheet {
-            padding: 26px;
+            padding: 0;
         }
 
         .sheet-head {
@@ -279,7 +279,9 @@
             align-items: start;
             justify-content: space-between;
             gap: 16px;
-            margin-bottom: 18px;
+            margin-bottom: 0;
+            padding: 26px 26px 18px;
+            border-bottom: 1px solid rgba(255,255,255,.08);
         }
 
         .sheet-head h2 {
@@ -308,12 +310,36 @@
 
         .sheet-actions {
             display: grid;
-            gap: 12px;
+            grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
+            gap: 0;
+        }
+
+        .sheet-side {
+            padding: 24px 22px 26px 26px;
+            border-right: 1px solid rgba(255,255,255,.08);
+            background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015));
+        }
+
+        .sheet-side h3 {
+            margin: 0 0 10px;
+            font-size: 22px;
+            line-height: 1.05;
+        }
+
+        .sheet-side p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .sheet-body {
+            padding: 24px 26px 26px 22px;
         }
 
         .role-grid {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 12px;
             margin-top: 10px;
         }
@@ -329,7 +355,7 @@
         }
 
         .sheet-card.role {
-            min-height: 120px;
+            min-height: 126px;
             background:
                 linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)),
                 rgba(255,255,255,.03);
@@ -375,6 +401,30 @@
         @media (max-width: 560px) {
             .role-grid {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 860px) {
+            dialog {
+                width: min(680px, calc(100vw - 20px));
+            }
+
+            .sheet-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .sheet-side {
+                border-right: 0;
+                border-bottom: 1px solid rgba(255,255,255,.08);
+                padding-right: 26px;
+            }
+
+            .sheet-body {
+                padding-left: 26px;
+            }
+
+            .role-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
     </style>
@@ -431,35 +481,45 @@
             </div>
 
             <div class="sheet-actions">
-                <div class="sheet-kicker">Bireysel Roller</div>
-                <div class="role-grid">
-                    <a class="sheet-card role" href="/giris.html?role=player">
-                        <strong>Oyuncu</strong>
-                        <span>Kendi profilini kur, videolarini ekle ve firsatlari takip et.</span>
-                    </a>
-                    <a class="sheet-card role" href="/giris.html?role=scout">
-                        <strong>Scout</strong>
-                        <span>Oyuncu izle, raporla ve kesif akisina dogrudan gir.</span>
-                    </a>
-                    <a class="sheet-card role" href="/giris.html?role=manager">
-                        <strong>Menajer</strong>
-                        <span>Oyuncularini temsil et, gorusmeleri ve firsatlari yonet.</span>
-                    </a>
-                    <a class="sheet-card role" href="/giris.html?role=coach">
-                        <strong>Antrenor</strong>
-                        <span>Gozlem, performans ve ekip akislarini kendi panelinden yonet.</span>
-                    </a>
-                    <a class="sheet-card role" href="/giris.html?role=lawyer">
-                        <strong>Avukat</strong>
-                        <span>Sozlesme, hukuki surec ve profesyonel destek akisina gir.</span>
+                <aside class="sheet-side">
+                    <h3>Rolunu sec.</h3>
+                    <p>
+                        Giris ve kayit akisini role gore ayiriyoruz. Bireysel roller tek ailede,
+                        takim ve kulup tarafi ise ayri hatta ilerliyor.
+                    </p>
+                </aside>
+
+                <div class="sheet-body">
+                    <div class="sheet-kicker">Bireysel Roller</div>
+                    <div class="role-grid">
+                        <a class="sheet-card role" href="/giris.html?role=player">
+                            <strong>Oyuncu</strong>
+                            <span>Kendi profilini kur, videolarini ekle ve firsatlari takip et.</span>
+                        </a>
+                        <a class="sheet-card role" href="/giris.html?role=scout">
+                            <strong>Scout</strong>
+                            <span>Oyuncu izle, raporla ve kesif akisina dogrudan gir.</span>
+                        </a>
+                        <a class="sheet-card role" href="/giris.html?role=manager">
+                            <strong>Menajer</strong>
+                            <span>Oyuncularini temsil et, gorusmeleri ve firsatlari yonet.</span>
+                        </a>
+                        <a class="sheet-card role" href="/giris.html?role=coach">
+                            <strong>Antrenor</strong>
+                            <span>Gozlem, performans ve ekip akislarini kendi panelinden yonet.</span>
+                        </a>
+                        <a class="sheet-card role" href="/giris.html?role=lawyer">
+                            <strong>Avukat</strong>
+                            <span>Sozlesme, hukuki surec ve profesyonel destek akisina gir.</span>
+                        </a>
+                    </div>
+
+                    <div class="sheet-kicker">Kulup Tarafi</div>
+                    <a class="sheet-card role" href="/takim-giris.html">
+                        <strong>Takım / Kulüp</strong>
+                        <span>Kulup kaydi, takim girisi ve oyuncu ihtiyaclarini yonetmek icin devam et.</span>
                     </a>
                 </div>
-
-                <div class="sheet-kicker">Kulup Tarafi</div>
-                <a class="sheet-card role" href="/takim-giris.html">
-                    <strong>Takım / Kulüp</strong>
-                    <span>Kulup kaydi, takim girisi ve oyuncu ihtiyaclarini yonetmek icin devam et.</span>
-                </a>
             </div>
         </div>
     </dialog>
