@@ -77,7 +77,7 @@ class LegacyCompatibilityController extends Controller
                 'u.name',
                 'u.position',
                 'u.city',
-                DB::raw("'Sponsorlu oyuncu profili' as summary"),
+                'u.source_url',
                 DB::raw('bp.name as package_label'),
                 DB::raw('pb.ends_at as expires_at'),
                 DB::raw('pb.activated_at as created_at'),
@@ -89,7 +89,11 @@ class LegacyCompatibilityController extends Controller
             ->values()
             ->take(40)
             ->map(function ($row) {
-                unset($row->boosted_user_id, $row->discover_score);
+                $summary = trim((string) ($row->source_url ?? ''));
+                $row->summary = $summary !== '' && ! preg_match('/^https?:\/\//i', $summary)
+                    ? $summary
+                    : 'Sponsorlu oyuncu profili';
+                unset($row->source_url, $row->boosted_user_id, $row->discover_score);
                 return $row;
             });
 

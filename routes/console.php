@@ -238,7 +238,12 @@ Artisan::command('release:check {--env-file=}', function () {
             return false;
         }
 
-        return ! preg_match('/^\$\{[^}]+\}$/', trim($value));
+        $trimmed = trim($value);
+        if (preg_match('/^\$\{[^}]+\}$/', $trimmed)) {
+            return false;
+        }
+
+        return ! preg_match('/replace(?:-|_)?with|replace(?:-|_)?me|changeme|your-|example\\.com/i', $trimmed);
     };
 
     $envFile = $this->option('env-file');

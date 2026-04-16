@@ -41,6 +41,8 @@ class ReleaseReadinessCommandTest extends TestCase
         config()->set('mail.default', 'smtp');
         config()->set('cache.default', 'redis');
         config()->set('session.driver', 'cookie');
+        config()->set('session.secure', true);
+        config()->set('sanctum.stateful', ['app.example.com']);
         config()->set('logging.channels.stack.level', 'info');
 
         putenv('LOG_LEVEL=info');
@@ -86,6 +88,8 @@ class ReleaseReadinessCommandTest extends TestCase
             'CACHE_STORE=redis',
             'QUEUE_CONNECTION=redis',
             'SESSION_DRIVER=cookie',
+            'SESSION_SECURE_COOKIE=true',
+            'SANCTUM_STATEFUL_DOMAINS=app.example.com',
             'MAIL_MAILER=smtp',
             'MAIL_HOST=smtp.example.com',
             'MAIL_PORT=587',

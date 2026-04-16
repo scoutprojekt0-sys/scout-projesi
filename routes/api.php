@@ -110,7 +110,7 @@ Route::prefix('data-quality')->middleware(['auth:sanctum', 'admin'])->group(func
 });
 
 // Moderation Queue endpoints
-Route::prefix('moderation')->middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api', 'ability:staff'])->group(function () {
+Route::prefix('moderation')->middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->group(function () {
     Route::get('/', [ModerationController::class, 'index']);
     Route::get('/high-risk', [Week10AnomalyController::class, 'highRiskQueue']);
     Route::get('/stats', [ModerationController::class, 'stats']);
