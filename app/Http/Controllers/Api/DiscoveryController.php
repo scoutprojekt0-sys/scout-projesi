@@ -551,6 +551,26 @@ class DiscoveryController extends Controller
                 'joined_at' => $row->created_at,
             ])->values();
 
+        $coaches = DB::table('users')
+            ->leftJoin('staff_profiles', 'staff_profiles.user_id', '=', 'users.id')
+            ->where('users.role', 'coach')
+            ->orderByDesc('users.created_at')
+            ->limit(2)
+            ->get([
+                'users.id',
+                'users.name',
+                'users.city',
+                'users.created_at',
+                DB::raw("COALESCE(staff_profiles.organization, 'Antrenor AÄŸÄ±') as subtitle"),
+            ])
+            ->map(fn ($row) => [
+                'id' => (int) $row->id,
+                'name' => (string) ($row->name ?? 'Antrenor'),
+                'city' => (string) ($row->city ?? ''),
+                'subtitle' => (string) ($row->subtitle ?? 'Antrenor AÄŸÄ±'),
+                'joined_at' => $row->created_at,
+            ])->values();
+
         $clubs = DB::table('users')
             ->leftJoin('team_profiles', 'team_profiles.user_id', '=', 'users.id')
             ->whereIn('users.role', ['team', 'club'])
@@ -596,11 +616,12 @@ class DiscoveryController extends Controller
         return $this->successResponse([
             'scouts' => $scouts,
             'managers' => $managers,
+            'coaches' => $coaches,
             'clubs' => $clubs,
             'lawyers' => $lawyers,
         ], 'Platforma yeni katılan profesyoneller hazir.', 200, [
             'meta' => [
-                'count' => $scouts->count() + $managers->count() + $clubs->count() + $lawyers->count(),
+                'count' => $scouts->count() + $managers->count() + $coaches->count() + $clubs->count() + $lawyers->count(),
             ],
         ]);
     }

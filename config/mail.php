@@ -1,5 +1,7 @@
 <?php
 
+$mailFromAddress = (string) env('MAIL_FROM_ADDRESS', 'hello@example.com');
+
 return [
 
     /*
@@ -45,7 +47,7 @@ return [
             'port' => env('MAIL_PORT', 2525),
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
-            'timeout' => null,
+            'timeout' => (int) env('MAIL_TIMEOUT', 10),
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
 
@@ -111,7 +113,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+        'address' => $mailFromAddress,
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 

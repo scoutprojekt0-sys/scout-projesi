@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\Process\Process;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -23,6 +24,7 @@ class AiLabelingController extends Controller
         $sport = $this->normalizeSport($sport);
         $split = strtolower(trim((string) $request->query('split', 'train')));
         $latestOnly = filter_var($request->query('latest_only', false), FILTER_VALIDATE_BOOL);
+        $includeAnnotated = filter_var($request->query('include_annotated', false), FILTER_VALIDATE_BOOL);
         if (! in_array($split, ['train', 'val', 'test', 'all'], true)) {
             return response()->json(['ok' => false, 'message' => 'Gecersiz split'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
@@ -51,6 +53,9 @@ class AiLabelingController extends Controller
             [$rowSplit, $imagePath, $labelPath, $status] = $data;
             $imagePath = str_replace('\\', '/', $imagePath);
             if (isset($skipped[$imagePath])) {
+                continue;
+            }
+            if (! $includeAnnotated && $status === 'annotated') {
                 continue;
             }
             if ($this->isMismatchedForSport($sport, implode(' ', [$imagePath, $labelPath]))) {
@@ -86,6 +91,7 @@ class AiLabelingController extends Controller
             'meta' => [
                 'latest_source_key' => $latestSourceKey,
                 'latest_only' => $latestOnly,
+                'include_annotated' => $includeAnnotated,
             ],
         ]);
     }
@@ -166,6 +172,22 @@ class AiLabelingController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
+        $cacheKey = $this->predictCacheKey(
+            $sport,
+            $imagePath,
+            $modelPath,
+            (float) ($validated['conf'] ?? 0.20)
+        );
+        $cachedPayload = Cache::get($cacheKey);
+        if (is_array($cachedPayload)) {
+            return response()->json([
+                'ok' => true,
+                'data' => $cachedPayload,
+                'model_path' => $modelPath,
+                'cached' => true,
+            ]);
+        }
+
         $pythonPath = base_path('ai-worker/.venv/Scripts/python.exe');
         if (! File::exists($pythonPath)) {
             $pythonPath = 'python';
@@ -225,10 +247,13 @@ class AiLabelingController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+        Cache::put($cacheKey, $payload, now()->addHours(12));
+
         return response()->json([
             'ok' => true,
             'data' => $payload,
             'model_path' => $modelPath,
+            'cached' => false,
         ]);
     }
 
@@ -466,9 +491,11 @@ class AiLabelingController extends Controller
 
         $runRoot = base_path("runs/{$sport}");
         if (File::exists($runRoot)) {
-            foreach (File::allFiles($runRoot) as $file) {
-                if ($file->getFilename() === 'best.pt') {
-                    $candidates[] = $file->getPathname();
+            $runDirs = File::directories($runRoot);
+            foreach ($runDirs as $runDir) {
+                $bestPath = $runDir.DIRECTORY_SEPARATOR.'weights'.DIRECTORY_SEPARATOR.'best.pt';
+                if (File::exists($bestPath)) {
+                    $candidates[] = $bestPath;
                 }
             }
         }
@@ -480,6 +507,22 @@ class AiLabelingController extends Controller
         usort($candidates, static fn (string $a, string $b): int => filemtime($b) <=> filemtime($a));
 
         return $candidates[0];
+    }
+
+    private function predictCacheKey(string $sport, string $imagePath, string $modelPath, float $confidence): string
+    {
+        $imageMtime = (int) (@filemtime($imagePath) ?: 0);
+        $modelMtime = (int) (@filemtime($modelPath) ?: 0);
+        $signature = implode('|', [
+            $sport,
+            $imagePath,
+            $imageMtime,
+            $modelPath,
+            $modelMtime,
+            number_format($confidence, 4, '.', ''),
+        ]);
+
+        return 'ai_labeling_predict:'.sha1($signature);
     }
 
     private function decodePredictOutput(string $output): ?array

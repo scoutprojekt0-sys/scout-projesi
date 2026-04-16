@@ -17,7 +17,7 @@ class FavoriteController extends Controller
     public function publicLeaderboard(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'role' => ['nullable', 'string', 'in:player,manager,scout,club'],
+            'role' => ['nullable', 'string', 'in:player,manager,scout,coach,club'],
             'limit' => ['nullable', 'integer', 'min:1', 'max:50'],
         ]);
 
@@ -58,7 +58,7 @@ class FavoriteController extends Controller
                 ->orderByDesc('users.rating')
                 ->limit($limit)
                 ->get();
-        } elseif ($role === 'manager' || $role === 'scout') {
+        } elseif (in_array($role, ['manager', 'scout', 'coach'], true)) {
             $rows = DB::table('users')
                 ->leftJoin('staff_profiles', 'staff_profiles.user_id', '=', 'users.id')
                 ->leftJoin('favorites', 'favorites.target_user_id', '=', 'users.id')

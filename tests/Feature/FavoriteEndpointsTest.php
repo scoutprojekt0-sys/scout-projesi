@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Models\Favorite;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -77,5 +78,27 @@ class FavoriteEndpointsTest extends TestCase
         $this->postJson('/api/favorites/'.$user->id.'/toggle')
             ->assertStatus(400)
             ->assertJsonPath('ok', false);
+    }
+
+    public function test_public_leaderboard_supports_coach_role(): void
+    {
+        $fan = User::factory()->create(['role' => 'scout']);
+        $coach = User::factory()->create([
+            'role' => 'coach',
+            'name' => 'Coach Leader',
+            'city' => 'Izmir',
+        ]);
+
+        Favorite::query()->create([
+            'user_id' => $fan->id,
+            'target_user_id' => $coach->id,
+        ]);
+
+        $this->getJson('/api/public/favorites/leaderboard?role=coach&limit=5')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.0.name', 'Coach Leader')
+            ->assertJsonPath('data.0.role', 'coach')
+            ->assertJsonPath('data.0.favorites_count', 1);
     }
 }

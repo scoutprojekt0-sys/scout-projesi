@@ -50,7 +50,7 @@ class AuthController extends Controller
 
         // Hoşgeldin emailini kuyruğa gönder
         if ($verificationRequired && $verificationLink) {
-            SendWelcomeEmail::dispatch($user, $verificationLink);
+            SendWelcomeEmail::dispatchAfterResponse($user, $verificationLink);
         }
 
         return response()->json([
@@ -430,7 +430,7 @@ class AuthController extends Controller
             'email_verification_token' => $user->email_verification_token ?: Str::random(64),
         ])->save();
 
-        SendWelcomeEmail::dispatch(
+        SendWelcomeEmail::dispatchAfterResponse(
             $user,
             $this->buildEmailVerificationLink((string) $user->email_verification_token)
         );

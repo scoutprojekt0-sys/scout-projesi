@@ -47,6 +47,10 @@
         <input type="checkbox" id="latestOnly">
         <span>Sadece son yuklenen video</span>
       </label>
+      <label class="toggle-row">
+        <input type="checkbox" id="includeAnnotated">
+        <span>Etiketli kareleri de goster</span>
+      </label>
       <div id="queue"></div>
     </aside>
     <main class="main">
@@ -80,6 +84,8 @@
     const sportEl = document.getElementById('sport');
     const splitEl = document.getElementById('split');
     const latestOnlyEl = document.getElementById('latestOnly');
+    const includeAnnotatedEl = document.getElementById('includeAnnotated');
+    const predictButton = document.getElementById('predict');
 
     let queue = [];
     let active = null;
@@ -114,7 +120,7 @@
     document.getElementById('deleteSelected').onclick = deleteSelectedBox;
     document.getElementById('skip').onclick = skipItem;
     document.getElementById('save').onclick = saveLabels;
-    document.getElementById('predict').onclick = predictLabels;
+    predictButton.onclick = predictLabels;
 
     canvas.addEventListener('mousedown', (e) => {
       if (!active || !image.width) return;
@@ -156,10 +162,12 @@
       const sport = sportEl.value;
       const split = splitEl.value;
       const latestOnly = latestOnlyEl.checked;
+      const includeAnnotated = includeAnnotatedEl.checked;
       statusEl.textContent = 'Queue yukleniyor...';
       try {
         const params = new URLSearchParams({ split });
         if (latestOnly) params.set('latest_only', '1');
+        if (includeAnnotated) params.set('include_annotated', '1');
         const res = await fetch(`/api/ai-labeling/${sport}/queue?${params.toString()}`);
         const json = await res.json();
         if (!res.ok || !json.ok) {
@@ -168,7 +176,8 @@
         queue = json.data || [];
         renderQueue();
         const latestMeta = json.meta && json.meta.latest_source_key ? `\nKaynak video: ${json.meta.latest_source_key}` : '';
-        statusEl.textContent = `Queue yuklendi: ${queue.length} kayit${latestMeta}`;
+        const annotatedMeta = includeAnnotated ? '\nEtiketli kareler dahil.' : '';
+        statusEl.textContent = `Queue yuklendi: ${queue.length} kayit${latestMeta}${annotatedMeta}`;
         if (queue.length) {
           openItem(queue[0]);
         } else {
@@ -298,6 +307,8 @@
         return;
       }
 
+      const startedAt = Date.now();
+      predictButton.disabled = true;
       statusEl.textContent = 'AI onerileri aliniyor...';
       try {
         const res = await fetch(`/api/ai-labeling/${sportEl.value}/predict`, {
@@ -326,9 +337,13 @@
         selectedBoxIndex = -1;
 
         render();
-        statusEl.textContent = `AI ${boxes.length} kutu onerdi. Yanlis kutulari sil, eksikleri ekle, sonra Kaydet.`;
+        const elapsedSeconds = ((Date.now() - startedAt) / 1000).toFixed(1);
+        const cacheLabel = json.cached ? ' Cache kullanildi.' : '';
+        statusEl.textContent = `AI ${boxes.length} kutu onerdi. ${elapsedSeconds}s surdu.${cacheLabel} Yanlis kutulari sil, eksikleri ekle, sonra Kaydet.`;
       } catch (error) {
         statusEl.textContent = `AI onerisi alinamadi.\n${error.message}`;
+      } finally {
+        predictButton.disabled = false;
       }
     }
 
