@@ -747,7 +747,7 @@ class AuthController extends Controller
 
     private function emailVerificationRequired(): bool
     {
-        return (bool) config('app.auth_require_email_verification', false);
+        return false;
     }
 
     private function findPlayerForClubLogin(string $teamName, string $playerName): ?User
