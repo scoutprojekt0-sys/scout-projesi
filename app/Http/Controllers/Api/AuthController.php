@@ -459,12 +459,7 @@ class AuthController extends Controller
     public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
     {
         $email = strtolower((string) $request->validated('email'));
-        /** @var User|null $user */
-        $user = User::query()->where('email', $email)->first();
-
-        if ($user) {
-            Password::broker()->createToken($user);
-        }
+        Password::broker()->sendResetLink(['email' => $email]);
 
         return response()->json([
             'ok' => true,
