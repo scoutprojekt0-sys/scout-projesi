@@ -267,6 +267,26 @@ def _save_checkpoint(trainer, target_path: Path) -> None:
     torch.save(checkpoint, target_path)
 
 
+def _normalize_run_args_yaml(save_dir: Path, args: argparse.Namespace) -> None:
+    args_path = save_dir / "args.yaml"
+    payload: dict = {}
+    if args_path.exists():
+        payload = yaml.safe_load(args_path.read_text(encoding="utf-8")) or {}
+
+    payload["save"] = True
+    payload["val"] = True
+    payload["plots"] = True
+    payload["project"] = str(Path(args.project).resolve() if args.project else default_project_path(args.sport))
+    payload["name"] = args.name
+    payload["imgsz"] = args.imgsz
+    payload["batch"] = args.batch
+    payload["epochs"] = args.epochs
+    payload["device"] = args.device
+    payload["save_dir"] = str(save_dir)
+
+    args_path.write_text(yaml.safe_dump(payload, sort_keys=False, allow_unicode=True), encoding="utf-8")
+
+
 def _run_validation(model_path: Path, data_yaml: str, split: str, args: argparse.Namespace, save_dir: Path) -> dict:
     from ultralytics import YOLO  # type: ignore
 
@@ -338,6 +358,7 @@ def main() -> None:
     elapsed_hours = (time.time() - start_time) / 3600
 
     save_dir = Path(results.save_dir)
+    _normalize_run_args_yaml(save_dir, args)
     weights_dir = save_dir / "weights"
     last_path = weights_dir / "last.pt"
     best_path = weights_dir / "best.pt"
