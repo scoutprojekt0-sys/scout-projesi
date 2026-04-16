@@ -343,6 +343,7 @@ Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->grou
     Route::put('/notifications/preferences', [NotificationController::class, 'updatePreferences']);
     Route::get('/users', [SystemController::class, 'usersIndex'])->middleware('admin');
     Route::get('/users/{id}/profile-card', [SystemController::class, 'userProfileCard'])->middleware('admin');
+    Route::delete('/users/{id}', [SystemController::class, 'destroyUser'])->middleware('admin');
     Route::get('/admin/ops/rate-limit-summary', [SystemController::class, 'adminRateLimitSummary'])->middleware('admin');
     Route::get('/admin/success-stories', [LegacyCompatibilityController::class, 'adminSuccessStoriesIndex'])->middleware('admin');
     Route::patch('/admin/success-stories/{id}', [LegacyCompatibilityController::class, 'adminSuccessStoriesUpdate'])->middleware('admin');

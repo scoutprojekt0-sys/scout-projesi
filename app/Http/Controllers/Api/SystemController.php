@@ -15,6 +15,7 @@ class SystemController extends Controller
 {
     use ApiResponds;
     use EnforcesPrivacy;
+
     public function ping(): JsonResponse
     {
         return $this->successResponse([
@@ -88,6 +89,30 @@ class SystemController extends Controller
         }
 
         return $this->paginatedListResponse($users, 'Kullanici listesi hazir.');
+    }
+
+    public function destroyUser(int $id): JsonResponse
+    {
+        $user = DB::table('users')
+            ->where('id', $id)
+            ->select('id', 'email', 'role')
+            ->first();
+
+        if (! $user) {
+            return $this->errorResponse('Kullanici bulunamadi.', 404, 'not_found');
+        }
+
+        DB::transaction(function () use ($id): void {
+            $this->deleteUserRelations([$id]);
+
+            DB::table('users')->where('id', $id)->delete();
+        });
+
+        return $this->successResponse([
+            'id' => $id,
+            'email' => $user->email,
+            'role' => $user->role,
+        ], 'Kullanici silindi.');
     }
 
     public function userProfileCard(Request $request, int $id): JsonResponse
@@ -187,5 +212,88 @@ class SystemController extends Controller
                 'last_login_at' => $lastLoginAt,
                 'last_active_at' => $lastActiveAt,
             ], 'Profil karti hazir.');
+    }
+
+    private function deleteUserRelations(array $userIds): void
+    {
+        $userIds = array_values(array_unique(array_map('intval', $userIds)));
+        if ($userIds === []) {
+            return;
+        }
+
+        $tableColumnMap = [
+            'player_profiles' => ['user_id'],
+            'team_profiles' => ['user_id'],
+            'staff_profiles' => ['user_id'],
+            'social_media_accounts' => ['user_id'],
+            'media' => ['user_id'],
+            'notifications' => ['user_id'],
+            'favorites' => ['user_id', 'target_user_id'],
+            'profile_reviews' => ['reviewer_id', 'reviewed_user_id'],
+            'profile_review_replies' => ['author_id'],
+            'profile_review_reports' => ['reporter_id'],
+            'profile_views' => ['viewer_user_id', 'viewed_user_id'],
+            'contacts' => ['sender_user_id', 'receiver_user_id'],
+            'live_matches' => ['created_by'],
+            'live_watch_requests' => ['requester_user_id', 'target_user_id'],
+            'applications' => ['applicant_user_id', 'reviewer_user_id'],
+            'opportunities' => ['user_id'],
+            'reports' => ['reporter_id', 'reported_user_id'],
+            'scout_player_reports' => ['scout_user_id', 'player_user_id'],
+            'scout_tip_watchlists' => ['user_id', 'target_user_id'],
+            'scout_tip_role_requests' => ['requester_user_id', 'target_user_id'],
+            'scout_tips' => ['user_id', 'target_user_id'],
+            'support_tickets' => ['user_id'],
+            'support_ticket_messages' => ['user_id'],
+            'user_notification_preferences' => ['user_id'],
+            'profile_views' => ['viewer_user_id', 'viewed_user_id'],
+            'video_clips' => ['user_id'],
+            'video_analyses' => ['user_id'],
+            'video_analysis_targets' => ['user_id'],
+            'video_analysis_clips' => ['user_id'],
+            'video_analysis_events' => ['user_id'],
+            'payments' => ['user_id'],
+            'subscriptions' => ['user_id'],
+            'player_boosts' => ['user_id'],
+            'profile_review_replies' => ['author_id'],
+            'profile_review_reports' => ['reporter_id'],
+        ];
+
+        foreach ($tableColumnMap as $table => $columns) {
+            if (! Schema::hasTable($table)) {
+                continue;
+            }
+
+            $existingColumns = array_values(array_filter(
+                $columns,
+                fn (string $column) => Schema::hasColumn($table, $column)
+            ));
+
+            if ($existingColumns === []) {
+                continue;
+            }
+
+            DB::table($table)->where(function ($query) use ($existingColumns, $userIds): void {
+                foreach ($existingColumns as $index => $column) {
+                    if ($index === 0) {
+                        $query->whereIn($column, $userIds);
+                    } else {
+                        $query->orWhereIn($column, $userIds);
+                    }
+                }
+            })->delete();
+        }
+
+        if (Schema::hasTable('personal_access_tokens')) {
+            $query = DB::table('personal_access_tokens');
+
+            if (Schema::hasColumn('personal_access_tokens', 'tokenable_type')) {
+                $query->where('tokenable_type', 'App\\Models\\User');
+            }
+
+            if (Schema::hasColumn('personal_access_tokens', 'tokenable_id')) {
+                $query->whereIn('tokenable_id', $userIds)->delete();
+            }
+        }
     }
 }

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\SocialMediaAccount;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -166,5 +167,52 @@ class AdminAccessAndPrivacyTest extends TestCase
             ->assertJsonPath('ok', true)
             ->assertJsonPath('data.name', 'Gunluk Kesfet Plus')
             ->assertJsonPath('data.price', '219.90');
+    }
+
+    public function test_non_admin_cannot_delete_user(): void
+    {
+        $user = User::factory()->create(['role' => 'player']);
+        $target = User::factory()->create(['role' => 'player']);
+
+        Sanctum::actingAs($user, ['profile:read']);
+
+        $this->deleteJson('/api/users/'.$target->id)
+            ->assertStatus(403)
+            ->assertJsonPath('code', 'forbidden_admin_only');
+    }
+
+    public function test_admin_can_delete_user_and_related_profile_data(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $target = User::factory()->create(['role' => 'player']);
+
+        DB::table('player_profiles')->insert([
+            'user_id' => $target->id,
+            'birth_year' => 2004,
+            'position' => 'FW',
+            'updated_at' => now(),
+        ]);
+
+        DB::table('notifications')->insert([
+            'user_id' => $target->id,
+            'type' => 'system',
+            'title' => 'Test',
+            'message' => 'Silinecek kullanici bildirimi',
+            'is_read' => false,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        Sanctum::actingAs($admin, ['profile:read']);
+
+        $this->deleteJson('/api/users/'.$target->id)
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('message', 'Kullanici silindi.')
+            ->assertJsonPath('data.id', $target->id);
+
+        $this->assertDatabaseMissing('users', ['id' => $target->id]);
+        $this->assertDatabaseMissing('player_profiles', ['user_id' => $target->id]);
+        $this->assertDatabaseMissing('notifications', ['user_id' => $target->id]);
     }
 }
