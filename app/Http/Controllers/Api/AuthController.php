@@ -12,6 +12,7 @@ use App\Http\Requests\Auth\UpdateMeRequest;
 use App\Jobs\SendWelcomeEmail;
 use App\Models\AuditEvent;
 use App\Models\User;
+use App\Services\BrevoEmailService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -459,7 +460,25 @@ class AuthController extends Controller
     public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
     {
         $email = strtolower((string) $request->validated('email'));
-        Password::broker()->sendResetLink(['email' => $email]);
+        /** @var User|null $user */
+        $user = User::query()->where('email', $email)->first();
+
+        if ($user) {
+            $token = Password::broker()->createToken($user);
+
+            try {
+                app(BrevoEmailService::class)->sendPasswordResetEmail(
+                    $user,
+                    $this->buildPasswordResetLink($email, $token)
+                );
+            } catch (\Throwable $e) {
+                Log::error('Password reset email failed', [
+                    'user_id' => $user->id,
+                    'email' => $user->email,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
 
         return response()->json([
             'ok' => true,
@@ -743,6 +762,17 @@ class AuthController extends Controller
     private function buildEmailVerificationLink(string $token): string
     {
         return 'nextscout://verify-email?token=' . urlencode($token);
+    }
+
+    private function buildPasswordResetLink(string $email, string $token): string
+    {
+        $frontendUrl = rtrim((string) config('app.frontend_url', ''), '/');
+
+        if ($frontendUrl !== '') {
+            return $frontendUrl.'/reset-password?token='.urlencode($token).'&email='.urlencode($email);
+        }
+
+        return 'nextscout://reset-password?token='.urlencode($token).'&email='.urlencode($email);
     }
 
     private function emailVerificationRequired(): bool

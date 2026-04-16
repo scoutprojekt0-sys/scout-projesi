@@ -54,6 +54,8 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'frontend_url' => env('FRONTEND_URL', 'http://localhost:3000'),
+
     'auth_require_email_verification' => (bool) env('AUTH_REQUIRE_EMAIL_VERIFICATION', true),
 
     /*

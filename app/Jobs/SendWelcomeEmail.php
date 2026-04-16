@@ -2,15 +2,14 @@
 
 namespace App\Jobs;
 
-use App\Mail\WelcomeEmail;
 use App\Models\User;
+use App\Services\BrevoEmailService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 class SendWelcomeEmail implements ShouldQueue
 {
@@ -33,8 +32,7 @@ class SendWelcomeEmail implements ShouldQueue
     public function handle(): void
     {
         try {
-            Mail::to($this->user->email)
-                ->send(new WelcomeEmail($this->user, $this->verificationLink));
+            app(BrevoEmailService::class)->sendWelcomeEmail($this->user, $this->verificationLink);
 
             Log::info('Welcome email sent', ['user_id' => $this->user->id, 'email' => $this->user->email]);
         } catch (\Throwable $e) {
@@ -42,7 +40,6 @@ class SendWelcomeEmail implements ShouldQueue
                 'user_id' => $this->user->id,
                 'error'   => $e->getMessage(),
             ]);
-            throw $e;
         }
     }
 }
