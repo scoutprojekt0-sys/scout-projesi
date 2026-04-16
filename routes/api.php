@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\AdminBillingController;
 use App\Http\Controllers\Api\AdminAmateurResultController;
 use App\Http\Controllers\Api\AdminScoutController;
+use App\Http\Controllers\Api\ApiRootController;
 use App\Http\Controllers\Api\AiSupportController;
 use App\Http\Controllers\Api\AiLabelingController;
 use App\Http\Controllers\Api\AuthController;
@@ -70,6 +71,7 @@ use App\Http\Controllers\Api\WatchDemandController;
 use Illuminate\Support\Facades\Route;
 
 // System endpoints
+Route::get('/', ApiRootController::class);
 Route::get('/ping', [SystemController::class, 'ping']);
 Route::get('/locales', [LocalizationController::class, 'getSupportedLocales']);
 Route::get('/translations', [LocalizationController::class, 'getTranslations']);
