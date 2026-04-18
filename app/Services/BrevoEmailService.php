@@ -4,7 +4,10 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use RuntimeException;
 
 class BrevoEmailService
@@ -70,7 +73,11 @@ class BrevoEmailService
         string $htmlContent,
         string $textContent = ''
     ): void {
-        $this->ensureConfigured();
+        if (! $this->isBrevoApiConfigured()) {
+            $this->sendViaLaravelMailer($toEmail, $toName, $subject, $htmlContent, $textContent);
+
+            return;
+        }
 
         $payload = [
             'sender' => [
@@ -100,10 +107,34 @@ class BrevoEmailService
         }
     }
 
-    private function ensureConfigured(): void
+    private function isBrevoApiConfigured(): bool
     {
-        if ($this->apiKey === '' || $this->senderEmail === '') {
-            throw new RuntimeException('Brevo mail service is not configured. Set BREVO_API_KEY and BREVO_SENDER_EMAIL.');
-        }
+        return $this->apiKey !== '' && $this->senderEmail !== '';
+    }
+
+    private function sendViaLaravelMailer(
+        string $toEmail,
+        string $toName,
+        string $subject,
+        string $htmlContent,
+        string $textContent = ''
+    ): void {
+        Mail::send([], [], function ($message) use ($toEmail, $toName, $subject, $htmlContent, $textContent): void {
+            $symfonyMessage = $message->getSymfonyMessage();
+
+            if (! $symfonyMessage instanceof Email) {
+                throw new RuntimeException('Symfony email message could not be created.');
+            }
+
+            $symfonyMessage
+                ->subject($subject)
+                ->from(new Address($this->senderEmail, $this->senderName))
+                ->to(new Address($toEmail, $toName))
+                ->html($htmlContent);
+
+            if ($textContent !== '') {
+                $symfonyMessage->text($textContent);
+            }
+        });
     }
 }

@@ -3,10 +3,12 @@
 use App\Http\Middleware\RejectLegacyWildcardToken;
 use App\Http\Middleware\EnsureInternalToolAccess;
 use App\Http\Middleware\RequestMetricsLogger;
+use App\Http\Middleware\AllowCriticalApiDuringMaintenance;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\Http\Middleware\CheckAbilities;
@@ -21,6 +23,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->replace(
+            PreventRequestsDuringMaintenance::class,
+            AllowCriticalApiDuringMaintenance::class
+        );
+
         $middleware->append(RequestMetricsLogger::class);
         $middleware->append(\App\Http\Middleware\SetLocale::class);
 
