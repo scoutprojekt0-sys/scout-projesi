@@ -4113,7 +4113,7 @@ function nsnsAlert(msg) {
         }
 
         @media (max-width: 768px) {
-            /* Mobile temporary mode: keep only header, hide all content below */
+            /* Mobile uses the normal homepage content; temporary mobile-only shell is disabled. */
             body {
                 background:
                     radial-gradient(circle at 12% 10%, #1a3f63 0%, transparent 34%),
@@ -4130,12 +4130,8 @@ function nsnsAlert(msg) {
                 z-index: 3100;
             }
 
-            body > *:not(header):not(script):not(.modal-overlay):not(.mobile-bottom-search-panel):not(.mobile-icon-square):not(.mobile-discover-panel):not(.mobile-icon-tooltip) {
-                display: none !important;
-            }
-
             .mobile-icon-square {
-                display: flex !important;
+                display: none !important;
                 align-items: center;
                 justify-content: flex-start;
                 width: 100%;
@@ -4207,7 +4203,7 @@ function nsnsAlert(msg) {
             }
 
             .mobile-bottom-search-panel {
-                display: flex !important;
+                display: none !important;
                 position: fixed;
                 left: 12px;
                 right: 12px;
