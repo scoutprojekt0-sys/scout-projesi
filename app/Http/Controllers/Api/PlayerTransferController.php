@@ -71,8 +71,17 @@ class PlayerTransferController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        if ($response = $this->ensureTransferStoreAccess($request->user())) {
+        $user = $request->user();
+
+        if ($response = $this->ensureTransferStoreAccess($user)) {
             return $response;
+        }
+
+        $role = strtolower((string) ($user?->role ?? ''));
+        if ($role === 'player' && $user) {
+            $request->merge([
+                'player_id' => (int) $user->id,
+            ]);
         }
 
         $validator = Validator::make($request->all(), [
@@ -434,7 +443,7 @@ class PlayerTransferController extends Controller
     private function ensureTransferStoreAccess(?User $user): ?JsonResponse
     {
         $role = strtolower((string) ($user?->role ?? ''));
-        $allowedRoles = ['admin', 'super_admin', 'team', 'club', 'kulup', 'manager', 'menajer', 'lawyer'];
+        $allowedRoles = ['admin', 'super_admin', 'player', 'team', 'club', 'kulup', 'manager', 'menajer', 'lawyer'];
 
         if ($user && in_array($role, $allowedRoles, true)) {
             return null;
