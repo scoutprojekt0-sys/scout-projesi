@@ -13,7 +13,9 @@ class PlayerTransfer extends Model
     protected $fillable = [
         'player_id',
         'from_club_id',
+        'from_club_name',
         'to_club_id',
+        'to_club_name',
         'fee',
         'counter_fee',
         'currency',

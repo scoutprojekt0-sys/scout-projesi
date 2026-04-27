@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ClubOffer;
 use App\Models\DataAuditLog;
 use App\Models\ModerationQueue;
+use App\Models\PlayerProfile;
 use App\Models\PlayerTransfer;
 use App\Services\ScoutAttributionService;
 use Illuminate\Support\Carbon;
@@ -79,6 +80,14 @@ class PlayerTransferController extends Controller
 
         $role = strtolower((string) ($user?->role ?? ''));
         if ($role === 'player' && $user) {
+            $requestedPlayerId = $request->input('player_id');
+            if ($requestedPlayerId !== null && (int) $requestedPlayerId !== (int) $user->id) {
+                return response()->json([
+                    'ok' => false,
+                    'message' => 'Oyuncu hesabi sadece kendi transfer kaydini olusturabilir.',
+                ], 403);
+            }
+
             $request->merge([
                 'player_id' => (int) $user->id,
             ]);
@@ -87,7 +96,9 @@ class PlayerTransferController extends Controller
         $validator = Validator::make($request->all(), [
             'player_id' => ['required', Rule::exists('users', 'id')->where('role', 'player')],
             'from_club_id' => ['nullable', Rule::exists('users', 'id')->where('role', 'team')],
-            'to_club_id' => ['required', Rule::exists('users', 'id')->where('role', 'team')],
+            'from_club_name' => 'nullable|string|max:160',
+            'to_club_id' => ['nullable', Rule::exists('users', 'id')->where('role', 'team')],
+            'to_club_name' => 'nullable|string|max:160',
             'fee' => 'nullable|numeric|min:0',
             'currency' => 'nullable|string|size:3',
             'transfer_date' => 'required|date',
@@ -107,8 +118,37 @@ class PlayerTransferController extends Controller
             ], 422);
         }
 
+        $payload = $validator->validated();
+        if (empty($payload['to_club_id']) && empty(trim((string) ($payload['to_club_name'] ?? '')))) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Validation failed',
+                'errors' => [
+                    'to_club_name' => ['Yeni kulup adi veya kulup secimi zorunludur.'],
+                ],
+            ], 422);
+        }
+
+        if (empty(trim((string) ($payload['from_club_name'] ?? '')))) {
+            $currentTeam = PlayerProfile::query()
+                ->where('user_id', $payload['player_id'])
+                ->value('current_team');
+
+            if (!empty(trim((string) $currentTeam))) {
+                $payload['from_club_name'] = trim((string) $currentTeam);
+            }
+        }
+
+        if (!empty($payload['from_club_name'])) {
+            $payload['from_club_name'] = trim((string) $payload['from_club_name']);
+        }
+
+        if (!empty($payload['to_club_name'])) {
+            $payload['to_club_name'] = trim((string) $payload['to_club_name']);
+        }
+
         $transfer = PlayerTransfer::create(array_merge(
-            $validator->validated(),
+            $payload,
             [
                 'created_by' => auth()->id(),
                 'verification_status' => 'pending',
