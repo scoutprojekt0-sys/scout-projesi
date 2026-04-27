@@ -147,27 +147,35 @@ class PlayerTransferController extends Controller
             $payload['to_club_name'] = trim((string) $payload['to_club_name']);
         }
 
+        $isPlayerSubmittedTransfer = $role === 'player';
+        $verificationStatus = $isPlayerSubmittedTransfer ? 'verified' : 'pending';
+        $verifiedBy = $isPlayerSubmittedTransfer ? auth()->id() : null;
+        $verifiedAt = $isPlayerSubmittedTransfer ? now() : null;
+
         $transfer = PlayerTransfer::create(array_merge(
             $payload,
             [
                 'created_by' => auth()->id(),
-                'verification_status' => 'pending',
+                'verification_status' => $verificationStatus,
                 'confidence_score' => 0.7,
+                'verified_by' => $verifiedBy,
+                'verified_at' => $verifiedAt,
             ]
         ));
 
-        // Add to moderation queue
-        ModerationQueue::create([
-            'model_type' => 'PlayerTransfer',
-            'model_id' => $transfer->id,
-            'status' => 'pending',
-            'priority' => 'medium',
-            'reason' => 'new_entry',
-            'proposed_changes' => $transfer->toArray(),
-            'source_url' => $request->source_url,
-            'confidence_score' => 0.7,
-            'submitted_by' => auth()->id(),
-        ]);
+        if (! $isPlayerSubmittedTransfer) {
+            ModerationQueue::create([
+                'model_type' => 'PlayerTransfer',
+                'model_id' => $transfer->id,
+                'status' => 'pending',
+                'priority' => 'medium',
+                'reason' => 'new_entry',
+                'proposed_changes' => $transfer->toArray(),
+                'source_url' => $request->source_url,
+                'confidence_score' => 0.7,
+                'submitted_by' => auth()->id(),
+            ]);
+        }
 
         DataAuditLog::logChange(
             'PlayerTransfer',
@@ -183,7 +191,9 @@ class PlayerTransferController extends Controller
 
         return response()->json([
             'ok' => true,
-            'message' => 'Transfer created successfully. Awaiting verification.',
+            'message' => $isPlayerSubmittedTransfer
+                ? 'Transfer created successfully.'
+                : 'Transfer created successfully. Awaiting verification.',
             'data' => $transfer->load(['player', 'fromClub', 'toClub']),
         ], 201);
     }

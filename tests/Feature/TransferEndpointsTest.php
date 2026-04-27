@@ -34,14 +34,26 @@ class TransferEndpointsTest extends TestCase
             ->assertCreated()
             ->assertJsonPath('ok', true)
             ->assertJsonPath('data.from_club_name', 'Mahalle SK')
-            ->assertJsonPath('data.to_club_name', 'Yeni Spor');
+            ->assertJsonPath('data.to_club_name', 'Yeni Spor')
+            ->assertJsonPath('data.verification_status', 'verified');
 
         $this->assertDatabaseHas('player_transfers', [
             'player_id' => $player->id,
             'from_club_name' => 'Mahalle SK',
             'to_club_name' => 'Yeni Spor',
             'to_club_id' => null,
+            'verification_status' => 'verified',
         ]);
+
+        $this->assertDatabaseMissing('moderation_queue', [
+            'model_type' => 'PlayerTransfer',
+            'status' => 'pending',
+        ]);
+
+        $this->getJson("/api/transfers/player/{$player->id}/timeline")
+            ->assertOk()
+            ->assertJsonPath('data.0.from_club_name', 'Mahalle SK')
+            ->assertJsonPath('data.0.to_club_name', 'Yeni Spor');
     }
 
     public function test_player_cannot_create_transfer_for_another_player(): void
