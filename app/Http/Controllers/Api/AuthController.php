@@ -570,7 +570,7 @@ class AuthController extends Controller
 
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('profile-photos', 'public');
-            $data['photo_url'] = Storage::url($path);
+            $data['photo_url'] = $path;
         }
 
         $user->fill($data);
@@ -844,12 +844,58 @@ class AuthController extends Controller
             'role' => (string) $user->role,
             'city' => $user->city,
             'phone' => $user->phone,
-            'photo_url' => $user->photo_url,
+            'photo_url' => $this->publicFileUrl($user->photo_url),
             'sport' => $user->sport,
             'position' => $user->position,
             'is_verified' => (bool) $user->is_verified,
             'created_at' => optional($user->created_at)?->toIso8601String(),
             'updated_at' => optional($user->updated_at)?->toIso8601String(),
         ];
+    }
+
+    private function publicFileUrl(?string $value): ?string
+    {
+        $path = $this->extractPublicDiskPath($value);
+
+        return $path !== null ? $this->publicFileAssetUrl($path) : $value;
+    }
+
+    private function publicFileAssetUrl(string $path): string
+    {
+        $normalizedPath = implode('/', array_map('rawurlencode', array_filter(explode('/', trim($path, '/')), static fn ($segment) => $segment !== '')));
+        $request = request();
+
+        if ($request !== null) {
+            return rtrim($request->getSchemeAndHttpHost(), '/').'/media-files/'.$normalizedPath;
+        }
+
+        return url('/media-files/'.$normalizedPath);
+    }
+
+    private function extractPublicDiskPath(?string $value): ?string
+    {
+        $raw = trim((string) $value);
+        if ($raw === '') {
+            return null;
+        }
+
+        if (! str_contains($raw, '://') && ! str_starts_with($raw, '/')) {
+            return ltrim($raw, '/');
+        }
+
+        $path = parse_url($raw, PHP_URL_PATH);
+        if (! is_string($path) || $path === '') {
+            return null;
+        }
+
+        if (str_starts_with($path, '/media-files/')) {
+            return ltrim(substr($path, strlen('/media-files/')), '/');
+        }
+
+        if (str_starts_with($path, '/storage/')) {
+            return ltrim(substr($path, strlen('/storage/')), '/');
+        }
+
+        return null;
     }
 }
