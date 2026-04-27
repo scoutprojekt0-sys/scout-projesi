@@ -14,15 +14,19 @@ class StaffProfile extends Model
     protected $fillable = [
         'user_id',
         'role_type',
+        'branch',
         'organization',
         'experience_years',
         'bio',
+        'focus',
+        'coverage',
+        'scouting_notes',
     ];
 
     protected $casts = [
-        'user_id'          => 'integer',
+        'user_id' => 'integer',
         'experience_years' => 'integer',
-        'updated_at'       => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function user(): BelongsTo

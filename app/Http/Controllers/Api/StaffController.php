@@ -42,6 +42,9 @@ class StaffController extends Controller
                 'staff_profiles.organization',
                 'staff_profiles.experience_years',
                 'staff_profiles.bio',
+                'staff_profiles.focus',
+                'staff_profiles.coverage',
+                'staff_profiles.scouting_notes',
             ]);
 
         if (! empty($validated['role_type'])) {
@@ -64,7 +67,9 @@ class StaffController extends Controller
         $adminAccess = $this->isAdmin($authUser);
         $staff->getCollection()->transform(function ($member) use ($authUser, $adminAccess) {
             $isOwner = $authUser && (int) $authUser->id === (int) ($member->id ?? 0);
-            return $this->redactPrivateFields($member, $adminAccess || $isOwner);
+            $redacted = $this->redactPrivateFields($member, $adminAccess || $isOwner);
+            $redacted->profile_photo_url = $this->publicFileUrl($redacted->profile_photo_url ?? null);
+            return $redacted;
         });
 
         return response()->json([
@@ -99,6 +104,9 @@ class StaffController extends Controller
                 'staff_profiles.organization',
                 'staff_profiles.experience_years',
                 'staff_profiles.bio',
+                'staff_profiles.focus',
+                'staff_profiles.coverage',
+                'staff_profiles.scouting_notes',
             ])
             ->first();
 
@@ -111,6 +119,7 @@ class StaffController extends Controller
 
         $authUser = $request->user();
         $staff = $this->redactPrivateFields($staff, $this->canSeePrivate($authUser, $id));
+        $staff->profile_photo_url = $this->publicFileUrl($staff->profile_photo_url ?? null);
 
         return response()->json([
             'ok' => true,
@@ -153,6 +162,9 @@ class StaffController extends Controller
             'organization' => ['sometimes', 'nullable', 'string', 'max:140'],
             'experience_years' => ['sometimes', 'nullable', 'integer', 'min:0', 'max:80'],
             'bio' => ['sometimes', 'nullable', 'string', 'max:5000'],
+            'focus' => ['sometimes', 'nullable', 'string', 'max:5000'],
+            'coverage' => ['sometimes', 'nullable', 'string', 'max:5000'],
+            'scouting_notes' => ['sometimes', 'nullable', 'string', 'max:5000'],
             'profile_photo_url' => ['sometimes', 'nullable', 'string', 'max:65535'],
         ]);
 
@@ -178,6 +190,9 @@ class StaffController extends Controller
                 'organization' => array_key_exists('organization', $validated) ? $validated['organization'] : ($existingProfile->organization ?? null),
                 'experience_years' => array_key_exists('experience_years', $validated) ? $validated['experience_years'] : ($existingProfile->experience_years ?? null),
                 'bio' => array_key_exists('bio', $validated) ? $validated['bio'] : ($existingProfile->bio ?? null),
+                'focus' => array_key_exists('focus', $validated) ? $validated['focus'] : ($existingProfile->focus ?? null),
+                'coverage' => array_key_exists('coverage', $validated) ? $validated['coverage'] : ($existingProfile->coverage ?? null),
+                'scouting_notes' => array_key_exists('scouting_notes', $validated) ? $validated['scouting_notes'] : ($existingProfile->scouting_notes ?? null),
                 'updated_at' => now(),
             ]
         );
@@ -199,13 +214,54 @@ class StaffController extends Controller
                 'staff_profiles.organization',
                 'staff_profiles.experience_years',
                 'staff_profiles.bio',
+                'staff_profiles.focus',
+                'staff_profiles.coverage',
+                'staff_profiles.scouting_notes',
             ])
             ->first();
+
+        if ($updated) {
+            $updated->profile_photo_url = $this->publicFileUrl($updated->profile_photo_url ?? null);
+        }
 
         return response()->json([
             'ok' => true,
             'message' => 'Staff profili guncellendi.',
             'data' => $updated,
         ]);
+    }
+
+    private function publicFileUrl(?string $value): ?string
+    {
+        $path = $this->extractPublicDiskPath($value);
+
+        return $path !== null ? route('public.media-files', ['path' => $path]) : $value;
+    }
+
+    private function extractPublicDiskPath(?string $value): ?string
+    {
+        $raw = trim((string) $value);
+        if ($raw === '') {
+            return null;
+        }
+
+        if (! str_contains($raw, '://') && ! str_starts_with($raw, '/')) {
+            return ltrim($raw, '/');
+        }
+
+        $path = parse_url($raw, PHP_URL_PATH);
+        if (! is_string($path) || $path === '') {
+            return null;
+        }
+
+        if (str_starts_with($path, '/media-files/')) {
+            return ltrim(substr($path, strlen('/media-files/')), '/');
+        }
+
+        if (str_starts_with($path, '/storage/')) {
+            return ltrim(substr($path, strlen('/storage/')), '/');
+        }
+
+        return null;
     }
 }
