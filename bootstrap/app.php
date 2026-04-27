@@ -30,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->append(RequestMetricsLogger::class);
         $middleware->append(\App\Http\Middleware\SetLocale::class);
+        $middleware->redirectGuestsTo(fn (Request $request) => $request->is('api/*') ? null : '/login');
 
         // API rate limiting
         $middleware->api(prepend: [
