@@ -10,6 +10,7 @@ class Contract extends Model
     protected $fillable = [
         'player_id',
         'club_id',
+        'club_name',
         'contract_type',
         'start_date',
         'end_date',

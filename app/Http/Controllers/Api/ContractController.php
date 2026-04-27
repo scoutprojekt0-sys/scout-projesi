@@ -47,6 +47,7 @@ class ContractController extends Controller
         $validated = $request->validate([
             'player_id'     => ['nullable', 'integer', 'exists:users,id'],
             'club_id'       => ['nullable', 'integer', 'exists:users,id'],
+            'club_name'     => ['nullable', 'string', 'max:160'],
             'contract_type' => ['required', 'in:permanent,loan,trial'],
             'start_date'    => ['required', 'date'],
             'end_date'      => ['required', 'date', 'after:start_date'],
@@ -59,16 +60,22 @@ class ContractController extends Controller
             return $this->errorResponse('Bu islem icin yetkiniz yok.', Response::HTTP_FORBIDDEN, 'forbidden');
         }
 
+        if (array_key_exists('club_name', $validated) && $validated['club_name'] !== null) {
+            $validated['club_name'] = trim((string) $validated['club_name']);
+        }
+
         if ($role === 'player') {
-            if (empty($validated['club_id'])) {
-                return $this->errorResponse('Kulup secimi zorunlu.', Response::HTTP_UNPROCESSABLE_ENTITY, 'club_required');
+            if (empty($validated['club_name'])) {
+                return $this->errorResponse('Takim adi zorunlu.', Response::HTTP_UNPROCESSABLE_ENTITY, 'club_name_required');
             }
             $validated['player_id'] = $user->id;
+            $validated['club_id'] = null;
         } else {
             if (empty($validated['player_id'])) {
                 return $this->errorResponse('Oyuncu secimi zorunlu.', Response::HTTP_UNPROCESSABLE_ENTITY, 'player_required');
             }
             $validated['club_id'] = $user->id;
+            $validated['club_name'] = $user->name;
         }
 
         $contract = Contract::create([
@@ -77,7 +84,7 @@ class ContractController extends Controller
             'status'   => 'active',
         ]);
 
-        return $this->successResponse($contract, 'Sozlesme olusturuldu.', Response::HTTP_CREATED);
+        return $this->successResponse($contract->fresh(['player:id,name', 'club:id,name']), 'Sozlesme olusturuldu.', Response::HTTP_CREATED);
     }
 
     public function update(Request $request, int $id): JsonResponse
@@ -105,20 +112,27 @@ class ContractController extends Controller
             'start_date' => ['sometimes', 'date'],
             'currency' => ['sometimes', 'string', 'size:3'],
             'club_id' => ['sometimes', 'integer', 'exists:users,id'],
+            'club_name' => ['sometimes', 'nullable', 'string', 'max:160'],
         ];
         $validated = $request->validate($rules);
 
+        if (array_key_exists('club_name', $validated) && $validated['club_name'] !== null) {
+            $validated['club_name'] = trim((string) $validated['club_name']);
+        }
+
         if ($role === 'player') {
             unset($validated['status']);
-            unset($validated['salary']);
-            if (isset($validated['club_id'])) {
-                $contract->club_id = (int) $validated['club_id'];
-                unset($validated['club_id']);
+            unset($validated['club_id']);
+            if (array_key_exists('club_name', $validated) && $validated['club_name'] === '') {
+                return $this->errorResponse('Takim adi zorunlu.', Response::HTTP_UNPROCESSABLE_ENTITY, 'club_name_required');
             }
+        } else {
+            $validated['club_id'] = (int) $user->id;
+            $validated['club_name'] = $user->name;
         }
 
         $contract->update($validated);
 
-        return $this->successResponse($contract->fresh(), 'Sozlesme guncellendi.');
+        return $this->successResponse($contract->fresh(['player:id,name', 'club:id,name']), 'Sozlesme guncellendi.');
     }
 }

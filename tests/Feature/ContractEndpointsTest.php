@@ -85,4 +85,70 @@ class ContractEndpointsTest extends TestCase
             ->assertForbidden()
             ->assertJsonPath('ok', false);
     }
+
+    public function test_player_can_create_contract_with_free_text_club_name(): void
+    {
+        $player = User::factory()->create(['role' => 'player', 'name' => 'Street Player']);
+
+        Sanctum::actingAs($player, $player->tokenAbilities());
+
+        $this->postJson('/api/contracts', [
+            'club_name' => 'Mahalle SK',
+            'contract_type' => 'trial',
+            'start_date' => '2026-05-01',
+            'end_date' => '2026-12-31',
+            'terms' => 'Serbest metin takim adi ile olusturuldu.',
+        ])
+            ->assertCreated()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.player_id', $player->id)
+            ->assertJsonPath('data.club_id', null)
+            ->assertJsonPath('data.club_name', 'Mahalle SK');
+
+        $this->assertDatabaseHas('contracts', [
+            'player_id' => $player->id,
+            'club_id' => null,
+            'club_name' => 'Mahalle SK',
+            'contract_type' => 'trial',
+        ]);
+    }
+
+    public function test_player_can_update_contract_club_name_without_club_id(): void
+    {
+        $player = User::factory()->create(['role' => 'player']);
+
+        $contract = Contract::query()->create([
+            'player_id' => $player->id,
+            'club_id' => null,
+            'club_name' => 'Eski Takim',
+            'contract_type' => 'trial',
+            'start_date' => '2026-01-01',
+            'end_date' => '2026-07-01',
+            'salary' => 2001,
+            'currency' => 'EUR',
+            'status' => 'active',
+        ]);
+
+        Sanctum::actingAs($player, $player->tokenAbilities());
+
+        $this->patchJson('/api/contracts/'.$contract->id, [
+            'club_name' => 'Yeni Mahalle Takimi',
+            'end_date' => '2026-08-01',
+            'salary' => 200,
+        ])
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.id', $contract->id)
+            ->assertJsonPath('data.club_id', null)
+            ->assertJsonPath('data.club_name', 'Yeni Mahalle Takimi')
+            ->assertJsonPath('data.salary', '200.00');
+
+        $this->assertDatabaseHas('contracts', [
+            'id' => $contract->id,
+            'club_id' => null,
+            'club_name' => 'Yeni Mahalle Takimi',
+            'end_date' => '2026-08-01 00:00:00',
+            'salary' => '200.00',
+        ]);
+    }
 }
