@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\ProfileView;
+use App\Models\ScoutPlayerReport;
 use App\Models\User;
 use App\Models\Media;
 use App\Models\VideoClip;
@@ -96,5 +97,42 @@ class PlayerCompatibilityEndpointsTest extends TestCase
             ->assertNotFound()
             ->assertJsonPath('ok', false)
             ->assertJsonPath('code', 'player_not_found');
+    }
+
+    public function test_public_profile_uses_media_and_scout_report_fallbacks(): void
+    {
+        $player = User::factory()->create([
+            'role' => 'player',
+            'photo_url' => null,
+            'rating' => null,
+        ]);
+
+        Media::query()->create([
+            'user_id' => $player->id,
+            'type' => 'image',
+            'url' => 'https://example.com/figen-photo.jpg',
+            'thumb_url' => 'https://example.com/figen-photo-thumb.jpg',
+            'title' => 'Figen Photo',
+        ]);
+
+        ScoutPlayerReport::query()->create([
+            'scout_user_id' => User::factory()->create(['role' => 'scout'])->id,
+            'player_user_id' => $player->id,
+            'player_name' => $player->name,
+            'position' => 'Kanat',
+            'age' => 19,
+            'rating' => 8.4,
+            'status' => 'shortlist',
+            'scout_name' => 'Scout Demo',
+            'club' => 'Demo Club',
+            'note' => 'Teknik ve hizli oyuncu.',
+        ]);
+
+        $this->getJson('/api/public/players/'.$player->id.'/profile')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.profile.photo_url', 'https://example.com/figen-photo.jpg')
+            ->assertJsonPath('data.profile.profile_photo_url', 'https://example.com/figen-photo.jpg')
+            ->assertJsonPath('data.card.overall_rating', 8.4);
     }
 }

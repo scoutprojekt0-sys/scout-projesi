@@ -293,6 +293,15 @@ class PlayerController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
+        $fallbackPhotoUrl = $player->photo_url ?? null;
+        if (empty($fallbackPhotoUrl) && Schema::hasTable('media')) {
+            $fallbackPhotoUrl = DB::table('media')
+                ->where('user_id', $id)
+                ->where('type', 'image')
+                ->orderByDesc('id')
+                ->value('url');
+        }
+
         $statsRows = collect();
         if (Schema::hasTable('player_statistics')) {
             $statsRows = DB::table('player_statistics')
@@ -313,12 +322,23 @@ class PlayerController extends Controller
         }
 
         $latest = $statsRows->first();
+        $fallbackScoutRating = null;
+        if (Schema::hasTable('scout_player_reports')) {
+            $fallbackScoutRating = DB::table('scout_player_reports')
+                ->where('player_user_id', $id)
+                ->orderByDesc('id')
+                ->value('rating');
+        }
         $summary = [
             'matches' => (int) $statsRows->sum('matches_played'),
             'goals' => (int) $statsRows->sum('goals'),
             'assists' => (int) $statsRows->sum('assists'),
             'minutes' => (int) $statsRows->sum('minutes_played'),
-            'rating' => $latest?->avg_rating !== null ? (float) $latest->avg_rating : (float) ($player->user_rating ?? 0),
+            'rating' => $latest?->avg_rating !== null
+                ? (float) $latest->avg_rating
+                : ($player->user_rating !== null
+                    ? (float) $player->user_rating
+                    : (is_numeric((string) $fallbackScoutRating) ? (float) $fallbackScoutRating : 0.0)),
         ];
         $talentMetrics = $this->buildTalentMetrics($summary);
 
@@ -360,8 +380,8 @@ class PlayerController extends Controller
                     'seeking_club' => (bool) ($player->seeking_club ?? false),
                     'nationality' => (string) ($player->country ?? ''),
                     'city' => (string) ($player->city ?? ''),
-                    'photo_url' => $this->publicFileUrl($player->photo_url ?? null),
-                    'profile_photo_url' => $this->publicFileUrl($player->photo_url ?? null),
+                    'photo_url' => $this->publicFileUrl($fallbackPhotoUrl),
+                    'profile_photo_url' => $this->publicFileUrl($fallbackPhotoUrl),
                     'views_count' => (int) ($player->views_count ?? 0),
                     'view_count' => (int) ($player->views_count ?? 0),
                     'is_verified' => $isVerified,
@@ -377,7 +397,7 @@ class PlayerController extends Controller
                     'goals' => $summary['goals'],
                     'assists' => $summary['assists'],
                     'nationality' => (string) ($player->country ?? ''),
-                    'profile_photo_url' => $this->publicFileUrl($player->photo_url ?? null),
+                    'profile_photo_url' => $this->publicFileUrl($fallbackPhotoUrl),
                     'birth_year' => $player->birth_year ? (int) $player->birth_year : null,
                     'dominant_foot' => $player->dominant_foot,
                     'weight_kg' => $player->weight_kg ? (int) $player->weight_kg : null,
