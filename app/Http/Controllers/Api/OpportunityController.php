@@ -386,6 +386,20 @@ class OpportunityController extends Controller
             return;
         }
 
+        $expiredManagedIds = DB::table('opportunities as o')
+            ->join('users as u', 'u.id', '=', 'o.team_user_id')
+            ->whereIn('u.role', ['manager', 'club', 'coach'])
+            ->whereNotNull('o.expires_at')
+            ->where('o.expires_at', '<=', now())
+            ->pluck('o.id');
+
+        if ($expiredManagedIds->isNotEmpty()) {
+            DB::table('opportunities')
+                ->whereIn('id', $expiredManagedIds->all())
+                ->delete();
+            $this->bumpIndexCacheVersion();
+        }
+
         DB::table('opportunities')
             ->where('status', 'open')
             ->whereNotNull('expires_at')
