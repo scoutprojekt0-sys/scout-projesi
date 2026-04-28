@@ -8,6 +8,7 @@ use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -128,6 +129,12 @@ class FavoriteController extends Controller
                 ->get();
         }
 
+        $rows = $rows->map(function ($row) {
+            $row->photo_url = $this->publicFileUrl($row->photo_url ?? null);
+
+            return $row;
+        })->values();
+
         return response()->json([
             'ok' => true,
             'data' => $rows,
@@ -218,5 +225,51 @@ class FavoriteController extends Controller
             'ok' => true,
             'data' => ['is_favorited' => $isFavorited],
         ]);
+    }
+
+    private function publicFileUrl(?string $value): ?string
+    {
+        $path = $this->extractPublicDiskPath($value);
+
+        return $path !== null ? $this->publicFileAssetUrl($path) : $value;
+    }
+
+    private function publicFileAssetUrl(string $path): string
+    {
+        $normalizedPath = implode('/', array_map('rawurlencode', array_filter(explode('/', trim($path, '/')), static fn ($segment) => $segment !== '')));
+        $request = request();
+
+        if ($request !== null) {
+            return rtrim($request->getSchemeAndHttpHost(), '/').'/media-files/'.$normalizedPath;
+        }
+
+        return url('/media-files/'.$normalizedPath);
+    }
+
+    private function extractPublicDiskPath(?string $value): ?string
+    {
+        $raw = trim((string) $value);
+        if ($raw === '') {
+            return null;
+        }
+
+        if (! str_contains($raw, '://') && ! str_starts_with($raw, '/')) {
+            return ltrim($raw, '/');
+        }
+
+        $path = parse_url($raw, PHP_URL_PATH);
+        if (! is_string($path) || $path === '') {
+            return null;
+        }
+
+        if (str_starts_with($path, '/media-files/')) {
+            return ltrim(substr($path, strlen('/media-files/')), '/');
+        }
+
+        if (str_starts_with($path, '/storage/')) {
+            return ltrim(substr($path, strlen('/storage/')), '/');
+        }
+
+        return null;
     }
 }
