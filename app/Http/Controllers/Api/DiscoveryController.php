@@ -32,6 +32,9 @@ class DiscoveryController extends Controller
         $position = request('position');
         $city = request('city');
         $perPage = max(1, min((int) request('per_page', 20), 100));
+        $ratingSelect = Schema::hasTable('player_statistics')
+            ? 'COALESCE(users.rating, (SELECT ps.avg_rating FROM player_statistics ps WHERE ps.user_id = users.id ORDER BY ps.season DESC, ps.id DESC LIMIT 1)) as rating'
+            : 'users.rating';
 
         $players = DB::table('users')
             ->leftJoin('player_profiles as pp', 'pp.user_id', '=', 'users.id')
@@ -84,7 +87,7 @@ class DiscoveryController extends Controller
                 'pp.birth_year',
                 'pp.dominant_foot',
                 'users.photo_url',
-                'users.rating',
+                DB::raw($ratingSelect),
                 'pp.height_cm',
                 'pp.weight_kg',
                 'pp.current_team',
@@ -95,6 +98,29 @@ class DiscoveryController extends Controller
             ->orderByDesc('users.created_at')
             ->orderByDesc('users.id')
             ->paginate($perPage);
+
+        $players->getCollection()->transform(function ($player) {
+            $photoUrl = $this->publicFileUrl($player->photo_url ?? null);
+            $birthYear = is_numeric((string) ($player->birth_year ?? null))
+                ? (int) $player->birth_year
+                : null;
+            $age = is_numeric((string) ($player->age ?? null))
+                ? (int) $player->age
+                : ($birthYear ? ((int) now()->format('Y') - $birthYear) : null);
+
+            $player->photo_url = $photoUrl;
+            $player->profile_photo_url = $photoUrl;
+            $player->age = $age;
+            $player->rating = is_numeric((string) ($player->rating ?? null))
+                ? (float) $player->rating
+                : null;
+            $player->current_club = (string) ($player->current_team ?? '-');
+            $player->club_name = (string) ($player->current_team ?? '-');
+            $player->view_count = 0;
+            $player->views_count = 0;
+
+            return $player;
+        });
 
         return $this->paginatedListResponse($players, 'Public oyuncu listesi hazir.');
     }
@@ -942,5 +968,51 @@ class DiscoveryController extends Controller
                 'status' => 'closed',
                 'updated_at' => now(),
             ]);
+    }
+
+    private function publicFileUrl(?string $value): ?string
+    {
+        $path = $this->extractPublicDiskPath($value);
+
+        return $path !== null ? $this->publicFileAssetUrl($path) : $value;
+    }
+
+    private function publicFileAssetUrl(string $path): string
+    {
+        $normalizedPath = implode('/', array_map('rawurlencode', array_filter(explode('/', trim($path, '/')), static fn ($segment) => $segment !== '')));
+        $request = request();
+
+        if ($request !== null) {
+            return rtrim($request->getSchemeAndHttpHost(), '/').'/media-files/'.$normalizedPath;
+        }
+
+        return url('/media-files/'.$normalizedPath);
+    }
+
+    private function extractPublicDiskPath(?string $value): ?string
+    {
+        $raw = trim((string) $value);
+        if ($raw === '') {
+            return null;
+        }
+
+        if (! str_contains($raw, '://') && ! str_starts_with($raw, '/')) {
+            return ltrim($raw, '/');
+        }
+
+        $path = parse_url($raw, PHP_URL_PATH);
+        if (! is_string($path) || $path === '') {
+            return null;
+        }
+
+        if (str_starts_with($path, '/media-files/')) {
+            return ltrim(substr($path, strlen('/media-files/')), '/');
+        }
+
+        if (str_starts_with($path, '/storage/')) {
+            return ltrim(substr($path, strlen('/storage/')), '/');
+        }
+
+        return null;
     }
 }
