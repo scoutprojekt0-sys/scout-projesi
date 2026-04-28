@@ -513,29 +513,29 @@ class PlayerController extends Controller
             }
         }
 
-        $recentSignals += $this->recentCountIfTableExists('media', fn ($query) => $query
+        $recentSignals += $this->recentCountIfTableHasColumns('media', ['user_id', 'created_at'], fn ($query) => $query
             ->where('user_id', $playerId)
             ->where('created_at', '>=', $recentThreshold)
         ) > 0 ? 1 : 0;
 
-        $recentSignals += $this->recentCountIfTableExists('applications', fn ($query) => $query
+        $recentSignals += $this->recentCountIfTableHasColumns('applications', ['player_user_id', 'updated_at'], fn ($query) => $query
             ->where('player_user_id', $playerId)
             ->where('updated_at', '>=', $recentThreshold)
         ) > 0 ? 1 : 0;
 
-        $recentSignals += $this->recentCountIfTableExists('profile_reviews', fn ($query) => $query
+        $recentSignals += $this->recentCountIfTableHasColumns('profile_reviews', ['target_user_id', 'created_at'], fn ($query) => $query
             ->where('target_user_id', $playerId)
             ->where('created_at', '>=', $recentThreshold)
         ) > 0 ? 1 : 0;
 
-        $recentSignals += $this->recentCountIfTableExists('contacts', fn ($query) => $query
+        $recentSignals += $this->recentCountIfTableHasColumns('contacts', ['from_user_id', 'to_user_id', 'updated_at'], fn ($query) => $query
             ->where(function ($builder) use ($playerId) {
                 $builder->where('from_user_id', $playerId)->orWhere('to_user_id', $playerId);
             })
             ->where('updated_at', '>=', $recentThreshold)
         ) > 0 ? 1 : 0;
 
-        $recentSignals += $this->recentCountIfTableExists('player_statistics', fn ($query) => $query
+        $recentSignals += $this->recentCountIfTableHasColumns('player_statistics', ['user_id', 'updated_at'], fn ($query) => $query
             ->where('user_id', $playerId)
             ->where('updated_at', '>=', $recentThreshold)
         ) > 0 ? 1 : 0;
@@ -571,6 +571,24 @@ class PlayerController extends Controller
     {
         if (! Schema::hasTable($table)) {
             return 0;
+        }
+
+        $query = DB::table($table);
+        $callback($query);
+
+        return (int) $query->count();
+    }
+
+    private function recentCountIfTableHasColumns(string $table, array $columns, callable $callback): int
+    {
+        if (! Schema::hasTable($table)) {
+            return 0;
+        }
+
+        foreach ($columns as $column) {
+            if (! Schema::hasColumn($table, $column)) {
+                return 0;
+            }
         }
 
         $query = DB::table($table);
