@@ -319,6 +319,14 @@ class DiscoveryController extends Controller
 
     public function managerNeeds(): JsonResponse
     {
+        $user = request()->user();
+        if (! $user || (string) $user->role !== 'player') {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Bu alan sadece oyuncular icin acik.',
+            ], 403);
+        }
+
         $hasExpiresAt = Schema::hasColumn('opportunities', 'expires_at');
         $this->closeExpiredOpportunities();
         $sportTerms = $this->sportTerms((string) request()->query('sport', ''));
