@@ -126,7 +126,7 @@ class LegacyCompatibilityController extends Controller
         $rows = DB::table('opportunities as o')
             ->join('users as u', 'u.id', '=', 'o.team_user_id')
             ->where('o.status', 'open')
-            ->whereIn('u.role', ['team', 'club'])
+            ->whereIn('u.role', ['team', 'club', 'coach'])
             ->when($sportTerms !== [], function ($query) use ($sportTerms) {
                 $query->whereIn(DB::raw('LOWER(COALESCE(u.sport, ""))'), $sportTerms);
             })
@@ -199,7 +199,7 @@ class LegacyCompatibilityController extends Controller
         $row = DB::table('opportunities as o')
             ->join('users as u', 'u.id', '=', 'o.team_user_id')
             ->where('o.id', $id)
-            ->whereIn('u.role', ['team', 'club'])
+            ->whereIn('u.role', ['team', 'club', 'coach'])
             ->where(function ($query) {
                 foreach (self::EVENT_KEYWORDS as $keyword) {
                     $query->orWhereRaw('LOWER(COALESCE(o.title, "")) LIKE ?', [$keyword])
