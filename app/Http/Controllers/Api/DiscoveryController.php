@@ -31,6 +31,7 @@ class DiscoveryController extends Controller
         $search = trim((string) (request('search') ?? request('q') ?? ''));
         $position = request('position');
         $city = request('city');
+        $perPage = max(1, min((int) request('per_page', 20), 100));
 
         $players = DB::table('users')
             ->leftJoin('player_profiles as pp', 'pp.user_id', '=', 'users.id')
@@ -62,7 +63,7 @@ class DiscoveryController extends Controller
             ])
             ->orderByDesc('users.created_at')
             ->orderByDesc('users.id')
-            ->paginate(20);
+            ->paginate($perPage);
 
         return $this->paginatedListResponse($players, 'Public oyuncu listesi hazir.');
     }
