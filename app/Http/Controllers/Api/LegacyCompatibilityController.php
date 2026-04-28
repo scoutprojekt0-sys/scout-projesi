@@ -270,6 +270,65 @@ class LegacyCompatibilityController extends Controller
         return response()->json(['ok' => true, 'message' => 'Basvuru gonderildi.']);
     }
 
+    public function communityEventApplications(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        if (! $user || ! in_array((string) $user->role, ['player', 'scout', 'manager', 'coach'], true)) {
+            return response()->json(['ok' => false, 'message' => 'Bu alan icin yetkin yok.'], Response::HTTP_FORBIDDEN);
+        }
+
+        if (! Schema::hasTable('applications')) {
+            return response()->json(['ok' => true, 'data' => []]);
+        }
+
+        $rows = DB::table('applications as a')
+            ->join('opportunities as o', 'o.id', '=', 'a.opportunity_id')
+            ->join('users as u', 'u.id', '=', 'o.team_user_id')
+            ->where('a.player_user_id', (int) $user->id)
+            ->where('o.status', 'open')
+            ->whereIn('u.role', ['team', 'club'])
+            ->where(function ($query) {
+                foreach (self::EVENT_KEYWORDS as $keyword) {
+                    $query->orWhereRaw('LOWER(COALESCE(o.title, "")) LIKE ?', [$keyword])
+                        ->orWhereRaw('LOWER(COALESCE(o.details, "")) LIKE ?', [$keyword]);
+                }
+            })
+            ->orderByDesc('a.updated_at')
+            ->get([
+                'a.id',
+                'a.opportunity_id',
+                'a.status',
+                'a.created_at',
+                'a.updated_at',
+                'o.title',
+                'o.city',
+                DB::raw('o.details as venue'),
+                DB::raw("'trial_day' as event_type"),
+                DB::raw('u.name as organizer_name'),
+                DB::raw('u.role as organizer_role'),
+                DB::raw('u.name as organizer_club_name'),
+            ])
+            ->map(fn ($row) => [
+                'id' => (int) $row->id,
+                'opportunity_id' => (int) $row->opportunity_id,
+                'title' => (string) ($row->title ?? ''),
+                'city' => (string) ($row->city ?? ''),
+                'venue' => (string) ($row->venue ?? ''),
+                'event_type' => (string) ($row->event_type ?? 'trial_day'),
+                'status' => (string) ($row->status ?? 'pending'),
+                'created_at' => $row->created_at,
+                'updated_at' => $row->updated_at,
+                'organizer' => [
+                    'name' => (string) ($row->organizer_name ?? ''),
+                    'role' => (string) ($row->organizer_role ?? ''),
+                    'club_name' => (string) ($row->organizer_club_name ?? ''),
+                ],
+            ])
+            ->values();
+
+        return response()->json(['ok' => true, 'data' => $rows]);
+    }
+
     public function successStoriesIndex(): JsonResponse
     {
         if (Schema::hasTable('success_stories')) {

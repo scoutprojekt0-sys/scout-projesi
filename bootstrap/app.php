@@ -11,6 +11,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Laravel\Sanctum\Exceptions\MissingAbilityException;
 use Laravel\Sanctum\Http\Middleware\CheckAbilities;
 use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -73,6 +74,14 @@ return Application::configure(basePath: dirname(__DIR__))
                     'code'    => 'unauthenticated',
                     'message' => 'Bu işlem için giriş yapmanız gerekiyor.',
                 ], 401);
+            }
+
+            if ($e instanceof MissingAbilityException) {
+                return response()->json([
+                    'ok'      => false,
+                    'code'    => 'forbidden',
+                    'message' => 'Bu islem icin yetkiniz yok.',
+                ], 403);
             }
 
             if ($e instanceof \Illuminate\Auth\Access\AuthorizationException) {

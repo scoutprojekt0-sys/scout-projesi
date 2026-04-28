@@ -265,9 +265,10 @@ class User extends Authenticatable
 
         return match ($this->role) {
             'player' => array_merge($abilities, ['player', 'application:apply', 'application:outgoing']),
-            'team' => array_merge($abilities, ['team', 'staff', 'opportunity:write', 'application:incoming']),
-            'club', 'manager', 'coach' => array_merge($abilities, ['staff', 'opportunity:write', 'application:incoming']),
-            'scout' => array_merge($abilities, ['staff']),
+            'team' => array_merge($abilities, ['team', 'staff', 'opportunity:write', 'application:incoming', 'application:apply', 'application:outgoing']),
+            'club' => array_merge($abilities, ['staff', 'opportunity:write', 'application:incoming', 'application:apply', 'application:outgoing']),
+            'manager', 'coach' => array_merge($abilities, ['staff', 'opportunity:write', 'application:incoming', 'application:apply', 'application:outgoing']),
+            'scout' => array_merge($abilities, ['staff', 'opportunity:write', 'application:incoming', 'application:apply', 'application:outgoing']),
             'lawyer' => array_merge($abilities, ['staff', 'lawyer']),
             default => $abilities,
         };

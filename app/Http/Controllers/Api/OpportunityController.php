@@ -40,6 +40,7 @@ class OpportunityController extends Controller
                 'opportunities.id',
                 'opportunities.team_user_id',
                 'teams.name as team_name',
+                'teams.role as team_role',
                 'teams.city as team_city',
                 'opportunities.title',
                 'opportunities.position',
@@ -159,10 +160,10 @@ class OpportunityController extends Controller
     {
         $hasExpiresAt = Schema::hasColumn('opportunities', 'expires_at');
         $authUser = $request->user();
-        if (! in_array($authUser->role, ['team', 'club', 'manager', 'coach'], true)) {
+        if (! in_array($authUser->role, ['team', 'club', 'manager', 'coach', 'scout'], true)) {
             return response()->json([
                 'ok' => false,
-                'message' => 'Sadece kulup, takim, menajer veya antrenor rolu ilan olusturabilir.',
+                'message' => 'Bu rol ilan olusturamaz.',
             ], Response::HTTP_FORBIDDEN);
         }
 
@@ -232,6 +233,7 @@ class OpportunityController extends Controller
                 'opportunities.id',
                 'opportunities.team_user_id',
                 'teams.name as team_name',
+                'teams.role as team_role',
                 'teams.city as team_city',
                 'opportunities.title',
                 'opportunities.position',

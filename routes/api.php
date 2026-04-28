@@ -274,6 +274,7 @@ Route::get('/public/live-watch-heatmap', [WatchDemandController::class, 'publicH
 Route::get('/market/live-feed', [MarketTerminalController::class, 'liveFeed']);
 Route::get('/public/players/quality-summary', [LegacyCompatibilityController::class, 'publicPlayersQualitySummary']);
 Route::get('/community-events', [LegacyCompatibilityController::class, 'communityEventsIndex']);
+Route::get('/community-events/my-applications', [LegacyCompatibilityController::class, 'communityEventApplications'])->middleware('auth:sanctum');
 Route::get('/community-events/{id}', [LegacyCompatibilityController::class, 'communityEventsShow']);
 Route::get('/success-stories', [LegacyCompatibilityController::class, 'successStoriesIndex']);
 Route::prefix('discovery')->group(function () {
@@ -367,10 +368,10 @@ Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->grou
     Route::patch('/opportunities/{id}', [OpportunityController::class, 'update'])->middleware('ability:opportunity:write');
     Route::delete('/opportunities/{id}', [OpportunityController::class, 'destroy'])->middleware('ability:opportunity:write');
 
-    Route::post('/opportunities/{id}/apply', [ApplicationController::class, 'apply'])->middleware('ability:player');
-    Route::get('/applications/incoming', [ApplicationController::class, 'incoming'])->middleware('ability:application:incoming');
-    Route::get('/applications/outgoing', [ApplicationController::class, 'outgoing'])->middleware('ability:player');
-    Route::patch('/applications/{id}/status', [ApplicationController::class, 'changeStatus'])->middleware('ability:application:incoming');
+    Route::post('/opportunities/{id}/apply', [ApplicationController::class, 'apply']);
+    Route::get('/applications/incoming', [ApplicationController::class, 'incoming']);
+    Route::get('/applications/outgoing', [ApplicationController::class, 'outgoing']);
+    Route::patch('/applications/{id}/status', [ApplicationController::class, 'changeStatus']);
 
     Route::post('/contacts', [ContactController::class, 'store'])->middleware('ability:contact:write');
     Route::get('/contacts/recipients/search', [ContactController::class, 'searchRecipients'])->middleware('ability:contact:read');

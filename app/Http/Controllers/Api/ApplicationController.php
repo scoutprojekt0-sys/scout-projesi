@@ -92,6 +92,7 @@ class ApplicationController extends Controller
                 'opportunities.title as opportunity_title',
                 'players.id as player_id',
                 'players.name as player_name',
+                'players.role as player_role',
                 'players.city as player_city',
             ]);
 
@@ -150,6 +151,7 @@ class ApplicationController extends Controller
                 'opportunities.status as opportunity_status',
                 'teams.id as team_id',
                 'teams.name as team_name',
+                'teams.role as team_role',
                 'teams.city as team_city',
             ]);
 
@@ -173,11 +175,9 @@ class ApplicationController extends Controller
             ->map(function ($row) {
                 $row->event_date = optional($this->extractOpportunityEventDate($row))?->toIso8601String();
                 return $row;
-            });
-        $filteredRows = $mappedRows
-            ->filter(fn ($row) => $this->shouldShowOutgoingApplication($row))
+            })
             ->values();
-        $outgoing->setCollection($filteredRows);
+        $outgoing->setCollection($mappedRows);
 
         return response()->json([
             'ok' => true,
