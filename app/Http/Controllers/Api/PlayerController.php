@@ -343,11 +343,13 @@ class PlayerController extends Controller
                     'gender' => (string) ($player->gender ?: 'bay'),
                 ],
                 'profile' => [
+                    'name' => (string) $player->name,
                     'sport' => (string) ($player->sport ?: 'futbol'),
                     'branch' => (string) ($player->sport ?: 'futbol'),
                     'gender' => (string) ($player->gender ?: 'bay'),
                     'position' => (string) $position,
                     'age' => $age !== null ? (int) $age : null,
+                    'birth_year' => $player->birth_year ? (int) $player->birth_year : null,
                     'height_cm' => $player->height_cm ? (int) $player->height_cm : null,
                     'weight_kg' => $player->weight_kg ? (int) $player->weight_kg : null,
                     'current_club' => (string) ($player->current_team ?? '-'),
@@ -358,6 +360,10 @@ class PlayerController extends Controller
                     'seeking_club' => (bool) ($player->seeking_club ?? false),
                     'nationality' => (string) ($player->country ?? ''),
                     'city' => (string) ($player->city ?? ''),
+                    'photo_url' => $this->publicFileUrl($player->photo_url ?? null),
+                    'profile_photo_url' => $this->publicFileUrl($player->photo_url ?? null),
+                    'views_count' => (int) ($player->views_count ?? 0),
+                    'view_count' => (int) ($player->views_count ?? 0),
                     'is_verified' => $isVerified,
                     'verification_status' => $verificationStatus ?: null,
                 ],
@@ -371,7 +377,11 @@ class PlayerController extends Controller
                     'goals' => $summary['goals'],
                     'assists' => $summary['assists'],
                     'nationality' => (string) ($player->country ?? ''),
-                    'profile_photo_url' => (string) ($player->photo_url ?? ''),
+                    'profile_photo_url' => $this->publicFileUrl($player->photo_url ?? null),
+                    'birth_year' => $player->birth_year ? (int) $player->birth_year : null,
+                    'dominant_foot' => $player->dominant_foot,
+                    'weight_kg' => $player->weight_kg ? (int) $player->weight_kg : null,
+                    'view_count' => (int) ($player->views_count ?? 0),
                     'confidence_score' => $player->confidence_score !== null ? (float) $player->confidence_score : null,
                     'is_verified' => $isVerified,
                     'verification_status' => $verificationStatus ?: null,
@@ -403,6 +413,52 @@ class PlayerController extends Controller
                 ],
             ],
         ]);
+    }
+
+    private function publicFileUrl(?string $value): ?string
+    {
+        $path = $this->extractPublicDiskPath($value);
+
+        return $path !== null ? $this->publicFileAssetUrl($path) : $value;
+    }
+
+    private function publicFileAssetUrl(string $path): string
+    {
+        $normalizedPath = implode('/', array_map('rawurlencode', array_filter(explode('/', trim($path, '/')), static fn ($segment) => $segment !== '')));
+        $request = request();
+
+        if ($request !== null) {
+            return rtrim($request->getSchemeAndHttpHost(), '/').'/media-files/'.$normalizedPath;
+        }
+
+        return url('/media-files/'.$normalizedPath);
+    }
+
+    private function extractPublicDiskPath(?string $value): ?string
+    {
+        $raw = trim((string) $value);
+        if ($raw === '') {
+            return null;
+        }
+
+        if (! str_contains($raw, '://') && ! str_starts_with($raw, '/')) {
+            return ltrim($raw, '/');
+        }
+
+        $path = parse_url($raw, PHP_URL_PATH);
+        if (! is_string($path) || $path === '') {
+            return null;
+        }
+
+        if (str_starts_with($path, '/media-files/')) {
+            return ltrim(substr($path, strlen('/media-files/')), '/');
+        }
+
+        if (str_starts_with($path, '/storage/')) {
+            return ltrim(substr($path, strlen('/storage/')), '/');
+        }
+
+        return null;
     }
 
     private function buildShowcaseStatus(int $playerId, object $player): array

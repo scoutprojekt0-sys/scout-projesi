@@ -36,6 +36,32 @@ class DiscoveryController extends Controller
         $players = DB::table('users')
             ->leftJoin('player_profiles as pp', 'pp.user_id', '=', 'users.id')
             ->where('role', 'player')
+            ->where(function ($query) {
+                $query->whereNull('users.email')
+                    ->orWhere(function ($inner) {
+                        $inner->where('users.email', 'not like', '%@demo.com')
+                            ->where('users.email', 'not like', '%@test.com')
+                            ->where('users.email', 'not like', '%@nextscout.local');
+                    });
+            })
+            ->where(function ($query) {
+                $query->whereNull('users.is_public')
+                    ->orWhere('users.is_public', true);
+            })
+            ->where('users.name', 'not like', 'Demo Player %')
+            ->where('users.name', 'not like', 'Test %')
+            ->where('users.name', 'not like', 'Debug %')
+            ->where('users.name', 'not like', 'Player User %')
+            ->where('users.name', '!=', 'Player User')
+            ->where('users.name', '!=', 'Player One')
+            ->where('users.name', '!=', 'nextscout')
+            ->where('users.name', '!=', 'tcm')
+            ->where('users.name', '!=', 'aaa')
+            ->where('users.name', 'not like', 'Kaniyolu %')
+            ->where('users.name', 'not like', '%External Test%')
+            ->where('users.name', 'not like', '%Verify %')
+            ->where('users.name', 'not like', '%Timeout Fix%')
+            ->where('users.name', 'not like', '%Ops User%')
             ->when($search, fn($q) => $q->where(function ($inner) use ($search) {
                 $inner->where('users.name', 'like', "%{$search}%")
                     ->orWhere('pp.current_team', 'like', "%{$search}%")
@@ -55,9 +81,14 @@ class DiscoveryController extends Controller
                 DB::raw('COALESCE(pp.position, users.position) as position'),
                 'users.city',
                 'users.age',
+                'pp.birth_year',
+                'pp.dominant_foot',
                 'users.photo_url',
+                'users.rating',
                 'pp.height_cm',
+                'pp.weight_kg',
                 'pp.current_team',
+                'pp.bio',
                 DB::raw("'-' as league"),
                 'users.created_at',
             ])
