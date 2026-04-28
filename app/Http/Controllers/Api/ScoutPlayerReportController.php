@@ -91,14 +91,20 @@ class ScoutPlayerReportController extends Controller
             'note' => ['nullable', 'string', 'min:8', 'max:5000'],
         ]);
 
+        $requestedPlayerName = trim((string) ($validated['player_name'] ?? ''));
+        $requestedPosition = trim((string) ($validated['position'] ?? ''));
+        $requestedAge = isset($validated['age']) ? (int) $validated['age'] : null;
         $playerUserId = isset($validated['player_user_id']) ? (int) $validated['player_user_id'] : null;
-        $player = null;
-        if ($playerUserId !== null) {
-            $player = User::query()->find($playerUserId);
-            if (! $player || (string) $player->role !== 'player') {
-                return $this->errorResponse('Secilen kayit bir oyuncuya ait degil.', Response::HTTP_UNPROCESSABLE_ENTITY, 'invalid_player');
-            }
+        $player = $this->resolvePlayerBinding(
+            $playerUserId,
+            $requestedPlayerName,
+            $requestedPosition,
+            $requestedAge,
+        );
+        if ($playerUserId !== null && ! $player) {
+            return $this->errorResponse('Secilen kayit bir oyuncuya ait degil.', Response::HTTP_UNPROCESSABLE_ENTITY, 'invalid_player');
         }
+        $playerUserId = $player?->id;
 
         $playerName = trim((string) ($validated['player_name'] ?? ($player?->name ?? '')));
         $position = trim((string) ($validated['position'] ?? ($player?->position ?? '')));
@@ -212,5 +218,57 @@ class ScoutPlayerReportController extends Controller
             'not_recommended' => 'reject',
             default => null,
         };
+    }
+
+    private function resolvePlayerBinding(?int $playerUserId, string $playerName, string $position, ?int $age): ?User
+    {
+        if ($playerUserId !== null) {
+            $player = User::query()->find($playerUserId);
+
+            return $player && (string) $player->role === 'player' ? $player : null;
+        }
+
+        $normalizedName = mb_strtolower(trim($playerName));
+        if ($normalizedName === '') {
+            return null;
+        }
+
+        $query = User::query()
+            ->leftJoin('player_profiles as pp', 'pp.user_id', '=', 'users.id')
+            ->where('users.role', 'player')
+            ->whereRaw('LOWER(users.name) = ?', [$normalizedName]);
+
+        if ($position !== '') {
+            $query->where(function ($builder) use ($position) {
+                $builder->where('users.position', $position)
+                    ->orWhere('pp.position', $position);
+            });
+        }
+
+        $match = $query
+            ->orderByDesc('users.updated_at')
+            ->select(['users.*', 'pp.birth_year'])
+            ->limit(5)
+            ->get();
+
+        if ($age !== null) {
+            $currentYear = (int) now()->format('Y');
+            $match = $match->filter(function ($row) use ($age, $currentYear) {
+                $userAge = is_numeric((string) ($row->age ?? null)) ? (int) $row->age : null;
+                $birthYear = is_numeric((string) ($row->birth_year ?? null)) ? (int) $row->birth_year : null;
+                $derivedAge = $birthYear !== null ? $currentYear - $birthYear : null;
+
+                return $userAge === $age || $derivedAge === $age;
+            })->values();
+        }
+
+        if ($match->count() === 1) {
+            /** @var User $resolved */
+            $resolved = User::query()->find($match->first()->id);
+
+            return $resolved;
+        }
+
+        return null;
     }
 }

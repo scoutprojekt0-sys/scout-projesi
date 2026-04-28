@@ -85,4 +85,30 @@ class ScoutPlayerReportEndpointsTest extends TestCase
             ->assertJsonPath('ok', false)
             ->assertJsonPath('code', 'forbidden_role');
     }
+
+    public function test_scout_report_store_auto_binds_unique_player_without_manual_id(): void
+    {
+        $scout = User::factory()->create(['role' => 'scout']);
+        $player = User::factory()->create([
+            'role' => 'player',
+            'name' => 'Figen Altas',
+            'age' => 19,
+            'position' => 'Kanat',
+        ]);
+
+        Sanctum::actingAs($scout, ['profile:write']);
+
+        $this->postJson('/api/scout-player-reports', [
+            'player_name' => 'Figen Altas',
+            'position' => 'Kanat',
+            'age' => 19,
+            'overall_rating' => 84,
+            'status' => 'shortlist',
+            'club' => 'Demo Club',
+            'note' => 'Teknik ve hizli oyuncu.',
+        ])
+            ->assertCreated()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.player_id', $player->id);
+    }
 }
