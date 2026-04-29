@@ -14,6 +14,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
@@ -332,41 +333,47 @@ class PlayerTransferController extends Controller
             ], 403);
         }
 
+        $hasOfferConfidenceScore = Schema::hasColumn('club_offers', 'confidence_score');
+        $selects = [
+            'offers.id',
+            'offers.transfer_id',
+            'offers.player_name',
+            'offers.offer_type',
+            'offers.amount_eur',
+            'offers.currency',
+            'offers.season',
+            'offers.contract_years',
+            'offers.salary_amount',
+            'offers.signing_fee',
+            'offers.bonus_summary',
+            'offers.contract_start_date',
+            'offers.contract_end_date',
+            'offers.expires_at',
+            'offers.clauses',
+            'offers.status',
+            'offers.note',
+            'offers.created_at',
+            'clubs.id as club_id',
+            'clubs.name as club_name',
+            'clubs.city as club_city',
+            'transfers.negotiation_status',
+            'transfers.verification_status',
+            'transfers.counter_fee',
+            'transfers.notes as history_notes',
+            'transfers.negotiation_notes',
+            'transfers.negotiation_updated_at',
+        ];
+
+        if ($hasOfferConfidenceScore) {
+            $selects[] = 'offers.confidence_score';
+        }
+
         $rows = DB::table('club_offers as offers')
             ->leftJoin('users as clubs', 'clubs.id', '=', 'offers.club_user_id')
             ->leftJoin('player_transfers as transfers', 'transfers.id', '=', 'offers.transfer_id')
             ->where('offers.target_player_user_id', (int) $user->id)
             ->orderByRaw('COALESCE(transfers.negotiation_updated_at, offers.updated_at, offers.created_at) desc')
-            ->select([
-                'offers.id',
-                'offers.transfer_id',
-                'offers.player_name',
-                'offers.offer_type',
-                'offers.amount_eur',
-                'offers.confidence_score',
-                'offers.currency',
-                'offers.season',
-                'offers.contract_years',
-                'offers.salary_amount',
-                'offers.signing_fee',
-                'offers.bonus_summary',
-                'offers.contract_start_date',
-                'offers.contract_end_date',
-                'offers.expires_at',
-                'offers.clauses',
-                'offers.status',
-                'offers.note',
-                'offers.created_at',
-                'clubs.id as club_id',
-                'clubs.name as club_name',
-                'clubs.city as club_city',
-                'transfers.negotiation_status',
-                'transfers.verification_status',
-                'transfers.counter_fee',
-                'transfers.notes as history_notes',
-                'transfers.negotiation_notes',
-                'transfers.negotiation_updated_at',
-            ])
+            ->select($selects)
             ->get()
             ->map(function ($row) {
                 $history = collect(explode("\n", (string) ($row->history_notes ?? '')))
