@@ -305,7 +305,7 @@ class ScoutTipEndpointsTest extends TestCase
         $this->assertNotEmpty(data_get($tip->metadata, 'staff_reviews.0.reviewed_at'));
     }
 
-    public function test_coach_and_club_role_requests_auto_shortlist_for_managers(): void
+    public function test_coach_and_club_approvals_auto_shortlist_for_managers(): void
     {
         $submitter = User::factory()->create(['role' => 'scout']);
         $coach = User::factory()->create(['role' => 'coach']);
@@ -324,26 +324,20 @@ class ScoutTipEndpointsTest extends TestCase
         ]);
 
         Sanctum::actingAs($coach, ['profile:read', 'profile:write', 'staff']);
-        $this->postJson('/api/scout-tips/'.$tip->id.'/role-request', [
-            'notes' => 'Kendi oyuncu havuzum icin takip etmek istiyorum.',
+        $this->postJson('/api/scout-tips/'.$tip->id.'/approve', [
+            'notes' => 'Teknik ekip tarafinda onaylandi.',
         ])->assertOk();
 
-        $this->assertDatabaseHas('scout_tip_role_requests', [
-            'scout_tip_id' => $tip->id,
-            'user_id' => $coach->id,
-            'role_type' => 'coach',
-        ]);
+        $tip->refresh();
+        $this->assertTrue((bool) data_get($tip->metadata, 'role_approvals.coach.approved', false));
 
         Sanctum::actingAs($club, ['profile:read', 'profile:write', 'staff']);
-        $this->postJson('/api/scout-tips/'.$tip->id.'/role-request', [
-            'notes' => 'Kulup profiline uygun.',
+        $this->postJson('/api/scout-tips/'.$tip->id.'/approve', [
+            'notes' => 'Kulup tarafinda onaylandi.',
         ])->assertOk();
 
-        $this->assertDatabaseHas('scout_tip_role_requests', [
-            'scout_tip_id' => $tip->id,
-            'user_id' => $club->id,
-            'role_type' => 'team',
-        ]);
+        $tip->refresh();
+        $this->assertTrue((bool) data_get($tip->metadata, 'role_approvals.team.approved', false));
 
         $this->assertDatabaseHas('scout_tip_watchlists', [
             'manager_user_id' => $manager->id,
