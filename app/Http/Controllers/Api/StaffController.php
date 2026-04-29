@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Concerns\EnforcesPrivacy;
 use App\Http\Controllers\Concerns\ResolvesPublicFileUrls;
+use App\Support\SportBranch;
 use App\Support\ProfileReviewData;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -187,7 +188,7 @@ class StaffController extends Controller
             'country' => ['sometimes', 'nullable', 'string', 'max:80'],
             'phone' => ['sometimes', 'nullable', 'string', 'max:30'],
             'role_type' => ['sometimes', Rule::in(['manager', 'coach', 'scout'])],
-            'branch' => ['sometimes', 'nullable', 'string', 'max:120'],
+            'branch' => ['sometimes', 'nullable', Rule::in(SportBranch::allowedInputs())],
             'organization' => ['sometimes', 'nullable', 'string', 'max:140'],
             'experience_years' => ['sometimes', 'nullable', 'integer', 'min:0', 'max:80'],
             'bio' => ['sometimes', 'nullable', 'string', 'max:5000'],
@@ -197,6 +198,27 @@ class StaffController extends Controller
             'profile_photo_url' => ['sometimes', 'nullable', 'string', 'max:65535'],
         ]);
 
+        $existingProfile = DB::table('staff_profiles')->where('user_id', $id)->first();
+        $currentBranch = SportBranch::normalize($existingProfile->branch ?? $authUser->sport ?? null);
+        $requestedBranch = array_key_exists('branch', $validated)
+            ? SportBranch::normalize($validated['branch'])
+            : null;
+
+        if ($currentBranch !== null && $requestedBranch !== null && $requestedBranch !== $currentBranch) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Brans kayit sonrasi degistirilemez.',
+                'errors' => [
+                    'branch' => ['Brans kayit sonrasi degistirilemez.'],
+                ],
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $resolvedBranch = $currentBranch ?? $requestedBranch;
+        $resolvedBranchLabel = $resolvedBranch !== null
+            ? SportBranch::label($resolvedBranch)
+            : ($existingProfile->branch ?? null);
+
         DB::table('users')
             ->where('id', $id)
             ->update([
@@ -204,18 +226,17 @@ class StaffController extends Controller
                 'city' => array_key_exists('city', $validated) ? $validated['city'] : $authUser->city,
                 'country' => array_key_exists('country', $validated) ? $validated['country'] : $authUser->country,
                 'phone' => array_key_exists('phone', $validated) ? $validated['phone'] : $authUser->phone,
+                'sport' => $resolvedBranch ?? $authUser->sport,
                 'photo_url' => array_key_exists('profile_photo_url', $validated) ? $validated['profile_photo_url'] : $authUser->photo_url,
                 'updated_at' => now(),
             ]);
-
-        $existingProfile = DB::table('staff_profiles')->where('user_id', $id)->first();
         $defaultRoleType = in_array($authUser->role, ['manager', 'coach', 'scout'], true) ? $authUser->role : 'scout';
 
         DB::table('staff_profiles')->updateOrInsert(
             ['user_id' => $id],
             [
                 'role_type' => array_key_exists('role_type', $validated) ? $validated['role_type'] : ($existingProfile->role_type ?? $defaultRoleType),
-                'branch' => array_key_exists('branch', $validated) ? $validated['branch'] : ($existingProfile->branch ?? null),
+                'branch' => $resolvedBranchLabel,
                 'organization' => array_key_exists('organization', $validated) ? $validated['organization'] : ($existingProfile->organization ?? null),
                 'experience_years' => array_key_exists('experience_years', $validated) ? $validated['experience_years'] : ($existingProfile->experience_years ?? null),
                 'bio' => array_key_exists('bio', $validated) ? $validated['bio'] : ($existingProfile->bio ?? null),

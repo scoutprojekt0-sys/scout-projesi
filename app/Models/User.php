@@ -18,6 +18,7 @@ class User extends Authenticatable
         'password',
         'auth_provider',
         'role',
+        'sport',
         'city',
         'phone',
         'stripe_customer_id',

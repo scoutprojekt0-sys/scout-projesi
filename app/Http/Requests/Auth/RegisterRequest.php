@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Support\SportBranch;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
@@ -20,6 +21,7 @@ class RegisterRequest extends FormRequest
             'email' => ['required', 'string', 'email', 'max:190', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::min(8)->letters()->mixedCase()->numbers()],
             'role' => ['required', Rule::in(['player', 'manager', 'coach', 'scout', 'team'])],
+            'branch' => ['required', 'string', Rule::in(SportBranch::allowedInputs())],
             'city' => ['nullable', 'string', 'max:80'],
             'phone' => ['nullable', 'string', 'max:30'],
         ];

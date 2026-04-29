@@ -13,11 +13,13 @@ use App\Http\Requests\Auth\UpdateMeRequest;
 use App\Jobs\SendWelcomeEmail;
 use App\Models\AuditEvent;
 use App\Models\User;
+use App\Support\SportBranch;
 use App\Services\BrevoEmailService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -35,6 +37,7 @@ class AuthController extends Controller
     public function register(RegisterRequest $request): JsonResponse
     {
         $data = $request->validated();
+        $sport = SportBranch::normalize($data['branch'] ?? null);
         $verificationRequired = $this->emailVerificationRequired();
         $verificationToken = $verificationRequired ? Str::random(64) : null;
 
@@ -43,6 +46,7 @@ class AuthController extends Controller
             'email' => strtolower($data['email']),
             'password' => Hash::make($data['password']),
             'role' => $data['role'],
+            'sport' => $sport,
             'city' => $data['city'] ?? null,
             'phone' => $data['phone'] ?? null,
             'is_verified' => ! $verificationRequired,
@@ -50,6 +54,17 @@ class AuthController extends Controller
             'email_verification_token' => $verificationToken,
         ]);
         $verificationLink = $verificationToken ? $this->buildEmailVerificationLink($verificationToken) : null;
+
+        if (in_array($user->role, ['manager', 'coach', 'scout'], true)) {
+            DB::table('staff_profiles')->updateOrInsert(
+                ['user_id' => $user->id],
+                [
+                    'role_type' => $user->role,
+                    'branch' => SportBranch::label($sport),
+                    'updated_at' => now(),
+                ]
+            );
+        }
 
         // Hoşgeldin emailini kuyruğa gönder
         if ($verificationRequired && $verificationLink) {

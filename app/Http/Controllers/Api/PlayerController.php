@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Concerns\EnforcesPrivacy;
 use App\Http\Controllers\Concerns\ResolvesPublicFileUrls;
 use App\Support\ProfileReviewData;
+use App\Support\SportBranch;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -169,7 +170,7 @@ class PlayerController extends Controller
 
         $validated = $request->validate([
             'name' => ['sometimes', 'string', 'min:2', 'max:120'],
-            'sport' => ['sometimes', 'nullable', 'string', 'max:40'],
+            'sport' => ['sometimes', 'nullable', Rule::in(SportBranch::allowedInputs())],
             'gender' => ['sometimes', 'nullable', 'string', 'max:20'],
             'contract_status' => ['sometimes', 'nullable', Rule::in(['active', 'free'])],
             'seeking_club' => ['sometimes', 'nullable', 'boolean'],
@@ -187,12 +188,29 @@ class PlayerController extends Controller
             'bio' => ['sometimes', 'nullable', 'string', 'max:5000'],
         ]);
 
+        $currentSport = SportBranch::normalize($authUser->sport ?? $target->sport ?? null);
+        $requestedSport = array_key_exists('sport', $validated)
+            ? SportBranch::normalize($validated['sport'])
+            : null;
+
+        if ($currentSport !== null && $requestedSport !== null && $requestedSport !== $currentSport) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Brans kayit sonrasi degistirilemez.',
+                'errors' => [
+                    'sport' => ['Brans kayit sonrasi degistirilemez.'],
+                ],
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $resolvedSport = $currentSport ?? $requestedSport;
+
         DB::table('users')
             ->where('id', $id)
             ->where('role', 'player')
             ->update([
                 'name' => $validated['name'] ?? $authUser->name,
-                'sport' => array_key_exists('sport', $validated) ? $validated['sport'] : $authUser->sport,
+                'sport' => $resolvedSport ?? $authUser->sport,
                 'gender' => array_key_exists('gender', $validated) ? $validated['gender'] : $authUser->gender,
                 'contract_status' => array_key_exists('contract_status', $validated) ? $validated['contract_status'] : $authUser->contract_status,
                 'seeking_club' => array_key_exists('seeking_club', $validated) ? $validated['seeking_club'] : $authUser->seeking_club,
