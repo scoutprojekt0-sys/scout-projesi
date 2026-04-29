@@ -71,7 +71,7 @@ class VideoAnalysisEndpointsTest extends TestCase
             ->assertJsonPath('data.0.player_id', $player->id);
     }
 
-    public function test_existing_video_analysis_is_reused_for_same_video_and_target(): void
+    public function test_in_progress_video_analysis_is_reused_for_same_video_and_target(): void
     {
         $player = User::factory()->create(['role' => 'player']);
         $clip = VideoClip::create([
@@ -79,6 +79,45 @@ class VideoAnalysisEndpointsTest extends TestCase
             'title' => 'Repeat Match Video',
             'video_url' => 'https://example.com/repeat-match-video',
             'thumbnail_url' => 'https://example.com/repeat-thumb.jpg',
+            'platform' => 'custom',
+        ]);
+
+        Sanctum::actingAs($player, ['profile:read', 'profile:write']);
+
+        $analysis = VideoAnalysis::create([
+            'video_clip_id' => $clip->id,
+            'requested_by' => $player->id,
+            'target_player_id' => $player->id,
+            'analysis_type' => 'scout_mvp',
+            'provider' => 'external',
+            'status' => 'processing',
+            'worker_status' => 'submitted',
+            'analysis_version' => 'external-worker',
+        ]);
+
+        $second = $this->postJson('/api/video-analyses/start', [
+            'video_clip_id' => $clip->id,
+            'target_player_id' => $player->id,
+            'analysis_type' => 'scout_mvp',
+        ]);
+
+        $second
+            ->assertStatus(200)
+            ->assertJsonPath('meta.analysis_source', 'cached')
+            ->assertJsonPath('data.id', $analysis->id)
+            ->assertJsonPath('data.status', 'processing');
+
+        $this->assertSame(1, VideoAnalysis::query()->count());
+    }
+
+    public function test_completed_video_analysis_is_not_reused_for_same_video_and_target(): void
+    {
+        $player = User::factory()->create(['role' => 'player']);
+        $clip = VideoClip::create([
+            'user_id' => $player->id,
+            'title' => 'Fresh Match Video',
+            'video_url' => 'https://example.com/fresh-match-video',
+            'thumbnail_url' => 'https://example.com/fresh-thumb.jpg',
             'platform' => 'custom',
         ]);
 
@@ -100,12 +139,50 @@ class VideoAnalysisEndpointsTest extends TestCase
         ]);
 
         $second
-            ->assertStatus(200)
-            ->assertJsonPath('meta.analysis_source', 'cached')
-            ->assertJsonPath('data.id', $firstAnalysisId)
-            ->assertJsonPath('data.status', 'completed');
+            ->assertStatus(201)
+            ->assertJsonPath('meta.analysis_source', 'fresh');
 
-        $this->assertSame(1, VideoAnalysis::query()->count());
+        $this->assertNotSame($firstAnalysisId, $second->json('data.id'));
+
+        $this->assertSame(2, VideoAnalysis::query()->count());
+    }
+
+    public function test_force_reanalyze_bypasses_existing_in_progress_analysis(): void
+    {
+        $player = User::factory()->create(['role' => 'player']);
+        $clip = VideoClip::create([
+            'user_id' => $player->id,
+            'title' => 'Force Match Video',
+            'video_url' => 'https://example.com/force-match-video',
+            'thumbnail_url' => 'https://example.com/force-thumb.jpg',
+            'platform' => 'custom',
+        ]);
+
+        Sanctum::actingAs($player, ['profile:read', 'profile:write']);
+
+        VideoAnalysis::create([
+            'video_clip_id' => $clip->id,
+            'requested_by' => $player->id,
+            'target_player_id' => $player->id,
+            'analysis_type' => 'scout_mvp',
+            'provider' => 'external',
+            'status' => 'processing',
+            'worker_status' => 'submitted',
+            'analysis_version' => 'external-worker',
+        ]);
+
+        $response = $this->postJson('/api/video-analyses/start', [
+            'video_clip_id' => $clip->id,
+            'target_player_id' => $player->id,
+            'analysis_type' => 'scout_mvp',
+            'force_reanalyze' => true,
+        ]);
+
+        $response
+            ->assertStatus(201)
+            ->assertJsonPath('meta.analysis_source', 'fresh');
+
+        $this->assertSame(2, VideoAnalysis::query()->count());
     }
 
     public function test_external_mode_can_fail_without_mock_fallback(): void

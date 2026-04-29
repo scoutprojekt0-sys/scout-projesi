@@ -22,19 +22,24 @@ class VideoAnalysisController extends Controller
             'video_clip_id' => ['required', 'integer', 'exists:video_clips,id'],
             'target_player_id' => ['nullable', 'integer', 'exists:users,id'],
             'analysis_type' => ['nullable', 'string', 'max:80'],
+            'force_reanalyze' => ['nullable', 'boolean'],
         ]);
 
         $videoClip = VideoClip::findOrFail($validated['video_clip_id']);
         $targetPlayerId = $validated['target_player_id'] ?? $videoClip->user_id;
         $analysisType = $validated['analysis_type'] ?? 'scout_mvp';
+        $forceReanalyze = (bool) ($validated['force_reanalyze'] ?? false);
 
-        $existingAnalysis = VideoAnalysis::query()
-            ->where('video_clip_id', $videoClip->id)
-            ->where('target_player_id', $targetPlayerId)
-            ->where('analysis_type', $analysisType)
-            ->whereIn('status', ['queued', 'processing', 'completed'])
-            ->latest('id')
-            ->first();
+        $existingAnalysis = null;
+        if (! $forceReanalyze) {
+            $existingAnalysis = VideoAnalysis::query()
+                ->where('video_clip_id', $videoClip->id)
+                ->where('target_player_id', $targetPlayerId)
+                ->where('analysis_type', $analysisType)
+                ->whereIn('status', ['queued', 'processing'])
+                ->latest('id')
+                ->first();
+        }
 
         if ($existingAnalysis) {
             $existingAnalysisPayload = $existingAnalysis->fresh(['videoClip', 'targetPlayer', 'events.clips', 'metrics', 'targets']);
