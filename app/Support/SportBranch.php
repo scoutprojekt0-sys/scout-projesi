@@ -12,11 +12,21 @@ class SportBranch
             'volleyball',
             'athletics',
             'tennis',
+            'Football',
+            'Basketball',
+            'Volleyball',
+            'Athletics',
+            'Tennis',
             'futbol',
             'basketbol',
             'voleybol',
             'atletizm',
             'tenis',
+            'Futbol',
+            'Basketbol',
+            'Voleybol',
+            'Atletizm',
+            'Tenis',
         ];
     }
 

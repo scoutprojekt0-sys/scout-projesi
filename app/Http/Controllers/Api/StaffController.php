@@ -204,17 +204,7 @@ class StaffController extends Controller
             ? SportBranch::normalize($validated['branch'])
             : null;
 
-        if ($currentBranch !== null && $requestedBranch !== null && $requestedBranch !== $currentBranch) {
-            return response()->json([
-                'ok' => false,
-                'message' => 'Brans kayit sonrasi degistirilemez.',
-                'errors' => [
-                    'branch' => ['Brans kayit sonrasi degistirilemez.'],
-                ],
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        $resolvedBranch = $currentBranch ?? $requestedBranch;
+        $resolvedBranch = $requestedBranch ?? $currentBranch;
         $resolvedBranchLabel = $resolvedBranch !== null
             ? SportBranch::label($resolvedBranch)
             : ($existingProfile->branch ?? null);
