@@ -73,6 +73,10 @@ class PipelineAnalyzer:
                 context.calibration_confidence = calibration.confidence
             frame_detections = [detector.detect(context, frame) for frame in frames]
             tracks = self.tracker.track(frame_detections)
+            player_tracks = [track for track in tracks if track.label == "player"]
+            ball_tracks = [track for track in tracks if track.label == "ball"]
+            if len(frames) < 2 or len(player_tracks) < 2:
+                raise RuntimeError("Analiz icin yeterli oyuncu takibi cikmadi.")
             context.target_track_id = self.target_locker.choose_track(context, tracks)
             context.track_team_map = self.team_separator.assign(frames, tracks)
             if context.target_track_id is not None:
@@ -80,6 +84,8 @@ class PipelineAnalyzer:
             possessions = self.ownership_chain.infer(context, tracks)
             events = self.event_detector.detect(context, tracks)
             summary, targets, metrics = self.metric_aggregator.summarize(context, tracks, events)
+            if context.target_track_id is None or (not events and len(ball_tracks) == 0):
+                raise RuntimeError("Analiz anlamli event veya top takibi uretemedi.")
 
         return VideoAnalysisResult(
             status="completed",

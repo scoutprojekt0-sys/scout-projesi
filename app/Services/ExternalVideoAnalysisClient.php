@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use App\Models\VideoAnalysis;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 
 class ExternalVideoAnalysisClient
@@ -22,8 +23,8 @@ class ExternalVideoAnalysisClient
                 'analysis_id' => $analysis->id,
                 'video_clip_id' => $analysis->video_clip_id,
                 'sport' => $this->inferSport($videoClip?->tags, $analysis->analysis_type),
-                'video_url' => $videoClip?->video_url,
-                'thumbnail_url' => $videoClip?->thumbnail_url,
+                'video_url' => $this->resolveMediaUrl($videoClip?->video_url),
+                'thumbnail_url' => $this->resolveMediaUrl($videoClip?->thumbnail_url),
                 'target_player_id' => $analysis->target_player_id,
                 'target_profile' => $this->buildTargetProfile($analysis->target_player_id),
                 'requested_by' => $analysis->requested_by,
@@ -128,5 +129,66 @@ class ExternalVideoAnalysisClient
             'current_team' => $player->playerProfile?->current_team,
             'city' => $player->city,
         ], static fn ($value) => $value !== null && $value !== '');
+    }
+
+    private function resolveMediaUrl(?string $value): ?string
+    {
+        $raw = trim((string) $value);
+        if ($raw === '') {
+            return null;
+        }
+
+        if (str_contains($raw, '://')) {
+            return $raw;
+        }
+
+        $publicPath = $this->extractPublicDiskPath($raw);
+        if ($publicPath !== null && Storage::disk('public')->exists($publicPath)) {
+            return $this->publicDiskUrl($publicPath);
+        }
+
+        if (str_starts_with($raw, '/')) {
+            $baseUrl = rtrim((string) config('app.url', ''), '/');
+            if ($baseUrl !== '') {
+                return $baseUrl.$raw;
+            }
+        }
+
+        return $raw;
+    }
+
+    private function extractPublicDiskPath(string $value): ?string
+    {
+        $raw = trim($value);
+        if ($raw === '') {
+            return null;
+        }
+
+        if (! str_contains($raw, '://') && ! str_starts_with($raw, '/')) {
+            return ltrim($raw, '/');
+        }
+
+        $path = parse_url($raw, PHP_URL_PATH);
+        if (! is_string($path) || $path === '') {
+            return null;
+        }
+
+        if (str_starts_with($path, '/media-files/')) {
+            return ltrim(substr($path, strlen('/media-files/')), '/');
+        }
+
+        if (str_starts_with($path, '/storage/')) {
+            return ltrim(substr($path, strlen('/storage/')), '/');
+        }
+
+        return null;
+    }
+
+    private function publicDiskUrl(string $path): string
+    {
+        $normalizedPath = implode('/', array_map('rawurlencode', array_filter(explode('/', trim($path, '/')), static fn ($segment) => $segment !== '')));
+        $baseUrl = rtrim((string) config('app.url', ''), '/');
+
+        return $baseUrl.'/storage/'.$normalizedPath;
     }
 }
