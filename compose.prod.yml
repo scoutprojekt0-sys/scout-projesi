@@ -1,4 +1,19 @@
 services:
+  ai-worker:
+    build:
+      context: .
+      dockerfile: ai-worker/Dockerfile.prod
+    image: scout-api/ai-worker:prod
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8010/health >/dev/null"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
   app:
     build:
       context: .
@@ -10,6 +25,8 @@ services:
     environment:
       CONTAINER_ROLE: app
     depends_on:
+      ai-worker:
+        condition: service_healthy
       db:
         condition: service_healthy
       redis:
@@ -32,6 +49,8 @@ services:
     environment:
       CONTAINER_ROLE: queue
     depends_on:
+      ai-worker:
+        condition: service_healthy
       db:
         condition: service_healthy
       redis:
@@ -48,6 +67,8 @@ services:
     environment:
       CONTAINER_ROLE: scheduler
     depends_on:
+      ai-worker:
+        condition: service_healthy
       db:
         condition: service_healthy
       redis:
