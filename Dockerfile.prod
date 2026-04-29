@@ -73,6 +73,7 @@ COPY --from=composer_deps /app/vendor ./vendor
 COPY --from=frontend_builder /app/public/build ./public/build
 
 RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
+    && ln -sfn /var/www/html/storage/app/public /var/www/html/public/storage \
     && chown -R www-data:www-data storage bootstrap/cache
 
 COPY docker/prod/bin/entrypoint.sh /usr/local/bin/app-entrypoint

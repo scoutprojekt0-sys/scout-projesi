@@ -24,13 +24,9 @@ trait ResolvesPublicFileUrls
     private function publicFileAssetUrl(string $path): string
     {
         $normalizedPath = implode('/', array_map('rawurlencode', array_filter(explode('/', trim($path, '/')), static fn ($segment) => $segment !== '')));
-        $request = request();
+        $baseUrl = rtrim((string) config('app.url', url('/')), '/');
 
-        if ($request !== null) {
-            return rtrim($request->getSchemeAndHttpHost(), '/').'/media-files/'.$normalizedPath;
-        }
-
-        return url('/media-files/'.$normalizedPath);
+        return $baseUrl.'/storage/'.$normalizedPath;
     }
 
     private function extractPublicDiskPath(?string $value): ?string
