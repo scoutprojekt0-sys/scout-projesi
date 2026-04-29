@@ -16,6 +16,33 @@ class StaffController extends Controller
 {
     use EnforcesPrivacy;
     use ResolvesPublicFileUrls;
+
+    public function me(Request $request): JsonResponse
+    {
+        $authUser = $request->user();
+        if (! $authUser || ! in_array($authUser->role, ['manager', 'coach', 'scout'], true)) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Staff profili bulunamadi.',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        return $this->show($request, (int) $authUser->id);
+    }
+
+    public function updateMe(Request $request): JsonResponse
+    {
+        $authUser = $request->user();
+        if (! $authUser || ! in_array($authUser->role, ['manager', 'coach', 'scout'], true)) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Staff profili bulunamadi.',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        return $this->update($request, (int) $authUser->id);
+    }
+
     public function index(Request $request): JsonResponse
     {
         $validated = $request->validate([

@@ -356,6 +356,8 @@ Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->grou
     Route::patch('/players/{id}', [PlayerController::class, 'update'])->middleware('ability:player');
     Route::apiResource('teams', TeamController::class)->only(['index', 'show', 'update']);
     Route::get('/teams/{id}/transfer-summary', [TeamController::class, 'transferSummary']);
+    Route::get('/staff-profiles/me', [StaffController::class, 'me'])->middleware('ability:profile:read');
+    Route::put('/staff-profiles/me', [StaffController::class, 'updateMe'])->middleware('ability:profile:write');
 
     Route::post('/media', [MediaController::class, 'store'])->middleware('ability:media:write');
     Route::get('/users/{id}/media', [MediaController::class, 'indexByUser'])->middleware('ability:media:read');
