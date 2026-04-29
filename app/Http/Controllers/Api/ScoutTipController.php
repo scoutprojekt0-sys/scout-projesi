@@ -100,27 +100,26 @@ class ScoutTipController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:160'],
+            'city' => ['nullable', 'string', 'max:80'],
+            'position' => ['nullable', 'string', 'max:60'],
         ]);
 
-        $name = trim((string) $validated['name']);
-        $normalized = Str::lower(preg_replace('/\s+/u', '', $name) ?? $name);
+        $matches = $this->workflowService->findPlayerCandidates(
+            name: trim((string) $validated['name']),
+            cityHint: isset($validated['city']) ? trim((string) $validated['city']) : null,
+            positionHint: isset($validated['position']) ? trim((string) $validated['position']) : null,
+        );
 
-        $players = User::query()
-            ->where('role', 'player')
-            ->select(['id', 'name', 'role', 'city', 'position'])
-            ->get();
+        $payload = [
+            'best_match' => $matches['best_match'],
+            'exact_matches' => $matches['exact_matches']->values(),
+            'candidates' => $matches['candidates']->take(8)->values(),
+        ];
 
-        $exact = $players->first(function (User $player) use ($normalized) {
-            $playerNormalized = Str::lower(preg_replace('/\s+/u', '', (string) $player->name) ?? (string) $player->name);
-            return $playerNormalized === $normalized;
-        });
-
-        $loose = $exact ?: $players->first(function (User $player) use ($normalized) {
-            $playerNormalized = Str::lower(preg_replace('/\s+/u', '', (string) $player->name) ?? (string) $player->name);
-            return str_contains($playerNormalized, $normalized) || str_contains($normalized, $playerNormalized);
-        });
-
-        return $this->successResponse($loose, $loose ? 'Oyuncu eslesmesi bulundu.' : 'Oyuncu eslesmesi bulunamadi.');
+        return $this->successResponse(
+            $payload,
+            $matches['best_match'] ? 'Oyuncu eslesmesi bulundu.' : 'Oyuncu eslesmesi bulunamadi.'
+        );
     }
 
     public function store(Request $request): JsonResponse
@@ -382,6 +381,10 @@ class ScoutTipController extends Controller
                 'roleRequests.user:id,name,role',
             ])
             ->whereIn('status', ['pending', 'screened', 'shortlisted', 'approved'])
+            ->where(function ($query) use ($user) {
+                $query->whereNull('metadata->dismissed_by_user_ids')
+                    ->orWhereJsonDoesntContain('metadata->dismissed_by_user_ids', (int) $user->id);
+            })
             ->latest('created_at')
             ->paginate((int) $request->input('per_page', 20));
 
@@ -401,6 +404,47 @@ class ScoutTipController extends Controller
         });
 
         return $this->paginatedListResponse($rows, 'Rol talep akisi hazir.');
+    }
+
+    public function dismiss(Request $request, int $id): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $this->canRequestRole($user)) {
+            return $this->errorResponse('Bu akis sadece kulup ve antrenor hesaplari icin acik.', 403, 'forbidden');
+        }
+
+        $tip = ScoutTip::findOrFail($id);
+        $metadata = $tip->metadata ?? [];
+
+        $dismissedUserIds = collect($metadata['dismissed_by_user_ids'] ?? [])
+            ->map(static fn ($value) => (int) $value)
+            ->push((int) $user->id)
+            ->unique()
+            ->values()
+            ->all();
+
+        $dismissedUsers = collect($metadata['dismissed_by_users'] ?? [])
+            ->reject(fn ($entry) => (int) ($entry['id'] ?? 0) === (int) $user->id)
+            ->values()
+            ->all();
+        $dismissedUsers[] = [
+            'id' => (int) $user->id,
+            'name' => $user->name,
+            'role' => $user->role,
+            'dismissed_at' => now()->toIso8601String(),
+        ];
+
+        $metadata['dismissed_by_user_ids'] = $dismissedUserIds;
+        $metadata['dismissed_by_users'] = $dismissedUsers;
+        $tip->metadata = $metadata;
+        $tip->save();
+
+        return $this->successResponse([
+            'dismissed' => true,
+            'scout_tip_id' => $tip->id,
+            'dismissed_at' => now()->toIso8601String(),
+        ], 'Scout ihbari listenizden kaldirildi.');
     }
 
     public function myRoleRequests(Request $request): JsonResponse
@@ -452,14 +496,6 @@ class ScoutTipController extends Controller
             if (! empty($validated['notes'])) {
                 $entry->notes = $validated['notes'];
                 $entry->save();
-            }
-
-            $counterpart = $roleType === 'coach' ? 'team' : 'coach';
-            $tip->load('roleRequests');
-            $hasCounterpartRequest = $tip->roleRequests->contains(fn (ScoutTipRoleRequest $row) => $row->role_type === $counterpart);
-
-            if ($hasCounterpartRequest) {
-                $this->autoCreateManagerShortlistEntries($tip);
             }
 
             NotificationStore::sendToUser((int) $tip->submitted_by, 'scout_tip_role_requested', [
@@ -587,7 +623,19 @@ class ScoutTipController extends Controller
 
     public function approve(Request $request, int $id): JsonResponse
     {
-        return $this->transition($request, $id, 'approved', 'Scout ihbari onaylandi.');
+        if (! $this->canReview($request->user())) {
+            return $this->errorResponse('Scout tip review yetkiniz yok.', 403, 'forbidden');
+        }
+
+        $validated = $request->validate([
+            'notes' => ['nullable', 'string', 'max:1000'],
+            'player_id' => ['nullable', 'integer', 'exists:users,id'],
+        ]);
+
+        $tip = $this->workflowService->updateStatus(ScoutTip::findOrFail($id), $request->user(), 'approved', $validated);
+        $tip = $this->registerRoleApproval($tip, $request->user(), $validated['notes'] ?? null);
+
+        return $this->successResponse($tip, 'Scout ihbari onaylandi.');
     }
 
     private function transition(Request $request, int $id, string $status, string $message): JsonResponse
@@ -632,15 +680,18 @@ class ScoutTipController extends Controller
     private function autoCreateManagerShortlistEntries(ScoutTip $tip): void
     {
         $tip->loadMissing('roleRequests.user:id,name,role');
+        $approvals = data_get($tip->metadata, 'role_approvals', []);
+        $coachApproved = (bool) data_get($approvals, 'coach.approved', false);
+        $teamApproved = (bool) data_get($approvals, 'team.approved', false);
 
-        $roleCounts = [
-            'coach' => $tip->roleRequests->where('role_type', 'coach')->count(),
-            'team' => $tip->roleRequests->where('role_type', 'team')->count(),
-        ];
-
-        if ($roleCounts['coach'] < 1 || $roleCounts['team'] < 1) {
+        if (! $coachApproved || ! $teamApproved) {
             return;
         }
+
+        $roleCounts = [
+            'coach' => $coachApproved ? 1 : 0,
+            'team' => $teamApproved ? 1 : 0,
+        ];
 
         $managerIds = User::query()
             ->where('role', 'manager')
@@ -657,11 +708,11 @@ class ScoutTipController extends Controller
                     'status' => 'auto_shortlisted',
                     'notes' => 'Kulup ve antrenor talebi sonrasinda otomatik shortlist olustu.',
                     'metadata' => [
-                        'source' => 'dual_role_request',
+                        'source' => 'dual_role_approval',
                         'player_name' => $tip->player_name,
                         'position' => $tip->position,
                         'city' => $tip->city,
-                        'role_request_counts' => $roleCounts,
+                        'role_approval_counts' => $roleCounts,
                     ],
                 ]
             );
@@ -672,8 +723,40 @@ class ScoutTipController extends Controller
             'player_name' => $tip->player_name,
             'position' => $tip->position,
             'city' => $tip->city,
-            'role_request_counts' => $roleCounts,
+            'role_approval_counts' => $roleCounts,
         ]);
+    }
+
+    private function registerRoleApproval(ScoutTip $tip, User $user, ?string $notes = null): ScoutTip
+    {
+        if (! in_array((string) $user->role, ['coach', 'team', 'club'], true)) {
+            return $this->attachResolvedPlayer($tip);
+        }
+
+        $tip = $this->attachResolvedPlayer($tip);
+        $roleType = $this->normalizeRoleRequestType((string) $user->role);
+        $metadata = $tip->metadata ?? [];
+        $approvals = $metadata['role_approvals'] ?? [];
+        $approvals[$roleType] = array_filter([
+            'approved' => true,
+            'approved_at' => now()->toIso8601String(),
+            'approved_by' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'role' => $user->role,
+            ],
+            'notes' => $notes ? trim($notes) : null,
+        ], static fn ($value) => $value !== null);
+
+        $metadata['role_approvals'] = $approvals;
+        $tip->metadata = $metadata;
+        $tip->save();
+
+        if (($approvals['coach']['approved'] ?? false) && ($approvals['team']['approved'] ?? false)) {
+            $this->autoCreateManagerShortlistEntries($tip);
+        }
+
+        return $this->attachResolvedPlayer($tip);
     }
 
     private function resolveGuestSubmitter(): User

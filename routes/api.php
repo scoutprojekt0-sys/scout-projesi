@@ -186,6 +186,7 @@ Route::prefix('scout-tips')->middleware(['auth:sanctum', 'reject_legacy_token', 
     Route::post('/{id}/manager-note', [ScoutTipController::class, 'saveManagerNote'])->middleware('ability:profile:write');
     Route::post('/{id}/watchlist', [ScoutTipController::class, 'addToWatchlist'])->middleware('ability:profile:write');
     Route::post('/{id}/role-request', [ScoutTipController::class, 'requestRole'])->middleware('ability:profile:write');
+    Route::post('/{id}/dismiss', [ScoutTipController::class, 'dismiss'])->middleware('ability:profile:write');
     Route::post('/', [ScoutTipController::class, 'store'])->middleware('ability:profile:write');
     Route::post('/{id}/withdraw', [ScoutTipController::class, 'withdraw'])->middleware('ability:profile:write');
     Route::post('/{id}/screen', [ScoutTipController::class, 'screen'])->middleware('ability:staff');

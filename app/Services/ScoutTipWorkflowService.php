@@ -10,6 +10,7 @@ use App\Models\ScoutTipEvent;
 use App\Models\User;
 use App\Support\NotificationStore;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ScoutTipWorkflowService
 {
@@ -22,6 +23,18 @@ class ScoutTipWorkflowService
     public function createTip(User $user, array $payload): ScoutTip
     {
         return DB::transaction(function () use ($user, $payload) {
+            $resolvedPlayer = $this->resolvePlayerFromPayload($payload);
+            if ($resolvedPlayer && empty($payload['player_id'])) {
+                $payload['player_id'] = $resolvedPlayer->id;
+                $payload['metadata'] = array_merge($payload['metadata'] ?? [], [
+                    'resolved_player' => [
+                        'id' => $resolvedPlayer->id,
+                        'name' => $resolvedPlayer->name,
+                        'matched_by' => 'player_name',
+                    ],
+                ]);
+            }
+
             $duplicate = ScoutTip::query()
                 ->whereRaw('lower(player_name) = ?', [mb_strtolower((string) $payload['player_name'])])
                 ->when(! empty($payload['birth_year']), fn ($query) => $query->where('birth_year', $payload['birth_year']))
@@ -265,7 +278,7 @@ class ScoutTipWorkflowService
     private function notifyRelevantRolesAboutTip(ScoutTip $tip, User $submitter, bool $isManagerSubmission = false): void
     {
         $targetIds = User::query()
-            ->whereIn('role', ['coach', 'team'])
+            ->whereIn('role', ['coach', 'team', 'club'])
             ->pluck('id');
 
         NotificationStore::sendToUsers($targetIds, $isManagerSubmission ? 'scout_tip_shortlisted' : 'scout_tip_created', [
@@ -300,5 +313,137 @@ class ScoutTipWorkflowService
                 'role' => $submitter->role,
             ],
         ]);
+    }
+
+    private function resolvePlayerFromPayload(array $payload): ?User
+    {
+        $playerId = (int) ($payload['player_id'] ?? 0);
+        if ($playerId > 0) {
+            return User::query()
+                ->where('role', 'player')
+                ->find($playerId);
+        }
+
+        $playerName = trim((string) ($payload['player_name'] ?? ''));
+        if ($playerName === '') {
+            return null;
+        }
+
+        $matches = $this->findPlayerCandidates(
+            name: $playerName,
+            cityHint: (string) ($payload['city'] ?? ''),
+            positionHint: (string) ($payload['position'] ?? '')
+        );
+
+        return $matches['best_match'];
+    }
+
+    public function findPlayerCandidates(string $name, ?string $cityHint = null, ?string $positionHint = null): array
+    {
+        $normalized = $this->normalizePlayerLookup($name);
+        if ($normalized === '') {
+            return [
+                'best_match' => null,
+                'exact_matches' => collect(),
+                'candidates' => collect(),
+            ];
+        }
+
+        $players = User::query()
+            ->where('role', 'player')
+            ->get(['id', 'name', 'role', 'city', 'position', 'current_team', 'birth_year', 'rating']);
+
+        $ranked = $players
+            ->map(function (User $player) use ($name, $cityHint, $positionHint) {
+                return [
+                    'player' => $player,
+                    'score' => $this->playerMatchScore($player, $name, $cityHint, $positionHint),
+                ];
+            })
+            ->filter(function (array $row) use ($normalized) {
+                $playerNormalized = $this->normalizePlayerLookup((string) $row['player']->name);
+                return $playerNormalized === $normalized
+                    || str_contains($playerNormalized, $normalized)
+                    || str_contains($normalized, $playerNormalized);
+            })
+            ->sortByDesc('score')
+            ->values();
+
+        $exactMatches = $ranked
+            ->filter(fn (array $row) => $this->normalizePlayerLookup((string) $row['player']->name) === $normalized)
+            ->values();
+
+        $bestMatch = null;
+        if ($exactMatches->count() === 1) {
+            $bestMatch = $exactMatches->first()['player'];
+        } elseif ($ranked->isNotEmpty()) {
+            $bestMatch = $ranked->first()['player'];
+        }
+
+        return [
+            'best_match' => $bestMatch,
+            'exact_matches' => $exactMatches->pluck('player')->values(),
+            'candidates' => $ranked->pluck('player')->values(),
+        ];
+    }
+
+    private function normalizePlayerLookup(string $value): string
+    {
+        $normalized = Str::lower(preg_replace('/\s+/u', '', $value) ?? $value);
+        return trim($normalized);
+    }
+
+    private function playerMatchScore(User $player, string $query, ?string $cityHint = null, ?string $positionHint = null): int
+    {
+        $normalizedQuery = $this->normalizePlayerLookup($query);
+        $normalizedName = $this->normalizePlayerLookup((string) $player->name);
+        $normalizedCity = $this->normalizePlayerLookup((string) ($player->city ?? ''));
+        $normalizedPosition = $this->normalizePlayerLookup((string) ($player->position ?? ''));
+        $normalizedTeam = $this->normalizePlayerLookup((string) ($player->current_team ?? ''));
+        $normalizedCityHint = $this->normalizePlayerLookup((string) ($cityHint ?? ''));
+        $normalizedPositionHint = $this->normalizePlayerLookup((string) ($positionHint ?? ''));
+
+        if ($normalizedQuery === '') {
+            return 0;
+        }
+
+        $score = 0;
+
+        if ($normalizedName === $normalizedQuery) {
+            $score += 1000;
+        } elseif (str_starts_with($normalizedName, $normalizedQuery)) {
+            $score += 700;
+        } elseif (str_contains($normalizedName, $normalizedQuery)) {
+            $score += 450;
+        }
+
+        $queryParts = preg_split('/\s+/u', trim(Str::lower($query))) ?: [];
+        foreach ($queryParts as $part) {
+            $normalizedPart = $this->normalizePlayerLookup((string) $part);
+            if ($normalizedPart === '') {
+                continue;
+            }
+            if ($normalizedName === $normalizedPart) {
+                $score += 120;
+            } elseif (str_starts_with($normalizedName, $normalizedPart)) {
+                $score += 80;
+            } elseif (str_contains($normalizedName, $normalizedPart)) {
+                $score += 45;
+            }
+        }
+
+        if ($normalizedCityHint !== '' && $normalizedCity === $normalizedCityHint) {
+            $score += 90;
+        }
+        if ($normalizedPositionHint !== '' && $normalizedPosition === $normalizedPositionHint) {
+            $score += 90;
+        }
+        if ($normalizedPositionHint !== '' && str_contains($normalizedTeam, $normalizedPositionHint)) {
+            $score += 20;
+        }
+
+        $score += (int) round((float) ($player->rating ?? 0));
+
+        return $score;
     }
 }

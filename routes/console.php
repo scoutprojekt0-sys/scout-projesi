@@ -584,6 +584,7 @@ Artisan::command('security:revoke-legacy-tokens {--dry-run}', function () {
 })->purpose('Revoke legacy Sanctum tokens that use wildcard (*) ability');
 
 Schedule::command('security:revoke-legacy-tokens')->dailyAt('03:00');
+Schedule::command('scout-tips:purge-expired --days=30')->dailyAt('03:30');
 
 Artisan::command('ai:export-video-candidates {sport=all} {--only-public : Export only public player videos}', function (string $sport) {
     $normalizeSport = static function (?array $tags, ?array $metadata): string {
