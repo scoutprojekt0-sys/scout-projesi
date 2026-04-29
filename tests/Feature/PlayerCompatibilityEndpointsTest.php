@@ -9,6 +9,7 @@ use App\Models\Media;
 use App\Models\VideoClip;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class PlayerCompatibilityEndpointsTest extends TestCase
@@ -134,5 +135,22 @@ class PlayerCompatibilityEndpointsTest extends TestCase
             ->assertJsonPath('data.profile.photo_url', 'https://example.com/figen-photo.jpg')
             ->assertJsonPath('data.profile.profile_photo_url', 'https://example.com/figen-photo.jpg')
             ->assertJsonPath('data.card.overall_rating', 8.4);
+    }
+
+    public function test_public_profile_returns_null_when_local_photo_file_is_missing(): void
+    {
+        Storage::fake('public');
+
+        $player = User::factory()->create([
+            'role' => 'player',
+            'photo_url' => 'profile-photos/missing-figen.jpg',
+        ]);
+
+        $this->getJson('/api/public/players/'.$player->id.'/profile')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.profile.photo_url', null)
+            ->assertJsonPath('data.profile.profile_photo_url', null)
+            ->assertJsonPath('data.card.profile_photo_url', null);
     }
 }

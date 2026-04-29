@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -156,5 +157,22 @@ class AuthAbilityTest extends TestCase
 
         $response->assertStatus(401);
         $this->assertDatabaseCount('personal_access_tokens', 0);
+    }
+
+    public function test_auth_me_returns_null_for_missing_local_profile_photo(): void
+    {
+        Storage::fake('public');
+
+        $user = User::factory()->create([
+            'role' => 'player',
+            'photo_url' => 'profile-photos/missing-auth-photo.jpg',
+        ]);
+
+        Sanctum::actingAs($user, $user->tokenAbilities());
+
+        $this->getJson('/api/auth/me')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.photo_url', null);
     }
 }

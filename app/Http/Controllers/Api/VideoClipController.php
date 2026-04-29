@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Concerns\ApiResponds;
+use App\Http\Controllers\Concerns\ResolvesPublicFileUrls;
 use App\Http\Controllers\Controller;
 use App\Models\VideoClip;
 use Illuminate\Http\JsonResponse;
@@ -13,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 class VideoClipController extends Controller
 {
     use ApiResponds;
+    use ResolvesPublicFileUrls;
 
     public function index(int $userId): JsonResponse
     {
@@ -156,8 +158,8 @@ class VideoClipController extends Controller
             'user_id' => (int) $clip->user_id,
             'title' => (string) $clip->title,
             'description' => $clip->description,
-            'video_url' => (string) $clip->video_url,
-            'thumbnail_url' => $clip->thumbnail_url,
+            'video_url' => $this->publicFileUrl($clip->video_url),
+            'thumbnail_url' => $this->publicFileUrl($clip->thumbnail_url),
             'platform' => $clip->platform,
             'duration_seconds' => $clip->duration_seconds,
             'match_date' => optional($clip->match_date)?->toDateString(),

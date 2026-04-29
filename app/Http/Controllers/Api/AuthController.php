@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Concerns\ApiResponds;
+use App\Http\Controllers\Concerns\ResolvesPublicFileUrls;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\LoginRequest;
@@ -30,6 +31,7 @@ use Symfony\Component\HttpFoundation\Response;
 class AuthController extends Controller
 {
     use ApiResponds;
+    use ResolvesPublicFileUrls;
     public function register(RegisterRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -853,49 +855,4 @@ class AuthController extends Controller
         ];
     }
 
-    private function publicFileUrl(?string $value): ?string
-    {
-        $path = $this->extractPublicDiskPath($value);
-
-        return $path !== null ? $this->publicFileAssetUrl($path) : $value;
-    }
-
-    private function publicFileAssetUrl(string $path): string
-    {
-        $normalizedPath = implode('/', array_map('rawurlencode', array_filter(explode('/', trim($path, '/')), static fn ($segment) => $segment !== '')));
-        $request = request();
-
-        if ($request !== null) {
-            return rtrim($request->getSchemeAndHttpHost(), '/').'/media-files/'.$normalizedPath;
-        }
-
-        return url('/media-files/'.$normalizedPath);
-    }
-
-    private function extractPublicDiskPath(?string $value): ?string
-    {
-        $raw = trim((string) $value);
-        if ($raw === '') {
-            return null;
-        }
-
-        if (! str_contains($raw, '://') && ! str_starts_with($raw, '/')) {
-            return ltrim($raw, '/');
-        }
-
-        $path = parse_url($raw, PHP_URL_PATH);
-        if (! is_string($path) || $path === '') {
-            return null;
-        }
-
-        if (str_starts_with($path, '/media-files/')) {
-            return ltrim(substr($path, strlen('/media-files/')), '/');
-        }
-
-        if (str_starts_with($path, '/storage/')) {
-            return ltrim(substr($path, strlen('/storage/')), '/');
-        }
-
-        return null;
-    }
 }

@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\VideoClip;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -71,6 +72,29 @@ class PublicPrivacyEndpointsTest extends TestCase
             ->assertJsonMissingPath('data.data.0.user_id');
     }
 
+    public function test_public_player_media_endpoint_returns_null_for_missing_local_files(): void
+    {
+        Storage::fake('public');
+
+        $player = User::factory()->create(['role' => 'player']);
+
+        DB::table('media')->insert([
+            'user_id' => $player->id,
+            'type' => 'image',
+            'url' => '/storage/media/'.$player->id.'/missing.jpg',
+            'thumb_url' => 'media/'.$player->id.'/missing-thumb.jpg',
+            'title' => 'Broken Shot',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $this->getJson('/api/public/players/'.$player->id.'/media')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.data.0.url', null)
+            ->assertJsonPath('data.data.0.thumb_url', null);
+    }
+
     public function test_public_discovery_shortlists_do_not_expose_email_or_phone_fields(): void
     {
         User::factory()->create([
@@ -120,5 +144,27 @@ class PublicPrivacyEndpointsTest extends TestCase
             ->assertOk()
             ->assertJsonPath('ok', true)
             ->assertJsonCount(0, 'data');
+    }
+
+    public function test_public_user_videos_endpoint_returns_null_for_missing_local_video_files(): void
+    {
+        Storage::fake('public');
+
+        $player = User::factory()->create(['role' => 'player']);
+
+        $clip = VideoClip::query()->create([
+            'user_id' => $player->id,
+            'title' => 'Broken Local Highlight',
+            'video_url' => '/storage/videos/'.$player->id.'/missing.mp4',
+            'thumbnail_url' => 'videos/'.$player->id.'/missing-thumb.jpg',
+            'platform' => 'custom',
+        ]);
+
+        $this->getJson('/api/users/'.$player->id.'/videos')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.0.id', $clip->id)
+            ->assertJsonPath('data.0.video_url', null)
+            ->assertJsonPath('data.0.thumbnail_url', null);
     }
 }

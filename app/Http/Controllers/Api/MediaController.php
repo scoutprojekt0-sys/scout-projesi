@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Concerns\ApiResponds;
+use App\Http\Controllers\Concerns\ResolvesPublicFileUrls;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Media\StoreMediaRequest;
 use App\Models\Media;
@@ -17,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 class MediaController extends Controller
 {
     use ApiResponds;
+    use ResolvesPublicFileUrls;
 
     public function store(StoreMediaRequest $request): JsonResponse
     {
@@ -160,8 +162,8 @@ class MediaController extends Controller
         return [
             'id' => (int) $media->id,
             'type' => (string) $media->type,
-            'url' => (string) $media->url,
-            'thumb_url' => $media->thumb_url,
+            'url' => $this->publicFileUrl($media->url),
+            'thumb_url' => $this->publicFileUrl($media->thumb_url),
             'title' => $media->title,
             'created_at' => optional($media->created_at)?->toIso8601String(),
             'updated_at' => optional($media->updated_at)?->toIso8601String(),
