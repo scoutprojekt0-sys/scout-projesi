@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\EncryptedJson;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -30,7 +31,7 @@ class PlayerVideoMetric extends Model
     ];
 
     protected $casts = [
-        'metadata' => 'array',
+        'metadata' => EncryptedJson::class,
     ];
 
     public function player()

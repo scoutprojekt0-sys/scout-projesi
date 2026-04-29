@@ -63,10 +63,6 @@ class ExternalVideoAnalysisClient
             return $callbackSecret;
         }
 
-        if (! app()->environment('production')) {
-            return '';
-        }
-
         throw new RuntimeException('AI callback secret tanimli degil.');
     }
 

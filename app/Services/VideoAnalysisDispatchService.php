@@ -66,7 +66,7 @@ class VideoAnalysisDispatchService
             'submitted_at' => now(),
             'raw_output' => [
                 'engine' => 'external-worker',
-                'submit_response' => $response,
+                'stage' => 'submitted',
             ],
         ]);
 

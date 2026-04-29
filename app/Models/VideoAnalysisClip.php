@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\EncryptedJson;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,7 +22,7 @@ class VideoAnalysisClip extends Model
     protected $casts = [
         'clip_start_second' => 'integer',
         'clip_end_second' => 'integer',
-        'metadata' => 'array',
+        'metadata' => EncryptedJson::class,
     ];
 
     public function event()

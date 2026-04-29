@@ -83,7 +83,7 @@ class VideoAnalysisResultService
                 'analysis_version' => $payload['analysis_version'] ?? $analysis->analysis_version,
                 'worker_status' => 'completed',
                 'summary' => $summary,
-                'raw_output' => $payload['raw_output'] ?? null,
+                'raw_output' => $this->sanitizeRawOutput($payload['raw_output'] ?? null),
                 'failure_reason' => null,
                 'completed_at' => now(),
                 'failed_at' => null,
@@ -99,10 +99,47 @@ class VideoAnalysisResultService
             'status' => 'failed',
             'worker_status' => 'failed',
             'failure_reason' => $reason,
-            'raw_output' => $rawOutput,
+            'raw_output' => $this->sanitizeRawOutput($rawOutput),
             'failed_at' => now(),
         ]);
 
         return $analysis->fresh();
+    }
+
+    private function sanitizeRawOutput(?array $rawOutput): ?array
+    {
+        if (! is_array($rawOutput) || $rawOutput === []) {
+            return null;
+        }
+
+        $allowed = [
+            'engine',
+            'sport',
+            'detector',
+            'detector_mode',
+            'sample_every_seconds',
+            'max_sample_seconds',
+            'full_video_mode',
+            'sampled_frames',
+            'analyzed_duration_seconds',
+            'track_count',
+            'target_track_id',
+            'team_count',
+            'target_team_id',
+            'ownership_moments',
+            'resolved_ownerships',
+            'meters_per_pixel',
+            'calibration_confidence',
+            'field_bbox',
+            'fallback_from',
+            'fallback_reason',
+            'fallback_mode',
+            'stage',
+        ];
+
+        return array_filter(
+            array_intersect_key($rawOutput, array_flip($allowed)),
+            static fn ($value) => $value !== null
+        );
     }
 }

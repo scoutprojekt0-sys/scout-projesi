@@ -2,6 +2,12 @@
 
 Bu servis, Laravel backend'in gonderdigi video analysis islerini alir ve sonucu callback ile geri yollar.
 
+Guvenlik notu:
+
+- `AI_ANALYSIS_CALLBACK_SECRET` bos birakilmamali.
+- callback sonuclari secret header ile dogrulanir.
+- analiz `summary/raw_output/event payload/metadata` alanlari uygulama tarafinda sifreli saklanir.
+
 ## Ne yapiyor
 
 - `POST /jobs/video-analysis` ile is kabul eder
@@ -26,6 +32,8 @@ uvicorn app.main:app --reload --port 8010
 - `AI_WORKER_MODE=mock`
 - `AI_WORKER_MODE=pipeline`
 - `AI_WORKER_DETECTOR=auto`
+- `AI_WORKER_SAMPLE_EVERY_SECONDS=1`
+- `AI_WORKER_MAX_SAMPLE_SECONDS=300` (`0` = tam video)
 - `AI_WORKER_CALLBACK_TIMEOUT_SECONDS=20`
 - `AI_WORKER_LOG_LEVEL=info`
 

@@ -155,8 +155,8 @@ class VideoAnalysisController extends Controller
     private function authorizeCallback(Request $request): void
     {
         $configuredSecret = (string) config('scout.ai_analysis.callback_secret', '');
-        if ($configuredSecret === '' && ! app()->environment('production')) {
-            return;
+        if ($configuredSecret === '') {
+            abort(503, 'AI callback secret tanimli degil.');
         }
 
         $providedSecret = (string) $request->header('X-Analysis-Callback-Secret', '');

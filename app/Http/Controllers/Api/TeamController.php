@@ -20,6 +20,7 @@ class TeamController extends Controller
             ->select([
                 'users.id',
                 'users.name',
+                'users.photo_url',
                 'users.city as user_city',
                 'users.created_at',
                 'team_profiles.team_name',
@@ -108,6 +109,7 @@ class TeamController extends Controller
                 'users.id',
                 'users.name',
                 'users.email',
+                'users.photo_url',
                 'users.city as user_city',
                 'users.phone',
                 'team_profiles.team_name',
@@ -157,6 +159,7 @@ class TeamController extends Controller
                 'users.id',
                 'users.name',
                 'users.email',
+                'users.photo_url',
                 'users.city as user_city',
                 'users.phone',
                 'users.created_at',
@@ -206,6 +209,7 @@ class TeamController extends Controller
             'name' => ['sometimes', 'string', 'min:2', 'max:120'],
             'city' => ['sometimes', 'nullable', 'string', 'max:80'],
             'phone' => ['sometimes', 'nullable', 'string', 'max:30'],
+            'photo_url' => ['sometimes', 'nullable', 'string', 'max:2048'],
             'team_name' => ['sometimes', 'string', 'min:2', 'max:140'],
             'league_level' => ['sometimes', 'nullable', 'string', 'max:60'],
             'team_city' => ['sometimes', 'nullable', 'string', 'max:80'],
@@ -220,6 +224,7 @@ class TeamController extends Controller
                 'name' => $validated['name'] ?? $authUser->name,
                 'city' => array_key_exists('city', $validated) ? $validated['city'] : $authUser->city,
                 'phone' => array_key_exists('phone', $validated) ? $validated['phone'] : $authUser->phone,
+                'photo_url' => array_key_exists('photo_url', $validated) ? $validated['photo_url'] : $authUser->photo_url,
                 'updated_at' => now(),
             ]);
 
@@ -244,6 +249,7 @@ class TeamController extends Controller
                 'users.id',
                 'users.name',
                 'users.email',
+                'users.photo_url',
                 'users.city as user_city',
                 'users.phone',
                 'team_profiles.team_name',

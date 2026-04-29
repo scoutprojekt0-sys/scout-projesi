@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\EncryptedJson;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -23,7 +24,7 @@ class VideoAnalysisEvent extends Model
         'start_second' => 'integer',
         'end_second' => 'integer',
         'confidence' => 'decimal:2',
-        'payload' => 'array',
+        'payload' => EncryptedJson::class,
     ];
 
     public function videoAnalysis()
