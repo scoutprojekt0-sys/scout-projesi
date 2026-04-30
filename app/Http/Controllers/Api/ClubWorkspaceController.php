@@ -262,27 +262,45 @@ class ClubWorkspaceController extends Controller
             'sport' => ['nullable', 'string', 'max:40'],
         ]);
 
+        $select = [
+            'id',
+            'profile_type',
+            'visibility',
+            'group_key',
+            'name',
+            'position',
+            'birth_year',
+            'age',
+            'height',
+            'shirt_number',
+            'updated_at',
+        ];
+
+        if ($this->hasClubInternalPlayerColumn('status')) {
+            $select[] = 'status';
+        }
+
+        if ($this->hasClubInternalPlayerColumn('photo_url')) {
+            $select[] = 'photo_url';
+        }
+
+        if ($this->hasClubInternalPlayerColumn('sport')) {
+            $select[] = 'sport';
+        }
+
         $players = ClubInternalPlayer::query()
-            ->select([
-                'id',
-                'profile_type',
-                'visibility',
-                'group_key',
-                'name',
-                'status',
-                'position',
-                'birth_year',
-                'age',
-                'height',
-                'shirt_number',
-                'photo_url',
-                'updated_at',
-            ])
+            ->select($select)
             ->where('club_user_id', (int) $user->id)
             ->when(! empty($validated['group']), fn ($query) => $query->where('group_key', trim((string) $validated['group'])))
-            ->when(! empty($validated['status']) && $validated['status'] !== 'all', fn ($query) => $query->where('status', trim((string) $validated['status'])))
+            ->when(
+                $this->hasClubInternalPlayerColumn('status') && ! empty($validated['status']) && $validated['status'] !== 'all',
+                fn ($query) => $query->where('status', trim((string) $validated['status']))
+            )
             ->when(! empty($validated['position']) && $validated['position'] !== 'all', fn ($query) => $query->where('position', trim((string) $validated['position'])))
-            ->when(! empty($validated['sport']) && $validated['sport'] !== 'all', fn ($query) => $query->where('sport', trim((string) $validated['sport'])))
+            ->when(
+                $this->hasClubInternalPlayerColumn('sport') && ! empty($validated['sport']) && $validated['sport'] !== 'all',
+                fn ($query) => $query->where('sport', trim((string) $validated['sport']))
+            )
             ->when(! empty($validated['search']), function ($query) use ($validated) {
                 $search = '%'.trim((string) $validated['search']).'%';
                 $query->where(function ($innerQuery) use ($search) {
