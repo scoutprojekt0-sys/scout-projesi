@@ -337,20 +337,24 @@ class ClubWorkspaceController extends Controller
 
     public function groupsIndex(Request $request): JsonResponse
     {
-        $user = $this->authorizeClubUser($request);
-        if ($user instanceof JsonResponse) {
-            return $user;
-        }
+        try {
+            $user = $this->authorizeClubUser($request);
+            if ($user instanceof JsonResponse) {
+                return $user;
+            }
 
-        if (! $this->hasUsableClubTeamGroupsTable()) {
+            if (! $this->hasUsableClubTeamGroupsTable()) {
+                return $this->successResponse($this->defaultTeamGroupFallbackPayload(), 'Takim gruplari hazir.');
+            }
+
+            $groups = $this->ensureDefaultTeamGroups($user)
+                ->map(fn (ClubTeamGroup $group) => $this->transformTeamGroup($group))
+                ->values();
+
+            return $this->successResponse($groups, 'Takim gruplari hazir.');
+        } catch (\Throwable $e) {
             return $this->successResponse($this->defaultTeamGroupFallbackPayload(), 'Takim gruplari hazir.');
         }
-
-        $groups = $this->ensureDefaultTeamGroups($user)
-            ->map(fn (ClubTeamGroup $group) => $this->transformTeamGroup($group))
-            ->values();
-
-        return $this->successResponse($groups, 'Takim gruplari hazir.');
     }
 
     public function groupsStore(Request $request): JsonResponse
