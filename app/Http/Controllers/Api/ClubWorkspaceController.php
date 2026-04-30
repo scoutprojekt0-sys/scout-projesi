@@ -570,6 +570,7 @@ class ClubWorkspaceController extends Controller
             'height' => ['nullable', 'string', 'max:40'],
             'shirtNumber' => ['nullable', 'string', 'max:20'],
             'photoUrl' => ['nullable', 'string', 'max:2048'],
+            'photo' => ['nullable', 'file', 'image', 'max:5120'],
             'contractStatus' => ['nullable', 'string', 'max:40'],
             'contact' => ['nullable', 'string', 'max:120'],
             'dominantFoot' => ['nullable', 'string', 'max:40'],
@@ -632,6 +633,9 @@ class ClubWorkspaceController extends Controller
 
         if ($this->hasClubInternalPlayerPhotoUrlColumn()) {
             $payload['photo_url'] = $this->nullableString($validated['photoUrl'] ?? null);
+            if ($request->hasFile('photo')) {
+                $payload['photo_url'] = $request->file('photo')->store('club-internal-player-photos', 'public');
+            }
         }
 
         return $payload;
