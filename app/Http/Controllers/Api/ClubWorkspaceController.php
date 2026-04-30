@@ -252,8 +252,6 @@ class ClubWorkspaceController extends Controller
             return $user;
         }
 
-        $this->ensureDefaultTeamGroups($user);
-
         $validated = $request->validate([
             'group' => ['nullable', 'string', 'max:40'],
             'status' => ['nullable', 'string', 'max:40'],
@@ -311,8 +309,10 @@ class ClubWorkspaceController extends Controller
                 });
             })
             ->latest('id')
-            ->paginate(200)
-            ->through(fn (ClubInternalPlayer $player) => $this->transformInternalPlayerSummary($player));
+            ->limit(200)
+            ->get()
+            ->map(fn (ClubInternalPlayer $player) => $this->transformInternalPlayerSummary($player))
+            ->values();
 
         return $this->successResponse($players, 'Kulup ici oyuncu profilleri hazir.');
     }
