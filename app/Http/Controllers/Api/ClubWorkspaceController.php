@@ -342,7 +342,7 @@ class ClubWorkspaceController extends Controller
             return $user;
         }
 
-        if (! Schema::hasTable('club_team_groups')) {
+        if (! $this->hasUsableClubTeamGroupsTable()) {
             return $this->successResponse($this->defaultTeamGroupFallbackPayload(), 'Takim gruplari hazir.');
         }
 
@@ -1157,6 +1157,21 @@ class ClubWorkspaceController extends Controller
             $this->defaultTeamGroups(),
             array_keys($this->defaultTeamGroups())
         );
+    }
+
+    private function hasUsableClubTeamGroupsTable(): bool
+    {
+        if (! Schema::hasTable('club_team_groups')) {
+            return false;
+        }
+
+        foreach (['club_user_id', 'group_key', 'name', 'note', 'is_showcased', 'sort_order'] as $column) {
+            if (! Schema::hasColumn('club_team_groups', $column)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function transformTeamGroup(ClubTeamGroup $group): array
