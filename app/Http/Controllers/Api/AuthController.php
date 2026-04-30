@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -719,10 +720,16 @@ class AuthController extends Controller
         $tokenRecord = $user->tokens()->where('id', $tokenId)->first();
         $userAgent = trim((string) $request->userAgent());
         if ($tokenRecord instanceof Model) {
-            $tokenRecord->forceFill([
-                'ip_address' => (string) $request->ip(),
-                'user_agent' => $userAgent !== '' ? substr($userAgent, 0, 1000) : null,
-            ])->save();
+            $updates = [];
+            if (Schema::hasColumn('personal_access_tokens', 'ip_address')) {
+                $updates['ip_address'] = (string) $request->ip();
+            }
+            if (Schema::hasColumn('personal_access_tokens', 'user_agent')) {
+                $updates['user_agent'] = $userAgent !== '' ? substr($userAgent, 0, 1000) : null;
+            }
+            if ($updates !== []) {
+                $tokenRecord->forceFill($updates)->save();
+            }
         }
 
         return [
