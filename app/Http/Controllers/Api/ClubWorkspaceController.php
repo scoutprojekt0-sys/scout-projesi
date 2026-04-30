@@ -263,6 +263,21 @@ class ClubWorkspaceController extends Controller
         ]);
 
         $players = ClubInternalPlayer::query()
+            ->select([
+                'id',
+                'profile_type',
+                'visibility',
+                'group_key',
+                'name',
+                'status',
+                'position',
+                'birth_year',
+                'age',
+                'height',
+                'shirt_number',
+                'photo_url',
+                'updated_at',
+            ])
             ->where('club_user_id', (int) $user->id)
             ->when(! empty($validated['group']), fn ($query) => $query->where('group_key', trim((string) $validated['group'])))
             ->when(! empty($validated['status']) && $validated['status'] !== 'all', fn ($query) => $query->where('status', trim((string) $validated['status'])))
@@ -279,9 +294,27 @@ class ClubWorkspaceController extends Controller
             })
             ->latest('id')
             ->paginate(200)
-            ->through(fn (ClubInternalPlayer $player) => $this->transformInternalPlayer($player));
+            ->through(fn (ClubInternalPlayer $player) => $this->transformInternalPlayerSummary($player));
 
         return $this->successResponse($players, 'Kulup ici oyuncu profilleri hazir.');
+    }
+
+    public function internalPlayersShow(int $id, Request $request): JsonResponse
+    {
+        $user = $this->authorizeClubUser($request);
+        if ($user instanceof JsonResponse) {
+            return $user;
+        }
+
+        $player = ClubInternalPlayer::query()
+            ->where('club_user_id', (int) $user->id)
+            ->find($id);
+
+        if (! $player) {
+            return $this->errorResponse('Kulup ici oyuncu profili bulunamadi.', Response::HTTP_NOT_FOUND, 'internal_player_not_found');
+        }
+
+        return $this->successResponse($this->transformInternalPlayer($player), 'Kulup ici oyuncu profili hazir.');
     }
 
     public function groupsIndex(Request $request): JsonResponse
@@ -994,6 +1027,27 @@ class ClubWorkspaceController extends Controller
             'playerUserId' => null,
             'playerPasswordInitialized' => false,
             'loginTeamName' => null,
+            'savedAt' => optional($player->updated_at)->toIso8601String(),
+        ];
+    }
+
+    private function transformInternalPlayerSummary(ClubInternalPlayer $player): array
+    {
+        return [
+            'id' => $player->id,
+            'profile_type' => $player->profile_type,
+            'visibility' => $player->visibility,
+            'group' => $player->group_key,
+            'status' => $player->status ?: 'active',
+            'name' => $player->name,
+            'position' => $player->position,
+            'birthYear' => $player->birth_year,
+            'age' => $player->age,
+            'height' => $player->height,
+            'shirtNumber' => $player->shirt_number,
+            'photoUrl' => $this->hasClubInternalPlayerPhotoUrlColumn()
+                ? $this->publicFileUrl($player->photo_url)
+                : null,
             'savedAt' => optional($player->updated_at)->toIso8601String(),
         ];
     }
