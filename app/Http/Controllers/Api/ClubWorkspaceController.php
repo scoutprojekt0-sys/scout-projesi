@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Concerns\ApiResponds;
+use App\Http\Controllers\Concerns\ResolvesPublicFileUrls;
 use App\Http\Controllers\Controller;
 use App\Models\ClubInternalPlayer;
 use App\Models\ClubOffer;
@@ -21,6 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 class ClubWorkspaceController extends Controller
 {
     use ApiResponds;
+    use ResolvesPublicFileUrls;
 
     public function offersIndex(Request $request): JsonResponse
     {
@@ -548,6 +550,7 @@ class ClubWorkspaceController extends Controller
             'position' => ['nullable', 'string', 'max:120'],
             'height' => ['nullable', 'string', 'max:40'],
             'shirtNumber' => ['nullable', 'string', 'max:20'],
+            'photoUrl' => ['nullable', 'string', 'max:2048'],
             'contractStatus' => ['nullable', 'string', 'max:40'],
             'contact' => ['nullable', 'string', 'max:120'],
             'dominantFoot' => ['nullable', 'string', 'max:40'],
@@ -585,6 +588,7 @@ class ClubWorkspaceController extends Controller
             'position' => $this->nullableString($validated['position'] ?? null),
             'height' => $this->nullableString($validated['height'] ?? null),
             'shirt_number' => $this->nullableString($validated['shirtNumber'] ?? null),
+            'photo_url' => $this->nullableString($validated['photoUrl'] ?? null),
             'contract_status' => $this->nullableString($validated['contractStatus'] ?? null),
             'contact' => $this->nullableString($validated['contact'] ?? null),
             'dominant_foot' => $this->nullableString($validated['dominantFoot'] ?? null),
@@ -909,6 +913,7 @@ class ClubWorkspaceController extends Controller
             'position' => $player->position,
             'height' => $player->height,
             'shirtNumber' => $player->shirt_number,
+            'photoUrl' => $this->publicFileUrl($player->photo_url),
             'contractStatus' => $player->contract_status,
             'contact' => $player->contact,
             'dominantFoot' => $player->dominant_foot,

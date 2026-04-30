@@ -23,6 +23,7 @@ class ClubInternalPlayer extends Model
         'position',
         'height',
         'shirt_number',
+        'photo_url',
         'contract_status',
         'contact',
         'dominant_foot',
