@@ -443,8 +443,6 @@ Route::apiResource('staff', StaffController::class)->only(['index', 'show', 'upd
     Route::post('/club/offers', [ClubWorkspaceController::class, 'offersStore'])->middleware('ability:profile:write');
     Route::get('/manager/offers', [ClubWorkspaceController::class, 'managerOffersIndex'])->middleware('ability:profile:read');
     Route::post('/manager/offers', [ClubWorkspaceController::class, 'managerOffersStore'])->middleware('ability:profile:write');
-    Route::get('/club/promos', [ClubWorkspaceController::class, 'promosIndex'])->middleware('ability:profile:read');
-    Route::post('/club/promos', [ClubWorkspaceController::class, 'promosStore'])->middleware('ability:profile:write');
     Route::get('/club/groups', [ClubWorkspaceController::class, 'groupsIndex'])->middleware('ability:profile:read');
     Route::post('/club/groups', [ClubWorkspaceController::class, 'groupsStore'])->middleware('ability:profile:write');
     Route::patch('/club/groups/{id}', [ClubWorkspaceController::class, 'groupsUpdate'])->middleware('ability:profile:write');

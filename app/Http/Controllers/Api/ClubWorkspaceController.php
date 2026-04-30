@@ -6,7 +6,6 @@ use App\Http\Controllers\Concerns\ApiResponds;
 use App\Http\Controllers\Controller;
 use App\Models\ClubInternalPlayer;
 use App\Models\ClubOffer;
-use App\Models\ClubPromo;
 use App\Models\ClubTeamGroup;
 use App\Models\PlayerProfile;
 use App\Models\PlayerTransfer;
@@ -223,50 +222,6 @@ class ClubWorkspaceController extends Controller
         });
 
         return $this->successResponse($this->transformOffer($offer->load('transfer')), 'Menajer teklifi kaydedildi.', Response::HTTP_CREATED);
-    }
-
-    public function promosIndex(Request $request): JsonResponse
-    {
-        $user = $this->authorizeClubUser($request);
-        if ($user instanceof JsonResponse) {
-            return $user;
-        }
-
-        $promos = ClubPromo::query()
-            ->where('club_user_id', (int) $user->id)
-            ->latest('id')
-            ->paginate(25)
-            ->through(fn (ClubPromo $promo) => $this->transformPromo($promo));
-
-        return $this->successResponse($promos, 'Kulup tanitimlari hazir.');
-    }
-
-    public function promosStore(Request $request): JsonResponse
-    {
-        $user = $this->authorizeClubUser($request);
-        if ($user instanceof JsonResponse) {
-            return $user;
-        }
-
-        $validated = $request->validate([
-            'club_name' => ['required', 'string', 'min:2', 'max:120'],
-            'notes' => ['nullable', 'string', 'max:4000'],
-            'video_url' => ['nullable', 'url', 'max:2000'],
-            'images' => ['nullable', 'array', 'max:2'],
-            'images.*' => ['string', 'max:500000'],
-            'paid' => ['required', 'boolean'],
-        ]);
-
-        $promo = ClubPromo::query()->create([
-            'club_user_id' => (int) $user->id,
-            'club_name' => trim((string) $validated['club_name']),
-            'notes' => $this->nullableString($validated['notes'] ?? null),
-            'video_url' => $this->nullableString($validated['video_url'] ?? null),
-            'images' => array_values($validated['images'] ?? []),
-            'paid' => (bool) $validated['paid'],
-        ]);
-
-        return $this->successResponse($this->transformPromo($promo), 'Kulup tanitimi kaydedildi.', Response::HTTP_CREATED);
     }
 
     public function internalPlayersIndex(Request $request): JsonResponse
@@ -933,19 +888,6 @@ class ClubWorkspaceController extends Controller
             'negotiation_updated_by' => (int) $user->id,
             'negotiation_updated_at' => $transferDate,
         ]);
-    }
-
-    private function transformPromo(ClubPromo $promo): array
-    {
-        return [
-            'id' => $promo->id,
-            'club_name' => $promo->club_name,
-            'notes' => $promo->notes,
-            'video_url' => $promo->video_url,
-            'images' => array_values($promo->images ?? []),
-            'paid' => (bool) $promo->paid,
-            'created_at' => optional($promo->created_at)->toIso8601String(),
-        ];
     }
 
     private function transformInternalPlayer(ClubInternalPlayer $player): array

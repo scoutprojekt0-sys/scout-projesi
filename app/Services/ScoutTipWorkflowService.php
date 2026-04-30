@@ -350,8 +350,18 @@ class ScoutTipWorkflowService
         }
 
         $players = User::query()
+            ->leftJoin('player_profiles', 'player_profiles.user_id', '=', 'users.id')
             ->where('role', 'player')
-            ->get(['id', 'name', 'role', 'city', 'position', 'current_team', 'birth_year', 'rating']);
+            ->get([
+                'users.id',
+                'users.name',
+                'users.role',
+                'users.city',
+                DB::raw('COALESCE(player_profiles.position, users.position) as position'),
+                'player_profiles.current_team as current_team',
+                'player_profiles.birth_year as birth_year',
+                'users.rating',
+            ]);
 
         $ranked = $players
             ->map(function (User $player) use ($name, $cityHint, $positionHint) {
