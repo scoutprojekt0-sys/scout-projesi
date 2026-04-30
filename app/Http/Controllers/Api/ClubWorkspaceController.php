@@ -26,7 +26,7 @@ class ClubWorkspaceController extends Controller
     use ApiResponds;
     use ResolvesPublicFileUrls;
 
-    private ?bool $hasClubInternalPlayerPhotoUrlColumn = null;
+    private array $clubInternalPlayerColumnPresence = [];
 
     public function promosIndex(Request $request): JsonResponse
     {
@@ -599,7 +599,6 @@ class ClubWorkspaceController extends Controller
             'profile_type' => trim((string) ($validated['profile_type'] ?? 'internal_profile')),
             'visibility' => trim((string) ($validated['visibility'] ?? 'club_only')),
             'group_key' => trim((string) $validated['group']),
-            'status' => trim((string) ($validated['status'] ?? 'active')),
             'name' => trim((string) $validated['name']),
             'gender' => $this->nullableString($validated['gender'] ?? null),
             'sport' => $this->nullableString($validated['sport'] ?? null),
@@ -612,8 +611,6 @@ class ClubWorkspaceController extends Controller
             'contact' => $this->nullableString($validated['contact'] ?? null),
             'dominant_foot' => $this->nullableString($validated['dominantFoot'] ?? null),
             'bio' => $this->nullableString($validated['bio'] ?? null),
-            'coach_note' => $this->nullableString($validated['coachNote'] ?? null),
-            'manager_note' => $this->nullableString($validated['managerNote'] ?? null),
             'note' => $this->nullableString(($validated['managerNote'] ?? null) ?: ($validated['note'] ?? null)),
             'matches' => $this->nullableString($validated['matches'] ?? null),
             'minutes' => $this->nullableString($validated['minutes'] ?? null),
@@ -630,6 +627,18 @@ class ClubWorkspaceController extends Controller
             'manual_event_title' => $this->nullableString($validated['manualEventTitle'] ?? null),
             'manual_event_details' => $this->nullableString($validated['manualEventDetails'] ?? null),
         ];
+
+        if ($this->hasClubInternalPlayerColumn('status')) {
+            $payload['status'] = trim((string) ($validated['status'] ?? 'active'));
+        }
+
+        if ($this->hasClubInternalPlayerColumn('coach_note')) {
+            $payload['coach_note'] = $this->nullableString($validated['coachNote'] ?? null);
+        }
+
+        if ($this->hasClubInternalPlayerColumn('manager_note')) {
+            $payload['manager_note'] = $this->nullableString($validated['managerNote'] ?? null);
+        }
 
         if ($this->hasClubInternalPlayerPhotoUrlColumn()) {
             $payload['photo_url'] = $this->nullableString($validated['photoUrl'] ?? null);
@@ -787,9 +796,18 @@ class ClubWorkspaceController extends Controller
             }
         }
 
-        $payload['note_history'] = array_values($noteHistory);
-        $payload['performance_history'] = array_values($performanceHistory);
-        $payload['timeline_events'] = array_values(array_slice($timelineEvents, -20));
+        if ($this->hasClubInternalPlayerColumn('note_history')) {
+            $payload['note_history'] = array_values($noteHistory);
+        }
+
+        if ($this->hasClubInternalPlayerColumn('performance_history')) {
+            $payload['performance_history'] = array_values($performanceHistory);
+        }
+
+        if ($this->hasClubInternalPlayerColumn('timeline_events')) {
+            $payload['timeline_events'] = array_values(array_slice($timelineEvents, -20));
+        }
+
         unset($payload['performance_match_name'], $payload['performance_match_date'], $payload['performance_summary'], $payload['manual_event_type'], $payload['manual_event_action'], $payload['manual_event_date'], $payload['manual_event_id'], $payload['manual_event_title'], $payload['manual_event_details']);
 
         return $payload;
@@ -925,7 +943,6 @@ class ClubWorkspaceController extends Controller
     private function transformInternalPlayer(ClubInternalPlayer $player): array
     {
         $timelineEvents = $this->normalizeInternalPlayerTimelineEvents($player->timeline_events ?? []);
-        $accountData = $this->resolveInternalPlayerAccountData($player);
 
         return [
             'id' => $player->id,
@@ -973,27 +990,11 @@ class ClubWorkspaceController extends Controller
             'rating' => $player->rating,
             'performanceHistory' => array_values($player->performance_history ?? []),
             'timelineEvents' => $timelineEvents,
-            'accountEnabled' => $accountData['account_enabled'],
-            'playerUserId' => $accountData['player_user_id'],
-            'playerPasswordInitialized' => $accountData['player_password_initialized'],
-            'loginTeamName' => $accountData['team_name'],
+            'accountEnabled' => false,
+            'playerUserId' => null,
+            'playerPasswordInitialized' => false,
+            'loginTeamName' => null,
             'savedAt' => optional($player->updated_at)->toIso8601String(),
-        ];
-    }
-
-    private function resolveInternalPlayerAccountData(ClubInternalPlayer $player): array
-    {
-        $clubUser = User::query()->find((int) $player->club_user_id);
-        $teamName = $clubUser ? $this->resolveClubLoginTeamName($clubUser) : null;
-        $playerUser = ($teamName && $player->name)
-            ? $this->findPlayerUserForInternalPlayer($teamName, $player->name)
-            : null;
-
-        return [
-            'account_enabled' => (bool) $playerUser,
-            'player_user_id' => $playerUser?->id,
-            'player_password_initialized' => (bool) ($playerUser?->player_password_initialized ?? false),
-            'team_name' => $teamName,
         ];
     }
 
@@ -1135,10 +1136,15 @@ class ClubWorkspaceController extends Controller
 
     private function hasClubInternalPlayerPhotoUrlColumn(): bool
     {
-        if ($this->hasClubInternalPlayerPhotoUrlColumn !== null) {
-            return $this->hasClubInternalPlayerPhotoUrlColumn;
+        return $this->hasClubInternalPlayerColumn('photo_url');
+    }
+
+    private function hasClubInternalPlayerColumn(string $column): bool
+    {
+        if (array_key_exists($column, $this->clubInternalPlayerColumnPresence)) {
+            return $this->clubInternalPlayerColumnPresence[$column];
         }
 
-        return $this->hasClubInternalPlayerPhotoUrlColumn = Schema::hasColumn('club_internal_players', 'photo_url');
+        return $this->clubInternalPlayerColumnPresence[$column] = Schema::hasColumn('club_internal_players', $column);
     }
 }
