@@ -17,6 +17,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -24,6 +25,8 @@ class ClubWorkspaceController extends Controller
 {
     use ApiResponds;
     use ResolvesPublicFileUrls;
+
+    private ?bool $hasClubInternalPlayerPhotoUrlColumn = null;
 
     public function promosIndex(Request $request): JsonResponse
     {
@@ -590,7 +593,7 @@ class ClubWorkspaceController extends Controller
             'manualEventDetails' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        return [
+        $payload = [
             'club_user_id' => (int) $user->id,
             'profile_type' => trim((string) ($validated['profile_type'] ?? 'internal_profile')),
             'visibility' => trim((string) ($validated['visibility'] ?? 'club_only')),
@@ -604,7 +607,6 @@ class ClubWorkspaceController extends Controller
             'position' => $this->nullableString($validated['position'] ?? null),
             'height' => $this->nullableString($validated['height'] ?? null),
             'shirt_number' => $this->nullableString($validated['shirtNumber'] ?? null),
-            'photo_url' => $this->nullableString($validated['photoUrl'] ?? null),
             'contract_status' => $this->nullableString($validated['contractStatus'] ?? null),
             'contact' => $this->nullableString($validated['contact'] ?? null),
             'dominant_foot' => $this->nullableString($validated['dominantFoot'] ?? null),
@@ -627,6 +629,12 @@ class ClubWorkspaceController extends Controller
             'manual_event_title' => $this->nullableString($validated['manualEventTitle'] ?? null),
             'manual_event_details' => $this->nullableString($validated['manualEventDetails'] ?? null),
         ];
+
+        if ($this->hasClubInternalPlayerPhotoUrlColumn()) {
+            $payload['photo_url'] = $this->nullableString($validated['photoUrl'] ?? null);
+        }
+
+        return $payload;
     }
 
     private function attachInternalPlayerHistory(array $payload, ?ClubInternalPlayer $existingPlayer): array
@@ -929,7 +937,9 @@ class ClubWorkspaceController extends Controller
             'position' => $player->position,
             'height' => $player->height,
             'shirtNumber' => $player->shirt_number,
-            'photoUrl' => $this->publicFileUrl($player->photo_url),
+            'photoUrl' => $this->hasClubInternalPlayerPhotoUrlColumn()
+                ? $this->publicFileUrl($player->photo_url)
+                : null,
             'contractStatus' => $player->contract_status,
             'contact' => $player->contact,
             'dominantFoot' => $player->dominant_foot,
@@ -1117,5 +1127,14 @@ class ClubWorkspaceController extends Controller
         $normalized = trim((string) ($value ?? ''));
 
         return $normalized === '' ? null : $normalized;
+    }
+
+    private function hasClubInternalPlayerPhotoUrlColumn(): bool
+    {
+        if ($this->hasClubInternalPlayerPhotoUrlColumn !== null) {
+            return $this->hasClubInternalPlayerPhotoUrlColumn;
+        }
+
+        return $this->hasClubInternalPlayerPhotoUrlColumn = Schema::hasColumn('club_internal_players', 'photo_url');
     }
 }
