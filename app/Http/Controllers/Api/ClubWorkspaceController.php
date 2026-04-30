@@ -342,6 +342,10 @@ class ClubWorkspaceController extends Controller
             return $user;
         }
 
+        if (! Schema::hasTable('club_team_groups')) {
+            return $this->successResponse($this->defaultTeamGroupFallbackPayload(), 'Takim gruplari hazir.');
+        }
+
         $groups = $this->ensureDefaultTeamGroups($user)
             ->map(fn (ClubTeamGroup $group) => $this->transformTeamGroup($group))
             ->values();
@@ -1135,6 +1139,24 @@ class ClubWorkspaceController extends Controller
             ['group_key' => 'u19', 'name' => 'U19', 'note' => 'Gecis yas grubu kayit alani.'],
             ['group_key' => 'a-team', 'name' => 'A Takim', 'note' => 'Kulubun vitrin ve ana takim havuzu.'],
         ];
+    }
+
+    private function defaultTeamGroupFallbackPayload(): array
+    {
+        return array_map(
+            fn (array $group, int $index) => [
+                'id' => $index + 1,
+                'group_key' => $group['group_key'],
+                'name' => $group['name'],
+                'note' => $group['note'],
+                'is_showcased' => false,
+                'sort_order' => $index + 1,
+                'created_at' => null,
+                'updated_at' => null,
+            ],
+            $this->defaultTeamGroups(),
+            array_keys($this->defaultTeamGroups())
+        );
     }
 
     private function transformTeamGroup(ClubTeamGroup $group): array
