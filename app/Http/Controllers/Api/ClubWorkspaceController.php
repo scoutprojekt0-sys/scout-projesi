@@ -7,6 +7,7 @@ use App\Http\Controllers\Concerns\ResolvesPublicFileUrls;
 use App\Http\Controllers\Controller;
 use App\Models\ClubInternalPlayer;
 use App\Models\ClubOffer;
+use App\Models\ClubPromo;
 use App\Models\ClubTeamGroup;
 use App\Models\PlayerProfile;
 use App\Models\PlayerTransfer;
@@ -23,6 +24,21 @@ class ClubWorkspaceController extends Controller
 {
     use ApiResponds;
     use ResolvesPublicFileUrls;
+
+    public function promosIndex(Request $request): JsonResponse
+    {
+        $user = $this->authorizeClubUser($request);
+        if ($user instanceof JsonResponse) {
+            return $user;
+        }
+
+        $promos = ClubPromo::query()
+            ->where('club_user_id', (int) $user->id)
+            ->latest('id')
+            ->paginate(50);
+
+        return $this->successResponse($promos, 'Kulup tanitimlari hazir.');
+    }
 
     public function offersIndex(Request $request): JsonResponse
     {
