@@ -411,6 +411,11 @@ Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->grou
     Route::post('/support/ai-chat', [AiSupportController::class, 'chat'])->middleware('ability:profile:read');
     Route::post('/live-matches', [LiveMatchController::class, 'store'])->middleware('ability:profile:write');
     Route::post('/match/{matchId}/live-update', [LiveMatchController::class, 'updateLiveMatch'])->middleware('ability:profile:write');
+    Route::post('/club/live-matches/start', [LiveMatchController::class, 'startClubMatch'])->middleware('ability:profile:write');
+    Route::get('/club/live-matches/summaries', [LiveMatchController::class, 'clubMatchSummaries'])->middleware('ability:profile:read');
+    Route::get('/club/live-matches/{matchId}', [LiveMatchController::class, 'showClubMatch'])->middleware('ability:profile:read');
+    Route::post('/club/live-matches/{matchId}/events', [LiveMatchController::class, 'storeClubEvent'])->middleware('ability:profile:write');
+    Route::post('/club/live-matches/{matchId}/finish', [LiveMatchController::class, 'finishClubMatch'])->middleware('ability:profile:write');
 
     Route::get('/favorites', [FavoriteController::class, 'index'])->middleware('ability:profile:read');
     Route::post('/favorites/{targetUserId}/toggle', [FavoriteController::class, 'toggle'])->middleware('ability:profile:write');
