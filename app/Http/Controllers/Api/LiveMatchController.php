@@ -433,6 +433,32 @@ class LiveMatchController extends Controller
                 ->groupBy('event_type')
                 ->map(fn ($group) => $group->count());
 
+            $periodBreakdown = $events
+                ->groupBy('period')
+                ->map(function ($periodEvents, $period) {
+                    $counts = $periodEvents
+                        ->groupBy('event_type')
+                        ->map(fn ($group) => $group->count());
+
+                    return [
+                        'period' => (int) $period,
+                        'event_count' => $periodEvents->count(),
+                        'shot_2_attempt' => (int) ($counts['2 Sayilik Atis Deneme'] ?? 0),
+                        'shot_2_made' => (int) ($counts['2 Sayilik Atis Basari'] ?? 0),
+                        'shot_3_attempt' => (int) ($counts['3 Sayilik Atis Deneme'] ?? 0),
+                        'shot_3_made' => (int) ($counts['3 Sayilik Atis Basari'] ?? 0),
+                        'free_throw_attempt' => (int) ($counts['Serbest Atis Deneme'] ?? 0),
+                        'free_throw_made' => (int) ($counts['Serbest Atis Basari'] ?? 0),
+                        'assists' => (int) ($counts['Asist'] ?? 0),
+                        'steals' => (int) ($counts['Top Calma'] ?? 0),
+                        'turnovers' => (int) ($counts['Top Kaybi'] ?? 0),
+                        'off_rebounds' => (int) ($counts['Hucum Ribaund'] ?? 0),
+                        'def_rebounds' => (int) ($counts['Savunma Ribaund'] ?? 0),
+                    ];
+                })
+                ->sortBy('period')
+                ->values();
+
             return [
                 'id' => $match->id,
                 'group_key' => $match->group_key,
@@ -452,6 +478,7 @@ class LiveMatchController extends Controller
                 'turnovers' => (int) ($eventCounts['Top Kaybi'] ?? 0),
                 'off_rebounds' => (int) ($eventCounts['Hucum Ribaund'] ?? 0),
                 'def_rebounds' => (int) ($eventCounts['Savunma Ribaund'] ?? 0),
+                'period_breakdown' => $periodBreakdown,
                 'finished_at' => $match->finished_at?->toIso8601String(),
             ];
         })->values();
