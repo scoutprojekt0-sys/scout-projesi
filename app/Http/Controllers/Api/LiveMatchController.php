@@ -9,10 +9,10 @@ use App\Models\ClubTeamGroup;
 use App\Models\LiveMatch;
 use App\Models\LiveMatchEvent;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Symfony\Component\HttpFoundation\Response;
 
 class LiveMatchController extends Controller
@@ -33,13 +33,13 @@ class LiveMatchController extends Controller
             ->limit(20)
             ->get()
             ->map(fn (LiveMatch $match) => [
-                'id'          => $match->id,
-                'league'      => $match->league,
-                'home_team'   => $match->home_team,
-                'away_team'   => $match->away_team,
-                'home_score'  => $match->home_score,
-                'away_score'  => $match->away_score,
-                'status'      => 'finished',
+                'id' => $match->id,
+                'league' => $match->league,
+                'home_team' => $match->home_team,
+                'away_team' => $match->away_team,
+                'home_score' => $match->home_score,
+                'away_score' => $match->away_score,
+                'status' => 'finished',
                 'finished_at' => $match->match_date?->toIso8601String(),
             ])->values();
 
@@ -56,12 +56,12 @@ class LiveMatchController extends Controller
             ->limit(20)
             ->get()
             ->map(fn (LiveMatch $match) => [
-                'id'        => $match->id,
-                'league'    => $match->league,
+                'id' => $match->id,
+                'league' => $match->league,
                 'home_team' => $match->home_team,
                 'away_team' => $match->away_team,
-                'kickoff'   => $match->match_date?->toIso8601String(),
-                'status'    => 'scheduled',
+                'kickoff' => $match->match_date?->toIso8601String(),
+                'status' => 'scheduled',
             ])->values();
 
         return $this->successResponse($matches, 'Yaklasan maclar hazir.', 200, ['total' => $matches->count()]);
@@ -76,7 +76,7 @@ class LiveMatchController extends Controller
     {
         return $this->successResponse([
             'match_id' => $matchId,
-            'scorers'  => [
+            'scorers' => [
                 ['player' => 'Icardi', 'team' => 'home', 'minute' => 15],
                 ['player' => 'Dzeko',  'team' => 'away', 'minute' => 45],
                 ['player' => 'Zaha',   'team' => 'home', 'minute' => 62],
@@ -88,7 +88,7 @@ class LiveMatchController extends Controller
     {
         return $this->successResponse([
             'match_id' => $matchId,
-            'payload'  => $request->all(),
+            'payload' => $request->all(),
         ], 'Canli mac guncellemesi alindi.');
     }
 
@@ -103,7 +103,7 @@ class LiveMatchController extends Controller
             ->count();
 
         return $this->successResponse([
-            'count'            => $count,
+            'count' => $count,
             'has_live_matches' => $count > 0,
         ], 'Canli mac sayisi hazir.');
     }
@@ -121,31 +121,32 @@ class LiveMatchController extends Controller
             ->get()
             ->map(function (LiveMatch $match) {
                 $meta = $this->decodeRoundMeta($match->round);
+
                 return [
-                    'id'           => $match->id,
-                    'title'        => $match->title,
-                    'league'       => $match->league,
-                    'home_team'    => $match->home_team,
-                    'away_team'    => $match->away_team,
-                    'home_score'   => $match->home_score,
-                    'away_score'   => $match->away_score,
-                    'minute'       => null,
-                    'status'       => 'live',
-                    'match_date'   => $match->match_date?->toIso8601String(),
-                    'location'     => $meta['location']    ?? null,
-                    'sport'        => $meta['sport']       ?? null,
-                    'focus'        => $meta['focus']       ?? null,
-                    'stream_url'   => $meta['stream_url']  ?? null,
+                    'id' => $match->id,
+                    'title' => $match->title,
+                    'league' => $match->league,
+                    'home_team' => $match->home_team,
+                    'away_team' => $match->away_team,
+                    'home_score' => $match->home_score,
+                    'away_score' => $match->away_score,
+                    'minute' => null,
+                    'status' => 'live',
+                    'match_date' => $match->match_date?->toIso8601String(),
+                    'location' => $meta['location'] ?? null,
+                    'sport' => $meta['sport'] ?? null,
+                    'focus' => $meta['focus'] ?? null,
+                    'stream_url' => $meta['stream_url'] ?? null,
                     'stream_links' => is_array($meta['stream_links'] ?? null) ? $meta['stream_links'] : [],
-                    'note'         => $meta['note']        ?? null,
-                    'scout_name'   => $meta['scout_name']  ?? null,
-                    'source_role'  => $meta['source_role'] ?? null,
-                    'source_name'  => $meta['source_name'] ?? null,
+                    'note' => $meta['note'] ?? null,
+                    'scout_name' => $meta['scout_name'] ?? null,
+                    'source_role' => $meta['source_role'] ?? null,
+                    'source_name' => $meta['source_name'] ?? null,
                 ];
             })->values();
 
         return $this->successResponse($matches, 'Canli maclar hazir.', 200, [
-            'total'      => $matches->count(),
+            'total' => $matches->count(),
             'updated_at' => now()->toIso8601String(),
         ]);
     }
@@ -153,60 +154,60 @@ class LiveMatchController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'match_name'             => ['required', 'string', 'max:255'],
-            'location'               => ['nullable', 'string', 'max:255'],
-            'sport'                  => ['nullable', 'string', 'max:40'],
-            'focus'                  => ['nullable', 'string', 'max:255'],
-            'stream_url'             => ['nullable', 'url', 'max:500'],
-            'stream_links'           => ['nullable', 'array'],
-            'stream_links.youtube'   => ['nullable', 'url', 'max:500'],
+            'match_name' => ['required', 'string', 'max:255'],
+            'location' => ['nullable', 'string', 'max:255'],
+            'sport' => ['nullable', 'string', 'max:40'],
+            'focus' => ['nullable', 'string', 'max:255'],
+            'stream_url' => ['nullable', 'url', 'max:500'],
+            'stream_links' => ['nullable', 'array'],
+            'stream_links.youtube' => ['nullable', 'url', 'max:500'],
             'stream_links.instagram' => ['nullable', 'url', 'max:500'],
-            'stream_links.facebook'  => ['nullable', 'url', 'max:500'],
-            'stream_links.x'         => ['nullable', 'url', 'max:500'],
-            'note'                   => ['nullable', 'string', 'max:2000'],
-            'league'                 => ['nullable', 'string', 'max:120'],
-            'home_team'              => ['nullable', 'string', 'max:120'],
-            'away_team'              => ['nullable', 'string', 'max:120'],
-            'match_date'             => ['nullable', 'date'],
-            'scout_name'             => ['nullable', 'string', 'max:150'],
-            'source_role'            => ['nullable', 'string', 'max:50'],
-            'source_name'            => ['nullable', 'string', 'max:150'],
-            'source_user_id'         => ['nullable', 'integer'],
+            'stream_links.facebook' => ['nullable', 'url', 'max:500'],
+            'stream_links.x' => ['nullable', 'url', 'max:500'],
+            'note' => ['nullable', 'string', 'max:2000'],
+            'league' => ['nullable', 'string', 'max:120'],
+            'home_team' => ['nullable', 'string', 'max:120'],
+            'away_team' => ['nullable', 'string', 'max:120'],
+            'match_date' => ['nullable', 'date'],
+            'scout_name' => ['nullable', 'string', 'max:150'],
+            'source_role' => ['nullable', 'string', 'max:50'],
+            'source_name' => ['nullable', 'string', 'max:150'],
+            'source_user_id' => ['nullable', 'integer'],
         ]);
 
         [$homeTeam, $awayTeam] = $this->extractTeams($validated['match_name']);
         $scoutName = $this->resolveScoutName($request);
 
-        $meta  = [
-            'location'     => $validated['location']    ?? null,
-            'sport'        => $validated['sport']       ?? null,
-            'focus'        => $validated['focus']       ?? null,
-            'stream_url'   => $validated['stream_url']  ?? null,
+        $meta = [
+            'location' => $validated['location'] ?? null,
+            'sport' => $validated['sport'] ?? null,
+            'focus' => $validated['focus'] ?? null,
+            'stream_url' => $validated['stream_url'] ?? null,
             'stream_links' => is_array($validated['stream_links'] ?? null) ? $validated['stream_links'] : [],
-            'note'         => $validated['note']        ?? null,
-            'scout_name'   => $scoutName,
-            'source_role'  => $validated['source_role'] ?? null,
-            'source_name'  => $validated['source_name'] ?? null,
+            'note' => $validated['note'] ?? null,
+            'scout_name' => $scoutName,
+            'source_role' => $validated['source_role'] ?? null,
+            'source_name' => $validated['source_name'] ?? null,
             'source_user_id' => $validated['source_user_id'] ?? null,
         ];
 
         $match = LiveMatch::query()->create([
-            'title'       => $validated['match_name'],
-            'league'      => $validated['league']     ?? null,
-            'home_team'   => $validated['home_team']  ?? $homeTeam,
-            'away_team'   => $validated['away_team']  ?? $awayTeam,
-            'home_score'  => null,
-            'away_score'  => null,
-            'match_date'  => $validated['match_date'] ?? now(),
-            'is_live'     => true,
+            'title' => $validated['match_name'],
+            'league' => $validated['league'] ?? null,
+            'home_team' => $validated['home_team'] ?? $homeTeam,
+            'away_team' => $validated['away_team'] ?? $awayTeam,
+            'home_score' => null,
+            'away_score' => null,
+            'match_date' => $validated['match_date'] ?? now(),
+            'is_live' => true,
             'is_finished' => false,
-            'visibility'  => 'public',
-            'round'       => $this->encodeRoundMeta(null, $meta),
+            'visibility' => 'public',
+            'round' => $this->encodeRoundMeta(null, $meta),
         ]);
 
         return $this->successResponse([
-            'id'        => $match->id,
-            'title'     => $match->title,
+            'id' => $match->id,
+            'title' => $match->title,
             'home_team' => $match->home_team,
             'away_team' => $match->away_team,
         ], 'Canli mac kaydedildi.', 201);
@@ -215,12 +216,12 @@ class LiveMatchController extends Controller
     public function show(Request $request, int $id): JsonResponse
     {
         try {
-            $record  = LiveMatch::query()->findOrFail($id);
+            $record = LiveMatch::query()->findOrFail($id);
             if (($record->visibility ?? 'public') !== 'public') {
                 return $this->errorResponse('Mac bulunamadi', 404, 'match_not_found');
             }
-            $meta    = $this->decodeRoundMeta($record->round);
-            $status  = $record->is_finished ? 'finished' : ($record->is_live ? 'live' : 'scheduled');
+            $meta = $this->decodeRoundMeta($record->round);
+            $status = $record->is_finished ? 'finished' : ($record->is_live ? 'live' : 'scheduled');
 
             $updateRow = null;
             if (Schema::hasTable('live_match_updates')) {
@@ -231,33 +232,35 @@ class LiveMatchController extends Controller
             }
 
             $events = [];
-            if ($updateRow && !empty($updateRow->events)) {
+            if ($updateRow && ! empty($updateRow->events)) {
                 $decoded = json_decode((string) $updateRow->events, true);
-                if (is_array($decoded)) { $events = $decoded; }
+                if (is_array($decoded)) {
+                    $events = $decoded;
+                }
             }
 
             return $this->successResponse([
-                'id'           => $record->id,
-                'title'        => $record->title,
-                'league'       => $record->league,
-                'home_team'    => $record->home_team,
-                'away_team'    => $record->away_team,
-                'home_score'   => $updateRow->home_score ?? $record->home_score,
-                'away_score'   => $updateRow->away_score ?? $record->away_score,
-                'minute'       => $updateRow->current_minute ?? null,
-                'status'       => $updateRow->status ?? $status,
-                'match_date'   => $record->match_date?->toIso8601String(),
-                'events'       => $events,
-                'stadium'      => $meta['location']   ?? null,
-                'sport'        => $meta['sport']      ?? null,
-                'focus'        => $meta['focus']      ?? null,
-                'stream_url'   => $meta['stream_url'] ?? null,
+                'id' => $record->id,
+                'title' => $record->title,
+                'league' => $record->league,
+                'home_team' => $record->home_team,
+                'away_team' => $record->away_team,
+                'home_score' => $updateRow->home_score ?? $record->home_score,
+                'away_score' => $updateRow->away_score ?? $record->away_score,
+                'minute' => $updateRow->current_minute ?? null,
+                'status' => $updateRow->status ?? $status,
+                'match_date' => $record->match_date?->toIso8601String(),
+                'events' => $events,
+                'stadium' => $meta['location'] ?? null,
+                'sport' => $meta['sport'] ?? null,
+                'focus' => $meta['focus'] ?? null,
+                'stream_url' => $meta['stream_url'] ?? null,
                 'stream_links' => is_array($meta['stream_links'] ?? null) ? $meta['stream_links'] : [],
-                'scout_name'   => $meta['scout_name'] ?? null,
-                'note'         => $meta['note']       ?? null,
-                'source_role'  => $meta['source_role'] ?? null,
-                'source_name'  => $meta['source_name'] ?? null,
-                'updated_at'   => $updateRow->update_time ?? $record->updated_at?->toIso8601String(),
+                'scout_name' => $meta['scout_name'] ?? null,
+                'note' => $meta['note'] ?? null,
+                'source_role' => $meta['source_role'] ?? null,
+                'source_name' => $meta['source_name'] ?? null,
+                'updated_at' => $updateRow->update_time ?? $record->updated_at?->toIso8601String(),
             ], 'Mac detayi hazir.');
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse('Mac bulunamadi', 404, 'match_not_found');
@@ -270,31 +273,47 @@ class LiveMatchController extends Controller
         if (is_array($parts) && count($parts) >= 2) {
             return [trim($parts[0]) ?: 'Ev Sahibi', trim($parts[1]) ?: 'Deplasman'];
         }
+
         return ['Ev Sahibi', 'Deplasman'];
     }
 
     private function encodeRoundMeta(?string $round, array $meta): ?string
     {
         $clean = array_filter($meta, fn ($value) => $value !== null && $value !== '');
-        if (empty($clean) && $round) { return $round; }
-        if (empty($clean)) { return null; }
+        if (empty($clean) && $round) {
+            return $round;
+        }
+        if (empty($clean)) {
+            return null;
+        }
+
         return 'meta::'.json_encode(['round' => $round, 'meta' => $clean], JSON_UNESCAPED_UNICODE);
     }
 
     private function decodeRoundMeta(?string $round): array
     {
-        if (!$round || !str_starts_with($round, 'meta::')) { return []; }
+        if (! $round || ! str_starts_with($round, 'meta::')) {
+            return [];
+        }
         $decoded = json_decode(substr($round, 6), true);
-        if (!is_array($decoded)) { return []; }
+        if (! is_array($decoded)) {
+            return [];
+        }
         $meta = $decoded['meta'] ?? [];
+
         return is_array($meta) ? $meta : [];
     }
 
     private function resolveScoutName(Request $request): ?string
     {
         $name = trim((string) $request->input('scout_name', ''));
-        if ($name !== '') { return $name; }
-        if (auth()->check()) { return (string) (auth()->user()->name ?? ''); }
+        if ($name !== '') {
+            return $name;
+        }
+        if (auth()->check()) {
+            return (string) (auth()->user()->name ?? '');
+        }
+
         return null;
     }
 
@@ -315,7 +334,7 @@ class LiveMatchController extends Controller
     public function startClubMatch(Request $request): JsonResponse
     {
         $user = $request->user();
-        if (!$user) {
+        if (! $user) {
             return $this->errorResponse('Yetkisiz erisim.', Response::HTTP_UNAUTHORIZED, 'unauthorized');
         }
 
@@ -332,7 +351,7 @@ class LiveMatchController extends Controller
             ->where('group_key', $validated['group_key'])
             ->first();
 
-        if (!$group) {
+        if (! $group) {
             return $this->errorResponse('Takim grubu bulunamadi.', Response::HTTP_NOT_FOUND, 'group_not_found');
         }
 
@@ -406,7 +425,7 @@ class LiveMatchController extends Controller
     public function clubMatchSummaries(Request $request): JsonResponse
     {
         $user = $request->user();
-        if (!$user) {
+        if (! $user) {
             return $this->errorResponse('Yetkisiz erisim.', Response::HTTP_UNAUTHORIZED, 'unauthorized');
         }
 
@@ -515,7 +534,7 @@ class LiveMatchController extends Controller
             ->where('group_key', $match->group_key)
             ->first();
 
-        if (!$player) {
+        if (! $player) {
             return $this->errorResponse('Oyuncu bulunamadi.', Response::HTTP_NOT_FOUND, 'player_not_found');
         }
 
@@ -564,7 +583,7 @@ class LiveMatchController extends Controller
     private function resolveClubMatch(Request $request, int $matchId): LiveMatch|JsonResponse
     {
         $user = $request->user();
-        if (!$user) {
+        if (! $user) {
             return $this->errorResponse('Yetkisiz erisim.', Response::HTTP_UNAUTHORIZED, 'unauthorized');
         }
 
@@ -574,7 +593,7 @@ class LiveMatchController extends Controller
             ->where('club_user_id', $user->id)
             ->first();
 
-        if (!$match) {
+        if (! $match) {
             return $this->errorResponse('Mac bulunamadi.', Response::HTTP_NOT_FOUND, 'match_not_found');
         }
 

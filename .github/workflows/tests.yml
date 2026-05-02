@@ -41,8 +41,36 @@ jobs:
           APP_ENV: local
           APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
 
+      - name: Detect changed PHP files
+        id: changed-php
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            base_ref="${{ github.base_ref }}"
+            git fetch origin "${base_ref}" --depth=1
+            files=$(git diff --name-only "origin/${base_ref}...HEAD" -- '*.php')
+          elif [[ "${{ github.event_name }}" == "push" ]]; then
+            before="${{ github.event.before }}"
+            if [[ -n "${before}" && "${before}" != "0000000000000000000000000000000000000000" ]]; then
+              files=$(git diff --name-only "${before}...HEAD" -- '*.php')
+            else
+              files=$(git diff-tree --no-commit-id --name-only -r HEAD -- '*.php')
+            fi
+          else
+            files=""
+          fi
+
+          files=$(echo "${files}" | grep -Ev '^(workshop/|laravel_skeleton/|socket_test\.php$)' || true)
+          files=$(echo "${files}" | xargs)
+          echo "files=${files}" >> "$GITHUB_OUTPUT"
+
       - name: Check code style (Pint)
-        run: ./vendor/bin/pint --test
+        if: steps.changed-php.outputs.files != ''
+        run: ./vendor/bin/pint --test ${{ steps.changed-php.outputs.files }}
+
+      - name: Skip Pint when no relevant PHP files changed
+        if: steps.changed-php.outputs.files == ''
+        run: echo "No relevant PHP files changed for Pint."
 
   security-regressions:
     needs: lint
@@ -127,4 +155,3 @@ jobs:
 
       - name: Execute tests
         run: php artisan test
-

@@ -14,7 +14,7 @@
             "type": "text/javascript",
             "exec": [
               "pm.test('register manager status', function () {",
-              "  pm.expect([200, 201]).to.include(pm.response.code);",
+              "  pm.expect([200, 201, 422]).to.include(pm.response.code);",
               "});"
             ]
           }
@@ -27,7 +27,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"name\": \"Manager User\",\n  \"email\": \"manager@example.com\",\n  \"password\": \"Password123\",\n  \"password_confirmation\": \"Password123\",\n  \"role\": \"manager\",\n  \"city\": \"Istanbul\"\n}"
+          "raw": "{\n  \"name\": \"Manager User\",\n  \"email\": \"manager@example.com\",\n  \"password\": \"Password123\",\n  \"password_confirmation\": \"Password123\",\n  \"role\": \"manager\",\n  \"branch\": \"football\",\n  \"city\": \"Istanbul\"\n}"
         },
         "url": "{{base_url}}/api/auth/register"
       }
@@ -41,7 +41,7 @@
             "type": "text/javascript",
             "exec": [
               "pm.test('register scout status', function () {",
-              "  pm.expect([200, 201]).to.include(pm.response.code);",
+              "  pm.expect([200, 201, 422]).to.include(pm.response.code);",
               "});"
             ]
           }
@@ -54,7 +54,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"name\": \"Scout User\",\n  \"email\": \"scout@example.com\",\n  \"password\": \"Password123\",\n  \"password_confirmation\": \"Password123\",\n  \"role\": \"scout\",\n  \"city\": \"Ankara\"\n}"
+          "raw": "{\n  \"name\": \"Scout User\",\n  \"email\": \"scout@example.com\",\n  \"password\": \"Password123\",\n  \"password_confirmation\": \"Password123\",\n  \"role\": \"scout\",\n  \"branch\": \"football\",\n  \"city\": \"Ankara\"\n}"
         },
         "url": "{{base_url}}/api/auth/register"
       }

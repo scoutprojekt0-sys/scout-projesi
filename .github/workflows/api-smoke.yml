@@ -48,6 +48,7 @@ jobs:
       - name: Prepare environment
         run: |
           cp .env.example .env
+          echo "AUTH_REQUIRE_EMAIL_VERIFICATION=false" >> .env
           touch database/database.sqlite
           php artisan key:generate
           php artisan migrate --force
@@ -103,4 +104,3 @@ jobs:
           else
             echo "Optional communication/media collection not found, skipping."
           fi
-

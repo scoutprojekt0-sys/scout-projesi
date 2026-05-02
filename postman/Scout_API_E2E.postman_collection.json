@@ -14,7 +14,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"name\": \"Team User\",\n  \"email\": \"team@example.com\",\n  \"password\": \"Password123\",\n  \"password_confirmation\": \"Password123\",\n  \"role\": \"team\",\n  \"city\": \"Istanbul\"\n}"
+          "raw": "{\n  \"name\": \"Team User\",\n  \"email\": \"team@example.com\",\n  \"password\": \"Password123\",\n  \"password_confirmation\": \"Password123\",\n  \"role\": \"team\",\n  \"branch\": \"football\",\n  \"city\": \"Istanbul\"\n}"
         },
         "url": "{{base_url}}/api/auth/register"
       }
@@ -28,7 +28,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"name\": \"Player User\",\n  \"email\": \"player@example.com\",\n  \"password\": \"Password123\",\n  \"password_confirmation\": \"Password123\",\n  \"role\": \"player\",\n  \"city\": \"Ankara\"\n}"
+          "raw": "{\n  \"name\": \"Player User\",\n  \"email\": \"player@example.com\",\n  \"password\": \"Password123\",\n  \"password_confirmation\": \"Password123\",\n  \"role\": \"player\",\n  \"branch\": \"football\",\n  \"city\": \"Ankara\"\n}"
         },
         "url": "{{base_url}}/api/auth/register"
       }

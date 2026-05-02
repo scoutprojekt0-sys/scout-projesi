@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\LiveMatch;
 use App\Models\ClubTeamGroup;
+use App\Models\LiveMatch;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
