@@ -12,6 +12,18 @@ use Symfony\Component\HttpFoundation\Response;
 class SocialMediaController extends Controller
 {
     use EnforcesPrivacy;
+
+    public function publicIndex(int $userId): JsonResponse
+    {
+        $accounts = SocialMediaAccount::where('user_id', $userId)
+            ->orderBy('platform')
+            ->get()
+            ->map(fn (SocialMediaAccount $account) => $this->transformAccount($account))
+            ->values();
+
+        return response()->json(['ok' => true, 'data' => $accounts]);
+    }
+
     public function index(Request $request, int $userId): JsonResponse
     {
         $authUser = $request->user();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\UserNotificationPreference;
+use App\Support\NotificationStore;
 use Carbon\CarbonInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -168,6 +169,53 @@ class NotificationController extends Controller
                 'city' => $preferences->city,
                 'district' => $preferences->district,
             ],
+        ]);
+    }
+
+    public function sendPlayerSignal(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $validated = $request->validate([
+            'player_user_id' => ['required', 'integer', 'exists:users,id'],
+            'signal_type' => ['required', 'string', 'in:interest,watch'],
+        ]);
+
+        $playerUserId = (int) $validated['player_user_id'];
+        $signalType = (string) $validated['signal_type'];
+        $actorName = trim((string) ($user->name ?? ''));
+        $actorRole = trim((string) ($user->role ?? ''));
+        $roleLabel = match ($actorRole) {
+            'manager' => 'Menajer',
+            'coach' => 'Antrenor',
+            'team', 'club' => 'Kulup',
+            'scout' => 'Scout',
+            default => 'Kullanici',
+        };
+
+        $title = $signalType === 'interest' ? 'Ilgi Bildirimi' : 'Izleme Bildirimi';
+        $message = $signalType === 'interest'
+            ? sprintf('%s (%s) profilinize ilgi gosterdi.', $actorName !== '' ? $actorName : 'Bir kullanici', $roleLabel)
+            : sprintf('%s (%s) profilinizi izleme listesine ekledi.', $actorName !== '' ? $actorName : 'Bir kullanici', $roleLabel);
+
+        NotificationStore::sendToUser(
+            $playerUserId,
+            $signalType === 'interest' ? 'player_interest_signal' : 'player_watch_signal',
+            [
+                'actor_user_id' => (int) $user->id,
+                'actor_name' => $actorName,
+                'actor_role' => $actorRole,
+                'player_id' => $playerUserId,
+                'type' => $signalType,
+            ],
+            $title,
+            $message,
+            'medium',
+            $playerUserId,
+        );
+
+        return response()->json([
+            'ok' => true,
+            'message' => 'Oyuncu bildirimi gonderildi.',
         ]);
     }
 

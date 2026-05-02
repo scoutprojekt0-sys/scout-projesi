@@ -249,6 +249,7 @@ Route::get('/public/players', [DiscoveryController::class, 'publicPlayers']);
 Route::get('/public/search', [DiscoveryController::class, 'globalSearch']);
 Route::get('/public/players/{id}/profile', [PlayerController::class, 'publicProfile']);
 Route::get('/public/players/{id}/media', [MediaController::class, 'publicIndexByUser']);
+Route::get('/public/users/{userId}/social-media', [SocialMediaController::class, 'publicIndex']);
 Route::get('/contracts/live', [DiscoveryController::class, 'contractsLive']);
 Route::get('/player-of-week', [DiscoveryController::class, 'playerOfWeek']);
 Route::get('/trending/week', [DiscoveryController::class, 'trendingWeek']);
@@ -341,6 +342,7 @@ Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->grou
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+    Route::post('/notifications/player-signal', [NotificationController::class, 'sendPlayerSignal']);
     Route::get('/notifications/preferences', [NotificationController::class, 'preferences']);
     Route::put('/notifications/preferences', [NotificationController::class, 'updatePreferences']);
     Route::get('/users', [SystemController::class, 'usersIndex'])->middleware('admin');
