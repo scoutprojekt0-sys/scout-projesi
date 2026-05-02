@@ -633,6 +633,20 @@ class LiveMatchController extends Controller
                 'Oyuna Girdi',
                 'Oyundan Cikti',
             ],
+            'volleyball' => [
+                'Sayi',
+                'Asist',
+                'Hucum',
+                'Hucum Hata',
+                'Blok',
+                'Manset',
+                'Pas',
+                'Servis Ace',
+                'Servis Hata',
+                'Top Kaybi',
+                'Oyuna Girdi',
+                'Oyundan Cikti',
+            ],
             default => [
                 '2 Sayilik Atis Deneme',
                 '2 Sayilik Atis Basari',
@@ -666,6 +680,22 @@ class LiveMatchController extends Controller
                 'turnovers' => (int) ($counts['Top Kaybi'] ?? 0),
                 'off_rebounds' => (int) ($counts['Sari Kart'] ?? 0),
                 'def_rebounds' => (int) ($counts['Kirmizi Kart'] ?? 0),
+            ];
+        }
+
+        if ($this->normalizeClubMatchSport($sport) === 'volleyball') {
+            return [
+                'shot_2_attempt' => (int) ($counts['Hucum'] ?? 0),
+                'shot_2_made' => (int) ($counts['Hucum Hata'] ?? 0),
+                'shot_3_attempt' => (int) ($counts['Sayi'] ?? 0),
+                'shot_3_made' => (int) ($counts['Blok'] ?? 0),
+                'free_throw_attempt' => (int) ($counts['Servis Hata'] ?? 0),
+                'free_throw_made' => (int) ($counts['Servis Ace'] ?? 0),
+                'assists' => (int) ($counts['Asist'] ?? 0),
+                'steals' => (int) ($counts['Manset'] ?? 0),
+                'turnovers' => (int) ($counts['Top Kaybi'] ?? 0),
+                'off_rebounds' => (int) ($counts['Pas'] ?? 0),
+                'def_rebounds' => (int) ($counts['Blok'] ?? 0),
             ];
         }
 

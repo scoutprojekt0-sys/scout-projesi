@@ -226,6 +226,52 @@ class LiveMatchEndpointsTest extends TestCase
             ->assertJsonPath('data.player_id', $player->id);
     }
 
+    public function test_club_can_store_volleyball_live_match_event(): void
+    {
+        $user = User::factory()->create(['role' => 'club', 'name' => 'Volley Club']);
+        ClubTeamGroup::query()->create([
+            'club_user_id' => $user->id,
+            'group_key' => 'u18-volley',
+            'name' => 'U18 Voleybol',
+            'is_showcased' => false,
+            'sort_order' => 1,
+        ]);
+        $player = ClubInternalPlayer::query()->create([
+            'club_user_id' => $user->id,
+            'group_key' => 'u18-volley',
+            'name' => 'Zeynep Kaya',
+            'sport' => 'volleyball',
+            'shirt_number' => '7',
+            'status' => 'active',
+        ]);
+
+        Sanctum::actingAs($user, ['profile:write']);
+
+        $startResponse = $this->postJson('/api/club/live-matches/start', [
+            'group_key' => 'u18-volley',
+            'opponent' => 'Rakip VK',
+            'match_date' => now()->toIso8601String(),
+            'periods' => 3,
+            'sport' => 'volleyball',
+        ])->assertCreated();
+
+        $matchId = $startResponse->json('data.id');
+
+        $this->postJson('/api/club/live-matches/'.$matchId.'/events', [
+            'player_id' => $player->id,
+            'event_type' => 'Sayi',
+            'period' => 1,
+            'minute' => 4,
+            'second' => 11,
+            'x' => 0.58,
+            'y' => 0.31,
+        ])
+            ->assertCreated()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.event_type', 'Sayi')
+            ->assertJsonPath('data.player_id', $player->id);
+    }
+
     public function test_player_schedule_for_today_creates_live_match_notification(): void
     {
         $user = User::factory()->create(['role' => 'player', 'name' => 'Player One']);
