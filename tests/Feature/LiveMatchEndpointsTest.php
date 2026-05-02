@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\LiveMatch;
+use App\Models\ClubTeamGroup;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
@@ -136,6 +137,46 @@ class LiveMatchEndpointsTest extends TestCase
             ->assertJsonPath('ok', true)
             ->assertJsonPath('data.match_id', $match->id)
             ->assertJsonPath('data.payload.minute', 42);
+    }
+
+    public function test_club_can_start_private_live_match_session(): void
+    {
+        $user = User::factory()->create(['role' => 'club', 'name' => 'Test Club']);
+        ClubTeamGroup::query()->create([
+            'club_user_id' => $user->id,
+            'group_key' => 'u18-a',
+            'name' => 'U18 A Takimi',
+            'is_showcased' => false,
+            'sort_order' => 1,
+        ]);
+
+        Sanctum::actingAs($user, ['profile:write']);
+
+        $this->postJson('/api/club/live-matches/start', [
+            'group_key' => 'u18-a',
+            'opponent' => 'Rakip SK',
+            'match_date' => now()->toIso8601String(),
+            'periods' => 4,
+            'sport' => 'basketball',
+        ])
+            ->assertCreated()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.group_key', 'u18-a')
+            ->assertJsonPath('data.group_name', 'U18 A Takimi')
+            ->assertJsonPath('data.opponent', 'Rakip SK')
+            ->assertJsonPath('data.periods', 4)
+            ->assertJsonPath('data.status', 'live');
+
+        $this->assertDatabaseHas('live_matches', [
+            'home_team' => 'Test Club',
+            'away_team' => 'Rakip SK',
+            'visibility' => 'club_private',
+            'group_key' => 'u18-a',
+            'periods' => 4,
+            'is_live' => true,
+            'is_finished' => false,
+            'club_user_id' => $user->id,
+        ]);
     }
 
     public function test_player_schedule_for_today_creates_live_match_notification(): void
