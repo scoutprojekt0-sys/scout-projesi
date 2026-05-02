@@ -418,6 +418,7 @@ Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->grou
     Route::post('/club/live-matches/{matchId}/finish', [LiveMatchController::class, 'finishClubMatch'])->middleware('ability:profile:write');
 
     Route::get('/favorites', [FavoriteController::class, 'index'])->middleware('ability:profile:read');
+    Route::get('/favorites/followers', [FavoriteController::class, 'followers'])->middleware('ability:profile:read');
     Route::post('/favorites/{targetUserId}/toggle', [FavoriteController::class, 'toggle'])->middleware('ability:profile:write');
     Route::get('/favorites/{targetUserId}/check', [FavoriteController::class, 'check'])->middleware('ability:profile:read');
 Route::get('/lawyers/private', [LawyerController::class, 'index'])->middleware('ability:profile:read');

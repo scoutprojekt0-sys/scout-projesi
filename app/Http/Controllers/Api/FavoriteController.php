@@ -158,6 +158,20 @@ class FavoriteController extends Controller
         ]);
     }
 
+    public function followers(Request $request): JsonResponse
+    {
+        $followers = Favorite::query()
+            ->where('target_user_id', $request->user()->id)
+            ->with('user:id,name,role,city,position,photo_url')
+            ->latest('id')
+            ->paginate(20);
+
+        return response()->json([
+            'ok' => true,
+            'data' => $followers,
+        ]);
+    }
+
     public function toggle(Request $request, int $targetUserId): JsonResponse
     {
         $userId = (int) $request->user()->id;

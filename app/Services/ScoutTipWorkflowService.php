@@ -278,7 +278,12 @@ class ScoutTipWorkflowService
     private function notifyRelevantRolesAboutTip(ScoutTip $tip, User $submitter, bool $isManagerSubmission = false): void
     {
         $targetIds = User::query()
-            ->whereIn('role', ['coach', 'team', 'club'])
+            ->whereIn(
+                'role',
+                $isManagerSubmission
+                    ? ['coach', 'team', 'club']
+                    : ['coach', 'team', 'club', 'manager']
+            )
             ->pluck('id');
 
         NotificationStore::sendToUsers($targetIds, $isManagerSubmission ? 'scout_tip_shortlisted' : 'scout_tip_created', [
