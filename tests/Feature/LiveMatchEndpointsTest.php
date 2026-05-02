@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\ClubTeamGroup;
+use App\Models\ClubInternalPlayer;
 use App\Models\LiveMatch;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -177,6 +178,52 @@ class LiveMatchEndpointsTest extends TestCase
             'is_finished' => false,
             'club_user_id' => $user->id,
         ]);
+    }
+
+    public function test_club_can_store_football_live_match_event(): void
+    {
+        $user = User::factory()->create(['role' => 'club', 'name' => 'Football Club']);
+        ClubTeamGroup::query()->create([
+            'club_user_id' => $user->id,
+            'group_key' => 'u16-football',
+            'name' => 'U16 Futbol',
+            'is_showcased' => false,
+            'sort_order' => 1,
+        ]);
+        $player = ClubInternalPlayer::query()->create([
+            'club_user_id' => $user->id,
+            'group_key' => 'u16-football',
+            'name' => 'Ahmet Yilmaz',
+            'sport' => 'football',
+            'shirt_number' => '9',
+            'status' => 'active',
+        ]);
+
+        Sanctum::actingAs($user, ['profile:write']);
+
+        $startResponse = $this->postJson('/api/club/live-matches/start', [
+            'group_key' => 'u16-football',
+            'opponent' => 'Rakip FK',
+            'match_date' => now()->toIso8601String(),
+            'periods' => 2,
+            'sport' => 'football',
+        ])->assertCreated();
+
+        $matchId = $startResponse->json('data.id');
+
+        $this->postJson('/api/club/live-matches/'.$matchId.'/events', [
+            'player_id' => $player->id,
+            'event_type' => 'Gol',
+            'period' => 1,
+            'minute' => 12,
+            'second' => 8,
+            'x' => 0.82,
+            'y' => 0.47,
+        ])
+            ->assertCreated()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.event_type', 'Gol')
+            ->assertJsonPath('data.player_id', $player->id);
     }
 
     public function test_player_schedule_for_today_creates_live_match_notification(): void

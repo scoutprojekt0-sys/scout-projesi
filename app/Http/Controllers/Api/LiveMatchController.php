@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
 class LiveMatchController extends Controller
@@ -355,8 +356,10 @@ class LiveMatchController extends Controller
             return $this->errorResponse('Takim grubu bulunamadi.', Response::HTTP_NOT_FOUND, 'group_not_found');
         }
 
+        $sport = $this->normalizeClubMatchSport($validated['sport'] ?? null);
+
         $meta = [
-            'sport' => $validated['sport'] ?? 'basketball',
+            'sport' => $sport,
             'group_name' => $group->name,
             'group_key' => $group->group_key,
             'source_role' => 'club_live_scout',
@@ -387,7 +390,7 @@ class LiveMatchController extends Controller
             'opponent' => $match->away_team,
             'match_date' => $match->match_date?->toIso8601String(),
             'periods' => $match->periods,
-            'sport' => $meta['sport'],
+            'sport' => $sport,
             'status' => 'live',
         ], 'Canli mac oturumu baslatildi.', 201);
     }
@@ -448,58 +451,38 @@ class LiveMatchController extends Controller
                 ->where('live_match_id', $match->id)
                 ->get();
 
+            $sport = $this->normalizeClubMatchSport($meta['sport'] ?? null);
             $eventCounts = $events
                 ->groupBy('event_type')
                 ->map(fn ($group) => $group->count());
 
             $periodBreakdown = $events
                 ->groupBy('period')
-                ->map(function ($periodEvents, $period) {
+                ->map(function ($periodEvents, $period) use ($sport) {
                     $counts = $periodEvents
                         ->groupBy('event_type')
                         ->map(fn ($group) => $group->count());
 
-                    return [
+                    return array_merge([
                         'period' => (int) $period,
                         'event_count' => $periodEvents->count(),
-                        'shot_2_attempt' => (int) ($counts['2 Sayilik Atis Deneme'] ?? 0),
-                        'shot_2_made' => (int) ($counts['2 Sayilik Atis Basari'] ?? 0),
-                        'shot_3_attempt' => (int) ($counts['3 Sayilik Atis Deneme'] ?? 0),
-                        'shot_3_made' => (int) ($counts['3 Sayilik Atis Basari'] ?? 0),
-                        'free_throw_attempt' => (int) ($counts['Serbest Atis Deneme'] ?? 0),
-                        'free_throw_made' => (int) ($counts['Serbest Atis Basari'] ?? 0),
-                        'assists' => (int) ($counts['Asist'] ?? 0),
-                        'steals' => (int) ($counts['Top Calma'] ?? 0),
-                        'turnovers' => (int) ($counts['Top Kaybi'] ?? 0),
-                        'off_rebounds' => (int) ($counts['Hucum Ribaund'] ?? 0),
-                        'def_rebounds' => (int) ($counts['Savunma Ribaund'] ?? 0),
-                    ];
+                    ], $this->summarizeClubEventCounts($counts->all(), $sport));
                 })
                 ->sortBy('period')
                 ->values();
 
-            return [
+            return array_merge([
                 'id' => $match->id,
                 'group_key' => $match->group_key,
                 'group_name' => $meta['group_name'] ?? null,
+                'sport' => $sport,
                 'opponent' => $match->away_team,
                 'match_date' => $match->match_date?->toIso8601String(),
                 'periods' => $match->periods,
                 'event_count' => $events->count(),
-                'shot_2_attempt' => (int) ($eventCounts['2 Sayilik Atis Deneme'] ?? 0),
-                'shot_2_made' => (int) ($eventCounts['2 Sayilik Atis Basari'] ?? 0),
-                'shot_3_attempt' => (int) ($eventCounts['3 Sayilik Atis Deneme'] ?? 0),
-                'shot_3_made' => (int) ($eventCounts['3 Sayilik Atis Basari'] ?? 0),
-                'free_throw_attempt' => (int) ($eventCounts['Serbest Atis Deneme'] ?? 0),
-                'free_throw_made' => (int) ($eventCounts['Serbest Atis Basari'] ?? 0),
-                'assists' => (int) ($eventCounts['Asist'] ?? 0),
-                'steals' => (int) ($eventCounts['Top Calma'] ?? 0),
-                'turnovers' => (int) ($eventCounts['Top Kaybi'] ?? 0),
-                'off_rebounds' => (int) ($eventCounts['Hucum Ribaund'] ?? 0),
-                'def_rebounds' => (int) ($eventCounts['Savunma Ribaund'] ?? 0),
                 'period_breakdown' => $periodBreakdown,
                 'finished_at' => $match->finished_at?->toIso8601String(),
-            ];
+            ], $this->summarizeClubEventCounts($eventCounts->all(), $sport));
         })->values();
 
         return $this->successResponse($summaries, 'Mac ozetleri hazir.', 200, [
@@ -518,9 +501,11 @@ class LiveMatchController extends Controller
             return $this->errorResponse('Bitmis maca event eklenemez.', Response::HTTP_UNPROCESSABLE_ENTITY, 'match_finished');
         }
 
+        $sport = $this->normalizeClubMatchSport($this->decodeRoundMeta($match->round)['sport'] ?? null);
+
         $validated = $request->validate([
             'player_id' => ['required', 'integer'],
-            'event_type' => ['required', 'string', 'in:2 Sayilik Atis Deneme,2 Sayilik Atis Basari,3 Sayilik Atis Deneme,3 Sayilik Atis Basari,Serbest Atis Deneme,Serbest Atis Basari,Savunma Ribaund,Hucum Ribaund,Top Calma,Top Kaybi,Asist,Oyuna Girdi,Oyundan Cikti'],
+            'event_type' => ['required', 'string', Rule::in($this->clubEventTypesForSport($sport))],
             'period' => ['required', 'integer', 'min:1', 'max:8'],
             'minute' => ['required', 'integer', 'min:0', 'max:99'],
             'second' => ['required', 'integer', 'min:0', 'max:59'],
@@ -618,6 +603,84 @@ class LiveMatchController extends Controller
             'x' => $event->x,
             'y' => $event->y,
             'created_at' => $event->created_at?->toIso8601String(),
+        ];
+    }
+
+    private function normalizeClubMatchSport(?string $sport): string
+    {
+        return match (mb_strtolower(trim((string) $sport))) {
+            'football', 'soccer', 'futbol' => 'football',
+            'volleyball', 'voleybol' => 'volleyball',
+            default => 'basketball',
+        };
+    }
+
+    private function clubEventTypesForSport(string $sport): array
+    {
+        return match ($this->normalizeClubMatchSport($sport)) {
+            'football' => [
+                'Gol',
+                'Asist',
+                'Sut',
+                'Isabetli Sut',
+                'Top Kapma',
+                'Top Kaybi',
+                'Faul',
+                'Sari Kart',
+                'Kirmizi Kart',
+                'Korner',
+                'Ofsayt',
+                'Oyuna Girdi',
+                'Oyundan Cikti',
+            ],
+            default => [
+                '2 Sayilik Atis Deneme',
+                '2 Sayilik Atis Basari',
+                '3 Sayilik Atis Deneme',
+                '3 Sayilik Atis Basari',
+                'Serbest Atis Deneme',
+                'Serbest Atis Basari',
+                'Savunma Ribaund',
+                'Hucum Ribaund',
+                'Top Calma',
+                'Top Kaybi',
+                'Asist',
+                'Oyuna Girdi',
+                'Oyundan Cikti',
+            ],
+        };
+    }
+
+    private function summarizeClubEventCounts(array $counts, string $sport): array
+    {
+        if ($this->normalizeClubMatchSport($sport) === 'football') {
+            return [
+                'shot_2_attempt' => (int) ($counts['Sut'] ?? 0),
+                'shot_2_made' => (int) ($counts['Isabetli Sut'] ?? 0),
+                'shot_3_attempt' => (int) ($counts['Gol'] ?? 0),
+                'shot_3_made' => (int) ($counts['Korner'] ?? 0),
+                'free_throw_attempt' => (int) ($counts['Faul'] ?? 0),
+                'free_throw_made' => (int) ($counts['Ofsayt'] ?? 0),
+                'assists' => (int) ($counts['Asist'] ?? 0),
+                'steals' => (int) ($counts['Top Kapma'] ?? 0),
+                'turnovers' => (int) ($counts['Top Kaybi'] ?? 0),
+                'off_rebounds' => (int) ($counts['Sari Kart'] ?? 0),
+                'def_rebounds' => (int) ($counts['Kirmizi Kart'] ?? 0),
+            ];
+        }
+
+        return [
+            'shot_2_attempt' => (int) ($counts['2 Sayilik Atis Deneme'] ?? 0),
+            'shot_2_made' => (int) ($counts['2 Sayilik Atis Basari'] ?? 0),
+            'shot_3_attempt' => (int) ($counts['3 Sayilik Atis Deneme'] ?? 0),
+            'shot_3_made' => (int) ($counts['3 Sayilik Atis Basari'] ?? 0),
+            'free_throw_attempt' => (int) ($counts['Serbest Atis Deneme'] ?? 0),
+            'free_throw_made' => (int) ($counts['Serbest Atis Basari'] ?? 0),
+            'assists' => (int) ($counts['Asist'] ?? 0),
+            'steals' => (int) ($counts['Top Calma'] ?? 0),
+            'turnovers' => (int) ($counts['Top Kaybi'] ?? 0),
+            'off_rebounds' => (int) ($counts['Hucum Ribaund'] ?? 0),
+            'def_rebounds' => (int) ($counts['Savunma Ribaund'] ?? 0),
         ];
     }
 }
