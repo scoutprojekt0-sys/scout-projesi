@@ -1180,11 +1180,22 @@ class ClubWorkspaceController extends Controller
 
     private function transformTeamGroup(ClubTeamGroup $group): array
     {
+        $userSport = User::query()
+            ->whereKey($group->club_user_id)
+            ->value('sport');
+        $groupSport = ClubInternalPlayer::query()
+            ->where('club_user_id', $group->club_user_id)
+            ->where('group_key', $group->group_key)
+            ->whereNotNull('sport')
+            ->where('sport', '!=', '')
+            ->value('sport');
+
         return [
             'id' => $group->id,
             'group_key' => $group->group_key,
             'name' => $group->name,
             'note' => $group->note,
+            'sport' => $this->normalizeSportValue($groupSport ?? $userSport),
             'is_showcased' => (bool) $group->is_showcased,
             'sort_order' => (int) $group->sort_order,
             'created_at' => optional($group->created_at)->toIso8601String(),
