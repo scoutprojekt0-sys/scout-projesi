@@ -8,6 +8,7 @@ use App\Models\ProfileReview;
 use App\Models\ProfileReviewReply;
 use App\Models\ProfileReviewReport;
 use App\Models\User;
+use App\Support\NotificationStore;
 use App\Support\ProfileReviewData;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -99,6 +100,24 @@ class ProfileReviewController extends Controller
             ? 'Profil yorumu yayinlandi.'
             : 'Profil yorumu guncellendi.';
 
+        NotificationStore::sendToUser(
+            (int) $target->id,
+            'profile_review_added',
+            [
+                'review_id' => (int) $review->id,
+                'actor_user_id' => (int) $author->id,
+                'actor_name' => $author->name,
+                'actor_role' => $author->role,
+            ],
+            'Yeni yorum',
+            sprintf(
+                '%s profilinize yorum birakti.',
+                $author->name ?: 'Bir uye'
+            ),
+            'normal',
+            (int) $target->id,
+        );
+
         return $this->successResponse(
             ProfileReviewData::findForViewer($review->id, $author),
             $message,
@@ -130,6 +149,27 @@ class ProfileReviewController extends Controller
                 'body' => trim($validated['body']),
             ]
         );
+
+        $author = User::query()->find($review->author_id, ['id', 'name']);
+        if ($author && (int) $author->id !== (int) $user->id) {
+            NotificationStore::sendToUser(
+                (int) $author->id,
+                'profile_review_reply',
+                [
+                    'review_id' => (int) $review->id,
+                    'actor_user_id' => (int) $user->id,
+                    'actor_name' => $user->name,
+                    'actor_role' => $user->role,
+                ],
+                'Yoruma cevap geldi',
+                sprintf(
+                    '%s yorumunuza cevap verdi.',
+                    $user->name ?: 'Bir uye'
+                ),
+                'normal',
+                (int) $review->target_id,
+            );
+        }
 
         return $this->successResponse(
             ProfileReviewData::findForViewer($review->id, $user),
