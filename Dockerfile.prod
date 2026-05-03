@@ -3,9 +3,9 @@ WORKDIR /app
 
 ENV APP_ENV=production
 ENV APP_KEY=base64:docker-build-placeholder-key-12345678901234567890=
-ENV APP_URL=http://localhost
-ENV FRONTEND_URL=http://localhost
-ENV CORS_ALLOWED_ORIGINS=http://localhost
+ENV APP_URL=https://api.nextscout.pro
+ENV FRONTEND_URL=https://nextscout.pro
+ENV CORS_ALLOWED_ORIGINS=https://nextscout.pro,https://www.nextscout.pro
 
 COPY composer.json composer.lock artisan ./
 COPY app ./app
