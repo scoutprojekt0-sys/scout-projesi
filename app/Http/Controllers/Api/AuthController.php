@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Concerns\ApiResponds;
 use App\Http\Controllers\Concerns\ResolvesPublicFileUrls;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
@@ -537,6 +538,68 @@ class AuthController extends Controller
             'ok' => true,
             'code' => 'password_reset_success',
             'message' => 'Sifre basariyla guncellendi. Lutfen tekrar giris yapin.',
+        ]);
+    }
+
+    public function changePassword(ChangePasswordRequest $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+        $validated = $request->validated();
+
+        if ((string) $user->auth_provider === 'supabase') {
+            return response()->json([
+                'ok' => false,
+                'code' => 'password_change_not_supported_for_provider',
+                'message' => 'Bu hesap icin sifre degistirme uygulama icinden desteklenmiyor.',
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if (! Hash::check((string) $validated['current_password'], (string) $user->password)) {
+            return response()->json([
+                'ok' => false,
+                'code' => 'password_change_current_password_invalid',
+                'message' => 'Mevcut sifre hatali.',
+                'errors' => [
+                    'current_password' => ['Mevcut sifre hatali.'],
+                ],
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if (Hash::check((string) $validated['password'], (string) $user->password)) {
+            return response()->json([
+                'ok' => false,
+                'code' => 'password_change_same_as_current',
+                'message' => 'Yeni sifre mevcut sifre ile ayni olamaz.',
+                'errors' => [
+                    'password' => ['Yeni sifre mevcut sifre ile ayni olamaz.'],
+                ],
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $currentTokenId = $user->currentAccessToken()?->id;
+
+        $user->forceFill([
+            'password' => Hash::make((string) $validated['password']),
+            'player_password_initialized' => true,
+        ])->save();
+
+        if ($currentTokenId !== null) {
+            $user->tokens()->where('id', '!=', $currentTokenId)->delete();
+        }
+
+        Log::channel('security')->info('Password changed', [
+            'user_id' => $user->id,
+            'ip' => $request->ip(),
+        ]);
+        $this->recordAuditEvent($user->id, 'auth.password.changed', [
+            'ip' => $request->ip(),
+        ]);
+
+        return response()->json([
+            'ok' => true,
+            'code' => 'password_changed',
+            'message' => 'Sifre basariyla guncellendi.',
         ]);
     }
 

@@ -287,4 +287,57 @@ class AuthSecurityHardeningTest extends TestCase
             ->assertOk()
             ->assertJsonPath('ok', true);
     }
+
+    public function test_change_password_updates_password_and_revokes_other_sessions(): void
+    {
+        $user = User::factory()->create([
+            'role' => 'player',
+            'password' => Hash::make('OldPassword123'),
+            'player_password_initialized' => false,
+        ]);
+
+        $current = $user->createToken('current', $user->tokenAbilities())->plainTextToken;
+        $other = $user->createToken('other', $user->tokenAbilities())->plainTextToken;
+        $currentId = (int) explode('|', $current)[0];
+        $otherId = (int) explode('|', $other)[0];
+
+        $this->withHeader('Authorization', 'Bearer '.$current)
+            ->postJson('/api/auth/change-password', [
+                'current_password' => 'OldPassword123',
+                'password' => 'NewPassword123',
+                'password_confirmation' => 'NewPassword123',
+            ])
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('code', 'password_changed');
+
+        $this->assertTrue(Hash::check('NewPassword123', (string) $user->fresh()->password));
+        $this->assertTrue((bool) $user->fresh()->player_password_initialized);
+        $this->assertDatabaseHas('personal_access_tokens', ['id' => $currentId]);
+        $this->assertDatabaseMissing('personal_access_tokens', ['id' => $otherId]);
+        $this->assertDatabaseHas('audit_events', [
+            'user_id' => $user->id,
+            'event_type' => 'auth.password.changed',
+        ]);
+    }
+
+    public function test_change_password_rejects_wrong_current_password(): void
+    {
+        $user = User::factory()->create([
+            'role' => 'team',
+            'password' => Hash::make('OldPassword123'),
+        ]);
+
+        $token = $user->createToken('current', $user->tokenAbilities())->plainTextToken;
+
+        $this->withHeader('Authorization', 'Bearer '.$token)
+            ->postJson('/api/auth/change-password', [
+                'current_password' => 'WrongPassword999',
+                'password' => 'NewPassword123',
+                'password_confirmation' => 'NewPassword123',
+            ])
+            ->assertStatus(422)
+            ->assertJsonPath('ok', false)
+            ->assertJsonPath('code', 'password_change_current_password_invalid');
+    }
 }

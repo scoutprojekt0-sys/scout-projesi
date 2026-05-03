@@ -327,6 +327,7 @@ Route::prefix('auth')->group(function () {
         Route::get('/sessions', [AuthController::class, 'sessions'])->middleware('ability:profile:read');
         Route::delete('/sessions', [AuthController::class, 'logoutAll'])->middleware('ability:profile:write');
         Route::delete('/sessions/{tokenId}', [AuthController::class, 'revokeSession'])->middleware('ability:profile:write');
+        Route::post('/change-password', [AuthController::class, 'changePassword'])->middleware('ability:profile:write');
         Route::get('/me', [AuthController::class, 'me']);
         Route::put('/me', [AuthController::class, 'updateMe']);
     });
