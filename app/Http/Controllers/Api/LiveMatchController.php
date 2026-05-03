@@ -320,12 +320,14 @@ class LiveMatchController extends Controller
 
     private function expirePastMatches(): void
     {
+        $finishedBefore = now()->subSeconds(30);
+
         LiveMatch::query()
             ->where('visibility', 'public')
             ->where('is_live', true)
             ->where('is_finished', false)
             ->whereNotNull('match_date')
-            ->where('match_date', '<', now())
+            ->where('match_date', '<', $finishedBefore)
             ->update([
                 'is_live' => false,
                 'is_finished' => true,
