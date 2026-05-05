@@ -538,7 +538,6 @@ class ClubWorkspaceController extends Controller
                 'position' => $player->position,
                 'dominant_foot' => $player->dominant_foot,
                 'height_cm' => is_numeric((string) $player->height) ? (int) $player->height : null,
-                'bio' => $player->bio,
                 'current_team' => $teamName,
             ]
         );

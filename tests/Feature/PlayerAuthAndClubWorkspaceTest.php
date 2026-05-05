@@ -115,6 +115,7 @@ class PlayerAuthAndClubWorkspaceTest extends TestCase
         $playerProfile = PlayerProfile::query()->findOrFail($playerUserId);
         $this->assertSame('Besiktas U19', $playerProfile->current_team);
         $this->assertSame('Forvet', $playerProfile->position);
+        $this->assertNull($playerProfile->bio);
 
         $playerUser->forceFill([
             'player_password_initialized' => true,
@@ -157,6 +158,7 @@ class PlayerAuthAndClubWorkspaceTest extends TestCase
             'name' => 'Miran doğu Kaniyolu',
             'sport' => 'futbol',
             'position' => 'Forvet',
+            'bio' => 'Kulup icindeki ozel takip notu',
         ]);
 
         $this->postJson('/api/auth/player/set-password', [
@@ -178,5 +180,11 @@ class PlayerAuthAndClubWorkspaceTest extends TestCase
             ->assertOk()
             ->assertJsonPath('ok', true)
             ->assertJsonPath('code', 'player_logged_in');
+
+        $this->assertDatabaseHas('player_profiles', [
+            'current_team' => 'Sportek',
+            'position' => 'Forvet',
+            'bio' => null,
+        ]);
     }
 }

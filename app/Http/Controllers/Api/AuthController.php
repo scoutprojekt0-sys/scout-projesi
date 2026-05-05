@@ -966,7 +966,6 @@ class AuthController extends Controller
                     'position' => $internalPlayer->position,
                     'dominant_foot' => $internalPlayer->dominant_foot,
                     'height_cm' => is_numeric((string) $internalPlayer->height) ? (int) $internalPlayer->height : null,
-                    'bio' => $internalPlayer->bio,
                     'current_team' => $displayTeamName,
                 ]
             );
