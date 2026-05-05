@@ -390,7 +390,7 @@ class PlayerTransferController extends Controller
                     'player_name' => (string) ($row->player_name ?? 'Oyuncu'),
                     'offer_type' => (string) ($row->offer_type ?? 'permanent'),
                     'amount_eur' => $row->amount_eur !== null ? (float) $row->amount_eur : null,
-                    'confidence_score' => $row->confidence_score !== null ? (float) $row->confidence_score : null,
+                    'confidence_score' => property_exists($row, 'confidence_score') && $row->confidence_score !== null ? (float) $row->confidence_score : null,
                     'currency' => (string) ($row->currency ?? 'EUR'),
                     'season' => $row->season ? (string) $row->season : null,
                     'contract_years' => $row->contract_years !== null ? (int) $row->contract_years : null,
