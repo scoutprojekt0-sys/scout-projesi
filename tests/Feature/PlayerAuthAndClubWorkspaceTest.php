@@ -132,4 +132,51 @@ class PlayerAuthAndClubWorkspaceTest extends TestCase
         $internalPlayer = ClubInternalPlayer::query()->findOrFail($internalPlayerId);
         $this->assertSame($club->id, $internalPlayer->club_user_id);
     }
+
+    public function test_player_can_set_first_password_from_internal_club_player_without_precreated_account(): void
+    {
+        $club = User::factory()->club()->create([
+            'name' => 'Sportek',
+            'email' => 'sportek@example.com',
+        ]);
+
+        DB::table('team_profiles')->insert([
+            'user_id' => $club->id,
+            'team_name' => 'Sportek',
+            'league_level' => 'Akademi',
+            'city' => 'Istanbul',
+            'updated_at' => now(),
+        ]);
+
+        ClubInternalPlayer::query()->create([
+            'club_user_id' => $club->id,
+            'profile_type' => 'internal_profile',
+            'visibility' => 'club_only',
+            'group_key' => 'u9',
+            'status' => 'active',
+            'name' => 'Miran doğu Kaniyolu',
+            'sport' => 'futbol',
+            'position' => 'Forvet',
+        ]);
+
+        $this->postJson('/api/auth/player/set-password', [
+            'team_name' => 'sportek',
+            'player_name' => 'Miran dogu kaniyolu',
+            'password' => 'Secret123',
+            'password_confirmation' => 'Secret123',
+        ])
+            ->assertCreated()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('code', 'player_password_initialized')
+            ->assertJsonPath('data.user.name', 'Miran doğu Kaniyolu');
+
+        $this->postJson('/api/auth/player/login', [
+            'team_name' => 'Sportek',
+            'player_name' => 'Miran doğu Kaniyolu',
+            'password' => 'Secret123',
+        ])
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('code', 'player_logged_in');
+    }
 }

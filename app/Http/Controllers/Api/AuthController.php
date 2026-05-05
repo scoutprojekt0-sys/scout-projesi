@@ -13,6 +13,8 @@ use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\UpdateMeRequest;
 use App\Jobs\SendWelcomeEmail;
 use App\Models\AuditEvent;
+use App\Models\ClubInternalPlayer;
+use App\Models\PlayerProfile;
 use App\Models\User;
 use App\Support\SportBranch;
 use App\Services\BrevoEmailService;
@@ -237,7 +239,8 @@ class AuthController extends Controller
 
         $teamName = $this->normalizeLookupValue($validated['team_name']);
         $playerName = $this->normalizeLookupValue($validated['player_name']);
-        $user = $this->findPlayerForClubLogin($teamName, $playerName);
+        $user = $this->findPlayerForClubLogin($teamName, $playerName)
+            ?? $this->createPlayerUserFromInternalPlayer($teamName, $playerName);
 
         if (! $user) {
             return response()->json([
@@ -869,13 +872,107 @@ class AuthController extends Controller
 
     private function findPlayerForClubLogin(string $teamName, string $playerName): ?User
     {
-        return User::query()
+        $exactMatch = User::query()
             ->select('users.*')
             ->join('player_profiles', 'player_profiles.user_id', '=', 'users.id')
             ->where('users.role', 'player')
             ->whereRaw('LOWER(TRIM(users.name)) = ?', [$playerName])
             ->whereRaw('LOWER(TRIM(player_profiles.current_team)) = ?', [$teamName])
             ->first();
+
+        if ($exactMatch) {
+            return $exactMatch;
+        }
+
+        return User::query()
+            ->select('users.*', 'player_profiles.current_team as login_current_team')
+            ->join('player_profiles', 'player_profiles.user_id', '=', 'users.id')
+            ->where('users.role', 'player')
+            ->get()
+            ->first(function (User $user) use ($teamName, $playerName): bool {
+                $currentTeam = (string) ($user->getAttribute('login_current_team') ?? '');
+
+                return $this->normalizeLookupValue((string) $user->name) === $playerName
+                    && $this->normalizeLookupValue($currentTeam) === $teamName;
+            });
+    }
+
+    private function createPlayerUserFromInternalPlayer(string $teamName, string $playerName): ?User
+    {
+        $club = User::query()
+            ->whereIn('role', ['team', 'club'])
+            ->with('teamProfile')
+            ->get()
+            ->first(function (User $user) use ($teamName): bool {
+                $candidateTeamNames = [
+                    (string) ($user->teamProfile?->team_name ?? ''),
+                    (string) $user->name,
+                ];
+
+                foreach ($candidateTeamNames as $candidateTeamName) {
+                    if ($this->normalizeLookupValue($candidateTeamName) === $teamName) {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+
+        if (! $club) {
+            return null;
+        }
+
+        $internalPlayer = ClubInternalPlayer::query()
+            ->where('club_user_id', (int) $club->id)
+            ->get()
+            ->first(fn (ClubInternalPlayer $player): bool => $this->normalizeLookupValue((string) $player->name) === $playerName);
+
+        if (! $internalPlayer) {
+            return null;
+        }
+
+        $displayTeamName = trim((string) ($club->teamProfile?->team_name ?? $club->name ?? ''));
+        if ($displayTeamName === '') {
+            $displayTeamName = (string) $internalPlayer->group_key;
+        }
+
+        return DB::transaction(function () use ($internalPlayer, $displayTeamName): User {
+            $playerUser = $this->findPlayerForClubLogin(
+                $this->normalizeLookupValue($displayTeamName),
+                $this->normalizeLookupValue((string) $internalPlayer->name)
+            );
+
+            if (! $playerUser) {
+                $emailBase = Str::slug((string) ($internalPlayer->name ?: 'player'), '.');
+                $email = sprintf('%s.%s@nextscout.local', $emailBase ?: 'player', Str::lower(Str::random(8)));
+
+                $playerUser = User::query()->create([
+                    'name' => $internalPlayer->name,
+                    'email' => $email,
+                    'password' => Hash::make(Str::random(32)),
+                    'role' => 'player',
+                    'sport' => $internalPlayer->sport,
+                    'city' => null,
+                    'is_verified' => true,
+                    'email_verified_at' => now(),
+                    'player_password_initialized' => false,
+                ]);
+            }
+
+            PlayerProfile::query()->updateOrCreate(
+                ['user_id' => (int) $playerUser->id],
+                [
+                    'birth_year' => is_numeric((string) $internalPlayer->birth_year) ? (int) $internalPlayer->birth_year : null,
+                    'position' => $internalPlayer->position,
+                    'dominant_foot' => $internalPlayer->dominant_foot,
+                    'height_cm' => is_numeric((string) $internalPlayer->height) ? (int) $internalPlayer->height : null,
+                    'bio' => $internalPlayer->bio,
+                    'current_team' => $displayTeamName,
+                ]
+            );
+
+            return $playerUser->fresh() ?? $playerUser;
+        });
     }
 
     private function playerLoginFailedResponse(
@@ -915,7 +1012,12 @@ class AuthController extends Controller
 
     private function normalizeLookupValue(string $value): string
     {
-        return Str::of($value)->trim()->lower()->value();
+        return Str::of($value)
+            ->trim()
+            ->squish()
+            ->ascii('tr')
+            ->lower()
+            ->value();
     }
 
     private function transformUser(?User $user): ?array
