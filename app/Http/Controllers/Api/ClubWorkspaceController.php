@@ -1235,12 +1235,26 @@ class ClubWorkspaceController extends Controller
             return true;
         }
 
-        return $this->normalizeSportValue($player->sport) === $requested;
+        $profile = $player->relationLoaded('playerProfile')
+            ? $player->playerProfile
+            : PlayerProfile::query()->where('user_id', (int) $player->id)->first();
+
+        $candidates = [
+            $this->normalizeSportValue($player->sport),
+            $this->inferSportFromPosition($player->position ?? null),
+            $this->inferSportFromPosition($profile?->position),
+        ];
+
+        return in_array($requested, array_filter($candidates), true);
     }
 
     private function normalizeSportValue(mixed $value): ?string
     {
-        $normalized = mb_strtolower(trim((string) ($value ?? '')));
+        $normalized = Str::of((string) ($value ?? ''))
+            ->trim()
+            ->lower()
+            ->ascii()
+            ->value();
 
         return match ($normalized) {
             '', 'all', 'tum', 'coklu spor' => null,
@@ -1249,6 +1263,68 @@ class ClubWorkspaceController extends Controller
             'volleyball', 'voleybol', 'voleyball' => 'voleybol',
             default => $normalized,
         };
+    }
+
+    private function inferSportFromPosition(mixed $value): ?string
+    {
+        $position = Str::of((string) ($value ?? ''))
+            ->trim()
+            ->lower()
+            ->ascii()
+            ->value();
+
+        if ($position === '') {
+            return null;
+        }
+
+        $footballPositions = [
+            'gk',
+            'kaleci',
+            'defans',
+            'bek',
+            'stoper',
+            'orta saha',
+            'orta-saha',
+            'on libero',
+            'kanat',
+            'forvet',
+            'santrfor',
+            'striker',
+            'winger',
+            'midfielder',
+            'defender',
+            'goalkeeper',
+        ];
+
+        $basketballPositions = ['pg', 'sg', 'sf', 'pf', 'c', 'guard', 'forward', 'center', 'pivot'];
+        $volleyballPositions = [
+            'pasor',
+            'smacor',
+            'orta oyuncu',
+            'libero',
+            'pasor caprazi',
+            'opposite',
+            'setter',
+            'spiker',
+        ];
+
+        foreach ($footballPositions as $needle) {
+            if (str_contains($position, $needle)) {
+                return 'futbol';
+            }
+        }
+        foreach ($basketballPositions as $needle) {
+            if ($position === $needle || (strlen($needle) > 2 && str_contains($position, $needle))) {
+                return 'basketbol';
+            }
+        }
+        foreach ($volleyballPositions as $needle) {
+            if (str_contains($position, $needle)) {
+                return 'voleybol';
+            }
+        }
+
+        return null;
     }
 
     private function nullableString(mixed $value): ?string
