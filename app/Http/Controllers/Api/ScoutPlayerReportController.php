@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Concerns\ApiResponds;
 use App\Http\Controllers\Controller;
+use App\Models\Favorite;
 use App\Models\ScoutPlayerReport;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -179,7 +180,8 @@ class ScoutPlayerReportController extends Controller
     public function updateStatus(int $id, Request $request): JsonResponse
     {
         $user = $request->user();
-        if ((string) $user->role !== 'scout') {
+        $role = (string) $user->role;
+        if (! in_array($role, ['scout', 'coach', 'club', 'team'], true)) {
             return $this->errorResponse('Bu alan icin yetkiniz yok.', Response::HTTP_FORBIDDEN, 'forbidden_role');
         }
 
@@ -189,7 +191,15 @@ class ScoutPlayerReportController extends Controller
 
         $report = ScoutPlayerReport::query()
             ->where('id', $id)
-            ->where('scout_user_id', (int) $user->id)
+            ->when($role === 'scout', fn ($query) => $query->where('scout_user_id', (int) $user->id))
+            ->when($role === 'coach', fn ($query) => $query->whereJsonContains('shared_roles', 'coach'))
+            ->when(in_array($role, ['club', 'team'], true), function ($query) {
+                $query->where(function ($builder) {
+                    $builder
+                        ->whereJsonContains('shared_roles', 'club')
+                        ->orWhereJsonContains('shared_roles', 'team');
+                });
+            })
             ->first();
         if (! $report) {
             return $this->errorResponse('Scout raporu bulunamadi.', Response::HTTP_NOT_FOUND, 'report_not_found');
@@ -197,6 +207,13 @@ class ScoutPlayerReportController extends Controller
 
         $report->status = $validated['status'];
         $report->save();
+
+        if ($validated['status'] === 'observe' && $report->player_user_id) {
+            Favorite::query()->firstOrCreate([
+                'user_id' => (int) $user->id,
+                'target_user_id' => (int) $report->player_user_id,
+            ]);
+        }
 
         return $this->successResponse($this->transformReport($report->loadMissing('player:id,name,sport')), 'Scout raporu durumu guncellendi.');
     }

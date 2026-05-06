@@ -133,6 +133,71 @@ class ScoutPlayerReportEndpointsTest extends TestCase
             ->assertJsonPath('data.data.0.id', $sharedReport->id);
     }
 
+    public function test_shared_report_can_be_marked_observe_and_adds_player_to_follow_list(): void
+    {
+        $scout = User::factory()->create(['role' => 'scout']);
+        $club = User::factory()->create(['role' => 'club']);
+        $coach = User::factory()->create(['role' => 'coach']);
+        $player = User::factory()->create(['role' => 'player']);
+
+        $sharedReport = ScoutPlayerReport::query()->create([
+            'scout_user_id' => $scout->id,
+            'player_user_id' => $player->id,
+            'player_name' => 'Tracked Player',
+            'position' => 'RW',
+            'rating' => 8.4,
+            'status' => 'review',
+            'scout_name' => 'Sharing Scout',
+            'shared_roles' => ['club', 'coach'],
+            'note' => 'Kulup ve antrenor tarafindan takip edilebilir rapor.',
+        ]);
+
+        Sanctum::actingAs($club, ['profile:write']);
+
+        $this->postJson('/api/scout-player-reports/'.$sharedReport->id.'/status', [
+            'status' => 'observe',
+        ])
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.status', 'observe');
+
+        $this->assertDatabaseHas('favorites', [
+            'user_id' => $club->id,
+            'target_user_id' => $player->id,
+        ]);
+
+        Sanctum::actingAs($coach, ['profile:write']);
+
+        $this->postJson('/api/scout-player-reports/'.$sharedReport->id.'/status', [
+            'status' => 'reject',
+        ])
+            ->assertOk()
+            ->assertJsonPath('data.status', 'reject');
+    }
+
+    public function test_role_cannot_update_report_that_is_not_shared_with_them(): void
+    {
+        $scout = User::factory()->create(['role' => 'scout']);
+        $coach = User::factory()->create(['role' => 'coach']);
+
+        $clubOnlyReport = ScoutPlayerReport::query()->create([
+            'scout_user_id' => $scout->id,
+            'player_name' => 'Club Only Player',
+            'position' => 'CM',
+            'rating' => 7.4,
+            'status' => 'review',
+            'scout_name' => 'Sharing Scout',
+            'shared_roles' => ['club'],
+            'note' => 'Sadece kulup tarafina acik rapor.',
+        ]);
+
+        Sanctum::actingAs($coach, ['profile:write']);
+
+        $this->postJson('/api/scout-player-reports/'.$clubOnlyReport->id.'/status', [
+            'status' => 'observe',
+        ])->assertStatus(404);
+    }
+
     public function test_scout_report_store_auto_binds_unique_player_without_manual_id(): void
     {
         $scout = User::factory()->create(['role' => 'scout']);
