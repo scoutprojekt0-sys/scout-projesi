@@ -17,7 +17,8 @@ class ScoutPlayerReportController extends Controller
     public function index(Request $request): JsonResponse
     {
         $user = $request->user();
-        if ((string) $user->role !== 'scout') {
+        $role = (string) $user->role;
+        if (! in_array($role, ['scout', 'coach', 'club', 'team'], true)) {
             return $this->errorResponse('Bu alan icin yetkiniz yok.', Response::HTTP_FORBIDDEN, 'forbidden_role');
         }
 
@@ -30,8 +31,19 @@ class ScoutPlayerReportController extends Controller
 
         $query = ScoutPlayerReport::query()
             ->with('player:id,name,sport')
-            ->where('scout_user_id', (int) $user->id)
             ->latest('id');
+
+        if ($role === 'scout') {
+            $query->where('scout_user_id', (int) $user->id);
+        } elseif ($role === 'coach') {
+            $query->whereJsonContains('shared_roles', 'coach');
+        } else {
+            $query->where(function ($builder) {
+                $builder
+                    ->whereJsonContains('shared_roles', 'club')
+                    ->orWhereJsonContains('shared_roles', 'team');
+            });
+        }
 
         $search = trim((string) ($validated['q'] ?? ''));
         if ($search !== '') {
@@ -88,6 +100,8 @@ class ScoutPlayerReportController extends Controller
             'strengths.*' => ['string', 'max:120'],
             'risks' => ['nullable', 'array', 'max:12'],
             'risks.*' => ['string', 'max:120'],
+            'shared_roles' => ['nullable', 'array', 'max:4'],
+            'shared_roles.*' => ['string', 'in:coach,club,team'],
             'note' => ['nullable', 'string', 'min:8', 'max:5000'],
         ]);
 
@@ -117,6 +131,12 @@ class ScoutPlayerReportController extends Controller
         $summary = $this->nullableString($validated['summary'] ?? $validated['title'] ?? null);
         $potential = $this->nullableString($validated['potential'] ?? $validated['watched_location'] ?? null);
         $watchedAt = $validated['watched_at'] ?? $validated['watched_date'] ?? null;
+        $sharedRoles = collect($validated['shared_roles'] ?? [])
+            ->map(fn ($role) => (string) $role)
+            ->flatMap(fn ($role) => $role === 'team' ? ['team', 'club'] : [$role])
+            ->unique()
+            ->values()
+            ->all();
 
         if ($playerName === '') {
             return $this->errorResponse('Oyuncu adi zorunlu.', Response::HTTP_UNPROCESSABLE_ENTITY, 'missing_player_name');
@@ -149,6 +169,7 @@ class ScoutPlayerReportController extends Controller
             'summary' => $summary,
             'strengths' => array_values($validated['strengths'] ?? []),
             'risks' => array_values($validated['risks'] ?? []),
+            'shared_roles' => $sharedRoles,
             'note' => $note,
         ]);
 
@@ -198,6 +219,7 @@ class ScoutPlayerReportController extends Controller
             'summary' => $report->summary,
             'strengths' => array_values($report->strengths ?? []),
             'risks' => array_values($report->risks ?? []),
+            'shared_roles' => array_values($report->shared_roles ?? []),
             'note' => $report->note,
             'created_at' => optional($report->created_at)->toIso8601String(),
         ];

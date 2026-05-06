@@ -86,6 +86,53 @@ class ScoutPlayerReportEndpointsTest extends TestCase
             ->assertJsonPath('code', 'forbidden_role');
     }
 
+    public function test_club_and_coach_see_reports_shared_with_their_roles(): void
+    {
+        $scout = User::factory()->create(['role' => 'scout']);
+        $club = User::factory()->create(['role' => 'club']);
+        $coach = User::factory()->create(['role' => 'coach']);
+
+        $sharedReport = ScoutPlayerReport::query()->create([
+            'scout_user_id' => $scout->id,
+            'player_name' => 'Shared Player',
+            'position' => 'RW',
+            'rating' => 8.4,
+            'status' => 'shortlist',
+            'scout_name' => 'Sharing Scout',
+            'shared_roles' => ['club', 'coach'],
+            'note' => 'Kulup ve antrenor tarafina acik rapor.',
+        ]);
+
+        ScoutPlayerReport::query()->create([
+            'scout_user_id' => $scout->id,
+            'player_name' => 'Private Player',
+            'position' => 'CM',
+            'rating' => 7.1,
+            'status' => 'review',
+            'scout_name' => 'Sharing Scout',
+            'shared_roles' => [],
+            'note' => 'Sadece scout tarafinda kalmali.',
+        ]);
+
+        Sanctum::actingAs($club, ['profile:read']);
+
+        $this->getJson('/api/scout-player-reports')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.total', 1)
+            ->assertJsonPath('data.data.0.id', $sharedReport->id)
+            ->assertJsonPath('data.data.0.shared_roles.0', 'club')
+            ->assertJsonPath('data.data.0.shared_roles.1', 'coach');
+
+        Sanctum::actingAs($coach, ['profile:read']);
+
+        $this->getJson('/api/scout-player-reports')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.total', 1)
+            ->assertJsonPath('data.data.0.id', $sharedReport->id);
+    }
+
     public function test_scout_report_store_auto_binds_unique_player_without_manual_id(): void
     {
         $scout = User::factory()->create(['role' => 'scout']);
@@ -105,10 +152,13 @@ class ScoutPlayerReportEndpointsTest extends TestCase
             'overall_rating' => 84,
             'status' => 'shortlist',
             'club' => 'Demo Club',
+            'shared_roles' => ['club', 'coach'],
             'note' => 'Teknik ve hizli oyuncu.',
         ])
             ->assertCreated()
             ->assertJsonPath('ok', true)
-            ->assertJsonPath('data.player_id', $player->id);
+            ->assertJsonPath('data.player_id', $player->id)
+            ->assertJsonPath('data.shared_roles.0', 'club')
+            ->assertJsonPath('data.shared_roles.1', 'coach');
     }
 }

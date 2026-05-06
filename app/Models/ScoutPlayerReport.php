@@ -24,6 +24,7 @@ class ScoutPlayerReport extends Model
         'summary',
         'strengths',
         'risks',
+        'shared_roles',
         'note',
     ];
 
@@ -31,6 +32,7 @@ class ScoutPlayerReport extends Model
         'watched_at' => 'date',
         'strengths' => 'array',
         'risks' => 'array',
+        'shared_roles' => 'array',
         'rating' => 'decimal:1',
     ];
 
