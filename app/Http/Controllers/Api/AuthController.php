@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\Api;
 
@@ -70,7 +70,7 @@ class AuthController extends Controller
             );
         }
 
-        // Hoşgeldin emailini kuyruğa gönder
+        // HoÅŸgeldin emailini kuyruÄŸa gÃ¶nder
         if ($verificationRequired && $verificationLink) {
             SendWelcomeEmail::dispatchAfterResponse($user, $verificationLink);
         }
@@ -1014,6 +1014,7 @@ class AuthController extends Controller
         return Str::of($value)
             ->trim()
             ->squish()
+            ->replace(' ', '')
             ->ascii('tr')
             ->lower()
             ->value();
@@ -1042,3 +1043,4 @@ class AuthController extends Controller
     }
 
 }
+

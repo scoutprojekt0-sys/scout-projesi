@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\Api;
 
@@ -1088,13 +1088,31 @@ class ClubWorkspaceController extends Controller
 
     private function findPlayerUserForInternalPlayer(string $teamName, string $playerName): ?User
     {
+        $normalizedTeamName = $this->normalizeLookupValue($teamName);
+        $normalizedPlayerName = $this->normalizeLookupValue($playerName);
+
         return User::query()
-            ->select('users.*')
+            ->select('users.*', 'player_profiles.current_team as login_current_team')
             ->join('player_profiles', 'player_profiles.user_id', '=', 'users.id')
             ->where('users.role', 'player')
-            ->whereRaw('LOWER(TRIM(users.name)) = ?', [Str::of($playerName)->trim()->lower()->value()])
-            ->whereRaw('LOWER(TRIM(player_profiles.current_team)) = ?', [Str::of($teamName)->trim()->lower()->value()])
-            ->first();
+            ->get()
+            ->first(function (User $user) use ($normalizedTeamName, $normalizedPlayerName): bool {
+                $currentTeam = (string) ($user->getAttribute('login_current_team') ?? '');
+
+                return $this->normalizeLookupValue((string) $user->name) === $normalizedPlayerName
+                    && $this->normalizeLookupValue($currentTeam) === $normalizedTeamName;
+            });
+    }
+
+    private function normalizeLookupValue(string $value): string
+    {
+        return Str::of($value)
+            ->trim()
+            ->squish()
+            ->replace(' ', '')
+            ->ascii('tr')
+            ->lower()
+            ->value();
     }
 
     private function ensureDefaultTeamGroups(User $user)
@@ -1347,3 +1365,4 @@ class ClubWorkspaceController extends Controller
         return $this->clubInternalPlayerColumnPresence[$column] = Schema::hasColumn('club_internal_players', $column);
     }
 }
+
