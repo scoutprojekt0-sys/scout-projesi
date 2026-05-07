@@ -1088,19 +1088,28 @@ class ClubWorkspaceController extends Controller
 
     private function findPlayerUserForInternalPlayer(string $teamName, string $playerName): ?User
     {
-        $normalizedTeamName = $this->normalizeLookupValue($teamName);
-        $normalizedPlayerName = $this->normalizeLookupValue($playerName);
+        $exactMatch = User::query()
+            ->select('users.*')
+            ->join('player_profiles', 'player_profiles.user_id', '=', 'users.id')
+            ->where('users.role', 'player')
+            ->whereRaw('LOWER(TRIM(users.name)) = ?', [Str::of($playerName)->trim()->lower()->value()])
+            ->whereRaw('LOWER(TRIM(player_profiles.current_team)) = ?', [Str::of($teamName)->trim()->lower()->value()])
+            ->first();
+
+        if ($exactMatch) {
+            return $exactMatch;
+        }
 
         return User::query()
             ->select('users.*', 'player_profiles.current_team as login_current_team')
             ->join('player_profiles', 'player_profiles.user_id', '=', 'users.id')
             ->where('users.role', 'player')
             ->get()
-            ->first(function (User $user) use ($normalizedTeamName, $normalizedPlayerName): bool {
+            ->first(function (User $user) use ($teamName, $playerName): bool {
                 $currentTeam = (string) ($user->getAttribute('login_current_team') ?? '');
 
-                return $this->normalizeLookupValue((string) $user->name) === $normalizedPlayerName
-                    && $this->normalizeLookupValue($currentTeam) === $normalizedTeamName;
+                return $this->lookupValuesMatch((string) $user->name, $playerName)
+                    && $this->lookupValuesMatch($currentTeam, $teamName);
             });
     }
 
@@ -1109,10 +1118,30 @@ class ClubWorkspaceController extends Controller
         return Str::of($value)
             ->trim()
             ->squish()
-            ->replace(' ', '')
             ->ascii('tr')
             ->lower()
             ->value();
+    }
+
+    private function normalizeCompactLookupValue(string $value): string
+    {
+        return (string) preg_replace('/[^a-z0-9]+/', '', $this->normalizeLookupValue($value));
+    }
+
+    private function lookupValuesMatch(string $left, string $right): bool
+    {
+        $normalizedLeft = $this->normalizeLookupValue($left);
+        $normalizedRight = $this->normalizeLookupValue($right);
+
+        if ($normalizedLeft === '' || $normalizedRight === '') {
+            return false;
+        }
+
+        if ($normalizedLeft === $normalizedRight) {
+            return true;
+        }
+
+        return $this->normalizeCompactLookupValue($normalizedLeft) === $this->normalizeCompactLookupValue($normalizedRight);
     }
 
     private function ensureDefaultTeamGroups(User $user)
@@ -1365,4 +1394,3 @@ class ClubWorkspaceController extends Controller
         return $this->clubInternalPlayerColumnPresence[$column] = Schema::hasColumn('club_internal_players', $column);
     }
 }
-

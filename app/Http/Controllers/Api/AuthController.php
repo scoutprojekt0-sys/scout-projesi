@@ -892,8 +892,8 @@ class AuthController extends Controller
             ->first(function (User $user) use ($teamName, $playerName): bool {
                 $currentTeam = (string) ($user->getAttribute('login_current_team') ?? '');
 
-                return $this->normalizeLookupValue((string) $user->name) === $playerName
-                    && $this->normalizeLookupValue($currentTeam) === $teamName;
+                return $this->lookupValuesMatch((string) $user->name, $playerName)
+                    && $this->lookupValuesMatch($currentTeam, $teamName);
             });
     }
 
@@ -910,7 +910,7 @@ class AuthController extends Controller
                 ];
 
                 foreach ($candidateTeamNames as $candidateTeamName) {
-                    if ($this->normalizeLookupValue($candidateTeamName) === $teamName) {
+                    if ($this->lookupValuesMatch($candidateTeamName, $teamName)) {
                         return true;
                     }
                 }
@@ -925,7 +925,7 @@ class AuthController extends Controller
         $internalPlayer = ClubInternalPlayer::query()
             ->where('club_user_id', (int) $club->id)
             ->get()
-            ->first(fn (ClubInternalPlayer $player): bool => $this->normalizeLookupValue((string) $player->name) === $playerName);
+            ->first(fn (ClubInternalPlayer $player): bool => $this->lookupValuesMatch((string) $player->name, $playerName));
 
         if (! $internalPlayer) {
             return null;
@@ -1018,6 +1018,27 @@ class AuthController extends Controller
             ->ascii('tr')
             ->lower()
             ->value();
+    }
+
+    private function normalizeCompactLookupValue(string $value): string
+    {
+        return (string) preg_replace('/[^a-z0-9]+/', '', $this->normalizeLookupValue($value));
+    }
+
+    private function lookupValuesMatch(string $left, string $right): bool
+    {
+        $normalizedLeft = $this->normalizeLookupValue($left);
+        $normalizedRight = $this->normalizeLookupValue($right);
+
+        if ($normalizedLeft === '' || $normalizedRight === '') {
+            return false;
+        }
+
+        if ($normalizedLeft === $normalizedRight) {
+            return true;
+        }
+
+        return $this->normalizeCompactLookupValue($normalizedLeft) === $this->normalizeCompactLookupValue($normalizedRight);
     }
 
     private function transformUser(?User $user): ?array
