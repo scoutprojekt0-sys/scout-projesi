@@ -38,6 +38,8 @@ class AuthController extends Controller
 {
     use ApiResponds;
     use ResolvesPublicFileUrls;
+
+    private const CLUB_LOGIN_ROLES = ['team', 'club', 'kulup'];
     public function register(RegisterRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -899,37 +901,16 @@ class AuthController extends Controller
 
     private function createPlayerUserFromInternalPlayer(string $teamName, string $playerName): ?User
     {
-        $club = User::query()
-            ->whereIn('role', ['team', 'club'])
-            ->with('teamProfile')
-            ->get()
-            ->first(function (User $user) use ($teamName): bool {
-                $candidateTeamNames = [
-                    (string) ($user->teamProfile?->team_name ?? ''),
-                    (string) $user->name,
-                ];
+        $clubPlayerMatch = $this->findClubInternalPlayerForLookup($teamName, $playerName);
 
-                foreach ($candidateTeamNames as $candidateTeamName) {
-                    if ($this->lookupValuesMatch($candidateTeamName, $teamName)) {
-                        return true;
-                    }
-                }
-
-                return false;
-            });
-
-        if (! $club) {
+        if ($clubPlayerMatch === null) {
             return null;
         }
 
-        $internalPlayer = ClubInternalPlayer::query()
-            ->where('club_user_id', (int) $club->id)
-            ->get()
-            ->first(fn (ClubInternalPlayer $player): bool => $this->lookupValuesMatch((string) $player->name, $playerName));
-
-        if (! $internalPlayer) {
-            return null;
-        }
+        /** @var User $club */
+        $club = $clubPlayerMatch['club'];
+        /** @var ClubInternalPlayer $internalPlayer */
+        $internalPlayer = $clubPlayerMatch['player'];
 
         $displayTeamName = trim((string) ($club->teamProfile?->team_name ?? $club->name ?? ''));
         if ($displayTeamName === '') {
@@ -972,6 +953,82 @@ class AuthController extends Controller
 
             return $playerUser->fresh() ?? $playerUser;
         });
+    }
+
+    private function findClubInternalPlayerForLookup(string $teamName, string $playerName): ?array
+    {
+        $club = User::query()
+            ->whereIn('role', self::CLUB_LOGIN_ROLES)
+            ->with('teamProfile')
+            ->get()
+            ->first(function (User $user) use ($teamName): bool {
+                foreach ($this->clubLookupCandidates($user) as $candidateTeamName) {
+                    if ($this->lookupValuesMatch($candidateTeamName, $teamName)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+
+        if ($club) {
+            $internalPlayer = ClubInternalPlayer::query()
+                ->where('club_user_id', (int) $club->id)
+                ->get()
+                ->first(fn (ClubInternalPlayer $player): bool => $this->lookupValuesMatch((string) $player->name, $playerName));
+
+            if ($internalPlayer) {
+                return [
+                    'club' => $club,
+                    'player' => $internalPlayer,
+                ];
+            }
+        }
+
+        $matches = ClubInternalPlayer::query()
+            ->select('club_internal_players.*')
+            ->join('users', 'users.id', '=', 'club_internal_players.club_user_id')
+            ->leftJoin('team_profiles', 'team_profiles.user_id', '=', 'users.id')
+            ->whereIn('users.role', self::CLUB_LOGIN_ROLES)
+            ->where('club_internal_players.name', '<>', '')
+            ->get();
+
+        foreach ($matches as $internalPlayer) {
+            if (! $internalPlayer instanceof ClubInternalPlayer) {
+                continue;
+            }
+
+            if (! $this->lookupValuesMatch((string) $internalPlayer->name, $playerName)) {
+                continue;
+            }
+
+            $candidateClub = User::query()
+                ->with('teamProfile')
+                ->find((int) $internalPlayer->club_user_id);
+
+            if (! $candidateClub) {
+                continue;
+            }
+
+            foreach ($this->clubLookupCandidates($candidateClub) as $candidateTeamName) {
+                if ($this->lookupValuesMatch($candidateTeamName, $teamName)) {
+                    return [
+                        'club' => $candidateClub,
+                        'player' => $internalPlayer,
+                    ];
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private function clubLookupCandidates(User $club): array
+    {
+        return array_values(array_filter([
+            (string) ($club->teamProfile?->team_name ?? ''),
+            (string) $club->name,
+        ], static fn (string $value): bool => trim($value) !== ''));
     }
 
     private function playerLoginFailedResponse(
@@ -1064,4 +1121,3 @@ class AuthController extends Controller
     }
 
 }
-

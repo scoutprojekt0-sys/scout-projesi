@@ -595,7 +595,7 @@ class ClubWorkspaceController extends Controller
     private function authorizeClubUser(Request $request): User|JsonResponse
     {
         $user = $request->user();
-        if (! in_array((string) $user->role, ['team', 'club'], true)) {
+        if (! in_array((string) $user->role, ['team', 'club', 'kulup'], true)) {
             return $this->errorResponse('Bu alan sadece kulup veya takim kullanicilarina aciktir.', Response::HTTP_FORBIDDEN, 'forbidden_role');
         }
 
