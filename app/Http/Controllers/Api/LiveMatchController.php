@@ -1058,16 +1058,6 @@ class LiveMatchController extends Controller
             return max(1, min($scheduledMatchDurationSeconds, $elapsed));
         }
 
-        $maxEventTimestamp = LiveMatchEvent::query()
-            ->where('live_match_id', $match->id)
-            ->get()
-            ->map(fn (LiveMatchEvent $event) => $this->eventElapsedSeconds($event, $periodDurationSeconds))
-            ->max();
-
-        if (is_numeric($maxEventTimestamp) && (int) $maxEventTimestamp > 0) {
-            return max(1, min($scheduledMatchDurationSeconds, (int) $maxEventTimestamp));
-        }
-
         return $scheduledMatchDurationSeconds;
     }
 
