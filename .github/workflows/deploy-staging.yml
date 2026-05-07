@@ -37,6 +37,10 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pdo, sqlite, pdo_sqlite
           coverage: none
 
+      - name: Normalize PHP source encoding
+        run: |
+          php -r '$it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(getcwd(), FilesystemIterator::SKIP_DOTS)); foreach ($it as $file) { if ($file->getExtension() !== "php") continue; $path = $file->getPathname(); if (str_contains($path, DIRECTORY_SEPARATOR.".git".DIRECTORY_SEPARATOR) || str_contains($path, DIRECTORY_SEPARATOR."vendor".DIRECTORY_SEPARATOR)) continue; $contents = file_get_contents($path); if ($contents === false) continue; if (strncmp($contents, "\xEF\xBB\xBF", 3) === 0) { $contents = substr($contents, 3); } $contents = str_replace(["\r\n", "\r"], "\n", $contents); file_put_contents($path, $contents); }'
+
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-interaction --no-progress
         env:
