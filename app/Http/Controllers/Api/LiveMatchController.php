@@ -1089,8 +1089,8 @@ class LiveMatchController extends Controller
 
     private function eventElapsedSeconds(LiveMatchEvent $event, int $periodDurationSeconds): int
     {
-        $remaining = ((int) $event->minute * 60) + (int) $event->second;
-        $elapsedInPeriod = max(0, min($periodDurationSeconds, $periodDurationSeconds - $remaining));
+        $elapsed = ((int) $event->minute * 60) + (int) $event->second;
+        $elapsedInPeriod = max(0, min($periodDurationSeconds, $elapsed));
 
         return (max(0, ((int) $event->period) - 1) * $periodDurationSeconds) + $elapsedInPeriod;
     }
