@@ -426,6 +426,7 @@ class LiveMatchController extends Controller
             'status' => $match->is_finished ? 'finished' : 'live',
             'started_at' => $match->started_at?->toIso8601String(),
             'finished_at' => $match->finished_at?->toIso8601String(),
+            'actual_elapsed_seconds' => (int) ($meta['actual_elapsed_seconds'] ?? 0),
             'events' => $events,
         ], 'Kulup canli mac detayi hazir.');
     }
@@ -487,6 +488,7 @@ class LiveMatchController extends Controller
                 'event_count' => $events->count(),
                 'period_breakdown' => $periodBreakdown,
                 'finished_at' => $match->finished_at?->toIso8601String(),
+                'actual_elapsed_seconds' => (int) ($meta['actual_elapsed_seconds'] ?? 0),
             ], $this->summarizeClubEventCounts($eventCounts->all(), $sport));
         })->values();
 
@@ -552,13 +554,28 @@ class LiveMatchController extends Controller
             return $match;
         }
 
+        $validated = $request->validate([
+            'current_period' => ['nullable', 'integer', 'min:1', 'max:8'],
+            'remaining_seconds' => ['nullable', 'integer', 'min:0', 'max:3600'],
+        ]);
+
+        $actualElapsedSeconds = $this->resolveActualElapsedSecondsForMatch(
+            $match,
+            isset($validated['current_period']) ? (int) $validated['current_period'] : null,
+            isset($validated['remaining_seconds']) ? (int) $validated['remaining_seconds'] : null,
+        );
+
+        $meta = $this->decodeRoundMeta($match->round);
+        $meta['actual_elapsed_seconds'] = $actualElapsedSeconds;
+
         $this->syncClubInternalPlayerStatsFromMatch($match);
-        $this->syncPlayerProfileStatsFromMatch($match);
+        $this->syncPlayerProfileStatsFromMatch($match, $actualElapsedSeconds);
 
         $match->forceFill([
             'is_live' => false,
             'is_finished' => true,
             'finished_at' => now(),
+            'round' => $this->encodeRoundMeta(null, $meta),
         ])->save();
 
         $eventCount = LiveMatchEvent::query()
@@ -570,6 +587,7 @@ class LiveMatchController extends Controller
             'status' => 'finished',
             'finished_at' => $match->finished_at?->toIso8601String(),
             'event_count' => $eventCount,
+            'actual_elapsed_seconds' => $actualElapsedSeconds,
         ], 'Canli mac kapatildi.');
     }
 
@@ -764,7 +782,7 @@ class LiveMatchController extends Controller
         }
     }
 
-    private function syncPlayerProfileStatsFromMatch(LiveMatch $match): void
+    private function syncPlayerProfileStatsFromMatch(LiveMatch $match, int $actualElapsedSeconds): void
     {
         $meta = $this->decodeRoundMeta($match->round);
         $sport = $this->normalizeClubMatchSport($meta['sport'] ?? null);
@@ -797,7 +815,12 @@ class LiveMatchController extends Controller
                 ->all();
 
             $summary = $this->summarizeClubEventCounts($counts, $sport);
-            $minutesPlayed = $this->calculatePlayedMinutesForEvents($events, $sport, (int) ($match->periods ?? 0));
+            $minutesPlayed = $this->calculatePlayedMinutesForEvents(
+                $events,
+                $sport,
+                (int) ($match->periods ?? 0),
+                $actualElapsedSeconds,
+            );
             $started = $this->didPlayerStartMatch($events);
 
             $stat = PlayerStatistic::query()->firstOrCreate(
@@ -922,10 +945,14 @@ class LiveMatchController extends Controller
         };
     }
 
-    private function calculatePlayedMinutesForEvents($events, string $sport, int $periods): int
+    private function calculatePlayedMinutesForEvents($events, string $sport, int $periods, ?int $actualElapsedSeconds = null): int
     {
         $periodDurationSeconds = $this->liveMatchPeriodDurationSeconds($sport);
-        $matchDurationSeconds = max(1, max(1, $periods) * $periodDurationSeconds);
+        $scheduledMatchDurationSeconds = max(1, max(1, $periods) * $periodDurationSeconds);
+        $matchDurationSeconds = max(
+            1,
+            min($scheduledMatchDurationSeconds, (int) ($actualElapsedSeconds ?? $scheduledMatchDurationSeconds))
+        );
 
         if ($events->isEmpty()) {
             return 0;
@@ -1012,6 +1039,36 @@ class LiveMatchController extends Controller
         }
 
         return (int) ceil(min($playedSeconds, $matchDurationSeconds) / 60);
+    }
+
+    private function resolveActualElapsedSecondsForMatch(
+        LiveMatch $match,
+        ?int $currentPeriod,
+        ?int $remainingSeconds
+    ): int {
+        $periodDurationSeconds = $this->liveMatchPeriodDurationSeconds(
+            $this->normalizeClubMatchSport($this->decodeRoundMeta($match->round)['sport'] ?? null)
+        );
+        $scheduledMatchDurationSeconds = max(1, max(1, (int) ($match->periods ?? 0)) * $periodDurationSeconds);
+
+        if ($currentPeriod !== null && $remainingSeconds !== null) {
+            $elapsedInCurrentPeriod = max(0, min($periodDurationSeconds, $periodDurationSeconds - $remainingSeconds));
+            $elapsed = (max(0, $currentPeriod - 1) * $periodDurationSeconds) + $elapsedInCurrentPeriod;
+
+            return max(1, min($scheduledMatchDurationSeconds, $elapsed));
+        }
+
+        $maxEventTimestamp = LiveMatchEvent::query()
+            ->where('live_match_id', $match->id)
+            ->get()
+            ->map(fn (LiveMatchEvent $event) => $this->eventElapsedSeconds($event, $periodDurationSeconds))
+            ->max();
+
+        if (is_numeric($maxEventTimestamp) && (int) $maxEventTimestamp > 0) {
+            return max(1, min($scheduledMatchDurationSeconds, (int) $maxEventTimestamp));
+        }
+
+        return $scheduledMatchDurationSeconds;
     }
 
     private function didPlayerStartMatch($events): bool
