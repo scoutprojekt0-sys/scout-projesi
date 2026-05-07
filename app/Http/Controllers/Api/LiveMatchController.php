@@ -549,6 +549,8 @@ class LiveMatchController extends Controller
             return $match;
         }
 
+        $this->syncClubInternalPlayerStatsFromMatch($match);
+
         $match->forceFill([
             'is_live' => false,
             'is_finished' => true,
@@ -650,6 +652,8 @@ class LiveMatchController extends Controller
                 'Oyundan Cikti',
             ],
             default => [
+                '1 Sayilik Atis Deneme Basarili',
+                '1 Sayilik Atis Deneme Basarisiz',
                 '2 Sayilik Atis Deneme',
                 '2 Sayilik Atis Basari',
                 '3 Sayilik Atis Deneme',
@@ -706,13 +710,77 @@ class LiveMatchController extends Controller
             'shot_2_made' => (int) ($counts['2 Sayilik Atis Basari'] ?? 0),
             'shot_3_attempt' => (int) ($counts['3 Sayilik Atis Deneme'] ?? 0),
             'shot_3_made' => (int) ($counts['3 Sayilik Atis Basari'] ?? 0),
-            'free_throw_attempt' => (int) ($counts['Serbest Atis Deneme'] ?? 0),
-            'free_throw_made' => (int) ($counts['Serbest Atis Basari'] ?? 0),
+            'free_throw_attempt' => (int) ($counts['Serbest Atis Deneme'] ?? 0)
+                + (int) ($counts['1 Sayilik Atis Deneme Basarili'] ?? 0)
+                + (int) ($counts['1 Sayilik Atis Deneme Basarisiz'] ?? 0),
+            'free_throw_made' => (int) ($counts['Serbest Atis Basari'] ?? 0)
+                + (int) ($counts['1 Sayilik Atis Deneme Basarili'] ?? 0),
             'assists' => (int) ($counts['Asist'] ?? 0),
             'steals' => (int) ($counts['Top Calma'] ?? 0),
             'turnovers' => (int) ($counts['Top Kaybi'] ?? 0),
             'off_rebounds' => (int) ($counts['Hucum Ribaund'] ?? 0),
             'def_rebounds' => (int) ($counts['Savunma Ribaund'] ?? 0),
         ];
+    }
+
+    private function syncClubInternalPlayerStatsFromMatch(LiveMatch $match): void
+    {
+        $meta = $this->decodeRoundMeta($match->round);
+        $sport = $this->normalizeClubMatchSport($meta['sport'] ?? null);
+
+        $eventsByPlayer = LiveMatchEvent::query()
+            ->where('live_match_id', $match->id)
+            ->get()
+            ->groupBy('club_internal_player_id');
+
+        foreach ($eventsByPlayer as $playerId => $events) {
+            $player = ClubInternalPlayer::query()
+                ->where('id', (int) $playerId)
+                ->where('club_user_id', $match->club_user_id)
+                ->first();
+
+            if (! $player) {
+                continue;
+            }
+
+            $counts = $events
+                ->groupBy('event_type')
+                ->map(fn ($group) => $group->count())
+                ->all();
+
+            $summary = $this->summarizeClubEventCounts($counts, $sport);
+            $production = $this->clubProductionValueFromSummary($summary, $sport);
+            $assists = (int) ($summary['assists'] ?? 0);
+
+            $player->forceFill([
+                'matches' => $this->readNumericValue($player->matches) + 1,
+                'goals' => $this->readNumericValue($player->goals) + $production,
+                'assists' => $this->readNumericValue($player->assists) + $assists,
+            ])->save();
+        }
+    }
+
+    private function clubProductionValueFromSummary(array $summary, string $sport): int
+    {
+        if ($this->normalizeClubMatchSport($sport) === 'football') {
+            return (int) ($summary['shot_3_attempt'] ?? 0);
+        }
+
+        if ($this->normalizeClubMatchSport($sport) === 'volleyball') {
+            return (int) ($summary['shot_3_attempt'] ?? 0);
+        }
+
+        return ((int) ($summary['shot_2_made'] ?? 0) * 2)
+            + ((int) ($summary['shot_3_made'] ?? 0) * 3)
+            + (int) ($summary['free_throw_made'] ?? 0);
+    }
+
+    private function readNumericValue(mixed $value): int
+    {
+        if (is_numeric($value)) {
+            return (int) $value;
+        }
+
+        return 0;
     }
 }
