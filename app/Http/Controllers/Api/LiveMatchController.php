@@ -913,6 +913,15 @@ class LiveMatchController extends Controller
         return sprintf('%d-%d', $startYear, $startYear + 1);
     }
 
+    private function liveMatchPeriodDurationSeconds(string $sport): int
+    {
+        return match ($this->normalizeClubMatchSport($sport)) {
+            'football' => 45 * 60,
+            'volleyball' => 25 * 60,
+            default => 10 * 60,
+        };
+    }
+
     private function calculatePlayedMinutesForEvents($events, string $sport, int $periods): int
     {
         $periodDurationSeconds = $this->liveMatchPeriodDurationSeconds($sport);
