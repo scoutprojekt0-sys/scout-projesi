@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DataAuditLog;
 use App\Models\ModerationQueue;
 use App\Models\PlayerCareerTimeline;
+use App\Models\PlayerStatistic;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -122,6 +123,10 @@ class PlayerCareerController extends Controller
         $timeline = PlayerCareerTimeline::where('player_id', $playerId)
             ->where('verification_status', 'verified')
             ->get();
+        $playerStatistics = PlayerStatistic::query()
+            ->with('club:id,name')
+            ->where('user_id', $playerId)
+            ->get();
 
         $player = \App\Models\User::query()->find($playerId);
         $rating = (float) ($player?->rating ?? 0);
@@ -156,10 +161,45 @@ class PlayerCareerController extends Controller
             'yellow_cards' => $timeline->sum('yellow_cards'),
             'red_cards' => $timeline->sum('red_cards'),
         ];
+
+        if ($timeline->isEmpty() && $playerStatistics->isNotEmpty()) {
+            $byClub = $playerStatistics->groupBy('club_id')->map(function ($entries) {
+                return [
+                    'club_id' => $entries->first()->club_id,
+                    'club_name' => $entries->first()->club?->name ?? 'Unknown',
+                    'total_appearances' => $entries->sum('matches_played'),
+                    'total_goals' => $entries->sum('goals'),
+                    'total_assists' => $entries->sum('assists'),
+                    'total_minutes' => $entries->sum('minutes_played'),
+                    'seasons' => $entries->pluck('season')->filter()->unique()->count(),
+                ];
+            })->values();
+
+            $bySeason = $playerStatistics->groupBy('season')->map(function ($entries, $season) {
+                return [
+                    'season' => $season,
+                    'appearances' => $entries->sum('matches_played'),
+                    'goals' => $entries->sum('goals'),
+                    'assists' => $entries->sum('assists'),
+                    'minutes_played' => $entries->sum('minutes_played'),
+                ];
+            });
+
+            $careerTotals = [
+                'appearances' => $playerStatistics->sum('matches_played'),
+                'goals' => $playerStatistics->sum('goals'),
+                'assists' => $playerStatistics->sum('assists'),
+                'minutes_played' => $playerStatistics->sum('minutes_played'),
+                'yellow_cards' => $playerStatistics->sum('yellow_cards'),
+                'red_cards' => $playerStatistics->sum('red_cards'),
+            ];
+        }
+
         $achievementItems = $this->buildAchievementItems(
             $careerTotals,
             $timeline,
-            $rating
+            $rating,
+            $playerStatistics
         );
 
         return response()->json([
@@ -322,10 +362,16 @@ class PlayerCareerController extends Controller
         ]);
     }
 
-    private function buildAchievementItems(array $totals, $timeline, float $rating): array
+    private function buildAchievementItems(array $totals, $timeline, float $rating, $playerStatistics): array
     {
         $items = [];
-        $currentClub = optional($timeline->where('is_current', true)->first()?->club)->name ?? '-';
+        $currentClub = optional($timeline->where('is_current', true)->first()?->club)->name;
+        if (! $currentClub && $playerStatistics->isNotEmpty()) {
+            $currentClub = $playerStatistics
+                ->sortByDesc('season')
+                ->first()?->club?->name;
+        }
+        $currentClub ??= '-';
 
         if (($totals['goals'] ?? 0) > 0 || ($totals['assists'] ?? 0) > 0) {
             $items[] = [
@@ -365,6 +411,9 @@ class PlayerCareerController extends Controller
         }
 
         $clubCount = $timeline->pluck('club_id')->filter()->unique()->count();
+        if ($clubCount === 0 && $playerStatistics->isNotEmpty()) {
+            $clubCount = $playerStatistics->pluck('club_id')->filter()->unique()->count();
+        }
         if ($clubCount > 0) {
             $items[] = [
                 'category' => 'Kariyer',

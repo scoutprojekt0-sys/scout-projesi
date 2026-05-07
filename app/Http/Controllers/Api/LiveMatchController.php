@@ -8,11 +8,14 @@ use App\Models\ClubInternalPlayer;
 use App\Models\ClubTeamGroup;
 use App\Models\LiveMatch;
 use App\Models\LiveMatchEvent;
+use App\Models\PlayerStatistic;
+use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -550,6 +553,7 @@ class LiveMatchController extends Controller
         }
 
         $this->syncClubInternalPlayerStatsFromMatch($match);
+        $this->syncPlayerProfileStatsFromMatch($match);
 
         $match->forceFill([
             'is_live' => false,
@@ -760,6 +764,74 @@ class LiveMatchController extends Controller
         }
     }
 
+    private function syncPlayerProfileStatsFromMatch(LiveMatch $match): void
+    {
+        $meta = $this->decodeRoundMeta($match->round);
+        $sport = $this->normalizeClubMatchSport($meta['sport'] ?? null);
+        $season = $this->resolveSeasonLabelForMatch($match);
+
+        $eventsByPlayer = LiveMatchEvent::query()
+            ->where('live_match_id', $match->id)
+            ->orderBy('id')
+            ->get()
+            ->groupBy('club_internal_player_id');
+
+        foreach ($eventsByPlayer as $playerId => $events) {
+            $player = ClubInternalPlayer::query()
+                ->where('id', (int) $playerId)
+                ->where('club_user_id', $match->club_user_id)
+                ->first();
+
+            if (! $player) {
+                continue;
+            }
+
+            $playerUser = $this->findPlayerUserForInternalPlayer($match, $player);
+            if (! $playerUser) {
+                continue;
+            }
+
+            $counts = $events
+                ->groupBy('event_type')
+                ->map(fn ($group) => $group->count())
+                ->all();
+
+            $summary = $this->summarizeClubEventCounts($counts, $sport);
+            $minutesPlayed = $this->calculatePlayedMinutesForEvents($events, $sport, (int) ($match->periods ?? 0));
+            $started = $this->didPlayerStartMatch($events);
+
+            $stat = PlayerStatistic::query()->firstOrCreate(
+                [
+                    'user_id' => (int) $playerUser->id,
+                    'club_id' => (int) $match->club_user_id,
+                    'season' => $season,
+                ],
+                [
+                    'league' => null,
+                    'matches_played' => 0,
+                    'matches_started' => 0,
+                    'matches_benched' => 0,
+                    'goals' => 0,
+                    'assists' => 0,
+                    'yellow_cards' => 0,
+                    'red_cards' => 0,
+                    'minutes_played' => 0,
+                ]
+            );
+
+            $stat->forceFill([
+                'matches_played' => ((int) $stat->matches_played) + 1,
+                'matches_started' => ((int) $stat->matches_started) + ($started ? 1 : 0),
+                'matches_benched' => ((int) $stat->matches_benched) + ($started ? 0 : 1),
+                'goals' => ((int) $stat->goals) + $this->clubProductionValueFromSummary($summary, $sport),
+                'assists' => ((int) $stat->assists) + ((int) ($summary['assists'] ?? 0)),
+                'yellow_cards' => ((int) $stat->yellow_cards) + $this->yellowCardCountFromSummary($summary, $sport),
+                'red_cards' => ((int) $stat->red_cards) + $this->redCardCountFromSummary($summary, $sport),
+                'minutes_played' => ((int) $stat->minutes_played) + $minutesPlayed,
+            ])->save();
+        }
+    }
+
     private function clubProductionValueFromSummary(array $summary, string $sport): int
     {
         if ($this->normalizeClubMatchSport($sport) === 'football') {
@@ -773,6 +845,188 @@ class LiveMatchController extends Controller
         return ((int) ($summary['shot_2_made'] ?? 0) * 2)
             + ((int) ($summary['shot_3_made'] ?? 0) * 3)
             + (int) ($summary['free_throw_made'] ?? 0);
+    }
+
+    private function yellowCardCountFromSummary(array $summary, string $sport): int
+    {
+        if ($this->normalizeClubMatchSport($sport) === 'football') {
+            return (int) ($summary['off_rebounds'] ?? 0);
+        }
+
+        return 0;
+    }
+
+    private function redCardCountFromSummary(array $summary, string $sport): int
+    {
+        if ($this->normalizeClubMatchSport($sport) === 'football') {
+            return (int) ($summary['def_rebounds'] ?? 0);
+        }
+
+        return 0;
+    }
+
+    private function findPlayerUserForInternalPlayer(LiveMatch $match, ClubInternalPlayer $player): ?User
+    {
+        $club = User::query()
+            ->select('users.*', 'team_profiles.team_name as resolved_team_name')
+            ->leftJoin('team_profiles', 'team_profiles.user_id', '=', 'users.id')
+            ->where('users.id', (int) $match->club_user_id)
+            ->first();
+
+        if (! $club) {
+            return null;
+        }
+
+        $teamName = trim((string) ($club->getAttribute('resolved_team_name') ?: $club->name ?: ''));
+        $normalizedTeamName = $this->normalizeLookupValue($teamName);
+        $normalizedPlayerName = $this->normalizeLookupValue((string) $player->name);
+
+        return User::query()
+            ->select('users.*', 'player_profiles.current_team as login_current_team')
+            ->join('player_profiles', 'player_profiles.user_id', '=', 'users.id')
+            ->where('users.role', 'player')
+            ->get()
+            ->first(function (User $user) use ($normalizedPlayerName, $normalizedTeamName): bool {
+                $currentTeam = (string) ($user->getAttribute('login_current_team') ?? '');
+
+                return $this->normalizeLookupValue((string) $user->name) === $normalizedPlayerName
+                    && $this->normalizeLookupValue($currentTeam) === $normalizedTeamName;
+            });
+    }
+
+    private function normalizeLookupValue(string $value): string
+    {
+        return Str::of($value)
+            ->trim()
+            ->squish()
+            ->replace(' ', '')
+            ->ascii('tr')
+            ->lower()
+            ->value();
+    }
+
+    private function resolveSeasonLabelForMatch(LiveMatch $match): string
+    {
+        $matchDate = $match->match_date ?? now();
+        $startYear = (int) ($matchDate->month >= 7 ? $matchDate->year : $matchDate->year - 1);
+
+        return sprintf('%d-%d', $startYear, $startYear + 1);
+    }
+
+    private function calculatePlayedMinutesForEvents($events, string $sport, int $periods): int
+    {
+        $periodDurationSeconds = $this->liveMatchPeriodDurationSeconds($sport);
+        $matchDurationSeconds = max(1, max(1, $periods) * $periodDurationSeconds);
+
+        if ($events->isEmpty()) {
+            return 0;
+        }
+
+        $sorted = $events->sort(function (LiveMatchEvent $left, LiveMatchEvent $right) use ($periodDurationSeconds) {
+            $leftTimestamp = $this->eventElapsedSeconds($left, $periodDurationSeconds);
+            $rightTimestamp = $this->eventElapsedSeconds($right, $periodDurationSeconds);
+
+            if ($leftTimestamp !== $rightTimestamp) {
+                return $leftTimestamp <=> $rightTimestamp;
+            }
+
+            if ($left->event_type === $right->event_type) {
+                return 0;
+            }
+
+            if ($left->event_type === 'Oyuna Girdi') {
+                return -1;
+            }
+
+            if ($right->event_type === 'Oyuna Girdi') {
+                return 1;
+            }
+
+            if ($left->event_type === 'Oyundan Cikti') {
+                return -1;
+            }
+
+            if ($right->event_type === 'Oyundan Cikti') {
+                return 1;
+            }
+
+            return 0;
+        })->values();
+
+        $playedSeconds = 0;
+        $onCourt = false;
+        $stintStart = null;
+
+        foreach ($sorted as $event) {
+            $timestamp = $this->eventElapsedSeconds($event, $periodDurationSeconds);
+
+            switch ($event->event_type) {
+                case 'Oyuna Girdi':
+                    if (! $onCourt) {
+                        $onCourt = true;
+                        $stintStart = $timestamp;
+                    }
+                    break;
+
+                case 'Oyundan Cikti':
+                    if (! $onCourt) {
+                        $hasEntryAtSameTimestamp = $sorted->contains(function (LiveMatchEvent $candidate) use ($event, $timestamp, $periodDurationSeconds): bool {
+                            return $candidate->id !== $event->id
+                                && $candidate->event_type === 'Oyuna Girdi'
+                                && $this->eventElapsedSeconds($candidate, $periodDurationSeconds) === $timestamp;
+                        });
+
+                        if ($hasEntryAtSameTimestamp) {
+                            break;
+                        }
+
+                        $onCourt = true;
+                        $stintStart = 0;
+                    }
+
+                    $playedSeconds += max(0, $timestamp - ($stintStart ?? 0));
+                    $onCourt = false;
+                    $stintStart = null;
+                    break;
+
+                default:
+                    if (! $onCourt) {
+                        $onCourt = true;
+                        $stintStart = 0;
+                    }
+                    break;
+            }
+        }
+
+        if ($onCourt) {
+            $playedSeconds += max(0, $matchDurationSeconds - ($stintStart ?? 0));
+        }
+
+        return (int) ceil(min($playedSeconds, $matchDurationSeconds) / 60);
+    }
+
+    private function didPlayerStartMatch($events): bool
+    {
+        if ($events->isEmpty()) {
+            return false;
+        }
+
+        $firstEvent = $events->sortBy([
+            ['period', 'asc'],
+            ['minute', 'asc'],
+            ['second', 'asc'],
+            ['id', 'asc'],
+        ])->first();
+
+        return $firstEvent?->event_type !== 'Oyuna Girdi';
+    }
+
+    private function eventElapsedSeconds(LiveMatchEvent $event, int $periodDurationSeconds): int
+    {
+        $remaining = ((int) $event->minute * 60) + (int) $event->second;
+        $elapsedInPeriod = max(0, min($periodDurationSeconds, $periodDurationSeconds - $remaining));
+
+        return (max(0, ((int) $event->period) - 1) * $periodDurationSeconds) + $elapsedInPeriod;
     }
 
     private function readNumericValue(mixed $value): int

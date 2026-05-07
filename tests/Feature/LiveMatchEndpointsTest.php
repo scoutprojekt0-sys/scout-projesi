@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\ClubTeamGroup;
 use App\Models\ClubInternalPlayer;
 use App\Models\LiveMatch;
+use App\Models\PlayerProfile;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
@@ -270,6 +271,86 @@ class LiveMatchEndpointsTest extends TestCase
             ->assertJsonPath('ok', true)
             ->assertJsonPath('data.event_type', 'Sayi')
             ->assertJsonPath('data.player_id', $player->id);
+    }
+
+    public function test_finishing_club_match_syncs_player_statistics_for_matching_player_account(): void
+    {
+        $clubUser = User::factory()->create(['role' => 'club', 'name' => 'Sync Club']);
+        ClubTeamGroup::query()->create([
+            'club_user_id' => $clubUser->id,
+            'group_key' => 'u17-sync',
+            'name' => 'U17 Sync',
+            'is_showcased' => false,
+            'sort_order' => 1,
+        ]);
+        $internalPlayer = ClubInternalPlayer::query()->create([
+            'club_user_id' => $clubUser->id,
+            'group_key' => 'u17-sync',
+            'name' => 'Mert Demir',
+            'sport' => 'football',
+            'shirt_number' => '10',
+            'status' => 'active',
+        ]);
+        $playerUser = User::factory()->create([
+            'role' => 'player',
+            'name' => 'Mert Demir',
+        ]);
+        PlayerProfile::query()->create([
+            'user_id' => $playerUser->id,
+            'current_team' => 'Sync Club',
+        ]);
+
+        Sanctum::actingAs($clubUser, ['profile:write']);
+
+        $startResponse = $this->postJson('/api/club/live-matches/start', [
+            'group_key' => 'u17-sync',
+            'opponent' => 'Rakip Sync',
+            'match_date' => '2026-05-07T10:00:00Z',
+            'periods' => 2,
+            'sport' => 'football',
+        ])->assertCreated();
+
+        $matchId = $startResponse->json('data.id');
+
+        $this->postJson('/api/club/live-matches/'.$matchId.'/events', [
+            'player_id' => $internalPlayer->id,
+            'event_type' => 'Gol',
+            'period' => 1,
+            'minute' => 12,
+            'second' => 0,
+        ])->assertCreated();
+
+        $this->postJson('/api/club/live-matches/'.$matchId.'/events', [
+            'player_id' => $internalPlayer->id,
+            'event_type' => 'Asist',
+            'period' => 1,
+            'minute' => 9,
+            'second' => 0,
+        ])->assertCreated();
+
+        $this->postJson('/api/club/live-matches/'.$matchId.'/finish')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.status', 'finished');
+
+        $this->assertDatabaseHas('player_statistics', [
+            'user_id' => $playerUser->id,
+            'club_id' => $clubUser->id,
+            'season' => '2025-2026',
+            'matches_played' => 1,
+            'matches_started' => 1,
+            'matches_benched' => 0,
+            'goals' => 1,
+            'assists' => 1,
+        ]);
+
+        $this->getJson('/api/career/player/'.$playerUser->id.'/statistics')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.career_totals.appearances', 1)
+            ->assertJsonPath('data.career_totals.goals', 1)
+            ->assertJsonPath('data.career_totals.assists', 1)
+            ->assertJsonPath('data.by_club.0.club_name', 'Sync Club');
     }
 
     public function test_player_schedule_for_today_creates_live_match_notification(): void

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 namespace App\Http\Controllers\Api;
 
@@ -876,8 +876,8 @@ class AuthController extends Controller
             ->select('users.*')
             ->join('player_profiles', 'player_profiles.user_id', '=', 'users.id')
             ->where('users.role', 'player')
-            ->whereRaw('LOWER(TRIM(users.name)) = ?', [$playerName])
-            ->whereRaw('LOWER(TRIM(player_profiles.current_team)) = ?', [$teamName])
+            ->whereRaw("LOWER(REPLACE(TRIM(users.name), ' ', '')) = ?", [$playerName])
+            ->whereRaw("LOWER(REPLACE(TRIM(player_profiles.current_team), ' ', '')) = ?", [$teamName])
             ->first();
 
         if ($exactMatch) {

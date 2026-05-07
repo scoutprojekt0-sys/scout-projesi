@@ -64,6 +64,50 @@ class PlayerAuthAndClubWorkspaceTest extends TestCase
             ->assertJsonPath('data.user.id', $player->id);
     }
 
+    public function test_player_team_login_is_space_insensitive_for_team_name(): void
+    {
+        $player = User::factory()->create([
+            'role' => 'player',
+            'name' => 'Ali Veli',
+            'email' => 'ali.veli@example.com',
+            'password' => Hash::make('Secret123'),
+            'player_password_initialized' => true,
+        ]);
+
+        PlayerProfile::query()->create([
+            'user_id' => $player->id,
+            'current_team' => 'Veli Spor',
+            'position' => 'Forvet',
+        ]);
+
+        $this->postJson('/api/auth/player/login', [
+            'team_name' => 'Velispor',
+            'player_name' => 'Ali Veli',
+            'password' => 'Secret123',
+        ])
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('code', 'player_logged_in')
+            ->assertJsonPath('data.user.id', $player->id);
+
+        $freshPlayer = User::query()->findOrFail($player->id);
+        $freshPlayer->forceFill([
+            'password' => Hash::make('Secret456'),
+            'player_password_initialized' => false,
+        ])->save();
+
+        $this->postJson('/api/auth/player/set-password', [
+            'team_name' => 'Velispor',
+            'player_name' => 'Ali Veli',
+            'password' => 'Secret456',
+            'password_confirmation' => 'Secret456',
+        ])
+            ->assertCreated()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('code', 'player_password_initialized')
+            ->assertJsonPath('data.user.id', $player->id);
+    }
+
     public function test_club_can_create_player_account_and_reopen_first_password_setup(): void
     {
         $club = User::factory()->club()->create([
@@ -185,6 +229,67 @@ class PlayerAuthAndClubWorkspaceTest extends TestCase
             'current_team' => 'Sportek',
             'position' => 'Forvet',
             'bio' => null,
+        ]);
+    }
+
+    public function test_player_can_set_first_password_and_login_when_club_team_name_contains_spaces(): void
+    {
+        $club = User::factory()->club()->create([
+            'name' => 'Spor Tek',
+            'email' => 'sportek-spaced@example.com',
+        ]);
+
+        DB::table('team_profiles')->insert([
+            'user_id' => $club->id,
+            'team_name' => 'Spor Tek',
+            'league_level' => 'Akademi',
+            'city' => 'Istanbul',
+            'updated_at' => now(),
+        ]);
+
+        ClubInternalPlayer::query()->create([
+            'club_user_id' => $club->id,
+            'profile_type' => 'internal_profile',
+            'visibility' => 'club_only',
+            'group_key' => 'u10',
+            'status' => 'active',
+            'name' => 'Emir Can',
+            'sport' => 'futbol',
+            'position' => 'Orta Saha',
+        ]);
+
+        $this->postJson('/api/auth/player/set-password', [
+            'team_name' => 'Spor Tek',
+            'player_name' => 'Emir Can',
+            'password' => 'Secret123',
+            'password_confirmation' => 'Secret123',
+        ])
+            ->assertCreated()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('code', 'player_password_initialized')
+            ->assertJsonPath('data.user.name', 'Emir Can');
+
+        $this->postJson('/api/auth/player/login', [
+            'team_name' => 'Spor Tek',
+            'player_name' => 'Emir Can',
+            'password' => 'Secret123',
+        ])
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('code', 'player_logged_in');
+
+        $this->postJson('/api/auth/player/login', [
+            'team_name' => 'Sportek',
+            'player_name' => 'Emir Can',
+            'password' => 'Secret123',
+        ])
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('code', 'player_logged_in');
+
+        $this->assertDatabaseHas('player_profiles', [
+            'current_team' => 'Spor Tek',
+            'position' => 'Orta Saha',
         ]);
     }
 }
