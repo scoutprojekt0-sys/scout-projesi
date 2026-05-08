@@ -64,4 +64,11 @@ return [
         'sender_name' => env('BREVO_SENDER_NAME', env('MAIL_FROM_NAME', 'NextScout')),
     ],
 
+    'openai' => [
+        'api_key' => env('OPENAI_API_KEY', ''),
+        'base_url' => env('OPENAI_BASE_URL', 'https://api.openai.com/v1'),
+        'support_model' => env('OPENAI_SUPPORT_MODEL', 'gpt-5.4-mini'),
+        'timeout_seconds' => (int) env('OPENAI_TIMEOUT_SECONDS', 30),
+    ],
+
 ];

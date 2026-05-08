@@ -3,24 +3,47 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\OpenAiSupportService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 class AiSupportController extends Controller
 {
-    public function chat(Request $request): JsonResponse
+    public function chat(Request $request, OpenAiSupportService $openAiSupport): JsonResponse
     {
         $validated = $request->validate([
             'message' => ['required', 'string', 'max:2000'],
+            'history' => ['sometimes', 'array', 'max:10'],
+            'history.*.role' => ['required_with:history', 'in:user,assistant'],
+            'history.*.content' => ['required_with:history', 'string', 'max:4000'],
         ]);
 
         $user = $request->user();
         $role = strtolower((string) ($user?->role ?? 'member'));
         $message = trim((string) $validated['message']);
         $normalized = mb_strtolower($message, 'UTF-8');
+        $history = collect($validated['history'] ?? [])
+            ->filter(fn ($item) => is_array($item))
+            ->map(fn (array $item) => [
+                'role' => (string) ($item['role'] ?? 'user'),
+                'content' => trim((string) ($item['content'] ?? '')),
+            ])
+            ->filter(fn (array $item) => $item['content'] !== '')
+            ->values()
+            ->all();
 
-        $payload = $this->buildReply($normalized, $role);
+        try {
+            $payload = $openAiSupport->generateReply($message, $role, $history);
+        } catch (Throwable $exception) {
+            report($exception);
+            $payload = null;
+        }
+
+        if (! is_array($payload)) {
+            $payload = $this->buildReply($normalized, $role);
+        }
 
         return response()->json([
             'ok' => true,
