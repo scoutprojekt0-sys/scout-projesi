@@ -7,6 +7,9 @@ use App\Http\Controllers\Api\AdminScoutController;
 use App\Http\Controllers\Api\ApiRootController;
 use App\Http\Controllers\Api\AiSupportController;
 use App\Http\Controllers\Api\AiLabelingController;
+use App\Http\Controllers\Api\AiDatasetCandidateController;
+use App\Http\Controllers\Api\AiTrainingRunController;
+use App\Http\Controllers\Api\AiModelRegistryController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BillingController;
 use App\Http\Controllers\Api\ContactController;
@@ -221,6 +224,25 @@ Route::prefix('video-analyses')->middleware(['auth:sanctum', 'reject_legacy_toke
     Route::get('/{id}', [VideoAnalysisController::class, 'show'])->middleware('ability:profile:read');
     Route::get('/{id}/events', [VideoAnalysisController::class, 'events'])->middleware('ability:profile:read');
     Route::get('/{id}/clips', [VideoAnalysisController::class, 'clips'])->middleware('ability:profile:read');
+});
+
+Route::prefix('ai-dataset-candidates')->middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->group(function () {
+    Route::get('/', [AiDatasetCandidateController::class, 'index'])->middleware('ability:profile:read');
+    Route::get('/stats', [AiDatasetCandidateController::class, 'stats'])->middleware('ability:profile:read');
+    Route::get('/{id}', [AiDatasetCandidateController::class, 'show'])->middleware('ability:profile:read');
+    Route::post('/{id}/status', [AiDatasetCandidateController::class, 'updateStatus'])->middleware('ability:staff');
+});
+
+Route::prefix('ai-training-runs')->middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->group(function () {
+    Route::get('/', [AiTrainingRunController::class, 'index'])->middleware('ability:staff');
+    Route::get('/{id}', [AiTrainingRunController::class, 'show'])->middleware('ability:staff');
+});
+
+Route::prefix('ai-models')->middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->group(function () {
+    Route::get('/active', [AiModelRegistryController::class, 'active'])->middleware('ability:staff');
+    Route::get('/rollouts', [AiModelRegistryController::class, 'rollouts'])->middleware('ability:staff');
+    Route::post('/publish', [AiModelRegistryController::class, 'publish'])->middleware('ability:staff');
+    Route::post('/rollback', [AiModelRegistryController::class, 'rollback'])->middleware('ability:staff');
 });
 
 Route::get('/players/{playerId}/video-metrics', [PlayerVideoMetricController::class, 'index'])

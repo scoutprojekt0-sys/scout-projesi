@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class VideoClip extends Model
 {
@@ -41,5 +42,10 @@ class VideoClip extends Model
     public function analyses()
     {
         return $this->hasMany(VideoAnalysis::class);
+    }
+
+    public function datasetCandidate(): HasOne
+    {
+        return $this->hasOne(AiDatasetCandidate::class);
     }
 }

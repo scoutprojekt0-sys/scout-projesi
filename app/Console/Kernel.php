@@ -8,6 +8,12 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 class Kernel extends ConsoleKernel
 {
     protected $commands = [
+        \App\Console\Commands\RollbackAiModel::class,
+        \App\Console\Commands\PublishAiModel::class,
+        \App\Console\Commands\TrainApprovedAiDatasetCandidates::class,
+        \App\Console\Commands\SyncAiDatasetLabelStatus::class,
+        \App\Console\Commands\PrepareApprovedAiDatasetCandidates::class,
+        \App\Console\Commands\ExportAiDatasetCandidates::class,
         \App\Console\Commands\ResetLegacyPasswords::class,
     ];
 

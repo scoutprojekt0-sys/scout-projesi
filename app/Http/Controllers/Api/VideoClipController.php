@@ -6,6 +6,7 @@ use App\Http\Controllers\Concerns\ApiResponds;
 use App\Http\Controllers\Concerns\ResolvesPublicFileUrls;
 use App\Http\Controllers\Controller;
 use App\Models\VideoClip;
+use App\Services\AiDatasetCandidateService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -38,7 +39,7 @@ class VideoClipController extends Controller
         return $this->successResponse($this->transformPublicClip($clip->fresh()), 'Video detayi hazir.');
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(Request $request, AiDatasetCandidateService $datasetCandidateService): JsonResponse
     {
         $validated = $request->validate([
             'title'             => ['required', 'string', 'max:255'],
@@ -96,6 +97,8 @@ class VideoClipController extends Controller
                 'tags' => $tags->all() ?: null,
                 'metadata' => $metadata ?: null,
             ]);
+
+        $datasetCandidateService->syncFromVideoClip($clip);
 
         return $this->successResponse(
             $this->transformPublicClip($clip),
@@ -164,6 +167,7 @@ class VideoClipController extends Controller
             'duration_seconds' => $clip->duration_seconds,
             'match_date' => optional($clip->match_date)?->toDateString(),
             'tags' => is_array($clip->tags) ? $clip->tags : [],
+            'metadata' => is_array($clip->metadata) ? $clip->metadata : [],
             'created_at' => optional($clip->created_at)?->toIso8601String(),
         ];
     }
