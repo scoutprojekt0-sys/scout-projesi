@@ -26,6 +26,106 @@
     <link rel="stylesheet" href="assets/css/admin-responsive.css">
     <link rel="stylesheet" href="assets/css/mobile-unified.css">
     <link rel="stylesheet" href="assets/css/mobile-polish.css">
+    <style>
+        .admin-workspace {
+            display: grid;
+            grid-template-columns: 260px minmax(0, 1fr);
+            gap: 18px;
+            align-items: start;
+            margin-top: 4px;
+        }
+        .admin-sidebar {
+            position: sticky;
+            top: 96px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 14px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, .08);
+        }
+        .admin-sidebar-title {
+            margin-bottom: 12px;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+        .admin-sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .admin-sidebar-link {
+            width: 100%;
+            border: 1px solid #e5e7eb;
+            background: #f8fafc;
+            color: #0f172a;
+            border-radius: 10px;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: .18s ease;
+        }
+        .admin-sidebar-link:hover {
+            border-color: #93c5fd;
+            background: #eff6ff;
+        }
+        .admin-sidebar-link.active {
+            border-color: #2563eb;
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+            color: #fff;
+        }
+        .admin-main {
+            min-width: 0;
+        }
+        .admin-panel {
+            display: none;
+        }
+        .admin-panel.active {
+            display: block;
+        }
+        .admin-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
+            border: 1px solid #dbeafe;
+        }
+        .admin-panel-header h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #0f172a;
+        }
+        .admin-panel-header p {
+            margin: 4px 0 0;
+            color: #64748b;
+            font-size: 13px;
+        }
+        @media (max-width: 960px) {
+            .admin-workspace {
+                grid-template-columns: 1fr;
+            }
+            .admin-sidebar {
+                position: static;
+            }
+            .admin-sidebar-nav {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        @media (max-width: 640px) {
+            .admin-sidebar-nav {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="header">
@@ -96,7 +196,7 @@
             <div class="section-title"><i class="fas fa-bolt"></i> Hizli Islemler</div>
             <div class="action-buttons">
                 <a href="settings.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Kullanici Yï¿½netimi</a>
-                <a href="#successStoriesModerationSection" class="btn btn-primary"><i class="fas fa-trophy"></i> Basari Hikayeleri</a>
+                <a href="#successStoriesModerationSection" class="btn btn-primary" onclick="openAdminPanel('moderation', 'successStoriesModerationSection')"><i class="fas fa-trophy"></i> Basari Hikayeleri</a>
                 <a href="statistics.html" class="btn btn-secondary"><i class="fas fa-file-alt"></i> Raporlari Goruntule</a>
                 <a href="settings.html" class="btn btn-secondary"><i class="fas fa-cog"></i> Sistem Ayarlari</a>
                 <button type="button" class="btn btn-secondary" onclick="exportAdminSnapshot()"><i class="fas fa-database"></i> Yedek Al</button>
@@ -1515,6 +1615,162 @@
             notice.style.display = isBackendAdminSession(token) ? 'none' : 'block';
         }
 
+        function setActiveAdminPanel(panelId) {
+            const panels = Array.from(document.querySelectorAll('[data-admin-panel]'));
+            const navButtons = Array.from(document.querySelectorAll('[data-admin-nav]'));
+            if (!panels.length || !navButtons.length) return;
+
+            const targetPanel = panels.find((panel) => panel.getAttribute('data-admin-panel') === panelId) || panels[0];
+            panels.forEach((panel) => panel.classList.toggle('active', panel === targetPanel));
+            navButtons.forEach((button) => {
+                button.classList.toggle('active', button.getAttribute('data-admin-nav') === targetPanel.getAttribute('data-admin-panel'));
+            });
+
+            try {
+                localStorage.setItem('nextscout_admin_panel', targetPanel.getAttribute('data-admin-panel') || 'overview');
+            } catch (error) {
+            }
+        }
+
+        function openAdminPanel(panelId, anchorId) {
+            setActiveAdminPanel(panelId);
+            if (anchorId) {
+                window.setTimeout(() => {
+                    const target = document.getElementById(anchorId);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 60);
+            }
+        }
+
+        function createAdminPanel(panelId, title, description) {
+            const panel = document.createElement('section');
+            panel.className = 'admin-panel';
+            panel.setAttribute('data-admin-panel', panelId);
+            panel.innerHTML = `
+                <div class="admin-panel-header">
+                    <div>
+                        <h2>${escapeHtml(title)}</h2>
+                        <p>${escapeHtml(description)}</p>
+                    </div>
+                </div>
+            `;
+            return panel;
+        }
+
+        function initAdminWorkspace() {
+            if (document.querySelector('.admin-workspace')) {
+                return;
+            }
+
+            const container = document.querySelector('.container');
+            const notice = document.getElementById('adminAuthNotice');
+            if (!container || !notice) return;
+
+            const welcome = container.querySelector('.welcome');
+            const statsGrid = container.querySelector('.stats-grid');
+            const sections = Array.from(container.children).filter((child) => child.classList && child.classList.contains('section'));
+            if (!welcome || !statsGrid || sections.length < 14) {
+                return;
+            }
+
+            const panelDefinitions = [
+                {
+                    id: 'overview',
+                    title: 'Genel Bakis',
+                    description: 'Temel istatistikler ve hizli admin aksiyonlari.',
+                    nodes: [welcome, statsGrid, sections[0]],
+                },
+                {
+                    id: 'operations',
+                    title: 'Operasyon',
+                    description: 'Kalite, guvenlik ve istemci hata akislarini buradan izle.',
+                    nodes: [sections[1], sections[2], sections[3]],
+                },
+                {
+                    id: 'content',
+                    title: 'Icerik ve Ticari Alanlar',
+                    description: 'Moduller, iletisim, boost paketleri ve gelir bloklari.',
+                    nodes: [sections[4], sections[5], sections[6], sections[7], sections[8]],
+                },
+                {
+                    id: 'users',
+                    title: 'Kullanici Yonetimi',
+                    description: 'Kayitli kullanici arama ve profil karti islemleri.',
+                    nodes: [sections[9]],
+                },
+                {
+                    id: 'moderation',
+                    title: 'Moderasyon',
+                    description: 'Deneme ilanlari, basari hikayeleri ve amator sonuc akislari.',
+                    nodes: [sections[10], sections[11], sections[12]],
+                },
+                {
+                    id: 'ai-ops',
+                    title: 'AI Ops',
+                    description: 'Dataset adaylari, training run ve aktif model gecisleri.',
+                    nodes: [sections[13]],
+                },
+            ];
+
+            const workspace = document.createElement('div');
+            workspace.className = 'admin-workspace';
+
+            const sidebar = document.createElement('aside');
+            sidebar.className = 'admin-sidebar';
+            sidebar.innerHTML = `
+                <div class="admin-sidebar-title">Admin Navigasyon</div>
+                <div class="admin-sidebar-nav">
+                    ${panelDefinitions.map((panel) => `
+                        <button type="button" class="admin-sidebar-link" data-admin-nav="${panel.id}">
+                            ${escapeHtml(panel.title)}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+
+            const main = document.createElement('div');
+            main.className = 'admin-main';
+
+            panelDefinitions.forEach((definition) => {
+                const panel = createAdminPanel(definition.id, definition.title, definition.description);
+                definition.nodes.forEach((node) => {
+                    if (node && node.parentNode) {
+                        panel.appendChild(node);
+                    }
+                });
+                main.appendChild(panel);
+            });
+
+            workspace.appendChild(sidebar);
+            workspace.appendChild(main);
+            notice.insertAdjacentElement('afterend', workspace);
+
+            Array.from(sidebar.querySelectorAll('[data-admin-nav]')).forEach((button) => {
+                button.addEventListener('click', () => {
+                    setActiveAdminPanel(button.getAttribute('data-admin-nav') || 'overview');
+                });
+            });
+
+            let initialPanel = 'overview';
+            const hash = (window.location.hash || '').replace('#', '').trim();
+            if (hash) {
+                const hashTarget = document.getElementById(hash);
+                const containingPanel = hashTarget ? hashTarget.closest('[data-admin-panel]') : null;
+                if (containingPanel) {
+                    initialPanel = containingPanel.getAttribute('data-admin-panel') || initialPanel;
+                }
+            } else {
+                try {
+                    initialPanel = localStorage.getItem('nextscout_admin_panel') || initialPanel;
+                } catch (error) {
+                }
+            }
+
+            setActiveAdminPanel(initialPanel);
+        }
+
         function formatAiStatusBadge(status) {
             const value = (status || '').toString().trim().toLowerCase();
             const map = {
@@ -2209,6 +2465,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            initAdminWorkspace();
             updateAuthNotice();
             loadContactMessages();
             loadBoostPackagesAdmin();
@@ -2435,8 +2692,3 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
-
-
-
-
