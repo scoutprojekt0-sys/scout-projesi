@@ -39,8 +39,8 @@ return [
     ],
 
     'ai_analysis' => [
-        'mode' => env('AI_ANALYSIS_MODE', 'mock'),
-        'allow_mock_fallback' => env('AI_ANALYSIS_ALLOW_MOCK_FALLBACK'),
+        'mode' => env('AI_ANALYSIS_MODE', 'external'),
+        'allow_mock_fallback' => env('AI_ANALYSIS_ALLOW_MOCK_FALLBACK', false),
         'worker_base_url' => env('AI_ANALYSIS_WORKER_BASE_URL', ''),
         'worker_timeout_seconds' => (int) env('AI_ANALYSIS_WORKER_TIMEOUT_SECONDS', 20),
         'callback_secret' => env('AI_ANALYSIS_CALLBACK_SECRET', ''),

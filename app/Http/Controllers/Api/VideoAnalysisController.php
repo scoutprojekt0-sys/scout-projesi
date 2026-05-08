@@ -54,15 +54,19 @@ class VideoAnalysisController extends Controller
             );
         }
 
+        $analysisMode = (string) config('scout.ai_analysis.mode', 'external');
+        $provider = $analysisMode === 'external' ? 'external' : 'mock';
+        $analysisVersion = $analysisMode === 'external' ? 'external-worker' : 'mock-v1';
+
         $analysis = VideoAnalysis::create([
             'video_clip_id' => $videoClip->id,
             'requested_by' => $request->user()->id,
             'target_player_id' => $targetPlayerId,
             'analysis_type' => $analysisType,
-            'provider' => (string) config('scout.ai_analysis.mode', 'mock') === 'external' ? 'external' : 'mock',
+            'provider' => $provider,
             'status' => 'queued',
             'worker_status' => 'queued',
-            'analysis_version' => 'mock-v1',
+            'analysis_version' => $analysisVersion,
         ]);
 
         RunVideoAnalysisJob::dispatchSync($analysis->id);

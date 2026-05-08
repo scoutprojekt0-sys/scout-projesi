@@ -190,6 +190,8 @@ class VideoAnalysisEndpointsTest extends TestCase
         config()->set('scout.ai_analysis.mode', 'external');
         config()->set('scout.ai_analysis.allow_mock_fallback', false);
         config()->set('scout.ai_analysis.worker_base_url', 'http://worker.test');
+        config()->set('scout.ai_analysis.callback_secret', 'local-secret');
+        config()->set('app.url', 'http://app.test');
 
         Http::fake([
             'http://worker.test/*' => Http::response(['message' => 'worker error'], 500),
