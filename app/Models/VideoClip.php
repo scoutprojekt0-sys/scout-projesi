@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class VideoClip extends Model
 {
+    protected $hidden = [
+        'platform_video_id',
+        'metadata',
+    ];
+
     protected $fillable = [
         'user_id',
         'title',

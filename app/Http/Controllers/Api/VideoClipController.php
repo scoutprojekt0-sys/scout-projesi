@@ -24,7 +24,11 @@ class VideoClipController extends Controller
             ->orderByDesc('created_at')
             ->paginate(20);
 
-        $clips->getCollection()->transform(fn (VideoClip $clip) => $this->transformPublicClip($clip));
+        $clips->setCollection(
+            $clips->getCollection()->map(
+                fn (VideoClip $clip) => $this->transformPublicClip($clip)
+            )
+        );
 
         return $this->paginatedListResponse($clips, 'Video listesi hazir.');
     }
@@ -149,7 +153,11 @@ class VideoClipController extends Controller
             ->orderByDesc('created_at')
             ->paginate(20);
 
-        $clips->getCollection()->transform(fn (VideoClip $clip) => $this->transformPublicClip($clip));
+        $clips->setCollection(
+            $clips->getCollection()->map(
+                fn (VideoClip $clip) => $this->transformPublicClip($clip)
+            )
+        );
 
         return response()->json(['ok' => true, 'data' => $clips]);
     }
