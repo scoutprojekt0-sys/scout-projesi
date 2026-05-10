@@ -175,7 +175,6 @@ class VideoClipController extends Controller
             'duration_seconds' => $clip->duration_seconds,
             'match_date' => optional($clip->match_date)?->toDateString(),
             'tags' => is_array($clip->tags) ? $clip->tags : [],
-            'metadata' => is_array($clip->metadata) ? $clip->metadata : [],
             'created_at' => optional($clip->created_at)?->toIso8601String(),
         ];
     }
