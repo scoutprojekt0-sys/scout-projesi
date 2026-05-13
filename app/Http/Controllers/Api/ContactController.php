@@ -9,6 +9,7 @@ use App\Http\Requests\Contact\ListContactsRequest;
 use App\Http\Requests\Contact\StoreContactRequest;
 use App\Models\Contact;
 use App\Models\User;
+use App\Support\NotificationStore;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -43,6 +44,24 @@ class ContactController extends Controller
         ]);
 
         $created = DB::table('contacts')->where('id', $id)->first();
+
+        $sender = $request->user();
+        NotificationStore::sendToUser(
+            $toUserId,
+            'new_message',
+            [
+                'message_id' => $id,
+                'actor_user_id' => (int) $sender->id,
+                'actor_name' => (string) $sender->name,
+                'actor_role' => (string) $sender->role,
+                'route' => 'messages',
+            ],
+            'Yeni mesaj',
+            sprintf('%s sana mesaj gonderdi.', (string) $sender->name),
+            'high',
+            null,
+            'allow_inbox_push',
+        );
 
         return $this->successResponse($this->transformContactRow($created), 'Mesaj gonderildi.', Response::HTTP_CREATED);
     }

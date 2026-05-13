@@ -71,4 +71,11 @@ return [
         'timeout_seconds' => (int) env('OPENAI_TIMEOUT_SECONDS', 30),
     ],
 
+    'firebase_messaging' => [
+        'project_id' => env('FIREBASE_PROJECT_ID', 'scout-40154'),
+        'credentials_json' => env('FIREBASE_SERVICE_ACCOUNT_JSON', ''),
+        'credentials_path' => env('FIREBASE_SERVICE_ACCOUNT_PATH', ''),
+        'timeout_seconds' => (int) env('FIREBASE_MESSAGING_TIMEOUT_SECONDS', 10),
+    ],
+
 ];
