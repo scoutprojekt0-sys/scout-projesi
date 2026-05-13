@@ -164,6 +164,11 @@ class User extends Authenticatable
         return $this->hasOne(UserNotificationPreference::class);
     }
 
+    public function devicePushTokens()
+    {
+        return $this->hasMany(DevicePushToken::class);
+    }
+
     public function favoritedBy()
     {
         return $this->hasMany(Favorite::class, 'target_user_id');

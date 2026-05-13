@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\StaffPlayerEvaluationController;
 use App\Http\Controllers\Api\StaffPlayerNoteController;
 use App\Http\Controllers\Api\DataQualityController;
 use App\Http\Controllers\Api\DiscoveryController;
+use App\Http\Controllers\Api\DevicePushTokenController;
 use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\FeaturedController;
 use App\Http\Controllers\Api\HelpController;
@@ -368,6 +369,8 @@ Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->grou
     Route::post('/notifications/player-signal', [NotificationController::class, 'sendPlayerSignal']);
     Route::get('/notifications/preferences', [NotificationController::class, 'preferences']);
     Route::put('/notifications/preferences', [NotificationController::class, 'updatePreferences']);
+    Route::post('/devices/push-tokens', [DevicePushTokenController::class, 'store']);
+    Route::delete('/devices/push-tokens', [DevicePushTokenController::class, 'destroy']);
     Route::get('/users', [SystemController::class, 'usersIndex'])->middleware('admin');
     Route::get('/users/{id}/profile-card', [SystemController::class, 'userProfileCard'])->middleware('admin');
     Route::delete('/users/{id}', [SystemController::class, 'destroyUser'])->middleware('admin');
