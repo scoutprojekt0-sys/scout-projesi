@@ -56,7 +56,7 @@ class ScoutPlayerReportEndpointsTest extends TestCase
             ->assertJsonPath('data.status', 'observe');
     }
 
-    public function test_scout_cannot_update_other_scout_report_and_non_scout_cannot_access_workspace(): void
+    public function test_scout_cannot_update_other_scout_report_and_manager_sees_only_shared_reports(): void
     {
         $ownerScout = User::factory()->create(['role' => 'scout']);
         $otherScout = User::factory()->create(['role' => 'scout']);
@@ -81,9 +81,9 @@ class ScoutPlayerReportEndpointsTest extends TestCase
         Sanctum::actingAs($manager, ['profile:read']);
 
         $this->getJson('/api/scout-player-reports')
-            ->assertStatus(403)
-            ->assertJsonPath('ok', false)
-            ->assertJsonPath('code', 'forbidden_role');
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.total', 0);
     }
 
     public function test_club_and_coach_see_reports_shared_with_their_roles(): void
