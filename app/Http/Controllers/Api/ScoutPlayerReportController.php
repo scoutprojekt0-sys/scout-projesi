@@ -19,7 +19,7 @@ class ScoutPlayerReportController extends Controller
     {
         $user = $request->user();
         $role = (string) $user->role;
-        if (! in_array($role, ['scout', 'coach', 'club', 'team'], true)) {
+        if (! in_array($role, ['scout', 'coach', 'manager', 'club', 'team'], true)) {
             return $this->errorResponse('Bu alan icin yetkiniz yok.', Response::HTTP_FORBIDDEN, 'forbidden_role');
         }
 
@@ -181,7 +181,7 @@ class ScoutPlayerReportController extends Controller
     {
         $user = $request->user();
         $role = (string) $user->role;
-        if (! in_array($role, ['scout', 'coach', 'club', 'team'], true)) {
+        if (! in_array($role, ['scout', 'coach', 'manager', 'club', 'team'], true)) {
             return $this->errorResponse('Bu alan icin yetkiniz yok.', Response::HTTP_FORBIDDEN, 'forbidden_role');
         }
 
@@ -193,7 +193,7 @@ class ScoutPlayerReportController extends Controller
             ->where('id', $id)
             ->when($role === 'scout', fn ($query) => $query->where('scout_user_id', (int) $user->id))
             ->when($role === 'coach', fn ($query) => $query->whereJsonContains('shared_roles', 'coach'))
-            ->when(in_array($role, ['club', 'team'], true), function ($query) {
+            ->when(in_array($role, ['manager', 'club', 'team'], true), function ($query) {
                 $query->where(function ($builder) {
                     $builder
                         ->whereJsonContains('shared_roles', 'club')
