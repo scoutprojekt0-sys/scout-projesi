@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - master
   workflow_dispatch:
     inputs:
       ref:
@@ -24,12 +25,14 @@ jobs:
     name: Verify Before Deploy
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    env:
+      DEPLOY_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.ref_name }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.ref }}
+          ref: ${{ env.DEPLOY_REF }}
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -64,12 +67,14 @@ jobs:
     needs: verify
     timeout-minutes: 20
     environment: production
+    env:
+      DEPLOY_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.ref_name }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.ref }}
+          ref: ${{ env.DEPLOY_REF }}
 
       - name: Configure SSH
         run: |
@@ -89,8 +94,8 @@ jobs:
 
           cd "$HOME/apps/scout_api"
 
-          git fetch origin main
-          git reset --hard origin/main
+          git fetch origin "${DEPLOY_REF}"
+          git reset --hard "origin/${DEPLOY_REF}"
 
           docker compose --env-file .env.production -f compose.prod.yml build app --no-cache
           docker compose --env-file .env.production -f compose.prod.yml up -d --force-recreate app queue scheduler nginx
@@ -100,6 +105,7 @@ jobs:
           docker compose --env-file .env.production -f compose.prod.yml exec -T app php artisan route:cache
           EOF
         env:
+          DEPLOY_REF: ${{ env.DEPLOY_REF }}
           HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
           HETZNER_PORT: ${{ secrets.HETZNER_PORT || '22' }}
           HETZNER_USER: ${{ secrets.HETZNER_USER }}
