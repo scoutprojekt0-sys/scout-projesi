@@ -468,6 +468,8 @@ class DiscoveryController extends Controller
             ->get(['id', 'name', 'views_count'])
             ->map(fn ($row) => [
                 'id' => (int) $row->id,
+                'user_id' => (int) ($row->user_id ?? $row->id),
+                'photo_url' => $this->publicFileUrl($row->photo_url ?? null),
                 'name' => (string) ($row->name ?? 'Oyuncu'),
                 'views' => (int) ($row->views_count ?? 0),
             ])
@@ -574,13 +576,17 @@ class DiscoveryController extends Controller
             ->limit(2)
             ->get([
                 'users.id',
+                'users.id as user_id',
                 'users.name',
                 'users.city',
+                'users.photo_url',
                 'users.created_at',
                 DB::raw("COALESCE(staff_profiles.organization, 'Scout Ağı') as subtitle"),
             ])
             ->map(fn ($row) => [
                 'id' => (int) $row->id,
+                'user_id' => (int) ($row->user_id ?? $row->id),
+                'photo_url' => $this->publicFileUrl($row->photo_url ?? null),
                 'name' => (string) ($row->name ?? 'Scout'),
                 'city' => (string) ($row->city ?? ''),
                 'subtitle' => (string) ($row->subtitle ?? 'Scout Ağı'),
@@ -594,13 +600,17 @@ class DiscoveryController extends Controller
             ->limit(2)
             ->get([
                 'users.id',
+                'users.id as user_id',
                 'users.name',
                 'users.city',
+                'users.photo_url',
                 'users.created_at',
                 DB::raw("COALESCE(staff_profiles.organization, 'Menajer Portföyü') as subtitle"),
             ])
             ->map(fn ($row) => [
                 'id' => (int) $row->id,
+                'user_id' => (int) ($row->user_id ?? $row->id),
+                'photo_url' => $this->publicFileUrl($row->photo_url ?? null),
                 'name' => (string) ($row->name ?? 'Menajer'),
                 'city' => (string) ($row->city ?? ''),
                 'subtitle' => (string) ($row->subtitle ?? 'Menajer Portföyü'),
@@ -614,13 +624,17 @@ class DiscoveryController extends Controller
             ->limit(2)
             ->get([
                 'users.id',
+                'users.id as user_id',
                 'users.name',
                 'users.city',
+                'users.photo_url',
                 'users.created_at',
                 DB::raw("COALESCE(staff_profiles.organization, 'Antrenor AÄŸÄ±') as subtitle"),
             ])
             ->map(fn ($row) => [
                 'id' => (int) $row->id,
+                'user_id' => (int) ($row->user_id ?? $row->id),
+                'photo_url' => $this->publicFileUrl($row->photo_url ?? null),
                 'name' => (string) ($row->name ?? 'Antrenor'),
                 'city' => (string) ($row->city ?? ''),
                 'subtitle' => (string) ($row->subtitle ?? 'Antrenor AÄŸÄ±'),
@@ -634,14 +648,18 @@ class DiscoveryController extends Controller
             ->limit(2)
             ->get([
                 'users.id',
+                'users.id as user_id',
                 'users.name',
                 'users.city',
+                'users.photo_url',
                 'users.created_at',
                 DB::raw("COALESCE(team_profiles.team_name, users.name, 'Kulüp') as display_name"),
                 DB::raw("COALESCE(team_profiles.league_level, 'Kulüp Ağı') as subtitle"),
             ])
             ->map(fn ($row) => [
                 'id' => (int) $row->id,
+                'user_id' => (int) ($row->user_id ?? $row->id),
+                'photo_url' => $this->publicFileUrl($row->photo_url ?? null),
                 'name' => (string) ($row->display_name ?? 'Kulüp'),
                 'city' => (string) ($row->city ?? ''),
                 'subtitle' => (string) ($row->subtitle ?? 'Kulüp Ağı'),
@@ -663,6 +681,8 @@ class DiscoveryController extends Controller
             ])
             ->map(fn ($row) => [
                 'id' => (int) $row->id,
+                'user_id' => (int) ($row->user_id ?? $row->id),
+                'photo_url' => $this->publicFileUrl($row->photo_url ?? null),
                 'name' => (string) ($row->office_name ?: $row->name ?: 'Hukuk Ofisi'),
                 'city' => (string) ($row->city ?? ''),
                 'subtitle' => (string) ($row->specialization ?? 'Spor Hukuku'),
@@ -961,3 +981,7 @@ class DiscoveryController extends Controller
     }
 
 }
+
+
+
+
