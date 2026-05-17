@@ -27,9 +27,10 @@ class MarketTerminalController extends Controller
                 vc.id,
                 vc.title,
                 vc.created_at,
+                u.role as profile_role,
                 COALESCE(NULLIF(pp.position, \'\'), NULLIF(u.position, \'\'), \'Oyuncu\') as position_name,
-                u.id as player_id,
-                u.name as player_name,
+                u.id as profile_id,
+                u.name as profile_name,
                 COALESCE(vc.view_count, 0) as view_count,
                 COUNT(f.id) as favorites_count
             ')
@@ -37,6 +38,7 @@ class MarketTerminalController extends Controller
                 'vc.id',
                 'vc.title',
                 'vc.created_at',
+                'u.role',
                 'pp.position',
                 'u.position',
                 'u.id',
@@ -125,12 +127,19 @@ class MarketTerminalController extends Controller
 
             return [
                 'kind' => 'video_upload',
+                'role' => (string) ($row->profile_role ?? 'player'),
                 'tone' => 'up',
                 'badge' => 'VIDEO',
                 'symbol' => 'V',
-                'player_id' => (int) $row->player_id,
-                'player_name' => (string) ($row->player_name ?? 'Oyuncu'),
-                'position' => $this->normalizePosition($row->position_name),
+                'player_id' => ($row->profile_role ?? 'player') === 'player' ? (int) $row->profile_id : null,
+                'staff_id' => in_array($row->profile_role, ['scout', 'manager', 'coach'], true) ? (int) $row->profile_id : null,
+                'team_id' => in_array($row->profile_role, ['team', 'club'], true) ? (int) $row->profile_id : null,
+                'lawyer_id' => ($row->profile_role ?? null) === 'lawyer' ? (int) $row->profile_id : null,
+                'name' => (string) ($row->profile_name ?? 'Profil'),
+                'player_name' => (string) ($row->profile_name ?? 'Profil'),
+                'position' => ($row->profile_role ?? 'player') === 'player'
+                    ? $this->normalizePosition($row->position_name)
+                    : $this->roleLabel((string) ($row->profile_role ?? '')),
                 'headline' => 'Antrenman videosu yuklendi',
                 'detail' => 'Ilgi endeksi +' . $delta . '%',
                 'metric_label' => 'Ilgi Endeksi',
@@ -287,6 +296,18 @@ class MarketTerminalController extends Controller
             $score >= 82 => 'Yuksek',
             $score >= 56 => 'Orta',
             default => 'Dusuk',
+        };
+    }
+
+    private function roleLabel(string $role): string
+    {
+        return match (mb_strtolower(trim($role), 'UTF-8')) {
+            'scout' => 'Scout',
+            'manager', 'menajer' => 'Menajer',
+            'coach', 'antrenor' => 'Antrenor',
+            'team', 'club', 'kulup' => 'Kulup',
+            'lawyer', 'avukat' => 'Avukat',
+            default => 'Profil',
         };
     }
 
