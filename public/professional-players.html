@@ -3882,7 +3882,10 @@
           allPlayers = allPlayers.filter((p) => String(p.sport || "").toLowerCase() === "futbol" && Boolean(p.seeking_club));
         }
         if (playerView === "discover") {
-          allPlayers = allPlayers.filter((p) => Boolean(p.radar_new) || Boolean(p.radar_rising) || Boolean(p.radar_hidden));
+          const radarPlayers = allPlayers.filter((p) => Boolean(p.radar_new) || Boolean(p.radar_rising) || Boolean(p.radar_hidden));
+          if (radarPlayers.length) {
+            allPlayers = radarPlayers;
+          }
         }
 
         serverPage = Number(data?.meta?.page || data?.data?.current_page || page || 1);
@@ -4047,15 +4050,24 @@
       }
 
       if (getPlayerViewFromQuery() === "discover") {
-        filtered = filtered.filter((p) => Boolean(p.radar_new) || Boolean(p.radar_rising) || Boolean(p.radar_hidden));
+        const radarFiltered = filtered.filter((p) => Boolean(p.radar_new) || Boolean(p.radar_rising) || Boolean(p.radar_hidden));
+        if (radarFiltered.length) {
+          filtered = radarFiltered;
+        }
       }
 
       const visibilityLevel = getVisibilityLevelFromQuery();
       const visibilityRole = getVisibilityRoleFromQuery();
       if (visibilityLevel) {
-        filtered = filtered.filter((p) => String(p.visibility_level || "") === visibilityLevel);
+        const visibilityMatches = filtered.filter((p) => String(p.visibility_level || "") === visibilityLevel);
+        if (visibilityMatches.length) {
+          filtered = visibilityMatches;
+        }
       } else if (visibilityRole) {
-        filtered = filtered.filter((p) => ["active", "ready", "featured"].includes(String(p.visibility_level || "")));
+        const visibilityMatches = filtered.filter((p) => ["active", "ready", "featured"].includes(String(p.visibility_level || "")));
+        if (visibilityMatches.length) {
+          filtered = visibilityMatches;
+        }
       }
 
       filtered = filtered.map((player) => ({
