@@ -34,10 +34,17 @@ class LegacyCompatibilityController extends Controller
 
     public function discoveryCoachNeeds(): JsonResponse
     {
+        $this->purgeExpiredOpportunities();
         $rows = DB::table('opportunities as o')
             ->join('users as u', 'u.id', '=', 'o.team_user_id')
             ->where('o.status', 'open')
             ->where('u.role', 'coach')
+            ->when(Schema::hasColumn('opportunities', 'expires_at'), function ($query) {
+                $query->where(function ($innerQuery) {
+                    $innerQuery->whereNull('o.expires_at')
+                        ->orWhere('o.expires_at', '>', now());
+                });
+            })
             ->select([
                 'o.id',
                 'o.position',
@@ -121,12 +128,19 @@ class LegacyCompatibilityController extends Controller
 
     public function communityEventsIndex(Request $request): JsonResponse
     {
+        $this->purgeExpiredOpportunities();
         $trialOnly = (string) $request->query('trial_only', '') === '1';
         $sportTerms = $this->sportTerms((string) $request->query('sport', ''));
         $rows = DB::table('opportunities as o')
             ->join('users as u', 'u.id', '=', 'o.team_user_id')
             ->where('o.status', 'open')
             ->whereIn('u.role', ['team', 'club'])
+            ->when(Schema::hasColumn('opportunities', 'expires_at'), function ($query) {
+                $query->where(function ($innerQuery) {
+                    $innerQuery->whereNull('o.expires_at')
+                        ->orWhere('o.expires_at', '>', now());
+                });
+            })
             ->when($sportTerms !== [], function ($query) use ($sportTerms) {
                 $query->whereIn(DB::raw('LOWER(COALESCE(u.sport, ""))'), $sportTerms);
             })
@@ -196,10 +210,17 @@ class LegacyCompatibilityController extends Controller
 
     public function communityEventsShow(int $id): JsonResponse
     {
+        $this->purgeExpiredOpportunities();
         $row = DB::table('opportunities as o')
             ->join('users as u', 'u.id', '=', 'o.team_user_id')
             ->where('o.id', $id)
             ->whereIn('u.role', ['team', 'club'])
+            ->when(Schema::hasColumn('opportunities', 'expires_at'), function ($query) {
+                $query->where(function ($innerQuery) {
+                    $innerQuery->whereNull('o.expires_at')
+                        ->orWhere('o.expires_at', '>', now());
+                });
+            })
             ->where(function ($query) {
                 foreach (self::EVENT_KEYWORDS as $keyword) {
                     $query->orWhereRaw('LOWER(COALESCE(o.title, "")) LIKE ?', [$keyword])
@@ -272,6 +293,7 @@ class LegacyCompatibilityController extends Controller
 
     public function communityEventApplications(Request $request): JsonResponse
     {
+        $this->purgeExpiredOpportunities();
         $user = $request->user();
         if (! $user || ! in_array((string) $user->role, ['player', 'scout', 'manager', 'coach'], true)) {
             return response()->json(['ok' => false, 'message' => 'Bu alan icin yetkin yok.'], Response::HTTP_FORBIDDEN);
@@ -287,6 +309,12 @@ class LegacyCompatibilityController extends Controller
             ->where('a.player_user_id', (int) $user->id)
             ->where('o.status', 'open')
             ->whereIn('u.role', ['team', 'club'])
+            ->when(Schema::hasColumn('opportunities', 'expires_at'), function ($query) {
+                $query->where(function ($innerQuery) {
+                    $innerQuery->whereNull('o.expires_at')
+                        ->orWhere('o.expires_at', '>', now());
+                });
+            })
             ->where(function ($query) {
                 foreach (self::EVENT_KEYWORDS as $keyword) {
                     $query->orWhereRaw('LOWER(COALESCE(o.title, "")) LIKE ?', [$keyword])
@@ -697,5 +725,31 @@ class LegacyCompatibilityController extends Controller
             'ok' => true,
             'data' => $videos,
         ]);
+    }
+
+    private function purgeExpiredOpportunities(): void
+    {
+        if (! Schema::hasColumn('opportunities', 'expires_at')) {
+            return;
+        }
+
+        $expiredIds = DB::table('opportunities')
+            ->whereNotNull('expires_at')
+            ->where('expires_at', '<=', now())
+            ->pluck('id');
+
+        if ($expiredIds->isEmpty()) {
+            return;
+        }
+
+        DB::table('opportunities')
+            ->whereIn('id', $expiredIds->all())
+            ->delete();
+
+        $cacheKey = 'opportunities:index:cache_version';
+        if (! Cache::has($cacheKey)) {
+            Cache::forever($cacheKey, 1);
+        }
+        Cache::increment($cacheKey);
     }
 }

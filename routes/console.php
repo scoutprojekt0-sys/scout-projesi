@@ -1248,3 +1248,5 @@ Artisan::command('ai:train-model {sport} {--device=cpu : Training device, e.g. c
 
     return SymfonyCommand::SUCCESS;
 })->purpose('Run sport-specific YOLO training with readiness guard');
+
+Schedule::command('listings:purge-expired')->daily();

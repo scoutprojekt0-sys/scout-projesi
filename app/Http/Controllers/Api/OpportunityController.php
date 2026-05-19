@@ -181,10 +181,10 @@ class OpportunityController extends Controller
             'details' => ['nullable', 'string', 'max:5000'],
             'description' => ['nullable', 'string', 'max:5000'],
             'status' => ['nullable', Rule::in(['open', 'closed'])],
-            'duration_days' => ['nullable', Rule::in([7, 15, '7', '15'])],
+            'duration_days' => ['nullable', Rule::in([30, '30'])],
         ]);
 
-        $durationDays = (int) ($validated['duration_days'] ?? 7);
+        $durationDays = 30;
         $expiresAt = now()->addDays($durationDays);
 
         $payload = [
@@ -303,7 +303,7 @@ class OpportunityController extends Controller
             'details' => ['sometimes', 'nullable', 'string', 'max:5000'],
             'description' => ['sometimes', 'nullable', 'string', 'max:5000'],
             'status' => ['sometimes', Rule::in(['open', 'closed'])],
-            'duration_days' => ['sometimes', 'nullable', Rule::in([7, 15, '7', '15'])],
+            'duration_days' => ['sometimes', 'nullable', Rule::in([30, '30'])],
         ]);
 
         $updates = [
@@ -326,7 +326,7 @@ class OpportunityController extends Controller
 
         if ($hasExpiresAt) {
             $updates['expires_at'] = array_key_exists('duration_days', $validated) && $validated['duration_days']
-                ? now()->addDays((int) $validated['duration_days'])
+                ? now()->addDays(30)
                 : ($opportunity->expires_at ?? null);
         }
 
@@ -386,28 +386,17 @@ class OpportunityController extends Controller
             return;
         }
 
-        $expiredManagedIds = DB::table('opportunities as o')
-            ->join('users as u', 'u.id', '=', 'o.team_user_id')
-            ->whereIn('u.role', ['manager', 'club', 'coach'])
-            ->whereNotNull('o.expires_at')
-            ->where('o.expires_at', '<=', now())
-            ->pluck('o.id');
+        $expiredIds = DB::table('opportunities')
+            ->whereNotNull('expires_at')
+            ->where('expires_at', '<=', now())
+            ->pluck('id');
 
-        if ($expiredManagedIds->isNotEmpty()) {
+        if ($expiredIds->isNotEmpty()) {
             DB::table('opportunities')
-                ->whereIn('id', $expiredManagedIds->all())
+                ->whereIn('id', $expiredIds->all())
                 ->delete();
             $this->bumpIndexCacheVersion();
         }
-
-        DB::table('opportunities')
-            ->where('status', 'open')
-            ->whereNotNull('expires_at')
-            ->where('expires_at', '<=', now())
-            ->update([
-                'status' => 'closed',
-                'updated_at' => now(),
-            ]);
     }
 
     /**

@@ -6,6 +6,7 @@ use App\Http\Controllers\Concerns\ApiResponds;
 use App\Http\Controllers\Concerns\ResolvesPublicFileUrls;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -338,6 +339,7 @@ class DiscoveryController extends Controller
     public function clubNeeds(): JsonResponse
     {
         $hasExpiresAt = Schema::hasColumn('opportunities', 'expires_at');
+        $this->closeExpiredOpportunities();
         $perPage = max(1, min((int) request()->query('per_page', request()->query('limit', 20)), 100));
         $sportTerms = $this->sportTerms((string) request()->query('sport', ''));
 
@@ -534,6 +536,12 @@ class DiscoveryController extends Controller
             ->join('users as owner', 'o.team_user_id', '=', 'owner.id')
             ->where('o.status', 'open')
             ->whereIn('owner.role', ['team', 'manager'])
+            ->when(Schema::hasColumn('opportunities', 'expires_at'), function ($query) {
+                $query->where(function ($innerQuery) {
+                    $innerQuery->whereNull('o.expires_at')
+                        ->orWhere('o.expires_at', '>', now());
+                });
+            })
             ->select([
                 'o.id',
                 'o.title',
@@ -951,16 +959,14 @@ class DiscoveryController extends Controller
             return;
         }
 
-        $expiredManagedIds = DB::table('opportunities as o')
-            ->join('users as u', 'u.id', '=', 'o.team_user_id')
-            ->whereIn('u.role', ['manager', 'club', 'coach'])
+        $expiredIds = DB::table('opportunities as o')
             ->whereNotNull('o.expires_at')
             ->where('o.expires_at', '<=', now())
             ->pluck('o.id');
 
-        if ($expiredManagedIds->isNotEmpty()) {
+        if ($expiredIds->isNotEmpty()) {
             DB::table('opportunities')
-                ->whereIn('id', $expiredManagedIds->all())
+                ->whereIn('id', $expiredIds->all())
                 ->delete();
 
             $key = 'opportunities:index:cache_version';
@@ -970,14 +976,6 @@ class DiscoveryController extends Controller
             Cache::increment($key);
         }
 
-        DB::table('opportunities')
-            ->where('status', 'open')
-            ->whereNotNull('expires_at')
-            ->where('expires_at', '<=', now())
-            ->update([
-                'status' => 'closed',
-                'updated_at' => now(),
-            ]);
     }
 
 }
