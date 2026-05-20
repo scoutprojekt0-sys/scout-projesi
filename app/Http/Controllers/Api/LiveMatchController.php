@@ -100,10 +100,15 @@ class LiveMatchController extends Controller
     {
         $this->expirePastMatches();
 
+        $viewer = $request->user() ?? auth('sanctum')->user();
+
         $count = LiveMatch::query()
-            ->where('visibility', 'public')
             ->where('is_live', true)
             ->where('is_finished', false)
+            ->orderByDesc('match_date')
+            ->limit(150)
+            ->get()
+            ->filter(fn (LiveMatch $match) => $this->canUserViewMatch($match, $viewer))
             ->count();
 
         return $this->successResponse([
@@ -116,13 +121,15 @@ class LiveMatchController extends Controller
     {
         $this->expirePastMatches();
 
+        $viewer = $request->user() ?? auth('sanctum')->user();
+
         $matches = LiveMatch::query()
-            ->where('visibility', 'public')
             ->where('is_live', true)
             ->where('is_finished', false)
             ->orderByDesc('match_date')
-            ->limit(100)
+            ->limit(150)
             ->get()
+            ->filter(fn (LiveMatch $match) => $this->canUserViewMatch($match, $viewer))
             ->map(function (LiveMatch $match) {
                 $meta = $this->decodeRoundMeta($match->round);
 
@@ -140,6 +147,7 @@ class LiveMatchController extends Controller
                     'location' => $meta['location'] ?? null,
                     'sport' => $meta['sport'] ?? null,
                     'focus' => $meta['focus'] ?? null,
+                    'visibility' => $match->visibility ?? 'public',
                     'stream_url' => $meta['stream_url'] ?? null,
                     'stream_links' => is_array($meta['stream_links'] ?? null) ? $meta['stream_links'] : [],
                     'note' => $meta['note'] ?? null,
@@ -177,6 +185,7 @@ class LiveMatchController extends Controller
             'source_role' => ['nullable', 'string', 'max:50'],
             'source_name' => ['nullable', 'string', 'max:150'],
             'source_user_id' => ['nullable', 'integer'],
+            'visibility' => ['nullable', Rule::in(['public', 'private', 'staff_only'])],
         ]);
 
         [$homeTeam, $awayTeam] = $this->extractTeams($validated['match_name']);
@@ -205,7 +214,7 @@ class LiveMatchController extends Controller
             'match_date' => $validated['match_date'] ?? now(),
             'is_live' => true,
             'is_finished' => false,
-            'visibility' => 'public',
+            'visibility' => $validated['visibility'] ?? 'public',
             'round' => $this->encodeRoundMeta(null, $meta),
         ]);
 
@@ -214,6 +223,7 @@ class LiveMatchController extends Controller
             'title' => $match->title,
             'home_team' => $match->home_team,
             'away_team' => $match->away_team,
+            'visibility' => $match->visibility,
         ], 'Canli mac kaydedildi.', 201);
     }
 
@@ -221,7 +231,8 @@ class LiveMatchController extends Controller
     {
         try {
             $record = LiveMatch::query()->findOrFail($id);
-            if (($record->visibility ?? 'public') !== 'public') {
+            $viewer = $request->user() ?? auth('sanctum')->user();
+            if (! $this->canUserViewMatch($record, $viewer)) {
                 return $this->errorResponse('Mac bulunamadi', 404, 'match_not_found');
             }
             $meta = $this->decodeRoundMeta($record->round);
@@ -258,6 +269,7 @@ class LiveMatchController extends Controller
                 'stadium' => $meta['location'] ?? null,
                 'sport' => $meta['sport'] ?? null,
                 'focus' => $meta['focus'] ?? null,
+                'visibility' => $record->visibility ?? 'public',
                 'stream_url' => $meta['stream_url'] ?? null,
                 'stream_links' => is_array($meta['stream_links'] ?? null) ? $meta['stream_links'] : [],
                 'scout_name' => $meta['scout_name'] ?? null,
@@ -319,6 +331,62 @@ class LiveMatchController extends Controller
         }
 
         return null;
+    }
+
+    private function canUserViewMatch(LiveMatch $match, ?User $viewer): bool
+    {
+        $visibility = $match->visibility ?? 'public';
+
+        if ($visibility === 'public') {
+            return true;
+        }
+
+        if ($this->isMatchOwner($match, $viewer)) {
+            return true;
+        }
+
+        if ($visibility === 'private') {
+            return false;
+        }
+
+        if ($visibility === 'staff_only') {
+            return $this->isProfessionalViewer($viewer);
+        }
+
+        return false;
+    }
+
+    private function isMatchOwner(LiveMatch $match, ?User $viewer): bool
+    {
+        if (! $viewer) {
+            return false;
+        }
+
+        if ((int) ($match->club_user_id ?? 0) === (int) $viewer->id) {
+            return true;
+        }
+
+        $meta = $this->decodeRoundMeta($match->round);
+
+        return (int) ($meta['source_user_id'] ?? 0) === (int) $viewer->id;
+    }
+
+    private function isProfessionalViewer(?User $viewer): bool
+    {
+        if (! $viewer) {
+            return false;
+        }
+
+        return in_array(Str::lower((string) $viewer->role), [
+            'scout',
+            'manager',
+            'coach',
+            'team',
+            'club',
+            'lawyer',
+            'staff',
+            'admin',
+        ], true);
     }
 
     private function expirePastMatches(): void

@@ -125,7 +125,8 @@ class LiveMatchEndpointsTest extends TestCase
             ->assertCreated()
             ->assertJsonPath('ok', true)
             ->assertJsonPath('data.home_team', 'Galatasaray')
-            ->assertJsonPath('data.away_team', 'Kasimpasa');
+            ->assertJsonPath('data.away_team', 'Kasimpasa')
+            ->assertJsonPath('data.visibility', 'public');
 
         $match = LiveMatch::query()->latest('id')->firstOrFail();
 
@@ -139,6 +140,85 @@ class LiveMatchEndpointsTest extends TestCase
             ->assertJsonPath('ok', true)
             ->assertJsonPath('data.match_id', $match->id)
             ->assertJsonPath('data.payload.minute', 42);
+    }
+
+    public function test_live_match_visibility_rules_are_applied_per_viewer(): void
+    {
+        $owner = User::factory()->create(['role' => 'scout', 'name' => 'Owner Scout']);
+        $staffViewer = User::factory()->create(['role' => 'manager', 'name' => 'Manager Viewer']);
+        $playerViewer = User::factory()->create(['role' => 'player', 'name' => 'Player Viewer']);
+
+        $privateMatch = LiveMatch::query()->create([
+            'title' => 'Private Match - Hidden',
+            'league' => 'Super Lig',
+            'home_team' => 'Owner',
+            'away_team' => 'Hidden',
+            'match_date' => now(),
+            'is_live' => true,
+            'is_finished' => false,
+            'visibility' => 'private',
+            'round' => 'meta::{"round":null,"meta":{"source_user_id":'.$owner->id.'}}',
+        ]);
+
+        $staffOnlyMatch = LiveMatch::query()->create([
+            'title' => 'Staff Match - Visible',
+            'league' => 'Super Lig',
+            'home_team' => 'Staff',
+            'away_team' => 'Visible',
+            'match_date' => now(),
+            'is_live' => true,
+            'is_finished' => false,
+            'visibility' => 'staff_only',
+            'round' => 'meta::{"round":null,"meta":{"source_user_id":'.$owner->id.'}}',
+        ]);
+
+        LiveMatch::query()->create([
+            'title' => 'Public Match',
+            'league' => 'Super Lig',
+            'home_team' => 'A',
+            'away_team' => 'B',
+            'match_date' => now(),
+            'is_live' => true,
+            'is_finished' => false,
+            'visibility' => 'public',
+        ]);
+
+        $this->getJson('/api/live-matches')
+            ->assertOk()
+            ->assertJsonPath('total', 1)
+            ->assertJsonMissingPath('data.1');
+
+        Sanctum::actingAs($owner, ['profile:read']);
+
+        $this->getJson('/api/live-matches')
+            ->assertOk()
+            ->assertJsonPath('total', 3);
+
+        $this->getJson('/api/matches/'.$privateMatch->id)
+            ->assertOk()
+            ->assertJsonPath('data.visibility', 'private');
+
+        Sanctum::actingAs($staffViewer, ['profile:read']);
+
+        $this->getJson('/api/live-matches')
+            ->assertOk()
+            ->assertJsonPath('total', 2);
+
+        $this->getJson('/api/matches/'.$staffOnlyMatch->id)
+            ->assertOk()
+            ->assertJsonPath('data.visibility', 'staff_only');
+
+        $this->getJson('/api/matches/'.$privateMatch->id)
+            ->assertNotFound();
+
+        Sanctum::actingAs($playerViewer, ['player']);
+
+        $this->getJson('/api/live-matches')
+            ->assertOk()
+            ->assertJsonPath('total', 1);
+
+        $this->getJson('/api/matches/'.$staffOnlyMatch->id)
+            ->assertNotFound();
     }
 
     public function test_club_can_start_private_live_match_session(): void
