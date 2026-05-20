@@ -22,6 +22,7 @@ class NotificationEndpointsTest extends TestCase
     public function test_notification_routes_require_authentication(): void
     {
         $this->getJson('/api/notifications')->assertStatus(401);
+        $this->deleteJson('/api/notifications/1')->assertStatus(401);
         $this->patchJson('/api/notifications/1/read')->assertStatus(401);
         $this->postJson('/api/notifications/read-all')->assertStatus(401);
     }
@@ -158,6 +159,52 @@ class NotificationEndpointsTest extends TestCase
         $this->assertDatabaseMissing('notifications', [
             'user_id' => $player->id,
             'is_read' => false,
+        ]);
+    }
+
+    public function test_authenticated_user_can_delete_own_notification_permanently(): void
+    {
+        $player = User::factory()->create(['role' => 'player']);
+        $otherUser = User::factory()->create(['role' => 'team']);
+
+        $notificationId = DB::table('notifications')->insertGetId([
+            'user_id' => $player->id,
+            'type' => 'opportunity',
+            'payload' => json_encode(['role' => 'player']),
+            'is_read' => false,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $otherNotificationId = DB::table('notifications')->insertGetId([
+            'user_id' => $otherUser->id,
+            'type' => 'contact',
+            'payload' => json_encode(['role' => 'team']),
+            'is_read' => false,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        Sanctum::actingAs($player, ['profile:write']);
+
+        $this->deleteJson('/api/notifications/'.$notificationId)
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.id', $notificationId)
+            ->assertJsonPath('data.unread_count', 0);
+
+        $this->assertDatabaseMissing('notifications', [
+            'id' => $notificationId,
+            'user_id' => $player->id,
+        ]);
+
+        $this->deleteJson('/api/notifications/'.$otherNotificationId)
+            ->assertStatus(404)
+            ->assertJsonPath('ok', false);
+
+        $this->assertDatabaseHas('notifications', [
+            'id' => $otherNotificationId,
+            'user_id' => $otherUser->id,
         ]);
     }
 }

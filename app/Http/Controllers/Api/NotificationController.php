@@ -96,6 +96,34 @@ class NotificationController extends Controller
         ]);
     }
 
+    public function destroy(Request $request, int $id): JsonResponse
+    {
+        $user = $request->user();
+
+        $deleted = DB::table('notifications')
+            ->where('id', $id)
+            ->where('user_id', $user->id)
+            ->delete();
+
+        if ($deleted === 0) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Bildirim bulunamadi.',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $this->forgetUnreadCount($user->id);
+
+        return response()->json([
+            'ok' => true,
+            'message' => 'Bildirim kalici olarak silindi.',
+            'data' => [
+                'id' => $id,
+                'unread_count' => $this->unreadCount($user->id),
+            ],
+        ]);
+    }
+
     public function markAllAsRead(Request $request): JsonResponse
     {
         $user = $request->user();

@@ -364,6 +364,7 @@ Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->grou
     // System
     Route::get('/notifications/count', [SystemController::class, 'notificationsCount']);
     Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
     Route::post('/notifications/player-signal', [NotificationController::class, 'sendPlayerSignal']);
