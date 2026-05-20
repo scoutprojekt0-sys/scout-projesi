@@ -6,6 +6,7 @@ use App\Http\Controllers\Concerns\ApiResponds;
 use App\Http\Controllers\Concerns\ResolvesPublicFileUrls;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -483,6 +484,449 @@ class DiscoveryController extends Controller
             'weekly_coach_needs' => $weeklyCoachNeeds,
             'top_viewed_players' => $topViewedPlayers,
         ], 'Haftalik bulten hazir.');
+    }
+
+    public function weeklySummary(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        if (! $user) {
+            return $this->errorResponse('Yetkilendirme gerekli.', 401, 'unauthenticated');
+        }
+
+        $role = strtolower((string) ($user->role ?? ''));
+        $weekStart = now()->startOfWeek();
+        $weekEnd = now();
+        $previousWeekStart = $weekStart->copy()->subWeek();
+        $previousWeekEnd = $weekStart->copy()->subSecond();
+
+        $summary = match ($role) {
+            'scout' => $this->buildScoutWeeklySummary((int) $user->id, $weekStart, $weekEnd, $previousWeekStart, $previousWeekEnd),
+            'manager' => $this->buildManagerWeeklySummary((int) $user->id, $weekStart, $weekEnd, $previousWeekStart, $previousWeekEnd),
+            'coach' => $this->buildCoachWeeklySummary((int) $user->id, $weekStart, $weekEnd, $previousWeekStart, $previousWeekEnd),
+            'team', 'club' => $this->buildClubWeeklySummary((int) $user->id, $weekStart, $weekEnd, $previousWeekStart, $previousWeekEnd),
+            default => $this->buildPlayerWeeklySummary((int) $user->id, (string) ($user->name ?? 'Oyuncu'), $weekStart, $weekEnd, $previousWeekStart, $previousWeekEnd),
+        };
+
+        return $this->successResponse([
+            'role' => $role === 'team' ? 'club' : $role,
+            'window_start' => $weekStart->toISOString(),
+            'window_end' => $weekEnd->toISOString(),
+            ...$summary,
+        ], 'Haftalik ozet hazir.');
+    }
+
+    private function buildPlayerWeeklySummary(
+        int $userId,
+        string $userName,
+        $weekStart,
+        $weekEnd,
+        $previousWeekStart,
+        $previousWeekEnd
+    ): array {
+        $profileViews = $this->profileViewCount($userId, $weekStart, $weekEnd);
+        $followers = $this->favoriteFollowerCount($userId, $weekStart, $weekEnd);
+        $messages = $this->contactInboundCount($userId, $weekStart, $weekEnd);
+        $offers = $this->clubOfferCount($userId, $weekStart, $weekEnd);
+        $previousScore = $this->playerScore($userId, $previousWeekStart, $previousWeekEnd);
+        $currentScore = $profileViews + $followers + $messages + $offers;
+
+        return [
+            'stats' => [
+                'stat_one' => $profileViews,
+                'stat_two' => $followers,
+                'stat_three' => $messages + $offers,
+            ],
+            'metric_two' => $offers,
+            'signals' => [
+                'trend_value' => $this->formatTrendValue($currentScore, $previousScore),
+                'rank_value' => $this->formatRankValue(
+                    $this->rankForUser(
+                        $userId,
+                        DB::table('users')->where('role', 'player')->pluck('id')->map(fn ($id) => (int) $id)->all(),
+                        fn (int $id) => $this->playerScore($id, $weekStart, $weekEnd)
+                    )
+                ),
+            ],
+            'top_items' => $this->buildPlayerTopItems($userName, $profileViews, $followers, $messages, $offers),
+        ];
+    }
+
+    private function buildScoutWeeklySummary(int $userId, $weekStart, $weekEnd, $previousWeekStart, $previousWeekEnd): array
+    {
+        $reports = $this->scoutReportCountForScout($userId, $weekStart, $weekEnd);
+        $followers = $this->favoriteFollowerCount($userId, $weekStart, $weekEnd);
+        $watchRequests = $this->watchRequestCount($userId, $weekStart, $weekEnd);
+        $messages = $this->contactInboundCount($userId, $weekStart, $weekEnd);
+        $previousScore = $this->scoutScore($userId, $previousWeekStart, $previousWeekEnd);
+        $currentScore = $reports + $followers + $watchRequests + $messages;
+
+        return [
+            'stats' => [
+                'stat_one' => $reports,
+                'stat_two' => $followers,
+                'stat_three' => $watchRequests,
+            ],
+            'metric_two' => $messages,
+            'signals' => [
+                'trend_value' => $this->formatTrendValue($currentScore, $previousScore),
+                'rank_value' => $this->formatRankValue(
+                    $this->rankForUser(
+                        $userId,
+                        DB::table('users')->where('role', 'scout')->pluck('id')->map(fn ($id) => (int) $id)->all(),
+                        fn (int $id) => $this->scoutScore($id, $weekStart, $weekEnd)
+                    )
+                ),
+            ],
+            'top_items' => [
+                ['title' => 'Raporlar', 'detail' => "{$reports} rapor bu hafta olusturuldu"],
+                ['title' => 'Takip Edenler', 'detail' => "{$followers} yeni takip eden geldi"],
+                ['title' => 'Izleme Talepleri', 'detail' => "{$watchRequests} aktif izleme talebi acildi"],
+            ],
+        ];
+    }
+
+    private function buildManagerWeeklySummary(int $userId, $weekStart, $weekEnd, $previousWeekStart, $previousWeekEnd): array
+    {
+        $watchlist = $this->managerWatchlistCount($userId, $weekStart, $weekEnd);
+        $followers = $this->favoriteFollowerCount($userId, $weekStart, $weekEnd);
+        $listings = $this->opportunityCountForOwner($userId, $weekStart, $weekEnd);
+        $messages = $this->contactInboundCount($userId, $weekStart, $weekEnd);
+        $previousScore = $this->managerScore($userId, $previousWeekStart, $previousWeekEnd);
+        $currentScore = $watchlist + $followers + $listings + $messages;
+
+        return [
+            'stats' => [
+                'stat_one' => $watchlist,
+                'stat_two' => $followers,
+                'stat_three' => $listings,
+            ],
+            'metric_two' => $messages,
+            'signals' => [
+                'trend_value' => $this->formatTrendValue($currentScore, $previousScore),
+                'rank_value' => $this->formatRankValue(
+                    $this->rankForUser(
+                        $userId,
+                        DB::table('users')->where('role', 'manager')->pluck('id')->map(fn ($id) => (int) $id)->all(),
+                        fn (int $id) => $this->managerScore($id, $weekStart, $weekEnd)
+                    )
+                ),
+            ],
+            'top_items' => [
+                ['title' => 'Watchlist', 'detail' => "{$watchlist} oyuncu bu hafta watchlist'e eklendi"],
+                ['title' => 'Takip Edenler', 'detail' => "{$followers} yeni takip eden geldi"],
+                ['title' => 'Ilanlar', 'detail' => "{$listings} ilan bu hafta yayinlandi"],
+            ],
+        ];
+    }
+
+    private function buildCoachWeeklySummary(int $userId, $weekStart, $weekEnd, $previousWeekStart, $previousWeekEnd): array
+    {
+        $followers = $this->favoriteFollowerCount($userId, $weekStart, $weekEnd);
+        $notifications = $this->notificationCount($userId, $weekStart, $weekEnd);
+        $watchRequests = $this->watchRequestCount($userId, $weekStart, $weekEnd);
+        $messages = $this->contactInboundCount($userId, $weekStart, $weekEnd);
+        $previousScore = $this->coachScore($userId, $previousWeekStart, $previousWeekEnd);
+        $currentScore = $followers + $notifications + $watchRequests + $messages;
+
+        return [
+            'stats' => [
+                'stat_one' => $followers,
+                'stat_two' => $notifications,
+                'stat_three' => $watchRequests,
+            ],
+            'metric_two' => $messages,
+            'signals' => [
+                'trend_value' => $this->formatTrendValue($currentScore, $previousScore),
+                'rank_value' => $this->formatRankValue(
+                    $this->rankForUser(
+                        $userId,
+                        DB::table('users')->where('role', 'coach')->pluck('id')->map(fn ($id) => (int) $id)->all(),
+                        fn (int $id) => $this->coachScore($id, $weekStart, $weekEnd)
+                    )
+                ),
+            ],
+            'top_items' => [
+                ['title' => 'Takip Edenler', 'detail' => "{$followers} yeni takip eden geldi"],
+                ['title' => 'Bildirimler', 'detail' => "{$notifications} yeni bildirim olustu"],
+                ['title' => 'Izleme Talepleri', 'detail' => "{$watchRequests} izleme talebi acildi"],
+            ],
+        ];
+    }
+
+    private function buildClubWeeklySummary(int $userId, $weekStart, $weekEnd, $previousWeekStart, $previousWeekEnd): array
+    {
+        $listings = $this->opportunityCountForOwner($userId, $weekStart, $weekEnd);
+        $followers = $this->favoriteFollowerCount($userId, $weekStart, $weekEnd);
+        $messages = $this->contactInboundCount($userId, $weekStart, $weekEnd);
+        $reports = $this->sharedReportCountForRole(['club', 'team'], $weekStart, $weekEnd);
+        $previousScore = $this->clubScore($userId, $previousWeekStart, $previousWeekEnd);
+        $currentScore = $listings + $followers + $messages;
+
+        return [
+            'stats' => [
+                'stat_one' => $listings,
+                'stat_two' => $followers,
+                'stat_three' => $messages,
+            ],
+            'metric_two' => $reports,
+            'signals' => [
+                'trend_value' => $this->formatTrendValue($currentScore, $previousScore),
+                'rank_value' => $this->formatRankValue(
+                    $this->rankForUser(
+                        $userId,
+                        DB::table('users')->whereIn('role', ['team', 'club'])->pluck('id')->map(fn ($id) => (int) $id)->all(),
+                        fn (int $id) => $this->clubScore($id, $weekStart, $weekEnd)
+                    )
+                ),
+            ],
+            'top_items' => [
+                ['title' => 'Ilanlar', 'detail' => "{$listings} ilan bu hafta aktif oldu"],
+                ['title' => 'Takip Edenler', 'detail' => "{$followers} yeni takip eden geldi"],
+                ['title' => 'Mesajlar', 'detail' => "{$messages} yeni mesaj alindi"],
+            ],
+        ];
+    }
+
+    private function buildPlayerTopItems(string $userName, int $profileViews, int $followers, int $messages, int $offers): array
+    {
+        $items = [
+            ['title' => $userName !== '' ? $userName : 'Profilin', 'detail' => "{$profileViews} profil goruntulenmesi bu hafta kaydedildi"],
+            ['title' => 'Takip Edenler', 'detail' => "{$followers} yeni takip eden geldi"],
+            ['title' => 'Mesajlar / Teklifler', 'detail' => ($messages + $offers).' yeni hareket olustu'],
+        ];
+
+        $topViewedPlayers = DB::table('users')
+            ->where('role', 'player')
+            ->orderByDesc('views_count')
+            ->limit(2)
+            ->get(['name', 'views_count']);
+
+        foreach ($topViewedPlayers as $row) {
+            $items[] = [
+                'title' => (string) ($row->name ?? 'Oyuncu'),
+                'detail' => ((int) ($row->views_count ?? 0)).' goruntulenme',
+            ];
+        }
+
+        return array_slice($items, 0, 3);
+    }
+
+    private function playerScore(int $userId, $start, $end): int
+    {
+        return $this->profileViewCount($userId, $start, $end)
+            + $this->favoriteFollowerCount($userId, $start, $end)
+            + $this->contactInboundCount($userId, $start, $end)
+            + $this->clubOfferCount($userId, $start, $end);
+    }
+
+    private function scoutScore(int $userId, $start, $end): int
+    {
+        return $this->scoutReportCountForScout($userId, $start, $end)
+            + $this->favoriteFollowerCount($userId, $start, $end)
+            + $this->watchRequestCount($userId, $start, $end)
+            + $this->contactInboundCount($userId, $start, $end);
+    }
+
+    private function managerScore(int $userId, $start, $end): int
+    {
+        return $this->managerWatchlistCount($userId, $start, $end)
+            + $this->favoriteFollowerCount($userId, $start, $end)
+            + $this->opportunityCountForOwner($userId, $start, $end)
+            + $this->contactInboundCount($userId, $start, $end);
+    }
+
+    private function coachScore(int $userId, $start, $end): int
+    {
+        return $this->favoriteFollowerCount($userId, $start, $end)
+            + $this->notificationCount($userId, $start, $end)
+            + $this->watchRequestCount($userId, $start, $end)
+            + $this->contactInboundCount($userId, $start, $end);
+    }
+
+    private function clubScore(int $userId, $start, $end): int
+    {
+        return $this->opportunityCountForOwner($userId, $start, $end)
+            + $this->favoriteFollowerCount($userId, $start, $end)
+            + $this->contactInboundCount($userId, $start, $end);
+    }
+
+    private function profileViewCount(int $userId, $start, $end): int
+    {
+        if (! Schema::hasTable('profile_views')) {
+            return 0;
+        }
+
+        return (int) DB::table('profile_views')
+            ->where('viewed_user_id', $userId)
+            ->whereBetween('viewed_at', [$start, $end])
+            ->count();
+    }
+
+    private function favoriteFollowerCount(int $userId, $start, $end): int
+    {
+        if (! Schema::hasTable('favorites')) {
+            return 0;
+        }
+
+        return (int) DB::table('favorites')
+            ->where('target_user_id', $userId)
+            ->whereBetween('created_at', [$start, $end])
+            ->count();
+    }
+
+    private function contactInboundCount(int $userId, $start, $end): int
+    {
+        if (! Schema::hasTable('contacts')) {
+            return 0;
+        }
+
+        return (int) DB::table('contacts')
+            ->where('to_user_id', $userId)
+            ->whereBetween('created_at', [$start, $end])
+            ->count();
+    }
+
+    private function clubOfferCount(int $userId, $start, $end): int
+    {
+        if (! Schema::hasTable('club_offers')) {
+            return 0;
+        }
+
+        return (int) DB::table('club_offers')
+            ->where('target_player_user_id', $userId)
+            ->whereBetween('created_at', [$start, $end])
+            ->count();
+    }
+
+    private function scoutReportCountForScout(int $userId, $start, $end): int
+    {
+        if (! Schema::hasTable('scout_player_reports')) {
+            return 0;
+        }
+
+        return (int) DB::table('scout_player_reports')
+            ->where('scout_user_id', $userId)
+            ->whereBetween('created_at', [$start, $end])
+            ->count();
+    }
+
+    private function sharedReportCountForRole(array $roles, $start, $end): int
+    {
+        if (! Schema::hasTable('scout_player_reports') || ! Schema::hasColumn('scout_player_reports', 'shared_roles')) {
+            return 0;
+        }
+
+        $query = DB::table('scout_player_reports')
+            ->whereBetween('created_at', [$start, $end]);
+
+        $query->where(function ($builder) use ($roles) {
+            foreach ($roles as $role) {
+                $builder->orWhereJsonContains('shared_roles', $role);
+            }
+        });
+
+        return (int) $query->count();
+    }
+
+    private function watchRequestCount(int $userId, $start, $end): int
+    {
+        if (! Schema::hasTable('live_watch_requests')) {
+            return 0;
+        }
+
+        return (int) DB::table('live_watch_requests')
+            ->where('requester_user_id', $userId)
+            ->whereBetween('created_at', [$start, $end])
+            ->count();
+    }
+
+    private function managerWatchlistCount(int $userId, $start, $end): int
+    {
+        if (! Schema::hasTable('scout_tip_watchlists')) {
+            return 0;
+        }
+
+        return (int) DB::table('scout_tip_watchlists')
+            ->where('manager_user_id', $userId)
+            ->whereBetween('created_at', [$start, $end])
+            ->count();
+    }
+
+    private function notificationCount(int $userId, $start, $end): int
+    {
+        if (! Schema::hasTable('notifications')) {
+            return 0;
+        }
+
+        return (int) DB::table('notifications')
+            ->where('user_id', $userId)
+            ->whereBetween('created_at', [$start, $end])
+            ->count();
+    }
+
+    private function opportunityCountForOwner(int $userId, $start, $end): int
+    {
+        if (! Schema::hasTable('opportunities')) {
+            return 0;
+        }
+
+        return (int) DB::table('opportunities')
+            ->where('team_user_id', $userId)
+            ->whereBetween('created_at', [$start, $end])
+            ->count();
+    }
+
+    private function formatTrendValue(int $current, int $previous): string
+    {
+        if ($previous <= 0) {
+            if ($current <= 0) {
+                return '0%';
+            }
+
+            return '+100%';
+        }
+
+        $delta = (($current - $previous) / $previous) * 100;
+        $rounded = (int) round($delta);
+
+        if ($rounded > 0) {
+            return '+'.$rounded.'%';
+        }
+
+        return $rounded.'%';
+    }
+
+    private function formatRankValue(int $rank): string
+    {
+        if ($rank <= 0) {
+            return '-';
+        }
+
+        return '#'.$rank;
+    }
+
+    private function rankForUser(int $userId, array $userIds, callable $scoreResolver): int
+    {
+        if ($userIds === []) {
+            return 0;
+        }
+
+        $scores = [];
+        foreach ($userIds as $candidateUserId) {
+            $scores[$candidateUserId] = (int) $scoreResolver((int) $candidateUserId);
+        }
+
+        arsort($scores);
+
+        $position = 1;
+        foreach (array_keys($scores) as $candidateUserId) {
+            if ((int) $candidateUserId === $userId) {
+                return $position;
+            }
+            $position++;
+        }
+
+        return 0;
     }
 
     public function matchesForUser(): JsonResponse
@@ -979,7 +1423,6 @@ class DiscoveryController extends Controller
     }
 
 }
-
 
 
 

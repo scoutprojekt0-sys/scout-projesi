@@ -307,6 +307,7 @@ Route::prefix('discovery')->group(function () {
     Route::get('/coach-needs', [LegacyCompatibilityController::class, 'discoveryCoachNeeds']);
     Route::get('/boosts', [LegacyCompatibilityController::class, 'discoveryBoosts']);
     Route::get('/weekly-digest', [DiscoveryController::class, 'weeklyDigest']);
+    Route::get('/weekly-summary', [DiscoveryController::class, 'weeklySummary'])->middleware('auth:sanctum');
 });
 
 // Public News & Billing
