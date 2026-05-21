@@ -179,6 +179,40 @@ class LiveMatchEndpointsTest extends TestCase
         $this->assertSame('staff_only', $match->visibility);
     }
 
+    public function test_live_match_owner_can_finish_stream_and_non_owner_cannot(): void
+    {
+        $owner = User::factory()->create(['role' => 'player', 'name' => 'Owner Player']);
+        $other = User::factory()->create(['role' => 'player', 'name' => 'Other Player']);
+
+        $match = LiveMatch::query()->create([
+            'title' => 'Owner XI - Rival XI',
+            'league' => null,
+            'home_team' => 'Owner XI',
+            'away_team' => 'Rival XI',
+            'match_date' => now(),
+            'is_live' => true,
+            'is_finished' => false,
+            'visibility' => 'private',
+            'round' => 'meta::{"round":null,"meta":{"source_user_id":'.$owner->id.'}}',
+        ]);
+
+        Sanctum::actingAs($other, ['profile:write']);
+        $this->postJson('/api/live-matches/'.$match->id.'/finish')
+            ->assertForbidden();
+
+        Sanctum::actingAs($owner, ['profile:write']);
+        $this->postJson('/api/live-matches/'.$match->id.'/finish')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.status', 'finished');
+
+        $this->assertDatabaseHas('live_matches', [
+            'id' => $match->id,
+            'is_live' => false,
+            'is_finished' => true,
+        ]);
+    }
+
     public function test_live_match_visibility_rules_are_applied_per_viewer(): void
     {
         $owner = User::factory()->create(['role' => 'scout', 'name' => 'Owner Scout']);

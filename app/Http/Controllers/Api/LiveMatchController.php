@@ -130,7 +130,7 @@ class LiveMatchController extends Controller
             ->limit(150)
             ->get()
             ->filter(fn (LiveMatch $match) => $this->canUserViewMatch($match, $viewer))
-            ->map(function (LiveMatch $match) {
+            ->map(function (LiveMatch $match) use ($viewer) {
                 $meta = $this->decodeRoundMeta($match->round);
 
                 return [
@@ -154,6 +154,7 @@ class LiveMatchController extends Controller
                     'scout_name' => $meta['scout_name'] ?? null,
                     'source_role' => $meta['source_role'] ?? null,
                     'source_name' => $meta['source_name'] ?? null,
+                    'can_manage' => $this->canManageMatch($match, $viewer),
                 ];
             })->values();
 
@@ -276,8 +277,35 @@ class LiveMatchController extends Controller
                 'note' => $meta['note'] ?? null,
                 'source_role' => $meta['source_role'] ?? null,
                 'source_name' => $meta['source_name'] ?? null,
+                'can_manage' => $this->canManageMatch($record, $viewer),
                 'updated_at' => $updateRow->update_time ?? $record->updated_at?->toIso8601String(),
             ], 'Mac detayi hazir.');
+        } catch (ModelNotFoundException $e) {
+            return $this->errorResponse('Mac bulunamadi', 404, 'match_not_found');
+        }
+    }
+
+    public function finish(Request $request, int $id): JsonResponse
+    {
+        try {
+            $match = LiveMatch::query()->findOrFail($id);
+            $viewer = $request->user() ?? auth('sanctum')->user();
+
+            if (! $this->canManageMatch($match, $viewer)) {
+                return $this->errorResponse('Bu yayini bitirme yetkiniz yok.', Response::HTTP_FORBIDDEN, 'live_match_forbidden');
+            }
+
+            $match->forceFill([
+                'is_live' => false,
+                'is_finished' => true,
+                'finished_at' => now(),
+            ])->save();
+
+            return $this->successResponse([
+                'id' => $match->id,
+                'status' => 'finished',
+                'finished_at' => $match->finished_at?->toIso8601String(),
+            ], 'Canli yayin kapatildi.');
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse('Mac bulunamadi', 404, 'match_not_found');
         }
@@ -387,6 +415,19 @@ class LiveMatchController extends Controller
             'staff',
             'admin',
         ], true);
+    }
+
+    private function canManageMatch(LiveMatch $match, ?User $viewer): bool
+    {
+        if (! $viewer) {
+            return false;
+        }
+
+        if ($this->isMatchOwner($match, $viewer)) {
+            return true;
+        }
+
+        return in_array(Str::lower((string) $viewer->role), ['admin', 'staff'], true);
     }
 
     private function expirePastMatches(): void

@@ -440,6 +440,7 @@ Route::middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->grou
     Route::post('/support-tickets/{id}/close', [SupportTicketController::class, 'close'])->middleware('ability:profile:write');
     Route::post('/support/ai-chat', [AiSupportController::class, 'chat'])->middleware('ability:profile:read');
     Route::post('/live-matches', [LiveMatchController::class, 'store'])->middleware('ability:profile:write');
+    Route::post('/live-matches/{matchId}/finish', [LiveMatchController::class, 'finish'])->middleware('ability:profile:write');
     Route::post('/match/{matchId}/live-update', [LiveMatchController::class, 'updateLiveMatch'])->middleware('ability:profile:write');
     Route::post('/club/live-matches/start', [LiveMatchController::class, 'startClubMatch'])->middleware('ability:profile:write');
     Route::get('/club/live-matches/summaries', [LiveMatchController::class, 'clubMatchSummaries'])->middleware('ability:profile:read');
