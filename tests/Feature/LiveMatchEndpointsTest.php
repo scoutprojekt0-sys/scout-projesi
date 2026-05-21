@@ -6,6 +6,7 @@ use App\Models\ClubTeamGroup;
 use App\Models\ClubInternalPlayer;
 use App\Models\LiveMatch;
 use App\Models\PlayerProfile;
+use App\Models\PlayerMatchRating;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
@@ -494,6 +495,23 @@ class LiveMatchEndpointsTest extends TestCase
             'goals' => 1,
             'assists' => 1,
         ]);
+
+        $this->assertDatabaseHas('player_match_ratings', [
+            'live_match_id' => $matchId,
+            'club_internal_player_id' => $internalPlayer->id,
+            'club_user_id' => $clubUser->id,
+        ]);
+
+        $rating = PlayerMatchRating::query()
+            ->where('live_match_id', $matchId)
+            ->where('club_internal_player_id', $internalPlayer->id)
+            ->firstOrFail();
+
+        $this->assertGreaterThan(6.0, (float) $rating->final_rating);
+
+        $internalPlayer->refresh();
+        $this->assertNotEmpty($internalPlayer->performance_history ?? []);
+        $this->assertNotEmpty($internalPlayer->rating);
 
         $this->getJson('/api/career/player/'.$playerUser->id.'/statistics')
             ->assertOk()

@@ -1058,6 +1058,9 @@ class ClubWorkspaceController extends Controller
 
     private function transformInternalPlayerSummary(ClubInternalPlayer $player): array
     {
+        $performanceHistory = array_values($player->performance_history ?? []);
+        $lastPerformance = is_array($performanceHistory[0] ?? null) ? $performanceHistory[0] : null;
+
         return [
             'id' => $player->id,
             'profile_type' => $player->profile_type,
@@ -1073,6 +1076,15 @@ class ClubWorkspaceController extends Controller
             'photoUrl' => $this->hasClubInternalPlayerPhotoUrlColumn()
                 ? $this->publicFileUrl($player->photo_url)
                 : null,
+            'matches' => $player->matches,
+            'minutes' => $player->minutes,
+            'goals' => $player->goals,
+            'assists' => $player->assists,
+            'rating' => $player->rating,
+            'performanceHistory' => $performanceHistory,
+            'lastMatchRating' => $lastPerformance['rating'] ?? null,
+            'lastMatchSummary' => $lastPerformance['summary'] ?? null,
+            'lastMatchDate' => $lastPerformance['match_date'] ?? null,
             'savedAt' => optional($player->updated_at)->toIso8601String(),
         ];
     }

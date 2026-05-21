@@ -8,6 +8,7 @@ use App\Models\ClubInternalPlayer;
 use App\Models\ClubTeamGroup;
 use App\Models\LiveMatch;
 use App\Models\LiveMatchEvent;
+use App\Models\PlayerMatchRating;
 use App\Models\PlayerStatistic;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -678,6 +679,7 @@ class LiveMatchController extends Controller
         $meta['actual_elapsed_seconds'] = $actualElapsedSeconds;
 
         $this->syncClubInternalPlayerStatsFromMatch($match);
+        $this->syncPlayerMatchRatingsFromMatch($match, $actualElapsedSeconds);
         $this->syncPlayerProfileStatsFromMatch($match, $actualElapsedSeconds);
 
         $match->forceFill([
@@ -891,6 +893,76 @@ class LiveMatchController extends Controller
         }
     }
 
+    private function syncPlayerMatchRatingsFromMatch(LiveMatch $match, int $actualElapsedSeconds): void
+    {
+        $meta = $this->decodeRoundMeta($match->round);
+        $sport = $this->normalizeClubMatchSport($meta['sport'] ?? null);
+
+        $eventsByPlayer = LiveMatchEvent::query()
+            ->where('live_match_id', $match->id)
+            ->orderBy('id')
+            ->get()
+            ->groupBy('club_internal_player_id');
+
+        foreach ($eventsByPlayer as $playerId => $events) {
+            $player = ClubInternalPlayer::query()
+                ->where('id', (int) $playerId)
+                ->where('club_user_id', $match->club_user_id)
+                ->first();
+
+            if (! $player) {
+                continue;
+            }
+
+            $counts = $events
+                ->groupBy('event_type')
+                ->map(fn ($group) => $group->count())
+                ->all();
+
+            $minutesPlayed = $this->calculatePlayedMinutesForEvents(
+                $events,
+                $sport,
+                (int) ($match->periods ?? 0),
+                $actualElapsedSeconds,
+            );
+
+            $ratingSummary = $this->buildMatchRatingSummary($counts, $sport);
+            $rating = $this->calculateMatchRating(
+                $sport,
+                $player->position,
+                $ratingSummary,
+                $minutesPlayed,
+            );
+
+            PlayerMatchRating::query()->updateOrCreate(
+                [
+                    'live_match_id' => $match->id,
+                    'club_internal_player_id' => $player->id,
+                ],
+                [
+                    'club_user_id' => $match->club_user_id,
+                    'sport' => $sport,
+                    'position' => $player->position,
+                    'minutes_played' => $minutesPlayed,
+                    'base_score' => $rating['base_score'],
+                    'positive_score' => $rating['positive_score'],
+                    'negative_score' => $rating['negative_score'],
+                    'final_rating' => $rating['final_rating'],
+                    'summary_json' => $ratingSummary,
+                ]
+            );
+
+            $this->syncInternalPlayerRatingSnapshot(
+                $player,
+                $match,
+                $sport,
+                $minutesPlayed,
+                $ratingSummary,
+                $rating,
+            );
+        }
+    }
+
     private function syncPlayerProfileStatsFromMatch(LiveMatch $match, int $actualElapsedSeconds): void
     {
         $meta = $this->decodeRoundMeta($match->round);
@@ -962,6 +1034,243 @@ class LiveMatchController extends Controller
                 'minutes_played' => ((int) $stat->minutes_played) + $minutesPlayed,
             ])->save();
         }
+    }
+
+    private function buildMatchRatingSummary(array $counts, string $sport): array
+    {
+        if ($this->normalizeClubMatchSport($sport) === 'football') {
+            return [
+                'goals' => (int) ($counts['Gol'] ?? 0),
+                'assists' => (int) ($counts['Asist'] ?? 0),
+                'shots' => (int) ($counts['Sut'] ?? 0),
+                'shots_on_target' => (int) ($counts['Isabetli Sut'] ?? 0),
+                'tackles' => (int) ($counts['Top Kapma'] ?? 0),
+                'turnovers' => (int) ($counts['Top Kaybi'] ?? 0),
+                'fouls' => (int) ($counts['Faul'] ?? 0),
+                'yellow_cards' => (int) ($counts['Sari Kart'] ?? 0),
+                'red_cards' => (int) ($counts['Kirmizi Kart'] ?? 0),
+                'corners' => (int) ($counts['Korner'] ?? 0),
+                'offsides' => (int) ($counts['Ofsayt'] ?? 0),
+            ];
+        }
+
+        if ($this->normalizeClubMatchSport($sport) === 'volleyball') {
+            return [
+                'points' => (int) ($counts['Sayi'] ?? 0),
+                'assists' => (int) ($counts['Asist'] ?? 0),
+                'attacks' => (int) ($counts['Hucum'] ?? 0),
+                'attack_errors' => (int) ($counts['Hucum Hata'] ?? 0),
+                'blocks' => (int) ($counts['Blok'] ?? 0),
+                'receptions' => (int) ($counts['Manset'] ?? 0),
+                'sets' => (int) ($counts['Pas'] ?? 0),
+                'aces' => (int) ($counts['Servis Ace'] ?? 0),
+                'service_errors' => (int) ($counts['Servis Hata'] ?? 0),
+                'turnovers' => (int) ($counts['Top Kaybi'] ?? 0),
+            ];
+        }
+
+        return [
+            'ft_made_alt' => (int) ($counts['1 Sayilik Atis Deneme Basarili'] ?? 0),
+            'ft_miss_alt' => (int) ($counts['1 Sayilik Atis Deneme Basarisiz'] ?? 0),
+            'two_pt_attempt' => (int) ($counts['2 Sayilik Atis Deneme'] ?? 0),
+            'two_pt_made' => (int) ($counts['2 Sayilik Atis Basari'] ?? 0),
+            'three_pt_attempt' => (int) ($counts['3 Sayilik Atis Deneme'] ?? 0),
+            'three_pt_made' => (int) ($counts['3 Sayilik Atis Basari'] ?? 0),
+            'ft_attempt' => (int) ($counts['Serbest Atis Deneme'] ?? 0),
+            'ft_made' => (int) ($counts['Serbest Atis Basari'] ?? 0),
+            'def_reb' => (int) ($counts['Savunma Ribaund'] ?? 0),
+            'off_reb' => (int) ($counts['Hucum Ribaund'] ?? 0),
+            'steals' => (int) ($counts['Top Calma'] ?? 0),
+            'turnovers' => (int) ($counts['Top Kaybi'] ?? 0),
+            'assists' => (int) ($counts['Asist'] ?? 0),
+        ];
+    }
+
+    private function calculateMatchRating(string $sport, ?string $position, array $summary, int $minutesPlayed): array
+    {
+        $baseScore = 6.0;
+        $normalizedSport = $this->normalizeClubMatchSport($sport);
+        $weights = $this->matchRatingWeights($normalizedSport);
+        $multipliers = $this->positionRatingMultipliers($normalizedSport, $position);
+
+        $positiveScore = 0.0;
+        $negativeScore = 0.0;
+
+        foreach ($weights as $key => $weight) {
+            $count = (float) ($summary[$key] ?? 0);
+            if ($count <= 0) {
+                continue;
+            }
+
+            $impact = $count * abs($weight) * (float) ($multipliers[$key] ?? 1.0);
+            if ($weight >= 0) {
+                $positiveScore += $impact;
+            } else {
+                $negativeScore += $impact;
+            }
+        }
+
+        $expectedMinutes = match ($normalizedSport) {
+            'basketball' => 40,
+            'volleyball' => 75,
+            default => 90,
+        };
+
+        $minutesFactor = min($minutesPlayed / max($expectedMinutes, 1), 1.0);
+        $impactFactor = 0.6 + (0.4 * $minutesFactor);
+        $finalRating = $baseScore + (($positiveScore - $negativeScore) * $impactFactor);
+
+        return [
+            'base_score' => $baseScore,
+            'positive_score' => round($positiveScore, 2),
+            'negative_score' => round($negativeScore, 2),
+            'final_rating' => max(1.0, min(10.0, round($finalRating, 2))),
+        ];
+    }
+
+    private function matchRatingWeights(string $sport): array
+    {
+        return match ($sport) {
+            'football' => [
+                'goals' => 1.20,
+                'assists' => 0.90,
+                'shots' => 0.08,
+                'shots_on_target' => 0.20,
+                'tackles' => 0.15,
+                'corners' => 0.10,
+                'turnovers' => -0.12,
+                'fouls' => -0.08,
+                'yellow_cards' => -0.45,
+                'red_cards' => -1.20,
+                'offsides' => -0.10,
+            ],
+            'volleyball' => [
+                'points' => 0.55,
+                'assists' => 0.28,
+                'attacks' => 0.25,
+                'blocks' => 0.45,
+                'receptions' => 0.18,
+                'sets' => 0.16,
+                'aces' => 0.50,
+                'attack_errors' => -0.30,
+                'service_errors' => -0.28,
+                'turnovers' => -0.25,
+            ],
+            default => [
+                'two_pt_made' => 0.45,
+                'three_pt_made' => 0.70,
+                'ft_made' => 0.22,
+                'ft_made_alt' => 0.22,
+                'assists' => 0.30,
+                'def_reb' => 0.18,
+                'off_reb' => 0.25,
+                'steals' => 0.35,
+                'turnovers' => -0.28,
+                'two_pt_attempt' => -0.06,
+                'three_pt_attempt' => -0.08,
+                'ft_attempt' => -0.03,
+                'ft_miss_alt' => -0.08,
+            ],
+        };
+    }
+
+    private function positionRatingMultipliers(string $sport, ?string $position): array
+    {
+        if ($sport !== 'football') {
+            return [];
+        }
+
+        $normalizedPosition = Str::upper(trim((string) $position));
+
+        return match ($normalizedPosition) {
+            'ST', 'CF', 'FW' => ['goals' => 1.20, 'assists' => 1.00, 'tackles' => 0.80],
+            'CB', 'LB', 'RB', 'DEF' => ['goals' => 0.90, 'tackles' => 1.20, 'turnovers' => 1.10],
+            'CM', 'AM', 'DM', 'MF' => ['assists' => 1.15, 'tackles' => 1.00, 'turnovers' => 1.10],
+            default => [],
+        };
+    }
+
+    private function syncInternalPlayerRatingSnapshot(
+        ClubInternalPlayer $player,
+        LiveMatch $match,
+        string $sport,
+        int $minutesPlayed,
+        array $summary,
+        array $rating,
+    ): void {
+        $history = $player->performance_history ?? [];
+        array_unshift($history, [
+            'match_id' => $match->id,
+            'match_name' => $match->title,
+            'match_date' => $match->match_date?->toIso8601String(),
+            'sport' => $sport,
+            'minutes' => $minutesPlayed,
+            'goals' => $this->summaryPrimaryProduction($summary, $sport),
+            'assists' => (int) ($summary['assists'] ?? 0),
+            'rating' => number_format((float) $rating['final_rating'], 2, '.', ''),
+            'summary' => $this->ratingSummaryText($summary, $sport),
+            'created_at' => now()->toIso8601String(),
+        ]);
+        $history = array_slice($history, 0, 12);
+
+        $recentRatings = array_values(array_filter(array_map(
+            fn ($item) => is_numeric($item['rating'] ?? null) ? (float) $item['rating'] : null,
+            $history
+        ), fn ($value) => $value !== null));
+
+        $averageRating = count($recentRatings) > 0
+            ? round(array_sum($recentRatings) / count($recentRatings), 2)
+            : (float) $rating['final_rating'];
+
+        $player->forceFill([
+            'minutes' => (string) ($this->readNumericValue($player->minutes) + $minutesPlayed),
+            'rating' => number_format($averageRating, 2, '.', ''),
+            'performance_history' => array_values($history),
+        ])->save();
+    }
+
+    private function summaryPrimaryProduction(array $summary, string $sport): int
+    {
+        if ($this->normalizeClubMatchSport($sport) === 'football') {
+            return (int) ($summary['goals'] ?? 0);
+        }
+
+        if ($this->normalizeClubMatchSport($sport) === 'volleyball') {
+            return (int) ($summary['points'] ?? 0);
+        }
+
+        return ((int) ($summary['two_pt_made'] ?? 0) * 2)
+            + ((int) ($summary['three_pt_made'] ?? 0) * 3)
+            + (int) (($summary['ft_made'] ?? 0) + ($summary['ft_made_alt'] ?? 0));
+    }
+
+    private function ratingSummaryText(array $summary, string $sport): string
+    {
+        if ($this->normalizeClubMatchSport($sport) === 'football') {
+            return trim(implode(' | ', array_filter([
+                ((int) ($summary['goals'] ?? 0)) > 0 ? ((int) $summary['goals']).' gol' : null,
+                ((int) ($summary['assists'] ?? 0)) > 0 ? ((int) $summary['assists']).' asist' : null,
+                ((int) ($summary['tackles'] ?? 0)) > 0 ? ((int) $summary['tackles']).' top kapma' : null,
+            ])));
+        }
+
+        if ($this->normalizeClubMatchSport($sport) === 'volleyball') {
+            return trim(implode(' | ', array_filter([
+                ((int) ($summary['points'] ?? 0)) > 0 ? ((int) $summary['points']).' sayi' : null,
+                ((int) ($summary['assists'] ?? 0)) > 0 ? ((int) $summary['assists']).' asist' : null,
+                ((int) ($summary['blocks'] ?? 0)) > 0 ? ((int) $summary['blocks']).' blok' : null,
+            ])));
+        }
+
+        return trim(implode(' | ', array_filter([
+            $this->summaryPrimaryProduction($summary, $sport) > 0
+                ? $this->summaryPrimaryProduction($summary, $sport).' sayi'
+                : null,
+            ((int) ($summary['assists'] ?? 0)) > 0 ? ((int) $summary['assists']).' asist' : null,
+            ((int) ($summary['def_reb'] ?? 0) + (int) ($summary['off_reb'] ?? 0)) > 0
+                ? (((int) ($summary['def_reb'] ?? 0) + (int) ($summary['off_reb'] ?? 0))).' ribaund'
+                : null,
+        ])));
     }
 
     private function clubProductionValueFromSummary(array $summary, string $sport): int
