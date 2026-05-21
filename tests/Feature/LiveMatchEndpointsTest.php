@@ -142,6 +142,43 @@ class LiveMatchEndpointsTest extends TestCase
             ->assertJsonPath('data.payload.minute', 42);
     }
 
+    public function test_authenticated_user_can_store_live_match_with_youtube_links_in_meta(): void
+    {
+        $user = User::factory()->create(['role' => 'player', 'name' => 'Player Streamer']);
+        Sanctum::actingAs($user, ['profile:write']);
+
+        $youtubeUrl = 'https://www.youtube.com/watch?v=abcdefghijk&list=PL1234567890ABCDEFGHIJKLMN&feature=share';
+        $instagramUrl = 'https://www.instagram.com/live/example-stream-url-with-extra-metadata/';
+
+        $this->postJson('/api/live-matches', [
+            'match_name' => 'Player XI - Rival XI',
+            'location' => 'Istanbul',
+            'sport' => 'futbol',
+            'focus' => '10 numara',
+            'visibility' => 'staff_only',
+            'stream_url' => $youtubeUrl,
+            'stream_links' => [
+                'youtube' => $youtubeUrl,
+                'instagram' => $instagramUrl,
+            ],
+            'source_role' => 'player',
+            'source_name' => 'Player Streamer',
+            'source_user_id' => $user->id,
+            'note' => 'Canli yayin acik.',
+        ])
+            ->assertCreated()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.title', 'Player XI - Rival XI')
+            ->assertJsonPath('data.visibility', 'staff_only');
+
+        $match = LiveMatch::query()->latest('id')->firstOrFail();
+
+        $this->assertNotNull($match->round);
+        $this->assertStringContainsString('youtube.com', (string) $match->round);
+        $this->assertStringContainsString('instagram.com', (string) $match->round);
+        $this->assertSame('staff_only', $match->visibility);
+    }
+
     public function test_live_match_visibility_rules_are_applied_per_viewer(): void
     {
         $owner = User::factory()->create(['role' => 'scout', 'name' => 'Owner Scout']);
