@@ -1060,6 +1060,9 @@ class ClubWorkspaceController extends Controller
     {
         $performanceHistory = array_values($player->performance_history ?? []);
         $lastPerformance = is_array($performanceHistory[0] ?? null) ? $performanceHistory[0] : null;
+        $lastHighlights = is_array($lastPerformance['highlights'] ?? null)
+            ? array_values($lastPerformance['highlights'])
+            : [];
 
         return [
             'id' => $player->id,
@@ -1085,6 +1088,7 @@ class ClubWorkspaceController extends Controller
             'lastMatchRating' => $lastPerformance['rating'] ?? null,
             'lastMatchSummary' => $lastPerformance['summary'] ?? null,
             'lastMatchDate' => $lastPerformance['match_date'] ?? null,
+            'lastMatchHighlights' => $lastHighlights,
             'savedAt' => optional($player->updated_at)->toIso8601String(),
         ];
     }

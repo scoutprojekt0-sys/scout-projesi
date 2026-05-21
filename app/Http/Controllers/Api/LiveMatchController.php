@@ -1209,6 +1209,8 @@ class LiveMatchController extends Controller
             'assists' => (int) ($summary['assists'] ?? 0),
             'rating' => number_format((float) $rating['final_rating'], 2, '.', ''),
             'summary' => $this->ratingSummaryText($summary, $sport),
+            'summary_map' => $summary,
+            'highlights' => $this->ratingHighlights($summary, $sport),
             'created_at' => now()->toIso8601String(),
         ]);
         $history = array_slice($history, 0, 12);
@@ -1271,6 +1273,54 @@ class LiveMatchController extends Controller
                 ? (((int) ($summary['def_reb'] ?? 0) + (int) ($summary['off_reb'] ?? 0))).' ribaund'
                 : null,
         ])));
+    }
+
+    private function ratingHighlights(array $summary, string $sport): array
+    {
+        if ($this->normalizeClubMatchSport($sport) === 'football') {
+            return array_values(array_filter([
+                $this->highlightItem('Gol', (int) ($summary['goals'] ?? 0)),
+                $this->highlightItem('Asist', (int) ($summary['assists'] ?? 0)),
+                $this->highlightItem('Kirmizi Kart', (int) ($summary['red_cards'] ?? 0), true),
+                $this->highlightItem('Top Kaybi', (int) ($summary['turnovers'] ?? 0), true),
+                $this->highlightItem('Sari Kart', (int) ($summary['yellow_cards'] ?? 0), true),
+                $this->highlightItem('Isabetli Sut', (int) ($summary['shots_on_target'] ?? 0)),
+                $this->highlightItem('Top Kapma', (int) ($summary['tackles'] ?? 0)),
+            ]));
+        }
+
+        if ($this->normalizeClubMatchSport($sport) === 'volleyball') {
+            return array_values(array_filter([
+                $this->highlightItem('Sayi', (int) ($summary['points'] ?? 0)),
+                $this->highlightItem('Asist', (int) ($summary['assists'] ?? 0)),
+                $this->highlightItem('Blok', (int) ($summary['blocks'] ?? 0)),
+                $this->highlightItem('Ace', (int) ($summary['aces'] ?? 0)),
+                $this->highlightItem('Servis Hata', (int) ($summary['service_errors'] ?? 0), true),
+                $this->highlightItem('Hucum Hata', (int) ($summary['attack_errors'] ?? 0), true),
+                $this->highlightItem('Top Kaybi', (int) ($summary['turnovers'] ?? 0), true),
+            ]));
+        }
+
+        return array_values(array_filter([
+            $this->highlightItem('Sayi', $this->summaryPrimaryProduction($summary, $sport)),
+            $this->highlightItem('Asist', (int) ($summary['assists'] ?? 0)),
+            $this->highlightItem('Ribaund', ((int) ($summary['def_reb'] ?? 0) + (int) ($summary['off_reb'] ?? 0))),
+            $this->highlightItem('Top Calma', (int) ($summary['steals'] ?? 0)),
+            $this->highlightItem('Top Kaybi', (int) ($summary['turnovers'] ?? 0), true),
+        ]));
+    }
+
+    private function highlightItem(string $label, int $value, bool $negative = false): ?array
+    {
+        if ($value <= 0) {
+            return null;
+        }
+
+        return [
+            'label' => $label,
+            'value' => $value,
+            'negative' => $negative,
+        ];
     }
 
     private function clubProductionValueFromSummary(array $summary, string $sport): int
