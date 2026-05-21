@@ -336,12 +336,21 @@ class PlayerController extends Controller
                     'matches_benched',
                     'goals',
                     'assists',
+                    'shot_2_made',
+                    'shot_3_made',
+                    'free_throw_made',
+                    'free_throw_attempt',
+                    'steals',
+                    'turnovers',
+                    'off_rebounds',
+                    'def_rebounds',
                     'minutes_played',
                     'avg_rating',
                 ]);
         }
 
         $latest = $statsRows->first();
+        $sport = $this->normalizePublicProfileSport($player->sport ?? null);
         $fallbackScoutRating = null;
         if (Schema::hasTable('scout_player_reports')) {
             $fallbackScoutRating = DB::table('scout_player_reports')
@@ -349,18 +358,16 @@ class PlayerController extends Controller
                 ->orderByDesc('id')
                 ->value('rating');
         }
-        $summary = [
-            'matches' => (int) $statsRows->sum('matches_played'),
-            'goals' => (int) $statsRows->sum('goals'),
-            'assists' => (int) $statsRows->sum('assists'),
-            'minutes' => (int) $statsRows->sum('minutes_played'),
-            'rating' => $latest?->avg_rating !== null
+        $summary = $this->buildPublicProfileSummary(
+            $statsRows,
+            $sport,
+            $latest?->avg_rating !== null
                 ? (float) $latest->avg_rating
                 : ($player->user_rating !== null
                     ? (float) $player->user_rating
-                    : (is_numeric((string) $fallbackScoutRating) ? (float) $fallbackScoutRating : 0.0)),
-        ];
-        $talentMetrics = $this->buildTalentMetrics($summary);
+                    : (is_numeric((string) $fallbackScoutRating) ? (float) $fallbackScoutRating : 0.0))
+        );
+        $talentMetrics = $this->buildTalentMetrics($summary, $sport);
 
         $position = $player->position ?: $player->user_position ?: 'Oyuncu';
         $age = $player->age;
@@ -379,13 +386,13 @@ class PlayerController extends Controller
                 'user' => [
                     'id' => (int) $player->id,
                     'name' => (string) $player->name,
-                    'sport' => (string) ($player->sport ?: 'futbol'),
+                    'sport' => $sport,
                     'gender' => (string) ($player->gender ?: 'bay'),
                 ],
                 'profile' => [
                     'name' => (string) $player->name,
-                    'sport' => (string) ($player->sport ?: 'futbol'),
-                    'branch' => (string) ($player->sport ?: 'futbol'),
+                    'sport' => $sport,
+                    'branch' => $sport,
                     'gender' => (string) ($player->gender ?: 'bay'),
                     'position' => (string) $position,
                     'age' => $age !== null ? (int) $age : null,
@@ -729,13 +736,22 @@ class PlayerController extends Controller
         return $pdf;
     }
 
-    private function buildTalentMetrics(array $summary): array
+    private function buildTalentMetrics(array $summary, string $sport): array
     {
         $matches = (int) ($summary['matches'] ?? 0);
         $goals = (int) ($summary['goals'] ?? 0);
         $assists = (int) ($summary['assists'] ?? 0);
         $minutes = (int) ($summary['minutes'] ?? 0);
         $rating = (float) ($summary['rating'] ?? 0);
+        $primaryStat = (int) ($summary['primary_stat_value'] ?? $goals);
+        $steals = (int) ($summary['steals'] ?? 0);
+        $turnovers = (int) ($summary['turnovers'] ?? 0);
+        $rebounds = (int) ($summary['rebounds'] ?? 0);
+        $blocks = (int) ($summary['blocks'] ?? 0);
+        $aces = (int) ($summary['aces'] ?? 0);
+        $serviceErrors = (int) ($summary['service_errors'] ?? 0);
+        $yellowCards = (int) ($summary['yellow_cards'] ?? 0);
+        $redCards = (int) ($summary['red_cards'] ?? 0);
 
         $minutesPerMatch = $matches > 0 ? $minutes / $matches : 0.0;
         $goalRate = $matches > 0 ? $goals / $matches : 0.0;
@@ -744,6 +760,117 @@ class PlayerController extends Controller
         $ratingMomentum = max(-12.0, min(12.0, ($rating - 7.0) * 6));
         $minutesRatio = max(0.0, min(1.0, $minutesPerMatch / 90));
         $minutesBlocks = max(0.0, min(40.0, $minutes / 90));
+
+        if ($sport === 'basketbol') {
+            $pointRate = $matches > 0 ? $primaryStat / $matches : 0.0;
+            $reboundRate = $matches > 0 ? $rebounds / $matches : 0.0;
+            $stealRate = $matches > 0 ? $steals / $matches : 0.0;
+            $turnoverPenalty = $matches > 0 ? $turnovers / $matches : 0.0;
+
+            return [
+                [
+                    'label' => 'Skor Uretimi',
+                    'value' => $this->normalizeTalentMetric(
+                        $this->metricScore(38, [
+                            $rating * 2.4,
+                            $ratingMomentum,
+                            $pointRate * 3.2,
+                            $minutesRatio * 14,
+                        ])
+                    ),
+                ],
+                [
+                    'label' => 'Oyun Kurulum',
+                    'value' => $this->normalizeTalentMetric(
+                        $this->metricScore(36, [
+                            $rating * 2.0,
+                            $assistRate * 34,
+                            $stealRate * 18,
+                            $minutesRatio * 12,
+                        ])
+                    ),
+                ],
+                [
+                    'label' => 'Savunma Etkisi',
+                    'value' => $this->normalizeTalentMetric(
+                        $this->metricScore(35, [
+                            $rating * 1.8,
+                            $reboundRate * 24,
+                            $stealRate * 22,
+                            ($turnoverPenalty * -10),
+                            $minutesRatio * 12,
+                        ])
+                    ),
+                ],
+                [
+                    'label' => 'Mac Etkisi',
+                    'value' => $this->normalizeTalentMetric(
+                        $this->metricScore(34, [
+                            $matches * 0.8,
+                            $pointRate * 1.8,
+                            $assistRate * 12,
+                            $rating * 1.9,
+                            $minutesBlocks * 0.5,
+                        ])
+                    ),
+                ],
+            ];
+        }
+
+        if ($sport === 'voleybol') {
+            $pointRate = $matches > 0 ? $primaryStat / $matches : 0.0;
+            $blockRate = $matches > 0 ? $blocks / $matches : 0.0;
+            $aceRate = $matches > 0 ? $aces / $matches : 0.0;
+            $serviceErrorPenalty = $matches > 0 ? $serviceErrors / $matches : 0.0;
+
+            return [
+                [
+                    'label' => 'Hucum Etkisi',
+                    'value' => $this->normalizeTalentMetric(
+                        $this->metricScore(38, [
+                            $rating * 2.3,
+                            $pointRate * 3.0,
+                            $aceRate * 18,
+                            $minutesRatio * 14,
+                        ])
+                    ),
+                ],
+                [
+                    'label' => 'Oyun Kurulum',
+                    'value' => $this->normalizeTalentMetric(
+                        $this->metricScore(36, [
+                            $rating * 2.0,
+                            $assistRate * 34,
+                            $pointRate * 0.8,
+                            $minutesRatio * 12,
+                        ])
+                    ),
+                ],
+                [
+                    'label' => 'Blok-Savunma',
+                    'value' => $this->normalizeTalentMetric(
+                        $this->metricScore(35, [
+                            $rating * 1.9,
+                            $blockRate * 28,
+                            ($serviceErrorPenalty * -10),
+                            $minutesRatio * 12,
+                        ])
+                    ),
+                ],
+                [
+                    'label' => 'Mac Etkisi',
+                    'value' => $this->normalizeTalentMetric(
+                        $this->metricScore(34, [
+                            $matches * 0.8,
+                            $pointRate * 1.8,
+                            $blockRate * 12,
+                            $rating * 1.8,
+                            $minutesBlocks * 0.5,
+                        ])
+                    ),
+                ],
+            ];
+        }
 
         return [
             [
@@ -766,6 +893,8 @@ class PlayerController extends Controller
                         $ratingMomentum,
                         $goalRate * 34,
                         $goals * 1.2,
+                        ($yellowCards * -1.2),
+                        ($redCards * -3.0),
                         $minutesRatio * 10,
                     ])
                 ),
@@ -821,5 +950,116 @@ class PlayerController extends Controller
         }
 
         return round($normalized, 4);
+    }
+
+    private function normalizePublicProfileSport(mixed $value): string
+    {
+        $normalized = Str::of((string) ($value ?? ''))
+            ->trim()
+            ->lower()
+            ->ascii()
+            ->value();
+
+        return match ($normalized) {
+            'basket', 'basketball', 'basketbol' => 'basketbol',
+            'volleyball', 'voleybol', 'voleyball' => 'voleybol',
+            default => 'futbol',
+        };
+    }
+
+    private function buildPublicProfileSummary($statsRows, string $sport, float $rating): array
+    {
+        $matches = (int) $statsRows->sum('matches_played');
+        $assists = (int) $statsRows->sum('assists');
+        $minutes = (int) $statsRows->sum('minutes_played');
+        $goals = (int) $statsRows->sum('goals');
+        $steals = (int) $statsRows->sum('steals');
+        $turnovers = (int) $statsRows->sum('turnovers');
+        $offRebounds = (int) $statsRows->sum('off_rebounds');
+        $defRebounds = (int) $statsRows->sum('def_rebounds');
+        $shot2Made = (int) $statsRows->sum('shot_2_made');
+        $shot3Made = (int) $statsRows->sum('shot_3_made');
+        $freeThrowMade = (int) $statsRows->sum('free_throw_made');
+        $freeThrowAttempt = (int) $statsRows->sum('free_throw_attempt');
+
+        $summary = [
+            'sport' => $sport,
+            'matches' => $matches,
+            'goals' => $goals,
+            'assists' => $assists,
+            'minutes' => $minutes,
+            'rating' => $rating,
+            'primary_stat_label' => 'Gol',
+            'primary_stat_value' => $goals,
+            'steals' => $steals,
+            'turnovers' => $turnovers,
+            'rebounds' => $offRebounds + $defRebounds,
+            'blocks' => 0,
+            'aces' => 0,
+            'service_errors' => 0,
+            'yellow_cards' => $offRebounds,
+            'red_cards' => $defRebounds,
+            'secondary_stats' => [],
+        ];
+
+        if ($sport === 'basketbol') {
+            $points = ($shot2Made * 2) + ($shot3Made * 3) + $freeThrowMade;
+            $summary['goals'] = $points;
+            $summary['primary_stat_label'] = 'Sayi';
+            $summary['primary_stat_value'] = $points;
+            $summary['rebounds'] = $offRebounds + $defRebounds;
+            $summary['yellow_cards'] = 0;
+            $summary['red_cards'] = 0;
+            $summary['secondary_stats'] = array_values(array_filter([
+                $this->publicSummaryStat('Ribaund', $offRebounds + $defRebounds),
+                $this->publicSummaryStat('Top Calma', $steals),
+                $this->publicSummaryStat('Top Kaybi', $turnovers),
+            ]));
+
+            return $summary;
+        }
+
+        if ($sport === 'voleybol') {
+            $points = (int) $statsRows->sum('shot_3_attempt');
+            $blocks = $defRebounds;
+            $aces = $freeThrowMade;
+            $serviceErrors = $freeThrowAttempt;
+
+            $summary['goals'] = $points;
+            $summary['primary_stat_label'] = 'Sayi';
+            $summary['primary_stat_value'] = $points;
+            $summary['blocks'] = $blocks;
+            $summary['aces'] = $aces;
+            $summary['service_errors'] = $serviceErrors;
+            $summary['yellow_cards'] = 0;
+            $summary['red_cards'] = 0;
+            $summary['secondary_stats'] = array_values(array_filter([
+                $this->publicSummaryStat('Blok', $blocks),
+                $this->publicSummaryStat('Ace', $aces),
+                $this->publicSummaryStat('Servis Hata', $serviceErrors),
+            ]));
+
+            return $summary;
+        }
+
+        $summary['secondary_stats'] = array_values(array_filter([
+            $this->publicSummaryStat('Top Kapma', $steals),
+            $this->publicSummaryStat('Sari Kart', $offRebounds),
+            $this->publicSummaryStat('Kirmizi Kart', $defRebounds),
+        ]));
+
+        return $summary;
+    }
+
+    private function publicSummaryStat(string $label, int $value): ?array
+    {
+        if ($value <= 0) {
+            return null;
+        }
+
+        return [
+            'label' => $label,
+            'value' => $value,
+        ];
     }
 }

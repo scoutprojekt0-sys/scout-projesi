@@ -38,6 +38,31 @@ class DiscoveryResponseStandardizationTest extends TestCase
             ->assertJsonPath('current_page', 1);
     }
 
+
+    public function test_public_players_endpoint_filters_by_sport(): void
+    {
+        User::factory()->create([
+            'role' => 'player',
+            'name' => 'Football Player',
+            'sport' => 'football',
+            'created_at' => now(),
+        ]);
+
+        User::factory()->create([
+            'role' => 'player',
+            'name' => 'Basketball Player',
+            'sport' => 'basketball',
+            'created_at' => now()->subMinute(),
+        ]);
+
+        $this->getJson('/api/public/players?sport=basketball')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.name', 'Basketball Player')
+            ->assertJsonPath('data.0.sport', 'basketball');
+    }
+
     public function test_club_needs_endpoint_returns_standard_paginated_payload(): void
     {
         $team = User::factory()->create([

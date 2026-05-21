@@ -36,6 +36,7 @@ class DiscoveryController extends Controller
         $position = request('position');
         $city = request('city');
         $perPage = max(1, min((int) request('per_page', 20), 100));
+        $sportTerms = $this->sportTerms((string) request()->query('sport', ''));
         $ratingSelect = Schema::hasTable('player_statistics')
             ? 'COALESCE(users.rating, (SELECT ps.avg_rating FROM player_statistics ps WHERE ps.user_id = users.id ORDER BY ps.season DESC, ps.id DESC LIMIT 1)) as rating'
             : 'users.rating';
@@ -77,6 +78,9 @@ class DiscoveryController extends Controller
                     ->orWhere('pp.position', $position);
             }))
             ->when($city, fn($q) => $q->where('city', $city))
+            ->when($sportTerms !== [], function ($query) use ($sportTerms) {
+                $query->whereIn(DB::raw('LOWER(COALESCE(users.sport, ""))'), $sportTerms);
+            })
             ->select([
                 'users.id',
                 'users.name',
