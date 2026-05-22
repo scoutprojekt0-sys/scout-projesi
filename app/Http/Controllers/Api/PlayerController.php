@@ -342,29 +342,33 @@ class PlayerController extends Controller
 
         $statsRows = collect();
         if (Schema::hasTable('player_statistics')) {
-            $statsRows = DB::table('player_statistics')
-                ->where('user_id', $id)
-                ->orderByDesc('season')
-                ->orderByDesc('id')
-                ->get([
-                    'season',
-                    'league',
-                    'matches_played',
-                    'matches_started',
-                    'matches_benched',
-                    'goals',
-                    'assists',
-                    'shot_2_made',
-                    'shot_3_made',
-                    'free_throw_made',
-                    'free_throw_attempt',
-                    'steals',
-                    'turnovers',
-                    'off_rebounds',
-                    'def_rebounds',
-                    'minutes_played',
-                    'avg_rating',
-                ]);
+            $statsColumns = $this->existingTableColumns('player_statistics', [
+                'season',
+                'league',
+                'matches_played',
+                'matches_started',
+                'matches_benched',
+                'goals',
+                'assists',
+                'shot_2_made',
+                'shot_3_made',
+                'free_throw_made',
+                'free_throw_attempt',
+                'steals',
+                'turnovers',
+                'off_rebounds',
+                'def_rebounds',
+                'minutes_played',
+                'avg_rating',
+            ]);
+
+            if ($statsColumns !== []) {
+                $statsRows = DB::table('player_statistics')
+                    ->where('user_id', $id)
+                    ->orderByDesc('season')
+                    ->orderByDesc('id')
+                    ->get($statsColumns);
+            }
         }
 
         $latest = $statsRows->first();
@@ -620,6 +624,16 @@ class PlayerController extends Controller
         $callback($query);
 
         return (int) $query->count();
+    }
+
+
+    private function existingTableColumns(string $table, array $columns): array
+    {
+        if (! Schema::hasTable($table)) {
+            return [];
+        }
+
+        return array_values(array_filter($columns, fn (string $column): bool => Schema::hasColumn($table, $column)));
     }
 
     public function shareAssets(Request $request): JsonResponse
