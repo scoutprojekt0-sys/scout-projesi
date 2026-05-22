@@ -136,6 +136,19 @@ class PlayerController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
+        $clubInternalPlayer = $this->resolveClubInternalPlayerForUser($player);
+        if ($clubInternalPlayer && empty($player->photo_url) && ! empty($clubInternalPlayer->photo_url)) {
+            $player->photo_url = $clubInternalPlayer->photo_url;
+        }
+        if ($clubInternalPlayer && empty($player->current_team) && ! empty($clubInternalPlayer->current_team)) {
+            $player->current_team = $clubInternalPlayer->current_team;
+        }
+        if ($clubInternalPlayer) {
+            $player->club_internal_player_id = (int) $clubInternalPlayer->id;
+            $player->shirt_number = $clubInternalPlayer->shirt_number;
+            $player->group_key = $clubInternalPlayer->group_key;
+        }
+
         $authUser = $request->user();
         $isOwner = $authUser && (int) $authUser->id === (int) ($player->id ?? 0);
         $player = $this->redactPrivateFields($player, $this->isAdmin($authUser) || $isOwner);
@@ -314,7 +327,11 @@ class PlayerController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
+        $clubInternalPlayer = $this->resolveClubInternalPlayerForUser($player);
         $fallbackPhotoUrl = $player->photo_url ?? null;
+        if (empty($fallbackPhotoUrl) && $clubInternalPlayer && ! empty($clubInternalPlayer->photo_url)) {
+            $fallbackPhotoUrl = $clubInternalPlayer->photo_url;
+        }
         if (empty($fallbackPhotoUrl) && Schema::hasTable('media')) {
             $fallbackPhotoUrl = DB::table('media')
                 ->where('user_id', $id)
@@ -368,18 +385,54 @@ class PlayerController extends Controller
                     ? (float) $player->user_rating
                     : (is_numeric((string) $fallbackScoutRating) ? (float) $fallbackScoutRating : 0.0))
         );
+        $clubSummary = $this->buildClubInternalSummaryForPublicProfile($clubInternalPlayer, $sport);
+        if (($summary['matches'] ?? 0) <= 0 && ($clubSummary['matches'] ?? 0) > 0) {
+            $summary = $clubSummary;
+        }
         $talentMetrics = $this->buildTalentMetrics($summary, $sport);
 
-        $position = $player->position ?: $player->user_position ?: 'Oyuncu';
+        $position = $player->position
+            ?: $player->user_position
+            ?: ($clubInternalPlayer?->position ?: 'Oyuncu');
         $age = $player->age;
         if (! $age && $player->birth_year) {
             $age = (int) now()->format('Y') - (int) $player->birth_year;
+        }
+        if (! $age && $clubInternalPlayer && ! empty($clubInternalPlayer->birth_year)) {
+            $age = (int) now()->format('Y') - (int) $clubInternalPlayer->birth_year;
         }
         $verificationStatus = strtolower((string) ($player->verification_status ?? ''));
         $isVerified = (bool) ($player->is_verified ?? false)
             || $verificationStatus === 'verified'
             || ! empty($player->verified_at);
         $showcase = $this->buildShowcaseStatus((int) $id, $player);
+        $profileClubName = $player->current_team
+            ?: ($clubInternalPlayer?->current_team ?: '-');
+        $profileBio = $player->bio ?: ($clubInternalPlayer?->bio ?: '');
+        $latestSummary = $latest
+            ? [
+                'season' => $latest->season,
+                'league' => $latest->league,
+                'matches_played' => (int) ($latest->matches_played ?? 0),
+                'minutes_played' => (int) ($latest->minutes_played ?? 0),
+                'goals' => (int) ($latest->goals ?? 0),
+                'assists' => (int) ($latest->assists ?? 0),
+                'rating' => $latest->avg_rating !== null ? (float) $latest->avg_rating : $summary['rating'],
+            ]
+            : $this->buildClubInternalLatestForPublicProfile($clubInternalPlayer, $summary);
+        $historyRows = $statsRows->isNotEmpty()
+            ? $statsRows->map(fn ($row) => [
+                'season' => $row->season,
+                'league' => $row->league,
+                'matches_played' => (int) ($row->matches_played ?? 0),
+                'matches_started' => (int) ($row->matches_started ?? 0),
+                'matches_benched' => (int) ($row->matches_benched ?? 0),
+                'minutes_played' => (int) ($row->minutes_played ?? 0),
+                'goals' => (int) ($row->goals ?? 0),
+                'assists' => (int) ($row->assists ?? 0),
+                'avg_rating' => $row->avg_rating !== null ? (float) $row->avg_rating : null,
+            ])->values()
+            : collect($this->buildClubInternalHistoryForPublicProfile($clubInternalPlayer, $sport));
 
         return response()->json([
             'ok' => true,
@@ -397,13 +450,21 @@ class PlayerController extends Controller
                     'gender' => (string) ($player->gender ?: 'bay'),
                     'position' => (string) $position,
                     'age' => $age !== null ? (int) $age : null,
-                    'birth_year' => $player->birth_year ? (int) $player->birth_year : null,
-                    'height_cm' => $player->height_cm ? (int) $player->height_cm : null,
+                    'birth_year' => $player->birth_year
+                        ? (int) $player->birth_year
+                        : ($clubInternalPlayer?->birth_year ? (int) $clubInternalPlayer->birth_year : null),
+                    'height_cm' => $player->height_cm
+                        ? (int) $player->height_cm
+                        : ($clubInternalPlayer && is_numeric((string) $clubInternalPlayer->height)
+                            ? (int) $clubInternalPlayer->height
+                            : null),
                     'weight_kg' => $player->weight_kg ? (int) $player->weight_kg : null,
-                    'current_club' => (string) ($player->current_team ?? '-'),
-                    'club_name' => (string) ($player->current_team ?? '-'),
-                    'bio' => (string) ($player->bio ?? ''),
-                    'dominant_foot' => $player->dominant_foot,
+                    'current_club' => (string) $profileClubName,
+                    'club_name' => (string) $profileClubName,
+                    'bio' => (string) $profileBio,
+                    'dominant_foot' => $player->dominant_foot ?: ($clubInternalPlayer?->dominant_foot),
+                    'shirt_number' => $clubInternalPlayer?->shirt_number,
+                    'club_internal_player_id' => $clubInternalPlayer ? (int) $clubInternalPlayer->id : null,
                     'contract_status' => (string) ($player->contract_status ?: 'active'),
                     'seeking_club' => (bool) ($player->seeking_club ?? false),
                     'nationality' => (string) ($player->country ?? ''),
@@ -438,26 +499,8 @@ class PlayerController extends Controller
                 ],
                 'stats' => [
                     'summary' => $summary,
-                    'latest' => $latest ? [
-                        'season' => $latest->season,
-                        'league' => $latest->league,
-                        'matches_played' => (int) ($latest->matches_played ?? 0),
-                        'minutes_played' => (int) ($latest->minutes_played ?? 0),
-                        'goals' => (int) ($latest->goals ?? 0),
-                        'assists' => (int) ($latest->assists ?? 0),
-                        'rating' => $latest->avg_rating !== null ? (float) $latest->avg_rating : $summary['rating'],
-                    ] : null,
-                    'history' => $statsRows->map(fn ($row) => [
-                        'season' => $row->season,
-                        'league' => $row->league,
-                        'matches_played' => (int) ($row->matches_played ?? 0),
-                        'matches_started' => (int) ($row->matches_started ?? 0),
-                        'matches_benched' => (int) ($row->matches_benched ?? 0),
-                        'minutes_played' => (int) ($row->minutes_played ?? 0),
-                        'goals' => (int) ($row->goals ?? 0),
-                        'assists' => (int) ($row->assists ?? 0),
-                        'avg_rating' => $row->avg_rating !== null ? (float) $row->avg_rating : null,
-                    ])->values(),
+                    'latest' => $latestSummary,
+                    'history' => $historyRows->values(),
                 ],
             ],
         ]);
@@ -1050,6 +1093,266 @@ class PlayerController extends Controller
         ]));
 
         return $summary;
+    }
+
+    private function resolveClubInternalPlayerForUser(object $player): ?object
+    {
+        if (! Schema::hasTable('club_internal_players')) {
+            return null;
+        }
+
+        $normalizedName = $this->normalizeCompactLookupValue((string) ($player->name ?? ''));
+        $normalizedTeam = $this->normalizeCompactLookupValue((string) ($player->current_team ?? ''));
+        if ($normalizedName === '') {
+            return null;
+        }
+
+        $rows = DB::table('club_internal_players as cip')
+            ->join('users as clubs', 'clubs.id', '=', 'cip.club_user_id')
+            ->leftJoin('team_profiles as tp', 'tp.user_id', '=', 'clubs.id')
+            ->select([
+                'cip.id',
+                'cip.club_user_id',
+                'cip.group_key',
+                'cip.name',
+                'cip.sport',
+                'cip.birth_year',
+                'cip.position',
+                'cip.height',
+                'cip.shirt_number',
+                'cip.photo_url',
+                'cip.bio',
+                'cip.dominant_foot',
+                'cip.matches',
+                'cip.minutes',
+                'cip.goals',
+                'cip.assists',
+                'cip.rating',
+                'cip.performance_history',
+                'clubs.name as club_user_name',
+                'tp.team_name as club_team_name',
+            ])
+            ->whereRaw("LOWER(REPLACE(TRIM(cip.name), ' ', '')) = ?", [$normalizedName])
+            ->get();
+
+        foreach ($rows as $row) {
+            $candidateTeams = [
+                $row->club_team_name ?? '',
+                $row->club_user_name ?? '',
+                $row->group_key ?? '',
+            ];
+            if ($normalizedTeam === '') {
+                $row->current_team = trim((string) ($row->club_team_name ?: $row->club_user_name ?: $row->group_key));
+                return $row;
+            }
+            foreach ($candidateTeams as $candidateTeam) {
+                if ($this->normalizeCompactLookupValue((string) $candidateTeam) === $normalizedTeam) {
+                    $row->current_team = trim((string) ($row->club_team_name ?: $row->club_user_name ?: $row->group_key));
+                    return $row;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private function buildClubInternalSummaryForPublicProfile(?object $player, string $sport): array
+    {
+        if (! $player) {
+            return $this->buildPublicProfileSummary(collect(), $sport, 0.0);
+        }
+
+        $history = $this->decodeClubHistory($player->performance_history ?? null);
+        if ($history === []) {
+            $matches = max(0, (int) $this->numericValue($player->matches ?? 0));
+            $minutes = max(0, (int) $this->numericValue($player->minutes ?? 0));
+            $primary = max(0, (int) $this->numericValue($player->goals ?? 0));
+            $assists = max(0, (int) $this->numericValue($player->assists ?? 0));
+            $rating = max(0.0, (float) $this->numericValue($player->rating ?? 0));
+
+            $summary = $this->buildPublicProfileSummary(collect(), $sport, $rating);
+            $summary['matches'] = $matches;
+            $summary['minutes'] = $minutes;
+            $summary['assists'] = $assists;
+            $summary['rating'] = $rating;
+            $summary['goals'] = $primary;
+            $summary['primary_stat_value'] = $primary;
+            $summary['primary_stat_label'] = $sport === 'futbol' ? 'Gol' : 'Sayi';
+            return $summary;
+        }
+
+        $matches = count($history);
+        $minutes = 0;
+        $assists = 0;
+        $ratings = [];
+        $goals = 0;
+        $steals = 0;
+        $turnovers = 0;
+        $rebounds = 0;
+        $blocks = 0;
+        $aces = 0;
+        $serviceErrors = 0;
+
+        foreach ($history as $item) {
+            $summaryMap = is_array($item['summary_map'] ?? null) ? $item['summary_map'] : [];
+            $minutes += (int) $this->numericValue($item['minutes'] ?? $summaryMap['minutes'] ?? 0);
+            $assists += (int) $this->numericValue($item['assists'] ?? $summaryMap['assists'] ?? 0);
+            $ratingValue = $this->numericValue($item['rating'] ?? null);
+            if ($ratingValue > 0) {
+                $ratings[] = (float) $ratingValue;
+            }
+
+            if ($sport === 'basketbol') {
+                $twoPt = (int) $this->numericValue($summaryMap['two_pt_made'] ?? 0);
+                $threePt = (int) $this->numericValue($summaryMap['three_pt_made'] ?? 0);
+                $ftMade = (int) $this->numericValue(($summaryMap['ft_made'] ?? 0) + ($summaryMap['ft_made_alt'] ?? 0));
+                $goals += ($twoPt * 2) + ($threePt * 3) + $ftMade;
+                $steals += (int) $this->numericValue($summaryMap['steals'] ?? 0);
+                $turnovers += (int) $this->numericValue($summaryMap['turnovers'] ?? 0);
+                $rebounds += (int) $this->numericValue($summaryMap['rebounds_offensive'] ?? 0)
+                    + (int) $this->numericValue($summaryMap['rebounds_defensive'] ?? 0);
+                $blocks += (int) $this->numericValue($summaryMap['blocks'] ?? 0);
+                continue;
+            }
+
+            if ($sport === 'voleybol') {
+                $goals += (int) $this->numericValue($summaryMap['points'] ?? $item['goals'] ?? 0);
+                $blocks += (int) $this->numericValue($summaryMap['blocks'] ?? 0);
+                $aces += (int) $this->numericValue($summaryMap['aces'] ?? 0);
+                $serviceErrors += (int) $this->numericValue($summaryMap['service_errors'] ?? 0);
+                continue;
+            }
+
+            $goals += (int) $this->numericValue($item['goals'] ?? $summaryMap['goals'] ?? 0);
+            $steals += (int) $this->numericValue($summaryMap['tackles'] ?? 0);
+        }
+
+        $rating = $ratings !== [] ? round(array_sum($ratings) / count($ratings), 2) : (float) $this->numericValue($player->rating ?? 0);
+        $summary = $this->buildPublicProfileSummary(collect(), $sport, $rating);
+        $summary['matches'] = $matches;
+        $summary['minutes'] = $minutes;
+        $summary['assists'] = $assists;
+        $summary['rating'] = $rating;
+        $summary['goals'] = $goals;
+        $summary['primary_stat_label'] = $sport === 'futbol' ? 'Gol' : 'Sayi';
+        $summary['primary_stat_value'] = $goals;
+        $summary['steals'] = $steals;
+        $summary['turnovers'] = $turnovers;
+        $summary['rebounds'] = $rebounds;
+        $summary['blocks'] = $blocks;
+        $summary['aces'] = $aces;
+        $summary['service_errors'] = $serviceErrors;
+        $summary['secondary_stats'] = match ($sport) {
+            'basketbol' => array_values(array_filter([
+                $this->publicSummaryStat('Ribaund', $rebounds),
+                $this->publicSummaryStat('Top Calma', $steals),
+                $this->publicSummaryStat('Top Kaybi', $turnovers),
+                $this->publicSummaryStat('Blok', $blocks),
+            ])),
+            'voleybol' => array_values(array_filter([
+                $this->publicSummaryStat('Blok', $blocks),
+                $this->publicSummaryStat('Ace', $aces),
+                $this->publicSummaryStat('Servis Hata', $serviceErrors),
+            ])),
+            default => array_values(array_filter([
+                $this->publicSummaryStat('Top Kapma', $steals),
+            ])),
+        };
+
+        return $summary;
+    }
+
+    private function buildClubInternalLatestForPublicProfile(?object $player, array $summary): ?array
+    {
+        if (! $player) {
+            return null;
+        }
+
+        $history = $this->decodeClubHistory($player->performance_history ?? null);
+        if ($history === []) {
+            return ($summary['matches'] ?? 0) > 0 ? [
+                'season' => 'Kulup',
+                'league' => $player->current_team ?? $player->group_key ?? 'Kulup',
+                'matches_played' => (int) ($summary['matches'] ?? 0),
+                'minutes_played' => (int) ($summary['minutes'] ?? 0),
+                'goals' => (int) ($summary['goals'] ?? 0),
+                'assists' => (int) ($summary['assists'] ?? 0),
+                'rating' => (float) ($summary['rating'] ?? 0),
+            ] : null;
+        }
+
+        $latest = $history[0];
+        return [
+            'season' => substr((string) ($latest['match_date'] ?? now()->toDateString()), 0, 4),
+            'league' => (string) ($latest['match_name'] ?? 'Canli Mac'),
+            'matches_played' => 1,
+            'minutes_played' => (int) $this->numericValue($latest['minutes'] ?? 0),
+            'goals' => (int) $this->numericValue($latest['goals'] ?? 0),
+            'assists' => (int) $this->numericValue($latest['assists'] ?? 0),
+            'rating' => (float) $this->numericValue($latest['rating'] ?? ($summary['rating'] ?? 0)),
+        ];
+    }
+
+    private function buildClubInternalHistoryForPublicProfile(?object $player, string $sport): array
+    {
+        if (! $player) {
+            return [];
+        }
+
+        $history = $this->decodeClubHistory($player->performance_history ?? null);
+        return array_map(function (array $item) use ($sport): array {
+            $summaryMap = is_array($item['summary_map'] ?? null) ? $item['summary_map'] : [];
+            $primary = (int) $this->numericValue($item['goals'] ?? 0);
+            if ($sport === 'basketbol') {
+                $primary = ((int) $this->numericValue($summaryMap['two_pt_made'] ?? 0) * 2)
+                    + ((int) $this->numericValue($summaryMap['three_pt_made'] ?? 0) * 3)
+                    + (int) $this->numericValue(($summaryMap['ft_made'] ?? 0) + ($summaryMap['ft_made_alt'] ?? 0));
+            } elseif ($sport === 'voleybol') {
+                $primary = (int) $this->numericValue($summaryMap['points'] ?? $item['goals'] ?? 0);
+            }
+
+            return [
+                'season' => substr((string) ($item['match_date'] ?? now()->toDateString()), 0, 4),
+                'league' => (string) ($item['match_name'] ?? 'Canli Mac'),
+                'matches_played' => 1,
+                'matches_started' => 1,
+                'matches_benched' => 0,
+                'minutes_played' => (int) $this->numericValue($item['minutes'] ?? 0),
+                'goals' => $primary,
+                'assists' => (int) $this->numericValue($item['assists'] ?? 0),
+                'avg_rating' => (float) $this->numericValue($item['rating'] ?? 0),
+            ];
+        }, $history);
+    }
+
+    private function decodeClubHistory(mixed $value): array
+    {
+        if (is_array($value)) {
+            return array_values(array_filter($value, fn ($item) => is_array($item)));
+        }
+        if (is_string($value) && trim($value) !== '') {
+            $decoded = json_decode($value, true);
+            if (is_array($decoded)) {
+                return array_values(array_filter($decoded, fn ($item) => is_array($item)));
+            }
+        }
+        return [];
+    }
+
+    private function numericValue(mixed $value): float
+    {
+        return is_numeric((string) $value) ? (float) $value : 0.0;
+    }
+
+    private function normalizeCompactLookupValue(string $value): string
+    {
+        return Str::of($value)
+            ->trim()
+            ->squish()
+            ->replace(' ', '')
+            ->ascii('tr')
+            ->lower()
+            ->value();
     }
 
     private function publicSummaryStat(string $label, int $value): ?array
