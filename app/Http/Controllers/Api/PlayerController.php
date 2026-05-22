@@ -1107,7 +1107,7 @@ class PlayerController extends Controller
             return null;
         }
 
-        $rows = DB::table('club_internal_players as cip')
+        $baseQuery = DB::table('club_internal_players as cip')
             ->join('users as clubs', 'clubs.id', '=', 'cip.club_user_id')
             ->leftJoin('team_profiles as tp', 'tp.user_id', '=', 'clubs.id')
             ->select([
@@ -1131,11 +1131,30 @@ class PlayerController extends Controller
                 'cip.performance_history',
                 'clubs.name as club_user_name',
                 'tp.team_name as club_team_name',
-            ])
+            ]);
+
+        $rows = $baseQuery
             ->whereRaw("LOWER(REPLACE(TRIM(cip.name), ' ', '')) = ?", [$normalizedName])
             ->get();
 
+        if ($rows->isEmpty()) {
+            $nameParts = array_values(array_filter(explode(' ', (string) ($player->name ?? ''))));
+            $fallbackQuery = clone $baseQuery;
+            if ($nameParts !== []) {
+                $fallbackQuery->where(function ($query) use ($nameParts): void {
+                    foreach ($nameParts as $part) {
+                        $query->orWhere('cip.name', 'like', '%'.$part.'%');
+                    }
+                });
+            }
+            $rows = $fallbackQuery->get();
+        }
+
         foreach ($rows as $row) {
+            if ($this->normalizeCompactLookupValue((string) ($row->name ?? '')) !== $normalizedName) {
+                continue;
+            }
+
             $candidateTeams = [
                 $row->club_team_name ?? '',
                 $row->club_user_name ?? '',
