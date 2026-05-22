@@ -1162,6 +1162,11 @@ class PlayerController extends Controller
             return $this->buildPublicProfileSummary(collect(), $sport, 0.0);
         }
 
+        $ratingRows = $this->clubInternalRatingRows($player);
+        if ($ratingRows->isNotEmpty()) {
+            return $this->buildClubSummaryFromRatingRows($ratingRows, $sport);
+        }
+
         $history = $this->decodeClubHistory($player->performance_history ?? null);
         if ($history === []) {
             $matches = max(0, (int) $this->numericValue($player->matches ?? 0));
@@ -1268,6 +1273,21 @@ class PlayerController extends Controller
             return null;
         }
 
+        $ratingRows = $this->clubInternalRatingRows($player);
+        if ($ratingRows->isNotEmpty()) {
+            $latest = $ratingRows->first();
+            $summaryMap = is_array($latest->summary_json ?? null) ? $latest->summary_json : [];
+            return [
+                'season' => ! empty($latest->match_date) ? substr((string) $latest->match_date, 0, 4) : 'Kulup',
+                'league' => (string) ($latest->match_title ?? 'Canli Mac'),
+                'matches_played' => 1,
+                'minutes_played' => (int) ($latest->minutes_played ?? 0),
+                'goals' => $this->clubPrimaryFromRatingSummary($summaryMap, $sport),
+                'assists' => (int) $this->numericValue($summaryMap['assists'] ?? 0),
+                'rating' => (float) $this->numericValue($latest->final_rating ?? ($summary['rating'] ?? 0)),
+            ];
+        }
+
         $history = $this->decodeClubHistory($player->performance_history ?? null);
         if ($history === []) {
             return ($summary['matches'] ?? 0) > 0 ? [
@@ -1297,6 +1317,24 @@ class PlayerController extends Controller
     {
         if (! $player) {
             return [];
+        }
+
+        $ratingRows = $this->clubInternalRatingRows($player);
+        if ($ratingRows->isNotEmpty()) {
+            return $ratingRows->map(function ($row) use ($sport): array {
+                $summaryMap = is_array($row->summary_json ?? null) ? $row->summary_json : [];
+                return [
+                    'season' => ! empty($row->match_date) ? substr((string) $row->match_date, 0, 4) : 'Kulup',
+                    'league' => (string) ($row->match_title ?? 'Canli Mac'),
+                    'matches_played' => 1,
+                    'matches_started' => 1,
+                    'matches_benched' => 0,
+                    'minutes_played' => (int) ($row->minutes_played ?? 0),
+                    'goals' => $this->clubPrimaryFromRatingSummary($summaryMap, $sport),
+                    'assists' => (int) $this->numericValue($summaryMap['assists'] ?? 0),
+                    'avg_rating' => (float) $this->numericValue($row->final_rating ?? 0),
+                ];
+            })->values()->all();
         }
 
         $history = $this->decodeClubHistory($player->performance_history ?? null);
@@ -1342,6 +1380,122 @@ class PlayerController extends Controller
     private function numericValue(mixed $value): float
     {
         return is_numeric((string) $value) ? (float) $value : 0.0;
+    }
+
+    private function clubInternalRatingRows(object $player)
+    {
+        if (! Schema::hasTable('player_match_ratings')) {
+            return collect();
+        }
+
+        return DB::table('player_match_ratings as pmr')
+            ->leftJoin('live_matches as lm', 'lm.id', '=', 'pmr.live_match_id')
+            ->where('pmr.club_internal_player_id', (int) $player->id)
+            ->orderByDesc('pmr.id')
+            ->get([
+                'pmr.minutes_played',
+                'pmr.final_rating',
+                'pmr.summary_json',
+                'pmr.created_at',
+                'lm.title as match_title',
+                'lm.match_date',
+            ]);
+    }
+
+    private function buildClubSummaryFromRatingRows($rows, string $sport): array
+    {
+        $matches = $rows->count();
+        $minutes = 0;
+        $assists = 0;
+        $primary = 0;
+        $ratings = [];
+        $steals = 0;
+        $turnovers = 0;
+        $rebounds = 0;
+        $blocks = 0;
+        $aces = 0;
+        $serviceErrors = 0;
+        $yellowCards = 0;
+        $redCards = 0;
+
+        foreach ($rows as $row) {
+            $summary = is_array($row->summary_json ?? null) ? $row->summary_json : [];
+            $minutes += (int) ($row->minutes_played ?? 0);
+            $assists += (int) $this->numericValue($summary['assists'] ?? 0);
+            $primary += $this->clubPrimaryFromRatingSummary($summary, $sport);
+            $rating = $this->numericValue($row->final_rating ?? 0);
+            if ($rating > 0) {
+                $ratings[] = $rating;
+            }
+
+            if ($sport === 'basketbol') {
+                $steals += (int) $this->numericValue($summary['steals'] ?? 0);
+                $turnovers += (int) $this->numericValue($summary['turnovers'] ?? 0);
+                $rebounds += (int) $this->numericValue($summary['def_reb'] ?? 0)
+                    + (int) $this->numericValue($summary['off_reb'] ?? 0);
+                continue;
+            }
+
+            if ($sport === 'voleybol') {
+                $blocks += (int) $this->numericValue($summary['blocks'] ?? 0);
+                $aces += (int) $this->numericValue($summary['aces'] ?? 0);
+                $serviceErrors += (int) $this->numericValue($summary['service_errors'] ?? 0);
+                $turnovers += (int) $this->numericValue($summary['turnovers'] ?? 0);
+                continue;
+            }
+
+            $steals += (int) $this->numericValue($summary['tackles'] ?? 0);
+            $yellowCards += (int) $this->numericValue($summary['yellow_cards'] ?? 0);
+            $redCards += (int) $this->numericValue($summary['red_cards'] ?? 0);
+        }
+
+        $rating = $ratings !== [] ? round(array_sum($ratings) / count($ratings), 2) : 0.0;
+        $summary = $this->buildPublicProfileSummary(collect(), $sport, $rating);
+        $summary['matches'] = $matches;
+        $summary['minutes'] = $minutes;
+        $summary['assists'] = $assists;
+        $summary['rating'] = $rating;
+        $summary['goals'] = $primary;
+        $summary['primary_stat_label'] = $sport === 'futbol' ? 'Gol' : 'Sayi';
+        $summary['primary_stat_value'] = $primary;
+        $summary['steals'] = $steals;
+        $summary['turnovers'] = $turnovers;
+        $summary['rebounds'] = $rebounds;
+        $summary['blocks'] = $blocks;
+        $summary['aces'] = $aces;
+        $summary['service_errors'] = $serviceErrors;
+        $summary['yellow_cards'] = $yellowCards;
+        $summary['red_cards'] = $redCards;
+        $summary['secondary_stats'] = match ($sport) {
+            'basketbol' => array_values(array_filter([
+                $this->publicSummaryStat('Ribaund', $rebounds),
+                $this->publicSummaryStat('Top Calma', $steals),
+                $this->publicSummaryStat('Top Kaybi', $turnovers),
+            ])),
+            'voleybol' => array_values(array_filter([
+                $this->publicSummaryStat('Blok', $blocks),
+                $this->publicSummaryStat('Ace', $aces),
+                $this->publicSummaryStat('Servis Hata', $serviceErrors),
+            ])),
+            default => array_values(array_filter([
+                $this->publicSummaryStat('Top Kapma', $steals),
+                $this->publicSummaryStat('Sari Kart', $yellowCards),
+                $this->publicSummaryStat('Kirmizi Kart', $redCards),
+            ])),
+        };
+
+        return $summary;
+    }
+
+    private function clubPrimaryFromRatingSummary(array $summary, string $sport): int
+    {
+        return match ($sport) {
+            'basketbol' => ((int) $this->numericValue($summary['two_pt_made'] ?? 0) * 2)
+                + ((int) $this->numericValue($summary['three_pt_made'] ?? 0) * 3)
+                + (int) $this->numericValue(($summary['ft_made'] ?? 0) + ($summary['ft_made_alt'] ?? 0)),
+            'voleybol' => (int) $this->numericValue($summary['points'] ?? 0),
+            default => (int) $this->numericValue($summary['goals'] ?? 0),
+        };
     }
 
     private function normalizeCompactLookupValue(string $value): string
