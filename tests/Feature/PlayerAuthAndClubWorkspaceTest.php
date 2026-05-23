@@ -223,7 +223,7 @@ class PlayerAuthAndClubWorkspaceTest extends TestCase
             'bio' => 'Kulup icindeki ozel takip notu',
         ]);
 
-        $this->postJson('/api/auth/player/set-password', [
+        $setPasswordResponse = $this->postJson('/api/auth/player/set-password', [
             'team_name' => 'sportek',
             'player_name' => 'Miran dogu kaniyolu',
             'password' => 'Secret123',
@@ -233,6 +233,8 @@ class PlayerAuthAndClubWorkspaceTest extends TestCase
             ->assertJsonPath('ok', true)
             ->assertJsonPath('code', 'player_password_initialized')
             ->assertJsonPath('data.user.name', 'Miran doğu Kaniyolu');
+
+        $playerUserId = (int) $setPasswordResponse->json('data.user.id');
 
         $this->postJson('/api/auth/player/login', [
             'team_name' => 'Sportek',
@@ -249,7 +251,7 @@ class PlayerAuthAndClubWorkspaceTest extends TestCase
             'bio' => null,
         ]);
         $this->assertDatabaseHas('player_statistics', [
-            'user_id' => User::query()->where('name', 'Miran doÄŸu Kaniyolu')->value('id'),
+            'user_id' => $playerUserId,
             'club_id' => $club->id,
             'league' => 'Sportek',
         ]);
