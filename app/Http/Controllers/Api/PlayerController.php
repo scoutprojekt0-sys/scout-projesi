@@ -152,12 +152,26 @@ class PlayerController extends Controller
         $authUser = $request->user();
         $isOwner = $authUser && (int) $authUser->id === (int) ($player->id ?? 0);
         $player = $this->redactPrivateFields($player, $this->isAdmin($authUser) || $isOwner);
+        $sport = $this->normalizePublicProfileSport($player->sport ?? null);
+        $statsPayload = $this->buildPlayerStatsPayload((int) $id, $player, $clubInternalPlayer, $sport);
+        $clubCount = $this->resolvePlayerClubCount((int) $id, $player);
         $showcase = $this->buildShowcaseStatus((int) $id, $player);
 
         return response()->json([
             'ok' => true,
             'data' => [
                 ...((array) $player),
+                'current_club' => (string) (($player->current_team ?? null) ?: '-'),
+                'club_name' => (string) (($player->current_team ?? null) ?: '-'),
+                'overall_rating' => $statsPayload['summary']['rating'],
+                'matches_played' => $statsPayload['summary']['matches'],
+                'minutes_played' => $statsPayload['summary']['minutes'],
+                'goals' => $statsPayload['summary']['goals'],
+                'assists' => $statsPayload['summary']['assists'],
+                'club_count' => $clubCount,
+                'sport' => $sport,
+                'stats' => $statsPayload,
+                'talent_metrics' => $this->buildTalentMetrics($statsPayload['summary'], $sport),
                 'showcase' => $showcase,
                 'reviews' => ProfileReviewData::latestForTarget($id, $authUser),
             ],
@@ -340,59 +354,10 @@ class PlayerController extends Controller
                 ->value('url');
         }
 
-        $statsRows = collect();
-        if (Schema::hasTable('player_statistics')) {
-            $statsColumns = $this->existingTableColumns('player_statistics', [
-                'season',
-                'league',
-                'matches_played',
-                'matches_started',
-                'matches_benched',
-                'goals',
-                'assists',
-                'shot_2_made',
-                'shot_3_made',
-                'free_throw_made',
-                'free_throw_attempt',
-                'steals',
-                'turnovers',
-                'off_rebounds',
-                'def_rebounds',
-                'minutes_played',
-                'avg_rating',
-            ]);
-
-            if ($statsColumns !== []) {
-                $statsRows = DB::table('player_statistics')
-                    ->where('user_id', $id)
-                    ->orderByDesc('season')
-                    ->orderByDesc('id')
-                    ->get($statsColumns);
-            }
-        }
-
-        $latest = $statsRows->first();
         $sport = $this->normalizePublicProfileSport($player->sport ?? null);
-        $fallbackScoutRating = null;
-        if (Schema::hasTable('scout_player_reports')) {
-            $fallbackScoutRating = DB::table('scout_player_reports')
-                ->where('player_user_id', $id)
-                ->orderByDesc('id')
-                ->value('rating');
-        }
-        $summary = $this->buildPublicProfileSummary(
-            $statsRows,
-            $sport,
-            $latest?->avg_rating !== null
-                ? (float) $latest->avg_rating
-                : ($player->user_rating !== null
-                    ? (float) $player->user_rating
-                    : (is_numeric((string) $fallbackScoutRating) ? (float) $fallbackScoutRating : 0.0))
-        );
-        $clubSummary = $this->buildClubInternalSummaryForPublicProfile($clubInternalPlayer, $sport);
-        if (($summary['matches'] ?? 0) <= 0 && ($clubSummary['matches'] ?? 0) > 0) {
-            $summary = $clubSummary;
-        }
+        $statsPayload = $this->buildPlayerStatsPayload($id, $player, $clubInternalPlayer, $sport);
+        $summary = $statsPayload['summary'];
+        $latest = $statsPayload['latest'];
         $talentMetrics = $this->buildTalentMetrics($summary, $sport);
 
         $position = $player->position
@@ -413,30 +378,8 @@ class PlayerController extends Controller
         $profileClubName = $player->current_team
             ?: ($clubInternalPlayer?->current_team ?: '-');
         $profileBio = $player->bio ?: ($clubInternalPlayer?->bio ?: '');
-        $latestSummary = $latest
-            ? [
-                'season' => $latest->season,
-                'league' => $latest->league,
-                'matches_played' => (int) ($latest->matches_played ?? 0),
-                'minutes_played' => (int) ($latest->minutes_played ?? 0),
-                'goals' => (int) ($latest->goals ?? 0),
-                'assists' => (int) ($latest->assists ?? 0),
-                'rating' => $latest->avg_rating !== null ? (float) $latest->avg_rating : $summary['rating'],
-            ]
-            : $this->buildClubInternalLatestForPublicProfile($clubInternalPlayer, $summary, $sport);
-        $historyRows = $statsRows->isNotEmpty()
-            ? $statsRows->map(fn ($row) => [
-                'season' => $row->season,
-                'league' => $row->league,
-                'matches_played' => (int) ($row->matches_played ?? 0),
-                'matches_started' => (int) ($row->matches_started ?? 0),
-                'matches_benched' => (int) ($row->matches_benched ?? 0),
-                'minutes_played' => (int) ($row->minutes_played ?? 0),
-                'goals' => (int) ($row->goals ?? 0),
-                'assists' => (int) ($row->assists ?? 0),
-                'avg_rating' => $row->avg_rating !== null ? (float) $row->avg_rating : null,
-            ])->values()
-            : collect($this->buildClubInternalHistoryForPublicProfile($clubInternalPlayer, $sport));
+        $latestSummary = $statsPayload['latest'];
+        $historyRows = collect($statsPayload['history']);
 
         return response()->json([
             'ok' => true,
@@ -508,6 +451,109 @@ class PlayerController extends Controller
                 ],
             ],
         ]);
+    }
+
+    private function buildPlayerStatsPayload(int $playerId, object $player, ?object $clubInternalPlayer = null, ?string $sport = null): array
+    {
+        $sport = $sport ?? $this->normalizePublicProfileSport($player->sport ?? null);
+        $statsRows = collect();
+        if (Schema::hasTable('player_statistics')) {
+            $statsColumns = $this->existingTableColumns('player_statistics', [
+                'season',
+                'league',
+                'matches_played',
+                'matches_started',
+                'matches_benched',
+                'goals',
+                'assists',
+                'shot_2_made',
+                'shot_3_made',
+                'free_throw_made',
+                'free_throw_attempt',
+                'steals',
+                'turnovers',
+                'off_rebounds',
+                'def_rebounds',
+                'minutes_played',
+                'avg_rating',
+            ]);
+
+            if ($statsColumns !== []) {
+                $statsRows = DB::table('player_statistics')
+                    ->where('user_id', $playerId)
+                    ->orderByDesc('season')
+                    ->orderByDesc('id')
+                    ->get($statsColumns);
+            }
+        }
+
+        $latestRow = $statsRows->first();
+        $fallbackScoutRating = null;
+        if (Schema::hasTable('scout_player_reports')) {
+            $fallbackScoutRating = DB::table('scout_player_reports')
+                ->where('player_user_id', $playerId)
+                ->orderByDesc('id')
+                ->value('rating');
+        }
+
+        $summary = $this->buildPublicProfileSummary(
+            $statsRows,
+            $sport,
+            $latestRow?->avg_rating !== null
+                ? (float) $latestRow->avg_rating
+                : (($player->user_rating ?? $player->rating ?? null) !== null
+                    ? (float) ($player->user_rating ?? $player->rating)
+                    : (is_numeric((string) $fallbackScoutRating) ? (float) $fallbackScoutRating : 0.0))
+        );
+
+        $clubSummary = $this->buildClubInternalSummaryForPublicProfile($clubInternalPlayer, $sport);
+        if (($summary['matches'] ?? 0) <= 0 && ($clubSummary['matches'] ?? 0) > 0) {
+            $summary = $clubSummary;
+        }
+
+        $latest = $latestRow
+            ? [
+                'season' => $latestRow->season,
+                'league' => $latestRow->league,
+                'matches_played' => (int) ($latestRow->matches_played ?? 0),
+                'minutes_played' => (int) ($latestRow->minutes_played ?? 0),
+                'goals' => (int) ($latestRow->goals ?? 0),
+                'assists' => (int) ($latestRow->assists ?? 0),
+                'rating' => $latestRow->avg_rating !== null ? (float) $latestRow->avg_rating : (float) ($summary['rating'] ?? 0),
+            ]
+            : $this->buildClubInternalLatestForPublicProfile($clubInternalPlayer, $summary, $sport);
+
+        $history = $statsRows->isNotEmpty()
+            ? $statsRows->map(fn ($row) => [
+                'season' => $row->season,
+                'league' => $row->league,
+                'matches_played' => (int) ($row->matches_played ?? 0),
+                'matches_started' => (int) ($row->matches_started ?? 0),
+                'matches_benched' => (int) ($row->matches_benched ?? 0),
+                'minutes_played' => (int) ($row->minutes_played ?? 0),
+                'goals' => (int) ($row->goals ?? 0),
+                'assists' => (int) ($row->assists ?? 0),
+                'avg_rating' => $row->avg_rating !== null ? (float) $row->avg_rating : null,
+            ])->values()->all()
+            : $this->buildClubInternalHistoryForPublicProfile($clubInternalPlayer, $sport);
+
+        return [
+            'summary' => $summary,
+            'latest' => $latest,
+            'history' => $history,
+        ];
+    }
+
+    private function resolvePlayerClubCount(int $playerId, object $player): int
+    {
+        if (Schema::hasTable('player_career_timeline')) {
+            return (int) DB::table('player_career_timeline')
+                ->where('player_id', $playerId)
+                ->distinct('club_id')
+                ->count('club_id');
+        }
+
+        return ! empty($player->current_team ?? null) ? 1 : 0;
     }
 
     private function buildShowcaseStatus(int $playerId, object $player): array

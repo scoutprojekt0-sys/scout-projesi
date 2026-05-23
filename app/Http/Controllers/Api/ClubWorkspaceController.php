@@ -10,6 +10,7 @@ use App\Models\ClubOffer;
 use App\Models\ClubPromo;
 use App\Models\ClubTeamGroup;
 use App\Models\PlayerProfile;
+use App\Models\PlayerStatistic;
 use App\Models\PlayerTransfer;
 use App\Models\User;
 use Illuminate\Support\Carbon;
@@ -452,6 +453,7 @@ class ClubWorkspaceController extends Controller
         $payload = $this->validatedInternalPlayerPayload($request, $user);
         $payload = $this->attachInternalPlayerHistory($payload, null);
         $player = ClubInternalPlayer::query()->create($payload);
+        $this->syncExistingPlayerAccountDataForInternalPlayer($user, $player);
 
         return $this->successResponse($this->transformInternalPlayer($player), 'Kulup ici oyuncu profili kaydedildi.', Response::HTTP_CREATED);
     }
@@ -474,6 +476,7 @@ class ClubWorkspaceController extends Controller
         $payload = $this->validatedInternalPlayerPayload($request, $user);
         $player->fill($this->attachInternalPlayerHistory($payload, $player));
         $player->save();
+        $this->syncExistingPlayerAccountDataForInternalPlayer($user, $player);
 
         return $this->successResponse($this->transformInternalPlayer($player), 'Kulup ici oyuncu profili guncellendi.');
     }
@@ -531,16 +534,7 @@ class ClubWorkspaceController extends Controller
             ]);
         }
 
-        PlayerProfile::query()->updateOrCreate(
-            ['user_id' => (int) $playerUser->id],
-            [
-                'birth_year' => is_numeric((string) $player->birth_year) ? (int) $player->birth_year : null,
-                'position' => $player->position,
-                'dominant_foot' => $player->dominant_foot,
-                'height_cm' => is_numeric((string) $player->height) ? (int) $player->height : null,
-                'current_team' => $teamName,
-            ]
-        );
+        $this->syncPlayerAccountFromInternalPlayer($playerUser, $user, $player, $teamName);
 
         if (! (bool) $playerUser->player_password_initialized) {
             $playerUser->forceFill(['player_password_initialized' => false])->save();
@@ -1129,6 +1123,71 @@ class ClubWorkspaceController extends Controller
             });
     }
 
+    private function syncExistingPlayerAccountDataForInternalPlayer(User $clubUser, ClubInternalPlayer $internalPlayer): void
+    {
+        $teamName = $this->resolveClubLoginTeamName($clubUser);
+        $playerUser = $this->findPlayerUserForInternalPlayer($teamName, (string) $internalPlayer->name);
+
+        if (! $playerUser) {
+            return;
+        }
+
+        $this->syncPlayerAccountFromInternalPlayer($playerUser, $clubUser, $internalPlayer, $teamName);
+    }
+
+    private function syncPlayerAccountFromInternalPlayer(User $playerUser, User $clubUser, ClubInternalPlayer $internalPlayer, string $teamName): void
+    {
+        $birthYear = $this->toNullableInt($internalPlayer->birth_year);
+        $heightCm = $this->toNullableInt($internalPlayer->height);
+        $age = $this->resolveInternalPlayerAge($internalPlayer);
+        $rating = $this->toNullableDecimal($internalPlayer->rating);
+
+        $playerUser->forceFill(array_filter([
+            'name' => $internalPlayer->name ?: $playerUser->name,
+            'sport' => $internalPlayer->sport ?: $playerUser->sport,
+            'position' => $internalPlayer->position ?: $playerUser->position,
+            'age' => $age,
+            'rating' => $rating,
+        ], static fn ($value) => $value !== null))->save();
+
+        PlayerProfile::query()->updateOrCreate(
+            ['user_id' => (int) $playerUser->id],
+            [
+                'birth_year' => $birthYear,
+                'position' => $internalPlayer->position,
+                'dominant_foot' => $internalPlayer->dominant_foot,
+                'height_cm' => $heightCm,
+                'current_team' => $teamName,
+            ]
+        );
+
+        PlayerStatistic::query()->updateOrCreate(
+            [
+                'user_id' => (int) $playerUser->id,
+                'club_id' => (int) $clubUser->id,
+                'season' => $this->resolveCurrentSeasonLabel(),
+            ],
+            [
+                'league' => $teamName,
+                'matches_played' => $this->toStatInt($internalPlayer->matches),
+                'matches_started' => 0,
+                'matches_benched' => 0,
+                'goals' => $this->toStatInt($internalPlayer->goals),
+                'assists' => $this->toStatInt($internalPlayer->assists),
+                'yellow_cards' => 0,
+                'red_cards' => 0,
+                'minutes_played' => $this->toStatInt($internalPlayer->minutes),
+                'avg_rating' => $rating,
+                'metadata' => array_filter([
+                    'source' => 'club_internal_player',
+                    'club_internal_player_id' => (int) $internalPlayer->id,
+                    'group_key' => $internalPlayer->group_key,
+                    'status' => $internalPlayer->status,
+                ], static fn ($value) => $value !== null && $value !== ''),
+            ]
+        );
+    }
+
     private function normalizeLookupValue(string $value): string
     {
         return Str::of($value)
@@ -1394,6 +1453,67 @@ class ClubWorkspaceController extends Controller
         $normalized = trim((string) ($value ?? ''));
 
         return $normalized === '' ? null : $normalized;
+    }
+
+    private function toStatInt(mixed $value): int
+    {
+        return max(0, $this->toNullableInt($value) ?? 0);
+    }
+
+    private function toNullableInt(mixed $value): ?int
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $normalized = preg_replace('/[^0-9\-]+/', '', trim((string) $value));
+
+        if ($normalized === null || $normalized === '' || ! is_numeric($normalized)) {
+            return null;
+        }
+
+        return (int) $normalized;
+    }
+
+    private function toNullableDecimal(mixed $value): ?float
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $normalized = str_replace(',', '.', trim((string) $value));
+
+        if ($normalized === '' || ! is_numeric($normalized)) {
+            return null;
+        }
+
+        return round((float) $normalized, 2);
+    }
+
+    private function resolveInternalPlayerAge(ClubInternalPlayer $internalPlayer): ?int
+    {
+        $age = $this->toNullableInt($internalPlayer->age);
+        if ($age !== null) {
+            return max(0, $age);
+        }
+
+        $birthYear = $this->toNullableInt($internalPlayer->birth_year);
+
+        if ($birthYear === null) {
+            return null;
+        }
+
+        return max(0, ((int) now()->format('Y')) - $birthYear);
+    }
+
+    private function resolveCurrentSeasonLabel(): string
+    {
+        $today = now();
+        $year = (int) $today->format('Y');
+        $month = (int) $today->format('n');
+        $seasonStart = $month >= 7 ? $year : $year - 1;
+
+        return sprintf('%d-%02d', $seasonStart, ($seasonStart + 1) % 100);
     }
 
     private function hasClubInternalPlayerPhotoUrlColumn(): bool

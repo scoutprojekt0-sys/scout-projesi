@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\ClubInternalPlayer;
 use App\Models\PlayerProfile;
+use App\Models\PlayerStatistic;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -135,6 +136,11 @@ class PlayerAuthAndClubWorkspaceTest extends TestCase
             'height' => '180',
             'dominantFoot' => 'sag',
             'bio' => 'Hizli forvet',
+            'matches' => '17',
+            'minutes' => '1230',
+            'goals' => '11',
+            'assists' => '6',
+            'rating' => '7.4',
         ])
             ->assertCreated()
             ->assertJsonPath('ok', true)
@@ -160,6 +166,18 @@ class PlayerAuthAndClubWorkspaceTest extends TestCase
         $this->assertSame('Besiktas U19', $playerProfile->current_team);
         $this->assertSame('Forvet', $playerProfile->position);
         $this->assertNull($playerProfile->bio);
+        $this->assertSame(180, $playerProfile->height_cm);
+
+        $playerStats = PlayerStatistic::query()
+            ->where('user_id', $playerUserId)
+            ->where('club_id', $club->id)
+            ->firstOrFail();
+
+        $this->assertSame(17, $playerStats->matches_played);
+        $this->assertSame(1230, $playerStats->minutes_played);
+        $this->assertSame(11, $playerStats->goals);
+        $this->assertSame(6, $playerStats->assists);
+        $this->assertSame('7.40', number_format((float) $playerStats->avg_rating, 2, '.', ''));
 
         $playerUser->forceFill([
             'player_password_initialized' => true,
@@ -230,6 +248,11 @@ class PlayerAuthAndClubWorkspaceTest extends TestCase
             'position' => 'Forvet',
             'bio' => null,
         ]);
+        $this->assertDatabaseHas('player_statistics', [
+            'user_id' => User::query()->where('name', 'Miran doÄŸu Kaniyolu')->value('id'),
+            'club_id' => $club->id,
+            'league' => 'Sportek',
+        ]);
     }
 
     public function test_player_can_set_first_password_and_login_when_club_team_name_contains_spaces(): void
@@ -291,5 +314,77 @@ class PlayerAuthAndClubWorkspaceTest extends TestCase
             'current_team' => 'Spor Tek',
             'position' => 'Orta Saha',
         ]);
+    }
+
+    public function test_updating_internal_player_syncs_existing_player_statistics_to_public_profile(): void
+    {
+        $club = User::factory()->club()->create([
+            'name' => 'Altinordu',
+            'email' => 'altinordu@example.com',
+        ]);
+
+        DB::table('team_profiles')->insert([
+            'user_id' => $club->id,
+            'team_name' => 'Altinordu U17',
+            'league_level' => 'Akademi',
+            'city' => 'Izmir',
+            'updated_at' => now(),
+        ]);
+
+        Sanctum::actingAs($club, ['profile:read', 'profile:write']);
+
+        $createResponse = $this->postJson('/api/club/internal-players', [
+            'group' => 'u17',
+            'status' => 'active',
+            'name' => 'Can Demir',
+            'sport' => 'futbol',
+            'position' => 'Kanat',
+        ])->assertCreated();
+
+        $internalPlayerId = (int) $createResponse->json('data.id');
+
+        $accountResponse = $this->postJson("/api/club/internal-players/{$internalPlayerId}/account")
+            ->assertOk();
+
+        $playerUserId = (int) $accountResponse->json('data.player_user_id');
+
+        $this->putJson("/api/club/internal-players/{$internalPlayerId}", [
+            'group' => 'u17',
+            'status' => 'active',
+            'name' => 'Can Demir',
+            'sport' => 'futbol',
+            'position' => 'Kanat',
+            'matches' => '21',
+            'minutes' => '1680',
+            'goals' => '9',
+            'assists' => '8',
+            'rating' => '8.1',
+        ])
+            ->assertOk();
+
+        $publicProfileResponse = $this->getJson("/api/public/players/{$playerUserId}/profile")
+            ->assertOk()
+            ->assertJsonPath('ok', true);
+
+        $this->assertSame(21, $publicProfileResponse->json('data.stats.summary.matches'));
+        $this->assertSame(1680, $publicProfileResponse->json('data.stats.summary.minutes'));
+        $this->assertSame(9, $publicProfileResponse->json('data.stats.summary.goals'));
+        $this->assertSame(8, $publicProfileResponse->json('data.stats.summary.assists'));
+        $this->assertSame(8.1, $publicProfileResponse->json('data.stats.summary.rating'));
+        $this->assertSame('Altinordu U17', $publicProfileResponse->json('data.profile.current_club'));
+
+        $authPlayer = User::query()->findOrFail($playerUserId);
+        Sanctum::actingAs($authPlayer, ['profile:read']);
+
+        $authProfileResponse = $this->getJson("/api/players/{$playerUserId}")
+            ->assertOk()
+            ->assertJsonPath('ok', true);
+
+        $this->assertSame(21, $authProfileResponse->json('data.matches_played'));
+        $this->assertSame(1680, $authProfileResponse->json('data.minutes_played'));
+        $this->assertSame(9, $authProfileResponse->json('data.goals'));
+        $this->assertSame(8, $authProfileResponse->json('data.assists'));
+        $this->assertSame(8.1, $authProfileResponse->json('data.overall_rating'));
+        $this->assertSame('Altinordu U17', $authProfileResponse->json('data.current_club'));
     }
 }
