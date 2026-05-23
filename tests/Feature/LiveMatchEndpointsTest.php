@@ -519,7 +519,11 @@ class LiveMatchEndpointsTest extends TestCase
             ->assertJsonPath('data.career_totals.appearances', 1)
             ->assertJsonPath('data.career_totals.goals', 1)
             ->assertJsonPath('data.career_totals.assists', 1)
-            ->assertJsonPath('data.by_club.0.club_name', 'Sync Club');
+            ->assertJsonPath('data.by_club.0.club_name', 'Sync Club')
+            ->assertJsonPath('data.by_club.0.total_appearances', 1)
+            ->assertJsonPath('data.by_season.0.season', (int) now()->format('Y'))
+            ->assertJsonPath('data.by_season.0.season_label', now()->format('Y'))
+            ->assertJsonPath('data.by_season.0.appearances', 1);
     }
 
     public function test_player_schedule_for_today_creates_live_match_notification(): void

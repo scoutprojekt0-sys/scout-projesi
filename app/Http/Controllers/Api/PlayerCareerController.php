@@ -132,7 +132,7 @@ class PlayerCareerController extends Controller
         $rating = (float) ($player?->rating ?? 0);
 
         $byClub = $timeline->groupBy('club_id')->map(function ($entries) {
-            return [
+            return $this->normalizeClubStatisticsRow([
                 'club_id' => $entries->first()->club_id,
                 'club_name' => $entries->first()->club->name ?? 'Unknown',
                 'total_appearances' => $entries->sum('appearances'),
@@ -140,31 +140,31 @@ class PlayerCareerController extends Controller
                 'total_assists' => $entries->sum('assists'),
                 'total_minutes' => $entries->sum('minutes_played'),
                 'seasons' => $entries->count(),
-            ];
+            ]);
         })->values();
 
         $bySeason = $timeline->groupBy('season_start')->map(function ($entries, $season) {
-            return [
+            return $this->normalizeSeasonStatisticsRow([
                 'season' => $season,
                 'appearances' => $entries->sum('appearances'),
                 'goals' => $entries->sum('goals'),
                 'assists' => $entries->sum('assists'),
                 'minutes_played' => $entries->sum('minutes_played'),
-            ];
-        });
+            ]);
+        })->values();
 
-        $careerTotals = [
+        $careerTotals = $this->normalizeCareerTotals([
             'appearances' => $timeline->sum('appearances'),
             'goals' => $timeline->sum('goals'),
             'assists' => $timeline->sum('assists'),
             'minutes_played' => $timeline->sum('minutes_played'),
             'yellow_cards' => $timeline->sum('yellow_cards'),
             'red_cards' => $timeline->sum('red_cards'),
-        ];
+        ]);
 
         if ($timeline->isEmpty() && $playerStatistics->isNotEmpty()) {
             $byClub = $playerStatistics->groupBy('club_id')->map(function ($entries) {
-                return [
+                return $this->normalizeClubStatisticsRow([
                     'club_id' => $entries->first()->club_id,
                     'club_name' => $entries->first()->club?->name ?? 'Unknown',
                     'total_appearances' => $entries->sum('matches_played'),
@@ -172,27 +172,27 @@ class PlayerCareerController extends Controller
                     'total_assists' => $entries->sum('assists'),
                     'total_minutes' => $entries->sum('minutes_played'),
                     'seasons' => $entries->pluck('season')->filter()->unique()->count(),
-                ];
+                ]);
             })->values();
 
             $bySeason = $playerStatistics->groupBy('season')->map(function ($entries, $season) {
-                return [
+                return $this->normalizeSeasonStatisticsRow([
                     'season' => $season,
                     'appearances' => $entries->sum('matches_played'),
                     'goals' => $entries->sum('goals'),
                     'assists' => $entries->sum('assists'),
                     'minutes_played' => $entries->sum('minutes_played'),
-                ];
-            });
+                ]);
+            })->values();
 
-            $careerTotals = [
+            $careerTotals = $this->normalizeCareerTotals([
                 'appearances' => $playerStatistics->sum('matches_played'),
                 'goals' => $playerStatistics->sum('goals'),
                 'assists' => $playerStatistics->sum('assists'),
                 'minutes_played' => $playerStatistics->sum('minutes_played'),
                 'yellow_cards' => $playerStatistics->sum('yellow_cards'),
                 'red_cards' => $playerStatistics->sum('red_cards'),
-            ];
+            ]);
         }
 
         $achievementItems = $this->buildAchievementItems(
@@ -433,6 +433,76 @@ class PlayerCareerController extends Controller
         }
 
         return $items;
+    }
+
+    private function normalizeClubStatisticsRow(array $row): array
+    {
+        return [
+            'club_id' => $this->nullableInt($row['club_id'] ?? null),
+            'club_name' => (string) ($row['club_name'] ?? 'Unknown'),
+            'total_appearances' => $this->toInt($row['total_appearances'] ?? 0),
+            'total_goals' => $this->toInt($row['total_goals'] ?? 0),
+            'total_assists' => $this->toInt($row['total_assists'] ?? 0),
+            'total_minutes' => $this->toInt($row['total_minutes'] ?? 0),
+            'seasons' => $this->toInt($row['seasons'] ?? 0),
+        ];
+    }
+
+    private function normalizeSeasonStatisticsRow(array $row): array
+    {
+        $seasonLabel = trim((string) ($row['season'] ?? ''));
+        $seasonNumber = $this->nullableInt($seasonLabel);
+
+        return [
+            'season' => $seasonNumber ?? $seasonLabel,
+            'season_label' => $seasonLabel,
+            'appearances' => $this->toInt($row['appearances'] ?? 0),
+            'goals' => $this->toInt($row['goals'] ?? 0),
+            'assists' => $this->toInt($row['assists'] ?? 0),
+            'minutes_played' => $this->toInt($row['minutes_played'] ?? 0),
+        ];
+    }
+
+    private function normalizeCareerTotals(array $totals): array
+    {
+        return [
+            'appearances' => $this->toInt($totals['appearances'] ?? 0),
+            'goals' => $this->toInt($totals['goals'] ?? 0),
+            'assists' => $this->toInt($totals['assists'] ?? 0),
+            'minutes_played' => $this->toInt($totals['minutes_played'] ?? 0),
+            'yellow_cards' => $this->toInt($totals['yellow_cards'] ?? 0),
+            'red_cards' => $this->toInt($totals['red_cards'] ?? 0),
+        ];
+    }
+
+    private function toInt(mixed $value): int
+    {
+        if (is_int($value)) {
+            return $value;
+        }
+
+        if (is_numeric($value)) {
+            return (int) $value;
+        }
+
+        return 0;
+    }
+
+    private function nullableInt(mixed $value): ?int
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if (is_int($value)) {
+            return $value;
+        }
+
+        if (is_numeric($value)) {
+            return (int) $value;
+        }
+
+        return null;
     }
 
     private function ensureCareerStoreAccess($user): ?JsonResponse
