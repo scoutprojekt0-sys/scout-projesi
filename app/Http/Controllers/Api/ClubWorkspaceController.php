@@ -635,6 +635,16 @@ class ClubWorkspaceController extends Controller
             'goals' => ['nullable', 'string', 'max:20'],
             'assists' => ['nullable', 'string', 'max:20'],
             'rating' => ['nullable', 'string', 'max:20'],
+            'aggregateHighlights' => ['nullable', 'array'],
+            'aggregate_highlights' => ['nullable', 'array'],
+            'lastMatchHighlights' => ['nullable', 'array'],
+            'last_match_highlights' => ['nullable', 'array'],
+            'lastMatchRating' => ['nullable', 'string', 'max:20'],
+            'last_match_rating' => ['nullable', 'string', 'max:20'],
+            'lastMatchSummary' => ['nullable', 'string', 'max:1000'],
+            'last_match_summary' => ['nullable', 'string', 'max:1000'],
+            'lastMatchDate' => ['nullable', 'date'],
+            'last_match_date' => ['nullable', 'date'],
             'performanceMatchName' => ['nullable', 'string', 'max:160'],
             'performanceMatchDate' => ['nullable', 'date'],
             'performanceSummary' => ['nullable', 'string', 'max:1000'],
@@ -669,6 +679,21 @@ class ClubWorkspaceController extends Controller
             'goals' => $this->nullableString($validated['goals'] ?? null),
             'assists' => $this->nullableString($validated['assists'] ?? null),
             'rating' => $this->nullableString($validated['rating'] ?? null),
+            'aggregate_highlights' => $this->normalizeStatHighlights(
+                $validated['aggregateHighlights'] ?? $validated['aggregate_highlights'] ?? null
+            ),
+            'last_match_highlights' => $this->normalizeStatHighlights(
+                $validated['lastMatchHighlights'] ?? $validated['last_match_highlights'] ?? null
+            ),
+            'last_match_rating' => $this->nullableString(
+                $validated['lastMatchRating'] ?? $validated['last_match_rating'] ?? null
+            ),
+            'last_match_summary' => $this->nullableString(
+                $validated['lastMatchSummary'] ?? $validated['last_match_summary'] ?? null
+            ),
+            'last_match_date' => ! empty($validated['lastMatchDate'] ?? $validated['last_match_date'] ?? null)
+                ? Carbon::parse($validated['lastMatchDate'] ?? $validated['last_match_date'])->toIso8601String()
+                : null,
             'performance_match_name' => $this->nullableString($validated['performanceMatchName'] ?? null),
             'performance_match_date' => ! empty($validated['performanceMatchDate']) ? Carbon::parse($validated['performanceMatchDate'])->startOfDay()->toIso8601String() : null,
             'performance_summary' => $this->nullableString($validated['performanceSummary'] ?? null),
@@ -790,25 +815,26 @@ class ClubWorkspaceController extends Controller
 
         if ($hasPerformanceData && $performanceChanged) {
             array_unshift($performanceHistory, [
-                'match_name' => $payload['performance_match_name'] ?? null,
-                'match_date' => $payload['performance_match_date'] ?? null,
+                'match_name' => $payload['performance_match_name'] ?? $payload['last_match_summary'] ?? null,
+                'match_date' => $payload['performance_match_date'] ?? $payload['last_match_date'] ?? null,
                 'matches' => $payload['matches'] ?? null,
                 'minutes' => $payload['minutes'] ?? null,
                 'goals' => $payload['goals'] ?? null,
                 'assists' => $payload['assists'] ?? null,
-                'rating' => $payload['rating'] ?? null,
-                'summary' => $payload['performance_summary'] ?? null,
+                'rating' => $payload['last_match_rating'] ?? $payload['rating'] ?? null,
+                'summary' => $payload['performance_summary'] ?? $payload['last_match_summary'] ?? null,
+                'highlights' => array_values($payload['last_match_highlights'] ?? []),
                 'created_at' => $now,
             ]);
             $performanceHistory = array_slice($performanceHistory, 0, 12);
             $timelineEvents[] = $this->makeInternalPlayerTimelineEvent(
                 'performance_updated',
-                $payload['performance_match_name'] ?: 'Performans ozeti guncellendi',
-                $payload['performance_match_date'] ?: $now,
+                ($payload['performance_match_name'] ?? $payload['last_match_summary']) ?: 'Performans ozeti guncellendi',
+                ($payload['performance_match_date'] ?? $payload['last_match_date']) ?: $now,
                 trim(implode(' | ', array_filter([
-                    $payload['performance_summary'] ?? null,
+                    $payload['performance_summary'] ?? $payload['last_match_summary'] ?? null,
                     sprintf('%s dakika', $payload['minutes'] ?? '0'),
-                    sprintf('rating %s', $payload['rating'] ?? '-'),
+                    sprintf('rating %s', $payload['last_match_rating'] ?? $payload['rating'] ?? '-'),
                 ])))
             );
         }
@@ -1040,7 +1066,12 @@ class ClubWorkspaceController extends Controller
             'goals' => $player->goals,
             'assists' => $player->assists,
             'rating' => $player->rating,
+            'aggregateHighlights' => array_values($player->aggregate_highlights ?? []),
             'performanceHistory' => array_values($player->performance_history ?? []),
+            'lastMatchRating' => $player->last_match_rating,
+            'lastMatchSummary' => $player->last_match_summary,
+            'lastMatchDate' => $player->last_match_date,
+            'lastMatchHighlights' => array_values($player->last_match_highlights ?? []),
             'timelineEvents' => $timelineEvents,
             'accountEnabled' => false,
             'playerUserId' => null,
@@ -1054,9 +1085,12 @@ class ClubWorkspaceController extends Controller
     {
         $performanceHistory = array_values($player->performance_history ?? []);
         $lastPerformance = is_array($performanceHistory[0] ?? null) ? $performanceHistory[0] : null;
-        $lastHighlights = is_array($lastPerformance['highlights'] ?? null)
-            ? array_values($lastPerformance['highlights'])
-            : [];
+        $lastHighlights = array_values($player->last_match_highlights ?? []);
+        if ($lastHighlights === []) {
+            $lastHighlights = is_array($lastPerformance['highlights'] ?? null)
+                ? array_values($lastPerformance['highlights'])
+                : [];
+        }
 
         return [
             'id' => $player->id,
@@ -1078,13 +1112,35 @@ class ClubWorkspaceController extends Controller
             'goals' => $player->goals,
             'assists' => $player->assists,
             'rating' => $player->rating,
+            'aggregateHighlights' => array_values($player->aggregate_highlights ?? []),
             'performanceHistory' => $performanceHistory,
-            'lastMatchRating' => $lastPerformance['rating'] ?? null,
-            'lastMatchSummary' => $lastPerformance['summary'] ?? null,
-            'lastMatchDate' => $lastPerformance['match_date'] ?? null,
+            'lastMatchRating' => $player->last_match_rating ?? ($lastPerformance['rating'] ?? null),
+            'lastMatchSummary' => $player->last_match_summary ?? ($lastPerformance['summary'] ?? null),
+            'lastMatchDate' => $player->last_match_date ?? ($lastPerformance['match_date'] ?? null),
             'lastMatchHighlights' => $lastHighlights,
             'savedAt' => optional($player->updated_at)->toIso8601String(),
         ];
+    }
+
+    private function normalizeStatHighlights(mixed $value): array
+    {
+        if (! is_array($value)) {
+            return [];
+        }
+
+        return array_values(array_map(function ($item): array {
+            if (! is_array($item)) {
+                return [
+                    'label' => '',
+                    'value' => '',
+                ];
+            }
+
+            return [
+                'label' => trim((string) ($item['label'] ?? '')),
+                'value' => trim((string) ($item['value'] ?? '')),
+            ];
+        }, array_filter($value, fn ($item) => is_array($item))));
     }
 
     private function resolveClubLoginTeamName(User $user): string

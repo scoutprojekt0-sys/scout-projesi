@@ -37,12 +37,19 @@ class ClubInternalPlayer extends Model
         'goals',
         'assists',
         'rating',
+        'aggregate_highlights',
+        'last_match_highlights',
+        'last_match_rating',
+        'last_match_summary',
+        'last_match_date',
         'performance_history',
         'timeline_events',
     ];
 
     protected $casts = [
         'note_history' => 'array',
+        'aggregate_highlights' => 'array',
+        'last_match_highlights' => 'array',
         'performance_history' => 'array',
         'timeline_events' => 'array',
     ];
