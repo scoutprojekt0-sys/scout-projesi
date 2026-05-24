@@ -451,7 +451,10 @@ class PlayerCareerController extends Controller
     private function normalizeSeasonStatisticsRow(array $row): array
     {
         $seasonLabel = trim((string) ($row['season'] ?? ''));
-        $seasonNumber = $this->nullableInt($seasonLabel);
+        $seasonNumber = $this->normalizeSeasonYear($seasonLabel);
+        if ($seasonNumber !== null) {
+            $seasonLabel = (string) $seasonNumber;
+        }
 
         return [
             'season' => $seasonNumber ?? $seasonLabel,
@@ -461,6 +464,29 @@ class PlayerCareerController extends Controller
             'assists' => $this->toInt($row['assists'] ?? 0),
             'minutes_played' => $this->toInt($row['minutes_played'] ?? 0),
         ];
+    }
+
+    private function normalizeSeasonYear(string $value): ?int
+    {
+        $normalized = trim($value);
+        if ($normalized === '') {
+            return null;
+        }
+
+        $direct = $this->nullableInt($normalized);
+        if ($direct !== null) {
+            return $direct;
+        }
+
+        if (preg_match('/(\d{4})\s*-\s*(\d{4})$/', $normalized, $matches) === 1) {
+            return (int) $matches[2];
+        }
+
+        if (preg_match('/(\d{4})$/', $normalized, $matches) === 1) {
+            return (int) $matches[1];
+        }
+
+        return null;
     }
 
     private function normalizeCareerTotals(array $totals): array
