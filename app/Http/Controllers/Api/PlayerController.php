@@ -1183,6 +1183,11 @@ class PlayerController extends Controller
                 'cip.goals',
                 'cip.assists',
                 'cip.rating',
+                'cip.aggregate_highlights',
+                'cip.last_match_highlights',
+                'cip.last_match_rating',
+                'cip.last_match_summary',
+                'cip.last_match_date',
                 'cip.performance_history',
                 'clubs.name as club_user_name',
                 'tp.team_name as club_team_name',
@@ -1273,6 +1278,7 @@ class PlayerController extends Controller
         }
 
         $history = $this->decodeClubHistory($player->performance_history ?? null);
+        $aggregateHighlights = $this->decodeMapList($player->aggregate_highlights ?? null);
         if ($history === []) {
             $matches = max(0, (int) $this->numericValue($player->matches ?? 0));
             $minutes = max(0, (int) $this->numericValue($player->minutes ?? 0));
@@ -1288,6 +1294,7 @@ class PlayerController extends Controller
             $summary['goals'] = $primary;
             $summary['primary_stat_value'] = $primary;
             $summary['primary_stat_label'] = $sport === 'futbol' ? 'Gol' : 'Sayi';
+            $summary = $this->applyAggregateHighlightsToSummary($summary, $aggregateHighlights, $sport);
             return $this->applyClubInternalManualTotals($summary, $player, $sport);
         }
 
@@ -1373,6 +1380,7 @@ class PlayerController extends Controller
             ])),
         };
 
+        $summary = $this->applyAggregateHighlightsToSummary($summary, $aggregateHighlights, $sport);
         return $this->applyClubInternalManualTotals($summary, $player, $sport);
     }
 
@@ -1380,6 +1388,19 @@ class PlayerController extends Controller
     {
         if (! $player) {
             return null;
+        }
+
+        $lastMatchRating = $this->numericValue($player->last_match_rating ?? 0);
+        if ($lastMatchRating > 0 || ! empty($player->last_match_summary) || ! empty($player->last_match_date)) {
+            return [
+                'season' => ! empty($player->last_match_date) ? substr((string) $player->last_match_date, 0, 4) : 'Kulup',
+                'league' => (string) ($player->last_match_summary ?: ($player->current_team ?? $player->group_key ?? 'Kulup')),
+                'matches_played' => 1,
+                'minutes_played' => 0,
+                'goals' => 0,
+                'assists' => 0,
+                'rating' => $lastMatchRating > 0 ? $lastMatchRating : (float) ($summary['rating'] ?? 0),
+            ];
         }
 
         $ratingRows = $this->clubInternalRatingRows($player);
@@ -1484,6 +1505,65 @@ class PlayerController extends Controller
             }
         }
         return [];
+    }
+
+    private function decodeMapList(mixed $value): array
+    {
+        if (is_array($value)) {
+            return array_values(array_filter($value, fn ($item) => is_array($item)));
+        }
+        if (is_string($value) && trim($value) !== '') {
+            $decoded = json_decode($value, true);
+            if (is_array($decoded)) {
+                return array_values(array_filter($decoded, fn ($item) => is_array($item)));
+            }
+        }
+        return [];
+    }
+
+    private function applyAggregateHighlightsToSummary(array $summary, array $aggregateHighlights, string $sport): array
+    {
+        if ($aggregateHighlights === []) {
+            return $summary;
+        }
+
+        $readValue = function (array $labels) use ($aggregateHighlights): ?int {
+            foreach ($aggregateHighlights as $item) {
+                $label = Str::of((string) ($item['label'] ?? ''))->trim()->lower()->value();
+                foreach ($labels as $candidate) {
+                    if ($label === Str::of($candidate)->trim()->lower()->value()) {
+                        $value = $item['value'] ?? $item['count'] ?? $item['total'] ?? null;
+                        if (is_numeric((string) $value)) {
+                            return (int) $value;
+                        }
+                    }
+                }
+            }
+            return null;
+        };
+
+        if ($sport === 'voleybol') {
+            $blocks = $readValue(['Blok', 'Blocks']);
+            $receptions = $readValue(['Manset', 'Reception', 'Receptions']);
+            $aces = $readValue(['Servis Ace', 'Ace', 'Aces']);
+            if ($blocks !== null) {
+                $summary['blocks'] = $blocks;
+            }
+            if ($receptions !== null) {
+                $summary['receptions'] = $receptions;
+            }
+            if ($aces !== null) {
+                $summary['aces'] = $aces;
+            }
+            $summary['secondary_stats'] = array_values(array_filter([
+                $this->publicSummaryStat('Blok', (int) ($summary['blocks'] ?? 0)),
+                $this->publicSummaryStat('Manset', (int) ($summary['receptions'] ?? 0)),
+                $this->publicSummaryStat('Ace', (int) ($summary['aces'] ?? 0)),
+                $this->publicSummaryStat('Servis Hata', (int) ($summary['service_errors'] ?? 0)),
+            ]));
+        }
+
+        return $summary;
     }
 
     private function numericValue(mixed $value): float
