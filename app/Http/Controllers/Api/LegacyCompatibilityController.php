@@ -35,6 +35,7 @@ class LegacyCompatibilityController extends Controller
     public function discoveryCoachNeeds(): JsonResponse
     {
         $this->purgeExpiredOpportunities();
+        $sportTerms = $this->sportTerms((string) request()->query('sport', ''));
         $rows = DB::table('opportunities as o')
             ->join('users as u', 'u.id', '=', 'o.team_user_id')
             ->where('o.status', 'open')
@@ -44,6 +45,9 @@ class LegacyCompatibilityController extends Controller
                     $innerQuery->whereNull('o.expires_at')
                         ->orWhere('o.expires_at', '>', now());
                 });
+            })
+            ->when($sportTerms !== [], function ($query) use ($sportTerms) {
+                $query->whereIn(DB::raw('LOWER(COALESCE(u.sport, ""))'), $sportTerms);
             })
             ->select([
                 'o.id',
@@ -55,6 +59,7 @@ class LegacyCompatibilityController extends Controller
                 DB::raw('u.name as author_name'),
                 DB::raw('u.name as manager_name'),
                 DB::raw('u.name as club_name'),
+                DB::raw('u.sport as sport'),
                 'o.created_at',
             ])
             ->orderByDesc('o.created_at')

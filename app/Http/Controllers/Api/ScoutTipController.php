@@ -31,6 +31,7 @@ class ScoutTipController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $sportTerms = $this->sportTerms((string) $request->query('sport', ''));
         $query = ScoutTip::query()
             ->with(['submitter:id,name,scout_points,scout_rank', 'player:id,name,sport', 'videoClip:id,title,video_url'])
             ->orderByDesc('created_at');
@@ -42,6 +43,8 @@ class ScoutTipController extends Controller
         if ($request->filled('status')) {
             $query->where('status', $request->string('status'));
         }
+
+        $this->applySportTermsToScoutTipQuery($query, $sportTerms);
 
         return $this->paginatedListResponse(
             $query->paginate((int) $request->input('per_page', 20)),
@@ -64,6 +67,7 @@ class ScoutTipController extends Controller
     public function feed(Request $request): JsonResponse
     {
         $limit = max(1, min(60, (int) $request->input('limit', 2)));
+        $sportTerms = $this->sportTerms((string) $request->query('sport', ''));
 
         $rows = ScoutTip::query()
             ->select([
@@ -77,6 +81,9 @@ class ScoutTipController extends Controller
                 'created_at',
             ])
             ->whereIn('status', ['pending', 'screened', 'shortlisted', 'approved'])
+            ->when($sportTerms !== [], function ($query) use ($sportTerms) {
+                $this->applySportTermsToScoutTipQuery($query, $sportTerms);
+            })
             ->latest('created_at')
             ->limit($limit)
             ->get()
@@ -250,13 +257,19 @@ class ScoutTipController extends Controller
 
     public function watchlist(Request $request): JsonResponse
     {
+        $sportTerms = $this->sportTerms((string) $request->query('sport', ''));
         $rows = ScoutTipWatchlist::query()
             ->with([
                 'scoutTip.submitter:id,name',
                 'scoutTip.roleRequests.user:id,name,role',
-                'player:id,name,role,city,position,age,rating',
+                'player:id,name,role,city,position,age,rating,sport',
             ])
             ->where('manager_user_id', $request->user()->id)
+            ->when($sportTerms !== [], function ($query) use ($sportTerms) {
+                $query->whereHas('player', function ($innerQuery) use ($sportTerms) {
+                    $innerQuery->whereIn(DB::raw('LOWER(COALESCE(sport, ""))'), $sportTerms);
+                });
+            })
             ->latest('id')
             ->get();
 
@@ -266,6 +279,7 @@ class ScoutTipController extends Controller
     public function staffInbox(Request $request): JsonResponse
     {
         $user = $request->user();
+        $sportTerms = $this->sportTerms((string) $request->query('sport', ''));
 
         if (! $user || ! in_array((string) $user->role, ['coach', 'team', 'club'], true)) {
             return $this->errorResponse('Bu akis sadece kulup ve antrenor hesaplari icin acik.', 403, 'forbidden');
@@ -274,11 +288,14 @@ class ScoutTipController extends Controller
         $rows = ScoutTip::query()
             ->with([
                 'submitter:id,name,role',
-                'player:id,name,role,city,position,age,rating',
+                'player:id,name,role,city,position,age,rating,sport',
                 'videoClip:id,title,video_url',
             ])
             ->whereIn('status', ['shortlisted', 'approved', 'trial', 'signed'])
             ->whereHas('submitter', fn ($query) => $query->where('role', 'manager'))
+            ->when($sportTerms !== [], function ($query) use ($sportTerms) {
+                $this->applySportTermsToScoutTipQuery($query, $sportTerms);
+            })
             ->latest('shortlisted_at')
             ->latest('created_at')
             ->paginate((int) $request->input('per_page', 20));
@@ -368,6 +385,7 @@ class ScoutTipController extends Controller
     public function roleRequestFeed(Request $request): JsonResponse
     {
         $user = $request->user();
+        $sportTerms = $this->sportTerms((string) $request->query('sport', ''));
 
         if (! $this->canRequestRole($user)) {
             return $this->errorResponse('Bu akis sadece kulup ve antrenor hesaplari icin acik.', 403, 'forbidden');
@@ -379,11 +397,15 @@ class ScoutTipController extends Controller
             ->with([
                 'submitter:id,name,role',
                 'roleRequests.user:id,name,role',
+                'player:id,name,sport',
             ])
             ->whereIn('status', ['pending', 'screened', 'shortlisted', 'approved'])
             ->where(function ($query) use ($user) {
                 $query->whereNull('metadata->dismissed_by_user_ids')
                     ->orWhereJsonDoesntContain('metadata->dismissed_by_user_ids', (int) $user->id);
+            })
+            ->when($sportTerms !== [], function ($query) use ($sportTerms) {
+                $this->applySportTermsToScoutTipQuery($query, $sportTerms);
             })
             ->latest('created_at')
             ->paginate((int) $request->input('per_page', 20));
@@ -670,6 +692,34 @@ class ScoutTipController extends Controller
         }
 
         return in_array($user->role, ['coach', 'team', 'club'], true);
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function sportTerms(string $raw): array
+    {
+        $sport = mb_strtolower(trim($raw));
+        if ($sport === '' || $sport === 'all' || $sport === 'coklu spor') {
+            return [];
+        }
+
+        return match ($sport) {
+            'basketbol', 'basketball' => ['basketbol', 'basketball'],
+            'voleybol', 'volleyball' => ['voleybol', 'volleyball'],
+            default => ['futbol', 'football'],
+        };
+    }
+
+    private function applySportTermsToScoutTipQuery($query, array $sportTerms): void
+    {
+        if ($sportTerms === []) {
+            return;
+        }
+
+        $query->whereHas('player', function ($innerQuery) use ($sportTerms) {
+            $innerQuery->whereIn(DB::raw('LOWER(COALESCE(sport, ""))'), $sportTerms);
+        });
     }
 
     private function normalizeRoleRequestType(string $role): string
