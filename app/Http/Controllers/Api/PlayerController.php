@@ -1162,12 +1162,6 @@ class PlayerController extends Controller
             return null;
         }
 
-        $normalizedName = $this->normalizeCompactLookupValue((string) ($player->name ?? ''));
-        $normalizedTeam = $this->normalizeCompactLookupValue((string) ($player->current_team ?? ''));
-        if ($normalizedName === '') {
-            return null;
-        }
-
         $baseQuery = DB::table('club_internal_players as cip')
             ->join('users as clubs', 'clubs.id', '=', 'cip.club_user_id')
             ->leftJoin('team_profiles as tp', 'tp.user_id', '=', 'clubs.id')
@@ -1193,6 +1187,37 @@ class PlayerController extends Controller
                 'clubs.name as club_user_name',
                 'tp.team_name as club_team_name',
             ]);
+
+        if (Schema::hasTable('player_statistics')) {
+            $statsRows = DB::table('player_statistics')
+                ->where('user_id', (int) $player->id)
+                ->orderByDesc('id')
+                ->get(['metadata']);
+            foreach ($statsRows as $statsRow) {
+                $metadata = is_array($statsRow->metadata ?? null)
+                    ? $statsRow->metadata
+                    : json_decode((string) ($statsRow->metadata ?? ''), true);
+                $clubInternalPlayerId = is_array($metadata)
+                    ? (int) ($metadata['club_internal_player_id'] ?? 0)
+                    : 0;
+                if ($clubInternalPlayerId <= 0) {
+                    continue;
+                }
+                $linkedPlayer = (clone $baseQuery)
+                    ->where('cip.id', $clubInternalPlayerId)
+                    ->first();
+                if ($linkedPlayer) {
+                    $linkedPlayer->current_team = trim((string) ($linkedPlayer->club_team_name ?: $linkedPlayer->club_user_name ?: $linkedPlayer->group_key));
+                    return $linkedPlayer;
+                }
+            }
+        }
+
+        $normalizedName = $this->normalizeCompactLookupValue((string) ($player->name ?? ''));
+        $normalizedTeam = $this->normalizeCompactLookupValue((string) ($player->current_team ?? ''));
+        if ($normalizedName === '') {
+            return null;
+        }
 
         $rows = $baseQuery
             ->whereRaw("LOWER(REPLACE(TRIM(cip.name), ' ', '')) = ?", [$normalizedName])
@@ -1263,7 +1288,7 @@ class PlayerController extends Controller
             $summary['goals'] = $primary;
             $summary['primary_stat_value'] = $primary;
             $summary['primary_stat_label'] = $sport === 'futbol' ? 'Gol' : 'Sayi';
-            return $summary;
+            return $this->applyClubInternalManualTotals($summary, $player, $sport);
         }
 
         $matches = count($history);
@@ -1348,7 +1373,7 @@ class PlayerController extends Controller
             ])),
         };
 
-        return $summary;
+        return $this->applyClubInternalManualTotals($summary, $player, $sport);
     }
 
     private function buildClubInternalLatestForPublicProfile(?object $player, array $summary, string $sport): ?array
@@ -1571,6 +1596,35 @@ class PlayerController extends Controller
                 $this->publicSummaryStat('Kirmizi Kart', $redCards),
             ])),
         };
+
+        return $summary;
+    }
+
+    private function applyClubInternalManualTotals(array $summary, object $player, string $sport): array
+    {
+        $manualMatches = max(0, (int) $this->numericValue($player->matches ?? 0));
+        $manualMinutes = max(0, (int) $this->numericValue($player->minutes ?? 0));
+        $manualPrimary = max(0, (int) $this->numericValue($player->goals ?? 0));
+        $manualAssists = max(0, (int) $this->numericValue($player->assists ?? 0));
+        $manualRating = max(0.0, (float) $this->numericValue($player->rating ?? 0));
+
+        if ($manualMatches > ($summary['matches'] ?? 0)) {
+            $summary['matches'] = $manualMatches;
+        }
+        if ($manualMinutes > ($summary['minutes'] ?? 0)) {
+            $summary['minutes'] = $manualMinutes;
+        }
+        if ($manualAssists > ($summary['assists'] ?? 0)) {
+            $summary['assists'] = $manualAssists;
+        }
+        if ($manualPrimary > ($summary['goals'] ?? 0)) {
+            $summary['goals'] = $manualPrimary;
+            $summary['primary_stat_value'] = $manualPrimary;
+            $summary['primary_stat_label'] = $sport === 'futbol' ? 'Gol' : 'Sayi';
+        }
+        if ($manualRating > ($summary['rating'] ?? 0)) {
+            $summary['rating'] = $manualRating;
+        }
 
         return $summary;
     }

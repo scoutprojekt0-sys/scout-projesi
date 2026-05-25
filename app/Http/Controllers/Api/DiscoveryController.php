@@ -498,10 +498,10 @@ class DiscoveryController extends Controller
         }
 
         $role = strtolower((string) ($user->role ?? ''));
-        $weekStart = now()->startOfWeek();
         $weekEnd = now();
-        $previousWeekStart = $weekStart->copy()->subWeek();
+        $weekStart = $weekEnd->copy()->subDays(7);
         $previousWeekEnd = $weekStart->copy()->subSecond();
+        $previousWeekStart = $previousWeekEnd->copy()->subDays(7);
 
         $summary = match ($role) {
             'scout' => $this->buildScoutWeeklySummary((int) $user->id, $weekStart, $weekEnd, $previousWeekStart, $previousWeekEnd),
