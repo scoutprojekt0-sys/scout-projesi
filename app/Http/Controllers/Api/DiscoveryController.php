@@ -979,11 +979,16 @@ class DiscoveryController extends Controller
         $playerAge = (int) ($player->age ?? 0);
         $playerCity = $this->normalizeText($player->city);
         $hasTeam = ! empty($player->current_team);
+        $requestedSport = (string) request()->query('sport', '');
+        $sportTerms = $this->sportTerms($requestedSport);
 
         $rows = DB::table('opportunities as o')
             ->join('users as owner', 'o.team_user_id', '=', 'owner.id')
             ->where('o.status', 'open')
             ->whereIn('owner.role', ['team', 'manager'])
+            ->when($sportTerms !== [], function ($query) use ($sportTerms) {
+                $query->whereIn(DB::raw('LOWER(COALESCE(owner.sport, ""))'), $sportTerms);
+            })
             ->when(Schema::hasColumn('opportunities', 'expires_at'), function ($query) {
                 $query->where(function ($innerQuery) {
                     $innerQuery->whereNull('o.expires_at')
@@ -1001,6 +1006,7 @@ class DiscoveryController extends Controller
                 'o.created_at',
                 'owner.name as owner_name',
                 'owner.role as owner_role',
+                'owner.sport as owner_sport',
             ])
             ->orderByDesc('o.created_at')
             ->limit(50)
@@ -1008,7 +1014,12 @@ class DiscoveryController extends Controller
 
         $matches = collect($rows)
             ->map(function ($row) use ($playerPosition, $playerAge, $playerCity, $hasTeam) {
-                return $this->buildOpportunityMatch($row, $playerPosition, $playerAge, $playerCity, $hasTeam);
+                $match = $this->buildOpportunityMatch($row, $playerPosition, $playerAge, $playerCity, $hasTeam);
+                if ($match === null) {
+                    return null;
+                }
+                $match['sport'] = (string) ($row->owner_sport ?? '');
+                return $match;
             })
             ->filter()
             ->sortByDesc('match_score')
