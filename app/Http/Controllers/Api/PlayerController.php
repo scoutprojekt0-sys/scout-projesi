@@ -358,6 +358,7 @@ class PlayerController extends Controller
         $statsPayload = $this->buildPlayerStatsPayload($id, $player, $clubInternalPlayer, $sport);
         $summary = $statsPayload['summary'];
         $latest = $statsPayload['latest'];
+        $clubPerformance = $statsPayload['club_performance'] ?? null;
         $talentMetrics = $this->buildTalentMetrics($summary, $sport);
 
         $position = $player->position
@@ -448,6 +449,7 @@ class PlayerController extends Controller
                     'summary' => $summary,
                     'latest' => $latestSummary,
                     'history' => $historyRows->values(),
+                    'club_performance' => $clubPerformance,
                 ],
             ],
         ]);
@@ -508,11 +510,8 @@ class PlayerController extends Controller
 
         $clubSummary = $this->buildClubInternalSummaryForPublicProfile($clubInternalPlayer, $sport);
         $useClubInternalStats = $clubInternalPlayer !== null && (($clubSummary['matches'] ?? 0) > 0);
-        if ($useClubInternalStats) {
-            $summary = $clubSummary;
-        }
 
-        $latest = ! $useClubInternalStats && $latestRow
+        $latest = $latestRow
             ? [
                 'season' => $latestRow->season,
                 'league' => $latestRow->league,
@@ -522,9 +521,11 @@ class PlayerController extends Controller
                 'assists' => (int) ($latestRow->assists ?? 0),
                 'rating' => $latestRow->avg_rating !== null ? (float) $latestRow->avg_rating : (float) ($summary['rating'] ?? 0),
             ]
-            : $this->buildClubInternalLatestForPublicProfile($clubInternalPlayer, $summary, $sport);
+            : ($useClubInternalStats
+                ? $this->buildClubInternalLatestForPublicProfile($clubInternalPlayer, $clubSummary, $sport)
+                : null);
 
-        $history = ! $useClubInternalStats && $statsRows->isNotEmpty()
+        $history = $statsRows->isNotEmpty()
             ? $statsRows->map(fn ($row) => [
                 'season' => $row->season,
                 'league' => $row->league,
@@ -536,12 +537,19 @@ class PlayerController extends Controller
                 'assists' => (int) ($row->assists ?? 0),
                 'avg_rating' => $row->avg_rating !== null ? (float) $row->avg_rating : null,
             ])->values()->all()
-            : $this->buildClubInternalHistoryForPublicProfile($clubInternalPlayer, $sport);
+            : [];
+
+        $clubPerformance = $useClubInternalStats ? [
+            'summary' => $clubSummary,
+            'latest' => $this->buildClubInternalLatestForPublicProfile($clubInternalPlayer, $clubSummary, $sport),
+            'history' => $this->buildClubInternalHistoryForPublicProfile($clubInternalPlayer, $sport),
+        ] : null;
 
         return [
             'summary' => $summary,
             'latest' => $latest,
             'history' => $history,
+            'club_performance' => $clubPerformance,
         ];
     }
 
