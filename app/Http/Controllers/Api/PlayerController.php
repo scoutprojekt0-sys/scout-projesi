@@ -1280,13 +1280,16 @@ class PlayerController extends Controller
             return $this->buildPublicProfileSummary(collect(), $sport, 0.0);
         }
 
-        $ratingRows = $this->clubInternalRatingRows($player);
-        if ($ratingRows->isNotEmpty()) {
-            return $this->buildClubSummaryFromRatingRows($ratingRows, $sport);
-        }
-
         $history = $this->decodeClubHistory($player->performance_history ?? null);
         $aggregateHighlights = $this->decodeMapList($player->aggregate_highlights ?? null);
+        $ratingRows = $this->clubInternalRatingRows($player);
+
+        if ($history === [] && $ratingRows->isNotEmpty()) {
+            $summary = $this->buildClubSummaryFromRatingRows($ratingRows, $sport);
+            $summary = $this->applyAggregateHighlightsToSummary($summary, $aggregateHighlights, $sport);
+            return $this->applyClubInternalManualTotals($summary, $player, $sport);
+        }
+
         if ($history === []) {
             $matches = max(0, (int) $this->numericValue($player->matches ?? 0));
             $minutes = max(0, (int) $this->numericValue($player->minutes ?? 0));
@@ -1398,18 +1401,19 @@ class PlayerController extends Controller
             return null;
         }
 
-        $lastMatchRating = $this->numericValue($player->last_match_rating ?? 0);
-        if ($lastMatchRating > 0 || ! empty($player->last_match_summary) || ! empty($player->last_match_date)) {
+        $history = $this->decodeClubHistory($player->performance_history ?? null);
+        if ($history !== []) {
+            $latest = $history[0];
             return [
-                'season' => ! empty($player->last_match_date) ? substr((string) $player->last_match_date, 0, 4) : 'Kulup',
-                'league' => (string) ($player->last_match_summary ?: ($player->current_team ?? $player->group_key ?? 'Kulup')),
+                'season' => substr((string) ($latest['match_date'] ?? now()->toDateString()), 0, 4),
+                'league' => (string) ($latest['match_name'] ?? 'Canli Mac'),
                 'matches_played' => 1,
-                'minutes_played' => 0,
-                'goals' => 0,
-                'assists' => 0,
-                'rating' => $lastMatchRating > 0 ? $lastMatchRating : (float) ($summary['rating'] ?? 0),
-                'summary' => (string) ($player->last_match_summary ?: ($player->current_team ?? $player->group_key ?? 'Kulup')),
-                'match_date' => ! empty($player->last_match_date) ? (string) $player->last_match_date : null,
+                'minutes_played' => (int) $this->numericValue($latest['minutes'] ?? 0),
+                'goals' => (int) $this->numericValue($latest['goals'] ?? 0),
+                'assists' => (int) $this->numericValue($latest['assists'] ?? 0),
+                'rating' => (float) $this->numericValue($latest['rating'] ?? ($summary['rating'] ?? 0)),
+                'summary' => (string) (($latest['summary'] ?? $latest['match_name'] ?? 'Canli Mac')),
+                'match_date' => ! empty($latest['match_date']) ? (string) $latest['match_date'] : null,
             ];
         }
 
@@ -1430,39 +1434,67 @@ class PlayerController extends Controller
             ];
         }
 
-        $history = $this->decodeClubHistory($player->performance_history ?? null);
-        if ($history === []) {
-            return ($summary['matches'] ?? 0) > 0 ? [
-                'season' => 'Kulup',
-                'league' => $player->current_team ?? $player->group_key ?? 'Kulup',
-                'matches_played' => (int) ($summary['matches'] ?? 0),
-                'minutes_played' => (int) ($summary['minutes'] ?? 0),
-                'goals' => (int) ($summary['goals'] ?? 0),
-                'assists' => (int) ($summary['assists'] ?? 0),
-                'rating' => (float) ($summary['rating'] ?? 0),
-                'summary' => $player->current_team ?? $player->group_key ?? 'Kulup',
-                'match_date' => null,
-            ] : null;
+        $lastMatchRating = $this->numericValue($player->last_match_rating ?? 0);
+        if ($lastMatchRating > 0 || ! empty($player->last_match_summary) || ! empty($player->last_match_date)) {
+            return [
+                'season' => ! empty($player->last_match_date) ? substr((string) $player->last_match_date, 0, 4) : 'Kulup',
+                'league' => (string) ($player->last_match_summary ?: ($player->current_team ?? $player->group_key ?? 'Kulup')),
+                'matches_played' => 1,
+                'minutes_played' => 0,
+                'goals' => 0,
+                'assists' => 0,
+                'rating' => $lastMatchRating > 0 ? $lastMatchRating : (float) ($summary['rating'] ?? 0),
+                'summary' => (string) ($player->last_match_summary ?: ($player->current_team ?? $player->group_key ?? 'Kulup')),
+                'match_date' => ! empty($player->last_match_date) ? (string) $player->last_match_date : null,
+            ];
         }
 
-        $latest = $history[0];
-        return [
-            'season' => substr((string) ($latest['match_date'] ?? now()->toDateString()), 0, 4),
-            'league' => (string) ($latest['match_name'] ?? 'Canli Mac'),
-            'matches_played' => 1,
-            'minutes_played' => (int) $this->numericValue($latest['minutes'] ?? 0),
-            'goals' => (int) $this->numericValue($latest['goals'] ?? 0),
-            'assists' => (int) $this->numericValue($latest['assists'] ?? 0),
-            'rating' => (float) $this->numericValue($latest['rating'] ?? ($summary['rating'] ?? 0)),
-            'summary' => (string) ($latest['match_name'] ?? 'Canli Mac'),
-            'match_date' => ! empty($latest['match_date']) ? (string) $latest['match_date'] : null,
-        ];
+        return ($summary['matches'] ?? 0) > 0 ? [
+            'season' => 'Kulup',
+            'league' => $player->current_team ?? $player->group_key ?? 'Kulup',
+            'matches_played' => (int) ($summary['matches'] ?? 0),
+            'minutes_played' => (int) ($summary['minutes'] ?? 0),
+            'goals' => (int) ($summary['goals'] ?? 0),
+            'assists' => (int) ($summary['assists'] ?? 0),
+            'rating' => (float) ($summary['rating'] ?? 0),
+            'summary' => $player->current_team ?? $player->group_key ?? 'Kulup',
+            'match_date' => null,
+        ] : null;
     }
 
     private function buildClubInternalHistoryForPublicProfile(?object $player, string $sport): array
     {
         if (! $player) {
             return [];
+        }
+
+        $history = $this->decodeClubHistory($player->performance_history ?? null);
+        if ($history !== []) {
+            return array_map(function (array $item) use ($sport): array {
+                $summaryMap = is_array($item['summary_map'] ?? null) ? $item['summary_map'] : [];
+                $primary = (int) $this->numericValue($item['goals'] ?? 0);
+                if ($sport === 'basketbol') {
+                    $primary = ((int) $this->numericValue($summaryMap['two_pt_made'] ?? 0) * 2)
+                        + ((int) $this->numericValue($summaryMap['three_pt_made'] ?? 0) * 3)
+                        + (int) $this->numericValue(($summaryMap['ft_made'] ?? 0) + ($summaryMap['ft_made_alt'] ?? 0));
+                } elseif ($sport === 'voleybol') {
+                    $primary = (int) $this->numericValue($summaryMap['points'] ?? $item['goals'] ?? 0);
+                }
+
+                return [
+                    'season' => substr((string) ($item['match_date'] ?? now()->toDateString()), 0, 4),
+                    'league' => (string) ($item['match_name'] ?? 'Canli Mac'),
+                    'matches_played' => 1,
+                    'matches_started' => 1,
+                    'matches_benched' => 0,
+                    'minutes_played' => (int) $this->numericValue($item['minutes'] ?? 0),
+                    'goals' => $primary,
+                    'assists' => (int) $this->numericValue($item['assists'] ?? 0),
+                    'avg_rating' => (float) $this->numericValue($item['rating'] ?? 0),
+                    'summary' => (string) (($item['summary'] ?? $item['match_name'] ?? 'Canli Mac')),
+                    'match_date' => ! empty($item['match_date']) ? (string) $item['match_date'] : null,
+                ];
+            }, $history);
         }
 
         $ratingRows = $this->clubInternalRatingRows($player);
@@ -1479,34 +1511,12 @@ class PlayerController extends Controller
                     'goals' => $this->clubPrimaryFromRatingSummary($summaryMap, $sport),
                     'assists' => (int) $this->numericValue($summaryMap['assists'] ?? 0),
                     'avg_rating' => (float) $this->numericValue($row->final_rating ?? 0),
+                    'summary' => (string) ($row->match_title ?? 'Canli Mac'),
+                    'match_date' => ! empty($row->match_date) ? (string) $row->match_date : null,
                 ];
             })->values()->all();
         }
-
-        $history = $this->decodeClubHistory($player->performance_history ?? null);
-        return array_map(function (array $item) use ($sport): array {
-            $summaryMap = is_array($item['summary_map'] ?? null) ? $item['summary_map'] : [];
-            $primary = (int) $this->numericValue($item['goals'] ?? 0);
-            if ($sport === 'basketbol') {
-                $primary = ((int) $this->numericValue($summaryMap['two_pt_made'] ?? 0) * 2)
-                    + ((int) $this->numericValue($summaryMap['three_pt_made'] ?? 0) * 3)
-                    + (int) $this->numericValue(($summaryMap['ft_made'] ?? 0) + ($summaryMap['ft_made_alt'] ?? 0));
-            } elseif ($sport === 'voleybol') {
-                $primary = (int) $this->numericValue($summaryMap['points'] ?? $item['goals'] ?? 0);
-            }
-
-            return [
-                'season' => substr((string) ($item['match_date'] ?? now()->toDateString()), 0, 4),
-                'league' => (string) ($item['match_name'] ?? 'Canli Mac'),
-                'matches_played' => 1,
-                'matches_started' => 1,
-                'matches_benched' => 0,
-                'minutes_played' => (int) $this->numericValue($item['minutes'] ?? 0),
-                'goals' => $primary,
-                'assists' => (int) $this->numericValue($item['assists'] ?? 0),
-                'avg_rating' => (float) $this->numericValue($item['rating'] ?? 0),
-            ];
-        }, $history);
+        return [];
     }
 
     private function decodeClubHistory(mixed $value): array
