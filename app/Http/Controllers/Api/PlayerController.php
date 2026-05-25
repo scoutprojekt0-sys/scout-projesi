@@ -1408,6 +1408,8 @@ class PlayerController extends Controller
                 'goals' => 0,
                 'assists' => 0,
                 'rating' => $lastMatchRating > 0 ? $lastMatchRating : (float) ($summary['rating'] ?? 0),
+                'summary' => (string) ($player->last_match_summary ?: ($player->current_team ?? $player->group_key ?? 'Kulup')),
+                'match_date' => ! empty($player->last_match_date) ? (string) $player->last_match_date : null,
             ];
         }
 
@@ -1423,6 +1425,8 @@ class PlayerController extends Controller
                 'goals' => $this->clubPrimaryFromRatingSummary($summaryMap, $sport),
                 'assists' => (int) $this->numericValue($summaryMap['assists'] ?? 0),
                 'rating' => (float) $this->numericValue($latest->final_rating ?? ($summary['rating'] ?? 0)),
+                'summary' => (string) ($latest->match_title ?? 'Canli Mac'),
+                'match_date' => ! empty($latest->match_date) ? (string) $latest->match_date : null,
             ];
         }
 
@@ -1436,6 +1440,8 @@ class PlayerController extends Controller
                 'goals' => (int) ($summary['goals'] ?? 0),
                 'assists' => (int) ($summary['assists'] ?? 0),
                 'rating' => (float) ($summary['rating'] ?? 0),
+                'summary' => $player->current_team ?? $player->group_key ?? 'Kulup',
+                'match_date' => null,
             ] : null;
         }
 
@@ -1448,6 +1454,8 @@ class PlayerController extends Controller
             'goals' => (int) $this->numericValue($latest['goals'] ?? 0),
             'assists' => (int) $this->numericValue($latest['assists'] ?? 0),
             'rating' => (float) $this->numericValue($latest['rating'] ?? ($summary['rating'] ?? 0)),
+            'summary' => (string) ($latest['match_name'] ?? 'Canli Mac'),
+            'match_date' => ! empty($latest['match_date']) ? (string) $latest['match_date'] : null,
         ];
     }
 
