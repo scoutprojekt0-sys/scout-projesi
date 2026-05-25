@@ -507,11 +507,12 @@ class PlayerController extends Controller
         );
 
         $clubSummary = $this->buildClubInternalSummaryForPublicProfile($clubInternalPlayer, $sport);
-        if (($summary['matches'] ?? 0) <= 0 && ($clubSummary['matches'] ?? 0) > 0) {
+        $useClubInternalStats = $clubInternalPlayer !== null && (($clubSummary['matches'] ?? 0) > 0);
+        if ($useClubInternalStats) {
             $summary = $clubSummary;
         }
 
-        $latest = $latestRow
+        $latest = ! $useClubInternalStats && $latestRow
             ? [
                 'season' => $latestRow->season,
                 'league' => $latestRow->league,
@@ -523,7 +524,7 @@ class PlayerController extends Controller
             ]
             : $this->buildClubInternalLatestForPublicProfile($clubInternalPlayer, $summary, $sport);
 
-        $history = $statsRows->isNotEmpty()
+        $history = ! $useClubInternalStats && $statsRows->isNotEmpty()
             ? $statsRows->map(fn ($row) => [
                 'season' => $row->season,
                 'league' => $row->league,
@@ -1274,6 +1275,7 @@ class PlayerController extends Controller
         $turnovers = 0;
         $rebounds = 0;
         $blocks = 0;
+        $receptions = 0;
         $aces = 0;
         $serviceErrors = 0;
 
@@ -1302,6 +1304,7 @@ class PlayerController extends Controller
             if ($sport === 'voleybol') {
                 $goals += (int) $this->numericValue($summaryMap['points'] ?? $item['goals'] ?? 0);
                 $blocks += (int) $this->numericValue($summaryMap['blocks'] ?? 0);
+                $receptions += (int) $this->numericValue($summaryMap['receptions'] ?? 0);
                 $aces += (int) $this->numericValue($summaryMap['aces'] ?? 0);
                 $serviceErrors += (int) $this->numericValue($summaryMap['service_errors'] ?? 0);
                 continue;
@@ -1324,6 +1327,7 @@ class PlayerController extends Controller
         $summary['turnovers'] = $turnovers;
         $summary['rebounds'] = $rebounds;
         $summary['blocks'] = $blocks;
+        $summary['receptions'] = $receptions;
         $summary['aces'] = $aces;
         $summary['service_errors'] = $serviceErrors;
         $summary['secondary_stats'] = match ($sport) {
@@ -1335,6 +1339,7 @@ class PlayerController extends Controller
             ])),
             'voleybol' => array_values(array_filter([
                 $this->publicSummaryStat('Blok', $blocks),
+                $this->publicSummaryStat('Manset', $receptions),
                 $this->publicSummaryStat('Ace', $aces),
                 $this->publicSummaryStat('Servis Hata', $serviceErrors),
             ])),
@@ -1492,6 +1497,7 @@ class PlayerController extends Controller
         $turnovers = 0;
         $rebounds = 0;
         $blocks = 0;
+        $receptions = 0;
         $aces = 0;
         $serviceErrors = 0;
         $yellowCards = 0;
@@ -1517,6 +1523,7 @@ class PlayerController extends Controller
 
             if ($sport === 'voleybol') {
                 $blocks += (int) $this->numericValue($summary['blocks'] ?? 0);
+                $receptions += (int) $this->numericValue($summary['receptions'] ?? 0);
                 $aces += (int) $this->numericValue($summary['aces'] ?? 0);
                 $serviceErrors += (int) $this->numericValue($summary['service_errors'] ?? 0);
                 $turnovers += (int) $this->numericValue($summary['turnovers'] ?? 0);
@@ -1541,6 +1548,7 @@ class PlayerController extends Controller
         $summary['turnovers'] = $turnovers;
         $summary['rebounds'] = $rebounds;
         $summary['blocks'] = $blocks;
+        $summary['receptions'] = $receptions;
         $summary['aces'] = $aces;
         $summary['service_errors'] = $serviceErrors;
         $summary['yellow_cards'] = $yellowCards;
@@ -1553,6 +1561,7 @@ class PlayerController extends Controller
             ])),
             'voleybol' => array_values(array_filter([
                 $this->publicSummaryStat('Blok', $blocks),
+                $this->publicSummaryStat('Manset', $receptions),
                 $this->publicSummaryStat('Ace', $aces),
                 $this->publicSummaryStat('Servis Hata', $serviceErrors),
             ])),
