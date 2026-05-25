@@ -1521,16 +1521,56 @@ class PlayerController extends Controller
 
     private function decodeClubHistory(mixed $value): array
     {
+        $rows = [];
         if (is_array($value)) {
-            return array_values(array_filter($value, fn ($item) => is_array($item)));
+            $rows = array_values(array_filter($value, fn ($item) => is_array($item)));
         }
-        if (is_string($value) && trim($value) !== '') {
+        if ($rows === [] && is_string($value) && trim($value) !== '') {
             $decoded = json_decode($value, true);
             if (is_array($decoded)) {
-                return array_values(array_filter($decoded, fn ($item) => is_array($item)));
+                $rows = array_values(array_filter($decoded, fn ($item) => is_array($item)));
             }
         }
-        return [];
+        if ($rows === []) {
+            return [];
+        }
+
+        $filtered = [];
+        $seen = [];
+
+        foreach ($rows as $item) {
+            $matchDate = trim((string) ($item['match_date'] ?? $item['date'] ?? ''));
+            $matchName = trim((string) ($item['match_name'] ?? $item['league'] ?? ''));
+            $summary = trim((string) ($item['summary'] ?? ''));
+            $minutes = (int) $this->numericValue($item['minutes'] ?? $item['minutes_played'] ?? 0);
+            $goals = (int) $this->numericValue($item['goals'] ?? 0);
+            $assists = (int) $this->numericValue($item['assists'] ?? 0);
+            $rating = (float) $this->numericValue($item['rating'] ?? $item['avg_rating'] ?? 0);
+
+            $isSyntheticLiveRow = $matchName === 'Canli Mac' && $matchDate !== '' && $summary === '';
+            if ($isSyntheticLiveRow) {
+                continue;
+            }
+
+            $identity = implode('|', [
+                $matchDate !== '' ? $matchDate : 'no-date',
+                $matchName !== '' ? $matchName : 'no-name',
+                $summary !== '' ? $summary : 'no-summary',
+                $minutes,
+                $goals,
+                $assists,
+                number_format($rating, 2, '.', ''),
+            ]);
+
+            if (isset($seen[$identity])) {
+                continue;
+            }
+
+            $seen[$identity] = true;
+            $filtered[] = $item;
+        }
+
+        return array_values($filtered);
     }
 
     private function decodeMapList(mixed $value): array
