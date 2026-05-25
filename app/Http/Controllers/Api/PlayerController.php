@@ -1570,37 +1570,65 @@ class PlayerController extends Controller
             $filtered[] = $item;
         }
 
-        $grouped = [];
-
+        $rowsByDay = [];
         foreach ($filtered as $item) {
             $matchDateRaw = trim((string) ($item['match_date'] ?? $item['date'] ?? ''));
             $matchDateKey = $matchDateRaw !== '' ? substr($matchDateRaw, 0, 10) : 'no-date';
-            $matchName = trim((string) ($item['match_name'] ?? $item['league'] ?? ''));
-            $summary = trim((string) ($item['summary'] ?? ''));
-            $normalizedName = $matchName !== '' && $matchName !== 'Canli Mac'
-                ? $matchName
-                : ($summary !== '' ? $summary : 'unknown');
-            $groupKey = mb_strtolower($matchDateKey.'|'.$normalizedName, 'UTF-8');
+            $rowsByDay[$matchDateKey][] = $item;
+        }
 
-            $score = 0;
-            $score += (int) $this->numericValue($item['minutes'] ?? $item['minutes_played'] ?? 0) * 100;
-            $score += (int) $this->numericValue($item['goals'] ?? 0) * 20;
-            $score += (int) $this->numericValue($item['assists'] ?? 0) * 20;
-            $score += (int) round($this->numericValue($item['rating'] ?? $item['avg_rating'] ?? 0) * 10);
-            $score += strlen($summary);
+        $grouped = [];
 
-            if (! isset($grouped[$groupKey]) || $score >= $grouped[$groupKey]['__score']) {
-                $grouped[$groupKey] = [
-                    '__score' => $score,
-                    '__item' => $item,
-                ];
+        foreach ($rowsByDay as $matchDateKey => $dayRows) {
+            $meaningfulNames = [];
+            foreach ($dayRows as $item) {
+                $matchName = trim((string) ($item['match_name'] ?? $item['league'] ?? ''));
+                if ($matchName !== '' && mb_strtolower($matchName, 'UTF-8') !== 'canli mac') {
+                    $meaningfulNames[mb_strtolower($matchName, 'UTF-8')] = $matchName;
+                }
+            }
+
+            $collapseWholeDay = count($meaningfulNames) <= 1;
+
+            foreach ($dayRows as $item) {
+                $matchName = trim((string) ($item['match_name'] ?? $item['league'] ?? ''));
+                $summary = trim((string) ($item['summary'] ?? ''));
+                $normalizedName = $matchName !== '' && mb_strtolower($matchName, 'UTF-8') !== 'canli mac'
+                    ? $matchName
+                    : ($summary !== '' ? $summary : 'unknown');
+                $groupKey = $collapseWholeDay
+                    ? $matchDateKey
+                    : mb_strtolower($matchDateKey.'|'.$normalizedName, 'UTF-8');
+
+                $score = 0;
+                $score += (int) $this->numericValue($item['minutes'] ?? $item['minutes_played'] ?? 0) * 100;
+                $score += (int) $this->numericValue($item['goals'] ?? 0) * 20;
+                $score += (int) $this->numericValue($item['assists'] ?? 0) * 20;
+                $score += (int) round($this->numericValue($item['rating'] ?? $item['avg_rating'] ?? 0) * 10);
+                $score += strlen($summary);
+
+                if (! isset($grouped[$groupKey]) || $score >= $grouped[$groupKey]['__score']) {
+                    $grouped[$groupKey] = [
+                        '__score' => $score,
+                        '__item' => $item,
+                    ];
+                }
             }
         }
 
-        return array_values(array_map(
+        $result = array_values(array_map(
             fn (array $entry): array => $entry['__item'],
             array_values($grouped),
         ));
+
+        usort($result, function (array $left, array $right): int {
+            $leftTime = strtotime((string) ($left['match_date'] ?? $left['date'] ?? '')) ?: 0;
+            $rightTime = strtotime((string) ($right['match_date'] ?? $right['date'] ?? '')) ?: 0;
+
+            return $rightTime <=> $leftTime;
+        });
+
+        return $result;
     }
 
     private function decodeMapList(mixed $value): array
