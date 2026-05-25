@@ -13,6 +13,11 @@ class AllowCriticalApiDuringMaintenance extends PreventRequestsDuringMaintenance
      */
     protected $except = [
         'up',
+        'admin',
+        'admin-dashboard.html',
+        'admin-dashboard-improved.html',
+        'admin-dashboard-modern.html',
+        'admin-dashboard-new.html',
         'api/ping',
         'api/auth/login',
         'api/auth/register',
@@ -21,5 +26,21 @@ class AllowCriticalApiDuringMaintenance extends PreventRequestsDuringMaintenance
         'api/auth/password/forgot',
         'api/auth/password/reset',
         'api/auth/supabase/exchange',
+        'api/users',
+        'api/users/*',
+        'api/transfers',
+        'api/transfers/*',
+        'api/notifications/count',
+        'api/analytics/admin-overview',
+        'api/admin/*',
+        'api/ai-dataset-candidates',
+        'api/ai-dataset-candidates/*',
+        'api/ai-training-runs',
+        'api/ai-training-runs/*',
+        'api/ai-models/active',
+        'api/ai-models/rollouts',
+        'api/ai-models/publish',
+        'api/ai-models/rollback',
+        'api/data-quality/*',
     ];
 }

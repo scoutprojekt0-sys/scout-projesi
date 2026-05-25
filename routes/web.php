@@ -6,6 +6,10 @@ Route::get('/', function () {
     return redirect('/index.html');
 });
 
+Route::get('/admin', function () {
+    return redirect('/admin-dashboard.html');
+});
+
 Route::get('/scout-et.html', function () {
     return response(file_get_contents(base_path('scout-et.html')))
         ->header('Content-Type', 'text/html; charset=UTF-8');
