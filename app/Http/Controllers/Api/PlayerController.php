@@ -1309,7 +1309,13 @@ class PlayerController extends Controller
             return $this->applyClubInternalManualTotals($summary, $player, $sport);
         }
 
-        $matches = count($history);
+        $matches = max(
+            0,
+            (int) $this->numericValue($player->matches ?? 0)
+        );
+        if ($matches <= 0) {
+            $matches = count($history);
+        }
         $minutes = 0;
         $assists = 0;
         $ratings = [];
