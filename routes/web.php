@@ -7,7 +7,7 @@ Route::get('/', function () {
 });
 
 Route::get('/admin', function () {
-    return redirect('/admin-dashboard.html');
+    return redirect()->away('https://nextscout.pro/admin-dashboard.html');
 });
 
 Route::get('/scout-et.html', function () {
