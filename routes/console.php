@@ -816,7 +816,7 @@ Artisan::command('ai:sync-video-candidates {sport=all} {--only-public : Sync onl
     return $failed > 0 ? SymfonyCommand::FAILURE : SymfonyCommand::SUCCESS;
 })->purpose('Download AI dataset candidate videos into raw_videos folders');
 
-Artisan::command('ai:prepare-dataset {sport} {--limit=0 : Limit clip count} {--only-public : Sync only public player videos} {--skip-sync : Use only local raw_videos files} {--sample-every-seconds=1 : Frame sample interval} {--max-seconds=180 : Max seconds per video}', function (string $sport) {
+Artisan::command('ai:prepare-dataset {sport} {--limit=0 : Limit clip count} {--only-public : Sync only public player videos} {--skip-sync : Use only local raw_videos files} {--sample-every-seconds=1 : Frame sample interval} {--max-seconds=180 : Max seconds per video}', function (string $sport) use ($resolveAiWorkerPython) {
     $requestedSport = strtolower(trim($sport));
     $allowedSports = ['football', 'basketball', 'volleyball'];
     if (! in_array($requestedSport, $allowedSports, true)) {
@@ -1180,7 +1180,7 @@ Artisan::command('ai:training-readiness {sport} {--min-images=50 : Minimum total
     return SymfonyCommand::FAILURE;
 })->purpose('Check whether a sport dataset is ready for model training');
 
-Artisan::command('ai:train-model {sport} {--device=cpu : Training device, e.g. cpu or 0} {--epochs=60 : Training epochs} {--imgsz=960 : Image size} {--batch=8 : Batch size} {--force : Skip readiness gate}', function (string $sport) {
+Artisan::command('ai:train-model {sport} {--device=cpu : Training device, e.g. cpu or 0} {--epochs=60 : Training epochs} {--imgsz=960 : Image size} {--batch=8 : Batch size} {--force : Skip readiness gate}', function (string $sport) use ($resolveAiWorkerPython) {
     $requestedSport = strtolower(trim($sport));
     $allowedSports = ['football', 'basketball', 'volleyball'];
     if (! in_array($requestedSport, $allowedSports, true)) {
