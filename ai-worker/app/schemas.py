@@ -75,6 +75,12 @@ class VideoAnalysisResult(BaseModel):
 
 
 
+class PrepareDatasetJobRequest(BaseModel):
+    sport: str
+    sample_every_seconds: int = 1
+    max_seconds: int = 180
+
+
 class TrainingJobRequest(BaseModel):
     sport: str
     model_version: str
@@ -83,3 +89,4 @@ class TrainingJobRequest(BaseModel):
     imgsz: int = 960
     batch: int = 8
     force: bool = False
+

@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Models\AiDatasetCandidate;
+use App\Services\AiDatasetExportService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -9,6 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
+use Symfony\Component\Console\Command\Command as SymfonyCommand;
 
 class PrepareAiDatasetForSportJob implements ShouldQueue
 {
@@ -22,7 +25,7 @@ class PrepareAiDatasetForSportJob implements ShouldQueue
     ) {
     }
 
-    public function handle(): void
+    public function handle(AiDatasetExportService $exportService): void
     {
         $sport = strtolower(trim($this->sport));
         if (! in_array($sport, ['football', 'basketball', 'volleyball'], true)) {
@@ -35,9 +38,36 @@ class PrepareAiDatasetForSportJob implements ShouldQueue
         }
 
         try {
-            Artisan::call('ai:prepare-dataset', [
+            $exportedIds = AiDatasetCandidate::query()
+                ->where('sport', $sport)
+                ->where('status', AiDatasetCandidate::STATUS_QUEUED)
+                ->orderBy('id')
+                ->get()
+                ->map(function (AiDatasetCandidate $candidate) use ($exportService): ?int {
+                    $result = $exportService->exportOne($candidate);
+
+                    return ($result['result'] ?? null) === 'exported'
+                        ? (int) ($result['candidate_id'] ?? 0)
+                        : null;
+                })
+                ->filter(static fn (?int $id): bool => $id !== null && $id > 0)
+                ->values()
+                ->all();
+
+            if ($exportedIds === []) {
+                return;
+            }
+
+            $prepareExit = Artisan::call('ai:prepare-dataset', [
                 'sport' => $sport,
+                '--skip-sync' => true,
             ]);
+
+            if ($prepareExit !== SymfonyCommand::SUCCESS) {
+                return;
+            }
+
+            $exportService->markCandidatesAsLabeling($exportedIds);
         } finally {
             optional($lock)->release();
         }

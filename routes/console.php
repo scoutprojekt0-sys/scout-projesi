@@ -848,41 +848,66 @@ Artisan::command('ai:prepare-dataset {sport} {--limit=0 : Limit clip count} {--o
 
     $sourceDir = base_path('raw_videos/'.$requestedSport);
     $datasetDir = base_path('ai-worker/datasets/'.$requestedSport);
-    $scriptPath = base_path('ai-worker/scripts/prepare_dataset.py');
-    $pythonPath = $resolveAiWorkerPython(base_path('ai-worker/.venv'));
-
-    if ($pythonPath === null) {
-        $this->error('AI worker Python bulunamadi. Beklenen yollar: ai-worker/.venv/bin/python veya ai-worker/.venv/Scripts/python.exe');
-
-        return SymfonyCommand::FAILURE;
-    }
-
-    if (! File::exists($scriptPath)) {
-        $this->error('Dataset prep script bulunamadi: '.$scriptPath);
-
-        return SymfonyCommand::FAILURE;
-    }
+    $workerBaseUrl = rtrim((string) config('scout.ai_analysis.worker_base_url', ''), '/');
 
     $this->newLine();
     $this->info("2/2 Dataset prep basliyor: {$requestedSport}");
 
-    $command = sprintf(
-        '"%s" "%s" --sport "%s" --source-dir "%s" --output-dir "%s" --sample-every-seconds=%s --max-seconds=%s',
-        $pythonPath,
-        $scriptPath,
-        $requestedSport,
-        $sourceDir,
-        $datasetDir,
-        (string) $this->option('sample-every-seconds'),
-        (string) $this->option('max-seconds'),
-    );
+    if ($workerBaseUrl !== '') {
+        $response = Http::timeout(1800)
+            ->acceptJson()
+            ->post($workerBaseUrl.'/jobs/prepare-dataset', [
+                'sport' => $requestedSport,
+                'sample_every_seconds' => (int) $this->option('sample-every-seconds'),
+                'max_seconds' => (int) $this->option('max-seconds'),
+            ]);
 
-    passthru($command, $prepExit);
+        if (! $response->successful()) {
+            $this->error('ai-worker dataset prep istegi basarisiz: '.$response->status());
+            $this->line((string) $response->body());
 
-    if ((int) $prepExit !== 0) {
-        $this->error('Dataset prep adimi basarisiz oldu.');
+            return SymfonyCommand::FAILURE;
+        }
 
-        return SymfonyCommand::FAILURE;
+        $payload = $response->json() ?: [];
+        $output = trim((string) ($payload['output'] ?? ''));
+        if ($output !== '') {
+            $this->line($output);
+        }
+    } else {
+        $scriptPath = base_path('ai-worker/scripts/prepare_dataset.py');
+        $pythonPath = $resolveAiWorkerPython(base_path('ai-worker/.venv'));
+
+        if ($pythonPath === null) {
+            $this->error('AI worker Python bulunamadi. Beklenen yollar: ai-worker/.venv/bin/python veya ai-worker/.venv/Scripts/python.exe');
+
+            return SymfonyCommand::FAILURE;
+        }
+
+        if (! File::exists($scriptPath)) {
+            $this->error('Dataset prep script bulunamadi: '.$scriptPath);
+
+            return SymfonyCommand::FAILURE;
+        }
+
+        $command = sprintf(
+            '"%s" "%s" --sport "%s" --source-dir "%s" --output-dir "%s" --sample-every-seconds=%s --max-seconds=%s',
+            $pythonPath,
+            $scriptPath,
+            $requestedSport,
+            $sourceDir,
+            $datasetDir,
+            (string) $this->option('sample-every-seconds'),
+            (string) $this->option('max-seconds'),
+        );
+
+        passthru($command, $prepExit);
+
+        if ((int) $prepExit !== 0) {
+            $this->error('Dataset prep adimi basarisiz oldu.');
+
+            return SymfonyCommand::FAILURE;
+        }
     }
 
     $this->newLine();
@@ -1320,3 +1345,5 @@ Schedule::call(static function (): void {
         MaybeAutoTrainSportJob::dispatch($sport);
     }
 })->hourly()->name('ai-auto-train-all');
+
+

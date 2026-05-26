@@ -4,8 +4,9 @@ from fastapi import FastAPI
 
 from app.config import settings
 from app.model_registry import available_models
-from app.schemas import TrainingJobRequest, VideoAnalysisJobRequest
+from app.schemas import PrepareDatasetJobRequest, TrainingJobRequest, VideoAnalysisJobRequest
 from app.services import enqueue_video_analysis
+from app.dataset_prep import run_prepare_dataset_job
 from app.training import run_training_job
 from app.sports import SUPPORTED_SPORTS
 
@@ -38,6 +39,18 @@ async def create_video_analysis_job(payload: VideoAnalysisJobRequest) -> dict:
 
 
 
+
+@app.post('/jobs/prepare-dataset')
+async def create_prepare_dataset_job(payload: PrepareDatasetJobRequest) -> dict:
+    result = run_prepare_dataset_job(payload)
+    return {
+        'ok': True,
+        'sport': payload.sport,
+        'source_dir': result['source_dir'],
+        'output_dir': result['output_dir'],
+        'output': result['output'],
+    }
+
 @app.post('/jobs/train-model')
 async def create_training_job(payload: TrainingJobRequest) -> dict:
     result = run_training_job(payload)
@@ -49,3 +62,4 @@ async def create_training_job(payload: TrainingJobRequest) -> dict:
         'best_path': result['best_path'],
         'output': result['output'],
     }
+

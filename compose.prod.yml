@@ -9,6 +9,8 @@ services:
       - .env.production
     volumes:
       - app_storage:/app/storage
+      - ai_raw_videos:/app/raw_videos
+      - ai_datasets:/app/datasets
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8010/health >/dev/null"]
       interval: 30s
@@ -36,6 +38,8 @@ services:
     volumes:
       - app_storage:/var/www/html/storage
       - app_cache:/var/www/html/bootstrap/cache
+      - ai_raw_videos:/var/www/html/raw_videos
+      - ai_datasets:/var/www/html/ai-worker/datasets
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8080/up >/dev/null"]
       interval: 30s
@@ -60,6 +64,8 @@ services:
     volumes:
       - app_storage:/var/www/html/storage
       - app_cache:/var/www/html/bootstrap/cache
+      - ai_raw_videos:/var/www/html/raw_videos
+      - ai_datasets:/var/www/html/ai-worker/datasets
 
   scheduler:
     image: scout-api/app:prod
@@ -78,6 +84,8 @@ services:
     volumes:
       - app_storage:/var/www/html/storage
       - app_cache:/var/www/html/bootstrap/cache
+      - ai_raw_videos:/var/www/html/raw_videos
+      - ai_datasets:/var/www/html/ai-worker/datasets
 
   nginx:
     image: nginx:1.27-alpine
@@ -129,5 +137,8 @@ services:
 volumes:
   app_storage:
   app_cache:
+  ai_raw_videos:
+  ai_datasets:
   db_data:
   redis_data:
+
