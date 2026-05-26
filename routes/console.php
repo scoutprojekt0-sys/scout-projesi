@@ -2,6 +2,8 @@
 
 use App\Models\User;
 use App\Models\VideoClip;
+use App\Jobs\MaybeAutoTrainSportJob;
+use App\Jobs\PrepareAiDatasetForSportJob;
 use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -1180,7 +1182,7 @@ Artisan::command('ai:training-readiness {sport} {--min-images=50 : Minimum total
     return SymfonyCommand::FAILURE;
 })->purpose('Check whether a sport dataset is ready for model training');
 
-Artisan::command('ai:train-model {sport} {--device=cpu : Training device, e.g. cpu or 0} {--epochs=60 : Training epochs} {--imgsz=960 : Image size} {--batch=8 : Batch size} {--force : Skip readiness gate}', function (string $sport) use ($resolveAiWorkerPython) {
+Artisan::command('ai:train-model {sport} {--device=cpu : Training device, e.g. cpu or 0} {--epochs=60 : Training epochs} {--imgsz=960 : Image size} {--batch=8 : Batch size} {--force : Skip readiness gate} {--model-version= : Optional model version for published output}', function (string $sport) use ($resolveAiWorkerPython) {
     $requestedSport = strtolower(trim($sport));
     $allowedSports = ['football', 'basketball', 'volleyball'];
     if (! in_array($requestedSport, $allowedSports, true)) {
@@ -1199,6 +1201,40 @@ Artisan::command('ai:train-model {sport} {--device=cpu : Training device, e.g. c
 
             return SymfonyCommand::FAILURE;
         }
+    }
+
+    $workerBaseUrl = rtrim((string) config('scout.ai_analysis.worker_base_url', ''), '/');
+    if ($workerBaseUrl !== '') {
+        $this->info('Training ai-worker uzerinden baslatiliyor...');
+        $response = Http::timeout(86400)
+            ->acceptJson()
+            ->post($workerBaseUrl.'/jobs/train-model', [
+                'sport' => $requestedSport,
+                'model_version' => (string) ($this->option('model-version') ?: sprintf('%s-%s', $requestedSport, now()->format('YmdHis'))),
+                'device' => (string) $this->option('device'),
+                'epochs' => (int) $this->option('epochs'),
+                'imgsz' => (int) $this->option('imgsz'),
+                'batch' => (int) $this->option('batch'),
+                'force' => (bool) $this->option('force'),
+            ]);
+
+        if (! $response->successful()) {
+            $this->error('ai-worker training istegi basarisiz: '.$response->status());
+            $this->line((string) $response->body());
+
+            return SymfonyCommand::FAILURE;
+        }
+
+        $payload = $response->json() ?: [];
+        $this->line('published_model_path='.(string) ($payload['published_model_path'] ?? ''));
+        $this->line('best_path='.(string) ($payload['best_path'] ?? ''));
+        $output = trim((string) ($payload['output'] ?? ''));
+        if ($output !== '') {
+            $this->line($output);
+        }
+        $this->info('Training tamamlandi.');
+
+        return SymfonyCommand::SUCCESS;
     }
 
     $pythonPath = $resolveAiWorkerPython(base_path('ai-worker/.venv'));
@@ -1274,3 +1310,13 @@ Artisan::command('ai:train-model {sport} {--device=cpu : Training device, e.g. c
 })->purpose('Run sport-specific YOLO training with readiness guard');
 
 Schedule::command('listings:purge-expired')->daily();
+Schedule::call(static function (): void {
+    foreach (['football', 'basketball', 'volleyball'] as $sport) {
+        PrepareAiDatasetForSportJob::dispatch($sport);
+    }
+})->everyThirtyMinutes()->name('ai-dataset-prepare-all');
+Schedule::call(static function (): void {
+    foreach (['football', 'basketball', 'volleyball'] as $sport) {
+        MaybeAutoTrainSportJob::dispatch($sport);
+    }
+})->hourly()->name('ai-auto-train-all');

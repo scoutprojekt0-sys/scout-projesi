@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Concerns\ApiResponds;
 use App\Http\Controllers\Concerns\ResolvesPublicFileUrls;
 use App\Http\Controllers\Controller;
+use App\Jobs\MaybeAutoTrainSportJob;
+use App\Jobs\PrepareAiDatasetForSportJob;
 use App\Models\VideoClip;
 use App\Services\AiDatasetCandidateService;
 use Illuminate\Http\JsonResponse;
@@ -83,9 +85,11 @@ class VideoClipController extends Controller
             $tags->push($sport);
         }
 
+        $isDatasetCandidate = (bool) ($validated['ai_dataset_candidate'] ?? ($request->user()?->role === 'player' && $sport !== null));
+
         $metadata = array_filter([
             'sport' => $sport,
-            'ai_dataset_candidate' => (bool) ($validated['ai_dataset_candidate'] ?? false),
+            'ai_dataset_candidate' => $isDatasetCandidate,
         ], static fn ($value) => $value !== null);
 
         $clip = VideoClip::create([
@@ -102,7 +106,11 @@ class VideoClipController extends Controller
                 'metadata' => $metadata ?: null,
             ]);
 
-        $datasetCandidateService->syncFromVideoClip($clip);
+        $candidate = $datasetCandidateService->syncFromVideoClip($clip);
+        if ($candidate !== null) {
+            PrepareAiDatasetForSportJob::dispatch($candidate->sport);
+            MaybeAutoTrainSportJob::dispatch($candidate->sport);
+        }
 
         return $this->successResponse(
             $this->transformPublicClip($clip),

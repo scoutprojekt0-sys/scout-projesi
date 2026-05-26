@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\MaybeAutoTrainSportJob;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -141,6 +142,7 @@ class AiLabelingController extends Controller
         $split = $this->extractSplitFromPath($imagePath);
         $this->removeSkippedItem($sport, $split, $imagePath);
         $this->removeFromQueueFiles($sport, $split, $imagePath);
+        MaybeAutoTrainSportJob::dispatch($sport);
 
         return response()->json([
             'ok' => true,
