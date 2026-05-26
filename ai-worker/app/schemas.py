@@ -72,3 +72,14 @@ class VideoAnalysisResult(BaseModel):
     events: list[AnalysisEvent] = Field(default_factory=list)
     metrics: list[AnalysisMetric] = Field(default_factory=list)
     failure_reason: str | None = None
+
+
+
+class TrainingJobRequest(BaseModel):
+    sport: str
+    model_version: str
+    device: str = 'cpu'
+    epochs: int = 60
+    imgsz: int = 960
+    batch: int = 8
+    force: bool = False

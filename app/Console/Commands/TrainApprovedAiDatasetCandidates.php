@@ -70,6 +70,7 @@ class TrainApprovedAiDatasetCandidates extends Command
             '--imgsz' => (string) $this->option('imgsz'),
             '--batch' => (string) $this->option('batch'),
             '--force' => (bool) $this->option('force'),
+            '--model-version' => $modelVersion,
         ]);
         $output = Artisan::output();
         $this->output->write($output);
@@ -83,7 +84,11 @@ class TrainApprovedAiDatasetCandidates extends Command
 
         $updated = $service->markSportCandidatesAsTrained($sport, $modelVersion);
         $runService->markCompleted($run, $output);
-        $publishedModelPath = $registry->stageLatestRunModelForInference($sport, $modelVersion);
+        preg_match('/published_model_path=(.+)/', $output, $publishedModelPathMatch);
+        $publishedModelPath = trim((string) ($publishedModelPathMatch[1] ?? ''));
+        if ($publishedModelPath === '') {
+            $publishedModelPath = $registry->stageLatestRunModelForInference($sport, $modelVersion);
+        }
         $registry->publish(
             $sport,
             $modelVersion,
