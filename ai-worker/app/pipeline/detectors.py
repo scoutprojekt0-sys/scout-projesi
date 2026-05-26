@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from app.model_registry import normalize_label, resolve_model_path, resolve_model_path_for_sport
+from app.model_registry import normalize_label, resolve_model_path, resolve_model_path_for_job
 from app.pipeline.types import AnalysisContext, Detection, FrameDetections, FrameSample
 
 
@@ -50,8 +50,8 @@ class YoloDetector(BaseDetector):
         self._model = None
         self._loaded_path: str | None = None
 
-    def _load(self, sport: str):
-        target_model_path = str(resolve_model_path_for_sport(sport, self.default_model_path))
+    def _load(self, context: AnalysisContext):
+        target_model_path = str(resolve_model_path_for_job(context.model_path, context.sport, self.default_model_path))
         if self._model is not None and self._loaded_path == target_model_path:
             return self._model
 
@@ -72,7 +72,7 @@ class YoloDetector(BaseDetector):
         return self._model
 
     def detect(self, context: AnalysisContext, frame: FrameSample) -> FrameDetections:
-        model = self._load(context.sport)
+        model = self._load(context)
         result = model.track(frame.image, persist=True, verbose=False, tracker="bytetrack.yaml")[0]
         detections: list[Detection] = []
 
@@ -95,6 +95,7 @@ class YoloDetector(BaseDetector):
                         "source": "yolo",
                         "sport": context.sport,
                         "model_path": self.model_path,
+                        "model_version": context.model_version,
                         "tracker": "bytetrack",
                     },
                 )

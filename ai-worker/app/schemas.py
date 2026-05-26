@@ -13,6 +13,8 @@ class VideoAnalysisJobRequest(BaseModel):
     requested_by: int
     analysis_type: str = "scout_mvp"
     target_profile: dict[str, Any] | None = None
+    model_version: str | None = None
+    model_path: str | None = None
     callback_url: HttpUrl
     callback_secret: str
 

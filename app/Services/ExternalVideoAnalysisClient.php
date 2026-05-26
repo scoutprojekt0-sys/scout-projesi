@@ -10,25 +10,32 @@ use RuntimeException;
 
 class ExternalVideoAnalysisClient
 {
+    public function __construct(private readonly AiModelRegistryService $modelRegistry)
+    {
+    }
+
     public function submit(VideoAnalysis $analysis): array
     {
         $baseUrl = $this->resolveBaseUrl();
         $videoClip = $analysis->videoClip;
         $callbackSecret = $this->resolveCallbackSecret();
         $callbackUrl = $this->resolveCallbackUrl($analysis->id);
+        $sport = $this->inferSport($videoClip?->tags, $analysis->analysis_type);
 
         $response = Http::timeout((int) config('scout.ai_analysis.worker_timeout_seconds', 20))
             ->acceptJson()
             ->post($baseUrl.'/jobs/video-analysis', [
                 'analysis_id' => $analysis->id,
                 'video_clip_id' => $analysis->video_clip_id,
-                'sport' => $this->inferSport($videoClip?->tags, $analysis->analysis_type),
+                'sport' => $sport,
                 'video_url' => $this->resolveMediaUrl($videoClip?->video_url),
                 'thumbnail_url' => $this->resolveMediaUrl($videoClip?->thumbnail_url),
                 'target_player_id' => $analysis->target_player_id,
                 'target_profile' => $this->buildTargetProfile($analysis->target_player_id),
                 'requested_by' => $analysis->requested_by,
                 'analysis_type' => $analysis->analysis_type,
+                'model_version' => $this->modelRegistry->resolveInferenceModelVersion($sport),
+                'model_path' => $this->modelRegistry->resolveInferenceModelPath($sport),
                 'callback_url' => $callbackUrl,
                 'callback_secret' => $callbackSecret,
             ]);

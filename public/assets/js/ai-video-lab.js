@@ -1,5 +1,5 @@
 (function () {
-  const ANALYSIS_CACHE_KEY = 'nextscout_ai_video_lab_cache_v1';
+  const ANALYSIS_CACHE_KEY = 'nextscout_ai_video_lab_cache_v2';
 
   function getApiBaseUrl() {
     if (typeof window.API_BASE_URL === 'string' && window.API_BASE_URL.trim()) {
@@ -123,6 +123,21 @@
       throw new Error(firstError || data.message || 'Islem basarisiz.');
     }
     return data;
+  }
+
+  function normalizeAnalysisSummary(summary, metrics) {
+    const normalized = summary && typeof summary === 'object' ? Object.assign({}, summary) : {};
+    const metricRow = Array.isArray(metrics) && metrics.length && metrics[0] && typeof metrics[0] === 'object'
+      ? metrics[0]
+      : null;
+    if (metricRow) {
+      Object.keys(metricRow).forEach(function (key) {
+        if ((normalized[key] === undefined || normalized[key] === null || normalized[key] === '') && metricRow[key] !== undefined && metricRow[key] !== null) {
+          normalized[key] = metricRow[key];
+        }
+      });
+    }
+    return Object.keys(normalized).length ? normalized : null;
   }
 
   function createSummaryMarkup(summary) {
@@ -844,7 +859,7 @@
           return;
         }
         if (summaryRoot) {
-          summaryRoot.innerHTML = createSummaryMarkup(analysis.summary || {});
+          summaryRoot.innerHTML = createSummaryMarkup(normalizeAnalysisSummary(analysis.summary, analysis.metrics));
         }
         setSourceBadge(analysisSource, analysisMeta);
         const events = await apiGet('/video-analyses/' + analysis.id + '/events', true);
@@ -856,7 +871,7 @@
           analysis_id: analysis.id,
           player_id: selectedPlayer.id,
           video_clip_id: videoClipId,
-          summary: analysis.summary || null,
+          summary: normalizeAnalysisSummary(analysis.summary, analysis.metrics),
           events: Array.isArray(events) ? events : [],
           provider: analysisMeta.provider || analysis.provider || '',
           fallback_mode: analysisMeta.fallback_mode || '',
@@ -904,7 +919,7 @@
           const analysisMeta = payload.meta || initialMeta || {};
           if (analysis.status === 'completed') {
             if (summaryRoot) {
-              summaryRoot.innerHTML = createSummaryMarkup(analysis.summary || {});
+              summaryRoot.innerHTML = createSummaryMarkup(normalizeAnalysisSummary(analysis.summary, analysis.metrics));
             }
             const events = await apiGet('/video-analyses/' + analysis.id + '/events', true);
             if (eventsRoot) {
@@ -915,7 +930,7 @@
               analysis_id: analysis.id,
               player_id: selectedPlayer.id,
               video_clip_id: videoClipId,
-              summary: analysis.summary || null,
+              summary: normalizeAnalysisSummary(analysis.summary, analysis.metrics),
               events: Array.isArray(events) ? events : [],
               provider: analysisMeta.provider || analysis.provider || '',
               fallback_mode: analysisMeta.fallback_mode || '',
@@ -1005,3 +1020,4 @@
     document.querySelectorAll('[data-ai-video-lab]').forEach(initLab);
   });
 })();
+

@@ -1754,6 +1754,7 @@
 
         function getAuthToken() {
             return (
+                localStorage.getItem('sanctum_token') ||
                 localStorage.getItem('nextscout_token') ||
                 localStorage.getItem('auth_token') ||
                 ''
@@ -2420,7 +2421,6 @@
     <script src="assets/js/mobile-professional.js" defer></script>
 </body>
 </html>
-
 
 
 

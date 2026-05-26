@@ -7,7 +7,7 @@ from pathlib import Path
 import httpx
 
 from app.config import settings
-from app.model_registry import has_model_for_sport
+from app.model_registry import has_model_for_job
 from app.pipeline.calibration import FieldCalibrator
 from app.pipeline.detectors import HeuristicDetector, YoloDetector
 from app.pipeline.events import EventDetector
@@ -39,11 +39,11 @@ class PipelineAnalyzer:
         self.event_detector = EventDetector()
         self.metric_aggregator = MetricAggregator()
 
-    def _build_detector(self, sport: str):
+    def _build_detector(self, context: AnalysisContext):
         detector_mode = settings.ai_worker_detector.strip().lower()
         if detector_mode == "yolo":
             return YoloDetector(settings.ai_worker_yolo_model_path)
-        if detector_mode == "auto" and has_model_for_sport(sport, settings.ai_worker_yolo_model_path):
+        if detector_mode == "auto" and has_model_for_job(context.model_path, context.sport, settings.ai_worker_yolo_model_path):
             return YoloDetector(settings.ai_worker_yolo_model_path)
         return HeuristicDetector()
 
@@ -59,10 +59,12 @@ class PipelineAnalyzer:
             video_url=job.video_url,
             thumbnail_url=job.thumbnail_url,
             analysis_type=job.analysis_type,
+            model_version=job.model_version,
+            model_path=job.model_path,
             target_profile=job.target_profile,
         )
 
-        detector = self._build_detector(context.sport)
+        detector = self._build_detector(context)
 
         with tempfile.TemporaryDirectory(prefix="nextscout-ai-") as tmp_dir:
             local_video = self._download_video(job.video_url, Path(tmp_dir))
@@ -96,6 +98,8 @@ class PipelineAnalyzer:
                 "sport": context.sport,
                 "detector": "yolo" if isinstance(detector, YoloDetector) else "heuristic",
                 "detector_mode": settings.ai_worker_detector,
+                "model_version": context.model_version,
+                "model_path": context.model_path,
                 "sample_every_seconds": settings.ai_worker_sample_every_seconds,
                 "max_sample_seconds": settings.ai_worker_max_sample_seconds,
                 "full_video_mode": settings.ai_worker_max_sample_seconds <= 0,

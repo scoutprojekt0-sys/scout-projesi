@@ -14,6 +14,30 @@ use Illuminate\Support\Str;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Process\Process;
 
+$resolveAiWorkerPython = static function (string $virtualEnvRoot): ?string {
+    $candidates = [
+        $virtualEnvRoot.'/bin/python',
+        $virtualEnvRoot.'/Scripts/python.exe',
+    ];
+
+    foreach ($candidates as $candidate) {
+        if (File::exists($candidate)) {
+            return $candidate;
+        }
+    }
+
+    foreach (['python3', 'python'] as $binary) {
+        $process = new Process([$binary, '--version'], base_path());
+        $process->setTimeout(10);
+        $process->run();
+        if ($process->isSuccessful()) {
+            return $binary;
+        }
+    }
+
+    return null;
+};
+
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
@@ -823,10 +847,10 @@ Artisan::command('ai:prepare-dataset {sport} {--limit=0 : Limit clip count} {--o
     $sourceDir = base_path('raw_videos/'.$requestedSport);
     $datasetDir = base_path('ai-worker/datasets/'.$requestedSport);
     $scriptPath = base_path('ai-worker/scripts/prepare_dataset.py');
-    $pythonPath = base_path('ai-worker/.venv/Scripts/python.exe');
+    $pythonPath = $resolveAiWorkerPython(base_path('ai-worker/.venv'));
 
-    if (! File::exists($pythonPath)) {
-        $this->error('Python sanal ortam bulunamadi: '.$pythonPath);
+    if ($pythonPath === null) {
+        $this->error('AI worker Python bulunamadi. Beklenen yollar: ai-worker/.venv/bin/python veya ai-worker/.venv/Scripts/python.exe');
 
         return SymfonyCommand::FAILURE;
     }
@@ -1177,9 +1201,9 @@ Artisan::command('ai:train-model {sport} {--device=cpu : Training device, e.g. c
         }
     }
 
-    $pythonPath = base_path('ai-worker/.venv/Scripts/python.exe');
-    if (! File::exists($pythonPath)) {
-        $this->error('Python sanal ortam bulunamadi: '.$pythonPath);
+    $pythonPath = $resolveAiWorkerPython(base_path('ai-worker/.venv'));
+    if ($pythonPath === null) {
+        $this->error('AI worker Python bulunamadi. Beklenen yollar: ai-worker/.venv/bin/python veya ai-worker/.venv/Scripts/python.exe');
 
         return SymfonyCommand::FAILURE;
     }

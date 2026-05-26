@@ -188,9 +188,12 @@ class AiLabelingController extends Controller
             ]);
         }
 
-        $pythonPath = base_path('ai-worker/.venv/Scripts/python.exe');
-        if (! File::exists($pythonPath)) {
-            $pythonPath = 'python';
+        $pythonPath = $this->resolveAiWorkerPython();
+        if ($pythonPath === null) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'AI worker Python bulunamadi.',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $process = new Process([
@@ -205,29 +208,7 @@ class AiLabelingController extends Controller
             '--max-det',
             '80',
         ], base_path());
-        $systemRoot = getenv('SystemRoot') ?: getenv('SYSTEMROOT') ?: 'C:\\Windows';
-        $windir = getenv('WINDIR') ?: $systemRoot;
-        $path = getenv('PATH') ?: ($_SERVER['PATH'] ?? '');
-        $userProfile = getenv('USERPROFILE') ?: 'C:\\Users\\Hp';
-        $tempPath = getenv('TEMP') ?: $userProfile.'\\AppData\\Local\\Temp';
-        $process->setEnv([
-            'POLARS_SKIP_CPU_CHECK' => '1',
-            'PATH' => dirname($pythonPath).PATH_SEPARATOR.$path,
-            'SystemRoot' => $systemRoot,
-            'SYSTEMROOT' => $systemRoot,
-            'WINDIR' => $windir,
-            'USERPROFILE' => $userProfile,
-            'HOME' => $userProfile,
-            'HOMEDRIVE' => getenv('HOMEDRIVE') ?: 'C:',
-            'HOMEPATH' => getenv('HOMEPATH') ?: '\\Users\\Hp',
-            'APPDATA' => getenv('APPDATA') ?: $userProfile.'\\AppData\\Roaming',
-            'LOCALAPPDATA' => getenv('LOCALAPPDATA') ?: $userProfile.'\\AppData\\Local',
-            'USERNAME' => getenv('USERNAME') ?: 'Hp',
-            'USER' => getenv('USER') ?: 'Hp',
-            'TEMP' => $tempPath,
-            'TMP' => getenv('TMP') ?: $tempPath,
-            'TORCHINDUCTOR_CACHE_DIR' => $tempPath.'\\torchinductor_Hp',
-        ]);
+        $process->setEnv($this->buildPredictProcessEnv($pythonPath));
         $process->setTimeout(120);
         $process->run();
 
@@ -282,6 +263,66 @@ class AiLabelingController extends Controller
                 'label_path' => $labelPath,
                 'split' => $split,
             ],
+        ]);
+    }
+
+    private function resolveAiWorkerPython(): ?string
+    {
+        $candidates = [
+            base_path('ai-worker/.venv/bin/python'),
+            base_path('ai-worker/.venv/Scripts/python.exe'),
+        ];
+
+        foreach ($candidates as $candidate) {
+            if (File::exists($candidate)) {
+                return $candidate;
+            }
+        }
+
+        foreach (['python3', 'python'] as $binary) {
+            $process = new Process([$binary, '--version'], base_path());
+            $process->setTimeout(10);
+            $process->run();
+            if ($process->isSuccessful()) {
+                return $binary;
+            }
+        }
+
+        return null;
+    }
+
+    private function buildPredictProcessEnv(string $pythonPath): array
+    {
+        $path = getenv('PATH') ?: ($_SERVER['PATH'] ?? '');
+        $env = array_merge($_ENV, $_SERVER, [
+            'POLARS_SKIP_CPU_CHECK' => '1',
+            'PATH' => dirname($pythonPath).PATH_SEPARATOR.$path,
+        ]);
+
+        if (PHP_OS_FAMILY !== 'Windows') {
+            return $env;
+        }
+
+        $systemRoot = getenv('SystemRoot') ?: getenv('SYSTEMROOT') ?: 'C:\\Windows';
+        $windir = getenv('WINDIR') ?: $systemRoot;
+        $userProfile = getenv('USERPROFILE') ?: 'C:\\Users\\Hp';
+        $tempPath = getenv('TEMP') ?: $userProfile.'\\AppData\\Local\\Temp';
+
+        return array_merge($env, [
+            'SystemRoot' => $systemRoot,
+            'SYSTEMROOT' => $systemRoot,
+            'WINDIR' => $windir,
+            'USERPROFILE' => $userProfile,
+            'HOME' => $userProfile,
+            'HOMEDRIVE' => getenv('HOMEDRIVE') ?: 'C:',
+            'HOMEPATH' => getenv('HOMEPATH') ?: '\\Users\\Hp',
+            'APPDATA' => getenv('APPDATA') ?: $userProfile.'\\AppData\\Roaming',
+            'LOCALAPPDATA' => getenv('LOCALAPPDATA') ?: $userProfile.'\\AppData\\Local',
+            'USERNAME' => getenv('USERNAME') ?: 'Hp',
+            'USER' => getenv('USER') ?: 'Hp',
+            'TEMP' => $tempPath,
+            'TMP' => getenv('TMP') ?: $tempPath,
+            'TORCHINDUCTOR_CACHE_DIR' => $tempPath.'\\torchinductor_Hp',
         ]);
     }
 

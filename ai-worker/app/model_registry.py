@@ -67,8 +67,21 @@ def resolve_model_path_for_sport(sport: str, fallback_path: str) -> Path:
     return resolve_model_path(fallback_path)
 
 
+def resolve_model_path_for_job(requested_path: str | None, sport: str, fallback_path: str) -> Path:
+    if requested_path:
+        candidate = resolve_model_path(requested_path)
+        if candidate.exists():
+            return candidate
+    return resolve_model_path_for_sport(sport, fallback_path)
+
+
 def has_model_for_sport(sport: str, fallback_path: str) -> bool:
     target = resolve_model_path_for_sport(sport, fallback_path)
+    return target.exists()
+
+
+def has_model_for_job(requested_path: str | None, sport: str, fallback_path: str) -> bool:
+    target = resolve_model_path_for_job(requested_path, sport, fallback_path)
     return target.exists()
 
 

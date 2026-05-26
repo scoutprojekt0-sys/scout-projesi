@@ -491,8 +491,12 @@
         return 'http://127.0.0.1:8000/api';
       }
 
-      function getDashboardByRole(role) {
-        const normalized = String(role || '').trim().toLowerCase();
+      function getDashboardByRole(roleOrUser) {
+        const user = roleOrUser && typeof roleOrUser === 'object' ? roleOrUser : null;
+        const editorRole = String(user?.editor_role || '').trim().toLowerCase();
+        if (editorRole === 'admin') return 'admin-dashboard.html';
+
+        const normalized = String(user?.role || roleOrUser || '').trim().toLowerCase();
         if (normalized === 'admin') return 'admin-dashboard.html';
         if (normalized === 'manager') return 'manager-dashboard.html';
         if (normalized === 'coach' || normalized === 'scout') return 'coach-dashboard.html';
@@ -549,7 +553,7 @@
           showMessage('Giris basarili. Dashboard aciliyor...', 'success');
 
           setTimeout(() => {
-            window.location.replace(getDashboardByRole(user.role));
+            window.location.replace(getDashboardByRole(user));
           }, 150);
         } catch (error) {
           showMessage(error?.message || 'Giris basarisiz.', 'error');

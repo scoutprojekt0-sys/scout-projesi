@@ -83,10 +83,11 @@ class TrainApprovedAiDatasetCandidates extends Command
 
         $updated = $service->markSportCandidatesAsTrained($sport, $modelVersion);
         $runService->markCompleted($run, $output);
+        $publishedModelPath = $registry->stageLatestRunModelForInference($sport, $modelVersion);
         $registry->publish(
             $sport,
             $modelVersion,
-            $registry->resolveDefaultModelPath($sport),
+            $publishedModelPath,
             $run,
             'Auto-published after successful ai-dataset:train-approved run.'
         );
