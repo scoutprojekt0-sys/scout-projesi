@@ -847,38 +847,358 @@ Artisan::command('ai:prepare-dataset {sport} {--limit=0 : Limit clip count} {--o
     $sourceDir = base_path('raw_videos/'.$requestedSport);
     $datasetDir = base_path('ai-worker/datasets/'.$requestedSport);
     $scriptPath = base_path('ai-worker/scripts/prepare_dataset.py');
-    $workerBaseUrl = rtrim((string) config('scout.ai_analysis.worker_base_url', ''), '/');
-    if ($workerBaseUrl !== '') {
-        $this->info('Training ai-worker uzerinden baslatiliyor...');
-        $response = Http::timeout(86400)
-            ->acceptJson()
-            ->post($workerBaseUrl.'/jobs/train-model', [
-                'sport' => $requestedSport,
-                'model_version' => (string) ($this->option('model-version') ?: sprintf('%s-%s', $requestedSport, now()->format('YmdHis'))),
-                'device' => (string) $this->option('device'),
-                'epochs' => (int) $this->option('epochs'),
-                'imgsz' => (int) $this->option('imgsz'),
-                'batch' => (int) $this->option('batch'),
-                'force' => (bool) $this->option('force'),
-            ]);
+    $pythonPath = $resolveAiWorkerPython(base_path('ai-worker/.venv'));
 
-        if (! $response->successful()) {
-            $this->error('ai-worker training istegi basarisiz: '.$response->status());
-            $this->line((string) $response->body());
+    if ($pythonPath === null) {
+        $this->error('AI worker Python bulunamadi. Beklenen yollar: ai-worker/.venv/bin/python veya ai-worker/.venv/Scripts/python.exe');
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    if (! File::exists($scriptPath)) {
+        $this->error('Dataset prep script bulunamadi: '.$scriptPath);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $this->newLine();
+    $this->info("2/2 Dataset prep basliyor: {$requestedSport}");
+
+    $command = sprintf(
+        '"%s" "%s" --sport "%s" --source-dir "%s" --output-dir "%s" --sample-every-seconds=%s --max-seconds=%s',
+        $pythonPath,
+        $scriptPath,
+        $requestedSport,
+        $sourceDir,
+        $datasetDir,
+        (string) $this->option('sample-every-seconds'),
+        (string) $this->option('max-seconds'),
+    );
+
+    passthru($command, $prepExit);
+
+    if ((int) $prepExit !== 0) {
+        $this->error('Dataset prep adimi basarisiz oldu.');
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $this->newLine();
+    $this->info('Label queue yenileniyor...');
+
+    $queueExit = Artisan::call('ai:dataset-label-queue', [
+        'sport' => $requestedSport,
+        '--split' => 'all',
+    ]);
+    $this->output->write(Artisan::output());
+
+    if ($queueExit !== SymfonyCommand::SUCCESS) {
+        $this->error('Label queue yenilenemedi.');
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $this->newLine();
+    $this->info('Dataset hazirlama tamamlandi.');
+    $this->line('Raw video kaynagi: '.$sourceDir);
+    $this->line('Dataset klasoru: '.$datasetDir);
+
+    return SymfonyCommand::SUCCESS;
+})->purpose('Sync AI candidate videos and prepare dataset frames for a sport');
+
+Artisan::command('ai:dataset-stats {sport}', function (string $sport) {
+    $requestedSport = strtolower(trim($sport));
+    $allowedSports = ['football', 'basketball', 'volleyball'];
+    if (! in_array($requestedSport, $allowedSports, true)) {
+        $this->error('Desteklenmeyen spor: '.$sport);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $datasetDir = base_path('ai-worker/datasets/'.$requestedSport);
+    if (! File::exists($datasetDir)) {
+        $this->error('Dataset klasoru bulunamadi: '.$datasetDir);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $summary = [];
+    $totalImages = 0;
+    $totalLabels = 0;
+    $totalAnnotated = 0;
+
+    foreach (['train', 'val', 'test'] as $split) {
+        $imageDir = $datasetDir.'/images/'.$split;
+        $labelDir = $datasetDir.'/labels/'.$split;
+
+        $images = File::exists($imageDir) ? collect(File::files($imageDir)) : collect();
+        $labels = File::exists($labelDir) ? collect(File::files($labelDir)) : collect();
+        $annotated = $labels->filter(static function ($file) {
+            return trim((string) File::get($file->getPathname())) !== '';
+        });
+
+        $imageCount = $images->count();
+        $labelCount = $labels->count();
+        $annotatedCount = $annotated->count();
+
+        $summary[$split] = [
+            'images' => $imageCount,
+            'labels' => $labelCount,
+            'annotated' => $annotatedCount,
+            'empty_labels' => max(0, $labelCount - $annotatedCount),
+        ];
+
+        $totalImages += $imageCount;
+        $totalLabels += $labelCount;
+        $totalAnnotated += $annotatedCount;
+    }
+
+    $manifestPath = $datasetDir.'/manifest.csv';
+    $manifestExists = File::exists($manifestPath);
+    $completion = $totalLabels > 0 ? round(($totalAnnotated / $totalLabels) * 100, 1) : 0.0;
+
+    $this->info('Dataset istatistikleri');
+    $this->line('Spor: '.$requestedSport);
+    $this->line('Klasor: '.$datasetDir);
+    $this->line('Manifest: '.($manifestExists ? 'var' : 'yok'));
+    $this->newLine();
+
+    foreach ($summary as $split => $stats) {
+        $this->line(strtoupper($split));
+        $this->line(' - images: '.$stats['images']);
+        $this->line(' - labels: '.$stats['labels']);
+        $this->line(' - annotated: '.$stats['annotated']);
+        $this->line(' - empty_labels: '.$stats['empty_labels']);
+    }
+
+    $this->newLine();
+    $this->info('Toplam');
+    $this->line('images='.$totalImages);
+    $this->line('labels='.$totalLabels);
+    $this->line('annotated='.$totalAnnotated);
+    $this->line('label_completion='.$completion.'%');
+
+    return SymfonyCommand::SUCCESS;
+})->purpose('Show dataset image/label progress for a sport');
+
+Artisan::command('ai:dataset-label-queue {sport} {--split=all : train, val, test or all}', function (string $sport) {
+    $requestedSport = strtolower(trim($sport));
+    $allowedSports = ['football', 'basketball', 'volleyball'];
+    if (! in_array($requestedSport, $allowedSports, true)) {
+        $this->error('Desteklenmeyen spor: '.$sport);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $requestedSplit = strtolower(trim((string) $this->option('split')));
+    $allowedSplits = ['all', 'train', 'val', 'test'];
+    if (! in_array($requestedSplit, $allowedSplits, true)) {
+        $this->error('Desteklenmeyen split: '.$requestedSplit);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $datasetDir = base_path('ai-worker/datasets/'.$requestedSport);
+    if (! File::exists($datasetDir)) {
+        $this->error('Dataset klasoru bulunamadi: '.$datasetDir);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $splits = $requestedSplit === 'all' ? ['train', 'val', 'test'] : [$requestedSplit];
+    $queueDir = $datasetDir.'/queues';
+    if (! File::exists($queueDir)) {
+        File::makeDirectory($queueDir, 0777, true);
+    }
+
+    $loadSkippedItems = static function (string $split) use ($queueDir): array {
+        $path = $queueDir.'/skipped_'.$split.'.txt';
+        if (! File::exists($path)) {
+            return [];
+        }
+
+        return collect(file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [])
+            ->map(static fn (string $line): string => str_replace('\\', '/', trim($line)))
+            ->filter(static fn (string $line): bool => $line !== '')
+            ->flip()
+            ->all();
+    };
+
+    $suffix = $requestedSplit === 'all' ? 'all' : $requestedSplit;
+    $queuePath = $queueDir.'/label_queue_'.$suffix.'.csv';
+    $handle = fopen($queuePath, 'w');
+    if ($handle === false) {
+        $this->error('Queue dosyasi olusturulamadi: '.$queuePath);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    fputcsv($handle, ['split', 'image_path', 'label_path', 'status']);
+
+    $count = 0;
+    foreach ($splits as $split) {
+        $imageDir = $datasetDir.'/images/'.$split;
+        $labelDir = $datasetDir.'/labels/'.$split;
+        $skipped = $loadSkippedItems($split);
+        if (! File::exists($imageDir) || ! File::exists($labelDir)) {
+            continue;
+        }
+
+        foreach (File::files($imageDir) as $imageFile) {
+            $imagePath = str_replace('\\', '/', $imageFile->getPathname());
+            if (isset($skipped[$imagePath])) {
+                continue;
+            }
+
+            $labelPath = $labelDir.'/'.$imageFile->getFilenameWithoutExtension().'.txt';
+            $status = 'missing';
+            if (File::exists($labelPath)) {
+                $status = trim((string) File::get($labelPath)) === '' ? 'empty' : 'annotated';
+            }
+
+            if ($status === 'annotated') {
+                continue;
+            }
+
+            fputcsv($handle, [$split, $imagePath, str_replace('\\', '/', $labelPath), $status]);
+            $count++;
+        }
+    }
+
+    fclose($handle);
+
+    $this->info('Label queue hazir.');
+    $this->line('Kayit sayisi: '.$count);
+    $this->line('Dosya: '.$queuePath);
+
+    return SymfonyCommand::SUCCESS;
+})->purpose('Export unlabeled dataset frames into a labeling queue CSV');
+
+Artisan::command('ai:training-readiness {sport} {--min-images=50 : Minimum total image count} {--min-annotated=30 : Minimum annotated frame count} {--min-completion=60 : Minimum label completion percentage}', function (string $sport) {
+    $requestedSport = strtolower(trim($sport));
+    $allowedSports = ['football', 'basketball', 'volleyball'];
+    if (! in_array($requestedSport, $allowedSports, true)) {
+        $this->error('Desteklenmeyen spor: '.$sport);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $datasetDir = base_path('ai-worker/datasets/'.$requestedSport);
+    if (! File::exists($datasetDir)) {
+        $this->error('Dataset klasoru bulunamadi: '.$datasetDir);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    $summary = [];
+    $totalImages = 0;
+    $totalLabels = 0;
+    $totalAnnotated = 0;
+
+    foreach (['train', 'val', 'test'] as $split) {
+        $imageDir = $datasetDir.'/images/'.$split;
+        $labelDir = $datasetDir.'/labels/'.$split;
+
+        $images = File::exists($imageDir) ? collect(File::files($imageDir)) : collect();
+        $labels = File::exists($labelDir) ? collect(File::files($labelDir)) : collect();
+        $annotated = $labels->filter(static function ($file) {
+            return trim((string) File::get($file->getPathname())) !== '';
+        });
+
+        $summary[$split] = [
+            'images' => $images->count(),
+            'labels' => $labels->count(),
+            'annotated' => $annotated->count(),
+        ];
+
+        $totalImages += $images->count();
+        $totalLabels += $labels->count();
+        $totalAnnotated += $annotated->count();
+    }
+
+    $completion = $totalLabels > 0 ? round(($totalAnnotated / $totalLabels) * 100, 1) : 0.0;
+    $minImages = max(1, (int) $this->option('min-images'));
+    $minAnnotated = max(1, (int) $this->option('min-annotated'));
+    $minCompletion = max(1, (float) $this->option('min-completion'));
+
+    $checks = [
+        [
+            'label' => 'Toplam image',
+            'valid' => $totalImages >= $minImages,
+            'value' => "{$totalImages} / {$minImages}",
+            'hint' => 'Daha fazla frame uret veya daha fazla video sync et.',
+        ],
+        [
+            'label' => 'Annotated frame',
+            'valid' => $totalAnnotated >= $minAnnotated,
+            'value' => "{$totalAnnotated} / {$minAnnotated}",
+            'hint' => 'Etiketlenmis frame sayisini arttir.',
+        ],
+        [
+            'label' => 'Label completion',
+            'valid' => $completion >= $minCompletion,
+            'value' => "{$completion}% / {$minCompletion}%",
+            'hint' => 'Bos label dosyalarini doldur.',
+        ],
+        [
+            'label' => 'Train split',
+            'valid' => $summary['train']['images'] > 0,
+            'value' => (string) $summary['train']['images'],
+            'hint' => 'Train split bos. Dataset prep tekrar calistir.',
+        ],
+        [
+            'label' => 'Val split',
+            'valid' => $summary['val']['images'] > 0 || $totalImages < 10,
+            'value' => (string) $summary['val']['images'],
+            'hint' => 'Validation split bos. Daha fazla frame gerekebilir.',
+        ],
+    ];
+
+    $failed = collect($checks)->filter(static fn ($check) => ! $check['valid'])->values();
+
+    $this->info('Training readiness');
+    $this->line('Spor: '.$requestedSport);
+    $this->newLine();
+
+    foreach ($checks as $check) {
+        $status = $check['valid'] ? 'PASS' : 'FAIL';
+        $this->line("[{$status}] {$check['label']} => {$check['value']}");
+    }
+
+    $this->newLine();
+    if ($failed->isEmpty()) {
+        $this->info('Dataset train icin hazir gorunuyor.');
+
+        return SymfonyCommand::SUCCESS;
+    }
+
+    $this->warn('Eksikler:');
+    foreach ($failed as $check) {
+        $this->line('- '.$check['hint']);
+    }
+
+    return SymfonyCommand::FAILURE;
+})->purpose('Check whether a sport dataset is ready for model training');
+
+Artisan::command('ai:train-model {sport} {--device=cpu : Training device, e.g. cpu or 0} {--epochs=60 : Training epochs} {--imgsz=960 : Image size} {--batch=8 : Batch size} {--force : Skip readiness gate}', function (string $sport) use ($resolveAiWorkerPython) {
+    $requestedSport = strtolower(trim($sport));
+    $allowedSports = ['football', 'basketball', 'volleyball'];
+    if (! in_array($requestedSport, $allowedSports, true)) {
+        $this->error('Desteklenmeyen spor: '.$sport);
+
+        return SymfonyCommand::FAILURE;
+    }
+
+    if (! (bool) $this->option('force')) {
+        $this->info('Readiness kontrolu calisiyor...');
+        $readinessExit = Artisan::call('ai:training-readiness', ['sport' => $requestedSport]);
+        $this->output->write(Artisan::output());
+
+        if ($readinessExit !== SymfonyCommand::SUCCESS) {
+            $this->error('Dataset train icin hazir degil. Zorla gecmek icin --force kullan.');
 
             return SymfonyCommand::FAILURE;
         }
-
-        $payload = $response->json() ?: [];
-        $this->line('published_model_path='.(string) ($payload['published_model_path'] ?? ''));
-        $this->line('best_path='.(string) ($payload['best_path'] ?? ''));
-        $output = trim((string) ($payload['output'] ?? ''));
-        if ($output !== '') {
-            $this->line($output);
-        }
-        $this->info('Training tamamlandi.');
-
-        return SymfonyCommand::SUCCESS;
     }
 
     $pythonPath = $resolveAiWorkerPython(base_path('ai-worker/.venv'));
