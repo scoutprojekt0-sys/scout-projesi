@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import shutil
 import tempfile
 from pathlib import Path
 
@@ -121,6 +122,12 @@ class PipelineAnalyzer:
         )
 
     def _download_video(self, video_url: str, tmp_dir: Path) -> Path:
+        local_path = Path(video_url)
+        if local_path.exists():
+            target = tmp_dir / local_path.name
+            shutil.copy2(local_path, target)
+            return target
+
         target = tmp_dir / "video.mp4"
         logger.info("downloading video for analysis", extra={"video_url": video_url})
         with httpx.stream(

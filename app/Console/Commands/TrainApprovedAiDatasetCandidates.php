@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Services\AiDatasetExportService;
 use App\Services\AiModelRegistryService;
+use App\Services\AiModelValidationService;
 use App\Services\AiTrainingRunService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
@@ -25,7 +26,8 @@ class TrainApprovedAiDatasetCandidates extends Command
     public function handle(
         AiDatasetExportService $service,
         AiTrainingRunService $runService,
-        AiModelRegistryService $registry
+        AiModelRegistryService $registry,
+        AiModelValidationService $validationService
     ): int
     {
         $sport = strtolower(trim((string) $this->argument('sport')));
@@ -83,9 +85,29 @@ class TrainApprovedAiDatasetCandidates extends Command
         }
 
         $updated = $service->markSportCandidatesAsTrained($sport, $modelVersion);
-        $runService->markCompleted($run, $output);
+        $run = $runService->markCompleted($run, $output);
+        $validationSummary = $this->extractValidationSummary($output);
+        $run = $runService->attachValidation(
+            $run,
+            $validationSummary !== null
+                ? $validationService->buildRolloutDecision($sport, $validationSummary)
+                : [
+                    'passed' => false,
+                    'checks' => [],
+                    'summary' => [],
+                    'reason' => 'validation_summary_missing',
+                ]
+        );
         preg_match('/published_model_path=(.+)/', $output, $publishedModelPathMatch);
         $publishedModelPath = trim((string) ($publishedModelPathMatch[1] ?? ''));
+        if (! $registry->canPublish($run)) {
+            $this->warn('Validation gate gecilemedi. Model aktif edilmedi.');
+            $this->line('Training run id: '.$run->id);
+            $this->line('Model version: '.$modelVersion);
+            $this->line('Trained olarak isaretlenen aday sayisi: '.$updated);
+
+            return self::SUCCESS;
+        }
         if ($publishedModelPath === '') {
             $publishedModelPath = $registry->stageLatestRunModelForInference($sport, $modelVersion);
         }
@@ -103,5 +125,16 @@ class TrainApprovedAiDatasetCandidates extends Command
         $this->line('Trained olarak isaretlenen aday sayisi: '.$updated);
 
         return self::SUCCESS;
+    }
+
+    private function extractValidationSummary(string $output): ?array
+    {
+        if (preg_match('/validation_summary=(.+)/', $output, $matches) !== 1) {
+            return null;
+        }
+
+        $decoded = json_decode(trim((string) $matches[1]), true);
+
+        return is_array($decoded) ? $decoded : null;
     }
 }

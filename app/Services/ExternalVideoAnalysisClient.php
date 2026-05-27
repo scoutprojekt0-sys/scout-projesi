@@ -21,6 +21,8 @@ class ExternalVideoAnalysisClient
         $callbackSecret = $this->resolveCallbackSecret();
         $callbackUrl = $this->resolveCallbackUrl($analysis->id);
         $sport = $this->inferSport($videoClip?->tags, $analysis->analysis_type);
+        $modelVersion = $this->modelRegistry->resolveInferenceModelVersion($sport);
+        $modelPath = $this->modelRegistry->resolveInferenceModelPath($sport);
 
         $response = Http::timeout((int) config('scout.ai_analysis.worker_timeout_seconds', 20))
             ->acceptJson()
@@ -34,8 +36,8 @@ class ExternalVideoAnalysisClient
                 'target_profile' => $this->buildTargetProfile($analysis->target_player_id),
                 'requested_by' => $analysis->requested_by,
                 'analysis_type' => $analysis->analysis_type,
-                'model_version' => $this->modelRegistry->resolveInferenceModelVersion($sport),
-                'model_path' => $this->modelRegistry->resolveInferenceModelPath($sport),
+                'model_version' => $modelVersion,
+                'model_path' => $modelPath,
                 'callback_url' => $callbackUrl,
                 'callback_secret' => $callbackSecret,
             ]);
@@ -44,7 +46,11 @@ class ExternalVideoAnalysisClient
             throw new RuntimeException('AI worker istegi basarisiz: '.$response->status());
         }
 
-        return $response->json() ?: [];
+        return array_merge($response->json() ?: [], [
+            'inference_sport' => $sport,
+            'inference_model_version' => $modelVersion,
+            'inference_model_path' => $modelPath,
+        ]);
     }
 
     private function resolveBaseUrl(): string

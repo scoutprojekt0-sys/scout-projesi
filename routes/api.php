@@ -242,6 +242,8 @@ Route::prefix('ai-training-runs')->middleware(['auth:sanctum', 'reject_legacy_to
 Route::prefix('ai-models')->middleware(['auth:sanctum', 'reject_legacy_token', 'throttle:api'])->group(function () {
     Route::get('/active', [AiModelRegistryController::class, 'active'])->middleware('ability:staff');
     Route::get('/rollouts', [AiModelRegistryController::class, 'rollouts'])->middleware('ability:staff');
+    Route::get('/monitoring', [AiModelRegistryController::class, 'monitoring'])->middleware('ability:staff');
+    Route::get('/monitoring/overview', [AiModelRegistryController::class, 'monitoringOverview'])->middleware('ability:staff');
     Route::post('/publish', [AiModelRegistryController::class, 'publish'])->middleware('ability:staff');
     Route::post('/rollback', [AiModelRegistryController::class, 'rollback'])->middleware('ability:staff');
 });

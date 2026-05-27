@@ -6,10 +6,14 @@ use App\Models\ScoutTip;
 use App\Models\ScoutTipRoleRequest;
 use App\Models\ModerationQueue;
 use App\Models\PlayerTransfer;
+use App\Models\AiDatasetCandidate;
 use App\Models\User;
 use App\Models\VideoClip;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Queue;
+use App\Jobs\MaybeAutoTrainSportJob;
+use App\Jobs\PrepareAiDatasetForSportJob;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -399,6 +403,48 @@ class ScoutTipEndpointsTest extends TestCase
             'basis' => 'verified_transfer',
             'reward_type' => 'commission_share',
         ]);
+    }
+
+    public function test_guest_tip_video_enters_continuous_learning_pipeline_when_sport_is_resolvable(): void
+    {
+        Queue::fake();
+
+        $player = User::factory()->create([
+            'role' => 'player',
+            'name' => 'Arda Keskin',
+            'sport' => 'football',
+        ]);
+
+        $response = $this->postJson('/api/scout-tips/guest', [
+            'player_id' => $player->id,
+            'source_type' => 'existing_player',
+            'player_name' => $player->name,
+            'city' => 'Istanbul',
+            'guardian_consent_status' => 'received',
+            'description' => 'Dis sahadan gelen video kaydi. Oyuncunun topsuz kosulari ve yon degistirmeleri dikkat cekiyor.',
+            'video_title' => 'Guest Football Clip',
+            'video_url' => 'https://example.com/guest-football.mp4',
+            'video_platform' => 'custom',
+        ]);
+
+        $response
+            ->assertCreated()
+            ->assertJsonPath('data.video_clip_id', fn ($value) => is_int($value) || ctype_digit((string) $value));
+
+        $clipId = (int) $response->json('data.video_clip_id');
+
+        $this->assertDatabaseHas('ai_dataset_candidates', [
+            'video_clip_id' => $clipId,
+            'sport' => 'football',
+            'status' => AiDatasetCandidate::STATUS_QUEUED,
+        ]);
+
+        $candidate = AiDatasetCandidate::query()->where('video_clip_id', $clipId)->firstOrFail();
+        $this->assertSame('guest_scout_tip', data_get($candidate->metadata, 'candidate_source'));
+        $this->assertSame('manual_opt_in', data_get($candidate->metadata, 'candidate_origin'));
+
+        Queue::assertPushed(PrepareAiDatasetForSportJob::class);
+        Queue::assertPushed(MaybeAutoTrainSportJob::class);
     }
 
     public function test_moderation_approval_verifies_transfer_and_approves_reward(): void

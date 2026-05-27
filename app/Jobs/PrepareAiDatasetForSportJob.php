@@ -40,7 +40,10 @@ class PrepareAiDatasetForSportJob implements ShouldQueue
         try {
             $exportedIds = AiDatasetCandidate::query()
                 ->where('sport', $sport)
-                ->where('status', AiDatasetCandidate::STATUS_QUEUED)
+                ->whereIn('status', [
+                    AiDatasetCandidate::STATUS_QUEUED,
+                    AiDatasetCandidate::STATUS_APPROVED,
+                ])
                 ->orderBy('id')
                 ->get()
                 ->map(function (AiDatasetCandidate $candidate) use ($exportService): ?int {

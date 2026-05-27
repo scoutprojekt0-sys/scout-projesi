@@ -10,6 +10,8 @@ use App\Models\ScoutTipWatchlist;
 use App\Models\ProfileReview;
 use App\Models\User;
 use App\Models\VideoClip;
+use App\Services\AiContinuousLearningService;
+use App\Services\AiDatasetCandidateService;
 use App\Services\ScoutTipWorkflowService;
 use App\Support\NotificationStore;
 use Illuminate\Http\JsonResponse;
@@ -156,7 +158,11 @@ class ScoutTipController extends Controller
         return $this->successResponse($tip, 'Scout ihbari gonderildi.', Response::HTTP_CREATED);
     }
 
-    public function storeGuest(Request $request): JsonResponse
+    public function storeGuest(
+        Request $request,
+        AiDatasetCandidateService $datasetCandidateService,
+        AiContinuousLearningService $continuousLearningService
+    ): JsonResponse
     {
         $validated = $request->validate([
             'player_id' => ['nullable', 'integer', 'exists:users,id'],
@@ -181,23 +187,41 @@ class ScoutTipController extends Controller
         ]);
 
         $guestSubmitter = $this->resolveGuestSubmitter();
+        $resolvedSport = $this->resolveScoutTipSport($validated);
         $metadata = array_merge($validated['metadata'] ?? [], [
             'guest_submission' => true,
             'submitted_via' => 'public_scout_et',
             'guest_ip' => (string) $request->ip(),
             'guest_user_agent' => Str::limit((string) $request->userAgent(), 500),
+            'sport' => $resolvedSport,
         ]);
 
         if (! empty($validated['video_url'])) {
+            $tags = array_values(array_filter([
+                'scout_tip',
+                'guest_submission',
+                $resolvedSport,
+            ]));
             $clip = VideoClip::create([
                 'user_id' => $guestSubmitter->id,
                 'title' => $validated['video_title'] ?: ($validated['player_name'].' Scout Clip'),
                 'description' => 'Public guest scout tip video',
                 'video_url' => $validated['video_url'],
                 'platform' => $validated['video_platform'] ?: 'custom',
-                'tags' => ['scout_tip', 'guest_submission'],
+                'tags' => $tags,
+                'metadata' => array_filter([
+                    'sport' => $resolvedSport,
+                    'ai_dataset_candidate' => $resolvedSport !== null,
+                    'ai_dataset_candidate_requested' => $resolvedSport !== null,
+                    'candidate_source' => 'guest_scout_tip',
+                ], static fn ($value) => $value !== null),
             ]);
             $validated['video_clip_id'] = $clip->id;
+
+            $candidate = $datasetCandidateService->syncFromVideoClip($clip->fresh('player'));
+            if ($candidate !== null) {
+                $continuousLearningService->onCandidateQueued($candidate);
+            }
         }
 
         unset($validated['video_title'], $validated['video_url'], $validated['video_platform']);
@@ -725,6 +749,44 @@ class ScoutTipController extends Controller
     private function normalizeRoleRequestType(string $role): string
     {
         return in_array($role, ['team', 'club'], true) ? 'team' : 'coach';
+    }
+
+    private function resolveScoutTipSport(array $payload): ?string
+    {
+        $metadataSport = $this->normalizeSport(data_get($payload, 'metadata.sport'));
+        if ($metadataSport !== null) {
+            return $metadataSport;
+        }
+
+        $playerId = (int) ($payload['player_id'] ?? 0);
+        if ($playerId > 0) {
+            $playerSport = User::query()->whereKey($playerId)->value('sport');
+            $normalizedPlayerSport = $this->normalizeSport($playerSport);
+            if ($normalizedPlayerSport !== null) {
+                return $normalizedPlayerSport;
+            }
+        }
+
+        return null;
+    }
+
+    private function normalizeSport(mixed $sport): ?string
+    {
+        if (! is_string($sport)) {
+            return null;
+        }
+
+        $normalized = strtolower(trim($sport));
+        if ($normalized === '') {
+            return null;
+        }
+
+        return match ($normalized) {
+            'futbol', 'football', 'soccer' => 'football',
+            'basketbol', 'basketball' => 'basketball',
+            'voleybol', 'volleyball' => 'volleyball',
+            default => null,
+        };
     }
 
     private function autoCreateManagerShortlistEntries(ScoutTip $tip): void

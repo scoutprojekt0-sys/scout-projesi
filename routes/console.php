@@ -1253,6 +1253,9 @@ Artisan::command('ai:train-model {sport} {--device=cpu : Training device, e.g. c
         $payload = $response->json() ?: [];
         $this->line('published_model_path='.(string) ($payload['published_model_path'] ?? ''));
         $this->line('best_path='.(string) ($payload['best_path'] ?? ''));
+        if (isset($payload['validation_summary']) && is_array($payload['validation_summary'])) {
+            $this->line('validation_summary='.json_encode($payload['validation_summary'], JSON_UNESCAPED_SLASHES));
+        }
         $output = trim((string) ($payload['output'] ?? ''));
         if ($output !== '') {
             $this->line($output);
@@ -1329,6 +1332,37 @@ Artisan::command('ai:train-model {sport} {--device=cpu : Training device, e.g. c
         return SymfonyCommand::FAILURE;
     }
 
+    $bestPath = app(\App\Services\AiModelRegistryService::class)->resolveLatestRunBestPath($requestedSport);
+    if ($bestPath !== null && File::exists(base_path('ai-worker/scripts/validate_sport_model.py'))) {
+        $validationProcess = new Process([
+            $pythonPath,
+            base_path('ai-worker/scripts/validate_sport_model.py'),
+            '--sport',
+            $requestedSport,
+            '--weights',
+            $bestPath,
+            '--data',
+            $dataPath,
+            '--device',
+            (string) $this->option('device'),
+            '--imgsz',
+            (string) $this->option('imgsz'),
+            '--batch',
+            (string) $this->option('batch'),
+        ], base_path());
+        $validationProcess->setEnv(array_merge($_ENV, $_SERVER, [
+            'POLARS_SKIP_CPU_CHECK' => '1',
+        ]));
+        $validationProcess->setTimeout(null);
+        $validationProcess->run();
+        if ($validationProcess->isSuccessful()) {
+            $decoded = json_decode(trim((string) $validationProcess->getOutput()), true);
+            if (is_array($decoded)) {
+                $this->line('validation_summary='.json_encode($decoded, JSON_UNESCAPED_SLASHES));
+            }
+        }
+    }
+
     $this->info('Training tamamlandi.');
 
     return SymfonyCommand::SUCCESS;
@@ -1345,5 +1379,6 @@ Schedule::call(static function (): void {
         MaybeAutoTrainSportJob::dispatch($sport);
     }
 })->hourly()->name('ai-auto-train-all');
+Schedule::command('ai-models:monitor-drift --rollback')->hourly()->name('ai-model-drift-monitor');
 
 

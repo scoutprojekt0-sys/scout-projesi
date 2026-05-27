@@ -48,11 +48,17 @@ class AiDatasetExportCommandTest extends TestCase
         $candidate->refresh();
         $this->assertSame('train', $candidate->split);
         $this->assertNotEmpty($candidate->metadata['export']['raw_video_path'] ?? null);
+        $this->assertNotEmpty($candidate->metadata['export']['source_key'] ?? null);
+        $this->assertSame(
+            $candidate->metadata['export']['source_key'] ?? null,
+            $candidate->metadata['source_key'] ?? null
+        );
         $this->assertFileExists($candidate->metadata['export']['raw_video_path']);
         $this->assertFileExists($manifestPath);
 
         $manifest = File::get($manifestPath);
         $this->assertStringContainsString((string) $candidate->id, $manifest);
         $this->assertStringContainsString((string) $clip->id, $manifest);
+        $this->assertStringContainsString((string) $candidate->metadata['export']['source_key'], $manifest);
     }
 }

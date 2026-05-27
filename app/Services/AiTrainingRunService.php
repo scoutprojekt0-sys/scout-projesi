@@ -52,6 +52,16 @@ class AiTrainingRunService
         return $run->fresh('candidates');
     }
 
+    public function attachValidation(AiTrainingRun $run, array $validation): AiTrainingRun
+    {
+        $run->forceFill([
+            'validation_summary' => $validation,
+            'validation_passed' => (bool) ($validation['passed'] ?? false),
+        ])->save();
+
+        return $run->fresh('candidates');
+    }
+
     public function markFailed(AiTrainingRun $run, string $outputLog = ''): AiTrainingRun
     {
         $run->forceFill([

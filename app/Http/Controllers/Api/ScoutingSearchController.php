@@ -59,6 +59,7 @@ class ScoutingSearchController extends Controller
                 'users.name',
                 'users.city',
                 'users.position',
+                'users.sport',
                 'users.age',
                 'users.photo_url',
                 'player_video_metrics.successful_passes',
@@ -94,6 +95,10 @@ class ScoutingSearchController extends Controller
         if ($request->filled('position')) {
             $positions = $this->expandPositionAliases((string) $request->input('position'));
             $query->whereIn('users.position', $positions);
+        }
+
+        if ($request->filled('sport')) {
+            $query->where('users.sport', $this->normalizeSport((string) $request->input('sport')));
         }
 
         if ($request->filled('min_speed_score')) {
@@ -143,6 +148,10 @@ class ScoutingSearchController extends Controller
             ->join('users', 'users.id', '=', 'player_video_metrics.player_id')
             ->where('users.role', 'player');
 
+        if ($request->filled('sport')) {
+            $base->where('users.sport', $this->normalizeSport((string) $request->input('sport')));
+        }
+
         $makeRows = function (string $orderColumn) use ($base, $limit) {
             return (clone $base)
                 ->leftJoin('video_analyses', 'video_analyses.id', '=', 'player_video_metrics.video_analysis_id')
@@ -155,6 +164,7 @@ class ScoutingSearchController extends Controller
                     'users.name',
                     'users.city',
                     'users.position',
+                    'users.sport',
                     'users.age',
                     'users.photo_url',
                     'player_video_metrics.successful_crosses',
@@ -230,6 +240,18 @@ class ScoutingSearchController extends Controller
             'orta saha', 'ortasaha', 'midfield', 'midfielder' => ['Orta Saha', 'Midfielder', 'Midfield'],
             'forvet', 'forward', 'striker' => ['Forvet', 'Forward', 'Striker'],
             default => [$position],
+        };
+    }
+
+    private function normalizeSport(string $sport): string
+    {
+        $normalized = mb_strtolower(trim($sport));
+
+        return match ($normalized) {
+            'futbol', 'soccer' => 'football',
+            'basketbol' => 'basketball',
+            'voleybol' => 'volleyball',
+            default => $normalized,
         };
     }
 }

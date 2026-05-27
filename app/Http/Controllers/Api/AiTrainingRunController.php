@@ -69,6 +69,8 @@ class AiTrainingRunController extends Controller
             'candidate_count' => isset($run->candidates_count)
                 ? (int) $run->candidates_count
                 : (int) $run->candidate_count,
+            'validation_passed' => $run->validation_passed,
+            'validation_summary' => $run->validation_summary,
             'started_at' => optional($run->started_at)?->toIso8601String(),
             'completed_at' => optional($run->completed_at)?->toIso8601String(),
             'failed_at' => optional($run->failed_at)?->toIso8601String(),

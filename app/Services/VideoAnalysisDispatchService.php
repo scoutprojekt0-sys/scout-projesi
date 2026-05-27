@@ -63,6 +63,9 @@ class VideoAnalysisDispatchService
             'worker_status' => $response['status'] ?? 'submitted',
             'external_job_id' => $response['job_id'] ?? null,
             'analysis_version' => $response['analysis_version'] ?? 'external-worker',
+            'inference_sport' => $response['inference_sport'] ?? $analysis->inference_sport,
+            'inference_model_version' => $response['inference_model_version'] ?? $analysis->inference_model_version,
+            'inference_model_path' => $response['inference_model_path'] ?? $analysis->inference_model_path,
             'submitted_at' => now(),
             'raw_output' => [
                 'engine' => 'external-worker',

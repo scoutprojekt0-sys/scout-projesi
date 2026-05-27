@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\MaybeAutoTrainSportJob;
+use App\Models\AiDatasetCandidate;
+use App\Services\AiContinuousLearningService;
+use App\Services\AiModelValidationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -106,13 +108,19 @@ class AiLabelingController extends Controller
         return response()->file($resolved);
     }
 
-    public function save(Request $request, string $sport): JsonResponse
+    public function save(
+        Request $request,
+        string $sport,
+        AiContinuousLearningService $continuousLearningService,
+        AiModelValidationService $validationService
+    ): JsonResponse
     {
         $sport = $this->normalizeSport($sport);
         $validated = $request->validate([
             'image_path' => ['required', 'string'],
             'label_path' => ['required', 'string'],
             'boxes' => ['required', 'array'],
+            'prediction_confidence' => ['nullable', 'numeric', 'min:0', 'max:1'],
             'boxes.*.class_id' => ['required', 'integer', 'min:0', 'max:3'],
             'boxes.*.x' => ['required', 'numeric', 'min:0', 'max:1'],
             'boxes.*.y' => ['required', 'numeric', 'min:0', 'max:1'],
@@ -140,9 +148,13 @@ class AiLabelingController extends Controller
         File::ensureDirectoryExists(dirname($labelPath));
         File::put($labelPath, $lines.(($lines !== '') ? PHP_EOL : ''));
         $split = $this->extractSplitFromPath($imagePath);
+        $pseudoLabelPolicy = $validationService->evaluatePseudoLabelConfidence(
+            isset($validated['prediction_confidence']) ? (float) $validated['prediction_confidence'] : null
+        );
         $this->removeSkippedItem($sport, $split, $imagePath);
         $this->removeFromQueueFiles($sport, $split, $imagePath);
-        MaybeAutoTrainSportJob::dispatch($sport);
+        $this->syncPseudoLabelMetadata($sport, $imagePath, $pseudoLabelPolicy);
+        $continuousLearningService->onLabelSaved($sport);
 
         return response()->json([
             'ok' => true,
@@ -151,11 +163,16 @@ class AiLabelingController extends Controller
                 'image_path' => $imagePath,
                 'label_path' => $labelPath,
                 'box_count' => count($validated['boxes']),
+                'pseudo_label_policy' => $pseudoLabelPolicy,
             ],
         ]);
     }
 
-    public function predict(Request $request, string $sport): JsonResponse
+    public function predict(
+        Request $request,
+        string $sport,
+        AiModelValidationService $validationService
+    ): JsonResponse
     {
         $sport = $this->normalizeSport($sport);
         $validated = $request->validate([
@@ -231,12 +248,21 @@ class AiLabelingController extends Controller
         }
 
         Cache::put($cacheKey, $payload, now()->addHours(12));
+        $detections = $payload['detections'] ?? $payload['boxes'] ?? [];
+        $confidences = collect(is_array($detections) ? $detections : [])
+            ->map(static fn ($item) => is_array($item) ? ($item['confidence'] ?? null) : null)
+            ->filter(static fn ($value) => is_numeric($value))
+            ->map(static fn ($value) => (float) $value)
+            ->values();
+        $avgConfidence = $confidences->isEmpty() ? null : round((float) $confidences->avg(), 4);
+        $pseudoLabelPolicy = $validationService->evaluatePseudoLabelConfidence($avgConfidence);
 
         return response()->json([
             'ok' => true,
             'data' => $payload,
             'model_path' => $modelPath,
             'cached' => false,
+            'pseudo_label_policy' => $pseudoLabelPolicy,
         ]);
     }
 
@@ -566,6 +592,30 @@ class AiLabelingController extends Controller
         ]);
 
         return 'ai_labeling_predict:'.sha1($signature);
+    }
+
+    private function syncPseudoLabelMetadata(string $sport, string $imagePath, array $policy): void
+    {
+        $sourceKey = $this->extractSourceKey($imagePath);
+        $candidate = AiDatasetCandidate::query()
+            ->where('sport', $sport)
+            ->where(function ($query) use ($sourceKey) {
+                $query->where('metadata->export->source_key', $sourceKey)
+                    ->orWhere('metadata->source_key', $sourceKey)
+                    ->orWhere('metadata->video_url', 'like', '%'.$sourceKey.'%')
+                    ->orWhere('metadata->title', 'like', '%'.$sourceKey.'%');
+            })
+            ->latest('id')
+            ->first();
+
+        if (! $candidate) {
+            return;
+        }
+
+        $metadata = is_array($candidate->metadata) ? $candidate->metadata : [];
+        $metadata['pseudo_label_policy'] = $policy;
+        $candidate->metadata = $metadata;
+        $candidate->save();
     }
 
     private function decodePredictOutput(string $output): ?array

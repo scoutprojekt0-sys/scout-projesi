@@ -5,9 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Concerns\ApiResponds;
 use App\Http\Controllers\Concerns\ResolvesPublicFileUrls;
 use App\Http\Controllers\Controller;
-use App\Jobs\MaybeAutoTrainSportJob;
-use App\Jobs\PrepareAiDatasetForSportJob;
 use App\Models\VideoClip;
+use App\Services\AiContinuousLearningService;
 use App\Services\AiDatasetCandidateService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -45,7 +44,11 @@ class VideoClipController extends Controller
         return $this->successResponse($this->transformPublicClip($clip->fresh()), 'Video detayi hazir.');
     }
 
-    public function store(Request $request, AiDatasetCandidateService $datasetCandidateService): JsonResponse
+    public function store(
+        Request $request,
+        AiDatasetCandidateService $datasetCandidateService,
+        AiContinuousLearningService $continuousLearningService
+    ): JsonResponse
     {
         $validated = $request->validate([
             'title'             => ['required', 'string', 'max:255'],
@@ -75,7 +78,7 @@ class VideoClipController extends Controller
             return $this->errorResponse('Video dosyasi veya video URL gerekli.', Response::HTTP_UNPROCESSABLE_ENTITY, 'video_source_required');
         }
 
-        $sport = $this->normalizeSport($validated['sport'] ?? null);
+        $sport = $this->normalizeSport($validated['sport'] ?? $request->user()?->sport);
         $tags = collect($validated['tags'] ?? [])
             ->map(static fn ($value) => trim((string) $value))
             ->filter(static fn ($value) => $value !== '')
@@ -90,6 +93,9 @@ class VideoClipController extends Controller
         $metadata = array_filter([
             'sport' => $sport,
             'ai_dataset_candidate' => $isDatasetCandidate,
+            'ai_dataset_candidate_requested' => array_key_exists('ai_dataset_candidate', $validated)
+                ? (bool) $validated['ai_dataset_candidate']
+                : null,
         ], static fn ($value) => $value !== null);
 
         $clip = VideoClip::create([
@@ -108,8 +114,8 @@ class VideoClipController extends Controller
 
         $candidate = $datasetCandidateService->syncFromVideoClip($clip);
         if ($candidate !== null) {
-            PrepareAiDatasetForSportJob::dispatch($candidate->sport);
-            MaybeAutoTrainSportJob::dispatch($candidate->sport);
+            $continuousLearningService->onCandidateQueued($candidate);
+            $continuousLearningService->onVideoUploaded($clip, $candidate);
         }
 
         return $this->successResponse(

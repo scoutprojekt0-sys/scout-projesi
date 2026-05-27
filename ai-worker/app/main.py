@@ -60,6 +60,7 @@ async def create_training_job(payload: TrainingJobRequest) -> dict:
         'model_version': payload.model_version,
         'published_model_path': result['published_model_path'],
         'best_path': result['best_path'],
+        'validation_summary': result.get('validation_summary'),
         'output': result['output'],
     }
 

@@ -101,6 +101,10 @@ def load_existing_rows(manifest_path: Path) -> list[dict[str, str]]:
 def processed_video_keys(rows: list[dict[str, str]]) -> set[str]:
     keys: set[str] = set()
     for row in rows:
+        source_key = (row.get("source_key") or "").strip()
+        if source_key:
+            keys.add(source_key)
+            continue
         source_video = (row.get("source_video") or "").strip()
         if source_video:
             keys.add(safe_stem(Path(source_video).stem))
@@ -190,6 +194,7 @@ def main() -> None:
         final_rows.append(
             {
                 "source_video": frame_sources.get(frame_path.name, ""),
+                "source_key": safe_stem(Path(frame_sources.get(frame_path.name, frame_path.name)).stem),
                 "frame_path": str(image_target),
                 "split": split,
                 "labels_path": str(label_target),
@@ -201,7 +206,7 @@ def main() -> None:
     with manifest_path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(
             handle,
-            fieldnames=["source_video", "frame_path", "split", "labels_path", "needs_labeling", "notes"],
+            fieldnames=["source_video", "source_key", "frame_path", "split", "labels_path", "needs_labeling", "notes"],
         )
         writer.writeheader()
         writer.writerows(final_rows)

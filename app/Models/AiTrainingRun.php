@@ -25,6 +25,8 @@ class AiTrainingRun extends Model
         'candidate_ids',
         'notes',
         'output_log',
+        'validation_summary',
+        'validation_passed',
         'started_at',
         'completed_at',
         'failed_at',
@@ -33,6 +35,8 @@ class AiTrainingRun extends Model
     protected $casts = [
         'forced' => 'boolean',
         'candidate_ids' => 'array',
+        'validation_summary' => 'array',
+        'validation_passed' => 'boolean',
         'started_at' => 'datetime',
         'completed_at' => 'datetime',
         'failed_at' => 'datetime',

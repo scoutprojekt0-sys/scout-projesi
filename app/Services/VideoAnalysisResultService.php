@@ -11,9 +11,14 @@ use Illuminate\Support\Facades\DB;
 
 class VideoAnalysisResultService
 {
+    public function __construct(
+        private readonly AiContinuousLearningService $continuousLearningService,
+    ) {
+    }
+
     public function complete(VideoAnalysis $analysis, array $payload): VideoAnalysis
     {
-        return DB::transaction(function () use ($analysis, $payload) {
+        $completedAnalysis = DB::transaction(function () use ($analysis, $payload) {
             $analysis->events()->delete();
             $analysis->metrics()->delete();
             $analysis->targets()->delete();
@@ -91,6 +96,10 @@ class VideoAnalysisResultService
 
             return $analysis->fresh(['videoClip', 'targetPlayer', 'events.clips', 'metrics', 'targets']);
         });
+
+        $this->continuousLearningService->onAnalysisCompleted($completedAnalysis);
+
+        return $completedAnalysis;
     }
 
     public function fail(VideoAnalysis $analysis, string $reason, ?array $rawOutput = null): VideoAnalysis
@@ -131,6 +140,8 @@ class VideoAnalysisResultService
             'meters_per_pixel',
             'calibration_confidence',
             'field_bbox',
+            'model_version',
+            'model_path',
             'fallback_from',
             'fallback_reason',
             'fallback_mode',

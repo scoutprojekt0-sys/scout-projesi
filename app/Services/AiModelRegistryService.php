@@ -9,8 +9,42 @@ use Illuminate\Support\Facades\File;
 
 class AiModelRegistryService
 {
+    public function __construct(
+        private readonly AiModelValidationService $validationService,
+    ) {
+    }
+
+    public function canPublish(?AiTrainingRun $run): bool
+    {
+        if ($run === null) {
+            return true;
+        }
+
+        if ($run->validation_passed !== true) {
+            return false;
+        }
+
+        $validationSummary = is_array($run->validation_summary)
+            ? (array) ($run->validation_summary['summary'] ?? [])
+            : [];
+
+        if ($validationSummary === []) {
+            return false;
+        }
+
+        $comparison = $this->validationService->compareAgainstActiveBaseline($run->sport, [
+            'summary' => $validationSummary,
+        ]);
+
+        return (bool) ($comparison['passed'] ?? false);
+    }
+
     public function publish(string $sport, string $modelVersion, ?string $modelPath = null, ?AiTrainingRun $run = null, ?string $notes = null): AiActiveModel
     {
+        if (! $this->canPublish($run)) {
+            throw new \RuntimeException('Model validation gate gecilemedi. Publish engellendi.');
+        }
+
         $current = AiActiveModel::query()->where('sport', $sport)->first();
 
         $active = AiActiveModel::query()->updateOrCreate(

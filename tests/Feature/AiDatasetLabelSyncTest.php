@@ -33,7 +33,9 @@ class AiDatasetLabelSyncTest extends TestCase
             'status' => AiDatasetCandidate::STATUS_LABELING,
             'split' => 'train',
             'metadata' => [
+                'source_key' => 'candidate_1_clip_'.$clip->id.'_football_candidate',
                 'export' => [
+                    'source_key' => 'candidate_1_clip_'.$clip->id.'_football_candidate',
                     'raw_video_path' => $rawVideoPath,
                 ],
             ],
@@ -57,9 +59,9 @@ class AiDatasetLabelSyncTest extends TestCase
         File::put(
             $manifestPath,
             implode(PHP_EOL, [
-                'source_video,frame_path,split,labels_path,needs_labeling,notes',
-                $rawVideoPath.','.$imageOne.',train,'.$labelOne.',yes,',
-                $rawVideoPath.','.$imageTwo.',train,'.$labelTwo.',yes,',
+                'source_video,source_key,frame_path,split,labels_path,needs_labeling,notes',
+                $rawVideoPath.',candidate_1_clip_'.$clip->id.'_football_candidate,'.$imageOne.',train,'.$labelOne.',yes,',
+                $rawVideoPath.',candidate_1_clip_'.$clip->id.'_football_candidate,'.$imageTwo.',train,'.$labelTwo.',yes,',
             ]).PHP_EOL
         );
 

@@ -13,10 +13,15 @@ class MockVideoAnalysisService
 
     public function run(VideoAnalysis $analysis): VideoAnalysis
     {
+        $sport = $this->inferSport($analysis);
+
         $analysis->update([
             'status' => 'processing',
             'provider' => 'mock',
             'worker_status' => 'running',
+            'inference_sport' => $sport,
+            'inference_model_version' => 'mock-v1',
+            'inference_model_path' => 'mock://video-analysis/mock-v1',
             'started_at' => now(),
         ]);
 
@@ -149,5 +154,34 @@ class MockVideoAnalysisService
                 ],
             ]],
         ]);
+    }
+
+    private function inferSport(VideoAnalysis $analysis): string
+    {
+        $map = [
+            'futbol' => 'football',
+            'football' => 'football',
+            'soccer' => 'football',
+            'basketbol' => 'basketball',
+            'basketball' => 'basketball',
+            'voleybol' => 'volleyball',
+            'volleyball' => 'volleyball',
+        ];
+
+        foreach (($analysis->videoClip?->tags ?? []) as $tag) {
+            $normalized = strtolower(trim((string) $tag));
+            if (isset($map[$normalized])) {
+                return $map[$normalized];
+            }
+        }
+
+        $analysisType = strtolower(trim((string) $analysis->analysis_type));
+        foreach ($map as $key => $value) {
+            if (str_contains($analysisType, $key)) {
+                return $value;
+            }
+        }
+
+        return 'football';
     }
 }

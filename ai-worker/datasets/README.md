@@ -60,3 +60,29 @@ Dosya:
 - train script: `ai-worker/scripts/train_basketball_model.py`
 - train script: `ai-worker/scripts/train_volleyball_model.py`
 - smoke test script: `ai-worker/scripts/smoke_test_model.py`
+
+Opsiyonel event validation:
+
+- `ai-worker/datasets/<sport>/event_validation.json`
+
+Beklenen format:
+
+```json
+{
+  "cases": [
+    {
+      "case_id": "football-pass-001",
+      "video_path": "E:/datasets/football/events/pass_001.mp4",
+      "sport": "football",
+      "analysis_type": "scout_mvp",
+      "tolerance_seconds": 2,
+      "expected_events": [
+        { "event_type": "pass", "start_second": 14, "end_second": 16 },
+        { "event_type": "shot", "start_second": 41, "end_second": 43 }
+      ]
+    }
+  ]
+}
+```
+
+Bu dosya varsa `validate_sport_model.py` ek olarak event precision / recall / f1 ve event-type bazli metrikler uretir.

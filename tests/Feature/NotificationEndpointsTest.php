@@ -39,6 +39,15 @@ class NotificationEndpointsTest extends TestCase
                 'payload' => json_encode([
                     'actor_user_id' => 123,
                     'actor_name' => 'Scout One',
+                    'route' => '/ai-model-monitoring',
+                    'screen' => 'ai_model_monitoring',
+                    'target' => 'ai_model_monitoring',
+                    'category' => 'ai_model_monitoring',
+                    'sport' => 'football',
+                    'model_version' => 'football-v3',
+                    'rollback_target_model_version' => 'football-v2',
+                    'drift_detected' => true,
+                    'auto_rollback_executed' => true,
                     'secret_token' => 'hidden',
                     'email' => 'private@example.com',
                 ]),
@@ -74,6 +83,15 @@ class NotificationEndpointsTest extends TestCase
             ->assertJsonPath('data.0.type', 'message')
             ->assertJsonPath('data.1.type', 'opportunity')
             ->assertJsonPath('data.1.payload.actor_user_id', 123)
+            ->assertJsonPath('data.1.payload.route', '/ai-model-monitoring')
+            ->assertJsonPath('data.1.payload.screen', 'ai_model_monitoring')
+            ->assertJsonPath('data.1.payload.target', 'ai_model_monitoring')
+            ->assertJsonPath('data.1.payload.category', 'ai_model_monitoring')
+            ->assertJsonPath('data.1.payload.sport', 'football')
+            ->assertJsonPath('data.1.payload.model_version', 'football-v3')
+            ->assertJsonPath('data.1.payload.rollback_target_model_version', 'football-v2')
+            ->assertJsonPath('data.1.payload.drift_detected', true)
+            ->assertJsonPath('data.1.payload.auto_rollback_executed', true)
             ->assertJsonMissingPath('data.1.payload.secret_token')
             ->assertJsonMissingPath('data.1.payload.email');
 

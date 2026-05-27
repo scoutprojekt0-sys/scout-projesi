@@ -74,6 +74,7 @@ class AiDatasetExportService
         $targetDirectory = base_path('raw_videos/'.$candidate->sport);
         File::ensureDirectoryExists($targetDirectory);
 
+        $sourceKey = $this->buildSourceKey($candidate, $clip->title);
         $targetFilename = $this->buildTargetFilename($candidate, $clip->title, $extension);
         $targetAbsolutePath = $targetDirectory.DIRECTORY_SEPARATOR.$targetFilename;
 
@@ -91,17 +92,20 @@ class AiDatasetExportService
             'split' => $split,
             'status' => $candidate->status,
             'source_public_path' => $publicPath,
+            'source_key' => $sourceKey,
             'raw_video_path' => str_replace('\\', '/', $targetAbsolutePath),
             'exported_at' => now()->toIso8601String(),
         ]);
 
         $metadata = is_array($candidate->metadata) ? $candidate->metadata : [];
         $metadata['export'] = [
+            'source_key' => $sourceKey,
             'raw_video_path' => str_replace('\\', '/', $targetAbsolutePath),
             'manifest_path' => str_replace('\\', '/', $manifestPath),
             'source_public_path' => $publicPath,
             'exported_at' => now()->toIso8601String(),
         ];
+        $metadata['source_key'] = $sourceKey;
 
         $candidate->forceFill([
             'split' => $split,
@@ -140,7 +144,9 @@ class AiDatasetExportService
                     ];
 
                     $candidate->forceFill([
-                        'status' => AiDatasetCandidate::STATUS_LABELING,
+                        'status' => $candidate->status === AiDatasetCandidate::STATUS_APPROVED
+                            ? AiDatasetCandidate::STATUS_APPROVED
+                            : AiDatasetCandidate::STATUS_LABELING,
                         'labeling_started_at' => $candidate->labeling_started_at ?? now(),
                         'metadata' => $metadata,
                     ])->save();
@@ -332,6 +338,11 @@ class AiDatasetExportService
 
     private function buildTargetFilename(AiDatasetCandidate $candidate, string $title, string $extension): string
     {
+        return $this->buildSourceKey($candidate, $title).'.'.strtolower($extension);
+    }
+
+    private function buildSourceKey(AiDatasetCandidate $candidate, string $title): string
+    {
         $slug = preg_replace('/[^A-Za-z0-9._-]+/', '_', $title);
         $slug = trim((string) $slug, '._-');
         if ($slug === '') {
@@ -339,11 +350,10 @@ class AiDatasetExportService
         }
 
         return sprintf(
-            'candidate_%d_clip_%d_%s.%s',
+            'candidate_%d_clip_%d_%s',
             $candidate->id,
             $candidate->video_clip_id,
-            strtolower($slug),
-            strtolower($extension)
+            strtolower($slug)
         );
     }
 
@@ -358,6 +368,7 @@ class AiDatasetExportService
             'split',
             'status',
             'source_public_path',
+            'source_key',
             'raw_video_path',
             'exported_at',
         ];

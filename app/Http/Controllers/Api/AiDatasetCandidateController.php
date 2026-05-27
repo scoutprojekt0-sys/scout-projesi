@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\AiDatasetCandidate;
+use App\Services\AiContinuousLearningService;
+use App\Services\AiModelValidationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -68,16 +70,37 @@ class AiDatasetCandidateController extends Controller
         ]);
     }
 
-    public function updateStatus(Request $request, int $id): JsonResponse
+    public function updateStatus(
+        Request $request,
+        int $id,
+        AiContinuousLearningService $continuousLearningService,
+        AiModelValidationService $validationService
+    ): JsonResponse
     {
         $validated = $request->validate([
             'status' => ['required', 'in:'.implode(',', AiDatasetCandidate::STATUSES)],
             'split' => ['nullable', 'in:train,val,test'],
             'notes' => ['nullable', 'string', 'max:5000'],
             'model_version' => ['nullable', 'string', 'max:120'],
+            'manual_review_override' => ['nullable', 'boolean'],
         ]);
 
         $candidate = AiDatasetCandidate::query()->findOrFail($id);
+        $pseudoLabelPolicy = data_get($candidate->metadata, 'pseudo_label_policy');
+        if (
+            in_array($validated['status'], [AiDatasetCandidate::STATUS_APPROVED, AiDatasetCandidate::STATUS_LABELED], true) &&
+            is_array($pseudoLabelPolicy) &&
+            ($pseudoLabelPolicy['requires_manual_review'] ?? false) === true &&
+            ! filter_var($validated['manual_review_override'] ?? false, FILTER_VALIDATE_BOOL)
+        ) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Pseudo-label confidence gate gecilemedi. Manual review override gerekli.',
+                'pseudo_label_policy' => $pseudoLabelPolicy,
+                'required_min_confidence' => $validationService->pseudoLabelThreshold(),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         $candidate->status = $validated['status'];
         $candidate->split = $validated['split'] ?? $candidate->split;
         $candidate->notes = $validated['notes'] ?? $candidate->notes;
@@ -104,6 +127,7 @@ class AiDatasetCandidateController extends Controller
         }
 
         $candidate->save();
+        $continuousLearningService->onCandidateReviewed($candidate);
 
         return response()->json([
             'ok' => true,

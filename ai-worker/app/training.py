@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import shutil
 import subprocess
 import sys
@@ -26,6 +27,10 @@ def _project_dir(sport: str) -> Path:
 
 def _published_model_path(sport: str, model_version: str) -> Path:
     return _root() / 'storage' / 'app' / 'ai-models' / sport / f'{model_version}.pt'
+
+
+def _validation_script_path() -> Path:
+    return _root() / 'scripts' / 'validate_sport_model.py'
 
 
 def _find_latest_best(project_dir: Path) -> Path | None:
@@ -93,11 +98,50 @@ def run_training_job(job: TrainingJobRequest) -> dict:
     published_path = _published_model_path(job.sport, job.model_version)
     published_path.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(best_path, published_path)
+    validation_summary = _run_validation_job(job, best_path, data_path)
 
     return {
         'sport': job.sport,
         'model_version': job.model_version,
         'best_path': str(best_path),
         'published_model_path': str(published_path).replace('\\', '/').split('/app/', 1)[-1],
+        'validation_summary': validation_summary,
         'output': output.strip(),
     }
+
+
+def _run_validation_job(job: TrainingJobRequest, best_path: Path, data_path: Path) -> dict | None:
+    script_path = _validation_script_path()
+    if not script_path.exists():
+        return None
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(script_path),
+            '--sport',
+            job.sport,
+            '--weights',
+            str(best_path),
+            '--data',
+            str(data_path),
+            '--device',
+            str(job.device),
+            '--imgsz',
+            str(job.imgsz),
+            '--batch',
+            str(job.batch),
+        ],
+        cwd=str(_root().parent),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    if completed.returncode != 0:
+        return None
+
+    try:
+        return json.loads((completed.stdout or '').strip())
+    except json.JSONDecodeError:
+        return None

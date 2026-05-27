@@ -330,9 +330,22 @@ class NotificationController extends Controller
             'conversation_id',
             'url',
             'route',
+            'screen',
+            'target',
+            'category',
             'action',
             'status',
             'type',
+            'sport',
+            'model_sport',
+            'model_version',
+            'from_model_version',
+            'to_model_version',
+            'rollback_target_model_version',
+            'sample_count',
+            'captured_at',
+            'drift_detected',
+            'auto_rollback_executed',
         ];
 
         $sanitized = [];

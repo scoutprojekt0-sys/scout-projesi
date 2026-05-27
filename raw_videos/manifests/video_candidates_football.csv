@@ -1,2 +1,2 @@
-candidate_id,video_clip_id,user_id,sport,split,status,source_public_path,raw_video_path,exported_at
-1,1,1,football,train,approved,videos/1/clip.mp4,E:/PhpstormProjects/scout_api_server_restore/scout_api/raw_videos/football/candidate_1_clip_1_training_match_clip.mp4,2026-05-13T18:40:00+00:00
+candidate_id,video_clip_id,user_id,sport,split,status,source_public_path,source_key,raw_video_path,exported_at
+1,1,1,football,train,approved,videos/1/clip.mp4,candidate_1_clip_1_training_match_clip,E:/PhpstormProjects/scout_api_server_restore/scout_api/raw_videos/football/candidate_1_clip_1_training_match_clip.mp4,2026-05-28T01:35:26+03:00
