@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\AiDatasetCandidate;
+use App\Models\Media;
 use App\Models\User;
 use App\Models\VideoAnalysis;
 use App\Models\VideoClip;
@@ -107,6 +108,44 @@ class AiDatasetCandidateEndpointsTest extends TestCase
         $this->assertSame('media_upload', data_get($clip->metadata, 'source'));
         $this->assertTrue((bool) data_get($clip->metadata, 'ai_dataset_candidate'));
 
+        $this->assertDatabaseHas('ai_dataset_candidates', [
+            'video_clip_id' => $clip->id,
+            'user_id' => $user->id,
+            'sport' => 'basketball',
+            'status' => AiDatasetCandidate::STATUS_QUEUED,
+        ]);
+        Queue::assertPushed(PrepareAiDatasetForSportJob::class);
+        Queue::assertPushed(MaybeAutoTrainSportJob::class);
+        Queue::assertPushed(RunVideoAnalysisJob::class);
+    }
+
+    public function test_media_video_sync_command_backfills_existing_media_uploads(): void
+    {
+        Queue::fake();
+
+        $user = User::factory()->create([
+            'email' => 'miranlia120@example.test',
+            'role' => 'player',
+            'sport' => 'basketball',
+        ]);
+        $media = Media::query()->create([
+            'user_id' => $user->id,
+            'type' => 'video',
+            'url' => '/storage/media/'.$user->id.'/existing.mp4',
+            'thumb_url' => null,
+            'title' => 'Existing Media Clip',
+        ]);
+
+        $this->artisan('media-videos:sync-ai-learning', [
+            '--email' => $user->email,
+        ])->assertExitCode(0);
+
+        $clip = VideoClip::query()
+            ->where('metadata->source', 'media_upload')
+            ->where('metadata->media_id', $media->id)
+            ->firstOrFail();
+
+        $this->assertSame($user->id, $clip->user_id);
         $this->assertDatabaseHas('ai_dataset_candidates', [
             'video_clip_id' => $clip->id,
             'user_id' => $user->id,

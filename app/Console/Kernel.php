@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\SyncAiDatasetLabelStatus::class,
         \App\Console\Commands\PrepareApprovedAiDatasetCandidates::class,
         \App\Console\Commands\ExportAiDatasetCandidates::class,
+        \App\Console\Commands\SyncMediaVideosToAiLearning::class,
         \App\Console\Commands\ResetLegacyPasswords::class,
     ];
 
