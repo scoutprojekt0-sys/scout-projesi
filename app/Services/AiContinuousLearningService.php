@@ -111,6 +111,7 @@ class AiContinuousLearningService
             return;
         }
 
+        PrepareAiDatasetForSportJob::dispatch($candidate->sport);
         MaybeAutoTrainSportJob::dispatch($candidate->sport);
     }
 

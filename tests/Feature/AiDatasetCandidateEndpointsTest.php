@@ -350,6 +350,9 @@ class AiDatasetCandidateEndpointsTest extends TestCase
         Queue::assertPushed(MaybeAutoTrainSportJob::class, function (MaybeAutoTrainSportJob $job): bool {
             return $job->sport === 'football';
         });
+        Queue::assertPushed(PrepareAiDatasetForSportJob::class, function (PrepareAiDatasetForSportJob $job): bool {
+            return $job->sport === 'football';
+        });
     }
 
     public function test_low_confidence_pseudo_label_requires_manual_override_before_approval(): void
