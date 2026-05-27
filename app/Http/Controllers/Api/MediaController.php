@@ -8,6 +8,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Media\StoreMediaRequest;
 use App\Models\Media;
 use App\Models\User;
+use App\Models\VideoClip;
+use App\Services\AiContinuousLearningService;
+use App\Services\AiDatasetCandidateService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -20,20 +23,34 @@ class MediaController extends Controller
     use ApiResponds;
     use ResolvesPublicFileUrls;
 
-    public function store(StoreMediaRequest $request): JsonResponse
+    public function store(
+        StoreMediaRequest $request,
+        AiDatasetCandidateService $datasetCandidateService,
+        AiContinuousLearningService $continuousLearningService
+    ): JsonResponse
     {
         $file = $request->file('file');
         $mime = (string) $file->getMimeType();
         $type = str_starts_with($mime, 'image/') ? 'image' : 'video';
+        $user = $request->user();
 
-        $path  = $file->store('media/'.$request->user()->id, 'public');
+        $path  = $file->store('media/'.$user->id, 'public');
         $media = Media::query()->create([
-            'user_id'  => (int) $request->user()->id,
+            'user_id'  => (int) $user->id,
             'type'     => $type,
             'url'      => Storage::disk('public')->url($path),
             'thumb_url'=> null,
             'title'    => $request->validated('title'),
         ]);
+
+        if ($type === 'video') {
+            $this->queueMediaVideoForAiLearning(
+                $media,
+                $user,
+                $datasetCandidateService,
+                $continuousLearningService
+            );
+        }
 
         return $this->successResponse($this->transformMedia($media), 'Media yuklendi.', Response::HTTP_CREATED);
     }
@@ -168,5 +185,60 @@ class MediaController extends Controller
             'created_at' => optional($media->created_at)?->toIso8601String(),
             'updated_at' => optional($media->updated_at)?->toIso8601String(),
         ];
+    }
+
+    private function queueMediaVideoForAiLearning(
+        Media $media,
+        User $user,
+        AiDatasetCandidateService $datasetCandidateService,
+        AiContinuousLearningService $continuousLearningService
+    ): void {
+        $sport = $this->normalizeSport($user->sport);
+        $isDatasetCandidate = $user->role === 'player' && $sport !== null;
+
+        $clip = VideoClip::query()->create([
+            'user_id' => (int) $user->id,
+            'title' => $media->title ?: 'Media video '.$media->id,
+            'description' => null,
+            'video_url' => $media->url,
+            'thumbnail_url' => $media->thumb_url,
+            'platform' => 'custom',
+            'platform_video_id' => null,
+            'duration_seconds' => null,
+            'match_date' => null,
+            'tags' => $sport !== null ? [$sport] : null,
+            'metadata' => array_filter([
+                'source' => 'media_upload',
+                'media_id' => (int) $media->id,
+                'sport' => $sport,
+                'ai_dataset_candidate' => $isDatasetCandidate,
+                'ai_dataset_candidate_requested' => $isDatasetCandidate,
+            ], static fn ($value) => $value !== null),
+        ]);
+
+        $candidate = $datasetCandidateService->syncFromVideoClip($clip);
+        if ($candidate !== null) {
+            $continuousLearningService->onCandidateQueued($candidate);
+            $continuousLearningService->onVideoUploaded($clip, $candidate);
+        }
+    }
+
+    private function normalizeSport(?string $sport): ?string
+    {
+        if (! is_string($sport)) {
+            return null;
+        }
+
+        $normalized = strtolower(trim($sport));
+        if ($normalized === '') {
+            return null;
+        }
+
+        return match ($normalized) {
+            'futbol', 'football', 'soccer' => 'football',
+            'basketbol', 'basketball' => 'basketball',
+            'voleybol', 'volleyball' => 'volleyball',
+            default => $normalized,
+        };
     }
 }

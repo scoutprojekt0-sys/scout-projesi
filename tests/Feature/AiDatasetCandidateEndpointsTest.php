@@ -8,7 +8,9 @@ use App\Models\VideoAnalysis;
 use App\Models\VideoClip;
 use App\Services\VideoAnalysisResultService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 use App\Jobs\MaybeAutoTrainSportJob;
@@ -77,6 +79,40 @@ class AiDatasetCandidateEndpointsTest extends TestCase
         $candidate = AiDatasetCandidate::query()->where('video_clip_id', $clipId)->firstOrFail();
         $this->assertTrue((bool) data_get($candidate->metadata, 'auto_learning_enabled'));
         $this->assertSame('auto_ingest', data_get($candidate->metadata, 'candidate_origin'));
+        Queue::assertPushed(PrepareAiDatasetForSportJob::class);
+        Queue::assertPushed(MaybeAutoTrainSportJob::class);
+        Queue::assertPushed(RunVideoAnalysisJob::class);
+    }
+
+    public function test_media_video_upload_also_enrolls_supported_player_for_continuous_learning(): void
+    {
+        Queue::fake();
+        Storage::fake('public');
+
+        $user = User::factory()->create([
+            'role' => 'player',
+            'sport' => 'basketball',
+        ]);
+        Sanctum::actingAs($user, ['media:write', 'profile:read']);
+
+        $response = $this->postJson('/api/media', [
+            'title' => 'Media Workspace Clip',
+            'file' => UploadedFile::fake()->create('workspace-clip.mp4', 2048, 'video/mp4'),
+        ]);
+
+        $response->assertStatus(201)->assertJsonPath('ok', true);
+
+        $clip = VideoClip::query()->where('title', 'Media Workspace Clip')->firstOrFail();
+        $this->assertSame($user->id, $clip->user_id);
+        $this->assertSame('media_upload', data_get($clip->metadata, 'source'));
+        $this->assertTrue((bool) data_get($clip->metadata, 'ai_dataset_candidate'));
+
+        $this->assertDatabaseHas('ai_dataset_candidates', [
+            'video_clip_id' => $clip->id,
+            'user_id' => $user->id,
+            'sport' => 'basketball',
+            'status' => AiDatasetCandidate::STATUS_QUEUED,
+        ]);
         Queue::assertPushed(PrepareAiDatasetForSportJob::class);
         Queue::assertPushed(MaybeAutoTrainSportJob::class);
         Queue::assertPushed(RunVideoAnalysisJob::class);
