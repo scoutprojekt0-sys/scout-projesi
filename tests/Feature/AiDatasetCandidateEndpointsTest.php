@@ -157,6 +157,44 @@ class AiDatasetCandidateEndpointsTest extends TestCase
         Queue::assertPushed(RunVideoAnalysisJob::class);
     }
 
+    public function test_missing_ai_analysis_command_enqueues_analysis_for_queued_candidate(): void
+    {
+        Queue::fake();
+
+        $user = User::factory()->create([
+            'role' => 'player',
+            'sport' => 'football',
+        ]);
+        $clip = VideoClip::query()->create([
+            'user_id' => $user->id,
+            'title' => 'Queued Candidate Without Analysis',
+            'video_url' => 'https://example.com/missing-analysis.mp4',
+            'platform' => 'custom',
+            'tags' => ['football'],
+            'metadata' => ['sport' => 'football', 'ai_dataset_candidate' => true],
+        ]);
+        AiDatasetCandidate::query()->create([
+            'video_clip_id' => $clip->id,
+            'user_id' => $user->id,
+            'sport' => 'football',
+            'status' => AiDatasetCandidate::STATUS_QUEUED,
+            'queued_at' => now(),
+        ]);
+
+        $this->artisan('ai-learning:enqueue-missing-analyses')
+            ->expectsOutputToContain('ENQUEUE candidate=')
+            ->assertExitCode(0);
+
+        $this->assertDatabaseHas('video_analyses', [
+            'video_clip_id' => $clip->id,
+            'target_player_id' => $user->id,
+            'analysis_type' => 'continuous_learning',
+            'status' => 'queued',
+            'worker_status' => 'queued',
+        ]);
+        Queue::assertPushed(RunVideoAnalysisJob::class);
+    }
+
     public function test_confident_background_analysis_auto_approves_candidate_and_triggers_training(): void
     {
         Queue::fake();

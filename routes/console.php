@@ -1379,6 +1379,10 @@ Schedule::call(static function (): void {
         MaybeAutoTrainSportJob::dispatch($sport);
     }
 })->hourly()->name('ai-auto-train-all');
+Schedule::command('ai-learning:enqueue-missing-analyses --limit=200')
+    ->everyFiveMinutes()
+    ->name('ai-learning-enqueue-missing-analyses')
+    ->withoutOverlapping();
 Schedule::command('ai-models:monitor-drift --rollback')->hourly()->name('ai-model-drift-monitor');
 
 
