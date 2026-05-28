@@ -22,6 +22,7 @@ RUN pip install --no-cache-dir --upgrade pip \
 COPY ai-worker/app ./app
 COPY ai-worker/models ./models
 COPY ai-worker/datasets ./datasets
+COPY ai-worker/scripts ./scripts
 COPY ai-worker/yolov8n.pt ./yolov8n.pt
 
 EXPOSE 8010
