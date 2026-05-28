@@ -14,6 +14,9 @@ RUN apt-get update \
         libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
+RUN groupadd -g 82 www-data \
+    && useradd -u 82 -g 82 -M -s /usr/sbin/nologin www-data
+
 COPY ai-worker/requirements.txt ./requirements.txt
 
 RUN pip install --no-cache-dir --upgrade pip \
@@ -24,6 +27,11 @@ COPY ai-worker/models ./models
 COPY ai-worker/datasets ./datasets
 COPY ai-worker/scripts ./scripts
 COPY ai-worker/yolov8n.pt ./yolov8n.pt
+
+RUN mkdir -p /app/raw_videos /app/datasets \
+    && chown -R www-data:www-data /app/raw_videos /app/datasets
+
+USER www-data
 
 EXPOSE 8010
 

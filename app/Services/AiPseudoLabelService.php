@@ -36,6 +36,7 @@ class AiPseudoLabelService
                 AiDatasetCandidate::STATUS_LABELING,
                 AiDatasetCandidate::STATUS_LABELED,
                 AiDatasetCandidate::STATUS_APPROVED,
+                AiDatasetCandidate::STATUS_TRAINED,
             ])
             ->orderBy('id');
 

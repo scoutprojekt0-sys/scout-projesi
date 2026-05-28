@@ -83,4 +83,69 @@ class AiPseudoLabelServiceTest extends TestCase
         $this->assertSame($analysis->id, data_get($candidate->metadata, 'pseudo_label_policy.analysis_id'));
         $this->assertTrue((bool) data_get($candidate->metadata, 'pseudo_label_policy.requires_manual_review'));
     }
+
+    public function test_can_write_pseudo_label_for_candidate_already_marked_trained(): void
+    {
+        $user = User::factory()->create(['role' => 'player', 'sport' => 'basketball']);
+        $clip = VideoClip::query()->create([
+            'user_id' => $user->id,
+            'title' => 'Trained Pseudo Clip',
+            'video_url' => 'https://example.com/trained-pseudo.mp4',
+            'platform' => 'custom',
+            'tags' => ['basketball'],
+            'metadata' => ['sport' => 'basketball', 'ai_dataset_candidate' => true],
+        ]);
+        $sourceKey = 'candidate_2_clip_'.$clip->id.'_trained_pseudo_clip';
+        AiDatasetCandidate::query()->create([
+            'video_clip_id' => $clip->id,
+            'user_id' => $user->id,
+            'sport' => 'basketball',
+            'status' => AiDatasetCandidate::STATUS_TRAINED,
+            'metadata' => [
+                'source_key' => $sourceKey,
+                'export' => [
+                    'source_key' => $sourceKey,
+                    'raw_video_path' => str_replace('\\', '/', base_path('raw_videos/basketball/'.$sourceKey.'.mp4')),
+                ],
+            ],
+        ]);
+        $analysis = VideoAnalysis::query()->create([
+            'video_clip_id' => $clip->id,
+            'requested_by' => $user->id,
+            'target_player_id' => $user->id,
+            'analysis_type' => 'continuous_learning',
+            'provider' => 'external',
+            'status' => 'completed',
+            'worker_status' => 'completed',
+            'analysis_version' => 'external-worker',
+        ]);
+        VideoAnalysisEvent::query()->create([
+            'video_analysis_id' => $analysis->id,
+            'target_player_id' => $user->id,
+            'event_type' => 'dribble',
+            'start_second' => 0,
+            'end_second' => 3,
+            'confidence' => 79,
+        ]);
+
+        $datasetDir = base_path('ai-worker/datasets/basketball');
+        File::ensureDirectoryExists($datasetDir.'/images/train');
+        File::ensureDirectoryExists($datasetDir.'/labels/train');
+        $imagePath = str_replace('\\', '/', $datasetDir.'/images/train/'.$sourceKey.'_s1.jpg');
+        $labelPath = str_replace('\\', '/', $datasetDir.'/labels/train/'.$sourceKey.'_s1.txt');
+        File::put($imagePath, 'img');
+        File::put($labelPath, '');
+        File::put(
+            $datasetDir.'/manifest.csv',
+            implode(PHP_EOL, [
+                'source_video,source_key,frame_path,split,labels_path,needs_labeling,notes',
+                '/app/raw_videos/basketball/'.$sourceKey.'.mp4,'.$sourceKey.','.$imagePath.',train,/app/datasets/basketball/labels/train/'.$sourceKey.'_s1.txt,yes,',
+            ]).PHP_EOL
+        );
+
+        $result = app(AiPseudoLabelService::class)->writeLabelsForSport('basketball');
+
+        $this->assertSame(1, $result['updated']);
+        $this->assertSame("0 0.500000 0.500000 0.350000 0.550000\n", File::get($labelPath));
+    }
 }
