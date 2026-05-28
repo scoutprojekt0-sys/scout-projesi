@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\AiDatasetCandidate;
 use App\Services\AiDatasetExportService;
+use App\Services\AiPseudoLabelService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -25,7 +26,7 @@ class PrepareAiDatasetForSportJob implements ShouldQueue
     ) {
     }
 
-    public function handle(AiDatasetExportService $exportService): void
+    public function handle(AiDatasetExportService $exportService, AiPseudoLabelService $pseudoLabelService): void
     {
         $sport = strtolower(trim($this->sport));
         if (! in_array($sport, ['football', 'basketball', 'volleyball'], true)) {
@@ -70,6 +71,7 @@ class PrepareAiDatasetForSportJob implements ShouldQueue
                 return;
             }
 
+            $pseudoLabelService->writeLabelsForSport($sport);
             $exportService->markCandidatesAsLabeling($exportedIds);
         } finally {
             optional($lock)->release();

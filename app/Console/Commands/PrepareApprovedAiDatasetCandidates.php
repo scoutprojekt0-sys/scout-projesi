@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Services\AiDatasetExportService;
+use App\Services\AiPseudoLabelService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
@@ -18,7 +19,7 @@ class PrepareApprovedAiDatasetCandidates extends Command
 
     protected $description = 'Export approved dataset candidates and prepare dataset frames/label queue.';
 
-    public function handle(AiDatasetExportService $exportService): int
+    public function handle(AiDatasetExportService $exportService, AiPseudoLabelService $pseudoLabelService): int
     {
         $sport = strtolower(trim((string) $this->argument('sport')));
         if (! in_array($sport, ['football', 'basketball', 'volleyball'], true)) {
@@ -69,6 +70,9 @@ class PrepareApprovedAiDatasetCandidates extends Command
 
             return self::FAILURE;
         }
+
+        $pseudoResult = $pseudoLabelService->writeLabelsForSport($sport, $limitValue);
+        $this->line('Pseudo-label yazilan aday sayisi: '.$pseudoResult['updated']);
 
         $exportedIds = collect($exportResult['rows'])
             ->filter(static fn (array $row): bool => ($row['result'] ?? '') === 'exported')
