@@ -170,12 +170,18 @@ class AiDatasetExportService
 
         $manifestRows = $this->readCsvRows($manifestPath);
         $rowsBySource = [];
+        $rowsBySourceKey = [];
         foreach ($manifestRows as $row) {
             $sourceVideo = str_replace('\\', '/', trim((string) ($row['source_video'] ?? '')));
-            if ($sourceVideo === '') {
-                continue;
+            if ($sourceVideo !== '') {
+                $rowsBySource[$sourceVideo][] = $row;
+                $rowsBySource[$this->normalizeWorkerPath($sourceVideo)][] = $row;
             }
-            $rowsBySource[$sourceVideo][] = $row;
+
+            $sourceKey = trim((string) ($row['source_key'] ?? ''));
+            if ($sourceKey !== '') {
+                $rowsBySourceKey[$sourceKey][] = $row;
+            }
         }
 
         $updated = 0;
@@ -191,7 +197,13 @@ class AiDatasetExportService
 
         foreach ($candidates as $candidate) {
             $rawVideoPath = str_replace('\\', '/', (string) ($candidate->metadata['export']['raw_video_path'] ?? ''));
-            if ($rawVideoPath === '' || ! isset($rowsBySource[$rawVideoPath])) {
+            $sourceKey = (string) ($candidate->metadata['export']['source_key'] ?? $candidate->metadata['source_key'] ?? '');
+            $labelRows = $rawVideoPath !== ''
+                ? ($rowsBySource[$rawVideoPath] ?? $rowsBySource[$this->normalizeWorkerPath($rawVideoPath)] ?? null)
+                : null;
+            $labelRows ??= $sourceKey !== '' ? ($rowsBySourceKey[$sourceKey] ?? null) : null;
+
+            if ($labelRows === null) {
                 $results[] = [
                     'candidate_id' => $candidate->id,
                     'result' => 'skipped',
@@ -200,11 +212,10 @@ class AiDatasetExportService
                 continue;
             }
 
-            $labelRows = $rowsBySource[$rawVideoPath];
             $total = count($labelRows);
             $annotated = 0;
             foreach ($labelRows as $row) {
-                $labelPath = (string) ($row['labels_path'] ?? '');
+                $labelPath = $this->normalizeWorkerPath((string) ($row['labels_path'] ?? ''));
                 if ($labelPath !== '' && File::exists($labelPath) && trim((string) File::get($labelPath)) !== '') {
                     $annotated++;
                 }
@@ -243,6 +254,24 @@ class AiDatasetExportService
         }
 
         return ['updated' => $updated, 'rows' => $results];
+    }
+
+    private function normalizeWorkerPath(string $path): string
+    {
+        $normalized = str_replace('\\', '/', trim($path));
+        if ($normalized === '') {
+            return '';
+        }
+
+        if (str_starts_with($normalized, '/app/datasets/')) {
+            return str_replace('\\', '/', base_path('ai-worker/datasets/'.substr($normalized, strlen('/app/datasets/'))));
+        }
+
+        if (str_starts_with($normalized, '/app/raw_videos/')) {
+            return str_replace('\\', '/', base_path('raw_videos/'.substr($normalized, strlen('/app/raw_videos/'))));
+        }
+
+        return $normalized;
     }
 
     public function markSportCandidatesAsTrained(string $sport, string $modelVersion): int

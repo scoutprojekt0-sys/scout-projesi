@@ -25,7 +25,9 @@ class AiDatasetLabelSyncTest extends TestCase
             'metadata' => ['sport' => 'football', 'ai_dataset_candidate' => true],
         ]);
 
-        $rawVideoPath = str_replace('\\', '/', base_path('raw_videos/football/candidate_1_clip_'.$clip->id.'_football_candidate.mp4'));
+        $sourceKey = 'candidate_1_clip_'.$clip->id.'_football_candidate';
+        $rawVideoPath = str_replace('\\', '/', base_path('raw_videos/football/'.$sourceKey.'.mp4'));
+        $workerRawVideoPath = '/app/raw_videos/football/'.$sourceKey.'.mp4';
         $candidate = AiDatasetCandidate::query()->create([
             'video_clip_id' => $clip->id,
             'user_id' => $user->id,
@@ -33,9 +35,9 @@ class AiDatasetLabelSyncTest extends TestCase
             'status' => AiDatasetCandidate::STATUS_LABELING,
             'split' => 'train',
             'metadata' => [
-                'source_key' => 'candidate_1_clip_'.$clip->id.'_football_candidate',
+                'source_key' => $sourceKey,
                 'export' => [
-                    'source_key' => 'candidate_1_clip_'.$clip->id.'_football_candidate',
+                    'source_key' => $sourceKey,
                     'raw_video_path' => $rawVideoPath,
                 ],
             ],
@@ -60,8 +62,8 @@ class AiDatasetLabelSyncTest extends TestCase
             $manifestPath,
             implode(PHP_EOL, [
                 'source_video,source_key,frame_path,split,labels_path,needs_labeling,notes',
-                $rawVideoPath.',candidate_1_clip_'.$clip->id.'_football_candidate,'.$imageOne.',train,'.$labelOne.',yes,',
-                $rawVideoPath.',candidate_1_clip_'.$clip->id.'_football_candidate,'.$imageTwo.',train,'.$labelTwo.',yes,',
+                $workerRawVideoPath.','.$sourceKey.','.$imageOne.',train,/app/datasets/football/labels/train/frame1.txt,yes,',
+                $workerRawVideoPath.','.$sourceKey.','.$imageTwo.',train,/app/datasets/football/labels/train/frame2.txt,yes,',
             ]).PHP_EOL
         );
 
