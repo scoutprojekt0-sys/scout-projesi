@@ -73,8 +73,12 @@ COPY --from=composer_deps /app/vendor ./vendor
 COPY --from=frontend_builder /app/public/build ./public/build
 
 RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
+        raw_videos/manifests \
+        ai-worker/datasets/football \
+        ai-worker/datasets/basketball \
+        ai-worker/datasets/volleyball \
     && ln -sfn /var/www/html/storage/app/public /var/www/html/public/storage \
-    && chown -R www-data:www-data storage bootstrap/cache
+    && chown -R www-data:www-data storage bootstrap/cache raw_videos ai-worker/datasets
 
 COPY docker/prod/bin/entrypoint.sh /usr/local/bin/app-entrypoint
 RUN chmod +x /usr/local/bin/app-entrypoint

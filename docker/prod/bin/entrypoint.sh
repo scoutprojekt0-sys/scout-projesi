@@ -3,7 +3,16 @@ set -eu
 
 cd /var/www/html
 
-mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
+mkdir -p \
+  storage/framework/cache \
+  storage/framework/sessions \
+  storage/framework/views \
+  storage/logs \
+  bootstrap/cache \
+  raw_videos/manifests \
+  ai-worker/datasets/football \
+  ai-worker/datasets/basketball \
+  ai-worker/datasets/volleyball
 
 if [ "${APP_KEY:-}" = "" ] || [ "${APP_KEY:-}" = "base64:replace-with-generated-key" ]; then
   echo "APP_KEY is missing. Set a real APP_KEY in .env.production."
