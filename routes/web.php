@@ -10,6 +10,11 @@ Route::get('/admin', function () {
     return redirect()->away('https://nextscout.pro/admin-dashboard.html');
 });
 
+Route::get('/privacy', function () {
+    return response(file_get_contents(public_path('privacy.html')))
+        ->header('Content-Type', 'text/html; charset=UTF-8');
+});
+
 Route::get('/scout-et.html', function () {
     return response(file_get_contents(base_path('scout-et.html')))
         ->header('Content-Type', 'text/html; charset=UTF-8');
