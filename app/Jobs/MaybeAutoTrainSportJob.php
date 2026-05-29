@@ -44,6 +44,8 @@ class MaybeAutoTrainSportJob implements ShouldQueue
         }
 
         try {
+            $runService->failStaleRunningRuns($sport, 6);
+
             $runningExists = AiTrainingRun::query()
                 ->where('sport', $sport)
                 ->where('status', AiTrainingRun::STATUS_RUNNING)

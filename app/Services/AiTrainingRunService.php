@@ -4,9 +4,27 @@ namespace App\Services;
 
 use App\Models\AiDatasetCandidate;
 use App\Models\AiTrainingRun;
+use Illuminate\Support\Facades\DB;
 
 class AiTrainingRunService
 {
+    public function failStaleRunningRuns(string $sport, int $olderThanHours = 6): int
+    {
+        $cutoff = now()->subHours(max(1, $olderThanHours));
+        $note = 'Marked failed: stale running run cleanup at '.now()->toDateTimeString();
+
+        return AiTrainingRun::query()
+            ->where('sport', $sport)
+            ->where('status', AiTrainingRun::STATUS_RUNNING)
+            ->where('created_at', '<', $cutoff)
+            ->update([
+                'status' => AiTrainingRun::STATUS_FAILED,
+                'failed_at' => now(),
+                'notes' => DB::raw("TRIM(CONCAT(COALESCE(notes, ''), '\n{$note}'))"),
+                'updated_at' => now(),
+            ]);
+    }
+
     /**
      * @param  list<int>  $candidateIds
      */
