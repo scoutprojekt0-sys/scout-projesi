@@ -112,11 +112,13 @@ class VideoClipController extends Controller
                 'metadata' => $metadata ?: null,
             ]);
 
-        $candidate = $datasetCandidateService->syncFromVideoClip($clip);
-        if ($candidate !== null) {
-            $continuousLearningService->onCandidateQueued($candidate);
-            $continuousLearningService->onVideoUploaded($clip, $candidate);
-        }
+        app()->terminating(function () use ($clip, $datasetCandidateService, $continuousLearningService): void {
+            $candidate = $datasetCandidateService->syncFromVideoClip($clip);
+            if ($candidate !== null) {
+                $continuousLearningService->onCandidateQueued($candidate);
+                $continuousLearningService->onVideoUploaded($clip, $candidate);
+            }
+        });
 
         return $this->successResponse(
             $this->transformPublicClip($clip),

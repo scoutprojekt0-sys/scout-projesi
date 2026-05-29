@@ -153,8 +153,13 @@ class AiLabelingController extends Controller
         );
         $this->removeSkippedItem($sport, $split, $imagePath);
         $this->removeFromQueueFiles($sport, $split, $imagePath);
-        $this->syncPseudoLabelMetadata($sport, $imagePath, $pseudoLabelPolicy);
-        $continuousLearningService->onLabelSaved($sport);
+        try {
+            $this->syncPseudoLabelMetadata($sport, $imagePath, $pseudoLabelPolicy);
+            $continuousLearningService->onLabelSaved($sport);
+        } catch (\Throwable) {
+            // Local/offline labeling can run without a database connection.
+            // The label file itself is the source of truth for training.
+        }
 
         return response()->json([
             'ok' => true,
@@ -197,7 +202,11 @@ class AiLabelingController extends Controller
             $modelPath,
             (float) ($validated['conf'] ?? 0.20)
         );
-        $cachedPayload = Cache::get($cacheKey);
+        try {
+            $cachedPayload = Cache::get($cacheKey);
+        } catch (\Throwable) {
+            $cachedPayload = null;
+        }
         if (is_array($cachedPayload)) {
             return response()->json([
                 'ok' => true,
@@ -247,7 +256,12 @@ class AiLabelingController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        Cache::put($cacheKey, $payload, now()->addHours(12));
+        try {
+            Cache::put($cacheKey, $payload, now()->addHours(12));
+        } catch (\Throwable) {
+            // Prediction cache is optional; a cache backend failure must not
+            // block manual labeling.
+        }
         $detections = $payload['detections'] ?? $payload['boxes'] ?? [];
         $confidences = collect(is_array($detections) ? $detections : [])
             ->map(static fn ($item) => is_array($item) ? ($item['confidence'] ?? null) : null)

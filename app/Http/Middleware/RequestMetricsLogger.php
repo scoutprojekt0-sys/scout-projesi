@@ -54,14 +54,22 @@ class RequestMetricsLogger
         Log::channel('ops')->info('request.summary', $context);
 
         // Lightweight daily counters for admin operations/rate-limit visibility.
-        $dayKey = now()->format('Ymd');
-        Cache::increment("ops:requests:{$dayKey}:total");
-        Cache::increment("ops:requests:{$dayKey}:status:{$status}");
-        if ($status === 429) {
-            Cache::increment("ops:requests:{$dayKey}:rate_limited");
-        }
-        if ($status >= 500) {
-            Cache::increment("ops:requests:{$dayKey}:server_error");
+        // Metrics should never turn a successful request into a 500 response.
+        try {
+            $dayKey = now()->format('Ymd');
+            Cache::increment("ops:requests:{$dayKey}:total");
+            Cache::increment("ops:requests:{$dayKey}:status:{$status}");
+            if ($status === 429) {
+                Cache::increment("ops:requests:{$dayKey}:rate_limited");
+            }
+            if ($status >= 500) {
+                Cache::increment("ops:requests:{$dayKey}:server_error");
+            }
+        } catch (Throwable $exception) {
+            Log::channel('ops')->warning('request.metrics_failed', $context + [
+                'exception' => $exception::class,
+                'message' => $exception->getMessage(),
+            ]);
         }
 
         if ($status >= 500 || $durationMs >= $slowThresholdMs) {

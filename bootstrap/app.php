@@ -33,10 +33,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(\App\Http\Middleware\SetLocale::class);
         $middleware->redirectGuestsTo(fn (Request $request) => $request->is('api/*') ? null : '/login');
 
-        // API rate limiting
-        $middleware->api(prepend: [
-            \Illuminate\Routing\Middleware\ThrottleRequests::class.':'.env('RATE_LIMIT_API', 60).',1',
-        ]);
+        // API rate limiting. Local file-cache setups do not have the PHP Redis
+        // extension, so keep internal tooling usable without breaking requests.
+        if (extension_loaded('redis')) {
+            $middleware->api(prepend: [
+                \Illuminate\Routing\Middleware\ThrottleRequests::class.':'.env('RATE_LIMIT_API', 60).',1',
+            ]);
+        }
 
         // Apply input sanitization to all API routes
         $middleware->api(append: [

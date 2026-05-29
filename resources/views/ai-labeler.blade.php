@@ -353,16 +353,34 @@
         return;
       }
 
+      const normalizedBoxes = boxes
+        .map((b) => {
+          const left = Math.max(0, Math.min(image.width, b.x));
+          const top = Math.max(0, Math.min(image.height, b.y));
+          const right = Math.max(0, Math.min(image.width, b.x + b.w));
+          const bottom = Math.max(0, Math.min(image.height, b.y + b.h));
+          const width = Math.max(0, right - left);
+          const height = Math.max(0, bottom - top);
+
+          return {
+            class_id: Number(b.class_id) || 0,
+            x: (left + width / 2) / image.width,
+            y: (top + height / 2) / image.height,
+            w: width / image.width,
+            h: height / image.height,
+          };
+        })
+        .filter((b) => b.w > 0 && b.h > 0);
+
+      if (!normalizedBoxes.length) {
+        statusEl.textContent = 'Kaydetmek icin en az bir gecerli kutu ciz veya AI onerisi al.';
+        return;
+      }
+
       const payload = {
         image_path: active.image_path,
         label_path: active.label_path,
-        boxes: boxes.map((b) => ({
-          class_id: b.class_id,
-          x: (b.x + b.w / 2) / image.width,
-          y: (b.y + b.h / 2) / image.height,
-          w: b.w / image.width,
-          h: b.h / image.height,
-        })),
+        boxes: normalizedBoxes,
       };
 
       try {

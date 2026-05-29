@@ -221,12 +221,19 @@ class AiDatasetExportService
                 }
             }
 
-            if ($total > 0 && $annotated === $total) {
+            $completion = $total > 0 ? round(($annotated / $total) * 100, 1) : 0.0;
+            $minAnnotated = max(1, (int) env('AI_DATASET_CANDIDATE_MIN_ANNOTATED_FRAMES', 1));
+            $minCompletion = max(0.0, (float) env('AI_DATASET_CANDIDATE_MIN_LABEL_COMPLETION_PERCENT', 0));
+
+            if ($total > 0 && $annotated >= $minAnnotated && $completion >= $minCompletion) {
                 $metadata = is_array($candidate->metadata) ? $candidate->metadata : [];
                 $metadata['labeling_sync'] = [
                     'manifest_path' => str_replace('\\', '/', $manifestPath),
                     'annotated_frames' => $annotated,
                     'total_frames' => $total,
+                    'label_completion_percent' => $completion,
+                    'min_annotated_frames' => $minAnnotated,
+                    'min_label_completion_percent' => $minCompletion,
                     'synced_at' => now()->toIso8601String(),
                 ];
 
@@ -242,6 +249,7 @@ class AiDatasetExportService
                     'result' => 'labeled',
                     'annotated_frames' => $annotated,
                     'total_frames' => $total,
+                    'completion' => $completion,
                 ];
             } else {
                 $results[] = [
@@ -249,6 +257,8 @@ class AiDatasetExportService
                     'result' => 'pending',
                     'annotated_frames' => $annotated,
                     'total_frames' => $total,
+                    'completion' => $completion,
+                    'reason' => $annotated < $minAnnotated ? 'not_enough_annotated_frames' : 'completion_below_threshold',
                 ];
             }
         }

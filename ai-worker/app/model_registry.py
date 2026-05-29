@@ -48,7 +48,18 @@ def resolve_model_path(model_path: str) -> Path:
     if candidate.is_absolute():
         return candidate
 
-    return Path(__file__).resolve().parents[1] / candidate
+    worker_root = Path(__file__).resolve().parents[1]
+    project_root = worker_root.parent
+
+    worker_relative = worker_root / candidate
+    if worker_relative.exists():
+        return worker_relative
+
+    project_relative = project_root / candidate
+    if project_relative.exists():
+        return project_relative
+
+    return worker_relative
 
 
 def normalize_label(raw_label: str) -> str:

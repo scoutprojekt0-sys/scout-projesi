@@ -1101,7 +1101,7 @@ Artisan::command('ai:dataset-label-queue {sport} {--split=all : train, val, test
     return SymfonyCommand::SUCCESS;
 })->purpose('Export unlabeled dataset frames into a labeling queue CSV');
 
-Artisan::command('ai:training-readiness {sport} {--min-images=50 : Minimum total image count} {--min-annotated=30 : Minimum annotated frame count} {--min-completion=60 : Minimum label completion percentage}', function (string $sport) {
+Artisan::command('ai:training-readiness {sport} {--min-images=50 : Minimum total image count} {--min-annotated=30 : Minimum annotated frame count} {--min-completion=60 : Minimum label completion percentage} {--strict-completion : Fail when global label completion is below --min-completion}', function (string $sport) {
     $requestedSport = strtolower(trim($sport));
     $allowedSports = ['football', 'basketball', 'volleyball'];
     if (! in_array($requestedSport, $allowedSports, true)) {
@@ -1146,7 +1146,8 @@ Artisan::command('ai:training-readiness {sport} {--min-images=50 : Minimum total
     $completion = $totalLabels > 0 ? round(($totalAnnotated / $totalLabels) * 100, 1) : 0.0;
     $minImages = max(1, (int) $this->option('min-images'));
     $minAnnotated = max(1, (int) $this->option('min-annotated'));
-    $minCompletion = max(1, (float) $this->option('min-completion'));
+    $minCompletion = max(0, (float) $this->option('min-completion'));
+    $strictCompletion = (bool) $this->option('strict-completion');
 
     $checks = [
         [
@@ -1163,9 +1164,9 @@ Artisan::command('ai:training-readiness {sport} {--min-images=50 : Minimum total
         ],
         [
             'label' => 'Label completion',
-            'valid' => $completion >= $minCompletion,
-            'value' => "{$completion}% / {$minCompletion}%",
-            'hint' => 'Bos label dosyalarini doldur.',
+            'valid' => ! $strictCompletion || $completion >= $minCompletion,
+            'value' => "{$completion}% / {$minCompletion}%".($strictCompletion ? '' : ' advisory'),
+            'hint' => 'Bos label dosyalari training icin engel degil; label queue icin bekletilir.',
         ],
         [
             'label' => 'Train split',
