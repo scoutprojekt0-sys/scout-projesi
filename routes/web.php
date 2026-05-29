@@ -15,6 +15,15 @@ Route::get('/privacy', function () {
         ->header('Content-Type', 'text/html; charset=UTF-8');
 });
 
+Route::get('/account-deletion', function () {
+    return response(file_get_contents(public_path('account-deletion.html')))
+        ->header('Content-Type', 'text/html; charset=UTF-8');
+});
+
+Route::get('/delete-account', function () {
+    return redirect('/account-deletion');
+});
+
 Route::get('/scout-et.html', function () {
     return response(file_get_contents(base_path('scout-et.html')))
         ->header('Content-Type', 'text/html; charset=UTF-8');
