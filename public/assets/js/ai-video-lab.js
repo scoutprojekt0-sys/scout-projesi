@@ -255,14 +255,12 @@
       '<div class="ai-video-lab-head" style="margin-bottom:0;">' +
         '<div>' +
           '<h2>AI Discovery</h2>' +
-          '<p>Analiz metrikleriyle oyuncu kesfet: en iyi cross, speed, movement ve filtreli siralama.</p>' +
+          '<p>Analiz metrikleriyle oyuncu kesfet: en iyi cross ve filtreli siralama.</p>' +
         '</div>' +
         '<div class="ai-video-lab-tag"><i class="fas fa-ranking-star"></i><span>Discovery</span></div>' +
       '</div>' +
       '<div class="ai-video-lab-discovery-grid">' +
         '<div class="ai-video-lab-discovery-card"><strong>En Iyi Cross</strong><div class="ai-video-lab-chip-list" data-ai-best-crosses><div class="ai-video-lab-empty">Yukleniyor...</div></div></div>' +
-        '<div class="ai-video-lab-discovery-card"><strong>En Hizli Oyuncular</strong><div class="ai-video-lab-chip-list" data-ai-best-speed><div class="ai-video-lab-empty">Yukleniyor...</div></div></div>' +
-        '<div class="ai-video-lab-discovery-card"><strong>En Yuksek Movement</strong><div class="ai-video-lab-chip-list" data-ai-best-movement><div class="ai-video-lab-empty">Yukleniyor...</div></div></div>' +
       '</div>' +
       '<div class="ai-video-lab-discovery-filters">' +
         '<div class="ai-video-lab-field"><label>Oyuncu Adi</label><input class="ai-video-lab-input" type="text" placeholder="Oyuncu ara" data-ai-discovery-search></div>' +
@@ -309,8 +307,6 @@
     const discoveryButton = root.querySelector('[data-ai-discovery-btn]');
     const discoveryResultsRoot = root.querySelector('[data-ai-discovery-results]');
     const bestCrossesRoot = root.querySelector('[data-ai-best-crosses]');
-    const bestSpeedRoot = root.querySelector('[data-ai-best-speed]');
-    const bestMovementRoot = root.querySelector('[data-ai-best-movement]');
     const workerModeBadge = document.getElementById('workerModeBadge');
     const discoveryStatusBadge = document.getElementById('discoveryStatusBadge');
     const rankingStatusBadge = document.getElementById('rankingStatusBadge');
@@ -577,8 +573,6 @@
       try {
         const payload = await apiGet('/scouting-search/rankings?limit=5', false);
         const bestCrosses = Array.isArray(payload?.best_crosses) ? payload.best_crosses : [];
-        const bestSpeed = Array.isArray(payload?.best_speed) ? payload.best_speed : [];
-        const bestMovement = Array.isArray(payload?.best_movement) ? payload.best_movement : [];
 
         if (bestCrossesRoot) {
           bestCrossesRoot.innerHTML = bestCrosses.length
@@ -586,22 +580,8 @@
             : '<div class="ai-video-lab-empty">Liste bos.</div>';
           bindQuickPickButtons(bestCrossesRoot, bestCrosses.map(normalizeDiscoveryPlayer).filter(Boolean));
         }
-        if (bestSpeedRoot) {
-          bestSpeedRoot.innerHTML = bestSpeed.length
-            ? bestSpeed.map(function (row) { return createDiscoveryChip(row, 'speed_score'); }).join('')
-            : '<div class="ai-video-lab-empty">Liste bos.</div>';
-          bindQuickPickButtons(bestSpeedRoot, bestSpeed.map(normalizeDiscoveryPlayer).filter(Boolean));
-        }
-        if (bestMovementRoot) {
-          bestMovementRoot.innerHTML = bestMovement.length
-            ? bestMovement.map(function (row) { return createDiscoveryChip(row, 'movement_score'); }).join('')
-            : '<div class="ai-video-lab-empty">Liste bos.</div>';
-          bindQuickPickButtons(bestMovementRoot, bestMovement.map(normalizeDiscoveryPlayer).filter(Boolean));
-        }
       } catch (error) {
         if (bestCrossesRoot) bestCrossesRoot.innerHTML = '<div class="ai-video-lab-empty">Ranking verisi alinamadi.</div>';
-        if (bestSpeedRoot) bestSpeedRoot.innerHTML = '<div class="ai-video-lab-empty">Ranking verisi alinamadi.</div>';
-        if (bestMovementRoot) bestMovementRoot.innerHTML = '<div class="ai-video-lab-empty">Ranking verisi alinamadi.</div>';
       }
     }
 
@@ -777,8 +757,7 @@
           player.position || '-',
           player.city || '-',
           'Yas: ' + (player.age || '-'),
-          'Cross: ' + (player.successful_crosses || 0),
-          'Speed: ' + (player.speed_score || 0)
+          'Cross: ' + (player.successful_crosses || 0)
         ].join(' - ');
       }
       if (targetInput) targetInput.value = player.id || '';

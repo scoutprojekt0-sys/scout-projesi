@@ -65,6 +65,8 @@ class PrepareAiDatasetForSportJob implements ShouldQueue
             $prepareExit = Artisan::call('ai:prepare-dataset', [
                 'sport' => $sport,
                 '--skip-sync' => true,
+                '--sample-every-seconds' => (string) max(1, (int) config('scout.ai_training.continuous_learning.dataset_sample_every_seconds', 2)),
+                '--max-seconds' => (string) max(1, (int) config('scout.ai_training.continuous_learning.dataset_max_seconds', 60)),
             ]);
 
             if ($prepareExit !== SymfonyCommand::SUCCESS) {
@@ -72,6 +74,11 @@ class PrepareAiDatasetForSportJob implements ShouldQueue
             }
 
             $pseudoLabelService->writeLabelsForSport($sport);
+            $exportService->purgeUnannotatedFrames($sport);
+            Artisan::call('ai:dataset-label-queue', [
+                'sport' => $sport,
+                '--split' => 'all',
+            ]);
             $exportService->markCandidatesAsLabeling($exportedIds);
         } finally {
             optional($lock)->release();

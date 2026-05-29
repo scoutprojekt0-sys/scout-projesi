@@ -266,6 +266,51 @@ class AiDatasetExportService
         return ['updated' => $updated, 'rows' => $results];
     }
 
+    /**
+     * @return array{kept:int,removed:int,manifest:string|null}
+     */
+    public function purgeUnannotatedFrames(string $sport): array
+    {
+        $manifestPath = base_path('ai-worker/datasets/'.$sport.'/manifest.csv');
+        if (! File::exists($manifestPath)) {
+            return ['kept' => 0, 'removed' => 0, 'manifest' => null];
+        }
+
+        $manifestRows = $this->readCsvRows($manifestPath);
+        $keptRows = [];
+        $removed = 0;
+
+        foreach ($manifestRows as $row) {
+            $labelPath = $this->normalizeWorkerPath((string) ($row['labels_path'] ?? ''));
+            $framePath = $this->normalizeWorkerPath((string) ($row['frame_path'] ?? ''));
+            $hasAnnotation = $labelPath !== ''
+                && File::exists($labelPath)
+                && trim((string) File::get($labelPath)) !== '';
+
+            if ($hasAnnotation) {
+                $row['needs_labeling'] = 'no';
+                $keptRows[] = $row;
+                continue;
+            }
+
+            if ($framePath !== '' && File::exists($framePath)) {
+                File::delete($framePath);
+            }
+            if ($labelPath !== '' && File::exists($labelPath)) {
+                File::delete($labelPath);
+            }
+            $removed++;
+        }
+
+        $this->writeDatasetManifest($manifestPath, $keptRows);
+
+        return [
+            'kept' => count($keptRows),
+            'removed' => $removed,
+            'manifest' => str_replace('\\', '/', $manifestPath),
+        ];
+    }
+
     private function normalizeWorkerPath(string $path): string
     {
         $normalized = str_replace('\\', '/', trim($path));
@@ -501,5 +546,32 @@ class AiDatasetExportService
         fclose($handle);
 
         return $rows;
+    }
+
+    /**
+     * @param  array<int,array<string,mixed>>  $rows
+     */
+    private function writeDatasetManifest(string $manifestPath, array $rows): void
+    {
+        $fieldNames = [
+            'source_video',
+            'source_key',
+            'frame_path',
+            'split',
+            'labels_path',
+            'needs_labeling',
+            'notes',
+        ];
+
+        $handle = fopen($manifestPath, 'w');
+        if (! is_resource($handle)) {
+            throw new \RuntimeException('Dataset manifest dosyasi yazilamadi: '.$manifestPath);
+        }
+
+        fputcsv($handle, $fieldNames);
+        foreach ($rows as $row) {
+            fputcsv($handle, array_map(static fn (string $field) => $row[$field] ?? '', $fieldNames));
+        }
+        fclose($handle);
     }
 }

@@ -818,7 +818,7 @@ Artisan::command('ai:sync-video-candidates {sport=all} {--only-public : Sync onl
     return $failed > 0 ? SymfonyCommand::FAILURE : SymfonyCommand::SUCCESS;
 })->purpose('Download AI dataset candidate videos into raw_videos folders');
 
-Artisan::command('ai:prepare-dataset {sport} {--limit=0 : Limit clip count} {--only-public : Sync only public player videos} {--skip-sync : Use only local raw_videos files} {--sample-every-seconds=1 : Frame sample interval} {--max-seconds=180 : Max seconds per video}', function (string $sport) use ($resolveAiWorkerPython) {
+Artisan::command('ai:prepare-dataset {sport} {--limit=0 : Limit clip count} {--only-public : Sync only public player videos} {--skip-sync : Use only local raw_videos files} {--sample-every-seconds= : Frame sample interval} {--max-seconds= : Max seconds per video}', function (string $sport) use ($resolveAiWorkerPython) {
     $requestedSport = strtolower(trim($sport));
     $allowedSports = ['football', 'basketball', 'volleyball'];
     if (! in_array($requestedSport, $allowedSports, true)) {
@@ -849,17 +849,28 @@ Artisan::command('ai:prepare-dataset {sport} {--limit=0 : Limit clip count} {--o
     $sourceDir = base_path('raw_videos/'.$requestedSport);
     $datasetDir = base_path('ai-worker/datasets/'.$requestedSport);
     $workerBaseUrl = rtrim((string) config('scout.ai_analysis.worker_base_url', ''), '/');
+    $sampleEverySeconds = $this->option('sample-every-seconds');
+    $sampleEverySeconds = is_numeric($sampleEverySeconds)
+        ? (int) $sampleEverySeconds
+        : (int) config('scout.ai_training.continuous_learning.dataset_sample_every_seconds', 2);
+    $maxSeconds = $this->option('max-seconds');
+    $maxSeconds = is_numeric($maxSeconds)
+        ? (int) $maxSeconds
+        : (int) config('scout.ai_training.continuous_learning.dataset_max_seconds', 60);
+    $sampleEverySeconds = max(1, $sampleEverySeconds);
+    $maxSeconds = max(1, $maxSeconds);
 
     $this->newLine();
     $this->info("2/2 Dataset prep basliyor: {$requestedSport}");
+    $this->line("Frame kurali: ilk {$maxSeconds}s, her {$sampleEverySeconds}s");
 
     if ($workerBaseUrl !== '') {
         $response = Http::timeout(1800)
             ->acceptJson()
             ->post($workerBaseUrl.'/jobs/prepare-dataset', [
                 'sport' => $requestedSport,
-                'sample_every_seconds' => (int) $this->option('sample-every-seconds'),
-                'max_seconds' => (int) $this->option('max-seconds'),
+                'sample_every_seconds' => $sampleEverySeconds,
+                'max_seconds' => $maxSeconds,
             ]);
 
         if (! $response->successful()) {
@@ -897,8 +908,8 @@ Artisan::command('ai:prepare-dataset {sport} {--limit=0 : Limit clip count} {--o
             $requestedSport,
             $sourceDir,
             $datasetDir,
-            (string) $this->option('sample-every-seconds'),
-            (string) $this->option('max-seconds'),
+            (string) $sampleEverySeconds,
+            (string) $maxSeconds,
         );
 
         passthru($command, $prepExit);
@@ -1379,7 +1390,7 @@ Schedule::call(static function (): void {
     foreach (['football', 'basketball', 'volleyball'] as $sport) {
         MaybeAutoTrainSportJob::dispatch($sport);
     }
-})->hourly()->name('ai-auto-train-all');
+})->dailyAt((string) config('scout.ai_training.auto_train.daily_at', '02:00'))->name('ai-auto-train-all');
 Schedule::command('ai-learning:enqueue-missing-analyses --limit=200')
     ->everyFiveMinutes()
     ->name('ai-learning-enqueue-missing-analyses')
