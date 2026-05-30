@@ -15,6 +15,8 @@ class AiTrainingRunController extends Controller
         $validated = $request->validate([
             'sport' => ['nullable', 'in:football,basketball,volleyball'],
             'status' => ['nullable', 'in:queued,running,completed,failed'],
+            'include_failed' => ['nullable', 'boolean'],
+            'per_page' => ['nullable', 'integer', 'min:1', 'max:50'],
         ]);
 
         $query = AiTrainingRun::query()
@@ -29,7 +31,11 @@ class AiTrainingRunController extends Controller
             $query->where('status', $validated['status']);
         }
 
-        $rows = $query->paginate(20)->through(
+        if ($request->has('include_failed') && $request->boolean('include_failed') === false && ! isset($validated['status'])) {
+            $query->where('status', '!=', AiTrainingRun::STATUS_FAILED);
+        }
+
+        $rows = $query->paginate((int) ($validated['per_page'] ?? 20))->through(
             fn (AiTrainingRun $run) => $this->transformSummary($run)
         );
 
