@@ -59,6 +59,12 @@ class PrepareAiDatasetForSportJob implements ShouldQueue
                 ->all();
 
             if ($exportedIds === []) {
+                $exportService->purgeUnannotatedFrames($sport);
+                Artisan::call('ai:dataset-label-queue', [
+                    'sport' => $sport,
+                    '--split' => 'all',
+                ]);
+
                 return;
             }
 

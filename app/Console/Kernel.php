@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\SyncMediaVideosToAiLearning::class,
         \App\Console\Commands\EnqueueMissingAiAnalyses::class,
         \App\Console\Commands\WriteAiPseudoLabels::class,
+        \App\Console\Commands\PurgeUnannotatedAiDatasetFrames::class,
         \App\Console\Commands\ResetLegacyPasswords::class,
     ];
 
