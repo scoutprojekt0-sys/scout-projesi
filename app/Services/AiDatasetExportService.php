@@ -271,14 +271,12 @@ class AiDatasetExportService
      */
     public function purgeUnannotatedFrames(string $sport): array
     {
-        $manifestPath = base_path('ai-worker/datasets/'.$sport.'/manifest.csv');
-        if (! File::exists($manifestPath)) {
-            return ['kept' => 0, 'removed' => 0, 'manifest' => null];
-        }
-
+        $datasetDir = base_path('ai-worker/datasets/'.$sport);
+        $manifestPath = $datasetDir.'/manifest.csv';
         $manifestRows = $this->readCsvRows($manifestPath);
         $keptRows = [];
         $removed = 0;
+        $removedPaths = [];
 
         foreach ($manifestRows as $row) {
             $labelPath = $this->normalizeWorkerPath((string) ($row['labels_path'] ?? ''));
@@ -295,19 +293,52 @@ class AiDatasetExportService
 
             if ($framePath !== '' && File::exists($framePath)) {
                 File::delete($framePath);
+                $removedPaths[$framePath] = true;
             }
             if ($labelPath !== '' && File::exists($labelPath)) {
                 File::delete($labelPath);
+                $removedPaths[$labelPath] = true;
             }
             $removed++;
         }
 
-        $this->writeDatasetManifest($manifestPath, $keptRows);
+        foreach (['train', 'val', 'test'] as $split) {
+            $labelDir = $datasetDir.'/labels/'.$split;
+            $imageDir = $datasetDir.'/images/'.$split;
+            if (! File::exists($labelDir)) {
+                continue;
+            }
+
+            foreach (File::files($labelDir) as $labelFile) {
+                $labelPath = str_replace('\\', '/', $labelFile->getPathname());
+                if (isset($removedPaths[$labelPath]) || trim((string) File::get($labelPath)) !== '') {
+                    continue;
+                }
+
+                File::delete($labelPath);
+                $removedPaths[$labelPath] = true;
+
+                foreach (['jpg', 'jpeg', 'png', 'webp'] as $extension) {
+                    $imagePath = $imageDir.'/'.$labelFile->getFilenameWithoutExtension().'.'.$extension;
+                    if (File::exists($imagePath)) {
+                        File::delete($imagePath);
+                        $removedPaths[str_replace('\\', '/', $imagePath)] = true;
+                        break;
+                    }
+                }
+
+                $removed++;
+            }
+        }
+
+        if (File::exists($manifestPath)) {
+            $this->writeDatasetManifest($manifestPath, $keptRows);
+        }
 
         return [
             'kept' => count($keptRows),
             'removed' => $removed,
-            'manifest' => str_replace('\\', '/', $manifestPath),
+            'manifest' => File::exists($manifestPath) ? str_replace('\\', '/', $manifestPath) : null,
         ];
     }
 
