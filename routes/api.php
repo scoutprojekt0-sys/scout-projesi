@@ -356,6 +356,7 @@ Route::prefix('auth')->group(function () {
         Route::post('/change-password', [AuthController::class, 'changePassword'])->middleware('ability:profile:write');
         Route::get('/me', [AuthController::class, 'me']);
         Route::put('/me', [AuthController::class, 'updateMe']);
+        Route::delete('/me', [AuthController::class, 'deleteMe'])->middleware('ability:profile:write');
     });
 });
 

@@ -251,6 +251,33 @@ class AuthSecurityHardeningTest extends TestCase
         $this->postJson('/api/auth/refresh')->assertStatus(401);
     }
 
+    public function test_delete_me_removes_account_and_revokes_tokens(): void
+    {
+        $user = User::factory()->create(['role' => 'player']);
+        $token = $user->createToken('current', $user->tokenAbilities())->plainTextToken;
+        $otherToken = $user->createToken('other', $user->tokenAbilities())->plainTextToken;
+        $currentTokenId = (int) explode('|', $token)[0];
+        $otherTokenId = (int) explode('|', $otherToken)[0];
+
+        $this->withHeader('Authorization', 'Bearer '.$token)
+            ->deleteJson('/api/auth/me')
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('code', 'account_deleted');
+
+        $this->assertDatabaseMissing('users', ['id' => $user->id]);
+        $this->assertDatabaseMissing('personal_access_tokens', ['id' => $currentTokenId]);
+        $this->assertDatabaseMissing('personal_access_tokens', ['id' => $otherTokenId]);
+        $this->assertDatabaseHas('audit_events', [
+            'event_type' => 'auth.account.deleted',
+        ]);
+    }
+
+    public function test_unauthenticated_request_cannot_delete_account(): void
+    {
+        $this->deleteJson('/api/auth/me')->assertStatus(401);
+    }
+
     public function test_user_cannot_revoke_another_users_session(): void
     {
         $attacker = User::factory()->create(['role' => 'player']);

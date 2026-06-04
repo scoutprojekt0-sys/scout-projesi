@@ -17,8 +17,8 @@ use App\Models\ClubInternalPlayer;
 use App\Models\PlayerProfile;
 use App\Models\PlayerStatistic;
 use App\Models\User;
-use App\Support\SportBranch;
 use App\Services\BrevoEmailService;
+use App\Support\SportBranch;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -30,7 +30,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,6 +40,7 @@ class AuthController extends Controller
     use ResolvesPublicFileUrls;
 
     private const CLUB_LOGIN_ROLES = ['team', 'club', 'kulup'];
+
     public function register(RegisterRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -671,6 +671,35 @@ class AuthController extends Controller
         ]);
     }
 
+    public function deleteMe(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+        $userId = (int) $user->id;
+        $emailHash = hash('sha256', strtolower((string) $user->email));
+
+        DB::transaction(function () use ($request, $user, $userId, $emailHash): void {
+            $this->recordAuditEvent($userId, 'auth.account.deleted', [
+                'email_hash' => $emailHash,
+                'ip' => $request->ip(),
+            ]);
+
+            $user->tokens()->delete();
+            $user->delete();
+        });
+
+        Log::channel('security')->info('Account deleted', [
+            'user_id' => $userId,
+            'ip' => $request->ip(),
+        ]);
+
+        return response()->json([
+            'ok' => true,
+            'code' => 'account_deleted',
+            'message' => 'Hesap ve hesaba bagli veriler silindi.',
+        ]);
+    }
+
     public function refresh(Request $request): JsonResponse
     {
         /** @var User $user */
@@ -854,7 +883,7 @@ class AuthController extends Controller
 
     private function buildEmailVerificationLink(string $token): string
     {
-        return 'nextscout://verify-email?token=' . urlencode($token);
+        return 'nextscout://verify-email?token='.urlencode($token);
     }
 
     private function buildPasswordResetLink(string $email, string $token): string
@@ -1225,5 +1254,4 @@ class AuthController extends Controller
 
         return sprintf('%d-%02d', $seasonStart, ($seasonStart + 1) % 100);
     }
-
 }
