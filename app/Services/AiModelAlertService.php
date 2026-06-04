@@ -83,7 +83,7 @@ class AiModelAlertService
     private function resolveRecipientIds(): array
     {
         return User::query()
-            ->where('role', 'admin')
+            ->whereIn('role', ['admin', 'scout'])
             ->pluck('id')
             ->all();
     }
