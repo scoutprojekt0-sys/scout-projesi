@@ -24,6 +24,27 @@ class LiveMatchController extends Controller
 {
     use ApiResponds;
 
+    private const LIVE_MATCH_VISIBILITIES = [
+        'public',
+        'private',
+        'staff_only',
+        'players_only',
+        'scouts_only',
+        'coaches_only',
+        'managers_only',
+        'clubs_only',
+        'lawyers_only',
+    ];
+
+    private const ROLE_VISIBILITY_MAP = [
+        'players_only' => ['player'],
+        'scouts_only' => ['scout'],
+        'coaches_only' => ['coach', 'antrenor'],
+        'managers_only' => ['manager', 'menajer'],
+        'clubs_only' => ['team', 'club', 'kulup'],
+        'lawyers_only' => ['lawyer', 'avukat'],
+    ];
+
     public function liveMatches(Request $request): JsonResponse
     {
         return $this->index($request);
@@ -187,7 +208,7 @@ class LiveMatchController extends Controller
             'source_role' => ['nullable', 'string', 'max:50'],
             'source_name' => ['nullable', 'string', 'max:150'],
             'source_user_id' => ['nullable', 'integer'],
-            'visibility' => ['nullable', Rule::in(['public', 'private', 'staff_only'])],
+            'visibility' => ['nullable', Rule::in(self::LIVE_MATCH_VISIBILITIES)],
         ]);
 
         [$homeTeam, $awayTeam] = $this->extractTeams($validated['match_name']);
@@ -382,6 +403,10 @@ class LiveMatchController extends Controller
             return $this->isProfessionalViewer($viewer);
         }
 
+        if (array_key_exists($visibility, self::ROLE_VISIBILITY_MAP)) {
+            return $this->viewerMatchesRoleVisibility($viewer, $visibility);
+        }
+
         return false;
     }
 
@@ -416,6 +441,20 @@ class LiveMatchController extends Controller
             'staff',
             'admin',
         ], true);
+    }
+
+    private function viewerMatchesRoleVisibility(?User $viewer, string $visibility): bool
+    {
+        if (! $viewer) {
+            return false;
+        }
+
+        $role = Str::lower((string) $viewer->role);
+        if (in_array($role, ['admin', 'staff'], true)) {
+            return true;
+        }
+
+        return in_array($role, self::ROLE_VISIBILITY_MAP[$visibility] ?? [], true);
     }
 
     private function canManageMatch(LiveMatch $match, ?User $viewer): bool

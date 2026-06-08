@@ -52,7 +52,7 @@ class ClubWorkspaceController extends Controller
         }
 
         $offers = ClubOffer::query()
-            ->with(['club:id,name,city', 'transfer:id,negotiation_status,verification_status,counter_fee,updated_at'])
+            ->with(['club:id,name,city', 'transfer:id,negotiation_status,verification_status,counter_fee,notes,negotiation_notes,negotiation_updated_at,updated_at'])
             ->where('club_user_id', (int) $user->id)
             ->latest('id')
             ->paginate(50)
@@ -142,7 +142,7 @@ class ClubWorkspaceController extends Controller
         }
 
         $offers = ClubOffer::query()
-            ->with(['club:id,name,city', 'transfer:id,negotiation_status,verification_status,counter_fee,updated_at'])
+            ->with(['club:id,name,city', 'transfer:id,negotiation_status,verification_status,counter_fee,notes,negotiation_notes,negotiation_updated_at,updated_at'])
             ->whereHas('transfer', fn ($query) => $query->where('created_by', (int) $user->id))
             ->latest('id')
             ->paginate(50)
@@ -943,6 +943,12 @@ class ClubWorkspaceController extends Controller
 
     private function transformOffer(ClubOffer $offer): array
     {
+        $history = collect(explode("\n", (string) ($offer->transfer?->notes ?? '')))
+            ->map(fn ($line) => trim((string) $line))
+            ->filter()
+            ->values()
+            ->all();
+
         return [
             'id' => $offer->id,
             'club_user_id' => $offer->club_user_id,
@@ -968,7 +974,10 @@ class ClubWorkspaceController extends Controller
             'negotiation_status' => $offer->transfer?->negotiation_status,
             'verification_status' => $offer->transfer?->verification_status,
             'counter_fee' => $offer->transfer?->counter_fee !== null ? (float) $offer->transfer->counter_fee : null,
+            'negotiation_notes' => $offer->transfer?->negotiation_notes,
+            'history' => $history,
             'created_at' => optional($offer->created_at)->toIso8601String(),
+            'updated_at' => optional($offer->transfer?->negotiation_updated_at ?? $offer->updated_at)->toIso8601String(),
         ];
     }
 

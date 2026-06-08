@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\ClubOffer;
+use App\Models\PlayerTransfer;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
@@ -74,5 +76,93 @@ class TransferEndpointsTest extends TestCase
         ])
             ->assertForbidden()
             ->assertJsonPath('ok', false);
+    }
+
+    public function test_club_can_counter_and_accept_player_counter_offer(): void
+    {
+        $club = User::factory()->club()->create([
+            'name' => 'Restore SK',
+            'sport' => 'football',
+        ]);
+        $player = User::factory()->player()->create([
+            'name' => 'Ali Kanat',
+            'sport' => 'football',
+        ]);
+
+        Sanctum::actingAs($club, $club->tokenAbilities());
+
+        $offerResponse = $this->postJson('/api/club/offers', [
+            'target_player_user_id' => $player->id,
+            'player_name' => $player->name,
+            'sport' => 'football',
+            'offer_type' => 'permanent',
+            'amount_eur' => 100000,
+            'currency' => 'EUR',
+            'season' => '2026-27',
+            'note' => 'Ilk kulup teklifi.',
+        ]);
+
+        $offerResponse
+            ->assertCreated()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.negotiation_status', 'open');
+
+        $transferId = (int) $offerResponse->json('data.transfer_id');
+        $this->assertGreaterThan(0, $transferId);
+
+        Sanctum::actingAs($player, $player->tokenAbilities());
+
+        $this->postJson("/api/transfers/{$transferId}/room-action", [
+            'action' => 'counter',
+            'counter_fee' => 125000,
+            'note' => 'Oyuncu karsi teklifi.',
+        ])
+            ->assertOk()
+            ->assertJsonPath('data.negotiation_status', 'countered');
+
+        Sanctum::actingAs($club, $club->tokenAbilities());
+
+        $this->postJson("/api/transfers/{$transferId}/room-action", [
+            'action' => 'counter',
+            'counter_fee' => 130000,
+            'note' => 'Kulup yeni karsi teklifi.',
+        ])
+            ->assertOk()
+            ->assertJsonPath('data.negotiation_status', 'countered');
+
+        $transfer = PlayerTransfer::query()->findOrFail($transferId);
+        $this->assertSame('countered', $transfer->negotiation_status);
+        $this->assertSame('130000.00', (string) $transfer->counter_fee);
+
+        $offer = ClubOffer::query()->where('transfer_id', $transferId)->firstOrFail();
+        $this->assertSame('countered', $offer->status);
+
+        Sanctum::actingAs($player, $player->tokenAbilities());
+
+        $this->postJson("/api/transfers/{$transferId}/room-action", [
+            'action' => 'counter',
+            'counter_fee' => 128000,
+            'note' => 'Oyuncu son rakam.',
+        ])
+            ->assertOk()
+            ->assertJsonPath('data.negotiation_status', 'countered');
+
+        Sanctum::actingAs($club, $club->tokenAbilities());
+
+        $this->postJson("/api/transfers/{$transferId}/room-action", [
+            'action' => 'accept',
+            'note' => 'Kulup son rakami kabul etti.',
+        ])
+            ->assertOk()
+            ->assertJsonPath('data.negotiation_status', 'accepted');
+
+        $transfer->refresh();
+        $offer->refresh();
+
+        $this->assertSame('accepted', $transfer->negotiation_status);
+        $this->assertSame('128000.00', (string) $transfer->fee);
+        $this->assertSame('128000.00', (string) $transfer->counter_fee);
+        $this->assertSame('accepted', $offer->status);
+        $this->assertStringContainsString('Kulup son rakami kabul etti.', (string) $transfer->notes);
     }
 }

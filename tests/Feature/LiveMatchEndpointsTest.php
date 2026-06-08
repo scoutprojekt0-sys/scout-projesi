@@ -293,6 +293,71 @@ class LiveMatchEndpointsTest extends TestCase
             ->assertNotFound();
     }
 
+    public function test_role_specific_live_match_visibility_rules_are_applied(): void
+    {
+        $owner = User::factory()->create(['role' => 'player', 'name' => 'Player Streamer']);
+        $playerViewer = User::factory()->create(['role' => 'player', 'name' => 'Player Viewer']);
+        $scoutViewer = User::factory()->create(['role' => 'scout', 'name' => 'Scout Viewer']);
+        $clubViewer = User::factory()->create(['role' => 'team', 'name' => 'Club Viewer']);
+
+        $playersOnlyMatch = LiveMatch::query()->create([
+            'title' => 'Players Only Stream',
+            'league' => 'U19',
+            'home_team' => 'Player XI',
+            'away_team' => 'Rival XI',
+            'match_date' => now(),
+            'is_live' => true,
+            'is_finished' => false,
+            'visibility' => 'players_only',
+            'round' => 'meta::{"round":null,"meta":{"source_user_id":'.$owner->id.'}}',
+        ]);
+
+        $scoutsOnlyMatch = LiveMatch::query()->create([
+            'title' => 'Scouts Only Stream',
+            'league' => 'U19',
+            'home_team' => 'Scout XI',
+            'away_team' => 'Rival XI',
+            'match_date' => now(),
+            'is_live' => true,
+            'is_finished' => false,
+            'visibility' => 'scouts_only',
+            'round' => 'meta::{"round":null,"meta":{"source_user_id":'.$owner->id.'}}',
+        ]);
+
+        $clubsOnlyMatch = LiveMatch::query()->create([
+            'title' => 'Clubs Only Stream',
+            'league' => 'U19',
+            'home_team' => 'Club XI',
+            'away_team' => 'Rival XI',
+            'match_date' => now(),
+            'is_live' => true,
+            'is_finished' => false,
+            'visibility' => 'clubs_only',
+            'round' => 'meta::{"round":null,"meta":{"source_user_id":'.$owner->id.'}}',
+        ]);
+
+        Sanctum::actingAs($playerViewer, ['profile:read']);
+        $this->getJson('/api/live-matches')
+            ->assertOk()
+            ->assertJsonPath('total', 1)
+            ->assertJsonPath('data.0.id', $playersOnlyMatch->id);
+
+        $this->getJson('/api/matches/'.$scoutsOnlyMatch->id)
+            ->assertNotFound();
+
+        Sanctum::actingAs($scoutViewer, ['profile:read']);
+        $this->getJson('/api/live-matches')
+            ->assertOk()
+            ->assertJsonPath('total', 1)
+            ->assertJsonPath('data.0.id', $scoutsOnlyMatch->id);
+
+        Sanctum::actingAs($clubViewer, ['profile:read']);
+        $this->getJson('/api/live-matches')
+            ->assertOk()
+            ->assertJsonPath('total', 1)
+            ->assertJsonPath('data.0.id', $clubsOnlyMatch->id);
+    }
+
     public function test_club_can_start_private_live_match_session(): void
     {
         $user = User::factory()->create(['role' => 'club', 'name' => 'Test Club']);

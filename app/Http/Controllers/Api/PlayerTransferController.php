@@ -241,6 +241,9 @@ class PlayerTransferController extends Controller
 
         if ($action === 'accept') {
             $transfer->negotiation_status = 'accepted';
+            if ($transfer->counter_fee !== null) {
+                $transfer->fee = $transfer->counter_fee;
+            }
             $historyEntry .= 'teklif kabul edildi.';
         } elseif ($action === 'reject') {
             $transfer->negotiation_status = 'rejected';
