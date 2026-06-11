@@ -24,6 +24,8 @@ class LiveMatchController extends Controller
 {
     use ApiResponds;
 
+    private const LIVE_MATCH_STALE_AFTER_HOURS = 12;
+
     private const LIVE_MATCH_VISIBILITIES = [
         'public',
         'private',
@@ -238,6 +240,7 @@ class LiveMatchController extends Controller
             'is_live' => true,
             'is_finished' => false,
             'visibility' => $validated['visibility'] ?? 'public',
+            'started_at' => now(),
             'round' => $this->encodeRoundMeta(null, $meta),
         ]);
 
@@ -472,17 +475,28 @@ class LiveMatchController extends Controller
 
     private function expirePastMatches(): void
     {
-        $finishedBefore = now()->subSeconds(30);
+        $finishedBefore = now()->subHours(self::LIVE_MATCH_STALE_AFTER_HOURS);
 
         LiveMatch::query()
-            ->where('visibility', 'public')
             ->where('is_live', true)
             ->where('is_finished', false)
-            ->whereNotNull('match_date')
-            ->where('match_date', '<', $finishedBefore)
+            ->where(function ($query) use ($finishedBefore): void {
+                $query->where('started_at', '<', $finishedBefore)
+                    ->orWhere(function ($query) use ($finishedBefore): void {
+                        $query->whereNull('started_at')
+                            ->whereNotNull('match_date')
+                            ->where('match_date', '<', $finishedBefore);
+                    })
+                    ->orWhere(function ($query) use ($finishedBefore): void {
+                        $query->whereNull('started_at')
+                            ->whereNull('match_date')
+                            ->where('created_at', '<', $finishedBefore);
+                    });
+            })
             ->update([
                 'is_live' => false,
                 'is_finished' => true,
+                'finished_at' => now(),
             ]);
     }
 

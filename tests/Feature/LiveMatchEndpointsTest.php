@@ -180,6 +180,35 @@ class LiveMatchEndpointsTest extends TestCase
         $this->assertSame('staff_only', $match->visibility);
     }
 
+    public function test_player_public_live_stream_remains_visible_to_professional_roles(): void
+    {
+        $player = User::factory()->create(['role' => 'player', 'name' => 'Player Streamer']);
+        $manager = User::factory()->create(['role' => 'manager', 'name' => 'Manager Viewer']);
+
+        Sanctum::actingAs($player, ['profile:write']);
+
+        $response = $this->postJson('/api/live-matches', [
+            'match_name' => 'Player XI - Rival XI',
+            'sport' => 'football',
+            'visibility' => 'public',
+            'match_date' => now()->subMinute()->toIso8601String(),
+            'source_role' => 'player',
+            'source_name' => 'Player Streamer',
+            'source_user_id' => $player->id,
+        ])->assertCreated();
+
+        $matchId = $response->json('data.id');
+
+        Sanctum::actingAs($manager, ['profile:read']);
+
+        $this->getJson('/api/live-matches')
+            ->assertOk()
+            ->assertJsonPath('total', 1)
+            ->assertJsonPath('data.0.id', $matchId)
+            ->assertJsonPath('data.0.visibility', 'public')
+            ->assertJsonPath('data.0.source_role', 'player');
+    }
+
     public function test_live_match_owner_can_finish_stream_and_non_owner_cannot(): void
     {
         $owner = User::factory()->create(['role' => 'player', 'name' => 'Owner Player']);
@@ -642,24 +671,79 @@ class LiveMatchEndpointsTest extends TestCase
         $this->assertDatabaseCount('live_matches', 0);
     }
 
-    public function test_past_live_match_is_automatically_hidden_after_match_time_passes(): void
+    public function test_stale_live_matches_are_automatically_hidden_after_cutoff(): void
     {
         LiveMatch::query()->create([
-            'title' => 'Bitmis Mac',
-            'league' => 'Super Lig',
+            'title' => 'Yeni Canli Yayin',
+            'league' => 'Live Scout',
             'home_team' => 'A',
             'away_team' => 'B',
             'match_date' => now()->subMinute(),
+            'started_at' => now()->subMinute(),
             'is_live' => true,
             'is_finished' => false,
+            'visibility' => 'public',
         ]);
+
+        LiveMatch::query()->create([
+            'title' => 'Eski Public Yayin',
+            'league' => 'Super Lig',
+            'home_team' => 'A',
+            'away_team' => 'B',
+            'match_date' => now()->subHours(13),
+            'started_at' => now()->subHours(13),
+            'is_live' => true,
+            'is_finished' => false,
+            'visibility' => 'public',
+        ]);
+
+        LiveMatch::query()->create([
+            'title' => 'Eski Staff Yayin',
+            'league' => 'Super Lig',
+            'home_team' => 'C',
+            'away_team' => 'D',
+            'match_date' => now()->subHours(13),
+            'started_at' => now()->subHours(13),
+            'is_live' => true,
+            'is_finished' => false,
+            'visibility' => 'staff_only',
+        ]);
+
+        $undatedStaleMatch = LiveMatch::query()->create([
+            'title' => 'Eski Tarihsiz Yayin',
+            'league' => 'Super Lig',
+            'home_team' => 'E',
+            'away_team' => 'F',
+            'match_date' => null,
+            'started_at' => null,
+            'is_live' => true,
+            'is_finished' => false,
+            'visibility' => 'scouts_only',
+        ]);
+        $undatedStaleMatch->forceFill([
+            'created_at' => now()->subHours(13),
+            'updated_at' => now()->subHours(13),
+        ])->save();
 
         $this->getJson('/api/live-matches')
             ->assertOk()
-            ->assertJsonPath('total', 0);
+            ->assertJsonPath('total', 1)
+            ->assertJsonPath('data.0.title', 'Yeni Canli Yayin');
 
         $this->assertDatabaseHas('live_matches', [
-            'title' => 'Bitmis Mac',
+            'title' => 'Eski Public Yayin',
+            'is_live' => false,
+            'is_finished' => true,
+        ]);
+
+        $this->assertDatabaseHas('live_matches', [
+            'title' => 'Eski Staff Yayin',
+            'is_live' => false,
+            'is_finished' => true,
+        ]);
+
+        $this->assertDatabaseHas('live_matches', [
+            'title' => 'Eski Tarihsiz Yayin',
             'is_live' => false,
             'is_finished' => true,
         ]);
