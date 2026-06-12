@@ -150,8 +150,17 @@ class ScoutTipController extends Controller
             'match_date' => ['nullable', 'date'],
             'guardian_consent_status' => ['required', 'in:not_required,pending,received,rejected'],
             'description' => ['required', 'string', 'min:30', 'max:3000'],
+            'sport' => ['nullable', 'string', 'max:40'],
             'metadata' => ['nullable', 'array'],
         ]);
+
+        $resolvedSport = $this->resolveScoutTipSport($validated);
+        if ($resolvedSport !== null) {
+            $validated['metadata'] = array_merge($validated['metadata'] ?? [], [
+                'sport' => $resolvedSport,
+            ]);
+        }
+        unset($validated['sport']);
 
         $tip = $this->workflowService->createTip($request->user(), $validated);
 
@@ -741,8 +750,12 @@ class ScoutTipController extends Controller
             return;
         }
 
-        $query->whereHas('player', function ($innerQuery) use ($sportTerms) {
-            $innerQuery->whereIn(DB::raw('LOWER(COALESCE(sport, ""))'), $sportTerms);
+        $query->where(function ($sportQuery) use ($sportTerms) {
+            $sportQuery
+                ->whereIn('metadata->sport', $sportTerms)
+                ->orWhereHas('player', function ($innerQuery) use ($sportTerms) {
+                    $innerQuery->whereIn(DB::raw('LOWER(COALESCE(sport, ""))'), $sportTerms);
+                });
         });
     }
 
@@ -753,6 +766,11 @@ class ScoutTipController extends Controller
 
     private function resolveScoutTipSport(array $payload): ?string
     {
+        $directSport = $this->normalizeSport($payload['sport'] ?? null);
+        if ($directSport !== null) {
+            return $directSport;
+        }
+
         $metadataSport = $this->normalizeSport(data_get($payload, 'metadata.sport'));
         if ($metadataSport !== null) {
             return $metadataSport;

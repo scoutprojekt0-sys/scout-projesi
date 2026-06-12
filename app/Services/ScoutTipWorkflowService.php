@@ -281,9 +281,10 @@ class ScoutTipWorkflowService
             ->whereIn(
                 'role',
                 $isManagerSubmission
-                    ? ['coach', 'team', 'club']
-                    : ['coach', 'team', 'club', 'manager']
+                    ? ['scout', 'coach', 'team', 'club']
+                    : ['scout', 'coach', 'team', 'club', 'manager']
             )
+            ->where('id', '!=', $submitter->id)
             ->pluck('id');
 
         NotificationStore::sendToUsers($targetIds, $isManagerSubmission ? 'scout_tip_shortlisted' : 'scout_tip_created', [
@@ -303,7 +304,8 @@ class ScoutTipWorkflowService
     private function notifyManagersAboutTip(ScoutTip $tip, User $submitter): void
     {
         $targetIds = User::query()
-            ->where('role', 'manager')
+            ->whereIn('role', ['scout', 'coach', 'team', 'club', 'manager'])
+            ->where('id', '!=', $submitter->id)
             ->pluck('id');
 
         NotificationStore::sendToUsers($targetIds, 'scout_tip_shortlisted', [

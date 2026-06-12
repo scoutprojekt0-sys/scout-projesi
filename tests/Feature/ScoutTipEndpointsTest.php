@@ -185,6 +185,8 @@ class ScoutTipEndpointsTest extends TestCase
     {
         $team = User::factory()->create(['role' => 'team']);
         $manager = User::factory()->create(['role' => 'manager']);
+        $coach = User::factory()->create(['role' => 'coach']);
+        $scout = User::factory()->create(['role' => 'scout']);
 
         Sanctum::actingAs($team, ['profile:read', 'profile:write', 'staff']);
 
@@ -196,11 +198,13 @@ class ScoutTipEndpointsTest extends TestCase
             'city' => 'Bursa',
             'guardian_consent_status' => 'received',
             'description' => 'Kulup tarafindan izlenen ve manager shortlistine alinmasi gereken oyuncu.',
+            'sport' => 'football',
         ]);
 
         $response
             ->assertCreated()
             ->assertJsonPath('data.status', 'shortlisted')
+            ->assertJsonPath('data.metadata.sport', 'football')
             ->assertJsonPath('data.metadata.submitted_to_manager_shortlist', true)
             ->assertJsonPath('data.metadata.submitted_role', 'team');
 
@@ -208,6 +212,34 @@ class ScoutTipEndpointsTest extends TestCase
             'user_id' => $manager->id,
             'type' => 'scout_tip_shortlisted',
         ]);
+
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $coach->id,
+            'type' => 'scout_tip_shortlisted',
+        ]);
+
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $scout->id,
+            'type' => 'scout_tip_shortlisted',
+        ]);
+
+        Sanctum::actingAs($manager, ['profile:read', 'profile:write', 'staff']);
+        $this->getJson('/api/scout-tips?status=shortlisted&sport=football')
+            ->assertOk()
+            ->assertJsonPath('data.0.id', $response->json('data.id'))
+            ->assertJsonPath('data.0.player_name', 'Berat Yildiz');
+
+        Sanctum::actingAs($scout, ['profile:read', 'profile:write', 'staff']);
+        $this->getJson('/api/scout-tips?status=shortlisted&sport=football')
+            ->assertOk()
+            ->assertJsonPath('data.0.id', $response->json('data.id'))
+            ->assertJsonPath('data.0.player_name', 'Berat Yildiz');
+
+        Sanctum::actingAs($coach, ['profile:read', 'profile:write', 'staff']);
+        $this->getJson('/api/scout-tips/role-requests/feed?sport=football')
+            ->assertOk()
+            ->assertJsonPath('data.0.id', $response->json('data.id'))
+            ->assertJsonPath('data.0.player_name', 'Berat Yildiz');
 
         $this->getJson('/api/scout-tips/feed?limit=10')
             ->assertOk()
