@@ -299,6 +299,32 @@ class ScoutTipEndpointsTest extends TestCase
             ->assertJsonMissing(['player_name' => 'Scout Kaydi']);
     }
 
+    public function test_sport_filtered_queue_keeps_legacy_new_player_tips_without_sport_metadata(): void
+    {
+        $submitter = User::factory()->create(['role' => 'team']);
+        $manager = User::factory()->create(['role' => 'manager']);
+
+        $legacyTip = ScoutTip::create([
+            'submitted_by' => $submitter->id,
+            'source_type' => 'new_player',
+            'player_name' => 'Legacy Kulup Oyuncusu',
+            'city' => 'Bursa',
+            'guardian_consent_status' => 'received',
+            'description' => 'Sport metadata olmadan olusturulmus eski kulup bildirimi.',
+            'status' => 'shortlisted',
+            'shortlisted_at' => now(),
+            'ai_quality_score' => 61,
+            'final_score' => 61,
+        ]);
+
+        Sanctum::actingAs($manager, ['profile:read', 'profile:write', 'staff']);
+
+        $this->getJson('/api/scout-tips?status=shortlisted&sport=football')
+            ->assertOk()
+            ->assertJsonPath('data.0.id', $legacyTip->id)
+            ->assertJsonPath('data.0.player_name', 'Legacy Kulup Oyuncusu');
+    }
+
     public function test_coach_can_record_review_with_timestamp_for_manager_tip(): void
     {
         $manager = User::factory()->create(['role' => 'manager']);

@@ -755,6 +755,15 @@ class ScoutTipController extends Controller
                 ->whereIn('metadata->sport', $sportTerms)
                 ->orWhereHas('player', function ($innerQuery) use ($sportTerms) {
                     $innerQuery->whereIn(DB::raw('LOWER(COALESCE(sport, ""))'), $sportTerms);
+                })
+                ->orWhere(function ($unknownSportQuery) {
+                    $unknownSportQuery
+                        ->whereNull('player_id')
+                        ->where(function ($metadataQuery) {
+                            $metadataQuery
+                                ->whereNull('metadata->sport')
+                                ->orWhere('metadata->sport', '');
+                        });
                 });
         });
     }
